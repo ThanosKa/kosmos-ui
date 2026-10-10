@@ -38,3 +38,21 @@ export function readKosmosTokens(): KosmosTokens {
     dark: parseBlock(css, blockSelectors.dark),
   };
 }
+
+/**
+ * The tokens as a shadcn registry item's `cssVars`. The CLI writes `theme` into the user's
+ * `@theme inline`, so references between `@theme static` values are resolved here (inline
+ * theme vars do not exist at runtime). Font families stay with the user's app.
+ */
+export function kosmosTokensAsCssVars(tokens: KosmosTokens = readKosmosTokens()) {
+  const resolve = (value: string): string =>
+    value.replace(/var\(--([\w-]+)\)/g, (ref, name: string) =>
+      name in tokens.theme ? resolve(tokens.theme[name]) : ref,
+    );
+  const theme: Declarations = {};
+  for (const [name, value] of Object.entries(tokens.themeInline)) {
+    if (!name.startsWith('font-')) theme[name] = value;
+  }
+  for (const [name, value] of Object.entries(tokens.theme)) theme[name] = resolve(value);
+  return { theme, light: tokens.light, dark: tokens.dark };
+}

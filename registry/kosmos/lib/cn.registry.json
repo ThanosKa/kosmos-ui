@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cn",
+  "type": "registry:lib",
+  "title": "cn",
+  "description": "Class merging that knows the Kosmos type roles (text-caption to text-display) are font sizes, so they never drop a text color.",
+  "dependencies": ["cn"],
+  "files": [
+    {
+      "path": "registry/kosmos/lib/cn.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

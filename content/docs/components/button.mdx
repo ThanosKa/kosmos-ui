@@ -1,0 +1,99 @@
+---
+title: Button
+description: Starts an action or, with href, goes to a page. Four variants, three sizes and icon-only sizes, built on Base UI.
+---
+
+<ComponentPreview name="button-demo" />
+
+## Installation
+
+<ComponentInstall name="button" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+```
+
+```tsx
+<Button variant="primary">Save changes</Button>
+```
+
+Pass `variant` on every Button, even when you want the default `primary`. The call then reads the same everywhere, and a reviewer sees the intent without opening the component.
+
+## Examples
+
+### Variants
+
+Use one `primary` per view for the main action. Its neighbors take `secondary` or `ghost`. `destructive` is for actions that delete or can't be undone.
+
+<ComponentPreview name="button-variants" />
+
+### Sizes
+
+`md` (30px) is the default and fits most toolbars and forms. Use `sm` in dense rows and `lg` for a lone call to action.
+
+<ComponentPreview name="button-sizes" />
+
+### With an icon
+
+Mark the icon with `data-icon="inline-start"` or `data-icon="inline-end"`, so the padding on that side tightens to balance it.
+
+<ComponentPreview name="button-with-icon" />
+
+### Icon only
+
+Use the `icon`, `icon-sm` or `icon-lg` size and give the button an `aria-label`, because the icon has no text to read out.
+
+<ComponentPreview name="button-icon" />
+
+### Link
+
+With `href`, the Button renders an `<a>` with the same look, so it navigates like any link: middle-click, open in new tab, and the browser's status bar all work. For client-side routing, put `buttonVariants({ variant, size })` on your router's link component instead.
+
+<ComponentPreview name="button-link" />
+
+### Disabled
+
+A disabled button can't be clicked or focused. Add `focusableWhenDisabled` when it should stay in the tab order, for example while a form is saving, so focus doesn't jump.
+
+<ComponentPreview name="button-disabled" />
+
+## API
+
+Button wraps the [Base UI Button](https://base-ui.com/react/components/button) and accepts all of its props, or all `<a>` props when `href` is set.
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The role of the button.',
+      type: "'primary' | 'secondary' | 'ghost' | 'destructive'",
+      default: "'primary'",
+    },
+    size: {
+      description: 'Height and padding. The icon sizes are square.',
+      type: "'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'",
+      default: "'md'",
+    },
+    href: {
+      description: 'Renders an `<a>` with this URL instead of a `<button>`.',
+      type: 'string',
+    },
+    disabled: {
+      description: 'Blocks clicks and removes the button from the tab order.',
+      type: 'boolean',
+      default: 'false',
+    },
+    focusableWhenDisabled: {
+      description: 'Keeps a disabled button focusable.',
+      type: 'boolean',
+      default: 'false',
+    },
+    render: {
+      description: 'Replaces the rendered `<button>` (Base UI `render` prop).',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
+  }}
+/>
+
+`buttonVariants({ variant, size })` returns the same classes, for elements that should look like a Button without being one.
