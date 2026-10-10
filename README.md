@@ -1,45 +1,37 @@
-# kosmos-ui
+# Kosmos UI
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
-
-Run development server:
+Kosmos UI is an open source design system for dashboard app UI: components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, quick motion and dense typography. You install them with the shadcn CLI, and the code lands in your project for you to own and edit.
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+npx shadcn add @kosmos/button
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+This repo holds everything: the components, the blocks, the registry they are installed from, and the docs site.
 
-## Explore
+## Development
 
-In the project, you can see:
+Requirements: Node.js 20.9 or later. The pnpm version is pinned in `package.json`, and Corepack picks it up.
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+```bash
+corepack enable
+pnpm install
+pnpm dev
+```
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+Then open http://localhost:3000.
 
-### Fumadocs MDX
+Before you open a pull request:
 
-Collections are defined with the [Macro API](https://fumadocs.dev/docs/mdx/macro) in `lib/source.ts`.
+```bash
+pnpm types:check
+pnpm lint
+pnpm build
+```
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
+## Contributing
 
-## Learn More
+See [CONTRIBUTING.md](CONTRIBUTING.md). Design decisions are recorded in [docs/adr](docs/adr).
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.dev) - learn about Fumadocs
+[MIT](LICENSE) © 2026 Thanos Kazakis. The license does not cover the Kosmos UI name or logo.

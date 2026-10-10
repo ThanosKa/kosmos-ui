@@ -24,5 +24,10 @@ yarn-error.log*
 .env*.local
 .vercel
 next-env.d.ts
+
 # local planning notes (not public)
 .scratch/
+
+# claude code: personal settings and agent worktrees
+.claude/settings.local.json
+.claude/worktrees/
