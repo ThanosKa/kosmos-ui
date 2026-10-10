@@ -29,6 +29,32 @@ export type RegistryItem = {
   [key: string]: unknown;
 };
 
+/**
+ * Approval groups, in build order. Each component or block names its group in its own
+ * `<name>.registry.json` as `"meta": { "group": "<key>" }`, so items built in parallel never edit a
+ * shared list. `/approve/<key>` shows every item of a group; the label is public, so it stays English.
+ */
+export const groups = {
+  basics: 'Basics',
+  forms: 'Forms',
+  overlays: 'Overlays',
+  navigation: 'Navigation',
+  data: 'Data',
+  misc: 'Misc',
+  blocks: 'Blocks',
+} as const;
+export type Group = keyof typeof groups;
+const groupedTypes = ['registry:ui', 'registry:block'];
+
+export function isGroup(value: unknown): value is Group {
+  return typeof value === 'string' && Object.hasOwn(groups, value);
+}
+
+/** The items of one approval group, sorted by name. */
+export function itemsInGroup(group: Group, items: RegistryItem[] = readRegistryItems()): RegistryItem[] {
+  return items.filter((item) => item.meta?.group === group).sort((a, b) => a.name.localeCompare(b.name));
+}
+
 const typeOrder = ['registry:theme', 'registry:lib', 'registry:hook', 'registry:ui', 'registry:component', 'registry:block'];
 
 function readItem(file: string, root: string): RegistryItem {
@@ -45,6 +71,12 @@ function readItem(file: string, root: string): RegistryItem {
     return { ...item, cssVars: kosmosTokensAsCssVars(), meta: Object.keys(meta).length ? meta : undefined };
   }
   if (cssVarsFrom) throw new Error(`${file}: unsupported meta.cssVarsFrom "${String(cssVarsFrom)}"`);
+  const group = item.meta?.group;
+  if (groupedTypes.includes(item.type) ? !isGroup(group) : group !== undefined) {
+    throw new Error(
+      `${file}: ${groupedTypes.includes(item.type) ? `a ${item.type} item needs` : `a ${item.type} item takes no`} "meta": { "group": ${Object.keys(groups).map((key) => `"${key}"`).join(' | ')} }, got ${JSON.stringify(group)}`,
+    );
+  }
   return item;
 }
 
