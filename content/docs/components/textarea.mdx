@@ -1,0 +1,64 @@
+---
+title: Textarea
+description: A multi-line text input that grows with what you type. Same look as Input, built on Base UI.
+---
+
+<ComponentPreview name="textarea-demo" />
+
+## Installation
+
+<ComponentInstall name="textarea" />
+
+## Usage
+
+```tsx
+import { Textarea } from '@/components/ui/textarea';
+```
+
+```tsx
+<Textarea name="note" aria-label="Note" placeholder="Add a note for the team" />
+```
+
+Textarea starts 64px tall and grows with its content (`field-sizing: content`). Set a taller start with a `min-h-*` class, or cap the growth with `max-h-*`, after which it scrolls.
+
+## Examples
+
+### With a label
+
+Put it in a [Field](/docs/components/field) for a visible label and help text.
+
+<ComponentPreview name="textarea-with-label" />
+
+### Invalid and disabled
+
+<ComponentPreview name="textarea-states" />
+
+## API
+
+Textarea is a Base UI [Field.Control](https://base-ui.com/react/components/field) rendered as a `<textarea>`, so it takes its label, description and error from a Field. It accepts all `<textarea>` props.
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The text, when you control it.',
+      type: 'string',
+    },
+    defaultValue: {
+      description: 'The starting text, when the textarea manages it.',
+      type: 'string',
+    },
+    onValueChange: {
+      description: 'Called with the new text on every change.',
+      type: '(value: string, eventDetails) => void',
+    },
+    disabled: {
+      description: 'Blocks input and leaves the text out of the form. A disabled Field disables it too.',
+      type: 'boolean',
+      default: 'false',
+    },
+    'aria-invalid': {
+      description: 'Marks the text as wrong outside a Field. Inside one, set `invalid` on the Field instead.',
+      type: 'boolean',
+    },
+  }}
+/>
