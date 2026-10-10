@@ -3,6 +3,25 @@
 @import 'fumadocs-ui/css/preset.css';
 @import '../registry/kosmos/styles/tokens.css';
 
+/*
+ * State pinning for preview routes (/view/[name]): `data-preview="hover focus"`
+ * on an element triggers the same styles as the real interaction, so one
+ * screenshot can show every state. Adapted from shadcn's design-system skill
+ * (MIT). Site-only: registry items never ship these variants.
+ */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+  &[data-preview~='hover'] {
+    @slot;
+  }
+}
+@custom-variant focus-visible (&:focus-visible, &[data-preview~='focus']);
+@custom-variant active (&:active, &[data-preview~='active']);
+
 :root,
 .dark {
   --color-fd-overlay: var(--scrim);

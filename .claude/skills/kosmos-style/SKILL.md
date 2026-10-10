@@ -13,6 +13,8 @@ This skill wins every conflict with a review skill (`better-*`, `review-animatio
 
 Components reach every color, shadow, radius, easing, duration and text size through a token: `bg-primary`, `text-muted-foreground`, `shadow-popover`, `rounded-xl`, `ease-power3-out`, `duration-fast`, `text-body`. Component files hold no color literal of any notation. Inline `style` carries only CSS variables (`style={{ '--nav-index': i }}`).
 
+Merge classes with `cn` from `@/registry/kosmos/lib/cn` (registry item `@kosmos/cn`), never the bare `cn` package: the default merger reads a type role such as `text-body` as a text color and silently drops the `text-*` color before it.
+
 A missing role gets a new token in `tokens.css`, added in the same change as the component that uses it, with a row in [tokens.md](tokens.md). A token earns its place by a component using it; a token nothing uses is deleted.
 
 Dark mode is the `.dark` class on `<html>`, set by next-themes. Tokens switch on that class only, so components rarely need a `dark:` variant.
@@ -97,7 +99,7 @@ Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-m
 
 ### Press scale
 
-An enabled button scales to `0.96` while pressed: `enabled:active:scale-96 motion-reduce:enabled:active:scale-100`, with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+An enabled button scales to `0.96` while pressed: `motion-safe:enabled:not-data-disabled:active:scale-96` (`not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
 
 _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one value both reviewers accept: `better-ui` prescribes exactly `0.96`, and Emil Kowalski's range is `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
 
@@ -109,6 +111,8 @@ Every focusable element shows `focus-visible:outline-2 focus-visible:outline-off
 
 Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`nav`, `item`); a variant nothing uses is deleted.
 
+ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
+
 ## Before you finish
 
 | Detection | Fix |
@@ -119,7 +123,7 @@ Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos c
 | A `shadow-*` ring without `border border-transparent` | Add it |
 | `transition-all`, bare `transition`, `ease-out`, `ease-in-out`, `ease-in`, `duration-150` | Named properties, `ease-power3-out` or `ease-smooth-in-out`, `duration-fast` |
 | `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
-| `active:scale-*` other than `scale-96`, or without `enabled:` | `enabled:active:scale-96 motion-reduce:enabled:active:scale-100` |
+| `active:scale-*` other than `scale-96`, or without `motion-safe:enabled:not-data-disabled:` | `motion-safe:enabled:not-data-disabled:active:scale-96` |
 | `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
 | `text-[13px]`, `text-sm`, `text-xs` or any size outside the type roles | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |

@@ -3,6 +3,11 @@
 
 # generated content
 .source
+# registry: composed from registry/**/*.registry.json and built by `pnpm registry:build`
+/registry.json
+/public/r/
+# review screenshots from `pnpm screenshots`
+/.screenshots/
 
 # test & build
 /coverage

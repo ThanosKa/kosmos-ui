@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion",
+  "type": "registry:lib",
+  "title": "Motion values",
+  "description": "The Kosmos easing curves, durations and spring as JavaScript values for Motion, matching the CSS tokens.",
+  "files": [
+    {
+      "path": "registry/kosmos/lib/motion.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

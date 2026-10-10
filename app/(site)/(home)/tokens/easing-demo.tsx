@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/registry/kosmos/ui/button';
 
 export function EasingDemo({
   items,
@@ -12,14 +13,9 @@ export function EasingDemo({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setPlayed((value) => !value)}
-          aria-pressed={played}
-          className="h-[30px] rounded-lg border border-transparent bg-primary px-3 text-body font-medium text-primary-foreground shadow-primary transition-[background-color,scale] duration-fast ease-power3-out hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring enabled:active:scale-96 motion-reduce:enabled:active:scale-100"
-        >
+        <Button variant="primary" onClick={() => setPlayed((value) => !value)}>
           {played ? 'Reset' : 'Play'}
-        </button>
+        </Button>
         <p className="text-small text-muted-foreground">
           Slowed to 1000ms so the curve is visible. With reduced motion the dot
           cross-fades to the end instead of moving.

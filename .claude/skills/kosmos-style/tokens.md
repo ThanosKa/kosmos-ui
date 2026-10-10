@@ -29,7 +29,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `muted` | Track and quiet fills | Light study / dark study |
 | `muted-foreground` | Secondary text | Adjusted in both modes to pass 4.5:1 on `background`, `card` and `muted` |
 | `accent`, `accent-foreground` | Translucent hover/highlight overlay for ghost, nav, menu items and rows | Hover overlays of both studies (foreground 4% light, white 6% dark) |
-| `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white; dark study |
+| `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics; dark study |
 | `border` | Dividers between items | Light study / dark study |
 | `input` | `border-input` in components installed from shadcn; Kosmos inputs draw their edge with `shadow-control` | Light study / dark study |
