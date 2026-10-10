@@ -15,7 +15,7 @@ Call the Skill tool with `kosmos-style` before writing a line, and keep its **Be
 
 ## 2. Build
 
-Write the component fresh on Base UI (`@base-ui/react`). Each file below is found by its name; adding a component edits no shared file.
+Write the component fresh on Base UI (`@base-ui/react`). For a component that already exists, check each file below against this table and fix what differs. Each file is found by its name; adding a component edits no shared file.
 
 | File | What it holds |
 | --- | --- |
@@ -26,33 +26,40 @@ Write the component fresh on Base UI (`@base-ui/react`). Each file below is foun
 | `registry/kosmos/examples/<name>-<example>.tsx` | One file per docs example. |
 | `content/docs/components/<name>.mdx` | The docs page: hero preview, install, usage, examples, API (`TypeTable`). |
 
-Each of these renders at `/view/<file name>`. The conventions behind them live in the header comments of `lib/registry.ts`, `lib/examples.ts` and `scripts/*.mts`.
+Every file in `registry/kosmos/examples/` renders at `/view/<file name>`. The conventions behind these files live in the header comments of `lib/registry.ts`, `lib/examples.ts` and `scripts/*.mts`.
 
 Done when `/view/<name>` renders every row of the matrix with no console error.
 
 ## 3. Shoot
 
-Run the dev server on the port you were given (`pnpm dev --port <N>`), then:
+Use the dev server on the port you were given, starting it with `pnpm dev --port <N>` if none runs (the script rebuilds the registry first; bare `next dev` does not). Then:
 
 ```bash
 pnpm screenshots <name> --port <N>
 ```
 
-Read all four PNGs it prints (light and dark, 375 and 1280 wide). A page error makes it exit 1: fix that first.
+Read all four PNGs it prints (light and dark, 375 and 1280 wide). A page error makes it exit 1: fix that first. The shots run under reduced motion, so a state only motion shows (the press scale in the `active` column) is checked in step 4.
 
 ## 4. Review
 
-Call the Skill tool with `better-interface` and review the four screenshots and the source against it and the better-* skills it pulls in. Then go through the kosmos-style **Before you finish** table line by line.
+Call the Skill tool with `better-interface` and review the review preview, its four screenshots and its source files, as a screen review. Here the review leads to fixes in step 5, as when the user asks better-interface to implement its findings. Use its findings format. Then go through the kosmos-style **Before you finish** table line by line.
 
-Then explore what a screenshot cannot show with `agent-browser` on `/view/<name>` (`agent-browser skills get core` teaches it; give `screenshot` an absolute path): Tab through every control, check the focus order and the visible focus outline, open and close every overlay with keyboard and pointer (Escape, click outside, focus returning to the trigger), and set reduced motion. Write each finding as one line: what, where, which rule.
+Then explore what a screenshot cannot show with `agent-browser` on `/view/<name>?theme=light` and `?theme=dark` (`agent-browser --help` lists every command; give `screenshot` an absolute path). Cover one control of each kind (each variant, each size, the link form, the disabled-but-focusable case), not every cell:
 
-A finding that contradicts a value in kosmos-style keeps the Kosmos value and is marked `Kosmos style`; it is not a fix.
+- Keyboard: `press Tab` plus `screenshot` for the focus order and the focus outline; Enter and Space activate.
+- Overlays: open and close with keyboard and pointer; Escape and a click outside close; focus returns to the trigger.
+- Motion: `mouse down` on a control plus `get styles` for the press scale; `set media light reduced-motion` to see it turn into a cross-fade or nothing.
+- Text: a long label, and the page at 320px wide.
+
+`eval` may be blocked in an isolated worktree; `get styles`, `get box` and `snapshot` answer the same questions.
+
+A finding that contradicts a value in kosmos-style keeps the Kosmos value and is listed under `Kosmos style` (as its conflicts.md says); it is not a fix. A finding only the user can settle, because fixing it breaks a kosmos-style rule or it is a product choice, is marked `Needs decision`.
 
 ## 5. Fix, in rounds
 
 A **round** is steps 3 to 5: shoot, review, fix every finding you accept. Start the next round on the fixed code.
 
-- Stop when a round's review leaves no finding except `Kosmos style` ones.
+- Stop when a round's review leaves only `Kosmos style` and `Needs decision` findings.
 - Stop after round 3 regardless. Every finding still standing goes to **Open** in the report, with the reason it stayed open. A fourth round needs the user.
 
 ## 6. Check the registry and the code
@@ -61,16 +68,16 @@ A **round** is steps 3 to 5: shoot, review, fix every finding you accept. Start 
 pnpm registry:check <name>   # valid JSON, shadcn add in a clean app, that app builds
 pnpm types:check
 pnpm lint
-pnpm build
+pnpm build                   # safe while the dev server runs
 ```
 
-Then call the Skill tool with `mattpocock-skills:code-review` on the change, against `AGENTS.md` and the ticket. Every command passes before the report.
+Then call the Skill tool with `mattpocock-skills:code-review`. Its fixed point is the branch you started from, so commit to your feature branch first; its spec is the ticket or request that started the work. Every command passes before the report.
 
 ## 7. Docs and changelog
 
 The docs page from step 2 matches the final code: every prop in `TypeTable`, every example file used on the page. The docs nav lists every file in `content/docs/components/` and `content/docs/blocks/` by itself.
 
-When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: `content/docs/changelog/YYYY-MM-DD-<slug>.mdx`, frontmatter `title`, `description` and `date`, the date in the file name equal to `date`. The title starts with the action ("Added Badge", "Changed Button focus outline"), so search tells it apart from the component's own page. Copy the shape of the newest entry there. Internal refactors with no visible change get none. Write the text with `better-writing`.
+When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: `content/docs/changelog/YYYY-MM-DD-<slug>.mdx`, frontmatter `title`, `description` and `date`, the date in the file name equal to `date`. The title starts with the action ("Added Badge", "Changed Button focus outline"), so search tells it apart from the component's own page. Copy the shape of the newest entry there. A change to a component that has not been released since its "Added" entry goes into that entry. Internal refactors and changes to examples or docs text get no entry. Write the text with `better-writing`.
 
 ## 8. Report
 
@@ -91,16 +98,19 @@ Fixed:
 - <finding> -> <fix> (round <n>)
 
 Open:
-- <finding>: <why it stayed open: Kosmos style | out of rounds | needs a decision>
+- <finding>: <Kosmos style | Needs decision | out of rounds | tooling>, <why>
 
 Needs user:
-- Run `/review-animations` on <files>   <- only when it has motion
+- Run `/review-animations` on <files>
 - Approve the <Group> group at /approve/<group>
 
-Checks: registry:check, types:check, lint, build, code-review
+Checks:
+- registry:check: <pass | fail: reason>
+- types:check, lint, build: <pass | fail: reason>, <new warnings>
+- code-review: <findings, or none>
 ```
 
-Motion means anything that moves, scales or animates in or out: press scale, enter and exit, height, sliding indicators, keyframes, `motion` code. `review-animations` runs only when the user calls it, so the report asks for it; it never replaces the user's call.
+The `/review-animations` line appears only when the component has motion: anything that moves, scales or animates in or out (press scale, enter and exit, height, sliding indicators, keyframes, `motion` code). That skill runs only when the user calls it, so the report asks for it.
 
 ## 9. Approval
 
