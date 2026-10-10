@@ -4,10 +4,10 @@ import { Button } from '@/registry/kosmos/ui/button';
 export default function ButtonIcon() {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button variant="secondary" size="icon" aria-label="Settings">
+      <Button variant="secondary" size="icon" aria-label="Open settings">
         <Settings />
       </Button>
-      <Button variant="ghost" size="icon" aria-label="Notifications">
+      <Button variant="ghost" size="icon" aria-label="Open notifications">
         <Bell />
       </Button>
     </div>

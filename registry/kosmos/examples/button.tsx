@@ -30,13 +30,13 @@ export default function ButtonPreview() {
           <Button variant="secondary" size="lg">
             Large
           </Button>
-          <Button variant="secondary" size="icon-sm" aria-label="Settings">
+          <Button variant="secondary" size="icon-sm" aria-label="Open settings">
             <Settings />
           </Button>
-          <Button variant="secondary" size="icon" aria-label="Settings">
+          <Button variant="secondary" size="icon" aria-label="Open settings">
             <Settings />
           </Button>
-          <Button variant="secondary" size="icon-lg" aria-label="Settings">
+          <Button variant="secondary" size="icon-lg" aria-label="Open settings">
             <Settings />
           </Button>
         </div>
@@ -52,7 +52,11 @@ export default function ButtonPreview() {
             Continue
             <ArrowRight data-icon="inline-end" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Settings">
+          <Button variant="secondary" size="sm">
+            <Plus data-icon="inline-start" />
+            Add filter
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Open settings">
             <Settings />
           </Button>
           <Button variant="secondary" href="#docs">
