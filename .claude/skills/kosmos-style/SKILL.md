@@ -99,7 +99,9 @@ Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-m
 
 ### Press scale
 
-An enabled button scales to `0.96` while pressed: `motion-safe:enabled:not-data-disabled:active:scale-96` (`not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+An enabled button scales to `0.96` while pressed: `motion-safe:not-disabled:not-data-disabled:active:scale-96` (`not-disabled` instead of `enabled`, so a Button rendered as a link with `href` scales too, since `:enabled` never matches an `<a>`; `not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+
+_Decided without the user (2026-10-11), pending confirmation._ A link styled as a Button presses like one: people cannot tell the two apart, and shadcn's Button applies its press feedback to every rendered element, links included.
 
 _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one value both reviewers accept: `better-ui` prescribes exactly `0.96`, and Emil Kowalski's range is `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
 
@@ -115,6 +117,12 @@ ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`
 
 ## Before you finish
 
+Search the changed files for each detection. Size classes need a pattern that stops at the class name, because a plain `text-sm` also matches the valid `text-small`:
+
+```bash
+grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <files>
+```
+
 | Detection | Fix |
 | --- | --- |
 | `#`, `rgb(`, `hsl(` or `oklch(` in a `.tsx` file | The role token; add one in `tokens.css` if the role is new |
@@ -123,9 +131,9 @@ ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`
 | A `shadow-*` ring without `border border-transparent` | Add it |
 | `transition-all`, bare `transition`, `ease-out`, `ease-in-out`, `ease-in`, `duration-150` | Named properties, `ease-power3-out` or `ease-smooth-in-out`, `duration-fast` |
 | `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
-| `active:scale-*` other than `scale-96`, or without `motion-safe:enabled:not-data-disabled:` | `motion-safe:enabled:not-data-disabled:active:scale-96` |
+| `active:scale-*` other than `scale-96`, or without `motion-safe:not-disabled:not-data-disabled:` | `motion-safe:not-disabled:not-data-disabled:active:scale-96` |
 | `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
-| `text-[13px]`, `text-sm`, `text-xs` or any size outside the type roles | The matching type role |
+| A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement | The focus outline above |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |

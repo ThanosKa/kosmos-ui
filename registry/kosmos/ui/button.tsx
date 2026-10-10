@@ -8,7 +8,7 @@ const buttonVariants = cva(
     'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent font-medium whitespace-nowrap [-webkit-tap-highlight-color:transparent]',
     'transition-[background-color,scale]',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-    'motion-safe:enabled:not-data-disabled:active:scale-96',
+    'motion-safe:not-disabled:not-data-disabled:active:scale-96',
     'data-disabled:opacity-50',
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ],
