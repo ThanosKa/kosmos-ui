@@ -1,0 +1,230 @@
+/*
+ * Kosmos UI tokens: the single source for every color, shadow, radius,
+ * easing, duration and type role. Rules for using them live in the
+ * `kosmos-style` skill (.claude/skills/kosmos-style).
+ *
+ * The four blocks map 1:1 onto a shadcn registry item, so the registry can
+ * ship these exact values:
+ *   @theme inline  -> cssVars.theme  (Tailwind names that point at a mode var)
+ *   @theme static  -> cssVars.theme  (same in light and dark; `static` keeps
+ *                     every var emitted so Motion code and docs can read them)
+ *   :root          -> cssVars.light
+ *   .dark          -> cssVars.dark
+ * Dark mode is the `.dark` class on <html> (next-themes, shadcn convention).
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-scrim: var(--scrim);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-control: var(--shadow-control);
+  --shadow-primary: var(--shadow-primary);
+  --shadow-card: var(--shadow-card);
+  --shadow-popover: var(--shadow-popover);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-inset: var(--shadow-inset);
+  --shadow-lift: var(--shadow-lift);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@theme static {
+  --ease-power3-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-smooth-in-out: cubic-bezier(0.7, 0, 0, 1);
+
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: var(--ease-power3-out);
+
+  --transition-duration-instant: 100ms;
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 200ms;
+  --transition-duration-overlay: 250ms;
+  --transition-duration-slow: 300ms;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: calc(16 / 12);
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.4;
+  --text-body: 0.875rem;
+  --text-body--line-height: calc(20 / 14);
+  --text-title: 1rem;
+  --text-title--line-height: 1.5;
+  --text-title--font-weight: 600;
+  --text-heading: 1.25rem;
+  --text-heading--line-height: 1.4;
+  --text-heading--font-weight: 600;
+  --text-heading--letter-spacing: -0.01em;
+  --text-display: 2rem;
+  --text-display--line-height: 1.25;
+  --text-display--font-weight: 500;
+  --text-display--letter-spacing: -0.02em;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.182 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.182 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.182 0 0);
+  --primary: oklch(0.486 0.285 273.8);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.985 0 0);
+  --secondary-foreground: oklch(0.182 0 0);
+  --muted: oklch(0.955 0 0);
+  --muted-foreground: oklch(0.528 0 0);
+  --accent: oklch(0.182 0 0 / 0.04);
+  --accent-foreground: oklch(0.182 0 0);
+  --destructive: oklch(0.567 0.225 28.5);
+  --success: oklch(0.627 0.17 149.2);
+  --warning: oklch(0.666 0.157 58.3);
+  --border: oklch(0.946 0 0);
+  --input: oklch(0.946 0 0);
+  --ring: oklch(0.486 0.285 273.8);
+  --scrim: oklch(0.182 0 0 / 0.4);
+
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.182 0 0);
+  --sidebar-primary: oklch(0.486 0.285 273.8);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.182 0 0 / 0.04);
+  --sidebar-accent-foreground: oklch(0.182 0 0);
+  --sidebar-border: oklch(0.946 0 0);
+  --sidebar-ring: oklch(0.486 0.285 273.8);
+
+  --shadow-control:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 1px 2px 0 oklch(0 0 0 / 0.06);
+  --shadow-primary:
+    0 0 0 1px oklch(0.4 0.24 273.8),
+    0 1px 2px 0 oklch(0 0 0 / 0.16),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.2),
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  --shadow-card:
+    0 0 0 1px oklch(0 0 0 / 0.06),
+    0 0 0 3px oklch(0.848 0 0 / 0.12),
+    0 1px 2px 0 oklch(0.256 0 0 / 0.04),
+    0 2px 4px 0 oklch(0.256 0 0 / 0.03);
+  --shadow-popover:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 4px 12px 0 oklch(0 0 0 / 0.06),
+    0 12px 32px 0 oklch(0 0 0 / 0.08);
+  --shadow-modal:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 12px 24px 0 oklch(0 0 0 / 0.08),
+    0 32px 64px 0 oklch(0 0 0 / 0.12);
+  --shadow-inset:
+    inset 0 0 0 1px oklch(0 0 0 / 0.04),
+    inset 0 1px 2px 0 oklch(0 0 0 / 0.06);
+  --shadow-lift:
+    0 0 0 1px color-mix(in oklab, var(--primary) 24%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--primary) 16%, transparent),
+    0 2px 12px 0 oklch(0.256 0 0 / 0.08),
+    0 6px 16px 0 oklch(0.256 0 0 / 0.12);
+}
+
+.dark {
+  --background: oklch(0.2 0 0);
+  --foreground: oklch(0.988 0.006 264.5);
+  --card: oklch(0.23 0.007 258.4);
+  --card-foreground: oklch(0.988 0.006 264.5);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.988 0.006 264.5);
+  --primary: oklch(0.486 0.285 273.8);
+  --primary-foreground: oklch(0.988 0.006 264.5);
+  --secondary: oklch(0.235 0 0);
+  --secondary-foreground: oklch(0.988 0.006 264.5);
+  --muted: oklch(0.285 0 0);
+  --muted-foreground: oklch(0.67 0 0);
+  --accent: oklch(1 0 0 / 0.06);
+  --accent-foreground: oklch(0.988 0.006 264.5);
+  --destructive: oklch(0.715 0.165 22.1);
+  --success: oklch(0.723 0.192 149.6);
+  --warning: oklch(0.837 0.164 84.4);
+  --border: oklch(0.256 0 0);
+  --input: oklch(0.345 0 0);
+  --ring: oklch(0.613 0.218 283.8);
+  --scrim: oklch(0 0 0 / 0.6);
+
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.988 0.006 264.5);
+  --sidebar-primary: oklch(0.613 0.218 283.8);
+  --sidebar-primary-foreground: oklch(0.988 0.006 264.5);
+  --sidebar-accent: oklch(1 0 0 / 0.06);
+  --sidebar-accent-foreground: oklch(0.988 0.006 264.5);
+  --sidebar-border: oklch(0.256 0 0);
+  --sidebar-ring: oklch(0.613 0.218 283.8);
+
+  --shadow-control:
+    0 0 0 1px oklch(0 0 0 / 0.4),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.1),
+    inset 0 0 0 1px oklch(1 0 0 / 0.06);
+  --shadow-primary:
+    0 0 0 1px oklch(0.164 0 0),
+    0 4px 4px 0 oklch(0.285 0 0 / 0.32),
+    inset 0 4px 6px 0 oklch(1 0 0 / 0.2),
+    inset 0 0 0 1px oklch(1 0 0 / 0.15),
+    inset 0 -8px 14px 0 oklch(0 0 0 / 0.15);
+  --shadow-card:
+    0 0 0 1px oklch(0.164 0 0),
+    0 4px 4px 0 oklch(0.285 0 0 / 0.32),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08),
+    inset 0 0 0 1px oklch(1 0 0 / 0.08);
+  --shadow-popover:
+    0 0 0 1px oklch(0.164 0 0),
+    0 16px 40px 0 oklch(0 0 0 / 0.5),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.06),
+    inset 0 0 0 1px oklch(1 0 0 / 0.04);
+  --shadow-modal:
+    0 0 0 1px oklch(0 0 0 / 0.32),
+    0 12px 24px 0 oklch(0 0 0 / 0.24),
+    0 32px 64px 0 oklch(0 0 0 / 0.44),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.04),
+    inset 0 0 0 1px oklch(1 0 0 / 0.04);
+  --shadow-inset:
+    0 0 0 1px oklch(0 0 0 / 0.24),
+    inset 0 2px 4px 0 oklch(0 0 0 / 0.2),
+    inset 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow-lift:
+    0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--primary) 20%, transparent),
+    0 8px 24px 0 oklch(0 0 0 / 0.5),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08);
+}
