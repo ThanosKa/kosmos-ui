@@ -1,0 +1,146 @@
+---
+title: Field
+description: Gives a form control a label, help text and an error, and connects them for screen readers. Works with every Kosmos control.
+---
+
+<ComponentPreview name="field-validation" />
+
+## Installation
+
+<ComponentInstall name="field" />
+
+Field works with any control, so it installs none. Add the controls you need, such as [Input](/docs/components/input), on their own.
+
+## Usage
+
+```tsx
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+```
+
+```tsx
+<Field name="email">
+  <FieldLabel>Email</FieldLabel>
+  <Input type="email" required />
+  <FieldDescription>We send invoices to this address.</FieldDescription>
+  <FieldError>Enter an email address with a domain, such as name@company.com.</FieldError>
+</Field>
+```
+
+Put one control in each Field. The Field connects the parts for you:
+
+- FieldLabel becomes the control's accessible name.
+- FieldDescription and FieldError are read after it, through `aria-describedby`.
+- An invalid Field sets `aria-invalid` on the control.
+- A disabled Field disables the control and dims the label and description.
+
+The control can be [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), or any Base UI control, such as Checkbox, Switch or Slider.
+
+## Examples
+
+### Validation
+
+Field runs the browser's own checks (`required`, `type`, `minLength`, `pattern`) and shows a FieldError when one fails. `validationMode="onBlur"` checks when focus leaves the control; the default checks on submit. Give each check its own message with `match`. Type a name without a domain in the demo at the top, then leave the field.
+
+```tsx
+<Field name="email" validationMode="onBlur">
+  <FieldLabel>Email</FieldLabel>
+  <Input type="email" required />
+  <FieldError match="valueMissing">Enter your email address.</FieldError>
+  <FieldError match="typeMismatch">Enter an email address with a domain, such as name@company.com.</FieldError>
+</Field>
+```
+
+For your own rules, pass `validate`: a function that gets the value and returns an error message, or nothing when the value is fine.
+
+### Errors from your app
+
+When a form library or the server decides the value is wrong, set `invalid` on the Field and put the message in a FieldError. It shows for as long as `invalid` is true.
+
+<ComponentPreview name="field-invalid" />
+
+### With a Select
+
+Select's trigger is a button, so give its label `nativeLabel={false}` and `render={<div />}`. It still names the Select, without a native label's click forwarding.
+
+<ComponentPreview name="select-with-field" />
+
+### Horizontal
+
+`orientation="horizontal"` puts the control beside a FieldContent that holds the label and description, as in a settings list. Checkbox and Switch use it too, with the control first.
+
+<ComponentPreview name="field-horizontal" />
+
+### Disabled
+
+<ComponentPreview name="field-disabled" />
+
+## API
+
+Field wraps the [Base UI Field](https://base-ui.com/react/components/field). Each part accepts the props of its Base UI part.
+
+### Field
+
+<TypeTable
+  type={{
+    name: {
+      description: 'Names the value when the form is submitted, and links Form errors to this Field.',
+      type: 'string',
+    },
+    orientation: {
+      description: '`horizontal` puts the control beside a FieldContent.',
+      type: "'vertical' | 'horizontal'",
+      default: "'vertical'",
+    },
+    invalid: {
+      description: 'Marks the value as wrong, for errors your app decides. Shows the FieldError.',
+      type: 'boolean',
+    },
+    disabled: {
+      description: 'Disables the control and dims the label and description.',
+      type: 'boolean',
+      default: 'false',
+    },
+    validate: {
+      description: 'Your own check. Return an error message, or nothing when the value is fine.',
+      type: '(value, formValues) => string | string[] | null | Promise<…>',
+    },
+    validationMode: {
+      description: 'When the browser checks and `validate` run.',
+      type: "'onSubmit' | 'onBlur' | 'onChange'",
+      default: "'onSubmit'",
+    },
+  }}
+/>
+
+### FieldLabel
+
+<TypeTable
+  type={{
+    nativeLabel: {
+      description: 'Set to `false`, with `render={<div />}`, when the control is a button, such as a Select trigger.',
+      type: 'boolean',
+      default: 'true',
+    },
+  }}
+/>
+
+### FieldError
+
+<TypeTable
+  type={{
+    match: {
+      description:
+        'Shows the error only for one failed check, such as `valueMissing` or `typeMismatch`. `true` always shows it.',
+      type: 'boolean | keyof ValidityState',
+    },
+    children: {
+      description: "The message. Without children, the browser's own validation message shows.",
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### FieldContent, FieldDescription
+
+FieldContent is a plain `<div>` that stacks the label, description and error in a horizontal Field. FieldDescription is the help text under the control.
