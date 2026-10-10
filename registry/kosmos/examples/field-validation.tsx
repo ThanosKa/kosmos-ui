@@ -1,7 +1,9 @@
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
 
-export default function FieldDemo() {
+// The docs hero. Not named field-demo: registry:check renders <name>-demo with only the item's own
+// dependencies installed, and a Field needs a control from another item.
+export default function FieldValidation() {
   return (
     <Field name="email" validationMode="onBlur" className="w-full max-w-xs">
       <FieldLabel>Email</FieldLabel>

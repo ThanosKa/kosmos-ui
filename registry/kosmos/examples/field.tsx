@@ -1,4 +1,5 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
@@ -23,10 +24,59 @@ function RoleSelect({ defaultValue }: { defaultValue?: string }) {
   );
 }
 
+const orientations = ['vertical', 'horizontal'] as const;
+const states = ['default', 'focus', 'invalid', 'disabled'] as const;
+
 export default function FieldPreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="States">
+      <PreviewSection title="Orientation × states">
+        <StateMatrix
+          rows={orientations}
+          states={states}
+          render={(orientation, state) => {
+            const label = <FieldLabel>Seats</FieldLabel>;
+            const description = <FieldDescription>Billed monthly.</FieldDescription>;
+            const error = <FieldError>Enter 1 or more.</FieldError>;
+            const input = (
+              <Input
+                type="number"
+                defaultValue={state === 'invalid' ? 0 : 12}
+                className={orientation === 'horizontal' ? 'w-14 tabular-nums' : 'tabular-nums'}
+                {...(state === 'focus' ? previewState('focus') : {})}
+              />
+            );
+            return (
+              <Field
+                orientation={orientation}
+                invalid={state === 'invalid'}
+                disabled={state === 'disabled'}
+                className="w-full"
+              >
+                {orientation === 'vertical' ? (
+                  <>
+                    {label}
+                    {input}
+                    {description}
+                    {error}
+                  </>
+                ) : (
+                  <>
+                    <FieldContent>
+                      {label}
+                      {description}
+                      {error}
+                    </FieldContent>
+                    {input}
+                  </>
+                )}
+              </Field>
+            );
+          }}
+        />
+      </PreviewSection>
+
+      <PreviewSection title="In a form row">
         <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           <Field>
             <FieldLabel>Email</FieldLabel>

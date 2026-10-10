@@ -62,7 +62,7 @@ function SelectContent({
   side = 'bottom',
   sideOffset = 4,
   align = 'start',
-  alignOffset = 0,
+  alignOffset,
   alignItemWithTrigger = true,
   ...props
 }: SelectContentProps) {

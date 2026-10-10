@@ -5,7 +5,7 @@
   "title": "Field",
   "description": "Groups a label, a control, a description and an error on Base UI Field and connects them for assistive tech. Works with Input, Textarea, Select, Checkbox, Switch and Slider, stacked or side by side.",
   "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority", "lucide-react"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/input"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "forms" },
   "files": [
     {

@@ -1,7 +1,7 @@
 'use client';
 
 import { Field as FieldPrimitive } from '@base-ui/react/field';
-import { cva } from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { CircleAlert } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -18,7 +18,7 @@ const fieldVariants = cva('flex min-w-0', {
   defaultVariants: { orientation: 'vertical' },
 });
 
-type FieldOrientation = 'vertical' | 'horizontal';
+type FieldOrientation = NonNullable<VariantProps<typeof fieldVariants>['orientation']>;
 
 type FieldProps = Omit<FieldPrimitive.Root.Props, 'className'> & {
   className?: string;
@@ -26,14 +26,14 @@ type FieldProps = Omit<FieldPrimitive.Root.Props, 'className'> & {
   orientation?: FieldOrientation;
 };
 
+/** Whether the app marked the Field `invalid`, so FieldError can show without a `match`. */
+const FieldInvalidContext = React.createContext(false);
+
 /**
  * Groups a label, one control, a description and an error, and connects them: the label
  * names the control, and the description and error are read with it (`aria-describedby`).
  * Works with any Base UI control: Input, Textarea, Select, Checkbox, Switch, Slider.
  */
-/** Whether the app marked the Field `invalid`, so FieldError can show without a `match`. */
-const FieldInvalidContext = React.createContext(false);
-
 function Field({ className, orientation = 'vertical', invalid, children, ...props }: FieldProps) {
   return (
     <FieldPrimitive.Root
@@ -93,12 +93,14 @@ type FieldErrorProps = Omit<FieldPrimitive.Error.Props, 'className' | 'render'> 
  */
 function FieldError({ className, match, ...props }: FieldErrorProps) {
   // Base UI shows the error for failed validation and Form errors only; a Field marked
-  // `invalid` by the app (react-hook-form, a server response) shows it too.
+  // `invalid` by the app (react-hook-form, a server response) shows its message too.
+  // Without children there is no message to show, so Base UI's own rules apply.
   const invalid = React.use(FieldInvalidContext);
+  const hasMessage = props.children != null && props.children !== false && props.children !== '';
   return (
     <FieldPrimitive.Error
       data-slot="field-error"
-      match={match ?? (invalid || undefined)}
+      match={match ?? (invalid && hasMessage ? true : undefined)}
       className={cn('flex items-start gap-1.5 text-small text-foreground', className)}
       render={(errorProps) => (
         <div {...errorProps}>
@@ -112,24 +114,15 @@ function FieldError({ className, match, ...props }: FieldErrorProps) {
   );
 }
 
-type FieldItemProps = Omit<FieldPrimitive.Item.Props, 'className'> & { className?: string };
-
-/** One option in a checkbox or radio group: its control beside its own label and description. */
-function FieldItem({ className, ...props }: FieldItemProps) {
-  return <FieldPrimitive.Item data-slot="field-item" className={cn('flex items-start gap-2', className)} {...props} />;
-}
-
 export {
   Field,
   FieldContent,
   FieldDescription,
   FieldError,
-  FieldItem,
   FieldLabel,
   fieldVariants,
   type FieldDescriptionProps,
   type FieldErrorProps,
-  type FieldItemProps,
   type FieldLabelProps,
   type FieldOrientation,
   type FieldProps,
