@@ -7,11 +7,11 @@ import {
   cssVarsAsCss,
   installCommands,
   installedPath,
-  packageRunners,
   resolveRegistryTree,
   toInstalledImports,
   type RegistryItem,
 } from '@/lib/registry';
+import { PackageManagerTabs } from './shadcn-command';
 
 function Step({ children }: { children: ReactNode }) {
   return <p className="mt-4 mb-2 text-sm text-fd-muted-foreground first:mt-0">{children}</p>;
@@ -42,13 +42,7 @@ export function ComponentInstall({ name }: { name: string }) {
   return (
     <Tabs items={['CLI', 'Manual']} className="not-prose">
       <Tab value="CLI">
-        <Tabs items={Object.keys(packageRunners)} groupId="package-manager" persist className="my-0">
-          {Object.entries(packageRunners).map(([manager, runner]) => (
-            <Tab key={manager} value={manager} className="p-0">
-              <ServerCodeBlock code={installCommands(name, runner)} lang="bash" codeblock={{ className: 'my-0' }} />
-            </Tab>
-          ))}
-        </Tabs>
+        <PackageManagerTabs code={(runner) => installCommands(name, runner)} />
       </Tab>
       <Tab value="Manual">
         {packages.length > 0 && (
