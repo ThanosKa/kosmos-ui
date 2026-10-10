@@ -26,6 +26,22 @@ _Avoid_: playground, sandbox
 Μια προβολή που δείχνει όλα τα states ενός component μαζί (hover, focus, open, disabled κ.λπ.), ώστε να φαίνονται σε ένα screenshot.
 _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 
+**Review preview**:
+Το preview route ενός component με το όνομά του σκέτο (`/view/button`): το state matrix και ό,τι άλλο χρειάζεται για έλεγχο. Από αυτό βγαίνουν τα screenshots και αυτό δείχνει η σελίδα έγκρισης.
+_Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
+
+**Round**:
+Ένας γύρος του κύκλου `build-component`: screenshots, review, διορθώσεις. Το πολύ 3 γύροι, μετά ο Claude σταματά και αναφέρει ό,τι έμεινε ανοιχτό.
+_Avoid_: iteration, pass
+
+**Group**:
+Μία από τις ομάδες με τις οποίες χτίζονται και εγκρίνονται τα components (Basics, Forms, Overlays, Navigation, Data, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
+_Avoid_: category (στο shadcn είναι άλλο πεδίο)
+
+**Approval page**:
+Η σελίδα `/approve/<group>` που δείχνει το review preview κάθε component μιας ομάδας σε light και dark, ώστε ο χρήστης να εγκρίνει όλη την ομάδα μία φορά. Ένα component είναι έτοιμο μόνο μετά από αυτή την έγκριση.
+_Avoid_: sign-off page, QA page
+
 ### Στυλ
 
 **Token**:
