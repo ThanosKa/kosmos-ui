@@ -1,0 +1,74 @@
+---
+title: Installation
+description: Add the Kosmos registry to a shadcn project, install the tokens, then add your first component.
+---
+
+## Before you start
+
+You need a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components are built on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
+
+To start a new app with shadcn on Base UI, run:
+
+<ShadcnCommand args="init -t next -b base" />
+
+Already have a shadcn project? Open `components.json`. A `style` that starts with `base-`, such as `base-nova`, means the project runs on Base UI.
+
+## Add the registry
+
+Kosmos is a shadcn registry named `@kosmos`. Tell the CLI where to find it:
+
+<ShadcnCommand registryAdd />
+
+This writes a `registries` entry into your `components.json`. You can also add it by hand:
+
+<RegistryConfig />
+
+## Install the tokens
+
+The tokens are the CSS variables every Kosmos component reads: colors, shadows, radius, easing, durations and type roles, in light and dark. Add them once per project, before any component:
+
+<ShadcnCommand args="add @kosmos/tokens" />
+
+They go into your global CSS and replace shadcn's default colors, after the CLI asks you to confirm. Run this command on its own. When a component pulls the tokens in as a dependency instead, the CLI only adds the variables you don't have yet, and shadcn's colors stay.
+
+## Add a component
+
+<ShadcnCommand args="add @kosmos/button" />
+
+The Button lands in `components/ui/button.tsx`, and the CLI adds `lib/cn.ts`, the class helper it imports. Each component page lists everything it installs.
+
+`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost` and `destructive`, so update any call that uses shadcn's `default`, `outline` or `link`.
+
+Then use it:
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+export function SaveBar() {
+  return <Button variant="primary">Save changes</Button>;
+}
+```
+
+## Without the CLI
+
+Every Kosmos file is plain source, so you can copy it in by hand. Follow the same order: tokens, then `cn`, then the component.
+
+### Add the tokens
+
+Merge each block below into the matching block of `app/globals.css` (`@theme inline`, `:root` and `.dark`), after the Tailwind import. Where a variable already exists, such as shadcn's `--background` or `--primary`, replace its value.
+
+<RegistryCss name="tokens" />
+
+### Add cn
+
+Install the `cn` package, then copy `lib/cn.ts`:
+
+```bash
+npm install cn
+```
+
+<ComponentSource name="cn" />
+
+### Add a component
+
+Open the component's page and switch its install tabs to **Manual**. Install the packages it lists and copy its file into `components/ui/`. If your import aliases differ from `@/components/ui` and `@/lib`, change the imports to match.
