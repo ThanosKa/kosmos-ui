@@ -68,9 +68,9 @@ Then call the Skill tool with `mattpocock-skills:code-review` on the change, aga
 
 ## 7. Docs and changelog
 
-The docs page from step 2 matches the final code: every prop in `TypeTable`, every example file used on the page.
+The docs page from step 2 matches the final code: every prop in `TypeTable`, every example file used on the page. The docs nav lists every file in `content/docs/components/` and `content/docs/blocks/` by itself.
 
-When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: one MDX file per dated entry in `content/docs/changelog/`, with the file name and frontmatter of the newest entry there. Internal refactors with no visible change get none. Write the text with `better-writing`.
+When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: `content/docs/changelog/YYYY-MM-DD-<slug>.mdx`, frontmatter `title`, `description` and `date`, the date in the file name equal to `date`. The title starts with the action ("Added Badge", "Changed Button focus outline"), so search tells it apart from the component's own page. Copy the shape of the newest entry there. Internal refactors with no visible change get none. Write the text with `better-writing`.
 
 ## 8. Report
 
