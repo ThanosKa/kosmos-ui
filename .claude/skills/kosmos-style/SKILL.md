@@ -1,0 +1,127 @@
+---
+name: kosmos-style
+description: The Kosmos UI style, with the exact tokens and rules for every component, block and page. Load before writing or changing UI in this repo, and when a review skill's finding disagrees with a Kosmos value.
+---
+
+# Kosmos style
+
+The values live in one file, `registry/kosmos/styles/tokens.css`, and `/tokens` renders all of them in light and dark. This skill says which token each job takes. Every token, its role and its source is in [tokens.md](tokens.md).
+
+This skill wins every conflict with a review skill (`better-*`, `review-animations`). The conflicts and the value that wins are in [conflicts.md](conflicts.md). When a reviewer flags a value listed there, keep the Kosmos value and mark the finding `Kosmos style` in the report.
+
+## Tokens only
+
+Components reach every color, shadow, radius, easing, duration and text size through a token: `bg-primary`, `text-muted-foreground`, `shadow-popover`, `rounded-xl`, `ease-power3-out`, `duration-fast`, `text-body`. Component files hold no color literal of any notation. Inline `style` carries only CSS variables (`style={{ '--nav-index': i }}`).
+
+A missing role gets a new token in `tokens.css`, added in the same change as the component that uses it, with a row in [tokens.md](tokens.md). A token earns its place by a component using it; a token nothing uses is deleted.
+
+Dark mode is the `.dark` class on `<html>`, set by next-themes. Tokens switch on that class only, so components rarely need a `dark:` variant.
+
+## Surfaces: shadows, not borders
+
+Surfaces draw their edge and depth with one layered shadow token, never a depth border. In dark mode each shadow carries a dark outer ring and a 1px inner rim of light, which is the Kosmos signature.
+
+| Surface | Shadow | Fill |
+| --- | --- | --- |
+| Secondary button, input, select trigger, segmented group | `shadow-control` | `bg-secondary` |
+| Primary button | `shadow-primary` | `bg-primary` |
+| Card, stat tile, board card | `shadow-card` | `bg-card` |
+| Popover, menu, select list, tooltip, toast, command palette | `shadow-popover` | `bg-popover` |
+| Dialog, drawer | `shadow-modal` | `bg-popover` |
+| Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
+| Card being dragged | `shadow-lift` | `bg-card` |
+
+Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
+
+## Dividers between items
+
+Adjacent items in a list, menu or table are separated by one real 1px border in `border-border`, never a shadow or an outline:
+
+- Siblings rendered together: `divide-y divide-border` (or `divide-x`) on the parent.
+- Rows that are separate components: `border-b border-border last:border-b-0`.
+- Two-dimensional cell grids (stat grids, calendars): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full.
+
+_Decided without the user (2026-10-11), pending confirmation._ Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and `better-ui` keeps borders for dividers. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
+
+## Radius
+
+Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px), cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+
+## Color
+
+- One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
+- Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
+- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon.
+- `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
+
+## Typography
+
+Text in components sits between 12 and 14px. Each size is a type role, which sets size, line-height and weight together:
+
+| Role | Size / line-height / weight | Use |
+| --- | --- | --- |
+| `text-caption` | 12 / 16 / 400 | Meta, badges, keyboard hints, table headers, eyebrows (`uppercase tracking-[0.05em]`) |
+| `text-small` | 13 / 1.4 / 400 | Descriptions, hints, errors, menu shortcuts |
+| `text-body` | 14 / 20 / 400 | Default UI text: buttons, menu items, table cells, field labels |
+| `text-title` | 16 / 24 / 600 | Dialog, drawer and card titles |
+| `text-heading` | 20 / 28 / 600 | Page headings in blocks |
+| `text-display` | 32 / 40 / 500 | Stat values (always `tabular-nums`) |
+
+- Hierarchy comes from weight (`font-medium` for labels and buttons) and color (`text-muted-foreground`), not from more sizes.
+- Numbers that change or line up (tables, stats, counters, timers, prices) take `tabular-nums`.
+- Single-line text in a fixed-width slot takes `truncate`; multi-line takes `line-clamp-*`. Prose measure is set in `em` (`max-w-[40em]`).
+- Inputs render `text-base sm:text-body`, so iOS never zooms on focus.
+- Fonts are Geist (`font-sans`) and Geist Mono (`font-mono`), loaded with `next/font` in `app/layout.tsx`.
+
+## Motion
+
+Transitions name the properties that change: `transition-[background-color,box-shadow]`, never `transition-all` or `transition`. A bare `transition-[…]` already runs at 150ms with `power3-out`, the theme default, so hover and color changes need no duration or easing class.
+
+| Moment | Duration | Easing |
+| --- | --- | --- |
+| Hover, color, press, menu item highlight | `duration-fast` (150ms), highlight `duration-instant` (100ms) | `ease-power3-out` |
+| Popover, menu, select, tooltip open | `duration-base` (200ms) | `ease-power3-out` |
+| Dialog open | `duration-overlay` (250ms) | `ease-power3-out` |
+| Drawer open, sidebar resize, accordion height, sliding indicator, switch thumb | `duration-slow` (300ms) | `ease-smooth-in-out` for size and position, `ease-power3-out` for slides |
+| Any exit | `duration-fast` (150ms) | `ease-power3-out` |
+
+- Exits run faster than enters with the same curve and the same distance, reversed.
+- Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
+- Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, a skeleton shimmer).
+- The command palette and anything opened by a keyboard shortcut appear without animation.
+- Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
+
+### Reduced motion is mandatory
+
+Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-motion: reduce` the same change becomes an opacity cross-fade, never an instant jump. Motion trees sit inside `<MotionConfig reducedMotion="user">`. An animation without this gate is a blocking bug.
+
+### Press scale
+
+An enabled button scales to `0.96` while pressed: `enabled:active:scale-96 motion-reduce:enabled:active:scale-100`, with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+
+_Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one value both reviewers accept: `better-ui` prescribes exactly `0.96`, and Emil Kowalski's range is `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
+
+## Focus
+
+Every focusable element shows `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`. An outline keeps the surface's shadow stack intact and survives forced-colors mode. `ring` reaches 3:1 against `background` in both themes.
+
+## Buttons
+
+Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`nav`, `item`); a variant nothing uses is deleted.
+
+## Before you finish
+
+| Detection | Fix |
+| --- | --- |
+| `#`, `rgb(`, `hsl(` or `oklch(` in a `.tsx` file | The role token; add one in `tokens.css` if the role is new |
+| A token in `tokens.css` that no component, block or page uses | Delete it, or use it in this change |
+| `border` used for depth on a card, button, input or overlay | Its shadow token from the surface table plus `border-transparent` |
+| A `shadow-*` ring without `border border-transparent` | Add it |
+| `transition-all`, bare `transition`, `ease-out`, `ease-in-out`, `ease-in`, `duration-150` | Named properties, `ease-power3-out` or `ease-smooth-in-out`, `duration-fast` |
+| `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
+| `active:scale-*` other than `scale-96`, or without `enabled:` | `enabled:active:scale-96 motion-reduce:enabled:active:scale-100` |
+| `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
+| `text-[13px]`, `text-sm`, `text-xs` or any size outside the type roles | The matching type role |
+| A number column, stat or counter without `tabular-nums` | Add it |
+| `focus-visible:ring-*` or `outline-none` with no replacement | The focus outline above |
+| `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
