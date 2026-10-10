@@ -59,7 +59,7 @@ export default function DialogPreview() {
             {(container) => (
               <Dialog open modal={false}>
                 <DialogContent container={container} initialFocus={false} showCloseButton={false}>
-                  <DialogHeader className="pe-5">
+                  <DialogHeader>
                     <DialogTitle>Delete project?</DialogTitle>
                     <DialogDescription>
                       Q3 Roadmap and its 24 tasks will be deleted. You can&apos;t undo this.

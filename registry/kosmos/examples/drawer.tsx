@@ -66,7 +66,6 @@ export default function DrawerPreview() {
                     <TaskDetails />
                   </DrawerBody>
                   <DrawerFooter>
-                    <DrawerClose render={<Button variant="secondary" />}>Close</DrawerClose>
                     <Button variant="primary">Mark as done</Button>
                   </DrawerFooter>
                 </DrawerContent>
@@ -148,7 +147,6 @@ export default function DrawerPreview() {
                 <TaskDetails />
               </DrawerBody>
               <DrawerFooter>
-                <DrawerClose render={<Button variant="secondary" />}>Close</DrawerClose>
                 <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
               </DrawerFooter>
             </DrawerContent>

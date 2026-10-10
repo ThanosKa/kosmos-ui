@@ -54,7 +54,7 @@ function DialogPopup({ className, ...props }: DialogPrimitive.Popup.Props) {
     <DialogPrimitive.Popup
       data-slot="dialog-popup"
       className={cn(
-        'relative flex max-h-full w-full max-w-[30rem] min-w-0 flex-col rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-modal',
+        'group/dialog relative flex max-h-full w-full max-w-[30rem] min-w-0 flex-col rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-modal',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'transition-[opacity,scale] duration-overlay',
         'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
@@ -79,13 +79,18 @@ function DialogContent({ className, children, showCloseButton = true, container,
     <DialogPortal container={container}>
       <DialogOverlay />
       <DialogViewport>
-        <DialogPopup data-slot="dialog-content" className={className} {...props}>
+        <DialogPopup
+          data-slot="dialog-content"
+          data-close-button={showCloseButton ? '' : undefined}
+          className={className}
+          {...props}
+        >
           {children}
           {showCloseButton ? (
             <DialogPrimitive.Close
               data-slot="dialog-close"
               aria-label="Close"
-              render={<Button variant="ghost" size="icon-sm" className="absolute end-4 top-5 text-muted-foreground" />}
+              render={<Button variant="ghost" size="icon-sm" className="absolute end-4 top-5 text-muted-foreground after:absolute after:-inset-1.5" />}
             >
               <XIcon aria-hidden />
             </DialogPrimitive.Close>
@@ -96,12 +101,12 @@ function DialogContent({ className, children, showCloseButton = true, container,
   );
 }
 
-/** Title and description. Leaves room on the end side for the close button. */
+/** Title and description. Leaves room on the end side when the close button shows. */
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn('flex shrink-0 flex-col gap-1 px-5 pt-5 pe-12', className)}
+      className={cn('flex shrink-0 flex-col gap-1 px-5 pt-5 group-data-close-button/dialog:pe-12', className)}
       {...props}
     />
   );
@@ -133,7 +138,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
-  return <DialogPrimitive.Title data-slot="dialog-title" className={cn('text-title', className)} {...props} />;
+  return <DialogPrimitive.Title data-slot="dialog-title" className={cn('text-title text-balance', className)} {...props} />;
 }
 
 function DialogDescription({ className, ...props }: DialogPrimitive.Description.Props) {

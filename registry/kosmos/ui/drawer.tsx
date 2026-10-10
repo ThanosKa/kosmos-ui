@@ -61,7 +61,8 @@ function DrawerViewport({ className, ...props }: DrawerPrimitive.Viewport.Props)
 
 /**
  * The drawer surface, placed on the edge its `swipeDirection` names. Side panels float 8px from the
- * screen edges; sheets sit flush on the bottom or top edge with `rounded-3xl` corners on the open side.
+ * screen edges; sheets sit flush on the bottom or top edge, at most 36rem wide, with `rounded-3xl`
+ * corners on the open side.
  * Swipes move it with the pointer; open and close slide it, or cross-fade under reduced motion.
  */
 function DrawerPopup({ className, ...props }: DrawerPrimitive.Popup.Props) {
@@ -79,6 +80,7 @@ function DrawerPopup({ className, ...props }: DrawerPrimitive.Popup.Props) {
         'data-[swipe-direction=down]:inset-x-0 data-[swipe-direction=down]:bottom-0 data-[swipe-direction=down]:rounded-t-3xl',
         'data-[swipe-direction=up]:inset-x-0 data-[swipe-direction=up]:top-0 data-[swipe-direction=up]:rounded-b-3xl',
         'data-[swipe-direction=down]:max-h-[calc(100%-3rem)] data-[swipe-direction=up]:max-h-[calc(100%-3rem)]',
+        'data-[swipe-direction=down]:mx-auto data-[swipe-direction=down]:max-w-xl data-[swipe-direction=up]:mx-auto data-[swipe-direction=up]:max-w-xl',
         'data-[swipe-direction=down]:pb-[env(safe-area-inset-bottom)]',
         // Swipe: follow the pointer. Snap points offset a bottom sheet.
         '[transform:translate3d(var(--drawer-swipe-movement-x,0px),calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)),0)] data-swiping:select-none',
@@ -113,7 +115,12 @@ function DrawerContent({ className, children, showCloseButton = true, container,
     <DrawerPortal container={container}>
       {modal === true ? <DrawerOverlay /> : null}
       <DrawerViewport>
-        <DrawerPopup data-slot="drawer-content" className={className} {...props}>
+        <DrawerPopup
+          data-slot="drawer-content"
+          data-close-button={showCloseButton ? '' : undefined}
+          className={className}
+          {...props}
+        >
           <div
             aria-hidden
             data-slot="drawer-handle"
@@ -134,7 +141,7 @@ function DrawerContent({ className, children, showCloseButton = true, container,
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    className="absolute end-4 top-5 text-muted-foreground group-data-[swipe-direction=down]/drawer:top-3"
+                    className="absolute end-4 top-5 text-muted-foreground group-data-[swipe-direction=down]/drawer:top-3 after:absolute after:-inset-1.5"
                   />
                 }
               >
@@ -148,13 +155,13 @@ function DrawerContent({ className, children, showCloseButton = true, container,
   );
 }
 
-/** Title and description. Leaves room on the end side for the close button. */
+/** Title and description. Leaves room on the end side when the close button shows. */
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="drawer-header"
       className={cn(
-        'flex shrink-0 flex-col gap-1 px-5 pt-5 pe-12 group-data-[swipe-direction=down]/drawer:pt-3',
+        'flex shrink-0 flex-col gap-1 px-5 pt-5 group-data-close-button/drawer:pe-12 group-data-[swipe-direction=down]/drawer:pt-3',
         className,
       )}
       {...props}
@@ -189,7 +196,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props) {
-  return <DrawerPrimitive.Title data-slot="drawer-title" className={cn('text-title', className)} {...props} />;
+  return <DrawerPrimitive.Title data-slot="drawer-title" className={cn('text-title text-balance', className)} {...props} />;
 }
 
 function DrawerDescription({ className, ...props }: DrawerPrimitive.Description.Props) {
