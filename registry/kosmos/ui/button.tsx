@@ -21,9 +21,9 @@ const buttonVariants = cva(
         destructive: 'bg-secondary text-destructive shadow-control hover:not-data-disabled:bg-muted',
       },
       size: {
-        sm: "h-6 gap-1 px-2 text-small [&_svg:not([class*='size-'])]:size-3.5",
-        md: 'h-7.5 px-3 text-body has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5',
-        lg: 'h-9 px-4 text-body has-data-[icon=inline-end]:pr-3.5 has-data-[icon=inline-start]:pl-3.5',
+        sm: "h-6 gap-1 px-2 text-small has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        md: 'h-7.5 px-3 text-body has-data-[icon=inline-end]:pe-2.5 has-data-[icon=inline-start]:ps-2.5',
+        lg: 'h-9 px-4 text-body has-data-[icon=inline-end]:pe-3.5 has-data-[icon=inline-start]:ps-3.5',
         'icon-sm': "size-6 [&_svg:not([class*='size-'])]:size-3.5",
         icon: 'size-7.5',
         'icon-lg': 'size-9',

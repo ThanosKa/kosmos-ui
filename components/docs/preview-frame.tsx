@@ -1,12 +1,24 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/cn';
 
 /**
- * The preview route in an iframe, sized to its content. No `?theme`, so the frame
- * follows the docs theme toggle (next-themes syncs both documents through localStorage).
+ * The preview route in an iframe, sized to its content. Without `theme` the frame follows
+ * the docs theme toggle (next-themes syncs both documents through localStorage); with it the
+ * frame is pinned to that theme (the approval page shows light and dark side by side).
  */
-export function PreviewFrame({ name, minHeight = 240 }: { name: string; minHeight?: number }) {
+export function PreviewFrame({
+  name,
+  minHeight = 240,
+  theme,
+  className,
+}: {
+  name: string;
+  minHeight?: number;
+  theme?: 'light' | 'dark';
+  className?: string;
+}) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(minHeight);
 
@@ -43,11 +55,11 @@ export function PreviewFrame({ name, minHeight = 240 }: { name: string; minHeigh
   return (
     <iframe
       ref={ref}
-      src={`/view/${name}`}
-      title={`${name} preview`}
+      src={theme ? `/view/${name}?theme=${theme}` : `/view/${name}`}
+      title={theme ? `${name} preview, ${theme}` : `${name} preview`}
       loading="lazy"
       style={{ height }}
-      className="block w-full rounded-lg bg-fd-background"
+      className={cn('block w-full rounded-lg bg-fd-background', className)}
     />
   );
 }
