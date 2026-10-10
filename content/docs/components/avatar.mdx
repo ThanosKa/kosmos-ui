@@ -1,0 +1,71 @@
+---
+title: Avatar
+description: A person's picture, with their initials while it loads or when there is none. Three sizes and an overlapping group.
+---
+
+<ComponentPreview name="avatar-demo" />
+
+## Installation
+
+<ComponentInstall name="avatar" />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+```
+
+```tsx
+<Avatar>
+  <AvatarImage src="/avatars/maria.png" alt="Maria Lopez" />
+  <AvatarFallback>ML</AvatarFallback>
+</Avatar>
+```
+
+The fallback shows until the image loads, and stays when the image fails or there is no `src`. Images fade in once they load and get a hairline outline, so a light picture keeps its edge on a light page.
+
+## Examples
+
+### Sizes
+
+`md` (32px) is the default. Use `sm` (24px) in table rows and dense lists, and `lg` (40px) next to a name and an email.
+
+<ComponentPreview name="avatar-sizes" />
+
+### Group
+
+`AvatarGroup` overlaps the avatars and rings each one in the page color. End it with `AvatarGroupCount` for the people you leave out, and give that count the same `size` as the avatars.
+
+<ComponentPreview name="avatar-group" />
+
+### Alt text
+
+When the person's name is already next to the avatar, set `alt=""`, so a screen reader doesn't read the name twice. Otherwise, use the name as the `alt`.
+
+## API
+
+### Avatar
+
+Wraps the [Base UI Avatar](https://base-ui.com/react/components/avatar) root and accepts all of its props.
+
+<TypeTable
+  type={{
+    size: {
+      description: 'Diameter: 24, 32 or 40px.',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+    },
+  }}
+/>
+
+### AvatarImage
+
+Accepts all Base UI `Avatar.Image` props, such as `src`, `alt` and `onLoadingStatusChange`.
+
+### AvatarFallback
+
+Accepts all Base UI `Avatar.Fallback` props. Set `delay` in milliseconds to skip the fallback on fast connections.
+
+### AvatarGroup and AvatarGroupCount
+
+`AvatarGroup` is a `<div>`. `AvatarGroupCount` is a `<span>` that takes the same `size` prop as `Avatar`.

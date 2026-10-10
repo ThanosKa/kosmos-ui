@@ -47,13 +47,13 @@ _Decided without the user (2026-10-11), pending confirmation._ Borders are what 
 
 ## Radius
 
-Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px), cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill, cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
-- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon.
+- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
 
 ## Typography
@@ -89,7 +89,8 @@ Transitions name the properties that change: `transition-[background-color,box-s
 
 - Exits run faster than enters with the same curve and the same distance, reversed.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
-- Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, a skeleton shimmer).
+- Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate.
+- Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
 - The command palette and anything opened by a keyboard shortcut appear without animation.
 - Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
 
