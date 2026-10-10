@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "index",
+    "installation",
+    "changelog/index",
+    "---Components---",
+    "...components",
+    "---Blocks---",
+    "...blocks"
+  ]
+}

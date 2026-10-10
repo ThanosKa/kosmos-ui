@@ -10,8 +10,16 @@ import { kosmosTokensAsCssVars } from './tokens.ts';
  */
 export const registryItemGlob = 'registry/**/*.registry.json';
 export const registryNamespace = '@kosmos';
-/** The public registry URL users put in `components.json` (domain pending purchase). */
+/**
+ * The public registry URL users put in `components.json`. The only place the production domain is written:
+ * docs, llms.txt and install commands all read it from here. The domain is not bought yet, so
+ * `kosmosui.com` is a placeholder to be confirmed.
+ */
 export const registryUrl = 'https://kosmosui.com/r/{name}.json';
+/** Arguments for `shadcn registry add`, which writes the `@kosmos` entry into `components.json`. */
+export const registryAddArgs = `registry add ${registryNamespace}=${registryUrl}`;
+/** The `registries` entry that `shadcn registry add` writes, for users who edit `components.json` by hand. */
+export const registryConfig = JSON.stringify({ registries: { [registryNamespace]: registryUrl } }, null, 2);
 
 export type RegistryFile = { path: string; type: string; target?: string };
 
@@ -173,7 +181,7 @@ export const packageRunners = {
 export function installCommands(name: string, runner: string = packageRunners.npm): string {
   return [
     '# once per project: the @kosmos registry and the Kosmos tokens',
-    `${runner} registry add ${registryNamespace}=${registryUrl}`,
+    `${runner} ${registryAddArgs}`,
     `${runner} add ${registryNamespace}/tokens`,
     '',
     `${runner} add ${registryNamespace}/${name}`,
