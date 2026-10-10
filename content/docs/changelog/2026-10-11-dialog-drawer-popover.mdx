@@ -1,0 +1,13 @@
+---
+title: Added Dialog, Drawer and Popover
+description: The first overlays, for decisions, side panels and anchored details.
+date: 2026-10-11
+---
+
+Three overlays, each built on Base UI and installed on its own:
+
+- [Dialog](/docs/components/dialog) asks for one decision or one short task. It traps focus, closes on Escape or a click outside, and returns focus to the button that opened it. Its body scrolls once the dialog reaches the height of the screen.
+- [Drawer](/docs/components/drawer) slides in from an edge of the screen: a side panel for details, or a bottom sheet on a phone. It follows a swipe to close.
+- [Popover](/docs/components/popover) opens a small panel next to its trigger and flips to the other side when it runs out of room.
+
+Each one is a ready `…Content` part for the common case, plus the parts it is made of (portal, overlay, viewport, popup) for layouts of your own. Under reduced motion, all three fade instead of moving.

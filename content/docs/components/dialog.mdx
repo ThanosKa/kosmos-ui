@@ -1,0 +1,126 @@
+---
+title: Dialog
+description: A window over the page that asks for one decision or one short task, built on Base UI. Traps focus, closes on Escape or a click outside and returns focus to its trigger.
+---
+
+<ComponentPreview name="dialog-demo" minHeight={360} />
+
+## Installation
+
+<ComponentInstall name="dialog" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+```
+
+```tsx
+<Dialog>
+  <DialogTrigger render={<Button variant="secondary" />}>Invite member</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Invite to workspace</DialogTitle>
+      <DialogDescription>New members can see every project in Acme.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>…</DialogBody>
+    <DialogFooter>
+      <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
+      <Button variant="primary">Send invite</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+Give every dialog a `DialogTitle`: it names the dialog for screen readers. Render the trigger and the close buttons through `render={<Button variant="…" />}`, so they look like every other Kosmos button.
+
+## Examples
+
+### Confirm a destructive action
+
+Name the action and the object in the title, say what is lost in the description, and repeat the action on the button. Hide the close button and set `disablePointerDismissal`, so the dialog closes only through a clear choice.
+
+<ComponentPreview name="dialog-confirm" minHeight={320} />
+
+### Long content
+
+`DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view.
+
+<ComponentPreview name="dialog-scroll" minHeight={480} />
+
+### Build your own layout
+
+`DialogContent` is `DialogPortal`, `DialogOverlay`, `DialogViewport` and `DialogPopup` put together. Use the parts directly for a different layout, such as a dialog pinned near the top of the screen:
+
+```tsx
+<Dialog>
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogViewport className="items-start pt-[15vh]">
+      <DialogPopup className="max-w-xl">…</DialogPopup>
+    </DialogViewport>
+  </DialogPortal>
+</Dialog>
+```
+
+## Motion
+
+The dialog fades in from `scale-95` over 250ms and leaves the same way over 150ms, both with `power3-out`. Under reduced motion it only fades.
+
+## API
+
+Dialog wraps the [Base UI Dialog](https://base-ui.com/react/components/dialog). `Dialog` takes every Base UI `Dialog.Root` prop, such as `open`, `onOpenChange`, `modal` and `disablePointerDismissal`. Each part takes the props of the Base UI part it renders.
+
+### DialogContent
+
+Takes every Base UI `Dialog.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    showCloseButton: {
+      description: 'Shows a close button in the top corner. Turn it off only when the footer has a way out.',
+      type: 'boolean',
+      default: 'true',
+    },
+    container: {
+      description: 'The element the dialog renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+    initialFocus: {
+      description: 'The element that gets focus on open. Defaults to the first focusable element.',
+      type: 'boolean | RefObject<HTMLElement | null> | ((openType) => HTMLElement | boolean | null | void)',
+    },
+    finalFocus: {
+      description: 'The element that gets focus on close. Defaults to the trigger.',
+      type: 'boolean | RefObject<HTMLElement | null> | ((closeType) => HTMLElement | boolean | null | void)',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `DialogTrigger` | Opens the dialog. Base UI `Dialog.Trigger`. |
+| `DialogClose` | Closes the dialog. Base UI `Dialog.Close`. |
+| `DialogHeader` | Holds the title and description. |
+| `DialogTitle` | Names the dialog. Base UI `Dialog.Title`. |
+| `DialogDescription` | Describes the dialog. Base UI `Dialog.Description`. |
+| `DialogBody` | The content. Scrolls when the dialog reaches the screen height. |
+| `DialogFooter` | The actions, stacked on a phone and in a row from `sm`. |
+| `DialogPortal` | Renders its children into `document.body`. Base UI `Dialog.Portal`. |
+| `DialogOverlay` | The scrim behind the dialog. Base UI `Dialog.Backdrop`. |
+| `DialogViewport` | Centers the popup. Base UI `Dialog.Viewport`. |
+| `DialogPopup` | The dialog surface. Base UI `Dialog.Popup`. |

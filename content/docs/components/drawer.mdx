@@ -1,0 +1,125 @@
+---
+title: Drawer
+description: A panel that slides in from an edge of the screen, for details next to a list or a bottom sheet on a phone. Built on Base UI, it follows a swipe to close.
+---
+
+<ComponentPreview name="drawer-demo" minHeight={420} />
+
+## Installation
+
+<ComponentInstall name="drawer" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+```
+
+```tsx
+<Drawer>
+  <DrawerTrigger render={<Button variant="secondary" />}>Open task</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
+      <DrawerDescription>Billing revamp</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>…</DrawerBody>
+    <DrawerFooter>
+      <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+A drawer keeps the page in view, so use it for content that belongs to something on the page, like the details of a row. For a decision that should stop everything else, use a [Dialog](/docs/components/dialog).
+
+## Examples
+
+### Bottom sheet
+
+`swipeDirection="down"` docks the drawer to the bottom edge with a grab handle, at most 36rem wide. It suits short choices on a phone.
+
+<ComponentPreview name="drawer-bottom" minHeight={360} />
+
+### Left
+
+`swipeDirection="left"` opens from the left edge, for navigation on small screens. Set the width with `className`.
+
+<ComponentPreview name="drawer-left" minHeight={420} />
+
+### Non-modal
+
+With `modal={false}` there is no scrim and the page stays usable. Add `disablePointerDismissal` so a click on the page doesn't close the panel.
+
+<ComponentPreview name="drawer-non-modal" minHeight={420} />
+
+## Motion
+
+The drawer slides in from its edge over 300ms and out over 150ms, both with `power3-out`, and follows the pointer while it is swiped. Under reduced motion it fades instead of sliding.
+
+## API
+
+Drawer wraps the [Base UI Drawer](https://base-ui.com/react/components/drawer). `Drawer` takes every Base UI `Drawer.Root` prop, such as `open`, `onOpenChange`, `snapPoints` and `disablePointerDismissal`. Each part takes the props of the Base UI part it renders.
+
+### Drawer
+
+<TypeTable
+  type={{
+    swipeDirection: {
+      description: 'The edge the drawer docks to, and the direction a swipe closes it.',
+      type: "'right' | 'left' | 'down' | 'up'",
+      default: "'right'",
+    },
+    modal: {
+      description: 'Traps focus, locks page scroll and shows the scrim. `trap-focus` traps focus only.',
+      type: "boolean | 'trap-focus'",
+      default: 'true',
+    },
+  }}
+/>
+
+### DrawerContent
+
+Takes every Base UI `Drawer.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    showCloseButton: {
+      description: 'Shows a close button in the top corner. Turn it off only when the footer has a way out.',
+      type: 'boolean',
+      default: 'true',
+    },
+    container: {
+      description: 'The element the drawer renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `DrawerTrigger` | Opens the drawer. Base UI `Drawer.Trigger`. |
+| `DrawerClose` | Closes the drawer. Base UI `Drawer.Close`. |
+| `DrawerHeader` | Holds the title and description. |
+| `DrawerTitle` | Names the drawer. Base UI `Drawer.Title`. |
+| `DrawerDescription` | Describes the drawer. Base UI `Drawer.Description`. |
+| `DrawerBody` | The content. Scrolls on its own, so header and footer stay in view. |
+| `DrawerFooter` | The actions, on the bottom edge. |
+| `DrawerPortal` | Renders its children into `document.body`. Base UI `Drawer.Portal`. |
+| `DrawerOverlay` | The scrim, which fades as the drawer is swiped. Base UI `Drawer.Backdrop`. |
+| `DrawerViewport` | The full-screen layer the popup sits in. Base UI `Drawer.Viewport`. |
+| `DrawerPopup` | The drawer surface, placed by `swipeDirection`. Base UI `Drawer.Popup`. |
