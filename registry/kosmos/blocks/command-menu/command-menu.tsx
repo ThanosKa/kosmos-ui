@@ -190,8 +190,15 @@ type CommandMenuProps = {
   initialFocus?: React.ComponentProps<typeof CommandDialog>['initialFocus'];
   /** The second list to open on, by its key, for previews. Defaults to the main list. */
   defaultPage?: string;
-  /** The search text to start with, for previews. */
+  /**
+   * The search text. Use with `onQueryChange`, or leave it out and pass `defaultQuery`. The menu clears
+   * its own search each time it opens; a controlled one stays as you set it.
+   */
+  query?: string;
+  /** The search text at first, when the menu keeps its own state. */
   defaultQuery?: string;
+  /** Called as the search text changes, including when it is cleared on moving between lists. */
+  onQueryChange?: (query: string) => void;
 };
 
 /**
@@ -213,22 +220,29 @@ function CommandMenu({
   container,
   initialFocus,
   defaultPage,
+  query: queryProp,
   defaultQuery = '',
+  onQueryChange,
 }: CommandMenuProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
   const [page, setPage] = React.useState<string | null>(defaultPage ?? null);
-  const [query, setQuery] = React.useState(defaultQuery);
+  const [uncontrolledQuery, setUncontrolledQuery] = React.useState(defaultQuery);
+  const query = queryProp ?? uncontrolledQuery;
+  const setQuery = (next: string) => {
+    if (queryProp === undefined) setUncontrolledQuery(next);
+    onQueryChange?.(next);
+  };
   const isMac = useIsMac();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  // Start from the main list each time the menu opens, however it was closed.
+  // Start from the main list each time the menu opens, however it was closed. A controlled search stays as set.
   const [wasOpen, setWasOpen] = React.useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setPage(null);
-      setQuery('');
+      if (queryProp === undefined) setUncontrolledQuery('');
     }
   }
 
