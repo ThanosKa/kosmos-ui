@@ -1,0 +1,103 @@
+---
+title: Accordion
+description: Sections that open and close under their headings, for settings groups, FAQs and details people need only some of the time.
+---
+
+<ComponentPreview name="accordion-demo" />
+
+## Installation
+
+<ComponentInstall name="accordion" />
+
+## Usage
+
+```tsx
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+```
+
+```tsx
+<Accordion defaultValue={['plans']}>
+  <AccordionItem value="plans">
+    <AccordionTrigger>Can I change plans later?</AccordionTrigger>
+    <AccordionContent>Yes. Upgrades apply right away.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+Sections are split by 1px dividers. Each heading is a button inside an `<h3>`, with a chevron that turns over as its section opens. Opening another section closes the open one.
+
+A section grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades in and out instead, and the chevron cross-fades.
+
+Tab moves between headings, and Enter or Space opens and closes the focused one.
+
+## Examples
+
+### Several sections open
+
+Pass `multiple` to let people open more than one section at a time.
+
+<ComponentPreview name="accordion-multiple" />
+
+### Disabled section
+
+Set `disabled` on an `AccordionItem`. Say why in the heading or near it, so people know what would make it available.
+
+<ComponentPreview name="accordion-disabled" />
+
+### Controlled
+
+Pass `value` and `onValueChange` to `Accordion` to open sections from your own state. The value is always an array of item values, also without `multiple`.
+
+### Searchable content
+
+Pass `hiddenUntilFound` to `Accordion` so the browser's find in page also searches closed sections, and opens the one with a match.
+
+## API
+
+### Accordion
+
+Wraps the [Base UI Accordion](https://base-ui.com/react/components/accordion) root and accepts all of its props.
+
+<TypeTable
+  type={{
+    defaultValue: {
+      description: 'Values of the sections open at first.',
+      type: 'any[]',
+    },
+    value: {
+      description: 'Values of the open sections, to control them.',
+      type: 'any[]',
+    },
+    onValueChange: {
+      description: 'Called with the new values when a section opens or closes.',
+      type: '(value: any[]) => void',
+    },
+    multiple: {
+      description: 'Lets more than one section be open.',
+      type: 'boolean',
+      default: 'false',
+    },
+    hiddenUntilFound: {
+      description: "Lets the browser's find in page search and open closed sections.",
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Disables every section.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### AccordionItem
+
+Accepts all Base UI `Accordion.Item` props: `value` names the section, and `disabled` disables it alone.
+
+### AccordionTrigger
+
+The heading row. Accepts all Base UI `Accordion.Trigger` props. Its children are the heading text.
+
+### AccordionContent
+
+The section body. Accepts all Base UI `Accordion.Panel` props; `className` styles the inner container that holds the content and its padding.

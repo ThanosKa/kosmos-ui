@@ -1,0 +1,74 @@
+---
+title: Scroll area
+description: A scroll container with a thin scrollbar that looks the same on every platform, and fades on the edges where content is hidden.
+---
+
+<ComponentPreview name="scroll-area-demo" />
+
+## Installation
+
+<ComponentInstall name="scroll-area" />
+
+## Usage
+
+```tsx
+import { ScrollArea } from '@/components/ui/scroll-area';
+```
+
+```tsx
+<ScrollArea className="h-64">
+  <ul>{/* … */}</ul>
+</ScrollArea>
+```
+
+Give the scroll area a height (`h-64`) or a maximum height (`max-h-80`). Content taller or wider than that scrolls inside it, with the browser's own scrolling, so wheel, touch, trackpad and keyboard all work as usual.
+
+While content is hidden past an edge, that edge fades out and a 6px scrollbar shows, so people can tell there is more. Content that fits shows neither. The scrollbar never covers content: the scroll area makes room for it on the side where it shows.
+
+While the content scrolls, the scroll area can take keyboard focus: Tab reaches it, and the arrow keys, Page Up, Page Down, Home and End scroll it.
+
+## Examples
+
+### Horizontal
+
+Content wider than the scroll area scrolls sideways, with a scrollbar at the bottom. Give the row `w-max`, so it keeps its width instead of wrapping.
+
+<ComponentPreview name="scroll-area-horizontal" />
+
+### Without the fade
+
+Pass `fade={false}` when the edge of the content must stay crisp, for example a code block. The scrollbar still shows the overflow.
+
+### Inside an overlay
+
+In a dialog, drawer or menu, stop a scroll that reaches the end from scrolling the page behind: `viewportClassName="overscroll-contain"`.
+
+### Right-to-left
+
+In a right-to-left layout, wrap the app in Base UI's [`DirectionProvider`](https://base-ui.com/react/utils/direction-provider) with `direction="rtl"` as well as setting `dir="rtl"`, so the scroll area measures its edges from the right.
+
+## API
+
+Wraps the [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area) root and accepts all of its props.
+
+<TypeTable
+  type={{
+    fade: {
+      description: 'Fades out each edge that has hidden content past it.',
+      type: 'boolean',
+      default: 'true',
+    },
+    viewportClassName: {
+      description: 'Classes for the element that scrolls.',
+      type: 'string',
+    },
+    viewportRef: {
+      description: 'A ref to the element that scrolls, to read or set its scroll position.',
+      type: 'React.Ref<HTMLDivElement>',
+    },
+  }}
+/>
+
+### ScrollBar
+
+`ScrollArea` renders both scrollbars itself, so you only need `ScrollBar` to build a scroll area from the Base UI parts. It accepts all Base UI `ScrollArea.Scrollbar` props, such as `orientation`. Code written for shadcn's ScrollArea that passes `<ScrollBar orientation="horizontal" />` as a child keeps working: the child renders nothing.

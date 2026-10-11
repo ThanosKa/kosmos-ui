@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "type": "registry:ui",
+  "title": "Accordion",
+  "description": "Sections that open and close under their headings, on Base UI: divider borders, a height animation that turns into a fade under reduced motion, and full keyboard support.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/accordion.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

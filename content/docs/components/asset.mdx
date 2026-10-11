@@ -1,0 +1,144 @@
+---
+title: Asset
+description: An image or a video in a frame with a fixed aspect ratio, with a placeholder while it loads and a fallback if it fails.
+---
+
+<ComponentPreview name="asset-demo" />
+
+## Installation
+
+<ComponentInstall name="asset" />
+
+## Usage
+
+```tsx
+import { Asset, AssetImage, AssetVideo } from '@/components/ui/asset';
+```
+
+```tsx
+<Asset ratio={16 / 9}>
+  <AssetImage src="/media/release.webp" alt="The new billing page" />
+</Asset>
+```
+
+The frame takes its shape from `ratio`, width divided by height, before anything has loaded, so the page never jumps when the media arrives. It fills the width of its container.
+
+While the media loads, the frame shows a pulsing placeholder. Once loaded, the media fades in. If it fails, the frame shows an icon, or the `fallback` you pass. Images load lazily by default: an image far down the page loads only when it comes near the screen.
+
+`AssetImage` renders a plain `<img>`, so the component works in any React app. In Next.js, pass a `src` from your own image pipeline, or use `next/image` with `fill` inside an `Asset` frame.
+
+## Examples
+
+### Ratios
+
+<ComponentPreview name="asset-ratios" />
+
+### Video
+
+`AssetVideo` takes the props of a `<video>`. List the formats as `<source>` children, WebM first and MP4 for older browsers, and give a `poster` to show before it plays.
+
+With `autoPlay`, the video plays muted and inline, and only when the reduced motion setting is off. Without `controls`, it gets a pause button in the corner, so the motion can always be stopped. Change its labels with `pauseLabel` and `playLabel`.
+
+<ComponentPreview name="asset-video" />
+
+### Fallback
+
+<ComponentPreview name="asset-fallback" />
+
+### Alt text
+
+Describe what the image shows that matters here, in a short phrase. For an image that only decorates, such as a background, pass `alt=""` so screen readers skip it.
+
+## API
+
+### Asset
+
+A `<div>`; accepts all of its props.
+
+<TypeTable
+  type={{
+    ratio: {
+      description: 'Width divided by height, such as `16 / 9`, `1` or `3 / 4`.',
+      type: 'number',
+      default: '16 / 9',
+    },
+    fallback: {
+      description: 'What the frame shows when the media fails to load.',
+      type: 'React.ReactNode',
+      default: 'An icon',
+    },
+  }}
+/>
+
+### AssetImage
+
+An `<img>`; accepts all of its props.
+
+<TypeTable
+  type={{
+    alt: {
+      description: 'Describes the image. Required; pass `""` for an image that only decorates.',
+      type: 'string',
+      required: true,
+    },
+    fit: {
+      description: '`cover` fills the frame and crops the image; `contain` shows all of it inside the frame.',
+      type: "'cover' | 'contain'",
+      default: "'cover'",
+    },
+    loading: {
+      description: 'When the browser loads the image.',
+      type: "'lazy' | 'eager'",
+      default: "'lazy'",
+    },
+    decoding: {
+      description: 'Whether decoding the image may hold up the rest of the page.',
+      type: "'async' | 'sync' | 'auto'",
+      default: "'async'",
+    },
+  }}
+/>
+
+### AssetVideo
+
+A `<video>`; accepts all of its props.
+
+<TypeTable
+  type={{
+    fit: {
+      description: '`cover` fills the frame and crops the video; `contain` shows all of it inside the frame.',
+      type: "'cover' | 'contain'",
+      default: "'cover'",
+    },
+    autoPlay: {
+      description: 'Plays the video muted when it loads, unless the reduced motion setting is on.',
+      type: 'boolean',
+      default: 'false',
+    },
+    muted: {
+      description: 'Plays without sound. Browsers only play a video by itself when it is muted.',
+      type: 'boolean',
+      default: 'autoPlay',
+    },
+    playsInline: {
+      description: 'Plays in the page on iOS instead of going full screen.',
+      type: 'boolean',
+      default: 'true',
+    },
+    preload: {
+      description: "How much the browser loads before playback: the metadata when there is a `poster`, otherwise enough to show the first frame.",
+      type: "'none' | 'metadata' | 'auto'",
+      default: "poster ? 'metadata' : 'auto'",
+    },
+    pauseLabel: {
+      description: 'Label of the pause button on a video that plays by itself without `controls`.',
+      type: 'string',
+      default: "'Pause video'",
+    },
+    playLabel: {
+      description: 'Label of the same button while the video is paused.',
+      type: 'string',
+      default: "'Play video'",
+    },
+  }}
+/>
