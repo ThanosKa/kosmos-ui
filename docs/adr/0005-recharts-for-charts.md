@@ -6,7 +6,8 @@ _Decided without the user (2026-10-11), pending confirmation._
 
 ## Consequences
 
-- `@kosmos/chart` declares `recharts` and `react-is` (a Recharts peer dependency) as dependencies.
+- Chart is the one Kosmos component not built on Base UI: Base UI has no chart primitive, and ADR 0001 lets a component without one use other building blocks.
+- `@kosmos/chart` declares `recharts@^3.10.1` and `react-is` (a Recharts peer dependency) as dependencies.
 - Kosmos adds `Sparkline` and `GrowthChart` on top of the shared parts; anything else is composed from Recharts directly inside `ChartContainer`.
 - Series colors are the `--chart-1` to `--chart-5` tokens (shadcn names). The config takes `color` only, no per-theme colors, because the tokens switch with the `.dark` class.
 - Chart animation uses the `slow` duration (300ms) and the `power3-out` curve from `@kosmos/motion`.

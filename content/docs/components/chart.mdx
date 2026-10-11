@@ -9,7 +9,7 @@ description: Charts built on Recharts and themed with Kosmos tokens. A growth ch
 
 <ComponentInstall name="chart" />
 
-This installs [Recharts](https://recharts.github.io), the chart library shadcn's charts also use.
+This installs [Recharts](https://recharts.github.io), the chart library shadcn's charts also use, and `react-is`, which Recharts needs. On React 18, pin `react-is` to version 18.
 
 ## Usage
 
@@ -92,6 +92,17 @@ Give the container a height or an aspect ratio; it is 16:9 by default. Pass a `t
   }}
 />
 
+### ChartContainer
+
+Accepts all `<div>` props.
+
+<TypeTable
+  type={{
+    config: { description: 'The series, keyed by data key; each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
+    children: { description: 'One Recharts chart, such as `<BarChart>`.', type: 'ReactElement', required: true },
+  }}
+/>
+
 ### ChartConfig
 
 <TypeTable
@@ -115,3 +126,17 @@ Give the container a height or an aspect ratio; it is 16:9 by default. Pass a `t
     },
   }}
 />
+
+### ChartLegendContent
+
+<TypeTable
+  type={{
+    verticalAlign: {
+      description: 'Match the `verticalAlign` of its `ChartLegend`, so the spacing lands between legend and chart.',
+      type: "'top' | 'middle' | 'bottom'",
+      default: "'bottom'",
+    },
+  }}
+/>
+
+`ChartTooltip` and `ChartLegend` are Recharts' `Tooltip` and `Legend`.

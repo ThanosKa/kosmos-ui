@@ -23,6 +23,7 @@ function useChart() {
 
 /** Recharts draws with the power3-out curve over the slow duration; it skips the animation under reduced motion. */
 export const chartAnimation = {
+  isAnimationActive: 'auto' as const,
   animationDuration: duration.slow * 1000,
   animationEasing: `cubic-bezier(${ease.power3Out.join(',')})` as `cubic-bezier(${number},${number},${number},${number})`,
 };
