@@ -34,7 +34,7 @@ const emptyMediaVariants = cva('mb-2 flex shrink-0 items-center justify-center [
   variants: {
     variant: {
       default: 'bg-transparent',
-      icon: "size-10 rounded-xl border border-transparent bg-card text-foreground shadow-card [&_svg:not([class*='size-'])]:size-5",
+      icon: "size-12 rounded-2xl border border-transparent bg-card text-muted-foreground shadow-card [&_svg:not([class*='size-'])]:size-5",
     },
   },
   defaultVariants: { variant: 'default' },
@@ -62,7 +62,7 @@ function EmptyTitle({ className, render, ...props }: useRender.ComponentProps<'d
   return useRender({
     defaultTagName: 'div',
     render,
-    props: mergeProps<'div'>({ className: cn('text-title text-balance text-foreground', className) }, props, {
+    props: mergeProps<'div'>({ className: cn('text-body font-medium text-balance text-foreground', className) }, props, {
       'data-slot': 'empty-title',
     } as React.ComponentProps<'div'>),
   });
@@ -73,7 +73,7 @@ function EmptyDescription({ className, ...props }: React.ComponentProps<'p'>) {
     <p
       data-slot="empty-description"
       className={cn(
-        'text-small text-pretty text-muted-foreground',
+        'text-body text-pretty text-muted-foreground',
         '[&>a]:rounded-sm [&>a]:font-medium [&>a]:text-foreground [&>a]:underline [&>a]:underline-offset-4',
         '[&>a]:focus-visible:outline-2 [&>a]:focus-visible:outline-offset-2 [&>a]:focus-visible:outline-ring',
         className,
