@@ -1,0 +1,85 @@
+---
+title: Empty state
+description: What a page, table or panel shows when it has nothing to show yet, and the next step to fill it.
+---
+
+<ComponentPreview name="empty-demo" />
+
+## Installation
+
+<ComponentInstall name="empty" />
+
+## Usage
+
+```tsx
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+```
+
+```tsx
+<Empty>
+  <EmptyHeader>
+    <EmptyMedia variant="icon">
+      <FolderPlus />
+    </EmptyMedia>
+    <EmptyTitle render={<h2 />}>No projects yet</EmptyTitle>
+    <EmptyDescription>Create a project to group your tasks, files and people in one place.</EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent>
+    <Button variant="secondary">New project</Button>
+  </EmptyContent>
+</Empty>
+```
+
+Say what is missing in the title, then what fills it in the description, and offer that step as a button. `Empty` grows to fill its container and centers its content, so put it where the list or table would be.
+
+The parts and their names match shadcn's Empty.
+
+## Examples
+
+### No results
+
+When a search or filter finds nothing, repeat the query in the title and offer a way back, such as clearing the filters.
+
+<ComponentPreview name="empty-search" />
+
+### Inside a table
+
+Put `Empty` in a single cell that spans every column, so the headers stay and the table keeps its shape.
+
+<ComponentPreview name="empty-table" />
+
+## API
+
+Each part renders a `<div>` (`EmptyDescription` a `<p>`) and accepts all of its props.
+
+### EmptyTitle
+
+<TypeTable
+  type={{
+    render: {
+      description: 'Replaces the rendered `<div>`. Pass a heading at the level that fits the page, such as `<h2 />`, so screen reader users can jump to it.',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
+  }}
+/>
+
+### EmptyMedia
+
+<TypeTable
+  type={{
+    variant: {
+      description: '`icon` sets one icon on a small card; `default` shows its children as they are, for an illustration or avatars.',
+      type: "'default' | 'icon'",
+      default: "'default'",
+    },
+  }}
+/>
+
+The media is decorative and hidden from screen readers; the title carries the meaning.

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tokens",
+  "type": "registry:theme",
+  "title": "Kosmos tokens",
+  "description": "The Kosmos UI theme: colors, layered shadows, radius ladder, power easings, durations and type roles as CSS variables, in light and dark. Every Kosmos component depends on it.",
+  "meta": {
+    "cssVarsFrom": "registry/kosmos/styles/tokens.css"
+  }
+}

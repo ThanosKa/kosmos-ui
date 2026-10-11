@@ -1,0 +1,16 @@
+---
+title: Added the Kanban board, Detail drawer, Command menu and New item dialog blocks
+description: Four more blocks for working with records, built from Kosmos components.
+date: 2026-10-11
+---
+
+Four more blocks. Each one installs with `shadcn add` and brings the components it is made of:
+
+- [Kanban board](/docs/blocks/kanban-board): columns of cards that scroll sideways inside their container. Cards move by drag and drop, touch or the keyboard, and screen readers hear every move.
+- [Detail drawer](/docs/blocks/detail-drawer): a side panel with one record's status, owner, ARR, health, labels, notes and activity, a field to add a note and a menu of actions.
+- [Command menu](/docs/blocks/command-menu): a ⌘K menu with a search button. Find a record, run an action or go to a page, with second lists for changing status and assigning an owner.
+- [New item dialog](/docs/blocks/new-item-dialog): the form for a new record, with validation. Create more keeps it open for the next one.
+
+They share the sample accounts of the data table, so the board and the table can show the same records, and a card or a row can open the drawer.
+
+The command menu's search (`query`) and the new item dialog's form (`values`) work controlled or uncontrolled, and a status change passed in through the drawer's `account` always wins over one made in the drawer.

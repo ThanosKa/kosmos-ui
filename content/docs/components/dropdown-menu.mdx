@@ -1,0 +1,141 @@
+---
+title: Dropdown Menu
+description: A list of actions that opens from a button. Built on Base UI Menu, with keyboard navigation, typeahead, check and radio items, shortcuts and submenus.
+---
+
+<ComponentPreview name="dropdown-menu-demo" minHeight={320} />
+
+## Installation
+
+<ComponentInstall name="dropdown-menu" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+```
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger render={<Button variant="secondary" />}>Actions</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem onClick={rename}>Rename</DropdownMenuItem>
+    <DropdownMenuItem variant="destructive" onClick={remove}>
+      Delete
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+Enter, Space or the down arrow on the trigger opens the menu with the first item highlighted. The arrow keys move through the items, typing a letter jumps to the next item that starts with it, and Escape or a click outside closes the menu and puts focus back on the trigger. Clicking an item runs it and closes the menu.
+
+Use a dropdown menu for actions. To pick a value for a form, use a [Select](/docs/components/select); to search a long list of commands, use a [Command](/docs/components/command) palette.
+
+## Examples
+
+### Check and radio items
+
+`DropdownMenuCheckboxItem` turns a setting on and off, and `DropdownMenuRadioItem` picks one choice inside a `DropdownMenuRadioGroup`. Both show a check mark at the end and keep the menu open, so several settings can change in one go. Name each group with a `DropdownMenuLabel`.
+
+<ComponentPreview name="dropdown-menu-checkboxes" minHeight={320} />
+
+### Icon trigger, links and groups
+
+An icon-only trigger needs an `aria-label`. `DropdownMenuLinkItem` renders a link, for items that go to another page. `DropdownMenuLabel` names a `DropdownMenuGroup`, and must sit inside one.
+
+<ComponentPreview name="dropdown-menu-icon-trigger" minHeight={300} />
+
+## Motion
+
+The menu grows out of its trigger from `scale-[0.97]` with a fade over 200ms, and shrinks back over 150ms, both with `power3-out`. Under reduced motion it only fades. Item highlights change color in 100ms and never scale.
+
+## API
+
+Dropdown Menu wraps the [Base UI Menu](https://base-ui.com/react/components/menu). `DropdownMenu` takes every Base UI `Menu.Root` prop, such as `open`, `onOpenChange`, `modal` and `loopFocus`. `DropdownMenuTrigger` takes the Base UI `Menu.Trigger` props, such as `openOnHover`.
+
+### DropdownMenuContent
+
+Takes every Base UI `Menu.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    side: {
+      description: 'The side of the trigger the menu opens on.',
+      type: "'top' | 'right' | 'bottom' | 'left' | 'inline-start' | 'inline-end'",
+      default: "'bottom'",
+    },
+    align: {
+      description: 'How the menu lines up with the trigger.',
+      type: "'start' | 'center' | 'end'",
+      default: "'start'",
+    },
+    sideOffset: { description: 'The gap between trigger and menu, in px.', type: 'number', default: '4' },
+    alignOffset: { description: 'Shifts the menu along the trigger, in px.', type: 'number', default: '0' },
+    collisionPadding: {
+      description: 'The space kept between the menu and the screen edges, in px.',
+      type: 'number',
+      default: '16',
+    },
+    anchor: {
+      description: 'An element to position against instead of the trigger.',
+      type: 'Element | RefObject<Element | null> | VirtualElement | null',
+    },
+    container: {
+      description: 'The element the menu renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+  }}
+/>
+
+`DropdownMenuSubContent` takes the same props, with `side` `'inline-end'`, `sideOffset` `0` and `alignOffset` `-5`, so its first item lines up with the item that opened it.
+
+### DropdownMenuItem
+
+Takes every Base UI `Menu.Item` prop, such as `onClick`, `disabled`, `label` and `closeOnClick`, plus:
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'destructive colors the label and icon red, for an action that deletes or removes.',
+      type: "'default' | 'destructive'",
+      default: "'default'",
+    },
+    inset: {
+      description: 'Lines the label up with items that have an icon.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+`DropdownMenuLinkItem`, `DropdownMenuCheckboxItem`, `DropdownMenuRadioItem`, `DropdownMenuSubTrigger` and `DropdownMenuLabel` take `inset` too.
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `DropdownMenuTrigger` | Opens the menu. Base UI `Menu.Trigger`. |
+| `DropdownMenuItem` | One action. Base UI `Menu.Item`. |
+| `DropdownMenuLinkItem` | An item that navigates. Base UI `Menu.LinkItem`. |
+| `DropdownMenuCheckboxItem` | An item that turns a setting on and off. Base UI `Menu.CheckboxItem`. |
+| `DropdownMenuRadioGroup` | Holds the value of its radio items. Base UI `Menu.RadioGroup`. |
+| `DropdownMenuRadioItem` | One choice in a radio group. Base UI `Menu.RadioItem`. |
+| `DropdownMenuGroup` | Groups related items. Base UI `Menu.Group`. |
+| `DropdownMenuLabel` | Names a group. Base UI `Menu.GroupLabel`. |
+| `DropdownMenuSeparator` | A 1px line between groups. Base UI `Separator`. |
+| `DropdownMenuShortcut` | A keyboard shortcut at the end of an item. Text only. |
+| `DropdownMenuSub` | Holds a submenu. Base UI `Menu.SubmenuRoot`. |
+| `DropdownMenuSubTrigger` | The item that opens a submenu. Base UI `Menu.SubmenuTrigger`. |
+| `DropdownMenuSubContent` | The submenu's popup. |
+| `DropdownMenuPortal` | Renders its children into `document.body`. Base UI `Menu.Portal`. |
+| `DropdownMenuPositioner` | Places the popup next to the trigger. Base UI `Menu.Positioner`. |
+| `DropdownMenuPopup` | The menu surface. Base UI `Menu.Popup`. |
+
+`DropdownMenuContent` is `DropdownMenuPortal`, `DropdownMenuPositioner` and `DropdownMenuPopup` put together.

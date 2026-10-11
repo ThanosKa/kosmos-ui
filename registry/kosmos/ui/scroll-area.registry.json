@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "type": "registry:ui",
+  "title": "Scroll area",
+  "description": "A native scroll container on Base UI with a thin scrollbar that looks the same on every platform, edge fades where content is hidden, and keyboard scrolling.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/scroll-area.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-control",
+  "type": "registry:ui",
+  "title": "Segmented control",
+  "description": "A row of options built on Base UI Radio Group that picks exactly one, like a view mode or a time range: Tab lands on the selected item and the arrow keys move the selection. Two sizes and an icon-only form.",
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "navigation" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/segmented-control.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

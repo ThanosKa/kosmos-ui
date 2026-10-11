@@ -1,0 +1,143 @@
+---
+title: Command
+description: A searchable list of commands, as a ⌘K palette in a dialog or inline on the page. Built on Base UI Autocomplete and Scroll Area.
+---
+
+<ComponentPreview name="command-demo" minHeight={460} />
+
+## Installation
+
+<ComponentInstall name="command" />
+
+Command installs [Dialog](/docs/components/dialog) and [Kbd](/docs/components/kbd) with it.
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+```
+
+```tsx
+const commands = [
+  { value: 'new-task', label: 'Create task' },
+  { value: 'settings', label: 'Open settings' },
+];
+
+<CommandDialog open={open} onOpenChange={setOpen}>
+  <Command items={commands}>
+    <CommandInput placeholder="Search for a command…" />
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandList>
+      {(item) => (
+        <CommandItem key={item.value} value={item} onClick={() => run(item)}>
+          {item.label}
+        </CommandItem>
+      )}
+    </CommandList>
+  </Command>
+</CommandDialog>
+```
+
+`Command` takes the whole list as `items` and filters it by each item's `label` as you type. The first match stays highlighted, so typing and pressing Enter runs it. The up and down arrows move the highlight; Escape or a click outside closes the palette and puts focus back where it was.
+
+The palette has no shortcut of its own. Listen for ⌘K (Ctrl+K on Windows and Linux) on `document` and toggle `open`, as the demo above does.
+
+### Groups
+
+Pass groups as `{ value, items }`. Render each with a `CommandGroup` that gets the group's `items`, a `CommandGroupLabel` and a `CommandCollection` for its items:
+
+```tsx
+<CommandList>
+  {(group) => (
+    <CommandGroup key={group.value} items={group.items}>
+      <CommandGroupLabel>{group.value}</CommandGroupLabel>
+      <CommandCollection>
+        {(item) => (
+          <CommandItem key={item.value} value={item}>
+            {item.label}
+          </CommandItem>
+        )}
+      </CommandCollection>
+    </CommandGroup>
+  )}
+</CommandList>
+```
+
+## Examples
+
+### Inline
+
+Without `CommandDialog`, `Command` renders as a panel on the page, for a searchable list inside a popover or a side panel. Give its input an `aria-label` that says what it searches.
+
+<ComponentPreview name="command-inline" minHeight={340} />
+
+## Motion
+
+The palette appears and closes without animation, because it opens from a keyboard shortcut and should be ready the moment you type. The highlight changes color in 100ms.
+
+## API
+
+### Command
+
+Takes every Base UI [`Autocomplete.Root`](https://base-ui.com/react/components/autocomplete) prop, such as `items`, `filter`, `value` and `onValueChange`, plus `className`. These defaults differ from Base UI:
+
+<TypeTable
+  type={{
+    inline: { description: 'Shows the list in place instead of in a popup.', type: 'boolean', default: 'true' },
+    open: { description: 'Shows the list.', type: 'boolean', default: 'true' },
+    autoHighlight: {
+      description: "Highlights the first match. 'always' keeps a match highlighted, so Enter always has something to run.",
+      type: "boolean | 'always'",
+      default: "'always'",
+    },
+    keepHighlight: {
+      description: 'Keeps the highlight when the pointer leaves the list.',
+      type: 'boolean',
+      default: 'true',
+    },
+  }}
+/>
+
+### CommandDialog
+
+Takes every [Dialog](/docs/components/dialog) root prop, such as `open` and `onOpenChange`, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'Names the palette for screen readers. Not shown.', type: 'string', default: "'Command palette'" },
+    description: {
+      description: 'Describes the palette for screen readers. Not shown.',
+      type: 'string',
+      default: "'Search for a command to run.'",
+    },
+    container: {
+      description: 'The element the palette renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+    initialFocus: { description: 'Where focus goes when the palette opens.', type: 'boolean | RefObject | function', default: 'the input' },
+    finalFocus: { description: 'Where focus goes when the palette closes.', type: 'boolean | RefObject | function', default: 'the element that had it' },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `CommandInput` | The search field, with a search icon. Base UI `Autocomplete.Input`. Its accessible name defaults to "Search commands". |
+| `CommandList` | The scrolling list of matches, up to 20rem tall. Base UI `Autocomplete.List` in a Scroll Area. |
+| `CommandEmpty` | Text shown while nothing matches, announced to screen readers. Base UI `Autocomplete.Empty`. |
+| `CommandGroup` | One group of matches. Base UI `Autocomplete.Group`. |
+| `CommandGroupLabel` | Names a group. Base UI `Autocomplete.GroupLabel`. |
+| `CommandCollection` | Renders the items of its group. Base UI `Autocomplete.Collection`. |
+| `CommandItem` | One command. Base UI `Autocomplete.Item`. |
+| `CommandSeparator` | A 1px line between items. Base UI `Autocomplete.Separator`. |
+| `CommandShortcut` | A `KbdGroup` at the end of an item, for the command's own shortcut. |
+| `CommandFooter` | A bar under the list. Without children it shows the keys that move, run and close. |

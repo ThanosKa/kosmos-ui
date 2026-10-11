@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "title": "Separator",
+  "description": "A 1px horizontal or vertical line between groups of content, built on Base UI and drawn as a border so it stays visible in forced-colors mode.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "basics" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/separator.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

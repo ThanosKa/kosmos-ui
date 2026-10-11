@@ -1,0 +1,81 @@
+---
+title: New item dialog
+description: A dialog with the form for a new record. Only the name is required, and Create more keeps it open for the next one.
+---
+
+<ComponentPreview name="new-item-dialog-demo" minHeight={720} />
+
+## Installation
+
+<ComponentInstall name="new-item-dialog" />
+
+The block brings [Dialog](/docs/components/dialog), [Field](/docs/components/field), [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), [Switch](/docs/components/switch), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it, and lands in `components/new-item-dialog.tsx`.
+
+## Usage
+
+```tsx
+import { NewItemDialog } from '@/components/new-item-dialog';
+
+<NewItemDialog people={members} onCreate={(values) => createAccount(values)} />;
+```
+
+The dialog opens from a **New account** button and puts focus in the name field. The sample form makes an account, shaped like the rows of the [data table](/docs/blocks/data-table); change the fields and `NewItemValues` in the file to fit your records.
+
+To open it from the [page header](/docs/blocks/page-header)'s New button or a column of the [kanban board](/docs/blocks/kanban-board), pass `trigger={null}`, control `open`, and start the form in that column:
+
+```tsx
+<NewItemDialog
+  open={open}
+  onOpenChange={setOpen}
+  trigger={null}
+  defaultValues={{ status: columnId }}
+  onCreate={addAccount}
+/>
+```
+
+## What it does
+
+- **Validation**: submitting without a name, or with a domain that isn't one, shows the error under the field and moves focus to it.
+- **Creating**: `onCreate` gets the trimmed values, the domain in lowercase and ARR as a number (or `null`), then the dialog closes.
+- **Create more**: with the switch on, the dialog stays open. It clears the text fields, keeps the status and owner, and confirms the record just created.
+- **Fresh form**: each time the dialog opens, the form starts from `defaultValues` again. To hold the form yourself, pass `values` and `onValuesChange`; a controlled form stays as you set it.
+- **Narrow containers**: the fields stack in one column when the dialog is narrower than 28rem.
+
+## Motion
+
+The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. With the reduced motion setting on, it only fades.
+
+## API
+
+### NewItemDialog
+
+<TypeTable
+  type={{
+    onCreate: { description: 'Called with the form values when a record is created.', type: '(values: NewItemValues) => void' },
+    people: { description: 'The people who can own the record.', type: '{ id: string; name: string; initials: string }[]', default: 'sample people' },
+    defaultValues: { description: 'Values to start the form with each time it opens.', type: 'Partial<NewItemValues>' },
+    values: { description: 'The form as it stands, controlled, with ARR as text. Use with `onValuesChange`.', type: 'NewItemFormValues' },
+    onValuesChange: { description: 'Called with the whole form each time a field changes.', type: '(values: NewItemFormValues) => void' },
+    open: { description: 'Whether the dialog is open, controlled.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the dialog starts open, uncontrolled.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the dialog opens or closes.', type: '(open: boolean) => void' },
+    trigger: { description: 'The element that opens the dialog. `null` renders none.', type: 'ReactElement | null', default: 'a "New account" button' },
+    defaultSubmitted: { description: 'Shows validation errors from the start, as after a failed submit. For previews.', type: 'boolean', default: 'false' },
+    modal: { description: 'Blocks the page behind the dialog.', type: 'boolean', default: 'true' },
+    container: { description: 'The element the dialog renders into.', type: 'HTMLElement | null', default: 'document.body' },
+    initialFocus: { description: 'Where focus goes when the dialog opens.', type: 'boolean | RefObject | function', default: 'the name field' },
+  }}
+/>
+
+### NewItemValues
+
+<TypeTable
+  type={{
+    name: { description: 'Trimmed, never empty.', type: 'string' },
+    domain: { description: 'Lowercase, or empty.', type: 'string' },
+    status: { description: 'The status.', type: "'trial' | 'active' | 'at-risk' | 'churned'", default: "'trial'" },
+    owner: { description: 'The id of a person in `people`, or `null`.', type: 'string | null', default: 'null' },
+    arr: { description: 'Annual recurring revenue in dollars, or `null` when left blank.', type: 'number | null', default: 'null' },
+    notes: { description: 'Trimmed; empty when left blank.', type: 'string' },
+  }}
+/>

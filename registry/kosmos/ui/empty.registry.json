@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty",
+  "type": "registry:ui",
+  "title": "Empty state",
+  "description": "What a page, table or panel shows when it has nothing yet: an icon, a title, a description and the next step.",
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/empty.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

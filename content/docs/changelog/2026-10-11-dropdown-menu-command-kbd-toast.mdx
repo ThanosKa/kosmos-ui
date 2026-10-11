@@ -1,0 +1,14 @@
+---
+title: Added Dropdown Menu, Command, Kbd and Toast
+description: The rest of the overlays, for menus of actions, a ⌘K palette, keyboard hints and notifications.
+date: 2026-10-11
+---
+
+Four more components, each built on Base UI and installed on its own:
+
+- [Dropdown Menu](/docs/components/dropdown-menu) opens a list of actions from a button. Arrow keys and typing a letter move through it, and it has check items, radio items, shortcuts and submenus.
+- [Command](/docs/components/command) filters a list of commands as you type, as a ⌘K palette in a dialog or inline on the page. Enter runs the highlighted match.
+- [Kbd](/docs/components/kbd) shows a key or a shortcut such as ⌘ K. Command uses it for its shortcuts and its key hints.
+- [Toast](/docs/components/toast) shows short notifications at the bottom of the screen. Add one from anywhere with `toast.add()`. Screen readers announce each one, and errors can interrupt with `priority: 'high'`.
+
+Under reduced motion, menus and toasts fade instead of moving. The command palette never animates, so it is ready the moment you type.

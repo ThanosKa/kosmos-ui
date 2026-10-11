@@ -1,0 +1,117 @@
+---
+title: Tabs
+description: Switches between panels that share one spot on the page, with an underline that slides to the active tab. Built on Base UI.
+---
+
+<ComponentPreview name="tabs-demo" />
+
+## Installation
+
+<ComponentInstall name="tabs" />
+
+## Usage
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+```
+
+```tsx
+<Tabs defaultValue="overview">
+  <TabsList>
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="activity">Activity</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">…</TabsContent>
+  <TabsContent value="activity">…</TabsContent>
+</Tabs>
+```
+
+Use tabs for views of the same thing, like the overview and the activity of one project. To pick a value, like a time range for a chart, use a [Segmented control](/docs/components/segmented-control).
+
+## Examples
+
+### Icons and counts
+
+Put an icon first with `data-icon="inline-start"`. A count after the label takes `text-caption`, `text-muted-foreground` and `tabular-nums`.
+
+<ComponentPreview name="tabs-icons" />
+
+### Vertical
+
+`orientation="vertical"` stacks the tabs beside the panel, for settings pages. The up and down arrow keys move between tabs.
+
+<ComponentPreview name="tabs-vertical" />
+
+### Disabled tab
+
+A disabled tab stays visible and is skipped by the arrow keys.
+
+<ComponentPreview name="tabs-disabled" />
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves focus to the active tab, then into the panel. |
+| `ArrowLeft` `ArrowRight` | Moves to the previous or next tab and shows its panel. Up and down in a vertical list. |
+| `Home` `End` | Moves to the first or last tab. |
+
+Tabs activate as focus reaches them. Pass `activateOnFocus={false}` to `TabsList` when a panel is slow to render, so the user moves with the arrows and picks with `Enter` or `Space`.
+
+## Motion
+
+The underline slides to the active tab over 300ms with `smooth-in-out`. Under reduced motion it fades out under the old tab and in under the new one instead of sliding. When the tabs don't fit, the list scrolls sideways and shows the platform's thin scrollbar.
+
+## API
+
+Tabs wraps the [Base UI Tabs](https://base-ui.com/react/components/tabs). Each part takes every prop of the Base UI part it renders.
+
+### Tabs
+
+<TypeTable
+  type={{
+    defaultValue: {
+      description: 'The tab shown first, when the tabs keep their own state.',
+      type: 'any',
+      default: '0',
+    },
+    value: {
+      description: 'The active tab. Use with `onValueChange`.',
+      type: 'any',
+    },
+    onValueChange: {
+      description: 'Called with the value of the newly active tab.',
+      type: '(value: any, eventDetails) => void',
+    },
+    orientation: {
+      description: 'Lays the tabs out in a row or a column, and picks the arrow keys that move between them.',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+    },
+  }}
+/>
+
+### TabsList
+
+<TypeTable
+  type={{
+    activateOnFocus: {
+      description: 'Shows a tab’s panel as soon as the arrow keys reach it.',
+      type: 'boolean',
+      default: 'true',
+    },
+    loopFocus: {
+      description: 'Wraps the arrow keys from the last tab back to the first.',
+      type: 'boolean',
+      default: 'true',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `TabsList` | The row of tabs on a 1px divider, with the sliding underline. Base UI `Tabs.List` and `Tabs.Indicator`. |
+| `TabsTrigger` | One tab. Takes `value` and `disabled`. Base UI `Tabs.Tab`. |
+| `TabsContent` | The panel for the tab with the same `value`. `keepMounted` keeps hidden panels in the page. Base UI `Tabs.Panel`. |

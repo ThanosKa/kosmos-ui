@@ -1,0 +1,53 @@
+---
+title: Stats overview
+description: The overview of a dashboard, with stat tiles, a revenue chart with a range switch, and each plan's share of revenue.
+---
+
+<ComponentPreview name="stats-overview-demo" minHeight={560} />
+
+## Installation
+
+<ComponentInstall name="stats-overview" />
+
+The block brings [Chart](/docs/components/chart), [Meter](/docs/components/meter), [Segmented control](/docs/components/segmented-control), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
+
+## Usage
+
+```tsx
+import { StatsOverview } from '@/components/stats-overview';
+
+<StatsOverview stats={stats} revenue={revenue} plans={plans} />;
+```
+
+Without props it shows sample metrics. The overview lays itself out by its own width: four tiles in a row on a wide container, two or one on a narrower one, and the plan breakdown moves under the chart.
+
+## What it does
+
+- **Stat tiles**: a label, the value, a sparkline and the change against last month. The trend icon is green when the change is good news and red when it is bad: set `goodWhen: 'down'` for a stat like churn, where falling is good. Values of a million and up go compact ($128.5M).
+- **Revenue chart**: two series over 30 days, 90 days or 12 months, with a tooltip and a hidden data table for screen readers. An empty range shows an empty state.
+- **Revenue by plan**: each plan's share as a meter, with its amount for the selected range.
+- **Loading**: `loading` swaps every value for a skeleton of the same shape.
+
+## API
+
+### StatsOverview
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    stats: {
+      description: 'The stat tiles. Leave `change` out when there is no earlier period.',
+      type: "{ id: string; label: string; value: number; format: 'currency' | 'number' | 'percent'; change?: number; goodWhen?: 'up' | 'down'; trend: number[] }[]",
+    },
+    revenue: {
+      description: 'The chart points for each range.',
+      type: "Record<'30d' | '90d' | '12m', { label: string; newBusiness: number; expansion: number }[]>",
+    },
+    plans: { description: "Each plan's share of revenue, in percent.", type: '{ plan: string; share: number }[]' },
+    range: { description: 'The chart range. Use with `onRangeChange`.', type: "'30d' | '90d' | '12m'" },
+    defaultRange: { description: 'The range shown at first, when the overview keeps its own state.', type: "'30d' | '90d' | '12m'", default: "'12m'" },
+    onRangeChange: { description: 'Called with the newly selected range.', type: "(range: '30d' | '90d' | '12m') => void" },
+    loading: { description: 'Shows skeletons while the data loads.', type: 'boolean', default: 'false' },
+  }}
+/>

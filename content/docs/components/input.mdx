@@ -1,0 +1,89 @@
+---
+title: Input
+description: A single-line text input built on Base UI. Put it in a Field to give it a label, help text and an error.
+---
+
+<ComponentPreview name="input-demo" />
+
+## Installation
+
+<ComponentInstall name="input" />
+
+## Usage
+
+```tsx
+import { Input } from '@/components/ui/input';
+```
+
+```tsx
+<Input type="email" name="email" aria-label="Email" placeholder="name@company.com" />
+```
+
+An Input on its own needs an `aria-label`. In most forms, put it in a [Field](/docs/components/field) instead, which gives it a visible label and connects the help text and error to it.
+
+On small screens the text is 16px, so iOS doesn't zoom the page when the input gets focus. From the `sm` breakpoint up it's 14px, like the rest of the interface.
+
+## Examples
+
+### With a label
+
+<ComponentPreview name="input-with-label" />
+
+### Types
+
+Input passes `type` to the native `<input>`, so the browser brings its own keyboard, autofill and picker for each type. Add `tabular-nums` to number inputs so the digits line up.
+
+<ComponentPreview name="input-types" />
+
+### Beside a button
+
+Input has the same height as a medium Button, so the two line up in a row.
+
+<ComponentPreview name="input-with-button" />
+
+### Invalid
+
+Set `invalid` on the Field and add a FieldError. The input gets a red ring and `aria-invalid`, and screen readers read the error with it. Outside a Field, set `aria-invalid` on the Input yourself.
+
+<ComponentPreview name="input-invalid" />
+
+### Disabled and read-only
+
+A disabled input can't be focused and isn't sent with the form. Use `readOnly` for a value people should be able to select and copy but not change.
+
+<ComponentPreview name="input-disabled" />
+
+## API
+
+Input wraps the [Base UI Input](https://base-ui.com/react/components/input) and accepts all of its props and all `<input>` props.
+
+<TypeTable
+  type={{
+    type: {
+      description: 'The native input type.',
+      type: 'string',
+      default: "'text'",
+    },
+    value: {
+      description: 'The value, when you control it.',
+      type: 'string | number | string[]',
+    },
+    defaultValue: {
+      description: 'The starting value, when the input manages it.',
+      type: 'string | number | string[]',
+    },
+    onValueChange: {
+      description: 'Called with the new value on every change.',
+      type: '(value: string, eventDetails) => void',
+    },
+    disabled: {
+      description: 'Blocks input and leaves the value out of the form. A disabled Field disables it too.',
+      type: 'boolean',
+      default: 'false',
+    },
+    'aria-invalid': {
+      description: 'Marks the value as wrong outside a Field. Inside one, set `invalid` on the Field instead.',
+      type: 'boolean',
+    },
+  }}
+/>
