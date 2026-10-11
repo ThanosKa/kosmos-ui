@@ -1,0 +1,104 @@
+---
+title: Kanban board
+description: Columns of task cards that move by drag and drop or from the keyboard, and scroll sideways inside their container.
+---
+
+<ComponentPreview name="kanban-board-demo" minHeight={520} />
+
+## Installation
+
+<ComponentInstall name="kanban-board" />
+
+The board installs [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Scroll area](/docs/components/scroll-area) and [Skeleton](/docs/components/skeleton) with it, plus [dnd-kit](https://dndkit.com) for drag and drop.
+
+## Usage
+
+```tsx
+import { KanbanBoard, type KanbanTask } from '@/components/kanban-board';
+```
+
+```tsx
+const [tasks, setTasks] = useState<KanbanTask[]>(initialTasks);
+
+<div className="flex h-[32rem]">
+  <KanbanBoard
+    tasks={tasks}
+    onTasksChange={setTasks}
+    onTaskOpen={(task) => openDetails(task.id)}
+    onAddTask={(columnId) => openNewTask(columnId)}
+  />
+</div>;
+```
+
+The board fills the height of its container, and each column scrolls on its own when its cards don't fit. When the columns are wider than the container, the board scrolls sideways. Without `tasks` it starts from sample tasks, so you can see it working before you connect your data.
+
+Each task names its column in `columnId`. The order of `tasks` is the order of the cards, so save the array `onTasksChange` gives you as it is.
+
+### Moving cards
+
+- **Pointer:** drag a card to another place or column. A short press without moving opens it instead.
+- **Touch:** press and hold a card for a moment, then drag.
+- **Keyboard:** Tab to a card and press Space to pick it up. Up and Down move it within its column; Left and Right move it to the same place in the next column. Space drops it and Escape puts it back. Enter opens the card.
+
+Screen readers hear how to move a card when they reach it, and where it is after every step.
+
+### Pairing with other blocks
+
+Open the [Detail drawer](/docs/blocks/detail-drawer) from `onTaskOpen` and the [New item dialog](/docs/blocks/new-item-dialog) from `onAddTask`, passing the column as the new task's status.
+
+## States
+
+Pass `loading` to show placeholder cards while your tasks load. A column with no cards says so, and turns into a drop target while a card is dragged.
+
+## Motion
+
+While you drag, the card lifts with a stronger shadow and a slight tilt, and the cards around it slide aside in 200ms. When you drop it, it settles into its place. With the reduced motion setting on, the card doesn't tilt and nothing slides: cards change places at once.
+
+## API
+
+### KanbanBoard
+
+Takes every `div` prop, plus:
+
+<TypeTable
+  type={{
+    columns: { description: 'The columns, in order.', type: 'KanbanColumn[]', default: 'Backlog, To do, In progress, Done' },
+    tasks: { description: 'The tasks, controlled. Their order is the order on the board.', type: 'KanbanTask[]' },
+    defaultTasks: { description: 'The tasks to start with when `tasks` is not controlled.', type: 'KanbanTask[]', default: 'sample tasks' },
+    onTasksChange: { description: 'Called with every task, in their new order, after a card moves.', type: '(tasks: KanbanTask[]) => void' },
+    onTaskOpen: { description: 'Called when a card is clicked or opened with Enter.', type: '(task: KanbanTask) => void' },
+    onAddTask: { description: 'Shows a + button in each column header that calls this with the column id.', type: '(columnId: string) => void' },
+    loading: { description: 'Shows placeholder cards.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### KanbanColumn
+
+<TypeTable
+  type={{
+    id: { description: 'Matched by each task’s `columnId`.', type: 'string', required: true },
+    title: { description: 'The column heading.', type: 'string', required: true },
+    icon: { description: 'The status icon beside the title.', type: 'LucideIcon' },
+    tone: {
+      description: 'Colors the icon. `warning` and `success` mark work under way and done.',
+      type: "'muted' | 'neutral' | 'warning' | 'success'",
+      default: "'muted'",
+    },
+  }}
+/>
+
+### KanbanTask
+
+<TypeTable
+  type={{
+    id: { description: 'Unique, and shown on the card.', type: 'string', required: true },
+    columnId: { description: 'The column the card sits in.', type: 'string', required: true },
+    title: { description: 'Up to three lines on the card.', type: 'string', required: true },
+    labels: { description: 'Shown as badges.', type: 'string[]' },
+    due: { description: 'Already formatted, such as "Oct 14".', type: 'string' },
+    assignee: { description: 'Shown as an avatar with initials.', type: '{ name: string; initials: string }' },
+    comments: { description: 'The comment count.', type: 'number' },
+  }}
+/>
+
+`KanbanCard` is exported too, for a card outside the board, such as a search result.

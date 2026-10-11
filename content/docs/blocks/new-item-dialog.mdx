@@ -1,0 +1,78 @@
+---
+title: New item dialog
+description: A dialog with the form for a new task. Only the title is required, and Create more keeps it open for the next one.
+---
+
+<ComponentPreview name="new-item-dialog-demo" minHeight={680} />
+
+## Installation
+
+<ComponentInstall name="new-item-dialog" />
+
+The dialog installs [Dialog](/docs/components/dialog), [Field](/docs/components/field), [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), [Switch](/docs/components/switch), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it.
+
+## Usage
+
+```tsx
+import { NewItemDialog } from '@/components/new-item-dialog';
+```
+
+```tsx
+<NewItemDialog
+  people={members}
+  onCreate={(values) => createTask(values)}
+/>
+```
+
+The dialog opens from a **New task** button and puts focus in the title field. Submitting without a title shows an error under the field and moves focus back to it. Submitting with one calls `onCreate` with the values and closes the dialog.
+
+With **Create more** on, the dialog stays open after each task. It clears the title and description, keeps the status, priority and assignee for the next task, and confirms the one just created.
+
+To open it from a column on the [Kanban board](/docs/blocks/kanban-board), pass `trigger={null}`, control `open` and start the form in that column:
+
+```tsx
+<NewItemDialog
+  open={open}
+  onOpenChange={setOpen}
+  trigger={null}
+  defaultValues={{ status: columnId }}
+  onCreate={(values) => addTask(values)}
+/>
+```
+
+## Motion
+
+The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. With the reduced motion setting on, it only fades.
+
+## API
+
+### NewItemDialog
+
+<TypeTable
+  type={{
+    onCreate: { description: 'Called with the form values when a task is created.', type: '(values: NewItemValues) => void' },
+    people: { description: 'The people the task can be assigned to.', type: '{ id: string; name: string; initials: string }[]', default: 'sample people' },
+    defaultValues: { description: 'Values to start the form with.', type: 'Partial<NewItemValues>' },
+    open: { description: 'Whether the dialog is open, controlled.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the dialog starts open, uncontrolled.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the dialog opens or closes.', type: '(open: boolean) => void' },
+    trigger: { description: 'The element that opens the dialog. `null` renders none.', type: 'ReactElement | null', default: 'a "New task" button' },
+    defaultSubmitted: { description: 'Shows validation errors from the start, as after a failed submit.', type: 'boolean', default: 'false' },
+    modal: { description: 'Blocks the page behind the dialog.', type: 'boolean', default: 'true' },
+    container: { description: 'The element the dialog renders into.', type: 'HTMLElement | null', default: 'document.body' },
+    initialFocus: { description: 'Where focus goes when the dialog opens.', type: 'boolean | RefObject | function', default: 'the title field' },
+  }}
+/>
+
+### NewItemValues
+
+<TypeTable
+  type={{
+    title: { description: 'Trimmed, never empty.', type: 'string' },
+    description: { description: 'Trimmed; empty when left blank.', type: 'string' },
+    status: { description: 'The status.', type: "'backlog' | 'todo' | 'in-progress' | 'done'", default: "'todo'" },
+    priority: { description: 'The priority.', type: "'low' | 'medium' | 'high' | 'urgent'", default: "'medium'" },
+    assignee: { description: 'The id of a person in `people`, or `null`.', type: 'string | null', default: 'null' },
+    due: { description: '`YYYY-MM-DD`, or empty.', type: 'string', default: "''" },
+  }}
+/>

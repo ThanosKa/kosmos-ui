@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "new-item-dialog",
+  "type": "registry:block",
+  "title": "New item dialog",
+  "description": "A dialog with the form for a new task: title, description, status, priority, assignee and due date, with a required-title check and a Create more switch.",
+  "dependencies": ["lucide-react"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/dialog",
+    "@kosmos/field",
+    "@kosmos/input",
+    "@kosmos/select",
+    "@kosmos/switch",
+    "@kosmos/textarea"
+  ],
+  "meta": { "group": "blocks" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/new-item-dialog/components/new-item-dialog.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

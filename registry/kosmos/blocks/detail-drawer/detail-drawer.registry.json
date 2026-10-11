@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "detail-drawer",
+  "type": "registry:block",
+  "title": "Detail drawer",
+  "description": "A side panel with the details of one task: editable status and priority, assignee, due date, labels, description, activity and a comment field, with a more-actions menu.",
+  "dependencies": ["lucide-react"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/button",
+    "@kosmos/drawer",
+    "@kosmos/dropdown-menu",
+    "@kosmos/select",
+    "@kosmos/separator",
+    "@kosmos/skeleton",
+    "@kosmos/textarea"
+  ],
+  "meta": { "group": "blocks" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/detail-drawer/components/detail-drawer.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

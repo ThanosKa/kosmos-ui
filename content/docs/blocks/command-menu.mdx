@@ -1,0 +1,58 @@
+---
+title: Command menu
+description: A ⌘K menu with a search button for the header. Find a task, run an action or go to a page.
+---
+
+<ComponentPreview name="command-menu-demo" minHeight={520} />
+
+## Installation
+
+<ComponentInstall name="command-menu" />
+
+The menu installs [Command](/docs/components/command), [Kbd](/docs/components/kbd), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it.
+
+## Usage
+
+```tsx
+import { CommandMenu } from '@/components/command-menu';
+```
+
+```tsx
+<CommandMenu
+  onRun={(value) => {
+    if (value === 'create-task') setNewTaskOpen(true);
+    if (value.startsWith('go:')) router.push(`/${value.slice(3)}`);
+  }}
+/>
+```
+
+The menu renders a search button that shows its shortcut. Click it, or press ⌘K (Ctrl+K on Windows and Linux) anywhere on the page. Typing filters the list, the first match stays highlighted and Enter runs it. Each command calls `onRun` with its value, such as `create-task`, `open:KOS-142` or `assign:maya`, and closes the menu. Edit the lists at the top of the file to match your app.
+
+**Change status…** and **Assign to…** open a second list instead of running. Backspace in the empty field or Escape goes back to the main list; Escape on the main list closes the menu, and focus goes back where it was.
+
+Use only one menu with `shortcut` on per page. Pass `trigger={null}` to hide the button and open the menu through `open` only, or your own element as `trigger`.
+
+## Motion
+
+The menu appears and closes without animation, because it opens from a keyboard shortcut and should be ready the moment you type.
+
+## API
+
+### CommandMenu
+
+<TypeTable
+  type={{
+    onRun: { description: 'Called with the value of the command that ran.', type: '(value: string) => void' },
+    open: { description: 'Whether the menu is open, controlled.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the menu starts open, uncontrolled.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the menu opens or closes.', type: '(open: boolean) => void' },
+    shortcut: { description: 'Toggles the menu with ⌘K or Ctrl+K from anywhere on the page.', type: 'boolean', default: 'true' },
+    trigger: { description: 'The element that opens the menu. `null` renders none.', type: 'ReactElement | null', default: 'a search button' },
+    className: { description: 'Classes for the default search button.', type: 'string' },
+    modal: { description: 'Blocks the page behind the menu.', type: 'boolean', default: 'true' },
+    container: { description: 'The element the menu renders into.', type: 'HTMLElement | null', default: 'document.body' },
+    initialFocus: { description: 'Where focus goes when the menu opens.', type: 'boolean | RefObject | function', default: 'the search field' },
+    defaultPage: { description: 'The list to open on.', type: "'root' | 'status' | 'assign'", default: "'root'" },
+    defaultQuery: { description: 'The search text to start with.', type: 'string', default: "''" },
+  }}
+/>
