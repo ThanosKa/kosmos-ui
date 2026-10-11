@@ -235,6 +235,8 @@ export function DashboardShowcase() {
         {accountsPage ? (
           <PageHeader
             title={accountsPage.title}
+            // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
+            headingLevel={3}
             leading={<SidebarTrigger className="-ms-1" />}
             tabs={tabs}
             tab={tab}
@@ -282,14 +284,14 @@ export function DashboardShowcase() {
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">
               <SidebarTrigger className="-ms-1" />
-              <h1 className="min-w-0 flex-1 truncate text-heading">{pageTitles[page]}</h1>
+              <h3 className="min-w-0 flex-1 truncate text-heading">{pageTitles[page]}</h3>
             </div>
             <Empty className="flex-1 py-16">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <Layers />
                 </EmptyMedia>
-                <EmptyTitle render={<h2 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
+                <EmptyTitle render={<h4 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
                 <EmptyDescription>
                   Accounts and its saved views are live. Everything there is built from Kosmos blocks.
                 </EmptyDescription>
