@@ -27,6 +27,7 @@ export default function PageHeaderPreview() {
             defaultTab="at-risk"
             filters={['maya', 'enterprise']}
             filterMenu={{ open: true, modal: false }}
+            onAction={() => {}}
           >
             <Body />
           </PageHeader>
@@ -35,21 +36,21 @@ export default function PageHeaderPreview() {
 
       <PreviewSection title="Default">
         <div className={frame}>
-          <PageHeader leading={toggle}>
+          <PageHeader leading={toggle} onAction={() => {}}>
             <Body />
           </PageHeader>
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Search text and board layout">
+      <PreviewSection title="Search text, board layout, h2 title">
         <div className={frame}>
-          <PageHeader leading={toggle} defaultTab="active" query="north" view="board">
+          <PageHeader leading={toggle} headingLevel={2} defaultTab="active" query="north" view="board" onAction={() => {}}>
             <Body text="Board" />
           </PageHeader>
         </div>
       </PreviewSection>
 
-      <PreviewSection title="In a narrow container, long title">
+      <PreviewSection title="In a narrow container, long title, no More actions menu">
         <div className={`${frame} max-w-sm`}>
           <PageHeader
             leading={toggle}
