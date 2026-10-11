@@ -129,8 +129,9 @@ export function MembersCard() {
           <TableRow>
             <TableHead>Member</TableHead>
             <TableHead>Status</TableHead>
-            {/* An `sr-only` span here would escape the table's scroll area and widen the page at 375px. */}
-            <TableHead className="w-10" aria-label="Actions" />
+            <TableHead className="w-10">
+              <span className="sr-only">Actions</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

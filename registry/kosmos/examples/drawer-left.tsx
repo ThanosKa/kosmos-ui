@@ -17,7 +17,7 @@ export default function DrawerLeft() {
       <DrawerTrigger render={<Button variant="ghost" size="icon" aria-label="Open navigation" />}>
         <Menu />
       </DrawerTrigger>
-      <DrawerContent className="sm:w-72">
+      <DrawerContent className="sm:data-[swipe-direction=left]:max-w-72">
         <DrawerHeader>
           <DrawerTitle>Acme</DrawerTitle>
         </DrawerHeader>

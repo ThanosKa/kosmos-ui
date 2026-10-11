@@ -75,7 +75,7 @@ function DrawerPopup({ className, ...props }: DrawerPrimitive.Popup.Props) {
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         // Side panels.
         'data-[swipe-direction=left]:inset-y-2 data-[swipe-direction=left]:left-2 data-[swipe-direction=right]:inset-y-2 data-[swipe-direction=right]:right-2',
-        'data-[swipe-direction=left]:w-[calc(100%-1rem)] data-[swipe-direction=right]:w-[calc(100%-1rem)] sm:data-[swipe-direction=left]:w-96 sm:data-[swipe-direction=right]:w-96',
+        'data-[swipe-direction=left]:w-[calc(100%-1rem)] data-[swipe-direction=right]:w-[calc(100%-1rem)] sm:data-[swipe-direction=left]:max-w-96 sm:data-[swipe-direction=right]:max-w-96',
         'data-[swipe-direction=left]:rounded-xl data-[swipe-direction=right]:rounded-xl',
         // Sheets.
         'data-[swipe-direction=down]:inset-x-0 data-[swipe-direction=down]:bottom-0 data-[swipe-direction=down]:rounded-t-3xl',

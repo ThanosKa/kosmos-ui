@@ -42,7 +42,8 @@ function ScrollArea({ className, children, fade = true, viewportClassName, viewp
         ref={viewportRef}
         data-slot="scroll-area-viewport"
         className={cn(
-          'min-h-0 flex-auto overscroll-x-contain rounded-[inherit] outline-none',
+          // `relative` keeps absolutely positioned content (an `sr-only` label) inside the clip, so it never widens the page.
+          'relative min-h-0 flex-auto overscroll-x-contain rounded-[inherit] outline-none',
           // Room for the scrollbar, so it never covers content.
           'data-has-overflow-x:pb-3 data-has-overflow-y:pe-3',
           fade && [

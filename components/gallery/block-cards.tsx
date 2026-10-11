@@ -70,7 +70,7 @@ export function AppFrame() {
 /** KanbanBoard with its sample columns and cards. */
 export function PipelineCard() {
   return (
-    <GalleryCard title="Pipeline" description="Drag a card, or pick it up with Space." bodyClassName="h-[30rem] overflow-hidden p-2 pt-4">
+    <GalleryCard title="Pipeline" description="Drag a card, or pick it up with Space." bodyClassName="h-[30rem] p-2 pt-4">
       <KanbanBoard />
     </GalleryCard>
   );

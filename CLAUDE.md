@@ -9,6 +9,10 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 - **Terms**: `GLOSSARY.md`. Use its terms and avoid the ones it lists under _Avoid_.
 - **Why**: `docs/adr/`. Read the relevant ADR before reversing a decision; record new hard-to-reverse decisions there.
 
+## Code
+
+- Code explains itself through names and structure. Add a comment only when a line cannot be understood without one, such as a browser or library workaround.
+
 ## Git
 
 - Commits: `type(scope): description`, one line, imperative, no body, no footer, no `Co-Authored-By`.

@@ -54,7 +54,7 @@ A drawer keeps the page in view, so use it for content that belongs to something
 
 ### Left
 
-`swipeDirection="left"` opens from the left edge, for navigation on small screens. Set the width with `className`.
+`swipeDirection="left"` opens from the left edge, for navigation on small screens. A side panel takes the width of its container less 1rem, up to 24rem, so it also fits a container narrower than the screen. To change that limit, set a maximum width with the same prefix in `className`, such as `sm:data-[swipe-direction=left]:max-w-72`.
 
 <ComponentPreview name="drawer-left" />
 
