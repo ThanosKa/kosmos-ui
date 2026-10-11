@@ -52,7 +52,7 @@ export function RevenueCard() {
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="text-display tabular-nums">{usd.format(summary.total)}</span>
-        <Badge variant={up ? 'success' : 'destructive'}>
+        <Badge variant={up ? 'green' : 'red'}>
           {up ? '+' : '−'}
           {Math.abs(summary.change)}%<span className="sr-only"> compared with the period before</span>
         </Badge>
@@ -72,16 +72,16 @@ export function RevenueCard() {
 const signups = [30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81].map((value) => ({ value }));
 const churn = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ value }));
 
-/** Sparkline stat tiles, split by a 1px grid. */
+/** Sparkline stat tiles, each its own card. */
 export function KpiCard() {
   const tiles = [
     { label: 'Signups', value: '1,284', change: '+4.2% vs September', data: signups, color: 'var(--chart-1)' },
     { label: 'Churn', value: '1.8%', change: '−0.6 pts vs September', data: churn, color: 'var(--chart-3)' },
   ];
   return (
-    <section aria-label="This month" className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-transparent bg-border shadow-card">
+    <section aria-label="This month" className="grid grid-cols-2 gap-4">
       {tiles.map((tile) => (
-        <div key={tile.label} className="flex min-w-0 flex-col gap-1 bg-card p-4">
+        <div key={tile.label} className="flex min-w-0 flex-col gap-1 rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <span className="text-body font-medium text-muted-foreground">{tile.label}</span>
           <span className="text-display tabular-nums">{tile.value}</span>
           <span className="truncate text-small text-muted-foreground tabular-nums">{tile.change}</span>
