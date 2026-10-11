@@ -21,6 +21,7 @@ const docs = defineDocs({
           'RegistryConfig',
           'RegistryCss',
           'ChangelogEntries',
+          'DocsIndex',
         ],
       },
     },

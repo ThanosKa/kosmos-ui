@@ -5,11 +5,22 @@ export const docsRoute = '/docs';
 export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 
-// fill this with your actual GitHub info, for example:
+/**
+ * Where the code and its author live. The only place these URLs are written: the site header and footer,
+ * the docs and the star count all read them from here.
+ * TODO-confirm: the GitHub repo and the X account don't exist yet (ticket 02), so these are placeholders.
+ */
 export const gitConfig = {
-  user: 'fuma-nama',
-  repo: 'fumadocs',
+  user: 'kosmos-ui',
+  repo: 'kosmos-ui',
   branch: 'main',
+};
+export const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
+export const licenseUrl = `${githubUrl}/blob/${gitConfig.branch}/LICENSE`;
+export const author = {
+  name: 'Thanos Kazakis',
+  xUrl: 'https://x.com/thanoskazakis',
+  githubUrl: 'https://github.com/thanoskazakis',
 };
 
 const getContentUrl = createGetUrl(docsContentRoute);
