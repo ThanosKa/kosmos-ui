@@ -10,6 +10,7 @@ import {
   getRegistryItem,
   installCommands,
   installedPath,
+  packageInstallers,
   packageRunners,
   registryAddArgs,
   registryConfig,
@@ -103,6 +104,10 @@ const placeholders = {
     ),
   // The easing curves are in the MotionTokens table; the demo itself has nothing to read.
   EasingCurves: () => '',
+  PackageInstall: ({ attributes }: PlaceholderData) => fence('bash', `${packageInstallers.npm} ${String(attributes.packages)}`),
+  LinkCards: ({ children }: PlaceholderData) => children.trim(),
+  LinkCard: ({ attributes, children }: PlaceholderData) =>
+    `- [${String(attributes.title)}](${String(attributes.href)})${children.trim() ? `: ${children.trim()}` : ''}\n`,
 };
 
 export const docsLlms = llms(source, {

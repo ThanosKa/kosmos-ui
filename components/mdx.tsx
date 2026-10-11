@@ -6,12 +6,13 @@ import { ComponentInstall, ComponentSource } from '@/components/docs/component-i
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { ChangelogEntries } from '@/components/docs/changelog-entries';
 import { DocsIndex } from '@/components/docs/docs-index';
-import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
+import { PackageInstall, RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
 import { Step, Steps } from '@/components/docs/steps';
 import { ColorTokens } from '@/components/docs/foundations/color-tokens';
 import { EasingCurves, MotionTokens } from '@/components/docs/foundations/motion-tokens';
 import { RadiusScale, ShadowSurfaces } from '@/components/docs/foundations/shadow-surfaces';
 import { TypeRoles } from '@/components/docs/foundations/type-roles';
+import { LinkCard, LinkCards } from '@/components/docs/link-cards';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -35,6 +36,9 @@ export function getMDXComponents(components?: MDXComponents) {
     RadiusScale,
     MotionTokens,
     EasingCurves,
+    PackageInstall,
+    LinkCards,
+    LinkCard,
     ...components,
   } satisfies MDXComponents;
 }
