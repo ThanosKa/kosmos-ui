@@ -145,11 +145,11 @@ type NewItemDialogProps = {
   onCreate?: (values: NewItemValues) => void;
   /** The people the task can be assigned to. */
   people?: NewItemPerson[];
-  /** Values to start the form with, such as the status of the column it was opened from. */
+  /** Values to initialValues the form with, such as the status of the column it was opened from. */
   defaultValues?: Partial<NewItemValues>;
   /** The element that opens the dialog. Defaults to a "New task" button; pass `null` to open it only through `open`. */
   trigger?: React.ReactElement | null;
-  /** Shows the validation errors from the start, as after a failed submit. For previews. */
+  /** Shows the validation errors from the initialValues, as after a failed submit. For previews. */
   defaultSubmitted?: boolean;
   /** Blocks the page behind the dialog. Defaults to `true`. */
   modal?: boolean;
@@ -179,8 +179,8 @@ function NewItemDialog({
 }: NewItemDialogProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
-  const start = React.useMemo(() => ({ ...emptyValues, ...defaultValues }), [defaultValues]);
-  const [values, setValues] = React.useState(start);
+  const initialValues = React.useMemo(() => ({ ...emptyValues, ...defaultValues }), [defaultValues]);
+  const [values, setValues] = React.useState(initialValues);
   const [submitted, setSubmitted] = React.useState(defaultSubmitted);
   const [createMore, setCreateMore] = React.useState(false);
   // The last task made while "Create more" kept the dialog open, confirmed in a live region.
@@ -192,13 +192,13 @@ function NewItemDialog({
     if (openProp === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);
     if (!next) {
-      setValues(start);
+      setValues(initialValues);
       setSubmitted(false);
       setLastCreated(null);
     }
   }
 
-  function set<Key extends keyof NewItemValues>(key: Key, value: NewItemValues[Key]) {
+  function setField<Key extends keyof NewItemValues>(key: Key, value: NewItemValues[Key]) {
     setValues((current) => ({ ...current, [key]: value }));
   }
 
@@ -230,7 +230,7 @@ function NewItemDialog({
         <DialogTrigger render={trigger} />
       ) : (
         <DialogTrigger render={<Button variant="primary" />}>
-          <Plus aria-hidden data-icon="inline-start" />
+          <Plus aria-hidden data-icon="inline-initialValues" />
           New task
         </DialogTrigger>
       )}
@@ -258,7 +258,7 @@ function NewItemDialog({
                 autoComplete="off"
                 placeholder="What needs to be done?"
                 value={values.title}
-                onValueChange={(value) => set('title', value)}
+                onValueChange={(value) => setField('title', value)}
               />
               <FieldError>Enter a title for the task.</FieldError>
             </Field>
@@ -269,15 +269,15 @@ function NewItemDialog({
                 placeholder="Add details, steps or links"
                 className="max-h-40"
                 value={values.description}
-                onValueChange={(value) => set('description', String(value))}
+                onValueChange={(value) => setField('description', String(value))}
               />
             </Field>
             <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-x-4">
-              <OptionSelect label="Status" value={values.status} onValueChange={(value) => set('status', value)} options={statuses} />
+              <OptionSelect label="Status" value={values.status} onValueChange={(value) => setField('status', value)} options={statuses} />
               <OptionSelect
                 label="Priority"
                 value={values.priority}
-                onValueChange={(value) => set('priority', value)}
+                onValueChange={(value) => setField('priority', value)}
                 options={priorities}
               />
               <Field>
@@ -286,7 +286,7 @@ function NewItemDialog({
                 </FieldLabel>
                 <Select
                   value={values.assignee}
-                  onValueChange={(value) => set('assignee', value as string | null)}
+                  onValueChange={(value) => setField('assignee', value as string | null)}
                   items={[{ value: null, label: 'Unassigned' }, ...people.map((person) => ({ value: person.id, label: person.name }))]}
                 >
                   <SelectTrigger className="w-full">
@@ -306,7 +306,7 @@ function NewItemDialog({
               </Field>
               <Field>
                 <FieldLabel>Due date</FieldLabel>
-                <Input type="date" name="due" value={values.due} onValueChange={(value) => set('due', value)} />
+                <Input type="date" name="due" value={values.due} onValueChange={(value) => setField('due', value)} />
               </Field>
             </div>
           </DialogBody>

@@ -92,7 +92,8 @@ const sortTransition = { duration: duration.base * 1000, easing: `cubic-bezier($
 const dropAnimation: DropAnimation = { duration: duration.base * 1000, easing: sortTransition.easing };
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
-const noop = () => () => {};
+/** For values that never change after hydration: nothing to subscribe to. */
+const subscribeNever = () => () => {};
 
 function subscribeReducedMotion(onChange: () => void) {
   const query = window.matchMedia(reducedMotionQuery);
@@ -111,7 +112,7 @@ function usePrefersReducedMotion() {
 /** False on the server and in the first client render, so portals into `document.body` wait for hydration. */
 function useMounted() {
   return React.useSyncExternalStore(
-    noop,
+    subscribeNever,
     () => true,
     () => false,
   );
@@ -342,16 +343,16 @@ function KanbanBoard({
   className,
   ...props
 }: KanbanBoardProps) {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultTasksProp);
-  const tasks = tasksProp ?? uncontrolled;
+  const [uncontrolledTasks, setUncontrolledTasks] = React.useState(defaultTasksProp);
+  const tasks = tasksProp ?? uncontrolledTasks;
   // The newest order, read by drag handlers that fire again before the next render.
-  const latest = React.useRef(tasks);
+  const latestTasks = React.useRef(tasks);
   React.useLayoutEffect(() => {
-    latest.current = tasks;
+    latestTasks.current = tasks;
   }, [tasks]);
   const setTasks = (next: KanbanTask[]) => {
-    latest.current = next;
-    if (tasksProp === undefined) setUncontrolled(next);
+    latestTasks.current = next;
+    if (tasksProp === undefined) setUncontrolledTasks(next);
     onTasksChange?.(next);
   };
 
@@ -369,7 +370,7 @@ function KanbanBoard({
       return sortableKeyboardCoordinates(event, args);
     }
     event.preventDefault();
-    const list = latest.current;
+    const list = latestTasks.current;
     const from = columnOf(active.id, list);
     const target = columns[columns.findIndex((column) => column.id === from) + (event.code === 'ArrowRight' ? 1 : -1)];
     if (!target) return undefined;
@@ -388,16 +389,16 @@ function KanbanBoard({
     }),
   );
 
-  const columnOf = (id: UniqueIdentifier, list = latest.current) =>
+  const columnOf = (id: UniqueIdentifier, list = latestTasks.current) =>
     columns.some((column) => column.id === id) ? String(id) : list.find((task) => task.id === id)?.columnId;
   const columnTitle = (id: string | undefined) => columns.find((column) => column.id === id)?.title ?? 'no column';
   const position = (id: UniqueIdentifier) => {
-    const list = latest.current;
+    const list = latestTasks.current;
     const columnId = columnOf(id, list);
     const inColumn = list.filter((task) => task.columnId === columnId);
     return `${columnTitle(columnId)}, position ${inColumn.findIndex((task) => task.id === id) + 1} of ${inColumn.length}`;
   };
-  const titleOf = (id: UniqueIdentifier) => latest.current.find((task) => task.id === id)?.title ?? String(id);
+  const titleOf = (id: UniqueIdentifier) => latestTasks.current.find((task) => task.id === id)?.title ?? String(id);
 
   const announcements: Announcements = {
     onDragStart: ({ active }) => `Picked up ${titleOf(active.id)}, in ${position(active.id)}.`,
@@ -419,7 +420,7 @@ function KanbanBoard({
     const from = columnOf(active.id);
     const to = columnOf(over.id);
     if (!from || !to || from === to) return;
-    const list = latest.current;
+    const list = latestTasks.current;
     const moving = list.find((task) => task.id === active.id);
     if (!moving) return;
     const rest = list.filter((task) => task.id !== active.id);
@@ -442,7 +443,7 @@ function KanbanBoard({
     setActiveId(null);
     snapshot.current = null;
     if (!over || active.id === over.id) return;
-    const list = latest.current;
+    const list = latestTasks.current;
     const from = list.findIndex((task) => task.id === active.id);
     const to = list.findIndex((task) => task.id === over.id);
     if (from < 0 || to < 0 || list[from].columnId !== list[to].columnId) return;

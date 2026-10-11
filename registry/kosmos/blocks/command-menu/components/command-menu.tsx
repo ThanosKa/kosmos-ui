@@ -43,6 +43,8 @@ type CommandMenuItem = {
   value: string;
   /** What the search matches. */
   label: string;
+  /** What the row shows, when it differs from `label` (which also holds the task ID, so the ID is searchable). */
+  title?: string;
   icon?: LucideIcon;
   /** Colors the icon, such as a status color. */
   iconClassName?: string;
@@ -50,8 +52,8 @@ type CommandMenuItem = {
   initials?: string;
   /** A task ID shown before the label. */
   code?: string;
-  /** Shown after the label, such as the keys that run the command. */
-  shortcut?: string[];
+  /** The keys that run the command, shown at the end of the row. */
+  keys?: string[];
   /** Opens a second list instead of running. */
   page?: Exclude<CommandMenuPage, 'root'>;
 };
@@ -62,15 +64,15 @@ const rootGroups: CommandMenuGroup[] = [
   {
     value: 'Recent tasks',
     items: [
-      { value: 'open:KOS-142', code: 'KOS-142', label: 'KOS-142 Fix the billing date in the invoice email', icon: CircleDot, iconClassName: 'text-warning' },
-      { value: 'open:KOS-140', code: 'KOS-140', label: 'KOS-140 Redesign the onboarding checklist', icon: CircleDot, iconClassName: 'text-warning' },
-      { value: 'open:KOS-131', code: 'KOS-131', label: 'KOS-131 Rate-limit the public search endpoint', icon: Circle },
+      { value: 'open:KOS-142', code: 'KOS-142', label: 'KOS-142 Fix the billing date in the invoice email', title: 'Fix the billing date in the invoice email', icon: CircleDot, iconClassName: 'text-warning' },
+      { value: 'open:KOS-140', code: 'KOS-140', label: 'KOS-140 Redesign the onboarding checklist', title: 'Redesign the onboarding checklist', icon: CircleDot, iconClassName: 'text-warning' },
+      { value: 'open:KOS-131', code: 'KOS-131', label: 'KOS-131 Rate-limit the public search endpoint', title: 'Rate-limit the public search endpoint', icon: Circle },
     ],
   },
   {
     value: 'Actions',
     items: [
-      { value: 'create-task', label: 'Create task', icon: FilePlus, shortcut: ['C'] },
+      { value: 'create-task', label: 'Create task', icon: FilePlus, keys: ['C'] },
       { value: 'change-status', label: 'Change status…', icon: ListTodo, page: 'status' },
       { value: 'assign', label: 'Assign to…', icon: UserRoundPen, page: 'assign' },
       { value: 'copy-link', label: 'Copy link to task', icon: Link },
@@ -80,9 +82,9 @@ const rootGroups: CommandMenuGroup[] = [
   {
     value: 'Go to',
     items: [
-      { value: 'go:dashboard', label: 'Dashboard', icon: LayoutDashboard, shortcut: ['G', 'D'] },
-      { value: 'go:projects', label: 'Projects', icon: FolderKanban, shortcut: ['G', 'P'] },
-      { value: 'go:settings', label: 'Settings', icon: Settings, shortcut: ['G', 'S'] },
+      { value: 'go:dashboard', label: 'Dashboard', icon: LayoutDashboard, keys: ['G', 'D'] },
+      { value: 'go:projects', label: 'Projects', icon: FolderKanban, keys: ['G', 'P'] },
+      { value: 'go:settings', label: 'Settings', icon: Settings, keys: ['G', 'S'] },
     ],
   },
 ];
@@ -120,12 +122,13 @@ const pages: Record<Exclude<CommandMenuPage, 'root'>, { title: string; placehold
   },
 };
 
-const noop = () => () => {};
+/** For values that never change after hydration: nothing to subscribe to. */
+const subscribeNever = () => () => {};
 
 /** Apple platforms show ⌘ for the shortcut, the rest Ctrl. The server renders ⌘. */
 function useIsMac() {
   return React.useSyncExternalStore(
-    noop,
+    subscribeNever,
     () => /Mac|iPhone|iPad/.test(navigator.userAgent),
     () => true,
   );
@@ -133,7 +136,6 @@ function useIsMac() {
 
 function ItemRow({ item }: { item: CommandMenuItem }) {
   const Icon = item.icon;
-  const title = item.code ? item.label.slice(item.code.length + 1) : item.label;
   return (
     <>
       {item.initials ? (
@@ -144,10 +146,10 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
         <Icon aria-hidden className={item.iconClassName} />
       ) : null}
       {item.code ? <span className="shrink-0 font-mono text-caption text-muted-foreground tabular-nums">{item.code}</span> : null}
-      <span className="min-w-0 truncate">{title}</span>
-      {item.shortcut ? (
+      <span className="min-w-0 truncate">{item.title ?? item.label}</span>
+      {item.keys ? (
         <CommandShortcut>
-          {item.shortcut.map((key) => (
+          {item.keys.map((key) => (
             <Kbd key={key}>{key}</Kbd>
           ))}
         </CommandShortcut>
@@ -258,7 +260,12 @@ function CommandMenu({
   return (
     <>
       {trigger === null ? null : trigger ? (
-        React.cloneElement(trigger as React.ReactElement<{ onClick?: () => void }>, { onClick: () => setOpen(true) })
+        React.cloneElement(trigger as React.ReactElement<{ onClick?: (event: React.MouseEvent) => void }>, {
+          onClick: (event: React.MouseEvent) => {
+            (trigger.props as { onClick?: (event: React.MouseEvent) => void }).onClick?.(event);
+            setOpen(true);
+          },
+        })
       ) : (
         <Button
           variant="secondary"
