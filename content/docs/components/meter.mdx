@@ -1,0 +1,118 @@
+---
+title: Meter
+description: Shows a value within a known range, such as a score or a quota, as a segment bar or a continuous bar. Built on Base UI Meter.
+---
+
+<ComponentPreview name="meter-demo" />
+
+## Installation
+
+<ComponentInstall name="meter" />
+
+## Usage
+
+```tsx
+import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/components/ui/meter';
+```
+
+```tsx
+<Meter value={68}>
+  <MeterLabel>Profile completeness</MeterLabel>
+  <MeterValue />
+  <MeterSegments />
+</Meter>
+```
+
+The label and the value sit on one line, with the bar below. Screen readers announce the meter by its label and read the value as text. Without a visible label, give `Meter` an `aria-label`.
+
+A meter shows a measurement, like disk usage or a lead score. For the progress of a task that finishes, such as an upload, use a progress bar instead.
+
+## Examples
+
+### Continuous bar
+
+`MeterBar` draws the value as one bar on a sunken track. Use it where a row of segments would be too busy, such as a list of quotas.
+
+<ComponentPreview name="meter-bar" />
+
+### Segments
+
+`MeterSegments` splits the range into `count` equal segments, 20 by default. Match the count to the unit when there is one, such as 5 for five steps.
+
+<ComponentPreview name="meter-segments" />
+
+### Color by region
+
+With `tone="auto"`, the color follows the value the way a native `<meter>` does. `low` and `high` split the range into three regions. The region holding `optimum` is `success`, the next one `warning` and the far one `destructive`. By default `optimum` is `max`, so more is better. Set `optimum={0}` when less is better, as for storage used.
+
+The color only repeats what the value says, so keep `MeterValue` or a visible number beside the meter.
+
+<ComponentPreview name="meter-tone" />
+
+### Format the value
+
+`format` takes `Intl.NumberFormat` options; without it the value reads as a percentage of the range. Pass a function as the child of `MeterValue` to add text around the formatted value, as in the example above.
+
+## API
+
+Meter wraps the [Base UI Meter](https://base-ui.com/react/components/meter) and accepts all of its props.
+
+### Meter
+
+<TypeTable
+  type={{
+    value: { description: 'The current value.', type: 'number', required: true },
+    min: { description: 'The lowest value.', type: 'number', default: '0' },
+    max: { description: 'The highest value.', type: 'number', default: '100' },
+    tone: {
+      description: 'The fill color, or `auto` to color by region.',
+      type: "'primary' | 'success' | 'warning' | 'destructive' | 'auto'",
+      default: "'primary'",
+    },
+    low: {
+      description: 'Upper end of the low region, for `tone="auto"`.',
+      type: 'number',
+      default: 'a third of the range',
+    },
+    high: {
+      description: 'Lower end of the high region, for `tone="auto"`.',
+      type: 'number',
+      default: 'two thirds of the range',
+    },
+    optimum: {
+      description: 'The best value, for `tone="auto"`.',
+      type: 'number',
+      default: 'max',
+    },
+    format: {
+      description: 'How `MeterValue` and screen readers format the value.',
+      type: 'Intl.NumberFormatOptions',
+    },
+    locale: { description: 'The locale used to format the value.', type: 'Intl.LocalesArgument' },
+    getAriaValueText: {
+      description: 'Returns the text screen readers announce for the value.',
+      type: '(formattedValue: string, value: number) => string',
+    },
+  }}
+/>
+
+### MeterValue
+
+<TypeTable
+  type={{
+    children: {
+      description: 'Returns what to show from the formatted and the raw value.',
+      type: '(formattedValue: string, value: number) => ReactNode',
+    },
+  }}
+/>
+
+### MeterSegments
+
+<TypeTable
+  type={{
+    count: { description: 'How many segments the range splits into.', type: 'number', default: '20' },
+  }}
+/>
+
+`MeterLabel` and `MeterBar` take the props of Base UI's `Meter.Label` and `Meter.Track`.
