@@ -1,0 +1,117 @@
+---
+title: Tooltip
+description: A short label for a control, shown on hover and on keyboard focus.
+---
+
+<ComponentPreview name="tooltip-demo" />
+
+## Installation
+
+<ComponentInstall name="tooltip" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+```
+
+```tsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Bold" />}>
+      <Bold />
+    </TooltipTrigger>
+    <TooltipContent>Bold</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+Pass the control the tooltip describes through `render`, so the trigger is your Button and not an extra wrapper.
+
+Wrap your app, or each toolbar, in one `TooltipProvider`. The first tooltip opens after 600ms; while one is open, moving to a neighbor opens the next one at once. Tooltips open immediately on keyboard focus.
+
+## Examples
+
+### Side
+
+`side` sets where the tooltip opens. It flips to the other side when there isn't room.
+
+<ComponentPreview name="tooltip-side" minHeight={280} />
+
+### Disabled trigger
+
+A disabled button gets no pointer or focus events, so its tooltip can't open. Add `focusableWhenDisabled` to keep it reachable, and give screen readers the same reason with `aria-describedby`.
+
+<ComponentPreview name="tooltip-disabled" />
+
+## Accessibility
+
+Screen readers do not read the tooltip's text, and touch screens never show it. Keep everything the user needs in the trigger:
+
+- An icon-only trigger needs an `aria-label` that names the action. The tooltip repeats it for sighted mouse and keyboard users.
+- A keyboard shortcut shown in the tooltip goes on the trigger as `aria-keyshortcuts`, as in the demo above.
+- Never put links, buttons or anything the user must read only in a tooltip. Use a Popover for that.
+
+## API
+
+### TooltipProvider
+
+Wraps the Base UI `Tooltip.Provider`.
+
+<TypeTable
+  type={{
+    delay: {
+      description: 'Milliseconds before the first tooltip opens on hover.',
+      type: 'number',
+      default: '600',
+    },
+    closeDelay: {
+      description: 'Milliseconds before a tooltip closes.',
+      type: 'number',
+      default: '0',
+    },
+    timeout: {
+      description: 'Another tooltip opens at once if the last one closed within this many milliseconds.',
+      type: 'number',
+      default: '400',
+    },
+  }}
+/>
+
+### Tooltip
+
+Wraps the [Base UI Tooltip](https://base-ui.com/react/components/tooltip) root: `open`, `defaultOpen`, `onOpenChange` and `disabled`.
+
+### TooltipTrigger
+
+Wraps `Tooltip.Trigger`. Use `render` to pass your control, and `delay` to override the provider's delay for one trigger.
+
+### TooltipContent
+
+The popup, placed in a portal next to the trigger.
+
+<TypeTable
+  type={{
+    side: {
+      description: 'Which side of the trigger it opens on.',
+      type: "'top' | 'right' | 'bottom' | 'left' | 'inline-start' | 'inline-end'",
+      default: "'top'",
+    },
+    sideOffset: {
+      description: 'Distance from the trigger, in pixels.',
+      type: 'number',
+      default: '6',
+    },
+    align: {
+      description: 'Alignment along the trigger.',
+      type: "'start' | 'center' | 'end'",
+      default: "'center'",
+    },
+    alignOffset: {
+      description: 'Offset along the alignment axis, in pixels.',
+      type: 'number',
+      default: '0',
+    },
+  }}
+/>

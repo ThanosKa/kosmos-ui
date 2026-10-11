@@ -1,0 +1,38 @@
+---
+title: Skeleton
+description: A pulsing placeholder in the shape of the content that is loading.
+---
+
+<ComponentPreview name="skeleton-demo" />
+
+## Installation
+
+<ComponentInstall name="skeleton" />
+
+## Usage
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+```
+
+```tsx
+<Skeleton className="h-4 w-32" />
+```
+
+Give each Skeleton the size and shape of what it stands in for: `rounded-full` for an avatar or a badge, the line height for text. When the content arrives in the same place, the layout doesn't jump.
+
+The pulse changes only opacity, so it also runs when the user has asked for reduced motion.
+
+## Examples
+
+### Card
+
+<ComponentPreview name="skeleton-card" />
+
+## Accessibility
+
+A Skeleton is an empty `<div>`, so screen readers skip it. Mark the region that is loading with `aria-busy="true"` and put a short visually hidden label in it, such as `<span className="sr-only">Loading revenue</span>`. Remove both when the content arrives.
+
+## API
+
+Skeleton is a `<div>` and accepts all of its props. Set its size and radius with `className`; the default radius is `rounded-lg`.
