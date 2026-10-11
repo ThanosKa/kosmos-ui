@@ -14,16 +14,22 @@ const blockSelectors: Record<TokenBlock, string> = {
   dark: '.dark',
 };
 
+/**
+ * Merges every block with this selector, in file order. Component-specific tokens (chart colors, ...)
+ * live in their own labelled set of blocks further down the file, so parallel changes don't touch the
+ * same lines.
+ */
 function parseBlock(css: string, selector: string): Declarations {
-  const start = css.indexOf(`${selector} {`);
-  if (start === -1) return {};
-  const open = css.indexOf('{', start);
-  const close = css.indexOf('}', open);
-  const body = css.slice(open + 1, close);
   const declarations: Declarations = {};
-  for (const part of body.split(';')) {
-    const match = /^\s*--([\w-]+)\s*:\s*([\s\S]+?)\s*$/.exec(part);
-    if (match) declarations[match[1]] = match[2].replace(/\s+/g, ' ');
+  let start = css.indexOf(`${selector} {`);
+  while (start !== -1) {
+    const open = css.indexOf('{', start);
+    const close = css.indexOf('}', open);
+    for (const part of css.slice(open + 1, close).split(';')) {
+      const match = /^\s*--([\w-]+)\s*:\s*([\s\S]+?)\s*$/.exec(part);
+      if (match) declarations[match[1]] = match[2].replace(/\s+/g, ' ');
+    }
+    start = css.indexOf(`${selector} {`, close);
   }
   return declarations;
 }
