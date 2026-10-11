@@ -135,7 +135,7 @@ function MeterSegments({ className, count = 20, ...props }: MeterPrimitive.Track
           key={index}
           data-filled={index < filled || undefined}
           className={cn(
-            'min-w-0 flex-1 rounded-xs border border-transparent transition-[background-color]',
+            'min-w-0 flex-1 rounded-sm border border-transparent transition-[background-color]',
             index < filled
               ? cn(toneFill[tone], 'forced-colors:bg-[CanvasText]')
               : 'bg-muted shadow-inset forced-colors:border-[CanvasText]',

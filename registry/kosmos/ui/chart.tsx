@@ -11,7 +11,7 @@ import { duration, ease } from '@/registry/kosmos/lib/motion';
  * (`var(--chart-1)`); it is exposed to the chart as `var(--color-<key>)`. The tokens switch with
  * the theme, so there is no per-theme color.
  */
-export type ChartConfig = Record<string, { label?: React.ReactNode; icon?: React.ComponentType; color?: string }>;
+type ChartConfig = Record<string, { label?: React.ReactNode; icon?: React.ComponentType; color?: string }>;
 
 const ChartContext = React.createContext<{ config: ChartConfig } | null>(null);
 
@@ -22,7 +22,7 @@ function useChart() {
 }
 
 /** Recharts draws with the power3-out curve over the slow duration; it skips the animation under reduced motion. */
-export const chartAnimation = {
+const chartAnimation = {
   isAnimationActive: 'auto' as const,
   animationDuration: duration.slow * 1000,
   animationEasing: `cubic-bezier(${ease.power3Out.join(',')})` as `cubic-bezier(${number},${number},${number},${number})`,
@@ -73,6 +73,20 @@ function ChartContainer({
   );
 }
 
+/** The CSS color of a series, as `ChartContainer` exposes it. */
+const seriesColor = (key: string) => `var(--color-${key})`;
+
+/** The color square beside a series name in the tooltip and the legend. */
+function SeriesSwatch({ seriesKey, fallback }: { seriesKey: string; fallback?: string }) {
+  return (
+    <span
+      aria-hidden
+      style={{ '--series': `var(--color-${seriesKey}, ${fallback ?? 'currentColor'})` } as React.CSSProperties}
+      className="size-2 shrink-0 rounded-sm bg-(--series) forced-colors:bg-[CanvasText]"
+    />
+  );
+}
+
 const ChartTooltip = Recharts.Tooltip;
 
 // A fixed locale, so server and client render the same text. Pass a formatter for the user's locale.
@@ -90,7 +104,7 @@ type ChartTooltipContentProps = Partial<Pick<TooltipContentProps, 'active' | 'pa
   hideIndicator?: boolean;
   /** Formats the label above the values (the x value). */
   labelFormatter?: (label: React.ReactNode) => React.ReactNode;
-  /** Formats each value; numbers default to the user's locale. */
+  /** Formats each value; numbers default to en-US grouping (1,234). */
   valueFormatter?: (value: TooltipValueType, key: string) => React.ReactNode;
 };
 
@@ -112,7 +126,7 @@ function ChartTooltipContent({
     <div
       data-slot="chart-tooltip"
       className={cn(
-        'grid min-w-32 gap-1.5 rounded-lg border border-transparent bg-popover px-2.5 py-1.5 text-caption text-popover-foreground tabular-nums shadow-popover',
+        'grid min-w-32 gap-1.5 rounded-xl border border-transparent bg-popover px-2.5 py-1.5 text-caption text-popover-foreground tabular-nums shadow-popover',
         className,
       )}
     >
@@ -130,11 +144,7 @@ function ChartTooltipContent({
                 <Icon />
               ) : (
                 !hideIndicator && (
-                  <span
-                    aria-hidden
-                    style={{ '--series': `var(--color-${key}, ${item.color ?? 'currentColor'})` } as React.CSSProperties}
-                    className="size-2 shrink-0 rounded-xs bg-(--series) forced-colors:bg-[CanvasText]"
-                  />
+                  <SeriesSwatch seriesKey={key} fallback={item.color} />
                 )
               )}
               <span className="min-w-0 flex-1 truncate text-muted-foreground">{series?.label ?? item.name}</span>
@@ -189,11 +199,7 @@ function ChartLegendContent({
             {Icon ? (
               <Icon />
             ) : (
-              <span
-                aria-hidden
-                style={{ '--series': `var(--color-${key}, ${item.color ?? 'currentColor'})` } as React.CSSProperties}
-                className="size-2 shrink-0 rounded-xs bg-(--series) forced-colors:bg-[CanvasText]"
-              />
+              <SeriesSwatch seriesKey={key} fallback={item.color} />
             )}
             {series?.label ?? item.value}
           </li>
@@ -237,9 +243,9 @@ function Sparkline({
         <Recharts.Area
           dataKey={dataKey}
           type="monotone"
-          stroke={`var(--color-${dataKey})`}
+          stroke={seriesColor(dataKey)}
           strokeWidth={1.5}
-          fill={`var(--color-${dataKey})`}
+          fill={seriesColor(dataKey)}
           fillOpacity={fill ? 0.1 : 0}
           dot={false}
           activeDot={false}
@@ -326,9 +332,9 @@ function GrowthChart({
               dataKey={key}
               name={typeof config[key].label === 'string' ? config[key].label : key}
               type="monotone"
-              stroke={`var(--color-${key})`}
+              stroke={seriesColor(key)}
               strokeWidth={2}
-              fill={`var(--color-${key})`}
+              fill={seriesColor(key)}
               fillOpacity={0.1}
               dot={false}
               activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card)' }}
@@ -366,6 +372,8 @@ function GrowthChart({
 
 export {
   ChartContainer,
+  chartAnimation,
+  type ChartConfig,
   ChartTooltip,
   ChartTooltipContent,
   ChartLegend,
