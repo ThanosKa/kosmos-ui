@@ -95,18 +95,18 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
 | `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `label` names the drawer for screen readers. |
 | `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
-| `SidebarTrigger` | An icon button that opens and closes the sidebar, or the drawer on phones. |
+| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. |
 | `SidebarInset` | The page beside the sidebar. Renders `<main>`. |
-| `SidebarHeader` | The top of the sidebar, for the product or workspace name. |
+| `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
 | `SidebarContent` | The scrolling middle. Render it as `<nav>` with `render={<nav aria-label="Main" />}`. |
-| `SidebarFooter` | The bottom of the sidebar, for the account or help links. |
-| `SidebarSeparator` | A line between the header, the groups and the footer. |
-| `SidebarGroup` | A section with a label and a menu. |
-| `SidebarGroupLabel` | The small heading of a group. `render={<h2 />}` makes it a heading. |
+| `SidebarFooter` | The bottom of the sidebar, for the account or help links, below a full-width line. |
+| `SidebarSeparator` | An inset line, for a break inside a group. The header, the groups and the footer draw their own lines. |
+| `SidebarGroup` | A section with a label and a menu. Every group after the first sits below a full-width line. |
+| `SidebarGroupLabel` | The small uppercase heading of a group. `render={<h2 />}` makes it a heading. |
 | `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
 | `SidebarMenuItem` | One item. Renders `<li>`. |
-| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Put the label in a `<span>` so it truncates. |
-| `SidebarMenuBadge` | A count at the end of an item. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page: idle items are muted, and the active one is raised onto the control surface in full ink. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuBadge` | A count at the end of an item, in a small pill. |
 
 ## Motion
 
