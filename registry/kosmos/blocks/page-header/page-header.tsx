@@ -146,10 +146,10 @@ function PageHeader({
       <div data-slot="page-header" className="flex flex-col">
         <div className="flex h-14 items-center gap-2 px-4">
           {leading}
-          <Heading className="min-w-0 flex-1 truncate text-heading">{title}</Heading>
+          <Heading className="min-w-0 flex-1 truncate text-title font-medium">{title}</Heading>
           {onAction ? (
             <DropdownMenu {...moreMenu}>
-              <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="More actions" />}>
+              <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="More actions" />}>
                 <Ellipsis aria-hidden />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -197,7 +197,7 @@ function PageHeader({
             <div className="relative min-w-0 flex-1 @3xl:w-52 @3xl:flex-none">
               <Search
                 aria-hidden
-                className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <label htmlFor={searchId} className="sr-only">
                 Search {title.toLowerCase()}
@@ -208,7 +208,7 @@ function PageHeader({
                 placeholder="Search…"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                className="ps-8"
+                className="h-7.5 ps-8"
               />
             </div>
 
