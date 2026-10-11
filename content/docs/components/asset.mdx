@@ -91,6 +91,11 @@ An `<img>`; accepts all of its props.
       type: "'lazy' | 'eager'",
       default: "'lazy'",
     },
+    decoding: {
+      description: 'Whether decoding the image may hold up the rest of the page.',
+      type: "'async' | 'sync' | 'auto'",
+      default: "'async'",
+    },
   }}
 />
 
@@ -109,6 +114,21 @@ A `<video>`; accepts all of its props.
       description: 'Plays the video muted when it loads, unless the reduced motion setting is on.',
       type: 'boolean',
       default: 'false',
+    },
+    muted: {
+      description: 'Plays without sound. Browsers only play a video by itself when it is muted.',
+      type: 'boolean',
+      default: 'autoPlay',
+    },
+    playsInline: {
+      description: 'Plays in the page on iOS instead of going full screen.',
+      type: 'boolean',
+      default: 'true',
+    },
+    preload: {
+      description: "How much the browser loads before playback: the metadata when there is a `poster`, otherwise enough to show the first frame.",
+      type: "'none' | 'metadata' | 'auto'",
+      default: "poster ? 'metadata' : 'auto'",
     },
     pauseLabel: {
       description: 'Label of the pause button on a video that plays by itself without `controls`.',

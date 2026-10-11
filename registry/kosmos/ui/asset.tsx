@@ -21,6 +21,11 @@ function setRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
   else if (ref) ref.current = value;
 }
 
+/** One ref callback that fills the component's own ref and the one passed in. */
+function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
+  return (node: T | null) => refs.forEach((ref) => setRef(ref, node));
+}
+
 type AssetProps = React.ComponentProps<'div'> & {
   /** Width divided by height, such as `16 / 9` or `1`. The frame keeps this shape before and after the media loads. */
   ratio?: number;
@@ -101,10 +106,7 @@ function AssetImage({ alt, className, fit = 'cover', loading = 'lazy', decoding 
     <img
       data-slot="asset-image"
       alt={alt}
-      ref={(node) => {
-        imageRef.current = node;
-        setRef(ref, node);
-      }}
+      ref={mergeRefs(imageRef, ref)}
       loading={loading}
       decoding={decoding}
       className={cn(mediaClasses(fit), className)}
@@ -132,7 +134,7 @@ type AssetVideoProps = React.ComponentProps<'video'> & {
 
 // The play and pause icons cross-fade; with motion allowed they also scale and blur, as icon swaps do.
 const iconSwap = cn(
-  'opacity-0 transition-[opacity,scale,filter] duration-slow data-visible:opacity-100',
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
   'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
 );
 
@@ -165,24 +167,31 @@ function AssetVideo({
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = React.useState(false);
   const { src } = props;
-  // With a poster there is something to show as soon as the metadata is in; without one, the first frame.
-  const readyState = poster ? 1 : 2;
+  const hasPoster = Boolean(poster);
 
   React.useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    // With a poster there is something to show as soon as the metadata is in; without one, the first frame.
+    const readyState = hasPoster ? HTMLMediaElement.HAVE_METADATA : HTMLMediaElement.HAVE_CURRENT_DATA;
+    // No source left to try. Only meaningful after the current task: while the browser is still picking a
+    // source it reports the same state, so this is checked from a timeout, never synchronously.
     const failed = () => video.error !== null || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
     // The video may be ready, or have failed, before hydration, when React's handlers are not listening yet.
-    if (failed()) setStatus('error');
+    if (video.error) setStatus('error');
     else setStatus(video.readyState >= readyState ? 'loaded' : 'loading');
+    const check = setTimeout(() => failed() && setStatus('error'));
     // With <source> children each failed source fires its own error, which does not bubble. The video
-    // has failed once the last one has, and the browser then reports that no source is left.
+    // has failed once the last one has.
     const onSourceError = (event: Event) => {
       if (event.target !== video) setTimeout(() => failed() && setStatus('error'));
     };
     video.addEventListener('error', onSourceError, true);
-    return () => video.removeEventListener('error', onSourceError, true);
-  }, [src, readyState, setStatus]);
+    return () => {
+      clearTimeout(check);
+      video.removeEventListener('error', onSourceError, true);
+    };
+  }, [src, hasPoster, setStatus]);
 
   React.useEffect(() => {
     const video = videoRef.current;
@@ -201,17 +210,15 @@ function AssetVideo({
     <>
       <video
         data-slot="asset-video"
-        ref={(node) => {
-          videoRef.current = node;
-          setRef(ref, node);
-        }}
+        ref={mergeRefs(videoRef, ref)}
         controls={controls}
         // Browsers only play a video by itself when it is muted.
         muted={muted ?? autoPlay}
         playsInline={playsInline}
         poster={poster}
         preload={preload ?? (poster ? 'metadata' : 'auto')}
-        className={cn(mediaClasses(fit), className)}
+        // Hidden on error, so its controls leave the tab order with it.
+        className={cn(mediaClasses(fit), 'group-data-[status=error]/asset:invisible', className)}
         onLoadedMetadata={(event) => {
           if (poster) setStatus('loaded');
           onLoadedMetadata?.(event);
@@ -239,7 +246,7 @@ function AssetVideo({
           variant="secondary"
           size="icon"
           aria-label={playing ? pauseLabel : playLabel}
-          className="absolute end-2 bottom-2 group-data-[status=error]/asset:hidden"
+          className="absolute end-2 bottom-2 group-data-[status=error]/asset:hidden group-data-[status=loading]/asset:hidden"
           onClick={toggle}
         >
           <span aria-hidden className="grid *:col-start-1 *:row-start-1">
