@@ -34,7 +34,7 @@ Put one control in each Field. The Field connects the parts for you:
 - An invalid Field sets `aria-invalid` on the control.
 - A disabled Field disables the control and dims the label and description.
 
-The control can be [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), or any Base UI control, such as Checkbox, Switch or Slider.
+The control can be [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), [Checkbox](/docs/components/checkbox), [Switch](/docs/components/switch), [Slider](/docs/components/slider), or any other Base UI control.
 
 ## Examples
 
@@ -67,7 +67,7 @@ Select's trigger is a button, so give its label `nativeLabel={false}` and `rende
 
 ### Horizontal
 
-`orientation="horizontal"` puts the control beside a FieldContent that holds the label and description, as in a settings list. Checkbox and Switch use it too, with the control first.
+`orientation="horizontal"` puts the control beside a FieldContent that holds the label and description, as in a settings list. Checkbox and Switch use it too, with the control first. A row with a FieldContent, a Checkbox or a Switch aligns to the top, so the control stays on the label's first line when the text wraps.
 
 <ComponentPreview name="field-horizontal" />
 
@@ -141,6 +141,6 @@ Field wraps the [Base UI Field](https://base-ui.com/react/components/field). Eac
   }}
 />
 
-### FieldContent, FieldDescription
+### FieldContent, FieldDescription, FieldItem
 
-FieldContent is a plain `<div>` that stacks the label, description and error in a horizontal Field. FieldDescription is the help text under the control.
+FieldContent is a plain `<div>` that stacks the label, description and error in a horizontal Field. FieldDescription is the help text under the control. FieldItem holds one option in a Field that groups several checkboxes or radios: the control beside its own FieldLabel. See [Checkbox](/docs/components/checkbox#group-with-a-parent).

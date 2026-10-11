@@ -1,0 +1,70 @@
+---
+title: Badge
+description: A small pill for a status, a count or a label. A neutral and a primary look, plus three status looks with a colored dot.
+---
+
+<ComponentPreview name="badge-demo" />
+
+## Installation
+
+<ComponentInstall name="badge" />
+
+## Usage
+
+```tsx
+import { Badge } from '@/components/ui/badge';
+```
+
+```tsx
+<Badge variant="success">Active</Badge>
+```
+
+## Examples
+
+### Status
+
+`success`, `warning` and `destructive` keep the neutral surface and add a colored dot. The label carries the meaning, so write one that reads on its own, such as "Payment failed" instead of "Error". The demo above shows all five looks.
+
+### With an icon
+
+An icon inside a badge is sized to 12px. Put it before the label, or after it when it points somewhere, like an arrow on a link.
+
+<ComponentPreview name="badge-icon" />
+
+### Counts
+
+Numbers in a badge use tabular figures, so a count that changes keeps its width. Use `primary` for a count that needs attention, such as unread items, and `secondary` for the rest.
+
+<ComponentPreview name="badge-count" />
+
+### Link
+
+Pass an `<a>` through `render` to make the whole badge a link. It gets a hover background and the focus outline.
+
+<ComponentPreview name="badge-link" />
+
+### Long labels
+
+A badge never wraps. When the label can be longer than its slot, wrap it in `<span className="min-w-0 truncate">` and show the full text somewhere the user can reach, such as the detail view.
+
+<ComponentPreview name="badge-long" />
+
+## API
+
+Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all of its props.
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The look. The status looks add a colored dot before the label.',
+      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive'",
+      default: "'secondary'",
+    },
+    render: {
+      description: 'Replaces the rendered `<span>`, for example with an `<a>`.',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
+  }}
+/>
+
+`badgeVariants({ variant })` returns the same classes, for elements that should look like a Badge without being one.
