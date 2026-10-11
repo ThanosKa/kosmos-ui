@@ -61,17 +61,21 @@ function Toast({ className, swipeDirection = ['down', 'right'], ...props }: Toas
         // Stack geometry from Base UI's CSS variables: 8px peek and gap, each toast behind 5% smaller.
         '[--gap:0.5rem] [--peek:0.5rem] [--scale:calc(max(0,1-(var(--toast-index)*0.05)))] [--shrink:calc(1-var(--scale))]',
         '[--height:var(--toast-frontmost-height,var(--toast-height))] [--offset-y:calc(var(--toast-offset-y)*-1+var(--toast-index)*var(--gap)*-1+var(--toast-swipe-movement-y))]',
-        'h-(--height) [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)-(var(--toast-index)*var(--peek))-(var(--shrink)*var(--height))))_scale(var(--scale))]',
-        'data-expanded:h-(--toast-height) data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]',
+        // Spread out: each toast at its full height, stacked with an 8px gap. Positions only; nothing animates here.
+        'h-(--toast-height) [transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]',
+        // Collapsed stack, with motion only: toasts behind peek out above the front one, smaller.
+        'motion-safe:h-(--height) motion-safe:[transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)-(var(--toast-index)*var(--peek))-(var(--shrink)*var(--height))))_scale(var(--scale))]',
+        'motion-safe:data-expanded:h-(--toast-height) motion-safe:data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]',
         // Keeps the stack spread out while the pointer crosses the gap between two toasts.
         "after:absolute after:inset-x-0 after:top-full after:h-[calc(var(--gap)+1px)] after:content-['']",
-        'transition-[transform,opacity,height] duration-slow data-ending-style:duration-fast',
+        // Slides and moves with power3-out, height changes with smooth-in-out; only the fade runs under reduced motion.
+        'transition-opacity duration-slow data-ending-style:duration-fast',
+        'motion-safe:transition-[transform,opacity,height] motion-safe:ease-[var(--ease-power3-out),var(--ease-power3-out),var(--ease-smooth-in-out)]',
         'data-starting-style:opacity-0 data-ending-style:opacity-0 data-limited:opacity-0',
         'motion-safe:data-starting-style:[transform:translateY(150%)]',
         'motion-safe:[&[data-ending-style]:not([data-limited]):not([data-swipe-direction])]:[transform:translateY(150%)]',
         'motion-safe:data-ending-style:data-[swipe-direction=down]:[transform:translateY(calc(var(--toast-swipe-movement-y)+150%))]',
         'motion-safe:data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))]',
-        'motion-reduce:h-(--toast-height) motion-reduce:transition-[opacity] motion-reduce:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]',
         className,
       )}
       {...props}
@@ -143,18 +147,17 @@ function ToastClose({ className, children, ...props }: ToastPrimitive.Close.Prop
   );
 }
 
+const toastIcons: Partial<Record<string, React.ReactNode>> = {
+  success: <CircleCheck aria-hidden className="text-success" />,
+  error: <CircleAlert aria-hidden className="text-destructive" />,
+  warning: <TriangleAlert aria-hidden className="text-warning" />,
+  info: <Info aria-hidden className="text-muted-foreground" />,
+  loading: <LoaderCircle aria-hidden className="text-muted-foreground motion-safe:animate-spin motion-reduce:animate-pulse" />,
+};
+
 /** The icon for a toast's `type`: success, error, warning, info or loading. Renders nothing for other types. */
 function ToastIcon({ type, className }: { type: string | undefined; className?: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    success: <CircleCheck aria-hidden className="text-success" />,
-    error: <CircleAlert aria-hidden className="text-destructive" />,
-    warning: <TriangleAlert aria-hidden className="text-warning" />,
-    info: <Info aria-hidden className="text-muted-foreground" />,
-    loading: (
-      <LoaderCircle aria-hidden className="text-muted-foreground motion-safe:animate-spin motion-reduce:animate-pulse" />
-    ),
-  };
-  const icon = type ? icons[type] : undefined;
+  const icon = type ? toastIcons[type] : undefined;
   if (!icon) return null;
   return (
     <span data-slot="toast-icon" className={cn('flex h-5 shrink-0 items-center [&_svg]:size-4', className)}>
