@@ -3,7 +3,7 @@ title: Toast
 description: Short notifications that stack at the bottom of the screen and close on their own. Built on Base UI Toast, they announce themselves to screen readers.
 ---
 
-<ComponentPreview name="toast-demo" minHeight={320} />
+<ComponentPreview name="toast-demo" />
 
 ## Installation
 
@@ -46,19 +46,19 @@ Screen readers announce every new toast politely, after what they are reading. P
 
 `type` adds an icon: `success`, `error`, `warning`, `info` or `loading`. The icon carries the color; the text stays in the regular text colors.
 
-<ComponentPreview name="toast-types" minHeight={320} />
+<ComponentPreview name="toast-types" />
 
 ### Action
 
 `actionProps` adds one button, such as Undo. Give a toast with an action `timeout: 0`, so it stays until it is closed and nobody misses the chance to use it.
 
-<ComponentPreview name="toast-action" minHeight={320} />
+<ComponentPreview name="toast-action" />
 
 ### Promise
 
 `toast.promise` shows a loading toast while a promise runs, then turns it into a success or an error toast.
 
-<ComponentPreview name="toast-promise" minHeight={320} />
+<ComponentPreview name="toast-promise" />
 
 ## Motion
 

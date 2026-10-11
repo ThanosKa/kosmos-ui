@@ -3,7 +3,7 @@ title: Dialog
 description: A window over the page that asks for one decision or one short task, built on Base UI. Traps focus, closes on Escape or a click outside and returns focus to its trigger.
 ---
 
-<ComponentPreview name="dialog-demo" minHeight={360} />
+<ComponentPreview name="dialog-demo" />
 
 ## Installation
 
@@ -51,13 +51,13 @@ Give every dialog a `DialogTitle`: it names the dialog for screen readers. Rende
 
 Name the action and the object in the title, say what is lost in the description, and repeat the action on the button. Hide the close button and set `disablePointerDismissal`, so the dialog closes only through a clear choice.
 
-<ComponentPreview name="dialog-confirm" minHeight={320} />
+<ComponentPreview name="dialog-confirm" />
 
 ### Long content
 
 `DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view.
 
-<ComponentPreview name="dialog-scroll" minHeight={480} />
+<ComponentPreview name="dialog-scroll" />
 
 ### Build your own layout
 

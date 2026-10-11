@@ -3,7 +3,7 @@ title: Drawer
 description: A panel that slides in from an edge of the screen, for details next to a list or a bottom sheet on a phone. Built on Base UI, it follows a swipe to close.
 ---
 
-<ComponentPreview name="drawer-demo" minHeight={420} />
+<ComponentPreview name="drawer-demo" />
 
 ## Installation
 
@@ -50,19 +50,19 @@ A drawer keeps the page in view, so use it for content that belongs to something
 
 `swipeDirection="down"` docks the drawer to the bottom edge with a grab handle, at most 36rem wide. It suits short choices on a phone.
 
-<ComponentPreview name="drawer-bottom" minHeight={360} />
+<ComponentPreview name="drawer-bottom" />
 
 ### Left
 
 `swipeDirection="left"` opens from the left edge, for navigation on small screens. Set the width with `className`.
 
-<ComponentPreview name="drawer-left" minHeight={420} />
+<ComponentPreview name="drawer-left" />
 
 ### Non-modal
 
 With `modal={false}` there is no scrim and the page stays usable. Add `disablePointerDismissal` so a click on the page doesn't close the panel.
 
-<ComponentPreview name="drawer-non-modal" minHeight={420} />
+<ComponentPreview name="drawer-non-modal" />
 
 ## Motion
 
