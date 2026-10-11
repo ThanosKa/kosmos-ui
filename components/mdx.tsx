@@ -7,6 +7,10 @@ import { ComponentPreview } from '@/components/docs/component-preview';
 import { ChangelogEntries } from '@/components/docs/changelog-entries';
 import { DocsIndex } from '@/components/docs/docs-index';
 import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
+import { ColorTokens } from '@/components/docs/foundations/color-tokens';
+import { EasingCurves, MotionTokens } from '@/components/docs/foundations/motion-tokens';
+import { RadiusScale, ShadowSurfaces } from '@/components/docs/foundations/shadow-surfaces';
+import { TypeRoles } from '@/components/docs/foundations/type-roles';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -22,6 +26,12 @@ export function getMDXComponents(components?: MDXComponents) {
     RegistryCss,
     ChangelogEntries,
     DocsIndex,
+    ColorTokens,
+    TypeRoles,
+    ShadowSurfaces,
+    RadiusScale,
+    MotionTokens,
+    EasingCurves,
     ...components,
   } satisfies MDXComponents;
 }
