@@ -22,6 +22,8 @@ const docs = defineDocs({
           'RegistryCss',
           'ChangelogEntries',
           'DocsIndex',
+          'Steps',
+          'Step',
         ],
       },
     },

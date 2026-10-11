@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/docs/component-preview';
 import { ChangelogEntries } from '@/components/docs/changelog-entries';
 import { DocsIndex } from '@/components/docs/docs-index';
 import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
+import { Step, Steps } from '@/components/docs/steps';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -22,6 +23,8 @@ export function getMDXComponents(components?: MDXComponents) {
     RegistryCss,
     ChangelogEntries,
     DocsIndex,
+    Steps,
+    Step,
     ...components,
   } satisfies MDXComponents;
 }
