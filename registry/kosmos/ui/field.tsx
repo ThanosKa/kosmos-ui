@@ -20,7 +20,7 @@ const fieldVariants = cva('flex min-w-0', {
   variants: {
     orientation: {
       // Label, control, description and error stacked.
-      vertical: 'flex-col gap-1.5',
+      vertical: 'flex-col gap-1.5 *:data-[slot=field-label]:text-small *:data-[slot=field-label]:text-muted-foreground',
       // Control and FieldContent side by side: a checkbox or switch with its label, or a settings row.
       horizontal: ['flex-row items-center gap-3', topAligned],
     },

@@ -14,12 +14,12 @@ function Input({ className, type = 'text', ...props }: InputProps) {
       type={type}
       className={cn(
         // Same surface as Textarea: keep the two in step.
-        'h-7.5 w-full min-w-0 rounded-lg border border-transparent bg-secondary px-2.5 text-base text-foreground shadow-control sm:text-body',
+        'h-8.5 w-full min-w-0 rounded-lg border border-transparent bg-secondary px-3 text-base text-foreground shadow-field sm:text-body',
         // Native parts (date picker icon, spin buttons) follow the theme.
         'dark:scheme-dark',
         'transition-[box-shadow]',
         'placeholder:text-muted-foreground',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
         // Invalid adds a destructive ring over the control ring. `aria-invalid` covers forms that set validity without a Field.
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
         'disabled:cursor-not-allowed disabled:opacity-50',

@@ -43,7 +43,7 @@ export default function InputPreview() {
 
       <PreviewSection title="Beside a button">
         <div className="flex max-w-sm gap-2">
-          <Input aria-label="Invite by email" type="email" placeholder="name@company.com" />
+          <Input aria-label="Invite by email" type="email" placeholder="name@company.com" className="h-7.5" />
           <Button variant="secondary">Invite</Button>
         </div>
       </PreviewSection>

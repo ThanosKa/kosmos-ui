@@ -231,7 +231,7 @@ export function ShareStage() {
                     <PopoverDescription>People with access see live numbers, not a copy.</PopoverDescription>
                   </PopoverHeader>
                   <div className="flex gap-2">
-                    <Input readOnly aria-label="Report link" defaultValue="haldenlabs.example/r/q4-pipeline" />
+                    <Input readOnly aria-label="Report link" defaultValue="haldenlabs.example/r/q4-pipeline" className="h-7.5" />
                     <Button variant="secondary" size="icon" aria-label="Copy link">
                       <Link2 />
                     </Button>

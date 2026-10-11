@@ -4,7 +4,7 @@ import { Input } from '@/registry/kosmos/ui/input';
 export default function InputWithButton() {
   return (
     <form className="flex w-full max-w-sm gap-2">
-      <Input type="email" name="invite" aria-label="Email to invite" placeholder="name@company.com" />
+      <Input type="email" name="invite" aria-label="Email to invite" placeholder="name@company.com" className="h-7.5" />
       <Button variant="secondary" type="submit">
         Invite
       </Button>
