@@ -27,7 +27,7 @@ export function SearchButton() {
         </KbdGroup>
       </Button>
       <Button
-        variant="ghost"
+        variant="secondary"
         size="icon"
         aria-label="Search docs"
         aria-keyshortcuts="Meta+K Control+K"
