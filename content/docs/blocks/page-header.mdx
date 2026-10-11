@@ -1,0 +1,63 @@
+---
+title: Page header
+description: The top of a list page, with a title and a primary action, tabs for saved views, and a toolbar with search, filters and a table or board switch.
+---
+
+<ComponentPreview name="page-header-demo" minHeight={200} />
+
+## Installation
+
+<ComponentInstall name="page-header" />
+
+The block brings [Tabs](/docs/components/tabs), [Input](/docs/components/input), [Dropdown menu](/docs/components/dropdown-menu), [Segmented control](/docs/components/segmented-control) and [Button](/docs/components/button) with it, and lands in `components/page-header.tsx`.
+
+## Usage
+
+```tsx
+import { PageHeader } from '@/components/page-header';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+
+export default function AccountsPage() {
+  const [tab, setTab] = React.useState('all');
+  const [query, setQuery] = React.useState('');
+
+  return (
+    <PageHeader leading={<SidebarTrigger />} tab={tab} onTabChange={setTab} query={query} onQueryChange={setQuery}>
+      {/* the page body, filtered by tab and query */}
+    </PageHeader>
+  );
+}
+```
+
+Pass the page body as `children`: it becomes the panel of the selected tab, so screen readers hear which view it shows. Every value (tab, search text, filters, layout) works controlled, with its `on…Change` callback, or keeps its own state when you leave it out. The tabs and filters at the top of the file are sample data.
+
+The header lays itself out by its own width, with container queries, not by the screen's. From 768px wide the tabs and the toolbar share a row; narrower, the toolbar moves under the tabs. Below 448px the primary action and Filter shrink to icons. The tabs scroll sideways when they do not fit.
+
+## API
+
+### PageHeader
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The page heading, an `<h1>`.', type: 'string', default: "'Accounts'" },
+    leading: { description: 'Goes before the title, usually a `SidebarTrigger`.', type: 'ReactNode' },
+    tabs: { description: 'The views the tabs switch between, each with an optional count.', type: '{ value: string; label: string; count?: number }[]' },
+    tab: { description: 'The selected tab. Use with `onTabChange`.', type: 'string' },
+    defaultTab: { description: 'The tab selected at first, when the header keeps its own state.', type: 'string', default: 'the first tab' },
+    onTabChange: { description: 'Called with the newly selected tab.', type: '(tab: string) => void' },
+    query: { description: 'The search text. Use with `onQueryChange`.', type: 'string' },
+    onQueryChange: { description: 'Called as the search text changes.', type: '(query: string) => void' },
+    filterOptions: { description: 'What the Filter menu offers.', type: '{ value: string; label: string }[]' },
+    filters: { description: 'The values of the filters that are on. Use with `onFiltersChange`.', type: 'string[]' },
+    onFiltersChange: { description: 'Called when a filter is turned on or off, or all are cleared.', type: '(filters: string[]) => void' },
+    view: { description: 'The selected layout. Use with `onViewChange`.', type: "'table' | 'board'", default: "'table'" },
+    onViewChange: { description: 'Called with the newly selected layout.', type: "(view: 'table' | 'board') => void" },
+    newLabel: { description: 'The label of the primary action.', type: 'string', default: "'New account'" },
+    onNew: { description: 'Runs the primary action, usually opening a dialog.', type: '() => void' },
+    filterMenu: { description: 'Props for the Filter menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },
+    moreMenu: { description: 'Props for the More actions menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },
+    children: { description: 'The page body, rendered as the panel of the selected tab.', type: 'ReactNode' },
+  }}
+/>
