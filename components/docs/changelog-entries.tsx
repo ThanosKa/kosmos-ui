@@ -10,7 +10,7 @@ export function ChangelogEntries() {
     const Body = page.data.body;
     return (
       <section key={page.url} className="border-b border-fd-border pb-8 last:border-b-0">
-        <time dateTime={isoDate} className="text-sm text-fd-muted-foreground">
+        <time dateTime={isoDate} className="text-small text-fd-muted-foreground">
           {displayDate}
         </time>
         <h2 id={page.slugs[1]} className="mt-1">
