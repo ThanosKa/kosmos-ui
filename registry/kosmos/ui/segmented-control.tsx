@@ -52,7 +52,7 @@ const segmentedControlItemVariants = cva(
     // The raised surface behind the selected item.
     'before:absolute before:-inset-px before:-z-10 before:rounded-[inherit] before:border before:border-transparent before:bg-secondary before:opacity-0 before:shadow-control',
     'before:transition-opacity data-checked:before:opacity-100',
-    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
     // An item with only an icon and an `aria-label` is square.
     '[&[aria-label]]:shrink-0 [&[aria-label]]:px-0',
   ],
