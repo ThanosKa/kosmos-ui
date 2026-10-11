@@ -59,7 +59,7 @@ export default function ScrollAreaPreview() {
             <div key={at} className="flex flex-col gap-2">
               <span className="text-caption text-muted-foreground">{at}</span>
               <div className={card}>
-                <PinnedScrollArea at={at} className="h-56">
+                <PinnedScrollArea at={at} className="h-56 rounded-xl">
                   <EventList />
                 </PinnedScrollArea>
               </div>
@@ -70,12 +70,12 @@ export default function ScrollAreaPreview() {
 
       <PreviewSection title="Horizontal">
         <div className={card}>
-          <ScrollArea>
+          <ScrollArea className="rounded-xl">
             <div className="flex w-max gap-2 p-2">
               {events.slice(0, 10).map((event) => (
                 <div
                   key={event}
-                  className="flex w-44 shrink-0 flex-col gap-1 rounded-xl border border-transparent bg-secondary p-3 shadow-control"
+                  className="flex w-44 shrink-0 flex-col gap-1 rounded-lg bg-muted p-3"
                 >
                   <span className="truncate text-body font-medium">{event}</span>
                   <span className="text-caption text-muted-foreground">Today</span>
@@ -90,7 +90,7 @@ export default function ScrollAreaPreview() {
 
       <PreviewSection title="Both axes">
         <div className={card}>
-          <ScrollArea className="h-48">
+          <ScrollArea className="h-48 rounded-xl">
             <div className="grid w-max grid-cols-[repeat(12,6rem)] gap-px bg-border">
               {Array.from({ length: 12 * 10 }, (_, cell) => (
                 <div key={cell} className="bg-card px-3 py-2 text-caption text-muted-foreground tabular-nums">
@@ -105,7 +105,7 @@ export default function ScrollAreaPreview() {
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
         <PreviewSection title="Content that fits: no scrollbar, no fade">
           <div className={card}>
-            <ScrollArea className="max-h-56">
+            <ScrollArea className="max-h-56 rounded-xl">
               <EventList count={3} />
             </ScrollArea>
           </div>
@@ -113,7 +113,7 @@ export default function ScrollAreaPreview() {
 
         <PreviewSection title="fade={false}">
           <div className={card}>
-            <ScrollArea className="h-56" fade={false}>
+            <ScrollArea className="h-56 rounded-xl" fade={false}>
               <EventList />
             </ScrollArea>
           </div>
@@ -122,7 +122,7 @@ export default function ScrollAreaPreview() {
 
       <PreviewSection title="Long text in a narrow slot">
         <div className={`${card} w-full max-w-72`}>
-          <ScrollArea className="max-h-40">
+          <ScrollArea className="max-h-40 rounded-xl">
             <div className="flex flex-col gap-3 p-3 text-small text-muted-foreground">
               <p>
                 Every request to the API counts toward the limit of the workspace it belongs to. When a workspace goes over

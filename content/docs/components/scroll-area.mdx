@@ -43,6 +43,10 @@ Pass `fade={false}` when the edge of the content must stay crisp, for example a 
 
 In a dialog, drawer or menu, stop a scroll that reaches the end from scrolling the page behind: `viewportClassName="overscroll-contain"`.
 
+### Right-to-left
+
+In a right-to-left layout, wrap the app in Base UI's [`DirectionProvider`](https://base-ui.com/react/utils/direction-provider) with `direction="rtl"` as well as setting `dir="rtl"`, so the scroll area measures its edges from the right.
+
 ## API
 
 Wraps the [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area) root and accepts all of its props.
