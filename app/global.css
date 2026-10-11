@@ -24,7 +24,8 @@
 
 /*
  * Site-only type roles for the landing page hero. Components stay between 12 and 14px (kosmos-style), so
- * these never ship in @kosmos/tokens. Use them as plain classes, not through `cn`, which doesn't know them.
+ * these never ship in @kosmos/tokens (kosmos-style tokens.md, "Site-only roles"). Use them as plain classes,
+ * not through `cn`, which doesn't know them.
  */
 @theme {
   --text-hero: clamp(2rem, 1.25rem + 3vw, 3.25rem);
