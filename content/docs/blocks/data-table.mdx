@@ -24,8 +24,9 @@ The `Account` type, the columns and the sample rows live in the file: change the
 ## What it does
 
 - **Sorting**: click a column header to sort, and again to reverse. The header carries `aria-sort`.
-- **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Export, Delete and Clear selection.
+- **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Clear selection, plus Export and Delete when you pass `onAction`.
 - **Opening a row**: with `onOpen`, the account name becomes a button and a click anywhere on the row opens it too. Clicks on the checkbox and the actions menu do not.
+- **Row actions**: each row has a menu with Open account (with `onOpen`) and Copy link and Delete account (with `onAction`). Without either, the menu is hidden.
 - **Loading and empty**: `loading` shows skeleton rows. When a search or status hides every row, the table says so and offers Clear filters through `onClearFilters`.
 - **Narrow screens**: the table scrolls sideways inside its own frame, and the page stays put.
 
@@ -46,6 +47,7 @@ Takes every `<div>` prop, plus:
     query: { description: 'Keeps rows whose name, domain or owner contains this text.', type: 'string' },
     status: { description: 'Keeps rows with this status; `all` keeps every row.', type: "'all' | 'active' | 'trial' | 'at-risk' | 'churned'", default: "'all'" },
     onOpen: { description: 'Called when a row is opened, by its name or a click on the row.', type: '(row: Account) => void' },
+    onAction: { description: 'Runs Copy link or Delete account from a row menu, with that row, or Export or Delete from the bulk bar, with the selected rows. Those items show only when this is passed.', type: "(action: 'copy-link' | 'export' | 'delete', rows: Account[]) => void" },
     onClearFilters: { description: 'Adds Clear filters to the empty state shown when a search or status hides every row.', type: '() => void' },
     selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
     defaultSelection: { description: 'The ids selected at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
