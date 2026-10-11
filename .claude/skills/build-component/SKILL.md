@@ -21,7 +21,7 @@ Write the component fresh on Base UI (`@base-ui/react`). For a component that al
 | --- | --- |
 | `registry/kosmos/ui/<name>.tsx` | The component. |
 | `registry/kosmos/ui/<name>.registry.json` | The registry item: `dependencies`, `registryDependencies` (`@kosmos/tokens`, `@kosmos/cn`, any other `@kosmos/*` it imports) and `"meta": { "group": "<group>" }`. The groups and their keys are `groups` in `lib/registry.ts`; the ticket names the group. |
-| `registry/kosmos/examples/<name>.tsx` | The **review preview**: every variant in every state through `StateMatrix` and `previewState()` (`components/preview/`), plus sizes, compositions and a long-text case. Pin open states too (an open menu, a checked box), so one screenshot shows them. |
+| `registry/kosmos/examples/<name>.tsx` | The **review preview**: every variant in every state through `StateMatrix` and `previewState()` (`components/preview/`), plus sizes, compositions and a long-text case. Pin open states too (an open menu, a checked box), so one screenshot shows them. Overlays (dialog, drawer, popover, menu) render open inside an `OverlayStage` (`components/preview/overlay-stage.tsx`) instead of a matrix cell, with controlled `open`, `modal={false}`, `initialFocus={false}` and the stage as `container`. |
 | `registry/kosmos/examples/<name>-demo.tsx` | The docs hero example. `registry:check` also renders it in the clean project. |
 | `registry/kosmos/examples/<name>-<example>.tsx` | One file per docs example. |
 | `content/docs/components/<name>.mdx` | The docs page: hero preview, install, usage, examples, API (`TypeTable`). |
