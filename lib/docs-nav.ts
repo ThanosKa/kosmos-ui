@@ -115,3 +115,19 @@ export function groupOfPage(page: { slugs: string[] }): Group | undefined {
   if ((section !== 'components' && section !== 'blocks') || page.slugs.length === 1) return undefined;
   return registryGroup(page.slugs);
 }
+
+export type DocsIndexItem = DocsNavItem & { name: string; description?: string };
+
+export type DocsIndexGroup = Omit<DocsNavGroup, 'items'> & { items: DocsIndexItem[] };
+
+/** The groups of the components or blocks index in sidebar order, each item with its registry name and page description. */
+export function getDocsIndex(section: 'components' | 'blocks', nav: DocsNav = getDocsNav()): DocsIndexGroup[] {
+  const pages = new Map(source.getPages().map((page) => [page.url, page]));
+  return (nav.sections.find((candidate) => candidate.id === section)?.groups ?? []).map((group) => ({
+    ...group,
+    items: group.items.map((item) => {
+      const page = pages.get(item.url)!;
+      return { ...item, name: page.slugs[1], description: page.data.description };
+    }),
+  }));
+}
