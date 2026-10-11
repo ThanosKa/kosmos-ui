@@ -1,5 +1,6 @@
 'use client';
 
+import { useDirection } from '@base-ui/react/direction-provider';
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
 import { PanelLeftIcon } from 'lucide-react';
@@ -25,7 +26,7 @@ type SidebarContextValue = {
   toggleSidebar: () => void;
   isMobile: boolean;
   /** Whether `mobileBreakpoint` is the default 768px, which CSS also knows before hydration. */
-  defaultBreakpoint: boolean;
+  usesDefaultBreakpoint: boolean;
   /** The width in pixels while open. */
   width: number;
   setWidth: (width: number) => void;
@@ -114,7 +115,7 @@ function SidebarProvider({
   ...props
 }: SidebarProviderProps) {
   const isMobile = useIsMobile(mobileBreakpoint);
-  const defaultBreakpoint = mobileBreakpoint === MOBILE_BREAKPOINT;
+  const usesDefaultBreakpoint = mobileBreakpoint === MOBILE_BREAKPOINT;
   const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange);
   const [width, setWidthState] = useControllable(widthProp, defaultWidth, onWidthChange);
   const [openMobile, setOpenMobile] = React.useState(false);
@@ -138,7 +139,7 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
       isMobile,
-      defaultBreakpoint,
+      usesDefaultBreakpoint,
       width,
       setWidth,
       defaultWidth,
@@ -148,7 +149,7 @@ function SidebarProvider({
       setResizing,
       sidebarId,
     }),
-    [open, setOpen, openMobile, toggleSidebar, isMobile, defaultBreakpoint, width, setWidth, defaultWidth, minWidth, maxWidth, resizing, sidebarId],
+    [open, setOpen, openMobile, toggleSidebar, isMobile, usesDefaultBreakpoint, width, setWidth, defaultWidth, minWidth, maxWidth, resizing, sidebarId],
   );
 
   return (
@@ -180,17 +181,20 @@ type SidebarProps = React.ComponentProps<'div'> & {
  * Fill it with `SidebarHeader`, `SidebarContent` and `SidebarFooter`.
  */
 function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarProps) {
-  const { isMobile, defaultBreakpoint, open, openMobile, setOpenMobile, sidebarId } = useSidebar();
+  const { isMobile, usesDefaultBreakpoint, open, openMobile, setOpenMobile, sidebarId } = useSidebar();
+  // The drawer opens from the side the sidebar sits on: the right edge in a right-to-left layout.
+  const side = useDirection() === 'rtl' ? 'right' : 'left';
 
   if (isMobile) {
     return (
-      <Drawer open={openMobile} onOpenChange={setOpenMobile} swipeDirection="left">
+      <Drawer open={openMobile} onOpenChange={setOpenMobile} swipeDirection={side}>
         <DrawerContent
           id={sidebarId}
           showCloseButton={false}
           className={cn(
             'bg-sidebar text-sidebar-foreground',
             'data-[swipe-direction=left]:w-72 data-[swipe-direction=left]:max-w-[calc(100%-1rem)] sm:data-[swipe-direction=left]:w-72',
+            'data-[swipe-direction=right]:w-72 data-[swipe-direction=right]:max-w-[calc(100%-1rem)] sm:data-[swipe-direction=right]:w-72',
           )}
         >
           <DrawerTitle className="sr-only">{label}</DrawerTitle>
@@ -209,7 +213,7 @@ function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarPr
       className={cn(
         'group/sidebar relative w-(--sidebar-width) shrink-0 data-[state=collapsed]:w-0',
         // Hidden on phones before hydration too, so the page never flashes the side-by-side layout.
-        defaultBreakpoint && 'max-md:hidden',
+        usesDefaultBreakpoint && 'max-md:hidden',
         // Collapse and expand: the width eases, or the panel fades under reduced motion. Resizing follows the pointer.
         'motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
         'motion-reduce:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s] motion-reduce:data-[state=collapsed]:opacity-0',
@@ -222,10 +226,10 @@ function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarPr
         className="sticky top-0 h-svh max-h-full overflow-hidden border-e border-sidebar-border bg-sidebar text-sidebar-foreground group-data-[state=collapsed]/sidebar:border-e-0"
       >
         <div
-          id={sidebarId}
           inert={!open}
           className={cn('flex h-full w-(--sidebar-width) flex-col', className)}
           {...props}
+          id={sidebarId}
         >
           {children}
         </div>
@@ -243,7 +247,7 @@ function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarPr
 function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'>) {
   const {
     isMobile,
-    defaultBreakpoint,
+    usesDefaultBreakpoint,
     open,
     setOpen,
     width,
@@ -306,9 +310,9 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
     event.preventDefault();
     setResizing(true);
     if (!open) {
-      // A collapsed sidebar reopens when moved outward.
-      if (next > width || event.key === 'End') setOpen(true);
-      else return;
+      // A collapsed sidebar reopens on Home, End or an arrow pointing outward.
+      if (next <= width && event.key !== 'Home' && event.key !== 'End') return;
+      setOpen(true);
     }
     setWidth(next);
   };
@@ -340,11 +344,11 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
       }}
       className={cn(
         'relative z-20 w-0 shrink-0 cursor-col-resize touch-none self-stretch',
-        defaultBreakpoint && 'max-md:hidden',
+        usesDefaultBreakpoint && 'max-md:hidden',
         'focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring',
         // The hit area: 8px wide, centered on the sidebar's edge.
         'before:absolute before:inset-y-0 before:-start-1 before:w-2',
-        // The line that shows on hover, focus and drag.
+        // The line that shows on hover and while dragging; focus draws the outline instead.
         'after:pointer-events-none after:absolute after:inset-y-0 after:-start-px after:w-0.5 after:bg-transparent after:transition-[background-color]',
         'hover:after:bg-sidebar-ring data-dragging:after:bg-sidebar-ring',
         className,
@@ -473,6 +477,7 @@ type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> 
 function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMenuButtonProps) {
   const sidebar = React.useContext(SidebarContext);
   const isLink = props.href !== undefined;
+  const { onClickCapture } = props as { onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void };
   return (
     <Button
       variant="ghost"
@@ -480,19 +485,19 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
       data-slot="sidebar-menu-button"
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
-      onClickCapture={() => {
-        if (isLink && sidebar?.isMobile) sidebar.setOpenMobile(false);
-      }}
       className={cn(
         'h-8 w-full min-w-0 justify-start gap-2 px-2 font-normal text-sidebar-foreground',
         // Nav items change background only; they do not press-scale.
         'motion-safe:not-disabled:not-data-disabled:active:scale-100',
         'hover:not-data-disabled:bg-sidebar-accent data-active:bg-sidebar-accent data-active:font-medium',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-sidebar-primary',
-        'focus-visible:outline-offset-0 focus-visible:outline-sidebar-ring',
         className,
       )}
       {...props}
+      onClickCapture={(event: React.MouseEvent<HTMLElement>) => {
+        onClickCapture?.(event);
+        if (isLink && sidebar?.isMobile) sidebar.setOpenMobile(false);
+      }}
     />
   );
 }

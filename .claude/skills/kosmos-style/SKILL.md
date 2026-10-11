@@ -42,6 +42,7 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 - Siblings rendered together: `divide-y divide-border` (or `divide-x`) on the parent.
 - Rows that are separate components: `border-b border-border last:border-b-0`.
 - Two-dimensional cell grids (stat grids, calendars): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full.
+- A sidebar docked beside the page: `border-e border-sidebar-border`. It is a divider between two regions, not a raised surface; the same sidebar in its phone drawer takes the drawer's `shadow-modal`.
 
 _Decided without the user (2026-10-11), pending confirmation._ Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and `better-ui` keeps borders for dividers. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
 
@@ -111,6 +112,8 @@ _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one
 ## Focus
 
 Every focusable element shows `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`. An outline keeps the surface's shadow stack intact and survives forced-colors mode. `ring` reaches 3:1 against `background` in both themes.
+
+Two exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: a tab inside a scrolling tab list draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ the scrolling list clips anything outside its padding box.
 
 ## Buttons
 

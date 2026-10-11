@@ -18,7 +18,8 @@ function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
 }
 
 /**
- * The row of tabs, drawn on a 1px divider, with an indicator that slides to the active tab.
+ * The row of tabs, drawn on a 1px divider, with an indicator that slides to the active tab. The indicator
+ * sits just inside the divider, because the scrolling list clips anything drawn over its border.
  * Under reduced motion the indicator cross-fades between tabs instead of sliding.
  * Scrolls sideways when the tabs do not fit, with the platform's thin scrollbar as the cue.
  */
@@ -42,7 +43,7 @@ function TabsList({ className, children, activateOnFocus = true, ...props }: Tab
         className={cn(
           'pointer-events-none absolute bg-foreground motion-reduce:hidden',
           'transition-[translate,width,height] duration-slow ease-smooth-in-out',
-          'data-[orientation=horizontal]:-bottom-px data-[orientation=horizontal]:left-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:w-(--active-tab-width) data-[orientation=horizontal]:translate-x-(--active-tab-left)',
+          'data-[orientation=horizontal]:bottom-0 data-[orientation=horizontal]:left-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:w-(--active-tab-width) data-[orientation=horizontal]:translate-x-(--active-tab-left)',
           'data-[orientation=vertical]:top-0 data-[orientation=vertical]:-start-px data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:h-(--active-tab-height) data-[orientation=vertical]:translate-y-(--active-tab-top)',
         )}
       />
@@ -66,7 +67,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         'group-data-[orientation=vertical]/tabs-list:h-8 group-data-[orientation=vertical]/tabs-list:justify-start group-data-[orientation=vertical]/tabs-list:px-3',
         // The underline the reduced-motion cross-fade uses in place of the sliding indicator.
         'after:pointer-events-none after:absolute after:bg-foreground after:opacity-0 after:transition-opacity motion-safe:after:hidden data-active:after:opacity-100',
-        'group-data-[orientation=horizontal]/tabs-list:after:inset-x-0 group-data-[orientation=horizontal]/tabs-list:after:-bottom-px group-data-[orientation=horizontal]/tabs-list:after:h-0.5',
+        'group-data-[orientation=horizontal]/tabs-list:after:inset-x-0 group-data-[orientation=horizontal]/tabs-list:after:bottom-0 group-data-[orientation=horizontal]/tabs-list:after:h-0.5',
         'group-data-[orientation=vertical]/tabs-list:after:inset-y-0 group-data-[orientation=vertical]/tabs-list:after:-start-px group-data-[orientation=vertical]/tabs-list:after:w-0.5',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
