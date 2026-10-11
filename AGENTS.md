@@ -13,8 +13,9 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 
 - Commits: `type(scope): description`, one line, imperative, no body, no footer, no `Co-Authored-By`.
 - Types: `feat`, `fix`, `refactor`, `style`, `docs`, `test`, `chore`. Scope is the component or area (`button`, `docs`, `registry`).
-- Trunk-based: short-lived `feature/`, `fix/`, `refactor/`, `docs/` branches, PR straight into `main`. There is no `dev` branch.
-- PRs: `gh pr create`, fill in `.github/pull_request_template.md`. Squash merge only; the PR title becomes the commit on `main`, so write it in commit format.
+- Branches: `main` is production, `dev` is integration. Short-lived `feature/`, `fix/`, `refactor/`, `docs/` branches start from `dev`, and their PRs go into `dev`, never straight into `main`.
+- PRs: `gh pr create --base dev`, fill in `.github/pull_request_template.md`. Squash merge only; the PR title becomes the commit on `dev`, so write it in commit format.
+- Releases: the maintainer opens a PR from `dev` into `main` and merges it with a merge commit, so `main` keeps the commits from `dev`.
 
 ## Gotchas
 

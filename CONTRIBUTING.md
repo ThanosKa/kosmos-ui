@@ -36,11 +36,11 @@ The repo ships its Claude Code setup, so a fresh clone works on any machine:
 - Commit messages: `type(scope): description`, one line, imperative mood, no body.
 - Types: `feat`, `fix`, `refactor`, `style` (code formatting only), `docs`, `test`, `chore`. The scope is the component or area, e.g. `feat(button): add loading state`.
 - A visual change to a component is `feat` or `fix`, never `style`.
-- Branch from `main` with a `feature/`, `fix/`, `refactor/` or `docs/` prefix and open the PR against `main`.
+- Branch from `dev` with a `feature/`, `fix/`, `refactor/` or `docs/` prefix and open the PR against `dev`. `main` holds what is released; the maintainer merges `dev` into it.
 
 ## Pull requests
 
-Every PR is squash merged, and its title becomes the commit on `main`, so write the title in the commit format above. The maintainer expects:
+Every PR is squash merged, and its title becomes the commit on `dev`, so write the title in the commit format above. The maintainer expects:
 
 - One focused change per PR.
 - The PR template filled in, including four screenshots of any visual change (light and dark, mobile and desktop).
