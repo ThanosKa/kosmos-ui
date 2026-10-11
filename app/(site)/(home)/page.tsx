@@ -22,7 +22,7 @@ export default function HomePage() {
       <section className="flex flex-col items-center pt-14 pb-12 text-center sm:pt-24 sm:pb-16">
         <h1 className="max-w-[14em] text-hero text-balance">Dashboard UI with the details already done</h1>
         <p className="mt-5 max-w-[34em] text-lead text-pretty text-muted-foreground">
-          {componentCount} components and {blockCount} blocks for dashboard apps, installed from the shadcn
+          {componentCount} premium components and {blockCount} blocks for dashboard apps, installed from the shadcn
           registry. Free and open source under MIT.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
