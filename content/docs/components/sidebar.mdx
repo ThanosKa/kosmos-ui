@@ -1,0 +1,193 @@
+---
+title: Sidebar
+description: The app sidebar, made of parts you compose. Resize it by dragging its edge or with the keyboard, collapse it to the edge, and open it as a drawer on phones.
+---
+
+<ComponentPreview name="sidebar-demo" minHeight={480} />
+
+## Installation
+
+<ComponentInstall name="sidebar" />
+
+The sidebar brings [Button](/docs/components/button), [Drawer](/docs/components/drawer) and [Separator](/docs/components/separator) with it.
+
+## Usage
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarResizeHandle,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+```
+
+```tsx
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>Acme Inc.</SidebarHeader>
+    <SidebarContent render={<nav aria-label="Main" />}>
+      <SidebarGroup>
+        <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton href="/inbox" isActive>
+              <Inbox />
+              <span>Inbox</span>
+              <SidebarMenuBadge>12</SidebarMenuBadge>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter>…</SidebarFooter>
+  </Sidebar>
+  <SidebarResizeHandle />
+  <SidebarInset>
+    <header>
+      <SidebarTrigger />
+    </header>
+    …
+  </SidebarInset>
+</SidebarProvider>
+```
+
+`SidebarProvider` wraps the whole app shell and fills the screen. The sidebar sticks to the top while the page scrolls, and its content scrolls on its own between the header and the footer.
+
+From 768px up the sidebar sits beside the page. Below that it leaves the layout, `SidebarTrigger` opens it as a drawer from the left edge, and a click on a link closes the drawer. `mobileBreakpoint` moves that point.
+
+## Resizing
+
+`SidebarResizeHandle` sits on the sidebar's edge, between `Sidebar` and `SidebarInset`. It is a window splitter:
+
+| Input | Action |
+| --- | --- |
+| Drag | Resizes between `minWidth` and `maxWidth`. Dragging past half of `minWidth` collapses the sidebar. |
+| `ArrowLeft` `ArrowRight` | Resizes by 16px, or 64px with `Shift`. |
+| `Home` `End` | Jumps to `minWidth` or `maxWidth`. |
+| `Enter` | Collapses or reopens the sidebar. |
+| Double click | Returns to `defaultWidth`. |
+
+The sidebar remembers nothing between visits. To keep the layout, control `width` and `open` and save them, as in the example below.
+
+## Examples
+
+### Controlled width
+
+<ComponentPreview name="sidebar-controlled" minHeight={320} />
+
+## Parts
+
+Each part is a styled element you can rearrange. `useSidebar()` reads and sets the state from any component inside the provider: `open`, `setOpen`, `openMobile`, `setOpenMobile`, `toggleSidebar`, `isMobile`, `width` and `setWidth`.
+
+| Part | What it is |
+| --- | --- |
+| `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
+| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `label` names the drawer for screen readers. |
+| `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
+| `SidebarTrigger` | An icon button that opens and closes the sidebar, or the drawer on phones. |
+| `SidebarInset` | The page beside the sidebar. Renders `<main>`. |
+| `SidebarHeader` | The top of the sidebar, for the product or workspace name. |
+| `SidebarContent` | The scrolling middle. Render it as `<nav>` with `render={<nav aria-label="Main" />}`. |
+| `SidebarFooter` | The bottom of the sidebar, for the account or help links. |
+| `SidebarSeparator` | A line between the header, the groups and the footer. |
+| `SidebarGroup` | A section with a label and a menu. |
+| `SidebarGroupLabel` | The small heading of a group. `render={<h2 />}` makes it a heading. |
+| `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
+| `SidebarMenuItem` | One item. Renders `<li>`. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuBadge` | A count at the end of an item. |
+
+## Motion
+
+The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar fades out, then gives up its space; on reopen it takes the space back and fades in.
+
+## API
+
+### SidebarProvider
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    defaultOpen: {
+      description: 'Whether the sidebar starts open beside the page.',
+      type: 'boolean',
+      default: 'true',
+    },
+    open: {
+      description: 'Whether the sidebar is open beside the page. Use with `onOpenChange`.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called when the sidebar collapses or reopens.',
+      type: '(open: boolean) => void',
+    },
+    defaultWidth: {
+      description: 'The starting width in pixels. A double click on the resize handle returns to it.',
+      type: 'number',
+      default: '256',
+    },
+    width: {
+      description: 'The width in pixels. Use with `onWidthChange`.',
+      type: 'number',
+    },
+    onWidthChange: {
+      description: 'Called with the new width while the sidebar is resized.',
+      type: '(width: number) => void',
+    },
+    minWidth: {
+      description: 'The narrowest the sidebar can be resized to, in pixels.',
+      type: 'number',
+      default: '208',
+    },
+    maxWidth: {
+      description: 'The widest the sidebar can be resized to, in pixels.',
+      type: 'number',
+      default: '384',
+    },
+    mobileBreakpoint: {
+      description: 'Below this viewport width in pixels the sidebar opens as a drawer.',
+      type: 'number',
+      default: '768',
+    },
+  }}
+/>
+
+### Sidebar
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    label: {
+      description: 'The name screen readers announce for the drawer on phones.',
+      type: 'string',
+      default: "'Sidebar'",
+    },
+  }}
+/>
+
+### SidebarMenuButton
+
+Takes every [Button](/docs/components/button) prop except `variant` and `size`, plus:
+
+<TypeTable
+  type={{
+    isActive: {
+      description: 'Marks the current page: a highlight, a primary icon and `aria-current="page"` on a link.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>

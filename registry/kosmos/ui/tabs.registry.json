@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "type": "registry:ui",
+  "title": "Tabs",
+  "description": "Tabs built on Base UI that switch between panels in one spot, with an underline indicator that slides to the active tab (a cross-fade under reduced motion), arrow-key navigation and a vertical form.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "navigation" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/tabs.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
