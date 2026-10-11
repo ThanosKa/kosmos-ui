@@ -1,0 +1,97 @@
+---
+title: App sidebar
+description: A dashboard sidebar with a workspace switcher, search, pages with unread counts, saved views and an account menu. Resizable, collapsible, and a drawer on phones.
+---
+
+<ComponentPreview name="app-sidebar-demo" minHeight={600} />
+
+## Installation
+
+<ComponentInstall name="app-sidebar" />
+
+The block brings [Sidebar](/docs/components/sidebar), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar), [Kbd](/docs/components/kbd) and [Button](/docs/components/button) with it, and lands in `components/app-sidebar.tsx`.
+
+## Usage
+
+Place `AppSidebar` inside a `SidebarProvider`, next to the resize handle and the page:
+
+```tsx
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/components/ui/sidebar';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <AppSidebar activeItem="accounts" />
+      <SidebarResizeHandle />
+      <SidebarInset>
+        <header className="flex h-12 items-center gap-2 border-b border-border px-3">
+          <SidebarTrigger />
+        </header>
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+```
+
+The pages, saved views, workspaces and user at the top of the file are sample data: replace them with your own. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/components/command); the block shows the ⌘K hint but does not bind the keys.
+
+To put the same content in another surface, such as your own drawer, render `AppSidebarContent` instead of `AppSidebar`.
+
+## What it does
+
+- **Workspace switcher**: a menu that lists the workspaces and marks the current one. It keeps its own state unless you pass `workspace` and `onWorkspaceChange`.
+- **Pages and saved views**: links with an icon and an optional count. `badgeLabel` tells screen readers what the count means ("unread").
+- **Account menu**: the signed-in user, with profile, settings and log out. It opens upward from the bottom of the sidebar.
+- **Resize, collapse and phones**: everything the [Sidebar](/docs/components/sidebar) does. From 768px up it sits beside the page; below that it opens as a drawer.
+
+## API
+
+### AppSidebar
+
+Takes every [Sidebar](/docs/components/sidebar#sidebar) prop, plus the props of `AppSidebarContent`.
+
+### AppSidebarContent
+
+<TypeTable
+  type={{
+    activeItem: {
+      description: 'The `id` of the current page. Its item is highlighted and marked `aria-current="page"`.',
+      type: 'string',
+      default: "'accounts'",
+    },
+    onNavigate: {
+      description: 'Called when an item is clicked, with its `id`. Call `event.preventDefault()` to route in place.',
+      type: '(id: string, event: React.MouseEvent<HTMLElement>) => void',
+    },
+    onSearch: {
+      description: 'Called by the search button, usually to open a command menu.',
+      type: '() => void',
+    },
+    workspaces: {
+      description: 'The workspaces in the switcher.',
+      type: '{ id: string; name: string; plan: string }[]',
+    },
+    workspace: {
+      description: 'The `id` of the current workspace. Use with `onWorkspaceChange`.',
+      type: 'string',
+    },
+    onWorkspaceChange: {
+      description: 'Called with the `id` of the workspace picked in the switcher.',
+      type: '(id: string) => void',
+    },
+    user: {
+      description: 'The signed-in user shown in the account menu.',
+      type: '{ name: string; email: string; initials: string }',
+    },
+    workspaceMenu: {
+      description: 'Props for the workspace menu, such as `open` and `onOpenChange`.',
+      type: 'DropdownMenu props',
+    },
+    userMenu: {
+      description: 'Props for the account menu, such as `open` and `onOpenChange`.',
+      type: 'DropdownMenu props',
+    },
+  }}
+/>
