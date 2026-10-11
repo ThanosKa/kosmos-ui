@@ -3,7 +3,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Badge } from '@/registry/kosmos/ui/badge';
 
-const variants = ['secondary', 'primary', 'success', 'warning', 'destructive'] as const;
+const variants = ['secondary', 'primary', 'success', 'warning', 'destructive', 'orange', 'blue', 'amber', 'magenta', 'green', 'red'] as const;
 const states = ['default', 'link', 'hover', 'focus'] as const;
 
 const labels: Record<(typeof variants)[number], string> = {
@@ -12,6 +12,12 @@ const labels: Record<(typeof variants)[number], string> = {
   success: 'Active',
   warning: 'Pending',
   destructive: 'Failed',
+  orange: 'Pilot',
+  blue: 'Enterprise',
+  amber: 'Small business',
+  magenta: 'Upsell',
+  green: 'Expansion',
+  red: 'Blocked',
 };
 
 const rows = [
