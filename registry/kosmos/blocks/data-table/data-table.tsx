@@ -93,12 +93,11 @@ function SortableHead({
   return (
     <TableHead aria-sort={active ? sort.direction : undefined} className={cn(align === 'end' && 'text-end', className)}>
       <Button
-        variant="ghost"
+        variant="item"
         size="sm"
         onClick={() => onSort(sortKey)}
         className={cn(
           'h-6 gap-1 px-1.5 text-caption font-medium text-muted-foreground hover:text-foreground',
-          'motion-safe:not-disabled:not-data-disabled:active:scale-100',
           align === 'end' ? '-me-1.5 flex-row-reverse' : '-ms-1.5',
           active && 'text-foreground',
         )}
@@ -311,10 +310,10 @@ function DataTable({
                       <div className="flex min-w-0 flex-1 flex-col items-start">
                         {onOpen ? (
                           <Button
-                            variant="ghost"
+                            variant="item"
                             size="sm"
                             onClick={() => onOpen(row)}
-                            className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium motion-safe:not-disabled:not-data-disabled:active:scale-100"
+                            className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium"
                           >
                             <span title={row.name} className="truncate">{row.name}</span>
                           </Button>
@@ -369,10 +368,10 @@ function DataTable({
                       <DropdownMenuTrigger
                         render={
                           <Button
-                            variant="ghost"
+                            variant="item"
                             size="icon-sm"
                             aria-label={`Actions for ${row.name}`}
-                            className="text-muted-foreground motion-safe:not-disabled:not-data-disabled:active:scale-100"
+                            className="text-muted-foreground"
                           />
                         }
                       >

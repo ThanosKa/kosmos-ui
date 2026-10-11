@@ -1,6 +1,6 @@
 ---
 title: Button
-description: Starts an action or, with href, goes to a page. Four variants, three sizes and icon-only sizes, built on Base UI.
+description: Starts an action or, with href, goes to a page. Five variants, three sizes and icon-only sizes, built on Base UI.
 ---
 
 <ComponentPreview name="button-demo" />
@@ -25,7 +25,7 @@ Pass `variant` on every Button, even when you want the default `primary`. The ca
 
 ### Variants
 
-Use one `primary` per view for the main action. Its neighbors take `secondary` or `ghost`. `destructive` is for actions that delete or can't be undone.
+Use one `primary` per view for the main action. Its neighbors take `secondary` or `ghost`. `destructive` is for actions that delete or can't be undone. `item` looks like `ghost` but doesn't scale when pressed: use it for buttons repeated in dense rows, such as nav items, table row actions and sortable column headers.
 
 <ComponentPreview name="button-variants" />
 
@@ -66,8 +66,8 @@ Button wraps the [Base UI Button](https://base-ui.com/react/components/button) a
 <TypeTable
   type={{
     variant: {
-      description: 'The role of the button.',
-      type: "'primary' | 'secondary' | 'ghost' | 'destructive'",
+      description: 'The role of the button, or `item` for a button repeated in a dense row.',
+      type: "'primary' | 'secondary' | 'ghost' | 'destructive' | 'item'",
       default: "'primary'",
     },
     size: {

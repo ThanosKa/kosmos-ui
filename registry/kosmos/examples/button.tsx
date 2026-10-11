@@ -3,7 +3,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Button } from '@/registry/kosmos/ui/button';
 
-const variants = ['primary', 'secondary', 'ghost', 'destructive'] as const;
+const variants = ['primary', 'secondary', 'ghost', 'destructive', 'item'] as const;
 
 export default function ButtonPreview() {
   return (

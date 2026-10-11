@@ -105,7 +105,7 @@ Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-m
 
 ### Press scale
 
-An enabled button scales to `0.96` while pressed: `motion-safe:not-disabled:not-data-disabled:active:scale-96` (`not-disabled` instead of `enabled`, so a Button rendered as a link with `href` scales too, since `:enabled` never matches an `<a>`; `not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+An enabled button scales to `0.96` while pressed: `motion-safe:not-disabled:not-data-disabled:active:scale-96` (`not-disabled` instead of `enabled`, so a Button rendered as a link with `href` scales too, since `:enabled` never matches an `<a>`; `not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only (a `Button` there takes `variant="item"`).
 
 _Decided without the user (2026-10-11), pending confirmation._ A link styled as a Button presses like one: people cannot tell the two apart, and shadcn's Button applies its press feedback to every rendered element, links included.
 
@@ -119,7 +119,7 @@ Two exceptions keep the outline visible where an offset outline would be clipped
 
 ## Buttons
 
-Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`nav`, `item`); a variant nothing uses is deleted.
+Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers); a variant nothing uses is deleted.
 
 ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
 
