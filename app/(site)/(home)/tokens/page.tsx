@@ -7,6 +7,8 @@ import { EasingDemo } from './easing-demo';
 export const metadata: Metadata = {
   title: 'Tokens',
   description: 'Every Kosmos UI token in light and dark.',
+  // An internal review page, like the (view) routes: keep it out of search results.
+  robots: { index: false },
 };
 
 const motionEase: Record<string, readonly number[]> = {
