@@ -22,6 +22,19 @@
 @custom-variant focus-visible (&:focus-visible, &[data-preview~='focus']);
 @custom-variant active (&:active, &[data-preview~='active']);
 
+/*
+ * Site-only type roles for the landing page hero. Components stay between 12 and 14px (kosmos-style), so
+ * these never ship in @kosmos/tokens. Use them as plain classes, not through `cn`, which doesn't know them.
+ */
+@theme {
+  --text-hero: clamp(2rem, 1.25rem + 3vw, 3.25rem);
+  --text-hero--line-height: 1.1;
+  --text-hero--font-weight: 600;
+  --text-hero--letter-spacing: -0.03em;
+  --text-lead: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+  --text-lead--line-height: 1.6;
+}
+
 :root,
 .dark {
   --color-fd-overlay: var(--scrim);

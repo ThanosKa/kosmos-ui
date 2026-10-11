@@ -45,6 +45,13 @@ const placeholders = {
     getChangelogEntries()
       .map(({ page, displayDate }) => `- ${displayDate}: [${page.data.title}](${page.url})${page.data.description ? `. ${page.data.description}` : ''}`)
       .join('\n'),
+  DocsIndex: ({ attributes }: PlaceholderData) =>
+    source
+      .getPages()
+      .filter((page) => page.slugs.length === 2 && page.slugs[0] === String(attributes.folder))
+      .sort((a, b) => a.data.title.localeCompare(b.data.title))
+      .map((page) => `- [${page.data.title}](${page.url})${page.data.description ? `: ${page.data.description}` : ''}`)
+      .join('\n'),
 };
 
 export const docsLlms = llms(source, {

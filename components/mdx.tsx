@@ -5,6 +5,7 @@ import type { MDXComponents } from 'mdx/types';
 import { ComponentInstall, ComponentSource } from '@/components/docs/component-install';
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { ChangelogEntries } from '@/components/docs/changelog-entries';
+import { DocsIndex } from '@/components/docs/docs-index';
 import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
 
 export function getMDXComponents(components?: MDXComponents) {
@@ -20,6 +21,7 @@ export function getMDXComponents(components?: MDXComponents) {
     RegistryConfig,
     RegistryCss,
     ChangelogEntries,
+    DocsIndex,
     ...components,
   } satisfies MDXComponents;
 }
