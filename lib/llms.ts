@@ -59,6 +59,8 @@ const placeholders = {
       .sort((a, b) => a.data.title.localeCompare(b.data.title))
       .map((page) => `- [${page.data.title}](${page.url})${page.data.description ? `: ${page.data.description}` : ''}`)
       .join('\n'),
+  Steps: ({ children }: PlaceholderData) => children.trim(),
+  Step: ({ children }: PlaceholderData) => `${children.trim()}\n`,
   ColorTokens: ({ attributes }: PlaceholderData) =>
     markdownTable(
       ['Class', 'Light', 'Dark', 'Use'],
