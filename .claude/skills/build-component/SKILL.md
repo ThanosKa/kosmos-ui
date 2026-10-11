@@ -38,6 +38,8 @@ Use the dev server on the port you were given, starting it with `pnpm dev --port
 pnpm screenshots <name> --port <N>
 ```
 
+On a new machine, install the browsers once: `pnpm exec playwright install chromium` for `pnpm screenshots` (the script prints this when the browser is missing), and `npm install -g agent-browser` (or `brew install agent-browser`) followed by `agent-browser install` for step 4.
+
 Read all four PNGs it prints (light and dark, 375 and 1280 wide). A page error makes it exit 1: fix that first. The shots run under reduced motion, so a state only motion shows (the press scale in the `active` column) is checked in step 4.
 
 ## 4. Review

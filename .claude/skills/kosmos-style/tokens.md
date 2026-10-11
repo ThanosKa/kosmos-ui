@@ -37,6 +37,8 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `scrim` | Backdrop behind dialogs and drawers | Light study (foreground 40%) / dark study (black 60%) |
 | `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | Light study / dark study, active item = `primary` |
 
+Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
+
 ## Chart colors
 
 In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges repeated blocks), so component-specific tokens don't edit the core blocks.
@@ -84,6 +86,10 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 ## Type roles
 
 `text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`; sizes in the SKILL.md table. Each sets size, line-height and, where it differs from 400, weight and letter-spacing. Sizes are in `rem`, line-heights unitless.
+
+### Site-only roles
+
+`text-hero` and `text-lead` exist only for the landing page hero. They are declared in `app/global.css`, not in `tokens.css`, so they never ship in `@kosmos/tokens`, and no component, block or docs page uses them; component text stays on the six roles above. Use them as plain classes, not through `cn`, which does not know them.
 
 ## Left out on purpose
 

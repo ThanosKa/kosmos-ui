@@ -38,7 +38,7 @@ To open it from the [page header](/docs/blocks/page-header)'s New button or a co
 - **Validation**: submitting without a name, or with a domain that isn't one, shows the error under the field and moves focus to it.
 - **Creating**: `onCreate` gets the trimmed values, the domain in lowercase and ARR as a number (or `null`), then the dialog closes.
 - **Create more**: with the switch on, the dialog stays open. It clears the text fields, keeps the status and owner, and confirms the record just created.
-- **Fresh form**: each time the dialog opens, the form starts from `defaultValues` again.
+- **Fresh form**: each time the dialog opens, the form starts from `defaultValues` again. To hold the form yourself, pass `values` and `onValuesChange`; a controlled form stays as you set it.
 - **Narrow containers**: the fields stack in one column when the dialog is narrower than 28rem.
 
 ## Motion
@@ -54,6 +54,8 @@ The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. Wit
     onCreate: { description: 'Called with the form values when a record is created.', type: '(values: NewItemValues) => void' },
     people: { description: 'The people who can own the record.', type: '{ id: string; name: string; initials: string }[]', default: 'sample people' },
     defaultValues: { description: 'Values to start the form with each time it opens.', type: 'Partial<NewItemValues>' },
+    values: { description: 'The form as it stands, controlled, with ARR as text. Use with `onValuesChange`.', type: 'NewItemFormValues' },
+    onValuesChange: { description: 'Called with the whole form each time a field changes.', type: '(values: NewItemFormValues) => void' },
     open: { description: 'Whether the dialog is open, controlled.', type: 'boolean' },
     defaultOpen: { description: 'Whether the dialog starts open, uncontrolled.', type: 'boolean', default: 'false' },
     onOpenChange: { description: 'Called when the dialog opens or closes.', type: '(open: boolean) => void' },

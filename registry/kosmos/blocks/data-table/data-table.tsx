@@ -60,12 +60,14 @@ const statusBadge: Record<AccountStatus, { label: string; variant: BadgeProps['v
 
 // Fixed locale and time zone, so the server and the browser render the same text.
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2 });
+const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 const day = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const formatDay = (iso: string) => day.format(new Date(`${iso}T00:00:00Z`));
 
 type SortKey = 'name' | 'arr' | 'health' | 'lastActivity';
 type Sort = { key: SortKey; direction: 'ascending' | 'descending' };
+/** What the row menu and the bulk bar offer. */
+type DataTableAction = 'copy-link' | 'export' | 'delete';
 
 function compare(a: Account, b: Account, key: SortKey) {
   if (key === 'name') return a.name.localeCompare(b.name);
@@ -93,12 +95,11 @@ function SortableHead({
   return (
     <TableHead aria-sort={active ? sort.direction : undefined} className={cn(align === 'end' && 'text-end', className)}>
       <Button
-        variant="ghost"
+        variant="item"
         size="sm"
         onClick={() => onSort(sortKey)}
         className={cn(
           'h-6 gap-1 px-1.5 text-caption font-medium text-muted-foreground hover:text-foreground',
-          'motion-safe:not-disabled:not-data-disabled:active:scale-100',
           align === 'end' ? '-me-1.5 flex-row-reverse' : '-ms-1.5',
           active && 'text-foreground',
         )}
@@ -123,6 +124,11 @@ type DataTableProps = Omit<React.ComponentProps<'div'>, 'children'> & {
   status?: 'all' | AccountStatus;
   /** Called when a row is opened, by its name or a click anywhere on it. */
   onOpen?: (row: Account) => void;
+  /**
+   * Runs an action on rows: Copy link and Delete account from a row's menu (with that row), Export and
+   * Delete from the bulk bar (with the selected rows). Those items show only when this is passed. Ask before deleting.
+   */
+  onAction?: (action: DataTableAction, rows: Account[]) => void;
   /** Shown in the empty state when a search or status hides every row. */
   onClearFilters?: () => void;
   /** The ids of the selected rows. Use with `onSelectionChange`, or leave it out and pass `defaultSelection`. */
@@ -146,6 +152,7 @@ function DataTable({
   query = '',
   status = 'all',
   onOpen,
+  onAction,
   onClearFilters,
   selection: selectionProp,
   defaultSelection = [],
@@ -311,10 +318,10 @@ function DataTable({
                       <div className="flex min-w-0 flex-1 flex-col items-start">
                         {onOpen ? (
                           <Button
-                            variant="ghost"
+                            variant="item"
                             size="sm"
                             onClick={() => onOpen(row)}
-                            className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium motion-safe:not-disabled:not-data-disabled:active:scale-100"
+                            className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium"
                           >
                             <span title={row.name} className="truncate">{row.name}</span>
                           </Button>
@@ -365,35 +372,43 @@ function DataTable({
                     <time dateTime={row.lastActivity}>{formatDay(row.lastActivity)}</time>
                   </TableCell>
                   <TableCell className="pe-4 text-end">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={`Actions for ${row.name}`}
-                            className="text-muted-foreground motion-safe:not-disabled:not-data-disabled:active:scale-100"
-                          />
-                        }
-                      >
-                        <Ellipsis aria-hidden />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onOpen?.(row)}>
-                          <ExternalLink />
-                          Open account
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link2 />
-                          Copy link
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive">
-                          <Trash2 />
-                          Delete account
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {onOpen || onAction ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={
+                            <Button
+                              variant="item"
+                              size="icon-sm"
+                              aria-label={`Actions for ${row.name}`}
+                              className="text-muted-foreground"
+                            />
+                          }
+                        >
+                          <Ellipsis aria-hidden />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {onOpen ? (
+                            <DropdownMenuItem onClick={() => onOpen(row)}>
+                              <ExternalLink />
+                              Open account
+                            </DropdownMenuItem>
+                          ) : null}
+                          {onAction ? (
+                            <>
+                              <DropdownMenuItem onClick={() => onAction('copy-link', [row])}>
+                                <Link2 />
+                                Copy link
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem variant="destructive" onClick={() => onAction('delete', [row])}>
+                                <Trash2 />
+                                Delete account
+                              </DropdownMenuItem>
+                            </>
+                          ) : null}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               );
@@ -402,7 +417,7 @@ function DataTable({
         </TableBody>
       </Table>
 
-      <div className="flex min-h-11 items-center justify-between gap-4 border-t border-border px-4 py-1.5 text-small text-muted-foreground tabular-nums">
+      <div className="flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border px-4 py-1.5 text-small text-muted-foreground tabular-nums">
         {loading ? (
           <Skeleton className="h-3.5 w-40" />
         ) : selected.length ? (
@@ -411,14 +426,18 @@ function DataTable({
               <X aria-hidden />
             </Button>
             <span className="me-2 whitespace-nowrap text-foreground">{selected.length} selected</span>
-            <Button variant="secondary" size="sm">
-              <Download aria-hidden data-icon="inline-start" />
-              Export
-            </Button>
-            <Button variant="destructive" size="sm">
-              <Trash2 aria-hidden data-icon="inline-start" />
-              Delete
-            </Button>
+            {onAction ? (
+              <>
+                <Button variant="secondary" size="sm" onClick={() => onAction('export', selected)}>
+                  <Download aria-hidden data-icon="inline-start" />
+                  Export
+                </Button>
+                <Button variant="destructive" size="sm" onClick={() => onAction('delete', selected)}>
+                  <Trash2 aria-hidden data-icon="inline-start" />
+                  Delete
+                </Button>
+              </>
+            ) : null}
           </div>
         ) : (
           <span>
@@ -439,4 +458,4 @@ function DataTable({
   );
 }
 
-export { DataTable, type DataTableProps, type Account, type AccountStatus, type Sort as DataTableSort };
+export { DataTable, sampleAccounts, type DataTableAction, type DataTableProps, type Account, type AccountStatus, type Sort as DataTableSort };

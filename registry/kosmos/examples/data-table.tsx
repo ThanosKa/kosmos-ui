@@ -37,6 +37,7 @@ export default function DataTablePreview() {
             selection={['northwind', 'orbit', 'vela']}
             defaultSort={{ key: 'arr', direction: 'descending' }}
             onOpen={() => {}}
+            onAction={() => {}}
           />
         </div>
       </PreviewSection>
@@ -61,12 +62,12 @@ export default function DataTablePreview() {
 
       <PreviewSection title="Long text and extreme values">
         <div className={frame}>
-          <DataTable rows={longRows} onOpen={() => {}} />
+          <DataTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
         </div>
       </PreviewSection>
       <PreviewSection title="In a narrow container (scrolls sideways)">
         <div className={`${frame} max-w-sm`}>
-          <DataTable defaultSelection={['bluebird']} />
+          <DataTable defaultSelection={['bluebird']} onAction={() => {}} />
         </div>
       </PreviewSection>
     </PreviewStack>

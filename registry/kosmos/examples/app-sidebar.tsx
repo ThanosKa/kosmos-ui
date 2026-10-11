@@ -31,7 +31,14 @@ function Page({ title }: { title: string }) {
 function PinnedSidebar({ menu }: { menu: 'workspace' | 'user' }) {
   const { isMobile } = useSidebar();
   const pinned = isMobile ? undefined : { open: true, modal: false };
-  return <AppSidebar workspaceMenu={menu === 'workspace' ? pinned : undefined} userMenu={menu === 'user' ? pinned : undefined} />;
+  return (
+    <AppSidebar
+      searchShortcut
+      onAction={() => {}}
+      workspaceMenu={menu === 'workspace' ? pinned : undefined}
+      userMenu={menu === 'user' ? pinned : undefined}
+    />
+  );
 }
 
 function Shell({
@@ -76,7 +83,13 @@ export default function AppSidebarPreview() {
 
       <PreviewSection title="Long names">
         <Shell className="h-40 md:h-[38rem]" title="Renewals this quarter">
-          <AppSidebar activeItem="view-renewals" {...longNames} />
+          <AppSidebar activeItem="view-renewals" onAction={() => {}} {...longNames} />
+        </Shell>
+      </PreviewSection>
+
+      <PreviewSection title="No workspaces, no actions, no shortcut: no switcher, the user as plain text">
+        <Shell className="h-40 md:h-[38rem]">
+          <AppSidebar workspaces={[]} />
         </Shell>
       </PreviewSection>
 
@@ -92,7 +105,7 @@ export default function AppSidebarPreview() {
               >
                 <DrawerTitle className="sr-only">Main navigation</DrawerTitle>
                 <div className="flex min-h-0 flex-1 flex-col">
-                  <AppSidebarContent />
+                  <AppSidebarContent searchShortcut onAction={() => {}} />
                 </div>
               </DrawerContent>
             </Drawer>

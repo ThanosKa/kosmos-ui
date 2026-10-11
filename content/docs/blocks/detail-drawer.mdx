@@ -31,7 +31,7 @@ Without props the drawer opens from an **Open account** button and shows a sampl
 
 ## What it does
 
-- **Status** changes in place and calls `onAccountChange` with the updated record.
+- **Status** changes in place and calls `onAccountChange` with the updated record. When `account.status` changes from outside, the drawer shows the new status.
 - **Notes**: ⌘Enter (Ctrl+Enter on Windows and Linux) or **Add note** adds one. With `onNote`, add the note to `account.activity` yourself; without it, the drawer keeps new notes until another record opens.
 - **More menu**: with `onAction`, a menu offers Copy link, Duplicate and Delete account. Ask for confirmation before you delete.
 - **Empty fields** say so (_No owner_, _Not scored_), and `loading` shows placeholders.

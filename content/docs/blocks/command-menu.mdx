@@ -57,7 +57,9 @@ The menu appears and closes without animation, because it opens from a keyboard 
     container: { description: 'The element the menu renders into.', type: 'HTMLElement | null', default: 'document.body' },
     initialFocus: { description: 'Where focus goes when the menu opens.', type: 'boolean | RefObject | function', default: 'the search field' },
     defaultPage: { description: 'A second list to open on, by its key. For previews.', type: 'string' },
-    defaultQuery: { description: 'The search text to start with. For previews.', type: 'string', default: "''" },
+    query: { description: 'The search text, controlled. Use with `onQueryChange`. It stays as you set it when the menu opens.', type: 'string' },
+    defaultQuery: { description: 'The search text at first, uncontrolled. The menu clears it each time it opens.', type: 'string', default: "''" },
+    onQueryChange: { description: 'Called as the search text changes.', type: '(query: string) => void' },
   }}
 />
 

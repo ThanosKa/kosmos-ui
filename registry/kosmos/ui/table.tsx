@@ -1,44 +1,22 @@
-import { ScrollArea } from '@base-ui/react/scroll-area';
 import type * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 /**
- * A native `<table>` in a Base UI scroll area, so a wide table scrolls on its own at 375px instead
+ * A native `<table>` in a Kosmos `ScrollArea`, so a wide table scrolls on its own at 375px instead
  * of widening the page. While columns are hidden, the clipped edge fades out and a scrollbar shows
  * under the table, so the hidden columns never go unnoticed. Numbers line up: the whole table is
  * `tabular-nums`.
  */
 function Table({ className, containerClassName, ...props }: React.ComponentProps<'table'> & { containerClassName?: string }) {
   return (
-    <ScrollArea.Root
-      data-slot="table-container"
-      className={cn(
-        'relative w-full rounded-lg',
-        // The viewport is focusable while it scrolls. Its edge mask would clip its own outline, so the root draws it.
-        'has-[>[data-slot=table-viewport]:focus-visible]:outline-2 has-[>[data-slot=table-viewport]:focus-visible]:outline-offset-2 has-[>[data-slot=table-viewport]:focus-visible]:outline-ring',
-        containerClassName,
-      )}
-    >
-      <ScrollArea.Viewport
-        data-slot="table-viewport"
-        className={cn(
-          'w-full overscroll-x-contain outline-none data-has-overflow-x:pb-3',
-          'mask-l-from-[calc(100%-min(2rem,var(--scroll-area-overflow-x-start)))] mask-r-from-[calc(100%-min(2rem,var(--scroll-area-overflow-x-end)))]',
-        )}
-      >
-        <table
-          data-slot="table"
-          className={cn('w-full caption-bottom border-collapse text-body tabular-nums', className)}
-          {...props}
-        />
-      </ScrollArea.Viewport>
-      <ScrollArea.Scrollbar
-        orientation="horizontal"
-        className="mx-1 flex h-1.5 rounded-full bg-muted"
-      >
-        <ScrollArea.Thumb className="w-(--scroll-area-thumb-width) rounded-full bg-muted-foreground/50" />
-      </ScrollArea.Scrollbar>
-    </ScrollArea.Root>
+    <ScrollArea data-slot="table-container" className={cn('w-full', containerClassName)}>
+      <table
+        data-slot="table"
+        className={cn('w-full caption-bottom border-collapse text-body tabular-nums', className)}
+        {...props}
+      />
+    </ScrollArea>
   );
 }
 

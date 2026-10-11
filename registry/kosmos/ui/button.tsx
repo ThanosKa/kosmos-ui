@@ -3,22 +3,26 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
+/** Standalone buttons scale to 0.96 while pressed. The `item` variant, repeated in dense rows, changes background only. */
+const pressScale = 'motion-safe:not-disabled:not-data-disabled:active:scale-96';
+
 const buttonVariants = cva(
   [
     'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent font-medium whitespace-nowrap [-webkit-tap-highlight-color:transparent]',
     'transition-[background-color,scale]',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-    'motion-safe:not-disabled:not-data-disabled:active:scale-96',
     'data-disabled:opacity-50',
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ],
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground shadow-primary hover:not-data-disabled:bg-primary/90',
-        secondary: 'bg-secondary text-secondary-foreground shadow-control hover:not-data-disabled:bg-muted',
-        ghost: 'bg-transparent text-foreground hover:not-data-disabled:bg-accent',
-        destructive: 'bg-secondary text-destructive shadow-control hover:not-data-disabled:bg-muted',
+        primary: [pressScale, 'bg-primary text-primary-foreground shadow-primary hover:not-data-disabled:bg-primary/90'],
+        secondary: [pressScale, 'bg-secondary text-secondary-foreground shadow-control hover:not-data-disabled:bg-muted'],
+        ghost: [pressScale, 'bg-transparent text-foreground hover:not-data-disabled:bg-accent'],
+        destructive: [pressScale, 'bg-secondary text-destructive shadow-control hover:not-data-disabled:bg-muted'],
+        // The ghost look without the press scale, for buttons repeated in dense rows: nav and menu items, table row actions, sortable headers.
+        item: 'bg-transparent text-foreground hover:not-data-disabled:bg-accent',
       },
       size: {
         sm: "h-6 gap-1 px-2 text-small has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3.5",

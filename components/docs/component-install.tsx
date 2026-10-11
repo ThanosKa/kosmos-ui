@@ -14,7 +14,7 @@ import {
 import { PackageManagerTabs } from './shadcn-command';
 
 function Step({ children }: { children: ReactNode }) {
-  return <p className="mt-4 mb-2 text-sm text-fd-muted-foreground first:mt-0">{children}</p>;
+  return <p className="mt-4 mb-2 text-small text-fd-muted-foreground first:mt-0">{children}</p>;
 }
 
 /** The source files of an item, as they land in the user's project. */

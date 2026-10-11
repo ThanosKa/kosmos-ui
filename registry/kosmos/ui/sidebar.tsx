@@ -480,15 +480,13 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
   const { onClickCapture } = props as { onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void };
   return (
     <Button
-      variant="ghost"
+      variant="item"
       size="md"
       data-slot="sidebar-menu-button"
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
       className={cn(
         'h-8 w-full min-w-0 justify-start gap-2 px-2 font-normal text-sidebar-foreground',
-        // Nav items change background only; they do not press-scale.
-        'motion-safe:not-disabled:not-data-disabled:active:scale-100',
         'hover:not-data-disabled:bg-sidebar-accent data-active:bg-sidebar-accent data-active:font-medium',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-sidebar-primary',
         className,

@@ -25,7 +25,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       {page.data.date && (
-        <time dateTime={page.data.date.toISOString().slice(0, 10)} className="text-sm text-fd-muted-foreground">
+        <time dateTime={page.data.date.toISOString().slice(0, 10)} className="text-small text-fd-muted-foreground">
           {formatChangelogDate(page.data.date)}
         </time>
       )}

@@ -1,7 +1,6 @@
 'use client';
 
 import { Autocomplete as AutocompletePrimitive } from '@base-ui/react/autocomplete';
-import { ScrollArea as ScrollAreaPrimitive } from '@base-ui/react/scroll-area';
 import { ArrowDown, ArrowUp, CornerDownLeft, Search } from 'lucide-react';
 import type * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -16,6 +15,7 @@ import {
   DialogViewport,
 } from '@/registry/kosmos/ui/dialog';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 type CommandProps<Item> = AutocompletePrimitive.Root.Props<Item> & {
   className?: string;
@@ -130,30 +130,23 @@ function CommandInput({ className, ...props }: AutocompletePrimitive.Input.Props
 
 /**
  * The scrolling list of matches. Pass a function to render each item or group of `items`,
- * or the items themselves. Scrolls past 20rem with a thin scrollbar.
+ * or the items themselves. Scrolls past 20rem in a `ScrollArea`: while matches are hidden past an
+ * edge, that edge fades out and the scrollbar shows, so rows below the fold are never missed.
  */
 function CommandList({ className, ...props }: AutocompletePrimitive.List.Props) {
   return (
-    <ScrollAreaPrimitive.Root data-slot="command-scroll-area" className="relative flex min-h-0 flex-[0_1_auto] flex-col overflow-hidden">
-      <ScrollAreaPrimitive.Viewport className="max-h-80 min-h-0 flex-1 overscroll-contain scroll-py-1 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring">
-        {/* `min-w-0!` beats the inline `min-width: fit-content`, so long labels truncate instead of widening the list. */}
-        <ScrollAreaPrimitive.Content className="min-w-0!">
-          <AutocompletePrimitive.List
-            data-slot="command-list"
-            className={cn('p-1 data-empty:p-0', className)}
-            {...props}
-          />
-        </ScrollAreaPrimitive.Content>
-      </ScrollAreaPrimitive.Viewport>
-      <ScrollAreaPrimitive.Scrollbar
-        className={cn(
-          'flex w-2.5 justify-center p-0.5 opacity-0 transition-opacity',
-          'data-hovering:opacity-100 data-scrolling:opacity-100 data-scrolling:duration-instant',
-        )}
-      >
-        <ScrollAreaPrimitive.Thumb className="w-full rounded-full bg-muted-foreground/40" />
-      </ScrollAreaPrimitive.Scrollbar>
-    </ScrollAreaPrimitive.Root>
+    <ScrollArea
+      data-slot="command-scroll-area"
+      className={cn(
+        'flex-[0_1_auto] rounded-none',
+        // The palette clips anything outside it, so the list draws its focus outline inside.
+        'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
+      )}
+      // `min-w-0!` beats the content's inline `min-width: fit-content`, so long labels truncate instead of widening the list.
+      viewportClassName="max-h-80 overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
+    >
+      <AutocompletePrimitive.List data-slot="command-list" className={cn('p-1 data-empty:p-0', className)} {...props} />
+    </ScrollArea>
   );
 }
 

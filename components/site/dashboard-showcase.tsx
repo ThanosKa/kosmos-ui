@@ -4,7 +4,7 @@ import { BarChart3, Building2, Handshake, Home, Inbox, Layers, Plus, Settings } 
 import * as React from 'react';
 import { AppSidebar, type AppSidebarNavItem } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { CommandMenu, type CommandMenuGroup } from '@/registry/kosmos/blocks/command-menu/command-menu';
-import { DataTable, type Account, type AccountStatus } from '@/registry/kosmos/blocks/data-table/data-table';
+import { DataTable, sampleAccounts, type Account, type AccountStatus } from '@/registry/kosmos/blocks/data-table/data-table';
 import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { KanbanBoard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog, type NewItemStatus, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
@@ -27,15 +27,9 @@ const priya = { name: 'Priya Raman', initials: 'PR' };
 const owners = { maya, jonas, priya };
 type OwnerKey = keyof typeof owners;
 
+// The data table's sample accounts, plus two more so the board's columns fill up.
 const initialAccounts: Account[] = [
-  { id: 'northwind', name: 'Northwind Traders', domain: 'northwind.example', status: 'active', owner: maya, arr: 184000, health: 86, lastActivity: '2026-10-10' },
-  { id: 'bluebird', name: 'Bluebird Labs', domain: 'bluebird.example', status: 'at-risk', owner: jonas, arr: 96500, health: 38, lastActivity: '2026-09-21' },
-  { id: 'cedar', name: 'Cedar & Pine', domain: 'cedarpine.example', status: 'active', owner: priya, arr: 42000, health: 74, lastActivity: '2026-10-08' },
-  { id: 'lumen', name: 'Lumen Health', domain: 'lumenhealth.example', status: 'trial', owner: maya, arr: 0, health: 55, lastActivity: '2026-10-11' },
-  { id: 'orbit', name: 'Orbit Freight', domain: 'orbitfreight.example', status: 'active', owner: jonas, arr: 238000, health: 91, lastActivity: '2026-10-09' },
-  { id: 'harbor', name: 'Harbor Savings Bank', domain: 'harborbank.example', status: 'churned', owner: priya, arr: 0, health: 12, lastActivity: '2026-08-30' },
-  { id: 'quill', name: 'Quill Studio', domain: 'quill.example', status: 'at-risk', owner: maya, arr: 18400, health: 41, lastActivity: '2026-09-28' },
-  { id: 'vela', name: 'Vela Robotics', domain: 'vela.example', status: 'active', owner: priya, arr: 127000, health: 68, lastActivity: '2026-10-06' },
+  ...sampleAccounts,
   { id: 'tidewater', name: 'Tidewater Outfitters', domain: 'tidewater.example', status: 'active', owner: jonas, arr: 64800, health: 79, lastActivity: '2026-10-07' },
   { id: 'kestrel', name: 'Kestrel Analytics', domain: 'kestrel.example', status: 'trial', owner: priya, arr: 0, health: 62, lastActivity: '2026-10-10' },
 ];
@@ -235,6 +229,8 @@ export function DashboardShowcase() {
         {accountsPage ? (
           <PageHeader
             title={accountsPage.title}
+            // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
+            headingLevel={3}
             leading={<SidebarTrigger className="-ms-1" />}
             tabs={tabs}
             tab={tab}
@@ -282,14 +278,14 @@ export function DashboardShowcase() {
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">
               <SidebarTrigger className="-ms-1" />
-              <h1 className="min-w-0 flex-1 truncate text-heading">{pageTitles[page]}</h1>
+              <h3 className="min-w-0 flex-1 truncate text-heading">{pageTitles[page]}</h3>
             </div>
             <Empty className="flex-1 py-16">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <Layers />
                 </EmptyMedia>
-                <EmptyTitle render={<h2 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
+                <EmptyTitle render={<h4 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
                 <EmptyDescription>
                   Accounts and its saved views are live. Everything there is built from Kosmos blocks.
                 </EmptyDescription>

@@ -30,7 +30,13 @@ const themes = ['light', 'dark'] as const;
 const shotStyle = 'nextjs-portal { display: none !important; }';
 
 await mkdir(outDir, { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch().catch((error: Error) => {
+  if (/Executable doesn't exist|playwright install/i.test(error.message)) {
+    console.error("Playwright's Chromium is not installed. Install it once with:\n\n  pnpm exec playwright install chromium\n");
+    process.exit(1);
+  }
+  throw error;
+});
 let failed = false;
 try {
   for (const name of names) {

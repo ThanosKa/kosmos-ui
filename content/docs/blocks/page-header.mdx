@@ -41,7 +41,8 @@ Takes every `<div>` prop, plus:
 
 <TypeTable
   type={{
-    title: { description: 'The page heading, an `<h1>`.', type: 'string', default: "'Accounts'" },
+    title: { description: 'The page heading.', type: 'string', default: "'Accounts'" },
+    headingLevel: { description: 'The heading level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
     leading: { description: 'Goes before the title, usually a `SidebarTrigger`.', type: 'ReactNode' },
     tabs: { description: 'The views the tabs switch between, each with an optional count.', type: '{ value: string; label: string; count?: number }[]' },
     tab: { description: 'The selected tab. Use with `onTabChange`.', type: 'string' },
@@ -59,6 +60,7 @@ Takes every `<div>` prop, plus:
     onViewChange: { description: 'Called with the newly selected layout.', type: "(view: 'table' | 'board') => void" },
     newLabel: { description: 'The label of the primary action.', type: 'string', default: "'New account'" },
     onNew: { description: 'Runs the primary action, usually opening a dialog.', type: '() => void' },
+    onAction: { description: 'Runs an action from the More actions menu. Without it, the menu is hidden.', type: "(action: 'import' | 'export' | 'copy-link') => void" },
     filterMenu: { description: 'Props for the Filter menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },
     moreMenu: { description: 'Props for the More actions menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },
     children: { description: 'The page body, rendered as the panel of the selected tab.', type: 'ReactNode' },

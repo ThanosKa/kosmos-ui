@@ -200,12 +200,16 @@ function DetailDrawer({
   container,
   initialFocus,
 }: DetailDrawerProps) {
-  // Edits made in the drawer, kept until another record opens.
-  const [local, setLocal] = React.useState<{ id: string; status?: DetailStatus; notes: DetailActivity[] }>({
-    id: account.id,
-    notes: [],
-  });
-  if (local.id !== account.id) setLocal({ id: account.id, notes: [] });
+  // Edits made in the drawer, kept until another record opens. A status edit lasts only until the
+  // `account` prop brings a status of its own: a change from outside always wins.
+  const [local, setLocal] = React.useState<{
+    id: string;
+    propStatus: DetailStatus;
+    status?: DetailStatus;
+    notes: DetailActivity[];
+  }>({ id: account.id, propStatus: account.status, notes: [] });
+  if (local.id !== account.id) setLocal({ id: account.id, propStatus: account.status, notes: [] });
+  else if (local.propStatus !== account.status) setLocal({ ...local, propStatus: account.status, status: undefined });
   const [draft, setDraft] = React.useState('');
   const statusLabelId = React.useId();
   const noteId = React.useId();

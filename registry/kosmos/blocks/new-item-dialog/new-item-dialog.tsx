@@ -38,7 +38,7 @@ type NewItemValues = {
   notes: string;
 };
 
-/** The form's own state: the text fields as typed. */
+/** The form as it stands, for `values` and `onValuesChange`: the text fields as typed, ARR as text. */
 type FormValues = Omit<NewItemValues, 'arr'> & { arr: string };
 
 // Sample data: replace it with your workspace's people.
@@ -99,6 +99,13 @@ type NewItemDialogProps = {
   people?: NewItemPerson[];
   /** Values to start the form with each time it opens, such as the status of the board column it was opened from. */
   defaultValues?: Partial<NewItemValues>;
+  /**
+   * The form as it stands, controlled. Use with `onValuesChange`. A controlled form is not cleared
+   * when the dialog opens; reset it yourself, for example in `onOpenChange`.
+   */
+  values?: FormValues;
+  /** Called with the whole form each time a field changes, and when "Create more" clears it. */
+  onValuesChange?: (values: FormValues) => void;
   /** The element that opens the dialog. Defaults to a "New account" button; pass `null` to open it only through `open`. */
   trigger?: React.ReactElement | null;
   /** Shows the validation errors from the start, as after a failed submit. For previews. */
@@ -128,6 +135,8 @@ function NewItemDialog({
   onCreate,
   people = samplePeople,
   defaultValues,
+  values: valuesProp,
+  onValuesChange,
   trigger,
   defaultSubmitted = false,
   modal = true,
@@ -136,7 +145,12 @@ function NewItemDialog({
 }: NewItemDialogProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
-  const [values, setValues] = React.useState(() => toForm(defaultValues));
+  const [uncontrolledValues, setUncontrolledValues] = React.useState(() => toForm(defaultValues));
+  const values = valuesProp ?? uncontrolledValues;
+  const setValues = (next: FormValues) => {
+    if (valuesProp === undefined) setUncontrolledValues(next);
+    onValuesChange?.(next);
+  };
   const [submitted, setSubmitted] = React.useState(defaultSubmitted);
   const [createMore, setCreateMore] = React.useState(false);
   // The last record made while "Create more" kept the dialog open, confirmed in a live region.
@@ -145,11 +159,12 @@ function NewItemDialog({
   const domainRef = React.useRef<HTMLInputElement>(null);
 
   // A fresh form each time the dialog opens, however it was closed, with the current `defaultValues`.
+  // A controlled form stays as its owner set it.
   const [wasOpen, setWasOpen] = React.useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
-      setValues(toForm(defaultValues));
+      if (valuesProp === undefined) setUncontrolledValues(toForm(defaultValues));
       setSubmitted(false);
       setLastCreated(null);
     }
@@ -165,7 +180,7 @@ function NewItemDialog({
   }
 
   function setField<Key extends keyof FormValues>(key: Key, value: FormValues[Key]) {
-    setValues((current) => ({ ...current, [key]: value }));
+    setValues({ ...values, [key]: value });
   }
 
   function submit(event: React.FormEvent) {
@@ -178,7 +193,7 @@ function NewItemDialog({
     onCreate?.({ ...values, name, domain, arr: Number.isFinite(arr) ? arr : null, notes: values.notes.trim() });
     if (createMore) {
       // Keep status and owner for the next record in the same batch.
-      setValues((current) => ({ ...current, name: '', domain: '', arr: '', notes: '' }));
+      setValues({ ...values, name: '', domain: '', arr: '', notes: '' });
       setSubmitted(false);
       setLastCreated(name);
       nameRef.current?.focus();
@@ -327,4 +342,4 @@ function NewItemDialog({
   );
 }
 
-export { NewItemDialog, type NewItemDialogProps, type NewItemPerson, type NewItemStatus, type NewItemValues };
+export { NewItemDialog, type FormValues as NewItemFormValues, type NewItemDialogProps, type NewItemPerson, type NewItemStatus, type NewItemValues };

@@ -22,6 +22,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/t
 type PageTab = { value: string; label: string; count?: number };
 type FilterOption = { value: string; label: string };
 type PageView = 'table' | 'board';
+/** What the More actions menu offers. */
+type PageHeaderAction = 'import' | 'export' | 'copy-link';
 
 const sampleTabs: PageTab[] = [
   { value: 'all', label: 'All accounts', count: 128 },
@@ -56,6 +58,8 @@ const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFra
 
 type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> & {
   title?: string;
+  /** The heading level of the title. Keep `1` when the header tops the page; lower it when the page already has an `<h1>`. */
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Goes before the title, usually a `SidebarTrigger`. */
   leading?: React.ReactNode;
   /** The views the tabs switch between, each with an optional count. */
@@ -82,6 +86,8 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
   newLabel?: string;
   /** Runs the primary action, usually opening a dialog. */
   onNew?: () => void;
+  /** Runs an action from the More actions menu. The menu shows only when this is passed. */
+  onAction?: (action: PageHeaderAction) => void;
   /** Props for the Filter menu, such as `open` and `onOpenChange`. */
   filterMenu?: MenuProps;
   /** Props for the More actions menu, such as `open` and `onOpenChange`. */
@@ -98,6 +104,7 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
  */
 function PageHeader({
   title = 'Accounts',
+  headingLevel = 1,
   leading,
   tabs = sampleTabs,
   tab: tabProp,
@@ -115,6 +122,7 @@ function PageHeader({
   onViewChange,
   newLabel = 'New account',
   onNew,
+  onAction,
   filterMenu,
   moreMenu,
   className,
@@ -126,6 +134,7 @@ function PageHeader({
   const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
   const [view, setView] = useControlled<PageView>(viewProp, defaultView, onViewChange);
   const searchId = React.useId();
+  const Heading = `h${headingLevel}` as const;
 
   return (
     <Tabs
@@ -137,27 +146,29 @@ function PageHeader({
       <div data-slot="page-header" className="flex flex-col">
         <div className="flex h-14 items-center gap-2 px-4">
           {leading}
-          <h1 className="min-w-0 flex-1 truncate text-heading">{title}</h1>
-          <DropdownMenu {...moreMenu}>
-            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="More actions" />}>
-              <Ellipsis aria-hidden />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Upload />
-                Import from CSV
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Download />
-                Export to CSV
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link2 />
-                Copy link to view
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Heading className="min-w-0 flex-1 truncate text-heading">{title}</Heading>
+          {onAction ? (
+            <DropdownMenu {...moreMenu}>
+              <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="More actions" />}>
+                <Ellipsis aria-hidden />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onAction('import')}>
+                  <Upload />
+                  Import from CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onAction('export')}>
+                  <Download />
+                  Export to CSV
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => onAction('copy-link')}>
+                  <Link2 />
+                  Copy link to view
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
           <Button variant="primary" onClick={onNew} aria-label={newLabel} className="@max-md:w-7.5 @max-md:px-0">
             <Plus aria-hidden data-icon="inline-start" />
             <span className="@max-md:hidden">{newLabel}</span>
@@ -265,4 +276,4 @@ function PageHeader({
   );
 }
 
-export { PageHeader, type PageHeaderProps, type PageTab, type PageView, type FilterOption };
+export { PageHeader, type PageHeaderAction, type PageHeaderProps, type PageTab, type PageView, type FilterOption };

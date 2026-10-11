@@ -35,15 +35,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/components/command); the block shows the ⌘K hint but does not bind the keys, so bind them where you pass `onSearch`.
+The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/blocks/command-menu). The block doesn't bind any keys: when your app binds ⌘K (Ctrl+K on Windows and Linux) to the same search, as the command menu does, pass `searchShortcut` and the button shows and announces it. The workspace and account menus run their actions (add workspace, profile, account settings, log out) through `onAction`; without it, those items are hidden and the user shows as plain text.
 
 To put the same content in another surface, such as your own drawer, render `AppSidebarContent` instead of `AppSidebar`.
 
 ## What it does
 
-- **Workspace switcher**: a menu that lists the workspaces and marks the current one. It keeps its own state unless you pass `workspace` and `onWorkspaceChange`.
+- **Workspace switcher**: a menu that lists the workspaces and marks the current one. It keeps its own state, starting on `defaultWorkspace`, unless you pass `workspace` and `onWorkspaceChange`. With no workspaces, it is hidden.
 - **Pages and saved views**: links with an icon and an optional count. `badgeLabel` tells screen readers what the count means ("unread").
-- **Account menu**: the signed-in user, with profile, settings and log out. It opens upward from the bottom of the sidebar.
+- **Account menu**: the signed-in user, with profile, settings and log out, once you pass `onAction`. It opens upward from the bottom of the sidebar.
 - **Resize, collapse and phones**: everything the [Sidebar](/docs/components/sidebar) does. From 768px up it sits beside the page; below that it opens as a drawer.
 
 ## API
@@ -74,13 +74,23 @@ Each item is `{ id: string; label: string; href: string; icon: LucideIcon; badge
       description: 'Called by the search button, usually to open a command menu.',
       type: '() => void',
     },
+    searchShortcut: {
+      description: 'Shows and announces ⌘K (Ctrl+K on Windows and Linux) on the search button. Turn it on only when your app binds that shortcut.',
+      type: 'boolean',
+      default: 'false',
+    },
     workspaces: {
-      description: 'The workspaces in the switcher.',
+      description: 'The workspaces in the switcher. With none, the switcher is hidden.',
       type: '{ id: string; name: string; plan: string }[]',
     },
     workspace: {
       description: 'The `id` of the current workspace. Use with `onWorkspaceChange`.',
       type: 'string',
+    },
+    defaultWorkspace: {
+      description: 'The workspace shown at first, when the switcher keeps its own state.',
+      type: 'string',
+      default: 'the first workspace',
     },
     onWorkspaceChange: {
       description: 'Called with the `id` of the workspace picked in the switcher.',
@@ -89,6 +99,10 @@ Each item is `{ id: string; label: string; href: string; icon: LucideIcon; badge
     user: {
       description: 'The signed-in user shown in the account menu.',
       type: '{ name: string; email: string; initials: string }',
+    },
+    onAction: {
+      description: 'Runs an action from the workspace or account menu. Without it, those items and the account menu are hidden.',
+      type: "(action: 'add-workspace' | 'profile' | 'account-settings' | 'log-out') => void",
     },
     workspaceMenu: {
       description: 'Props for the workspace menu, such as `open` and `onOpenChange`.',
