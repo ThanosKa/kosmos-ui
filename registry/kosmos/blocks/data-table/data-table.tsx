@@ -99,7 +99,7 @@ function SortableHead({
         size="sm"
         onClick={() => onSort(sortKey)}
         className={cn(
-          'h-6 gap-1 px-1.5 text-caption font-medium text-muted-foreground hover:text-foreground',
+          'h-6 gap-1 px-1.5 text-caption font-normal text-muted-foreground hover:text-foreground',
           align === 'end' ? '-me-1.5 flex-row-reverse' : '-ms-1.5',
           active && 'text-foreground',
         )}
