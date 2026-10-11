@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "type": "registry:ui",
+  "title": "Toast",
+  "description": "Short notifications built on Base UI Toast that stack at the bottom of the screen, announce themselves to screen readers and close on their own. Success, error, warning, info and loading types, an optional action, swipe to dismiss.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "overlays" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/toast.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

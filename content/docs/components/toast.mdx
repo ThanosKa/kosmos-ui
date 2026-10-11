@@ -1,0 +1,119 @@
+---
+title: Toast
+description: Short notifications that stack at the bottom of the screen and close on their own. Built on Base UI Toast, they announce themselves to screen readers.
+---
+
+<ComponentPreview name="toast-demo" minHeight={320} />
+
+## Installation
+
+<ComponentInstall name="toast" />
+
+## Usage
+
+Render one `Toaster` near the root of your app:
+
+```tsx title="app/layout.tsx"
+import { Toaster } from '@/components/ui/toast';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+```
+
+Then add toasts from anywhere, even outside React:
+
+```tsx
+import { toast } from '@/components/ui/toast';
+
+toast.add({ title: 'Invite sent', description: 'Ana Lopez will get an email in a minute.' });
+```
+
+A toast closes after 5 seconds. The timer pauses while the pointer is over the stack, while a toast has focus and while the window is in the background. Up to three toasts show at a time; older ones leave as new ones arrive.
+
+Screen readers announce every new toast politely, after what they are reading. Pass `priority: 'high'` for an error that needs attention now, and it is announced at once. F6 moves focus into the toasts, so keyboard users can reach their buttons.
+
+## Examples
+
+### Types
+
+`type` adds an icon: `success`, `error`, `warning`, `info` or `loading`. The icon carries the color; the text stays in the regular text colors.
+
+<ComponentPreview name="toast-types" minHeight={320} />
+
+### Action
+
+`actionProps` adds one button, such as Undo. Give a toast with an action `timeout: 0`, so it stays until it is closed and nobody misses the chance to use it.
+
+<ComponentPreview name="toast-action" minHeight={320} />
+
+### Promise
+
+`toast.promise` shows a loading toast while a promise runs, then turns it into a success or an error toast.
+
+<ComponentPreview name="toast-promise" minHeight={320} />
+
+## Motion
+
+A toast slides up from the bottom edge and fades in over 300ms with `power3-out`, and leaves the same way, or in the direction it was swiped, over 150ms. While collapsed, the two toasts before the newest peek out above it, each 5% smaller; hovering or focusing the stack spreads them out.
+
+Under reduced motion toasts only fade in and out, and the stack stays spread out, so nothing moves when you hover it. The loading icon pulses instead of spinning.
+
+## API
+
+Toast wraps the [Base UI Toast](https://base-ui.com/react/components/toast).
+
+### toast
+
+The app-wide manager that `Toaster` shows by default. It has the methods of Base UI's toast manager:
+
+| Method | What it does |
+| --- | --- |
+| `toast.add(options)` | Adds a toast and returns its id. Options: `title`, `description`, `type`, `timeout`, `priority`, `actionProps`, `id`, `onClose`, `data`. Adding an existing `id` updates that toast. |
+| `toast.update(id, options)` | Changes a toast in place. |
+| `toast.close(id)` | Closes a toast. |
+| `toast.promise(promise, { loading, success, error })` | Follows a promise with one toast. |
+
+`useToastManager()` returns the same methods plus the list of `toasts`, inside a `Toaster`. `createToastManager()` makes a separate manager for a second `Toaster`.
+
+### Toaster
+
+Takes every Base UI `Toast.Provider` prop, plus:
+
+<TypeTable
+  type={{
+    toastManager: { description: 'The manager whose toasts it shows.', type: 'ToastManager', default: 'toast' },
+    timeout: { description: 'How long a toast stays, in ms. 0 keeps it until it is closed.', type: 'number', default: '5000' },
+    limit: { description: 'How many toasts show at a time.', type: 'number', default: '3' },
+    container: {
+      description: 'The element the toasts render into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+  }}
+/>
+
+### Parts
+
+For a custom layout, build your own list from the parts and render it inside `ToastProvider`, `ToastPortal` and `ToastViewport`:
+
+| Part | What it is |
+| --- | --- |
+| `ToastProvider` | Holds the toasts. Base UI `Toast.Provider`. |
+| `ToastPortal` | Renders the viewport into `document.body`. Base UI `Toast.Portal`. |
+| `ToastViewport` | The region the toasts stack in, at the bottom end of the screen. Base UI `Toast.Viewport`. |
+| `ToastList` | Renders every toast with the default layout. |
+| `Toast` | One toast surface. Base UI `Toast.Root`. |
+| `ToastContent` | Lays out icon, text and buttons. Base UI `Toast.Content`. |
+| `ToastIcon` | The icon for a `type`. |
+| `ToastTitle` | The title. Base UI `Toast.Title`. |
+| `ToastDescription` | The text under the title. Base UI `Toast.Description`. |
+| `ToastAction` | The action button. Base UI `Toast.Action`. |
+| `ToastClose` | The close button. Base UI `Toast.Close`. |
