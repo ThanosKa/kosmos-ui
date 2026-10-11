@@ -56,6 +56,7 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
+- Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
 
 ## Typography

@@ -1,0 +1,142 @@
+---
+title: Chart
+description: Charts built on Recharts and themed with Kosmos tokens. A growth chart for a value over time, a sparkline for tiles, and parts for any Recharts chart.
+---
+
+<ComponentPreview name="chart-demo" />
+
+## Installation
+
+<ComponentInstall name="chart" />
+
+This installs [Recharts](https://recharts.github.io), the chart library shadcn's charts also use, and `react-is`, which Recharts needs. On React 18, pin `react-is` to version 18.
+
+## Usage
+
+```tsx
+import { GrowthChart, type ChartConfig } from '@/components/ui/chart';
+```
+
+```tsx
+const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisfies ChartConfig;
+
+<GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
+```
+
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They switch with the theme and were checked as a set for color-blind readers and for contrast on cards and on the page. For more than five series, group the smallest into "Other".
+
+## Examples
+
+### Two or more series
+
+Each key in `config` becomes a series. With two or more, a legend appears above the chart.
+
+<ComponentPreview name="chart-multiple" />
+
+### Sparkline
+
+A small trend line with no axes, for a stat tile or a table cell. It reads as one image, so its `aria-label` says what it shows, including the change: "Signups, last 12 months, up 4.2%".
+
+<ComponentPreview name="chart-sparkline" />
+
+### Any Recharts chart
+
+`ChartContainer` sizes a Recharts chart to its box and themes the axes, grid, cursor and focus outline. Each series color is available as `var(--color-<key>)`. Add `ChartTooltip` with `ChartTooltipContent`, and `ChartLegend` with `ChartLegendContent`, for the Kosmos tooltip and legend.
+
+<ComponentPreview name="chart-custom" />
+
+Give the container a height or an aspect ratio; it is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
+
+## Accessibility
+
+- The growth chart is named by `title`, and keyboard users can focus it and step through the points with the arrow keys.
+- It also renders its data as a visually hidden table, so screen reader users get every value.
+- Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
+
+## API
+
+### GrowthChart
+
+<TypeTable
+  type={{
+    data: { description: 'One object per x value.', type: 'Record<string, string | number>[]', required: true },
+    config: { description: 'The series to draw, keyed by data key.', type: 'ChartConfig', required: true },
+    xKey: { description: 'The key of the x value in each object.', type: 'string', required: true },
+    title: {
+      description: 'Names the chart for screen readers and captions its hidden data table.',
+      type: 'string',
+      required: true,
+    },
+    xLabel: { description: 'Heads the x column of the hidden table.', type: 'string', default: 'xKey' },
+    valueFormatter: {
+      description: 'Formats values in the tooltip and the hidden table. Axis ticks stay compact (1.2K).',
+      type: '(value: number) => string',
+    },
+    xFormatter: {
+      description: 'Formats x values on the axis, in the tooltip and in the hidden table.',
+      type: '(value: string) => string',
+    },
+    defaultIndex: { description: 'Shows the tooltip at this point without hovering.', type: 'number' },
+  }}
+/>
+
+### Sparkline
+
+<TypeTable
+  type={{
+    data: { description: 'One object per point.', type: 'Record<string, number>[]', required: true },
+    'aria-label': { description: 'What the line shows, including the trend.', type: 'string', required: true },
+    dataKey: { description: 'The key of the value in each object.', type: 'string', default: "'value'" },
+    color: { description: 'Any CSS color.', type: 'string', default: "'var(--chart-1)'" },
+    fill: { description: 'Washes the area under the line.', type: 'boolean', default: 'true' },
+  }}
+/>
+
+### ChartContainer
+
+Accepts all `<div>` props.
+
+<TypeTable
+  type={{
+    config: { description: 'The series, keyed by data key; each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
+    children: { description: 'One Recharts chart, such as `<BarChart>`.', type: 'ReactElement', required: true },
+  }}
+/>
+
+### ChartConfig
+
+<TypeTable
+  type={{
+    label: { description: 'The series name in the tooltip and legend.', type: 'ReactNode' },
+    color: { description: 'Any CSS color, usually a chart token.', type: 'string' },
+    icon: { description: 'Shown in place of the color swatch.', type: 'ComponentType' },
+  }}
+/>
+
+### ChartTooltipContent
+
+<TypeTable
+  type={{
+    hideLabel: { description: 'Hides the x value above the rows.', type: 'boolean', default: 'false' },
+    hideIndicator: { description: 'Hides the color swatches.', type: 'boolean', default: 'false' },
+    labelFormatter: { description: 'Formats the x value.', type: '(label: ReactNode) => ReactNode' },
+    valueFormatter: {
+      description: 'Formats each value. Numbers default to en-US formatting.',
+      type: '(value, key: string) => ReactNode',
+    },
+  }}
+/>
+
+### ChartLegendContent
+
+<TypeTable
+  type={{
+    verticalAlign: {
+      description: 'Match the `verticalAlign` of its `ChartLegend`, so the spacing lands between legend and chart.',
+      type: "'top' | 'middle' | 'bottom'",
+      default: "'bottom'",
+    },
+  }}
+/>
+
+`ChartTooltip` and `ChartLegend` are Recharts' `Tooltip` and `Legend`.
