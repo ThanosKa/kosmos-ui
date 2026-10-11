@@ -24,6 +24,17 @@ agent-browser install                   # downloads the browser agent-browser dr
 
 Then, with `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs to `.screenshots/`.
 
+### Install smoke test
+
+`pnpm registry:smoke` installs the whole registry the way `content/docs/installation.mdx` tells users to, then checks that it builds. Run it after you change a `*.registry.json`, a dependency, or the installation page.
+
+1. It builds the registry and serves `public/r` on port 3103 (`--port <n>`, or `--port 0` for a free one).
+2. It checks each item's imports against its own `dependencies` and `registryDependencies`.
+3. It creates a new app in a temp folder with `npx shadcn@latest init -t next -b base` (preset `nova`, or `--preset <name>`), adds the `@kosmos` registry and `@kosmos/tokens`, then every other item in one `shadcn add`.
+4. It writes `/kosmos-smoke` with every item's docs preview, plus one page per item, then runs the app's `npm run typecheck` and `npm run build`.
+
+It prints install, dependencies, types and build per item, exits 1 if any fail, and keeps the app and logs in the temp folder it prints. It needs network access for npm. To check a single item in a clean app, use `pnpm registry:check <name>`.
+
 ### Claude Code
 
 The repo ships its Claude Code setup, so a fresh clone works on any machine:

@@ -11,6 +11,7 @@
     "lint": "eslint",
     "registry:build": "node scripts/registry-build.mts",
     "registry:check": "node scripts/registry-check.mts",
+    "registry:smoke": "node scripts/registry-smoke.mts",
     "screenshots": "node scripts/screenshots.mts"
   },
   "dependencies": {
