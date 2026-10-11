@@ -1,0 +1,110 @@
+---
+title: Segmented control
+description: Picks one of a few options, like a view mode or a time range, from a row of segments. Built on Base UI Radio Group.
+---
+
+<ComponentPreview name="segmented-control-demo" />
+
+## Installation
+
+<ComponentInstall name="segmented-control" />
+
+## Usage
+
+```tsx
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control';
+```
+
+```tsx
+<SegmentedControl aria-label="Time range" defaultValue="30d">
+  <SegmentedControlItem value="7d">7 days</SegmentedControlItem>
+  <SegmentedControlItem value="30d">30 days</SegmentedControlItem>
+  <SegmentedControlItem value="90d">90 days</SegmentedControlItem>
+</SegmentedControl>
+```
+
+Give the control an `aria-label`, or point `aria-labelledby` at a visible label. Keep it to two to five options with one or two words each; for more options, use a [Select](/docs/components/select). To switch between panels of content, use [Tabs](/docs/components/tabs).
+
+Underneath it is a radio group, so exactly one item is always selected and `name` submits the value with a form.
+
+## Examples
+
+### Sizes
+
+`md` matches a 30px Button and `sm` a 24px one.
+
+<ComponentPreview name="segmented-control-sizes" />
+
+### Icons
+
+Put an icon first with `data-icon="inline-start"`. An item with only an icon needs an `aria-label`, which also makes it square.
+
+<ComponentPreview name="segmented-control-icons" />
+
+### Controlled
+
+Pass `value` and `onValueChange` to drive other parts of the page from the selection.
+
+<ComponentPreview name="segmented-control-controlled" />
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves focus to the selected item. |
+| `ArrowLeft` `ArrowRight` | Selects the previous or next item, wrapping at the ends. |
+| `Space` | Selects the focused item. |
+
+## Motion
+
+The raised surface fades onto the selected item over 200ms, so nothing slides and reduced motion needs no change. When the control is wider than its container, the labels wrap instead of overflowing.
+
+## API
+
+SegmentedControl wraps the [Base UI Radio Group](https://base-ui.com/react/components/radio) and each item a Base UI `Radio.Root`. Both take every prop of the part they render, such as `name`, `disabled` and `required`.
+
+### SegmentedControl
+
+<TypeTable
+  type={{
+    defaultValue: {
+      description: 'The item selected first, when the control keeps its own state.',
+      type: 'string',
+    },
+    value: {
+      description: 'The selected item. Use with `onValueChange`.',
+      type: 'string',
+    },
+    onValueChange: {
+      description: 'Called with the value of the newly selected item.',
+      type: '(value: string, eventDetails) => void',
+    },
+    size: {
+      description: '`md` matches a 30px Button, `sm` a 24px one.',
+      type: "'sm' | 'md'",
+      default: "'md'",
+    },
+    disabled: {
+      description: 'Turns off every item.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### SegmentedControlItem
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The value the control reports when this item is selected.',
+      type: 'string',
+      required: true,
+    },
+    disabled: {
+      description: 'Turns off this item only.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
