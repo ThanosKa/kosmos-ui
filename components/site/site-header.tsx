@@ -11,7 +11,7 @@ import { ThemeToggle } from './theme-toggle';
 /** The site header on the landing page: logo, docs links, search, GitHub, X and the theme toggle. */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
+    <header id="site-header" className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-1 px-4 sm:px-6">
         <SiteNavMenu className="-ms-1.5 md:hidden" />
         <Link

@@ -3,7 +3,7 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { GitHubIcon, XIcon } from './brand-icons';
 
 const link =
-  'rounded-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+  'rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 /** Who built Kosmos UI, where the code lives and its license. */
 export function SiteFooter() {

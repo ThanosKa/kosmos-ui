@@ -44,6 +44,11 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* The landing page's sticky header (3.5rem): focused and anchored elements stop below it. */
+html:has(#site-header) {
+  scroll-padding-top: 4.5rem;
+}
+
 html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;

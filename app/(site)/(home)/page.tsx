@@ -45,7 +45,7 @@ export default function HomePage() {
           A live dashboard built from the free blocks. Switch tabs, filter the table or{' '}
           <Link
             href="/docs/blocks"
-            className="rounded-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             browse the blocks
           </Link>
