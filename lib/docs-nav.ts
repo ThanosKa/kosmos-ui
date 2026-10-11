@@ -1,6 +1,16 @@
 import { createElement, type ReactNode } from 'react';
 import { flattenTree } from 'fumadocs-core/page-tree';
-import { ChartColumn, Compass, Layers2, LayoutDashboard, Puzzle, Shapes, TextCursorInput, type LucideIcon } from 'lucide-react';
+import {
+  ChartColumn,
+  Compass,
+  Layers2,
+  LayoutDashboard,
+  Library,
+  Puzzle,
+  Shapes,
+  TextCursorInput,
+  type LucideIcon,
+} from 'lucide-react';
 import { groups, isGroup, readRegistryItems, type Group } from './registry';
 import { source } from './source';
 
@@ -64,7 +74,7 @@ export function getDocsNav(): DocsNav {
     const section = sectionOf(page.slugs);
     if (section !== 'components' && section !== 'blocks') continue;
     if (page.slugs.length === 1) {
-      items[section].push({ title: 'Overview', url: page.url });
+      items[section].push({ title: 'Overview', url: page.url, icon: createElement(Library) });
       continue;
     }
     const group = registryGroup(page.slugs, registryItems);
