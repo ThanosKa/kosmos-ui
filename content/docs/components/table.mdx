@@ -65,17 +65,48 @@ Cells don't wrap. For a column of long text, give the table `className="table-fi
 
 ## API
 
-Each part renders the matching native element (`<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>`) and accepts all of its props.
+Each part renders the matching native element and accepts all of its props. No part wraps a Base UI part.
+
+### Table
+
+Renders a `<table>` inside a [Scroll Area](/docs/components/scroll-area), so a wide table scrolls sideways instead of widening the page. Takes every `<table>` prop, plus:
 
 <TypeTable
   type={{
     containerClassName: {
-      description: 'Classes for the scroll area around the `<table>`, on `Table`.',
+      description: 'Classes for the scroll area around the `<table>`.',
       type: 'string',
     },
+  }}
+/>
+
+### TableRow
+
+Renders a `<tr>` that highlights on hover. Takes every `<tr>` prop, plus:
+
+<TypeTable
+  type={{
     'data-state': {
-      description: "Set to `'selected'` on a `TableRow` to highlight it as selected.",
+      description: "Set to `'selected'` to highlight the row as selected.",
       type: "'selected'",
     },
   }}
 />
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `TableHeader` | The header rows. A `<thead>`. |
+| `TableBody` | The body rows. A `<tbody>`. |
+| `TableFooter` | The footer rows, such as totals, in medium weight below a 1px line. A `<tfoot>`. |
+| `TableHead` | A header cell. A `<th>`. |
+| `TableCell` | A body cell. A `<td>`. |
+| `TableCaption` | Describes the table, under it. A `<caption>`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Focuses the table while its columns overflow. A table that fits is skipped. |
+| `ArrowRight` or `ArrowLeft` | Scrolls sideways to the hidden columns. |

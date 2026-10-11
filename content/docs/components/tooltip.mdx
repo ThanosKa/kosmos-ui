@@ -55,9 +55,11 @@ Screen readers do not read the tooltip's text, and touch screens never show it. 
 
 ## API
 
+Tooltip wraps the [Base UI Tooltip](https://base-ui.com/react/components/tooltip). Each part takes the props of the Base UI part it renders.
+
 ### TooltipProvider
 
-Wraps the Base UI `Tooltip.Provider`.
+Shares one delay between the tooltips inside it. Takes every Base UI `Tooltip.Provider` prop:
 
 <TypeTable
   type={{
@@ -79,17 +81,9 @@ Wraps the Base UI `Tooltip.Provider`.
   }}
 />
 
-### Tooltip
-
-Wraps the [Base UI Tooltip](https://base-ui.com/react/components/tooltip) root: `open`, `defaultOpen`, `onOpenChange` and `disabled`.
-
-### TooltipTrigger
-
-Wraps `Tooltip.Trigger`. Use `render` to pass your control, and `delay` to override the provider's delay for one trigger.
-
 ### TooltipContent
 
-The popup, placed in a portal next to the trigger.
+The popup, placed next to the trigger: Base UI `Tooltip.Portal`, `Tooltip.Positioner` and `Tooltip.Popup` put together. Takes every `Tooltip.Popup` prop, plus:
 
 <TypeTable
   type={{
@@ -115,3 +109,17 @@ The popup, placed in a portal next to the trigger.
     },
   }}
 />
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `Tooltip` | Holds the open state: `open`, `defaultOpen`, `onOpenChange` and `disabled`. Base UI `Tooltip.Root`. |
+| `TooltipTrigger` | The control the tooltip describes. Use `render` to pass your control, and `delay` to override the provider's delay for one trigger. Base UI `Tooltip.Trigger`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Focusing the trigger opens its tooltip. Moving focus away closes it. |
+| `Escape` | Closes the tooltip. Focus stays on the trigger. |

@@ -2,8 +2,9 @@
   "pages": [
     "index",
     "installation",
-    "motion",
     "changelog/index",
+    "---Foundations---",
+    "...foundations",
     "---Components---",
     "...components",
     "---Blocks---",
