@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog",
+  "type": "registry:ui",
+  "title": "Dialog",
+  "description": "A modal window built on Base UI that traps focus, closes on Escape or a click outside and returns focus to its trigger. Composable parts (backdrop, viewport, popup) plus a ready header, body and footer.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "overlays" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/dialog.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
