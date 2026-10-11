@@ -161,7 +161,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
       data-lifted={lifted ? '' : undefined}
       data-placeholder={placeholder ? '' : undefined}
       className={cn(
-        'flex w-full cursor-grab touch-manipulation flex-col gap-3 rounded-2xl border border-transparent bg-card p-3 text-start text-card-foreground shadow-card select-none',
+        'flex w-full cursor-grab touch-manipulation flex-col divide-y divide-border rounded-2xl border border-transparent bg-card text-start text-card-foreground shadow-card select-none',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'data-lifted:cursor-grabbing data-lifted:shadow-lift motion-safe:data-lifted:-rotate-2',
         // The slot keeps its size but shows nothing; while it holds focus, the lifted card's ring marks the card.
@@ -170,7 +170,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
       )}
       {...props}
     >
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2 p-3">
         <div className="flex min-w-0 flex-1 flex-col">
           <p className="line-clamp-2 text-body font-medium text-pretty wrap-break-word">{item.name}</p>
           {item.domain ? <p className="truncate text-caption text-muted-foreground">{item.domain}</p> : null}
@@ -181,7 +181,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
           </Avatar>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5">
         {item.arr !== undefined ? (
           <span className="text-caption text-muted-foreground tabular-nums">
             <span className="font-medium text-foreground">{item.arr ? usdCompact.format(item.arr) : '$0'}</span> ARR
@@ -279,10 +279,10 @@ function KanbanColumnView({
     <section
       data-slot="kanban-column"
       aria-labelledby={headingId}
-      className="flex max-h-full w-72 shrink-0 flex-col rounded-3xl bg-accent"
+      className="flex max-h-full w-72 shrink-0 flex-col"
     >
       {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
-      <header className="relative flex h-10 shrink-0 items-center gap-2 ps-4 pe-2.5 pt-1">
+      <header className="relative flex h-11 shrink-0 items-center gap-2 ps-3.5 pe-2">
         <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[column.tone ?? 'muted'])} />
         <h3 id={headingId} className="truncate text-body font-medium">
           {column.title}
@@ -318,9 +318,9 @@ function KanbanColumnView({
         faster than Scroll area re-measures, which left a stale scrollbar gutter after the drag. The 4px
         inset leaves room for the card ring and focus outline, which the scroll container would clip.
       */}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-3xl [scrollbar-width:thin] dark:scheme-dark">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin] dark:scheme-dark">
         <SortableContext id={column.id} items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-          <div ref={setNodeRef} className="flex min-h-20 flex-col gap-2 p-1">
+          <div ref={setNodeRef} className="flex min-h-20 flex-col gap-2 px-3 py-1">
             {loading ? (
               <>
                 <Skeleton className="h-24 rounded-2xl" />
@@ -528,7 +528,7 @@ function KanbanBoard({
         onDragCancel={handleDragCancel}
       >
         <ScrollArea className="min-h-0 flex-1 rounded-3xl" viewportClassName="[&>[data-slot=scroll-area-content]]:h-full">
-          <div className="flex h-full w-max items-start gap-3">
+          <div className="flex h-full w-max items-stretch divide-x divide-border">
             {columns.map((column) => (
               <KanbanColumnView
                 key={column.id}

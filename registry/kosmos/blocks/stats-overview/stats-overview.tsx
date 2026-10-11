@@ -3,6 +3,7 @@
 import { ChartNoAxesCombined, TrendingDown, TrendingUp } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { Badge } from '@/registry/kosmos/ui/badge';
 import { GrowthChart, Sparkline, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
@@ -96,8 +97,11 @@ function StatTile({ stat, loading }: { stat: Stat; loading: boolean }) {
   const Icon = rising ? TrendingUp : TrendingDown;
 
   return (
-    <div data-slot="stat-tile" className="flex min-w-0 flex-col gap-2 bg-card p-4">
-      <p title={stat.label} className="truncate text-small text-muted-foreground">
+    <div
+      data-slot="stat-tile"
+      className="flex min-w-0 flex-col gap-2 rounded-2xl border border-transparent bg-card p-4 text-card-foreground shadow-card"
+    >
+      <p title={stat.label} className="truncate text-body font-medium text-muted-foreground">
         {stat.label}
       </p>
       {loading ? (
@@ -117,15 +121,15 @@ function StatTile({ stat, loading }: { stat: Stat; loading: boolean }) {
               />
             ) : null}
           </div>
-          <p className="flex min-w-0 items-center gap-1.5 text-small tabular-nums">
-            {good === null ? null : (
-              <Icon aria-hidden className={cn('size-4 shrink-0', good ? 'text-success' : 'text-destructive')} />
-            )}
+          <p className="flex min-w-0 items-center gap-2 text-small tabular-nums">
             {change === undefined ? (
               <span className="truncate text-muted-foreground">No earlier month to compare</span>
             ) : (
               <>
-                <span className="font-medium">{formatChange(change, stat.format)}</span>
+                <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
+                  {good === null ? null : <Icon aria-hidden />}
+                  {formatChange(change, stat.format)}
+                </Badge>
                 <span className="truncate text-muted-foreground">vs last month</span>
               </>
             )}
@@ -183,7 +187,7 @@ function StatsOverview({
       className={cn('@container flex min-w-0 flex-col gap-4', className)}
       {...props}
     >
-      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-transparent bg-border bg-clip-padding shadow-card @md:grid-cols-2 @4xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 @md:grid-cols-2 @4xl:grid-cols-4">
         {stats.map((stat) => (
           <StatTile key={stat.id} stat={stat} loading={loading} />
         ))}

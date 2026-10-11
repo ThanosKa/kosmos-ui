@@ -8,6 +8,7 @@
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
+    "@kosmos/badge",
     "@kosmos/chart",
     "@kosmos/empty",
     "@kosmos/meter",

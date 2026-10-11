@@ -16,10 +16,10 @@ function SelectTrigger({ className, children, ...props }: SelectTriggerProps) {
       data-slot="select-trigger"
       className={cn(
         // No width: it hugs its value in a row and fills a vertical Field, like an Input.
-        'inline-flex h-7.5 min-w-0 items-center justify-between gap-2 rounded-lg border border-transparent bg-secondary ps-2.5 pe-2 text-body text-secondary-foreground shadow-control select-none [-webkit-tap-highlight-color:transparent]',
+        'inline-flex h-8.5 min-w-0 items-center justify-between gap-2 rounded-lg border border-transparent bg-secondary ps-3 pe-2.5 text-body text-secondary-foreground shadow-field select-none [-webkit-tap-highlight-color:transparent]',
         'transition-[background-color,box-shadow]',
         'hover:not-data-disabled:bg-muted data-popup-open:bg-muted',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
@@ -28,7 +28,7 @@ function SelectTrigger({ className, children, ...props }: SelectTriggerProps) {
     >
       {children}
       <SelectPrimitive.Icon data-slot="select-icon" className="flex shrink-0 text-muted-foreground">
-        <ChevronsUpDown aria-hidden className="size-4" />
+        <ChevronsUpDown aria-hidden className="size-3.5" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -110,10 +110,10 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body outline-none select-none',
+        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body font-medium outline-none select-none',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
         className,
       )}
       {...props}
@@ -121,7 +121,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
       {/* Wraps instead of truncating: the list is where a value cut short in the trigger can be read in full. */}
       <SelectPrimitive.ItemText className="min-w-0 flex-1 wrap-break-word">{children}</SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator className="absolute end-2 flex items-center">
-        <Check aria-hidden className="size-4" />
+        <Check aria-hidden className="size-3.5" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );

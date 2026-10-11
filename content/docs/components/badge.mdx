@@ -1,6 +1,6 @@
 ---
 title: Badge
-description: A small pill for a status, a count or a label. A neutral and a primary look, plus three status looks with a colored dot.
+description: A small pill for a status, a count or a label. A neutral and a primary look, three status looks with a colored dot, and six tinted tag hues.
 ---
 
 <ComponentPreview name="badge-demo" />
@@ -24,6 +24,12 @@ import { Badge } from '@/components/ui/badge';
 ### Status
 
 `success`, `warning` and `destructive` keep the neutral surface and add a colored dot. The label carries the meaning, so write one that reads on its own, such as "Payment failed" instead of "Error". The demo above shows all five looks.
+
+### Tags
+
+For categories, such as a segment, a plan or a label, use a hue: `orange`, `blue`, `amber`, `magenta`, `green` or `red`. Each one tints the pill with a chart color and draws its text in a darker or lighter step of the same hue, which passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. Status keeps the neutral pill with a dot.
+
+<ComponentPreview name="badge-tags" />
 
 ### With an icon
 
@@ -56,8 +62,8 @@ Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/rea
 <TypeTable
   type={{
     variant: {
-      description: 'The look. The status looks add a colored dot before the label.',
-      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive'",
+      description: 'The look. The status looks add a colored dot before the label; the hues tint the pill, for categories.',
+      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red'",
       default: "'secondary'",
     },
     render: {

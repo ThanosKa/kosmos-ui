@@ -91,11 +91,11 @@ function DropdownMenuContent({
 }
 
 const itemClass = cn(
-  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg px-2 py-1.5 text-body outline-none select-none',
+  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg px-2 py-1.5 text-body font-medium outline-none select-none',
   'transition-[background-color] duration-instant',
   'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
   'data-inset:ps-8',
-  "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+  "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",
 );
 
 type DropdownMenuItemProps = MenuPrimitive.Item.Props & {
@@ -214,7 +214,7 @@ function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'spa
   return (
     <span
       data-slot="dropdown-menu-shortcut"
-      className={cn('ms-auto ps-4 text-small text-muted-foreground', className)}
+      className={cn('ms-auto ps-4 text-small font-normal text-muted-foreground', className)}
       {...props}
     />
   );

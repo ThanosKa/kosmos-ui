@@ -19,7 +19,6 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarResizeHandle,
-  SidebarSeparator,
   SidebarTrigger,
 } from '@/registry/kosmos/ui/sidebar';
 
@@ -71,7 +70,6 @@ function SidebarBody() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarSeparator />
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>

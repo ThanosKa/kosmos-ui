@@ -365,13 +365,13 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
   const { toggleSidebar, isMobile, open, openMobile, sidebarId } = useSidebar();
   return (
     <Button
-      variant="ghost"
-      size="icon-sm"
+      variant="secondary"
+      size="icon"
       data-slot="sidebar-trigger"
       aria-label="Toggle sidebar"
       aria-expanded={isMobile ? openMobile : open}
       aria-controls={isMobile && !openMobile ? undefined : sidebarId}
-      className={cn('text-muted-foreground', className)}
+      className={className}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -396,13 +396,23 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
 
 /** The top of the sidebar, for the workspace or product name. Stays put while the content scrolls. */
 function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="sidebar-header" className={cn('flex shrink-0 flex-col gap-2 p-2', className)} {...props} />;
+  return (
+    <div
+      data-slot="sidebar-header"
+      className={cn('flex shrink-0 flex-col gap-2 border-b border-sidebar-border p-2', className)}
+      {...props}
+    />
+  );
 }
 
 /** The bottom of the sidebar, for the account or help links. Stays put while the content scrolls. */
 function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div data-slot="sidebar-footer" className={cn('mt-auto flex shrink-0 flex-col gap-2 p-2', className)} {...props} />
+    <div
+      data-slot="sidebar-footer"
+      className={cn('mt-auto flex shrink-0 flex-col gap-2 border-t border-sidebar-border p-2', className)}
+      {...props}
+    />
   );
 }
 
@@ -432,7 +442,13 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
 
 /** A labelled section of the sidebar: a `SidebarGroupLabel` and a `SidebarMenu`. */
 function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot="sidebar-group" className={cn('flex w-full min-w-0 flex-col p-2', className)} {...props} />;
+  return (
+    <div
+      data-slot="sidebar-group"
+      className={cn('flex w-full min-w-0 flex-col px-2 py-3 not-first:border-t not-first:border-sidebar-border', className)}
+      {...props}
+    />
+  );
 }
 
 /** The small heading of a group. Render it as a heading with `render={<h2 />}` when the page outline needs one. */
@@ -443,7 +459,7 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
     props: mergeProps<'div'>(
       {
         className: cn(
-          'flex h-8 shrink-0 items-center truncate px-2 text-caption font-medium text-muted-foreground',
+          'flex h-6 shrink-0 items-center truncate px-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase',
           className,
         ),
       },
@@ -486,8 +502,9 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
       className={cn(
-        'h-8 w-full min-w-0 justify-start gap-2 px-2 font-normal text-sidebar-foreground',
-        'hover:not-data-disabled:bg-sidebar-accent data-active:bg-sidebar-accent data-active:font-medium',
+        'h-7.5 w-full min-w-0 justify-start gap-2 px-2 text-muted-foreground',
+        'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
+        'data-active:bg-secondary data-active:text-sidebar-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-sidebar-primary',
         className,
       )}
@@ -505,7 +522,10 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'span'>)
   return (
     <span
       data-slot="sidebar-menu-badge"
-      className={cn('ms-auto shrink-0 text-caption font-normal text-muted-foreground tabular-nums', className)}
+      className={cn(
+        'ms-auto inline-flex h-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-full border border-input bg-muted px-1.5 text-caption leading-none font-medium text-muted-foreground tabular-nums',
+        className,
+      )}
       {...props}
     />
   );

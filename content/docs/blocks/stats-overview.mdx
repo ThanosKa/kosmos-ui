@@ -23,7 +23,7 @@ Without props it shows sample metrics. The overview lays itself out by its own w
 
 ## What it does
 
-- **Stat tiles**: a label, the value, a sparkline and the change against last month. The trend icon is green when the change is good news and red when it is bad: set `goodWhen: 'down'` for a stat like churn, where falling is good. Values of a million and up go compact ($128.5M).
+- **Stat tiles**: separate cards, each with a label, the value, a sparkline and the change against last month. The change sits in a tinted pill, green when it is good news and red when it is bad: set `goodWhen: 'down'` for a stat like churn, where falling is good. Values of a million and up go compact ($128.5M).
 - **Revenue chart**: two series over 30 days, 90 days or 12 months, with a tooltip and a hidden data table for screen readers. An empty range shows an empty state.
 - **Revenue by plan**: each plan's share as a meter, with its amount for the selected range.
 - **Loading**: `loading` swaps every value for a skeleton of the same shape.

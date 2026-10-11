@@ -231,7 +231,7 @@ export function DashboardShowcase() {
             title={accountsPage.title}
             // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
             headingLevel={3}
-            leading={<SidebarTrigger className="-ms-1" />}
+            leading={<SidebarTrigger />}
             tabs={tabs}
             tab={tab}
             onTabChange={(value) => setTab(value as TabValue)}
@@ -277,8 +277,8 @@ export function DashboardShowcase() {
         ) : (
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-              <SidebarTrigger className="-ms-1" />
-              <h3 className="min-w-0 flex-1 truncate text-heading">{pageTitles[page]}</h3>
+              <SidebarTrigger />
+              <h3 className="min-w-0 flex-1 truncate text-title font-medium">{pageTitles[page]}</h3>
             </div>
             <Empty className="flex-1 py-16">
               <EmptyHeader>

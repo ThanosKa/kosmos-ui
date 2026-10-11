@@ -8,7 +8,7 @@ import { Button } from '@/registry/kosmos/ui/button';
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
 
 const toggle = (
-  <Button variant="ghost" size="icon-sm" aria-label="Toggle sidebar" className="text-muted-foreground">
+  <Button variant="secondary" size="icon" aria-label="Toggle sidebar">
     <PanelLeft aria-hidden />
   </Button>
 );

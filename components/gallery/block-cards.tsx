@@ -47,7 +47,7 @@ export function AppFrame() {
         <PageHeader
           title="Accounts"
           headingLevel={3}
-          leading={<SidebarTrigger className="-ms-1" />}
+          leading={<SidebarTrigger />}
           tabs={tabs}
           tab={tab}
           onTabChange={setTab}

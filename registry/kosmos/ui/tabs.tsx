@@ -69,7 +69,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         'after:pointer-events-none after:absolute after:bg-foreground after:opacity-0 after:transition-opacity motion-safe:after:hidden data-active:after:opacity-100',
         'group-data-[orientation=horizontal]/tabs-list:after:inset-x-0 group-data-[orientation=horizontal]/tabs-list:after:bottom-0 group-data-[orientation=horizontal]/tabs-list:after:h-0.5',
         'group-data-[orientation=vertical]/tabs-list:after:inset-y-0 group-data-[orientation=vertical]/tabs-list:after:-start-px group-data-[orientation=vertical]/tabs-list:after:w-0.5',
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
         className,
       )}
       {...props}

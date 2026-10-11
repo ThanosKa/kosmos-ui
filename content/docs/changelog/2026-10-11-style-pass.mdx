@@ -1,0 +1,23 @@
+---
+title: Changed the style of every component and block
+description: Denser chrome type, a 10px radius, muted idle items, a raised active item, taller fields and tinted tags. The colors stay the same.
+date: 2026-10-11
+---
+
+A pass over the whole style. The palette did not change: the same warm neutrals and the same orange accent. What changed is how the pieces are built.
+
+- **Type**: chrome text (buttons, nav and menu items, tabs, labels) is 500 weight, and body text tracks slightly tighter. Content (table cells, descriptions, values) stays 400. Page titles in the [page header](/docs/blocks/page-header) are 16px instead of 20px.
+- **Radius**: `--radius` is 10px, so controls and items are 10px and overlays 14px. Cards stay 16px and the checkbox 4px.
+- **Grey hierarchy**: idle sidebar items, table headers, counts and field labels step back to the muted grey, and icons in secondary and ghost buttons are muted too, so the active item and the values lead. Nothing goes below 4.5:1.
+- **[Sidebar](/docs/components/sidebar)**: full-width lines split the header, each group and the footer. Group labels are small uppercase eyebrows, items are 30px with 14px icons, the active item is raised onto the control surface, and counts sit in pills. `SidebarTrigger` is a 30px secondary icon button.
+- **[Button](/docs/components/button)**: 14px icons in `md`, a little less side padding, and a flat primary in light mode.
+- **Fields**: [Input](/docs/components/input), [Textarea](/docs/components/textarea) and the [Select](/docs/components/select) trigger are 34px with a plain ring edge, and focus lights up the field's own edge with a soft halo. Labels above a control are 13px and muted. Beside a Button, give an Input `className="h-7.5"` to match its 30px.
+- **Menus and lists**: menu, select and command items are 500 weight with 14px icons.
+- **[Badge](/docs/components/badge)**: six tag hues for categories, `orange`, `blue`, `amber`, `magenta`, `green` and `red`, each a tinted pill with text that passes 4.5:1. Status badges keep the neutral pill with a dot. Badges are 22px tall.
+- **Overlays in dark mode**: the inner edge of popovers, menus, dialogs and drawers is brighter, so they stand off the page.
+- **[Stats overview](/docs/blocks/stats-overview)**: each stat is its own card, the label is 14px, and the change sits in a green or red tag.
+- **[Kanban board](/docs/blocks/kanban-board)**: columns are open lanes split by lines, and each card splits its name from its numbers with a line.
+- **[Empty](/docs/components/empty)**: a 48px icon tile, a 14px title and a 14px description.
+- **Light cards** drop their hard 1px ring and keep the soft halo and drops.
+
+New tokens: `shadow-field` and the `tag-*` colors. The Badge `variant` gains the six hues; no prop was removed or renamed.

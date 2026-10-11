@@ -43,7 +43,6 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
   type SidebarProps,
 } from '@/registry/kosmos/ui/sidebar';
 
@@ -226,7 +225,7 @@ function AppSidebarContent({
         {current ? (
           <DropdownMenu {...workspaceMenu}>
             <DropdownMenuTrigger
-              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
+              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent" />}
               aria-label={`${current.name}, switch workspace`}
             >
               <WorkspaceMark name={current.name} />
@@ -288,13 +287,12 @@ function AppSidebarContent({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarSeparator />
       <SidebarFooter>
         <NavGroup items={navFooter} activeItem={activeItem} onNavigate={onNavigate} />
         {onAction ? (
           <DropdownMenu {...userMenu}>
             <DropdownMenuTrigger
-              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
+              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent" />}
               aria-label={`${user.name}, account menu`}
             >
               {userDetails}
