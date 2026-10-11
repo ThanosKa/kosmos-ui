@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { ServerCodeBlock } from 'fumadocs-ui/components/codeblock.rsc';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Tab } from 'fumadocs-ui/components/tabs';
 import {
   cssVarsAsCss,
   installCommands,
@@ -11,6 +11,7 @@ import {
   toInstalledImports,
   type RegistryItem,
 } from '@/lib/registry';
+import { DocsTabs } from './docs-tabs';
 import { PackageManagerTabs } from './shadcn-command';
 
 function Step({ children }: { children: ReactNode }) {
@@ -40,7 +41,7 @@ export function ComponentInstall({ name }: { name: string }) {
   const packages = [...new Set([item, ...deps].flatMap((entry) => entry.dependencies ?? []))];
 
   return (
-    <Tabs items={['CLI', 'Manual']} className="not-prose">
+    <DocsTabs items={['CLI', 'Manual']}>
       <Tab value="CLI">
         <PackageManagerTabs code={(runner) => installCommands(name, runner)} />
       </Tab>
@@ -52,7 +53,8 @@ export function ComponentInstall({ name }: { name: string }) {
           </>
         )}
         {deps.map((dep) => (
-          <div key={dep.name}>
+          // A Fragment, not a wrapper, so `first:mt-0` on Step matches only the panel's first step.
+          <Fragment key={dep.name}>
             {dep.cssVars && (
               <>
                 <Step>Add the {dep.title ?? dep.name} to your global CSS, after the Tailwind import.</Step>
@@ -69,11 +71,11 @@ export function ComponentInstall({ name }: { name: string }) {
                 <ComponentSource name={dep.name} item={dep} />
               </>
             )}
-          </div>
+          </Fragment>
         ))}
         <Step>Copy the component.</Step>
         <ComponentSource name={name} item={item} />
       </Tab>
-    </Tabs>
+    </DocsTabs>
   );
 }

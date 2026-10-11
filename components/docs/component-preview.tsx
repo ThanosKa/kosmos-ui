@@ -1,7 +1,8 @@
 import { ServerCodeBlock } from 'fumadocs-ui/components/codeblock.rsc';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Tab } from 'fumadocs-ui/components/tabs';
 import { readExampleSource } from '@/lib/examples';
 import { toInstalledImports } from '@/lib/registry';
+import { DocsTabs } from './docs-tabs';
 import { PreviewFrame } from './preview-frame';
 
 /**
@@ -11,13 +12,14 @@ import { PreviewFrame } from './preview-frame';
 export function ComponentPreview({ name, minHeight }: { name: string; minHeight?: number }) {
   const code = toInstalledImports(readExampleSource(name));
   return (
-    <Tabs items={['Preview', 'Code']} className="not-prose">
+    <DocsTabs items={['Preview', 'Code']}>
       <Tab value="Preview" className="p-0">
         <PreviewFrame name={name} minHeight={minHeight} />
       </Tab>
-      <Tab value="Code" className="p-0">
-        <ServerCodeBlock code={code} lang="tsx" codeblock={{ className: 'my-0 rounded-none border-0' }} />
+      {/* Keep the panel's own padding: Fumadocs pulls a lone code block out by the same amount to fill the panel. */}
+      <Tab value="Code">
+        <ServerCodeBlock code={code} lang="tsx" />
       </Tab>
-    </Tabs>
+    </DocsTabs>
   );
 }
