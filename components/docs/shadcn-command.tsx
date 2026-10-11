@@ -14,7 +14,11 @@ export function PackageManagerTabs({ code }: { code: (runner: Runner) => string 
     <CodeBlockTabs groupId="package-manager" persist defaultValue={managers[0]}>
       <CodeBlockTabsList>
         {managers.map((manager) => (
-          <CodeBlockTabsTrigger key={manager} value={manager}>
+          <CodeBlockTabsTrigger
+            key={manager}
+            value={manager}
+            className="rounded-lg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
+          >
             {manager}
           </CodeBlockTabsTrigger>
         ))}
