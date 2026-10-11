@@ -7,6 +7,13 @@ const config = {
   reactStrictMode: true,
   // `next dev` would otherwise write its own rules block to AGENTS.md; the agent instructions live in CLAUDE.md.
   agentRules: false,
+  async redirects() {
+    return [
+      { source: '/docs/foundations', destination: '/docs/foundations/color', permanent: false },
+      { source: '/docs/motion', destination: '/docs/foundations/motion', permanent: true },
+      { source: '/docs/motion.md', destination: '/docs/foundations/motion.md', permanent: true },
+    ];
+  },
 };
 
 export default withMDX(config);

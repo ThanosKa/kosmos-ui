@@ -60,6 +60,10 @@ _Avoid_: theme, style
 Μια ονομασμένη τιμή του στυλ (χρώμα, σκιά, radius, easing, duration, μέγεθος κειμένου), γραμμένη ως CSS variable στο `registry/kosmos/styles/tokens.css`. Τα components χρησιμοποιούν μόνο tokens, ποτέ σκέτες τιμές.
 _Avoid_: design variable, μεταβλητή χρώματος
 
+**Foundations**:
+Η ενότητα των docs που δείχνει στον χρήστη τα **tokens** του Kosmos (Color, Typography, Shadows, Motion), με τις τιμές τους σε light και dark και το πότε μπαίνει το καθένα. Οι τιμές βγαίνουν από τα ίδια τα tokens, όχι γραμμένες με το χέρι.
+_Avoid_: «tokens page» (είναι η εσωτερική σελίδα ελέγχου `/tokens`), design language, guidelines
+
 **Type role**:
 Ένα μέγεθος κειμένου με δικό του όνομα (`text-caption`, `text-body`, `text-title` κ.λπ.) που ορίζει μαζί μέγεθος, line-height και βάρος.
 _Avoid_: font size, heading level
