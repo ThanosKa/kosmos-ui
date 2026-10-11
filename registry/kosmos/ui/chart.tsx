@@ -343,29 +343,32 @@ function GrowthChart({
           ))}
         </Recharts.AreaChart>
       </ChartContainer>
-      <table className="sr-only">
-        <caption>{title}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{xLabel}</th>
-            {keys.map((key) => (
-              <th key={key} scope="col">
-                {config[key].label ?? key}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((datum, index) => (
-            <tr key={index}>
-              <th scope="row">{formatX(datum[xKey])}</th>
+      {/* A table keeps its content width at 1px, so the visually hidden box is a wrapper. */}
+      <div className="sr-only">
+        <table>
+          <caption>{title}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{xLabel}</th>
               {keys.map((key) => (
-                <td key={key}>{typeof datum[key] === 'number' ? formatY(datum[key]) : datum[key]}</td>
+                <th key={key} scope="col">
+                  {config[key].label ?? key}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((datum, index) => (
+              <tr key={index}>
+                <th scope="row">{formatX(datum[xKey])}</th>
+                {keys.map((key) => (
+                  <td key={key}>{typeof datum[key] === 'number' ? formatY(datum[key]) : datum[key]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </figure>
   );
 }

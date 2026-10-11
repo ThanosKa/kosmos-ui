@@ -281,7 +281,8 @@ function KanbanColumnView({
       aria-labelledby={headingId}
       className="flex max-h-full w-72 shrink-0 flex-col rounded-3xl bg-accent"
     >
-      <header className="flex h-10 shrink-0 items-center gap-2 ps-4 pe-2.5 pt-1">
+      {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
+      <header className="relative flex h-10 shrink-0 items-center gap-2 ps-4 pe-2.5 pt-1">
         <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[column.tone ?? 'muted'])} />
         <h3 id={headingId} className="truncate text-body font-medium">
           {column.title}

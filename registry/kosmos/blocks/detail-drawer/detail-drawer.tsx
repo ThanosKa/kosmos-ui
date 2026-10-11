@@ -258,7 +258,7 @@ function DetailDrawer({
         container={container}
         initialFocus={initialFocus}
         showCloseButton={false}
-        className="sm:data-[swipe-direction=left]:w-[28rem] sm:data-[swipe-direction=right]:w-[28rem]"
+        className="sm:data-[swipe-direction=left]:max-w-[28rem] sm:data-[swipe-direction=right]:max-w-[28rem]"
       >
         <div className="flex h-12 shrink-0 items-center gap-1 ps-5 pe-3">
           {loading ? (
