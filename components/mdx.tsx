@@ -8,6 +8,8 @@ import { ChangelogEntries } from '@/components/docs/changelog-entries';
 import { DocsIndex } from '@/components/docs/docs-index';
 import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
 import { Step, Steps } from '@/components/docs/steps';
+import { CodeBlock, Pre } from '@/components/docs/code-block';
+import type { ComponentProps } from 'react';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -25,6 +27,11 @@ export function getMDXComponents(components?: MDXComponents) {
     DocsIndex,
     Steps,
     Step,
+    pre: ({ title, className, style, children }: ComponentProps<'pre'>) => (
+      <CodeBlock title={title} className={className} style={style}>
+        <Pre>{children}</Pre>
+      </CodeBlock>
+    ),
     ...components,
   } satisfies MDXComponents;
 }

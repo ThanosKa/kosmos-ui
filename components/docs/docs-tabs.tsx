@@ -5,13 +5,16 @@ import { Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs';
 const toValue = (item: string) => item.toLowerCase().replace(/\s/, '-');
 
 /**
- * Fumadocs `Tabs` with triggers that draw the focus outline inside, since the tab list scrolls and
- * clips anything outside it. Children are `<Tab value="…">` panels, one per item.
+ * Fumadocs `Tabs` as a plain tab row over open panels, with triggers that draw the focus outline inside,
+ * since the tab list scrolls and clips anything outside it. Children are `<Tab value="…">` panels, one per item.
  */
 export function DocsTabs({ items, children }: { items: string[]; children: ReactNode }) {
   return (
-    <Tabs defaultValue={toValue(items[0])} className="not-prose">
-      <TabsList className="gap-0 px-2">
+    <Tabs
+      defaultValue={toValue(items[0])}
+      className="not-prose min-w-0 overflow-visible rounded-none border-0 bg-transparent [&>[role=tabpanel]]:rounded-none [&>[role=tabpanel]]:bg-transparent [&>[role=tabpanel]]:px-0 [&>[role=tabpanel]]:pt-4 [&>[role=tabpanel]]:pb-0"
+    >
+      <TabsList className="gap-0 border-b border-border px-0">
         {items.map((item) => (
           <TabsTrigger
             key={item}
