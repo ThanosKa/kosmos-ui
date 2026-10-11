@@ -26,17 +26,6 @@ import { Slider, SliderLabel, SliderValue } from '@/components/ui/slider';
 
 Slider renders one thumb for each value: a number gives one thumb, an array of two gives a range. Anything you put inside, such as a SliderLabel and a SliderValue, sits above the track. SliderLabel names the thumbs; without a visible label, pass `aria-label`.
 
-## Keyboard
-
-| Key | Action |
-| --- | --- |
-| →, ↑ | Increases the value by one `step` |
-| ←, ↓ | Decreases the value by one `step` |
-| Page Up, Shift + → | Increases the value by one `largeStep` |
-| Page Down, Shift + ← | Decreases the value by one `largeStep` |
-| Home, End | Moves to `min` or `max` |
-| Tab | Moves to the next thumb, then the next control |
-
 ## Examples
 
 ### Range
@@ -61,9 +50,11 @@ Set `orientation="vertical"`. The slider fills the height of its container, at l
 
 ## API
 
-Slider wraps the [Base UI Slider](https://base-ui.com/react/components/slider) and accepts all of its root props. It renders the control, track, indicator and thumbs for you.
+Slider wraps the [Base UI Slider](https://base-ui.com/react/components/slider).
 
 ### Slider
+
+Base UI `Slider.Root`, with the `Slider.Control`, `Slider.Track`, `Slider.Indicator` and one `Slider.Thumb` per value rendered for you. Takes every `Slider.Root` prop, plus `getAriaLabel` and `getAriaValueText` for the thumbs:
 
 <TypeTable
   type={{
@@ -136,6 +127,24 @@ Slider wraps the [Base UI Slider](https://base-ui.com/react/components/slider) a
   }}
 />
 
-### SliderLabel, SliderValue
+### Parts
 
-SliderLabel is the slider's visible name; it names every thumb. SliderValue shows the current value, or both ends of a range, formatted with `format`. Put both inside the Slider.
+Put both inside the `Slider`.
+
+| Part | What it is |
+| --- | --- |
+| `SliderLabel` | The slider's visible name. It names every thumb. Base UI `Slider.Label`. |
+| `SliderValue` | The current value, or both ends of a range, formatted with `format`. Base UI `Slider.Value`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `ArrowRight` or `ArrowUp` | Increases the value by one `step`. |
+| `ArrowLeft` or `ArrowDown` | Decreases the value by one `step`. |
+| `PageUp`, `Shift` + `ArrowRight` or `Shift` + `ArrowUp` | Increases the value by one `largeStep`. |
+| `PageDown`, `Shift` + `ArrowLeft` or `Shift` + `ArrowDown` | Decreases the value by one `largeStep`. |
+| `Home` or `End` | Moves the thumb to `min` or `max`. |
+| `Tab` | Moves to the next thumb, then the next control. |
+
+In a right-to-left layout, `ArrowLeft` increases the value and `ArrowRight` decreases it.

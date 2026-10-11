@@ -55,9 +55,11 @@ The color only repeats what the value says, so keep `MeterValue` or a visible nu
 
 ## API
 
-Meter wraps the [Base UI Meter](https://base-ui.com/react/components/meter) and accepts all of its props.
+Meter wraps the [Base UI Meter](https://base-ui.com/react/components/meter). Each part takes the props of the Base UI part it renders.
 
 ### Meter
+
+Takes every Base UI `Meter.Root` prop, plus `tone`, `low`, `high` and `optimum`:
 
 <TypeTable
   type={{
@@ -98,6 +100,8 @@ Meter wraps the [Base UI Meter](https://base-ui.com/react/components/meter) and 
 
 ### MeterValue
 
+The value as text, formatted by `format` on `Meter`. Takes every Base UI `Meter.Value` prop, such as:
+
 <TypeTable
   type={{
     children: {
@@ -109,10 +113,17 @@ Meter wraps the [Base UI Meter](https://base-ui.com/react/components/meter) and 
 
 ### MeterSegments
 
+The value as a row of equal segments. Takes every Base UI `Meter.Track` prop, plus:
+
 <TypeTable
   type={{
     count: { description: 'How many segments the range splits into.', type: 'number', default: '20' },
   }}
 />
 
-`MeterLabel` and `MeterBar` take the props of Base UI's `Meter.Label` and `Meter.Track`.
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `MeterLabel` | Names the meter. Base UI `Meter.Label`. |
+| `MeterBar` | The value as a continuous bar on a sunken track. Base UI `Meter.Track` and `Meter.Indicator`. |
