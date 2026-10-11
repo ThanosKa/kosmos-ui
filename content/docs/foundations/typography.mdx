@@ -1,0 +1,25 @@
+---
+title: Typography
+description: The type roles, each a size, line height, weight and tracking that travel together.
+icon: Type
+---
+
+Component text is small and dense. Each size is a type role: one class, such as `text-body`, sets the size, line height, weight and tracking together. Hierarchy comes from weight and from `text-muted-foreground`, not from more sizes.
+
+Every value below is read from the tokens file. Each specimen is shown on the light page and on the dark page.
+
+## Type roles
+
+<TypeRoles />
+
+## Weights
+
+Chrome is medium (500) and content is regular (400). Buttons, nav items, tabs, menu items, field labels and badges take `font-medium`. Table cells, descriptions, input values and prose stay regular.
+
+## Numbers
+
+Numbers that change or line up, such as table values, stats, counters and prices, take `tabular-nums`, so the digits keep their width.
+
+## Fonts
+
+Text is set in Geist (`font-sans`) and Geist Mono (`font-mono`). The tokens point the families at `--font-geist-sans` and `--font-geist-mono`, the variables a new Next.js app already sets when it loads Geist with `next/font`.

@@ -1,6 +1,7 @@
 ---
 title: Motion
 description: How Kosmos components animate, which tokens set the speed, and how reduced motion is respected.
+icon: Activity
 ---
 
 ## Animations ship with each component
@@ -13,19 +14,17 @@ Each transition names the properties it changes and reads its duration and easin
 
 ## The tokens
 
-The tokens come with `@kosmos/tokens`, next to the colors and shadows.
+The tokens come with `@kosmos/tokens`, next to the colors and shadows. Every value below is read from the tokens file.
 
-| Token | Value | Used for |
-| --- | --- | --- |
-| `duration-instant` | 100ms | Menu and list item highlight |
-| `duration-fast` | 150ms | Hover, color, press, and every exit |
-| `duration-base` | 200ms | Popover, menu, select and tooltip open |
-| `duration-overlay` | 250ms | Dialog open |
-| `duration-slow` | 300ms | Drawer, sidebar width, accordion height, tab indicator, switch thumb |
-| `ease-power3-out` | `cubic-bezier(0.25, 1, 0.5, 1)` | The default curve for everything |
-| `ease-smooth-in-out` | `cubic-bezier(0.7, 0, 0, 1)` | Size and position: sidebar width, accordion height, indicators, switch thumb |
+<MotionTokens />
 
-The tokens also set Tailwind's defaults, `--default-transition-duration` (150ms) and `--default-transition-timing-function` (`ease-power3-out`). A plain `transition-[background-color]` with no duration class runs at those values.
+The last two rows are Tailwind's defaults, which the tokens set too. A plain `transition-[background-color]` with no duration or easing class runs at those values.
+
+## Easing
+
+Play the curves to compare how each one moves.
+
+<EasingCurves />
 
 ## Motion values for JavaScript
 
