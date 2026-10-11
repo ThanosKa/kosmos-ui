@@ -9,6 +9,7 @@ import {
   getRegistryItem,
   installCommands,
   installedPath,
+  packageInstallers,
   packageRunners,
   registryAddArgs,
   registryConfig,
@@ -54,6 +55,10 @@ const placeholders = {
       .join('\n'),
   Steps: ({ children }: PlaceholderData) => children.trim(),
   Step: ({ children }: PlaceholderData) => `${children.trim()}\n`,
+  PackageInstall: ({ attributes }: PlaceholderData) => fence('bash', `${packageInstallers.npm} ${String(attributes.packages)}`),
+  LinkCards: ({ children }: PlaceholderData) => children.trim(),
+  LinkCard: ({ attributes, children }: PlaceholderData) =>
+    `- [${String(attributes.title)}](${String(attributes.href)})${children.trim() ? `: ${children.trim()}` : ''}\n`,
 };
 
 export const docsLlms = llms(source, {

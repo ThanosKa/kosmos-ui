@@ -8,6 +8,8 @@ import { ChangelogEntries } from '@/components/docs/changelog-entries';
 import { DocsIndex } from '@/components/docs/docs-index';
 import { RegistryConfig, RegistryCss, ShadcnCommand } from '@/components/docs/shadcn-command';
 import { Step, Steps } from '@/components/docs/steps';
+import { PackageInstall } from '@/components/docs/shadcn-command';
+import { LinkCard, LinkCards } from '@/components/docs/link-cards';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -25,6 +27,9 @@ export function getMDXComponents(components?: MDXComponents) {
     DocsIndex,
     Steps,
     Step,
+    PackageInstall,
+    LinkCards,
+    LinkCard,
     ...components,
   } satisfies MDXComponents;
 }
