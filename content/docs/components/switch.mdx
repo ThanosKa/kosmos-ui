@@ -1,0 +1,96 @@
+---
+title: Switch
+description: Turns a setting on or off, and the change applies at once. Built on Base UI.
+---
+
+<ComponentPreview name="switch-demo" />
+
+## Installation
+
+<ComponentInstall name="switch" />
+
+## Usage
+
+```tsx
+import { Field, FieldContent, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Switch } from '@/components/ui/switch';
+```
+
+```tsx
+<Field name="email-notifications" orientation="horizontal">
+  <FieldContent>
+    <FieldLabel>Email notifications</FieldLabel>
+    <FieldDescription>Get an email when someone assigns you a task.</FieldDescription>
+  </FieldContent>
+  <Switch />
+</Field>
+```
+
+Put the Switch in a horizontal [Field](/docs/components/field) with its FieldLabel. The label names the switch, and clicking it flips the switch. Without a Field, wrap the Switch and its text in a `<label>`, as in the demo above, or give it an `aria-label`.
+
+Use a Switch for a setting that takes effect right away. For a choice that waits for a Save or Submit button, use a [Checkbox](/docs/components/checkbox). Name the setting for what happens when it's on: "Email notifications", not "Turn off emails".
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| Space, Enter | Turns the focused switch on or off |
+| Tab | Moves to the next control |
+
+## Examples
+
+### Settings list
+
+Put the label and description first and the Switch at the end of the row. The Switch stays on the label's first line, however far the text wraps.
+
+<ComponentPreview name="switch-settings" />
+
+## Motion
+
+The thumb slides in 300ms with an in-out curve. When the system asks for reduced motion, the thumb moves at once and the track's color still fades, so the state change stays visible without movement.
+
+## API
+
+Switch wraps the [Base UI Switch](https://base-ui.com/react/components/switch) and accepts all of its props.
+
+<TypeTable
+  type={{
+    checked: {
+      description: 'Whether the switch is on, when you control it.',
+      type: 'boolean',
+    },
+    defaultChecked: {
+      description: 'Whether the switch starts on, when the Switch manages it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    onCheckedChange: {
+      description: 'Called with the new value when the switch is flipped.',
+      type: '(checked: boolean, eventDetails) => void',
+    },
+    name: {
+      description: 'Names the value when the form is submitted. A Field around it sets this too.',
+      type: 'string',
+    },
+    value: {
+      description: 'The value an on switch submits.',
+      type: 'string',
+      default: "'on'",
+    },
+    required: {
+      description: 'Fails form validation until the switch is on.',
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Blocks the switch and dims it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    readOnly: {
+      description: 'Shows the value but blocks changing it.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>

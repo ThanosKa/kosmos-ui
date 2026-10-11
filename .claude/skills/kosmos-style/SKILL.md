@@ -32,6 +32,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
 | Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
 | Card being dragged | `shadow-lift` | `bg-card` |
+| Switch thumb, slider thumb | `shadow-thumb` | `bg-primary-foreground` |
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 

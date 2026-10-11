@@ -48,6 +48,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
 | `shadow-lift` | Card while dragged | Double `primary` ring + deep drop |
+| `shadow-thumb` | Switch thumb, slider thumb | Ring + two short drops, so a near-white knob stands off a white page; dark uses the study's thumb ring and drop |
 
 ## Radius
 

@@ -1,0 +1,114 @@
+---
+title: Checkbox
+description: Turns one option on or off, with a mixed state for a parent of a partly selected list. Built on Base UI.
+---
+
+<ComponentPreview name="checkbox-demo" />
+
+## Installation
+
+<ComponentInstall name="checkbox" />
+
+## Usage
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldLabel } from '@/components/ui/field';
+```
+
+```tsx
+<Field name="summary" orientation="horizontal">
+  <Checkbox />
+  <FieldLabel>Weekly summary</FieldLabel>
+</Field>
+```
+
+Put the Checkbox first in a horizontal [Field](/docs/components/field), with its FieldLabel beside it. The label names the checkbox, and clicking it ticks the box. Without a Field, wrap the Checkbox and its text in a `<label>`, as in the demo above, or give it an `aria-label`.
+
+A ticked checkbox submits `on`, or its `value` when you set one. An unticked one submits nothing, as a native checkbox does.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| Space | Ticks or unticks the focused checkbox |
+| Tab | Moves to the next control |
+
+## Examples
+
+### With a description
+
+Wrap the label and description in a FieldContent. The checkbox stays on the label's first line, however far the text wraps.
+
+<ComponentPreview name="checkbox-with-label" />
+
+### Group with a parent
+
+A parent checkbox ticks or unticks a whole list and shows the mixed state when only part of it is ticked. Wrap the list in Base UI's `CheckboxGroup` with every child value in `allValues`, mark the parent `parent`, and give each option a FieldItem so it gets its own label.
+
+<ComponentPreview name="checkbox-group" />
+
+### Invalid
+
+Set `invalid` on the Field and put the message in a FieldError. A `required` checkbox also fails the browser's checks until it is ticked.
+
+<ComponentPreview name="checkbox-invalid" />
+
+## API
+
+Checkbox wraps the [Base UI Checkbox](https://base-ui.com/react/components/checkbox) and accepts all of its props.
+
+<TypeTable
+  type={{
+    checked: {
+      description: 'Whether the box is ticked, when you control it.',
+      type: 'boolean',
+    },
+    defaultChecked: {
+      description: 'Whether the box starts ticked, when the Checkbox manages it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    onCheckedChange: {
+      description: 'Called with the new value when the box is ticked or unticked.',
+      type: '(checked: boolean, eventDetails) => void',
+    },
+    indeterminate: {
+      description: 'Shows the mixed state: neither ticked nor unticked.',
+      type: 'boolean',
+      default: 'false',
+    },
+    name: {
+      description: 'Names the value when the form is submitted. A Field around it sets this too.',
+      type: 'string',
+    },
+    value: {
+      description: 'The value a ticked box submits, and its value inside a CheckboxGroup.',
+      type: 'string',
+    },
+    parent: {
+      description: 'Makes this the parent of a CheckboxGroup: it ticks every child and shows the mixed state.',
+      type: 'boolean',
+      default: 'false',
+    },
+    required: {
+      description: 'Fails form validation until the box is ticked.',
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Blocks the checkbox and dims it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    readOnly: {
+      description: 'Shows the value but blocks changing it.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### FieldItem
+
+FieldItem comes with [Field](/docs/components/field). It holds one option of a group, the control beside its own FieldLabel, while the Field names the whole group and carries its error.
