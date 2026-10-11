@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd",
+  "type": "registry:ui",
+  "title": "Kbd",
+  "description": "A keyboard key or shortcut, such as ⌘ K, for hints in menus, tooltips, the command palette and docs text.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "overlays" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/kbd.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
