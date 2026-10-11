@@ -32,7 +32,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the cream page; dark study |
 | `border` | Dividers between items | ADR 0007 |
-| `input` | `border-input` in components installed from shadcn; Kosmos inputs draw their edge with `shadow-control` | ADR 0007 |
+| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also `border-input` in components installed from shadcn | ADR 0007 |
 | `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
 | `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
@@ -48,22 +48,33 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 | --- | --- | --- |
 | `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other". Also `chart-1` fills the Meter's `primary` tone | Slot 1 is the brand orange (`ring` in each mode); slots 2–5 are blue, amber, magenta and green, stepped per mode (ADR 0007). Checked as a set: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
 
+## Tag colors
+
+In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; status keeps the neutral pill with a dot.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `tag-orange`, `tag-blue`, `tag-amber`, `tag-magenta`, `tag-green` | Tag fill: `chart-1` … `chart-5` mixed into transparent at 12% (light) and 16% (dark) | Our chart hues (ADR 0007); the tinted-tag structure comes from the dark study |
+| `tag-red` | Tag fill: `destructive` at the same alpha | As above |
+| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The same hue stepped to `L 0.47` in light and `L 0.84` (chroma 0.08) in dark, so every pair passes 4.5:1 on its fill over `card` and `background` (light 5.2–6.2:1, dark 7.9–9.2:1) |
+
 ## Shadows
 
 | Token | Surface | Structure |
 | --- | --- | --- |
-| `shadow-control` | Secondary button, input, segmented group | Light: 1px ring + 1px drop. Dark: dark ring + top rim + inner rim |
-| `shadow-primary` | Primary button | Darker ring + drop + top highlight + inner rim; dark adds a bottom inner shade |
-| `shadow-card` | Cards, tiles | Light: ring + 3px soft halo + two drops. Dark: dark ring + drop + rim |
-| `shadow-popover` | Popover, menu, tooltip, toast, command palette | Ring + stacked drops; dark adds the rim |
-| `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim |
+| `shadow-control` | Secondary button, segmented group, active sidebar item | Light: 1px ring + 1px drop. Dark: dark ring + top rim + inner rim |
+| `shadow-field` | Input, textarea, select trigger | One 1px ring in `input`, no drop, in both modes |
+| `shadow-primary` | Primary button | Light: flat, one ring in the `primary` fill. Dark: dark ring + drop + top highlight + inner rim + bottom inner shade |
+| `shadow-card` | Cards, tiles | Light: 3px soft halo + two drops, no hard ring. Dark: dark ring + drop + rim |
+| `shadow-popover` | Popover, menu, tooltip, toast, command palette | Ring + stacked drops; dark adds the rim (inner ring at white 10%, so the edge reads on a dark page) |
+| `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim (as popover) |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
 | `shadow-lift` | Card while dragged | Double `ring` (orange) ring + deep drop |
 | `shadow-thumb` | Switch thumb, slider thumb | Ring + two short drops, so a near-white knob stands off a white page; dark uses the study's thumb ring and drop |
 
 ## Radius
 
-`--radius` is 8px. The ladder: `sm` 4, `md` 6, `lg` 8 (controls), `xl` 12 (overlays), `2xl` 16 (cards), `3xl` 20 (sheet top), plus `rounded-full` for pills.
+`--radius` is 10px. The ladder: `sm` 4 (checkbox, kbd), `md` 8 (segmented items), `lg` 10 (controls, items, tooltips), `xl` 14 (overlays), `2xl` 16 (cards), `3xl` 20 (sheet top), plus `rounded-full` for pills. The offsets in `@theme inline` keep `sm`, `2xl` and `3xl` at those sizes while `--radius` sets the control radius.
 
 ## Motion
 
@@ -86,7 +97,7 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 ## Type roles
 
-`text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`; sizes in the SKILL.md table. Each sets size, line-height and, where it differs from 400, weight and letter-spacing. Sizes are in `rem`, line-heights unitless.
+`text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`; sizes in the SKILL.md table. Each sets size, line-height, letter-spacing and, where it differs from 400, weight. Sizes are in `rem`, line-heights unitless. Tracking tightens as size grows (caption 0, small -0.005em, body -0.01em, title and display -0.02em); caption declares its 0 so it resets the tracking it would inherit from body text.
 
 ### Site-only roles
 
@@ -96,4 +107,4 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 - Section padding and max-width tokens, and a marketing heading scale: the studies declared them and never used them in app UI.
 - A press-scale token: press feedback is the `scale-96` utility.
-- Tag tones (colored category pills): Badge marks status with a dot on the neutral pill, so no tones yet. The first component that needs colored categories adds them. _Decided without the user (2026-10-11), pending confirmation._
+- A fainter text role below `muted-foreground` (for meta, placeholders, eyebrows): it would fall under 4.5:1 in light mode, where `muted-foreground` already sits near the floor. See conflicts.md, Accessibility floor.

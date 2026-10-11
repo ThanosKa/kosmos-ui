@@ -25,8 +25,9 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 
 | Surface | Shadow | Fill |
 | --- | --- | --- |
-| Secondary button, input, select trigger, segmented group | `shadow-control` | `bg-secondary` |
-| Primary button | `shadow-primary` | `bg-primary` |
+| Secondary button, segmented group, active sidebar item | `shadow-control` | `bg-secondary` |
+| Input, textarea, select trigger | `shadow-field` | `bg-secondary` |
+| Primary button | `shadow-primary` (flat in light: one ring in the fill color) | `bg-primary` |
 | Card, stat tile, board card | `shadow-card` | `bg-card` |
 | Popover, menu, select list, tooltip, toast, command palette | `shadow-popover` | `bg-popover` |
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
@@ -34,7 +35,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Card being dragged | `shadow-lift` | `bg-card` |
 | Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 
-Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
+Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. A text field's edge is a ring with no drop (`shadow-field`), so it reads as a place to type rather than a button. Small pills with a colored edge (tags, the sidebar count) draw it with a real 1px border, since the edge is part of the pill, not depth. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
 ## Dividers between items
 
@@ -42,14 +43,16 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 
 - Siblings rendered together: `divide-y divide-border` (or `divide-x`) on the parent.
 - Rows that are separate components: `border-b border-border last:border-b-0`.
-- Two-dimensional cell grids (stat grids, calendars): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full.
+- Two-dimensional cell grids (calendars, spreadsheets): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full. Stat tiles are not a cell grid: each is its own card, `gap-4` apart.
 - A sidebar docked beside the page: `border-e border-sidebar-border`. It is a divider between two regions, not a raised surface; the same sidebar in its phone drawer takes the drawer's `shadow-modal`.
+- Inside the sidebar, the header, every group after the first and the footer are split by full-width `border-sidebar-border` lines, edge to edge, never inset.
+- Board columns are open lanes: `divide-x divide-border` on the row, no fill and no radius behind the cards. A board card splits who it is from its numbers with `divide-y divide-border`.
 
 _Decided without the user (2026-10-11), pending confirmation._ Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and `better-ui` keeps borders for dividers. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
 
 ## Radius
 
-Controls take `rounded-lg` (8px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
 _Decided without the user (2026-10-11), pending confirmation._ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
@@ -58,24 +61,28 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1`, the Meter's `primary` tone and `shadow-lift`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
-- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
+- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
+- A category (segment, plan, label) is a tag: a Badge hue variant (`orange`, `blue`, `amber`, `magenta`, `green`, `red`). Its fill is the matching `tag-*` token (a chart hue at low alpha), its edge a 1px border of `tag-*-foreground/20`, and its text `tag-*-foreground`, which passes 4.5:1 on the fill. A category keeps one hue everywhere. A change in a stat tile is a `green` or `red` tag beside its muted context.
+- Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. The active item, the current page and values stay `text-foreground`.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
-- `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
+- `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. It is the faintest text role: a fainter grey for meta, placeholders or eyebrows would drop below 4.5:1 (see conflicts.md, Accessibility floor).
 
 ## Typography
 
-Text in components sits between 12 and 14px. Each size is a type role, which sets size, line-height and weight together:
+Text in components sits between 12 and 14px. Each size is a type role, which sets size, line-height, weight and tracking together:
 
-| Role | Size / line-height / weight | Use |
+| Role | Size / line-height / weight / tracking | Use |
 | --- | --- | --- |
-| `text-caption` | 12 / 16 / 400 | Meta, badges, keyboard hints, table headers, eyebrows (`uppercase tracking-[0.05em]`) |
-| `text-small` | 13 / 1.4 / 400 | Descriptions, hints, errors, menu shortcuts |
-| `text-body` | 14 / 20 / 400 | Default UI text: buttons, menu items, table cells, field labels |
-| `text-title` | 16 / 24 / 600 | Dialog, drawer and card titles |
-| `text-heading` | 20 / 28 / 600 | Page headings in blocks |
-| `text-display` | 32 / 40 / 500 | Stat values (always `tabular-nums`) |
+| `text-caption` | 12 / 16 / 400 / 0 | Meta, badges, keyboard hints, table headers, eyebrows (`uppercase tracking-[0.05em]`) |
+| `text-small` | 13 / 1.4 / 400 / -0.005em | Descriptions, hints, errors, menu shortcuts, field labels above a control |
+| `text-body` | 14 / 20 / 400 / -0.01em | Default UI text: buttons, menu items, table cells, checkbox and switch labels |
+| `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium` |
+| `text-heading` | 20 / 28 / 600 / -0.01em | Headings of whole pages outside the app frame (docs, gallery), never in app chrome |
+| `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`) |
 
-- Hierarchy comes from weight (`font-medium` for labels and buttons) and color (`text-muted-foreground`), not from more sizes.
+- Chrome is 500, content is 400. Buttons, nav items, tabs, menu, select and command items, segmented items, field labels, badges and the titles of board cards and list rows take `font-medium`; table cells, descriptions, input values and prose stay 400. Table headers are 400, muted.
+- Hierarchy comes from weight and color (`text-muted-foreground`), not from more sizes.
+- Icons are 14px (`size-3.5`) in 30px controls (buttons, nav items, menu items, inputs) and 16px in 36px rows and `lg` buttons; 12px in `sm` buttons and badges.
 - Numbers that change or line up (tables, stats, counters, timers, prices) take `tabular-nums`.
 - Single-line text in a fixed-width slot takes `truncate`; multi-line takes `line-clamp-*`. Prose measure is set in `em` (`max-w-[40em]`).
 - Inputs render `text-base sm:text-body`, so iOS never zooms on focus.
@@ -116,9 +123,13 @@ _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one
 
 Every focusable element shows `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`. An outline keeps the surface's shadow stack intact and survives forced-colors mode. `ring` reaches 3:1 against `background` in both themes.
 
-Two exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: a tab inside a scrolling tab list draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ the scrolling list clips anything outside its padding box.
+Text fields (Input, Textarea, Select trigger) light up their own edge instead: `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20`, a flush 1px outline over the field ring plus a soft halo. The outline keeps forced colors working; the halo is decoration.
+
+Two more exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: a tab inside a scrolling tab list draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ the scrolling list clips anything outside its padding box.
 
 ## Buttons
+
+Buttons are 30px (`md`) with 14px icons and `px-2.5`; text fields are 34px with `px-3`, so a form reads calmer than its toolbar. A field in a toolbar or beside a Button takes the Button's height (`h-7.5`). Icon buttons in headers and toolbars are `variant="secondary" size="icon"`, a 30px square with the control ring, not a bare ghost glyph.
 
 Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers); a variant nothing uses is deleted.
 
@@ -146,5 +157,8 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
 | A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
-| `focus-visible:ring-*` or `outline-none` with no replacement | The focus outline above |
+| `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
+| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-sidebar-foreground` when active |
+| A category label as a neutral or status Badge | A hue variant |
+| `text-heading` in an app page header | `text-title font-medium` |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |

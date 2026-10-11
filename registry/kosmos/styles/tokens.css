@@ -53,13 +53,14 @@
   --shadow-inset: var(--shadow-inset);
   --shadow-lift: var(--shadow-lift);
   --shadow-thumb: var(--shadow-thumb);
+  --shadow-field: var(--shadow-field);
 
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 6px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-2xl: calc(var(--radius) + 6px);
+  --radius-3xl: calc(var(--radius) + 10px);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -80,13 +81,17 @@
 
   --text-caption: 0.75rem;
   --text-caption--line-height: calc(16 / 12);
+  --text-caption--letter-spacing: 0em;
   --text-small: 0.8125rem;
   --text-small--line-height: 1.4;
+  --text-small--letter-spacing: -0.005em;
   --text-body: 0.875rem;
   --text-body--line-height: calc(20 / 14);
+  --text-body--letter-spacing: -0.01em;
   --text-title: 1rem;
   --text-title--line-height: 1.5;
   --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.02em;
   --text-heading: 1.25rem;
   --text-heading--line-height: 1.4;
   --text-heading--font-weight: 600;
@@ -98,7 +103,7 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.625rem;
 
   --background: oklch(0.975 0.004 106.5);
   --foreground: oklch(0.263 0.013 100.5);
@@ -135,13 +140,8 @@
   --shadow-control:
     0 0 0 1px oklch(0 0 0 / 0.08),
     0 1px 2px 0 oklch(0 0 0 / 0.06);
-  --shadow-primary:
-    0 0 0 1px oklch(0.18 0.01 100),
-    0 1px 2px 0 oklch(0 0 0 / 0.16),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.2),
-    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  --shadow-primary: 0 0 0 1px var(--primary);
   --shadow-card:
-    0 0 0 1px oklch(0 0 0 / 0.06),
     0 0 0 3px oklch(0.848 0.005 106.5 / 0.12),
     0 1px 2px 0 oklch(0.256 0.013 100.5 / 0.04),
     0 2px 4px 0 oklch(0.256 0.013 100.5 / 0.03);
@@ -165,6 +165,7 @@
     0 0 0 1px oklch(0 0 0 / 0.1),
     0 1px 2px 0 oklch(0 0 0 / 0.12),
     0 2px 6px 0 oklch(0 0 0 / 0.12);
+  --shadow-field: 0 0 0 1px var(--input);
 }
 
 .dark {
@@ -219,13 +220,13 @@
     0 0 0 1px oklch(0.164 0 0),
     0 16px 40px 0 oklch(0 0 0 / 0.5),
     inset 0 1px 0 0 oklch(1 0 0 / 0.06),
-    inset 0 0 0 1px oklch(1 0 0 / 0.04);
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
   --shadow-modal:
     0 0 0 1px oklch(0 0 0 / 0.32),
     0 12px 24px 0 oklch(0 0 0 / 0.24),
     0 32px 64px 0 oklch(0 0 0 / 0.44),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.04),
-    inset 0 0 0 1px oklch(1 0 0 / 0.04);
+    inset 0 1px 0 0 oklch(1 0 0 / 0.06),
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
   --shadow-inset:
     0 0 0 1px oklch(0 0 0 / 0.24),
     inset 0 2px 4px 0 oklch(0 0 0 / 0.2),
@@ -238,6 +239,7 @@
   --shadow-thumb:
     0 0 0 1px oklch(0 0 0 / 0.4),
     0 2px 6px 0 oklch(0 0 0 / 0.5);
+  --shadow-field: 0 0 0 1px var(--input);
 }
 
 /*
@@ -269,4 +271,50 @@
   --chart-3: oklch(0.76 0.14 82);
   --chart-4: oklch(0.62 0.17 330);
   --chart-5: oklch(0.7 0.14 160);
+}
+
+/* Tags: the Badge hue variants. */
+@theme inline {
+  --color-tag-orange: var(--tag-orange);
+  --color-tag-orange-foreground: var(--tag-orange-foreground);
+  --color-tag-blue: var(--tag-blue);
+  --color-tag-blue-foreground: var(--tag-blue-foreground);
+  --color-tag-amber: var(--tag-amber);
+  --color-tag-amber-foreground: var(--tag-amber-foreground);
+  --color-tag-magenta: var(--tag-magenta);
+  --color-tag-magenta-foreground: var(--tag-magenta-foreground);
+  --color-tag-green: var(--tag-green);
+  --color-tag-green-foreground: var(--tag-green-foreground);
+  --color-tag-red: var(--tag-red);
+  --color-tag-red-foreground: var(--tag-red-foreground);
+}
+
+:root {
+  --tag-orange: color-mix(in oklab, var(--chart-1) 12%, transparent);
+  --tag-orange-foreground: oklch(0.47 0.14 38);
+  --tag-blue: color-mix(in oklab, var(--chart-2) 12%, transparent);
+  --tag-blue-foreground: oklch(0.47 0.14 252);
+  --tag-amber: color-mix(in oklab, var(--chart-3) 12%, transparent);
+  --tag-amber-foreground: oklch(0.47 0.12 82);
+  --tag-magenta: color-mix(in oklab, var(--chart-4) 12%, transparent);
+  --tag-magenta-foreground: oklch(0.47 0.14 330);
+  --tag-green: color-mix(in oklab, var(--chart-5) 12%, transparent);
+  --tag-green-foreground: oklch(0.47 0.12 160);
+  --tag-red: color-mix(in oklab, var(--destructive) 12%, transparent);
+  --tag-red-foreground: oklch(0.47 0.14 28.5);
+}
+
+.dark {
+  --tag-orange: color-mix(in oklab, var(--chart-1) 16%, transparent);
+  --tag-orange-foreground: oklch(0.84 0.08 42);
+  --tag-blue: color-mix(in oklab, var(--chart-2) 16%, transparent);
+  --tag-blue-foreground: oklch(0.84 0.08 250);
+  --tag-amber: color-mix(in oklab, var(--chart-3) 16%, transparent);
+  --tag-amber-foreground: oklch(0.84 0.08 82);
+  --tag-magenta: color-mix(in oklab, var(--chart-4) 16%, transparent);
+  --tag-magenta-foreground: oklch(0.84 0.08 330);
+  --tag-green: color-mix(in oklab, var(--chart-5) 16%, transparent);
+  --tag-green-foreground: oklch(0.84 0.08 160);
+  --tag-red: color-mix(in oklab, var(--destructive) 16%, transparent);
+  --tag-red-foreground: oklch(0.84 0.08 22.1);
 }

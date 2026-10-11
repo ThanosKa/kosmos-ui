@@ -24,7 +24,7 @@ Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `
 | --- | --- | --- | --- |
 | Dark-mode shadows | `better-ui`: depth shadows vanish in dark, keep one white ring | Dark outer ring + drop + 1px inner rim of light | The Kosmos signature look |
 | Input boundary | `better-ui`/`better-accessibility`: inputs keep a border with 3:1 contrast | `shadow-control` ring at the `secondary` fill, below 3:1; labels identify fields; the focus outline passes 3:1 | Same choice as shadcn and most design systems; report as `LOW` at most |
-| Focus indicator | Any visible ring with 3:1 | 2px `outline-ring` offset 2px | Survives forced colors and leaves shadow stacks intact |
+| Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a flush 1px `outline-ring` plus a 4px `ring/20` halo | Survives forced colors and leaves shadow stacks intact. On a field the 1px outline in `ring` passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most |
 | Token tiers | `better-colors`: primitive ramps plus semantic tokens; names like `--color-text-secondary` | One semantic tier with shadcn names (`muted-foreground`, `accent`) | `shadcn add` components must find the names they expect |
 | `accent` meaning | `better-colors`: accent is the brand hue | `accent` is the translucent hover overlay, brand is `primary` | shadcn's meaning, which installed components rely on |
 
@@ -35,6 +35,19 @@ Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `
 | Uppercase tracking | `better-typography`: `0.05em` | `0.05em` | Agrees; the studied eyebrow used `1px` |
 | Body text size | `better-typography`: 16px for long-form body | 12–14px in components; docs prose keeps the docs theme | Dense dashboard UI, which the skill allows by name |
 | Line-height on single-line UI | `better-typography`: body 1.5–1.6 | Type roles (caption 16px, body 20px); wrapped text uses `text-small` (1.4) or `text-body` | Dense rows; every wrapping role stays at 1.4 or more |
+
+## Accessibility floor
+
+The studied products go below the contrast floor in places. Kosmos keeps their structure and stops at the floor: 4.5:1 for text, 3:1 for large text and for non-text UI.
+
+| Point | Studied value | Kosmos value (wins) | Why |
+| --- | --- | --- | --- |
+| A third, fainter grey for meta, counts, placeholders and table headers | Light about 2.6:1 on white; dark about 3:1 | `muted-foreground` (4.6–5.3:1 light, 5.4–6.8:1 dark) | Text floor. Light `muted-foreground` already sits near 4.5:1, so no fainter text role fits between it and the floor |
+| Sidebar group labels | Dark about 1.9:1 | `muted-foreground`, uppercase caption | Same floor; the uppercase eyebrow keeps the label quieter than the items through size and case, not contrast |
+| Idle nav items | Dark grey near 4.6:1 | `muted-foreground` | Same structure (idle grey, active ink), at our own token |
+| Placeholders | Light about 2.6:1 | `muted-foreground` | Placeholder text is read as an example of the value and must pass 4.5:1 |
+| Tag text | Light-on-tint tags pass in dark; colored status text in some products | `tag-*-foreground` steps (5.2:1 and up on every fill); status text stays neutral with a dot | Tags carry a category by hue; status keeps the dot so its meaning never rides on color alone |
+| Field edge | About 1.2:1 ring, no drop | `shadow-field` in `input`, about 1.2:1 | Matches the existing Input boundary row: the label identifies the field and the focus outline passes 3:1 |
 
 ## Review output
 
