@@ -146,32 +146,31 @@ export function cssVarsAsCss(cssVars: NonNullable<RegistryItem['cssVars']>): str
   return [block('@theme inline', cssVars.theme), block(':root', cssVars.light), block('.dark', cssVars.dark)].join('\n\n');
 }
 
+/**
+ * Where each registry file type lives in this repo (under `registry/kosmos/`) and where `shadcn add`
+ * writes it in a default project. `installedPath` and `toInstalledImports` both read this one map.
+ * `source` is a regular expression: a block's files sit in a folder per block and all land in `components/`.
+ */
+const fileDirs: Record<string, { source: string; installed: string }> = {
+  'registry:ui': { source: 'ui/', installed: 'components/ui/' },
+  'registry:lib': { source: 'lib/', installed: 'lib/' },
+  'registry:hook': { source: 'hooks/', installed: 'hooks/' },
+  'registry:component': { source: 'blocks/[a-z0-9-]+/', installed: 'components/' },
+};
+
 /** Where `shadcn add` writes a registry file in a default project (`components/ui`, `lib`, `hooks`, `components`). */
 export function installedPath(file: RegistryFile): string {
   if (file.target) return file.target.replace(/^~\//, '');
   const base = file.path.split('/').pop()!;
-  switch (file.type) {
-    case 'registry:ui':
-      return `components/ui/${base}`;
-    case 'registry:lib':
-      return `lib/${base}`;
-    case 'registry:hook':
-      return `hooks/${base}`;
-    default:
-      return `components/${base}`;
-  }
+  return `${fileDirs[file.type]?.installed ?? 'components/'}${base}`;
 }
 
-/**
- * Rewrites `@/registry/kosmos/...` imports the way `shadcn add` does, for code shown in the docs.
- * A block's files (`registry/kosmos/blocks/<block>/<file>`, type `registry:component`) land in `components/`.
- */
+/** Rewrites `@/registry/kosmos/...` imports the way `shadcn add` does, for code shown in the docs. */
 export function toInstalledImports(code: string): string {
-  return code
-    .replace(/@\/registry\/kosmos\/ui\//g, '@/components/ui/')
-    .replace(/@\/registry\/kosmos\/blocks\/[a-z0-9-]+\//g, '@/components/')
-    .replace(/@\/registry\/kosmos\/lib\//g, '@/lib/')
-    .replace(/@\/registry\/kosmos\/hooks\//g, '@/hooks/');
+  return Object.values(fileDirs).reduce(
+    (result, { source, installed }) => result.replace(new RegExp(`@/registry/kosmos/${source}`, 'g'), `@/${installed}`),
+    code,
+  );
 }
 
 export const packageRunners = {
