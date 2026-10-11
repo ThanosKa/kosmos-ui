@@ -162,10 +162,14 @@ export function installedPath(file: RegistryFile): string {
   }
 }
 
-/** Rewrites `@/registry/kosmos/...` imports the way `shadcn add` does, for code shown in the docs. */
+/**
+ * Rewrites `@/registry/kosmos/...` imports the way `shadcn add` does, for code shown in the docs.
+ * A block's files (`registry/kosmos/blocks/<block>/<file>`, type `registry:component`) land in `components/`.
+ */
 export function toInstalledImports(code: string): string {
   return code
     .replace(/@\/registry\/kosmos\/ui\//g, '@/components/ui/')
+    .replace(/@\/registry\/kosmos\/blocks\/[a-z0-9-]+\//g, '@/components/')
     .replace(/@\/registry\/kosmos\/lib\//g, '@/lib/')
     .replace(/@\/registry\/kosmos\/hooks\//g, '@/hooks/')
     // A block's files live in `registry/kosmos/blocks/<block>/components/` and land in `components/`.
