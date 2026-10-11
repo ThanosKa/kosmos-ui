@@ -32,7 +32,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
 | Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
 | Card being dragged | `shadow-lift` | `bg-card` |
-| Switch thumb, slider thumb | `shadow-thumb` | `bg-primary-foreground` |
+| Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
@@ -56,6 +56,7 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
+- The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1`, the Meter's `primary` tone and `shadow-lift`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.

@@ -78,7 +78,7 @@ function Slider({
               getAriaLabel={getAriaLabel}
               getAriaValueText={getAriaValueText}
               className={cn(
-                'block size-4 rounded-full border border-transparent bg-primary-foreground shadow-thumb',
+                'block size-4 rounded-full border border-transparent bg-thumb shadow-thumb',
                 // A 28px hit area around the 16px thumb.
                 'after:absolute after:-inset-1.5 after:rounded-full',
                 'transition-[box-shadow]',

@@ -2,7 +2,7 @@
 
 Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. `/tokens` renders them live.
 
-"Light study" and "dark study" are the two studied products whose validated token sets supplied the light and dark values (ADR 0004). "Adjusted" marks a value changed from the study, with the reason.
+Colors are the warm neutral palette with an orange accent (ADR 0007). "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles (ADR 0004). "Adjusted" marks a value changed for contrast, with the reason.
 
 ## How the file maps to the registry
 
@@ -21,21 +21,22 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `background`, `foreground` | Page surface and its text | Light study / dark study |
-| `card`, `card-foreground` | Cards, tiles | Light study / dark study |
-| `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | Light study / dark study |
-| `primary`, `primary-foreground` | The one filled action per view; indigo in both modes | Dark study's action color, also used in light (adjusted: the light study used near-black, which would give each mode a different identity) |
-| `secondary`, `secondary-foreground` | Secondary button and input fill | Light study / dark study |
-| `muted` | Track and quiet fills | Light study / dark study |
-| `muted-foreground` | Secondary text | Adjusted in both modes to pass 4.5:1 on `background`, `card` and `muted` |
-| `accent`, `accent-foreground` | Translucent hover/highlight overlay for ghost, nav, menu items and rows | Hover overlays of both studies (foreground 4% light, white 6% dark) |
+| `background`, `foreground` | Page surface and its text: cream and warm ink in light, warm near-black and off-white in dark | ADR 0007 |
+| `card`, `card-foreground` | Cards, tiles: a step lighter than the page in light, a step lighter in dark | ADR 0007 |
+| `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0007 |
+| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range, active sidebar item. Warm ink with light text in light; light fill with ink text in dark | ADR 0007 (never orange: white on the orange is 3.3:1) |
+| `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0007 |
+| `muted` | Track and quiet fills | ADR 0007 |
+| `muted-foreground` | Secondary text | Set in both modes to pass 4.5:1 on `background`, `card`, `muted` and `sidebar` |
+| `accent`, `accent-foreground` | Translucent hover/highlight overlay for ghost, nav, menu items and rows | Hover overlays of both studies (ink 5% light, white 6% dark) |
 | `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
-| `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics; dark study |
-| `border` | Dividers between items | Light study / dark study |
-| `input` | `border-input` in components installed from shadcn; Kosmos inputs draw their edge with `shadow-control` | Light study / dark study |
-| `ring` | Focus outline | `primary` in light; a lighter indigo in dark (adjusted: the action indigo is 2.5:1 on the dark background) |
-| `scrim` | Backdrop behind dialogs and drawers | Light study (foreground 40%) / dark study (black 60%) |
-| `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | Light study / dark study, active item = `primary` |
+| `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the cream page; dark study |
+| `border` | Dividers between items | ADR 0007 |
+| `input` | `border-input` in components installed from shadcn; Kosmos inputs draw their edge with `shadow-control` | ADR 0007 |
+| `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
+| `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
+| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
+| `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | ADR 0007; a step darker than the page in light, active item = `primary`, focus = `ring` |
 
 Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
 
@@ -45,7 +46,7 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other". Also `chart-1` fills the Meter's `primary` tone | Slot 1 is the brand indigo (light `primary`, dark `ring`, which reaches 3:1 on the dark surfaces); slots 2–5 are orange, green, amber and pink, stepped per mode. Checked as a set with a color-vision validator: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other". Also `chart-1` fills the Meter's `primary` tone | Slot 1 is the brand orange (`ring` in each mode); slots 2–5 are blue, amber, magenta and green, stepped per mode (ADR 0007). Checked as a set: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
 
 ## Shadows
 
@@ -57,7 +58,7 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 | `shadow-popover` | Popover, menu, tooltip, toast, command palette | Ring + stacked drops; dark adds the rim |
 | `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
-| `shadow-lift` | Card while dragged | Double `primary` ring + deep drop |
+| `shadow-lift` | Card while dragged | Double `ring` (orange) ring + deep drop |
 | `shadow-thumb` | Switch thumb, slider thumb | Ring + two short drops, so a near-white knob stands off a white page; dark uses the study's thumb ring and drop |
 
 ## Radius
