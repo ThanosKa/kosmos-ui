@@ -1,0 +1,52 @@
+---
+title: Data table
+description: A table of records with sortable columns, row selection and bulk actions, status badges, owners, a health meter, row actions, and loading and empty states.
+---
+
+<ComponentPreview name="data-table-demo" minHeight={520} />
+
+## Installation
+
+<ComponentInstall name="data-table" />
+
+The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Avatar](/docs/components/avatar), [Meter](/docs/components/meter), [Dropdown menu](/docs/components/dropdown-menu), [Empty state](/docs/components/empty), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button) with it, and lands in `components/data-table.tsx`.
+
+## Usage
+
+```tsx
+import { DataTable } from '@/components/data-table';
+
+<DataTable rows={accounts} query={query} status={tab} onOpen={(account) => setOpen(account)} />;
+```
+
+The `Account` type, the columns and the sample rows live in the file: change them to fit your records. Pair the table with the [page header](/docs/blocks/page-header) and pass its `query` and tab straight through: the tab values match `status`.
+
+## What it does
+
+- **Sorting**: click a column header to sort, and again to reverse. The header carries `aria-sort`.
+- **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Export, Delete and Clear selection.
+- **Opening a row**: with `onOpen`, the account name becomes a button and a click anywhere on the row opens it too. Clicks on the checkbox and the actions menu do not.
+- **Loading and empty**: `loading` shows skeleton rows. When a search or status hides every row, the table says so and offers Clear filters through `onClearFilters`.
+- **Narrow screens**: the table scrolls sideways inside its own frame, and the page stays put.
+
+The Delete actions are placeholders. Wire them to a confirmation dialog or an undo toast before you ship.
+
+## API
+
+### DataTable
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    rows: { description: 'The rows.', type: 'Account[]', default: 'sample accounts' },
+    loading: { description: 'Shows skeleton rows while the data loads.', type: 'boolean', default: 'false' },
+    query: { description: 'Keeps rows whose name, domain or owner contains this text.', type: 'string' },
+    status: { description: 'Keeps rows with this status; `all` keeps every row.', type: "'all' | 'active' | 'trial' | 'at-risk' | 'churned'", default: "'all'" },
+    onOpen: { description: 'Called when a row is opened, by its name or a click on the row.', type: '(row: Account) => void' },
+    onClearFilters: { description: 'Adds Clear filters to the empty state shown when a search or status hides every row.', type: '() => void' },
+    selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
+    onSelectionChange: { description: 'Called with the ids of the selected rows.', type: '(ids: string[]) => void' },
+    defaultSort: { description: 'The column the rows are sorted by at first.', type: "{ key: 'name' | 'arr' | 'health' | 'lastActivity'; direction: 'ascending' | 'descending' }" },
+  }}
+/>
