@@ -7,7 +7,7 @@ date: 2026-10-11
 Three overlays, each built on Base UI and installed on its own:
 
 - [Dialog](/docs/components/dialog) asks for one decision or one short task. It traps focus, closes on Escape or a click outside, and returns focus to the button that opened it. Its body scrolls once the dialog reaches the height of the screen.
-- [Drawer](/docs/components/drawer) slides in from an edge of the screen: a side panel for details, or a bottom sheet on a phone. It follows a swipe to close.
+- [Drawer](/docs/components/drawer) slides in from an edge of the screen: a side panel for details, or a bottom sheet on a phone. A side panel is at most 24rem wide and never wider than the container it opens in. It follows a swipe to close.
 - [Popover](/docs/components/popover) opens a small panel next to its trigger and flips to the other side when it runs out of room.
 
 Each one has a ready `…Content` part for the common case, and also exports the parts it is made of (portal, popup and the like) for layouts of your own. Under reduced motion, all three fade instead of moving.
