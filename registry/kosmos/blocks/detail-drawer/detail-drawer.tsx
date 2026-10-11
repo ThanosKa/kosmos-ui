@@ -85,6 +85,10 @@ const statuses: Record<DetailStatus, { label: string; dot: string }> = {
   'at-risk': { label: 'At risk', dot: 'bg-warning' },
   churned: { label: 'Churned', dot: 'bg-destructive' },
 };
+const labelTones = ['blue', 'green', 'orange', 'magenta', 'amber'] as const;
+const labelTone = (label: string) =>
+  labelTones[[...label].reduce((sum, char, index) => sum + (index + 1) * char.charCodeAt(0), 0) % labelTones.length];
+
 const statusItems = Object.fromEntries(Object.entries(statuses).map(([key, value]) => [key, value.label]));
 
 // Fixed locale and time zone, so the server and the browser render the same text.
@@ -363,7 +367,7 @@ function DetailDrawer({
                 <Property label="Labels">
                   {account.labels?.length ? (
                     account.labels.map((label) => (
-                      <Badge key={label} variant="secondary">
+                      <Badge key={label} variant={labelTone(label)}>
                         {label}
                       </Badge>
                     ))
