@@ -64,6 +64,11 @@ export default function DataTablePreview() {
           <DataTable rows={longRows} onOpen={() => {}} />
         </div>
       </PreviewSection>
+      <PreviewSection title="In a narrow container (scrolls sideways)">
+        <div className={`${frame} max-w-sm`}>
+          <DataTable defaultSelection={['bluebird']} />
+        </div>
+      </PreviewSection>
     </PreviewStack>
   );
 }

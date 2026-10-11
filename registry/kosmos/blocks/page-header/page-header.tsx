@@ -64,16 +64,19 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
   tab?: string;
   defaultTab?: string;
   onTabChange?: (tab: string) => void;
-  /** The search text. Use with `onQueryChange`. */
+  /** The search text. Use with `onQueryChange`, or leave it out and pass `defaultQuery`. */
   query?: string;
+  defaultQuery?: string;
   onQueryChange?: (query: string) => void;
   /** What the Filter menu offers. */
   filterOptions?: FilterOption[];
-  /** The values of the filters that are on. Use with `onFiltersChange`. */
+  /** The values of the filters that are on. Use with `onFiltersChange`, or leave it out and pass `defaultFilters`. */
   filters?: string[];
+  defaultFilters?: string[];
   onFiltersChange?: (filters: string[]) => void;
-  /** The selected layout. Use with `onViewChange`. */
+  /** The selected layout. Use with `onViewChange`, or leave it out and pass `defaultView`. */
   view?: PageView;
+  defaultView?: PageView;
   onViewChange?: (view: PageView) => void;
   /** The label of the primary action. */
   newLabel?: string;
@@ -101,11 +104,14 @@ function PageHeader({
   defaultTab,
   onTabChange,
   query: queryProp,
+  defaultQuery = '',
   onQueryChange,
   filterOptions = sampleFilters,
   filters: filtersProp,
+  defaultFilters = [],
   onFiltersChange,
   view: viewProp,
+  defaultView = 'table',
   onViewChange,
   newLabel = 'New account',
   onNew,
@@ -116,9 +122,9 @@ function PageHeader({
   ...props
 }: PageHeaderProps) {
   const [tab, setTab] = useControlled(tabProp, defaultTab ?? tabs[0]?.value ?? '', onTabChange);
-  const [query, setQuery] = useControlled(queryProp, '', onQueryChange);
-  const [filters, setFilters] = useControlled<string[]>(filtersProp, [], onFiltersChange);
-  const [view, setView] = useControlled<PageView>(viewProp, 'table', onViewChange);
+  const [query, setQuery] = useControlled(queryProp, defaultQuery, onQueryChange);
+  const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
+  const [view, setView] = useControlled<PageView>(viewProp, defaultView, onViewChange);
   const searchId = React.useId();
 
   return (

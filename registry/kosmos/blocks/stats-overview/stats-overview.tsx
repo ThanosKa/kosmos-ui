@@ -55,7 +55,12 @@ const samplePlans: PlanShare[] = [
   { plan: 'Starter', share: 15 },
 ];
 
-const rangeLabels: Record<Range, string> = { '30d': '30 days', '90d': '90 days', '12m': '12 months' };
+/** Each range's name, and what its x values are, for the hidden data table. */
+const ranges: Record<Range, { label: string; xLabel: string }> = {
+  '30d': { label: '30 days', xLabel: 'Day' },
+  '90d': { label: '90 days', xLabel: 'Week of' },
+  '12m': { label: '12 months', xLabel: 'Month' },
+};
 
 const chartConfig = {
   newBusiness: { label: 'New business', color: 'var(--chart-1)' },
@@ -92,7 +97,9 @@ function StatTile({ stat, loading }: { stat: Stat; loading: boolean }) {
 
   return (
     <div data-slot="stat-tile" className="flex min-w-0 flex-col gap-2 bg-card p-4">
-      <p className="truncate text-small text-muted-foreground">{stat.label}</p>
+      <p title={stat.label} className="truncate text-small text-muted-foreground">
+        {stat.label}
+      </p>
       {loading ? (
         <>
           <Skeleton className="my-2 h-6 w-28" />
@@ -101,12 +108,12 @@ function StatTile({ stat, loading }: { stat: Stat; loading: boolean }) {
       ) : (
         <>
           <div className="flex min-w-0 items-end justify-between gap-3">
-            <p className="truncate text-display tabular-nums">{formatStat(stat)}</p>
+            <p className="max-w-full shrink-0 truncate text-display tabular-nums">{formatStat(stat)}</p>
             {stat.trend.length > 1 ? (
               <Sparkline
                 data={stat.trend.map((value) => ({ value }))}
-                aria-label={`${stat.label}, last 12 months`}
-                className="mb-1.5 h-8 w-20 shrink-0"
+                aria-label={`${stat.label}, recent trend`}
+                className="mb-1.5 h-8 w-auto max-w-20 min-w-10 flex-1"
               />
             ) : null}
           </div>
@@ -191,7 +198,7 @@ function StatsOverview({
                 <Skeleton className="my-1 h-3.5 w-40" />
               ) : (
                 <p className="text-small text-muted-foreground tabular-nums">
-                  {usd.format(total)} in the last {rangeLabels[range]}
+                  {usd.format(total)} in the last {ranges[range].label}
                 </p>
               )}
             </div>
@@ -201,9 +208,9 @@ function StatsOverview({
               value={range}
               onValueChange={(value) => setRange(value as Range)}
             >
-              {(Object.keys(rangeLabels) as Range[]).map((key) => (
+              {(Object.keys(ranges) as Range[]).map((key) => (
                 <SegmentedControlItem key={key} value={key}>
-                  {rangeLabels[key]}
+                  {ranges[key].label}
                 </SegmentedControlItem>
               ))}
             </SegmentedControl>
@@ -223,11 +230,11 @@ function StatsOverview({
           ) : (
             <GrowthChart
               key={range}
-              title={`Revenue by source, last ${rangeLabels[range]}`}
+              title={`Revenue by source, last ${ranges[range].label}`}
               data={points}
               config={chartConfig}
               xKey="label"
-              xLabel={range === '12m' ? 'Month' : range === '90d' ? 'Week of' : 'Day'}
+              xLabel={ranges[range].xLabel}
               valueFormatter={(value) => usd.format(value)}
             />
           )}
@@ -236,7 +243,7 @@ function StatsOverview({
         <div className="flex min-w-0 flex-col gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <div className="flex flex-col gap-0.5">
             <h2 className="text-title">Revenue by plan</h2>
-            <p className="text-small text-muted-foreground">Share of the last {rangeLabels[range]}</p>
+            <p className="text-small text-muted-foreground">Share of the last {ranges[range].label}</p>
           </div>
           <div className="flex flex-col gap-5">
             {loading

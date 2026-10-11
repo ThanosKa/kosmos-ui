@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The pages, saved views, workspaces and user at the top of the file are sample data: replace them with your own. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/components/command); the block shows the ⌘K hint but does not bind the keys.
+The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/components/command); the block shows the ⌘K hint but does not bind the keys, so bind them where you pass `onSearch`.
 
 To put the same content in another surface, such as your own drawer, render `AppSidebarContent` instead of `AppSidebar`.
 
@@ -54,8 +54,13 @@ Takes every [Sidebar](/docs/components/sidebar#sidebar) prop, plus the props of 
 
 ### AppSidebarContent
 
+Each item is `{ id: string; label: string; href: string; icon: LucideIcon; badge?: number; badgeLabel?: string }`.
+
 <TypeTable
   type={{
+    navMain: { description: 'The main pages, at the top.', type: 'AppSidebarNavItem[]', default: 'sample pages' },
+    navViews: { description: 'The saved views, under their own heading.', type: 'AppSidebarNavItem[]', default: 'sample views' },
+    navFooter: { description: 'The links above the account menu.', type: 'AppSidebarNavItem[]', default: 'Help and feedback, Settings' },
     activeItem: {
       description: 'The `id` of the current page. Its item is highlighted and marked `aria-current="page"`.',
       type: 'string',

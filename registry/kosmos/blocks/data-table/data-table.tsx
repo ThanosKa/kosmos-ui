@@ -125,11 +125,15 @@ type DataTableProps = Omit<React.ComponentProps<'div'>, 'children'> & {
   onOpen?: (row: Account) => void;
   /** Shown in the empty state when a search or status hides every row. */
   onClearFilters?: () => void;
-  /** The ids of the selected rows. Use with `onSelectionChange`. */
+  /** The ids of the selected rows. Use with `onSelectionChange`, or leave it out and pass `defaultSelection`. */
   selection?: string[];
+  defaultSelection?: string[];
   onSelectionChange?: (ids: string[]) => void;
-  /** The column the rows are sorted by at first. Without it, rows keep their order until a header is clicked. */
+  /** The sort. Use with `onSortChange`, or leave it out and pass `defaultSort`. `null` keeps the rows' own order. */
+  sort?: Sort | null;
+  /** The sort at first. Without it, rows keep their order until a header is clicked. */
   defaultSort?: Sort;
+  onSortChange?: (sort: Sort) => void;
 };
 
 /**
@@ -144,13 +148,17 @@ function DataTable({
   onOpen,
   onClearFilters,
   selection: selectionProp,
+  defaultSelection = [],
   onSelectionChange,
+  sort: sortProp,
   defaultSort,
+  onSortChange,
   className,
   ...props
 }: DataTableProps) {
-  const [sort, setSort] = React.useState<Sort | null>(defaultSort ?? null);
-  const [selectionState, setSelectionState] = React.useState<string[]>([]);
+  const [sortState, setSortState] = React.useState<Sort | null>(defaultSort ?? null);
+  const sort = sortProp === undefined ? sortState : sortProp;
+  const [selectionState, setSelectionState] = React.useState<string[]>(defaultSelection);
   const selection = selectionProp ?? selectionState;
   const setSelection = (ids: string[]) => {
     if (selectionProp === undefined) setSelectionState(ids);
@@ -174,12 +182,14 @@ function DataTable({
   const totalArr = visible.reduce((sum, row) => sum + row.arr, 0);
   const filtering = query.trim() !== '' || status !== 'all';
 
-  const onSort = (key: SortKey) =>
-    setSort((current) =>
-      current?.key !== key
+  const onSort = (key: SortKey) => {
+    const next: Sort =
+      sort?.key !== key
         ? { key, direction: key === 'name' ? 'ascending' : 'descending' }
-        : { key, direction: current.direction === 'ascending' ? 'descending' : 'ascending' },
-    );
+        : { key, direction: sort.direction === 'ascending' ? 'descending' : 'ascending' };
+    if (sortProp === undefined) setSortState(next);
+    onSortChange?.(next);
+  };
 
   const toggleRow = (id: string, checked: boolean) =>
     setSelection(checked ? [...selection, id] : selection.filter((value) => value !== id));

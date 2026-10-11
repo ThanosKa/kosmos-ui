@@ -33,6 +33,8 @@ The Delete actions are placeholders. Wire them to a confirmation dialog or an un
 
 ## API
 
+`DataTableSort` is `{ key: 'name' | 'arr' | 'health' | 'lastActivity'; direction: 'ascending' | 'descending' }`.
+
 ### DataTable
 
 Takes every `<div>` prop, plus:
@@ -46,7 +48,10 @@ Takes every `<div>` prop, plus:
     onOpen: { description: 'Called when a row is opened, by its name or a click on the row.', type: '(row: Account) => void' },
     onClearFilters: { description: 'Adds Clear filters to the empty state shown when a search or status hides every row.', type: '() => void' },
     selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
+    defaultSelection: { description: 'The ids selected at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
     onSelectionChange: { description: 'Called with the ids of the selected rows.', type: '(ids: string[]) => void' },
-    defaultSort: { description: 'The column the rows are sorted by at first.', type: "{ key: 'name' | 'arr' | 'health' | 'lastActivity'; direction: 'ascending' | 'descending' }" },
+    sort: { description: 'The sort. Use with `onSortChange`; `null` keeps the rows in their own order.', type: 'DataTableSort | null' },
+    defaultSort: { description: 'The sort at first, when the table keeps its own state.', type: 'DataTableSort' },
+    onSortChange: { description: 'Called with the new sort when a header is clicked.', type: '(sort: DataTableSort) => void' },
   }}
 />

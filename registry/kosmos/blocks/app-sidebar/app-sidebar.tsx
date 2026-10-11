@@ -53,7 +53,7 @@ type NavItem = { id: string; label: string; href: string; icon: LucideIcon; badg
 type Workspace = { id: string; name: string; plan: string };
 type User = { name: string; email: string; initials: string };
 
-const navMain: NavItem[] = [
+const sampleNavMain: NavItem[] = [
   { id: 'home', label: 'Home', href: '#home', icon: Home },
   { id: 'inbox', label: 'Inbox', href: '#inbox', icon: Inbox, badge: 3, badgeLabel: 'unread' },
   { id: 'accounts', label: 'Accounts', href: '#accounts', icon: Building2 },
@@ -61,13 +61,13 @@ const navMain: NavItem[] = [
   { id: 'reports', label: 'Reports', href: '#reports', icon: BarChart3 },
 ];
 
-const navViews: NavItem[] = [
+const sampleNavViews: NavItem[] = [
   { id: 'view-enterprise', label: 'Enterprise accounts', href: '#view-enterprise', icon: Layers },
   { id: 'view-renewals', label: 'Renewals this quarter', href: '#view-renewals', icon: Layers },
   { id: 'view-at-risk', label: 'At risk', href: '#view-at-risk', icon: Layers, badge: 4, badgeLabel: 'accounts' },
 ];
 
-const navFooter: NavItem[] = [
+const sampleNavFooter: NavItem[] = [
   { id: 'help', label: 'Help and feedback', href: '#help', icon: CircleHelp },
   { id: 'settings', label: 'Settings', href: '#settings', icon: Settings },
 ];
@@ -77,11 +77,17 @@ const sampleWorkspaces: Workspace[] = [
   { id: 'globex', name: 'Globex', plan: 'Free plan' },
 ];
 
-const sampleUser: User = { name: 'Maya Chen', email: 'maya@acme.com', initials: 'MC' };
+const sampleUser: User = { name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC' };
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 
 type AppSidebarContentProps = {
+  /** The main pages, at the top. */
+  navMain?: NavItem[];
+  /** The saved views, under their own heading. */
+  navViews?: NavItem[];
+  /** The links above the account menu, such as help and settings. */
+  navFooter?: NavItem[];
   /** The `id` of the current page; its item is highlighted and marked `aria-current="page"`. */
   activeItem?: string;
   /** Called when an item is clicked, with its `id`. Call `event.preventDefault()` to route in place. */
@@ -148,6 +154,9 @@ function NavGroup({
  * own to put the same content in another surface, such as your own drawer.
  */
 function AppSidebarContent({
+  navMain = sampleNavMain,
+  navViews = sampleNavViews,
+  navFooter = sampleNavFooter,
   activeItem = 'accounts',
   onNavigate,
   onSearch,
@@ -206,7 +215,8 @@ function AppSidebarContent({
         <Button
           variant="secondary"
           className="w-full justify-start px-2 font-normal text-muted-foreground"
-          aria-keyshortcuts="Meta+K"
+          // The hint is visual; whoever passes `onSearch` binds the shortcut, so only then is it announced.
+          aria-keyshortcuts={onSearch ? 'Meta+K' : undefined}
           onClick={onSearch}
         >
           <Search aria-hidden />
@@ -284,6 +294,9 @@ type AppSidebarProps = SidebarProps & AppSidebarContentProps;
  * an account menu. Place it inside a `SidebarProvider`, next to a `SidebarResizeHandle` and `SidebarInset`.
  */
 function AppSidebar({
+  navMain,
+  navViews,
+  navFooter,
   activeItem,
   onNavigate,
   onSearch,
@@ -299,6 +312,9 @@ function AppSidebar({
   return (
     <Sidebar label={label} {...props}>
       <AppSidebarContent
+        navMain={navMain}
+        navViews={navViews}
+        navFooter={navFooter}
         activeItem={activeItem}
         onNavigate={onNavigate}
         onSearch={onSearch}
@@ -313,4 +329,4 @@ function AppSidebar({
   );
 }
 
-export { AppSidebar, AppSidebarContent, type AppSidebarProps, type AppSidebarContentProps };
+export { AppSidebar, AppSidebarContent, type AppSidebarProps, type AppSidebarContentProps, type NavItem as AppSidebarNavItem };

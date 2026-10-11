@@ -3,6 +3,8 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StatsOverview, type Stat } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 
+const frame = 'w-full rounded-xl border border-transparent bg-background p-4 shadow-card';
+
 const emptyStats: Stat[] = [
   { id: 'mrr', label: 'Monthly revenue', value: 0, format: 'currency', trend: [] },
   { id: 'accounts', label: 'New accounts', value: 0, format: 'number', trend: [] },
@@ -21,27 +23,37 @@ export default function StatsOverviewPreview() {
   return (
     <PreviewStack>
       <PreviewSection title="Full, 12 months">
-        <StatsOverview />
+        <div className={frame}>
+          <StatsOverview />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="30 days">
-        <StatsOverview defaultRange="30d" />
+        <div className={frame}>
+          <StatsOverview defaultRange="30d" />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Loading">
-        <StatsOverview loading />
+        <div className={frame}>
+          <StatsOverview loading />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="No data yet">
-        <StatsOverview stats={emptyStats} revenue={{ '30d': [], '90d': [], '12m': [] }} />
+        <div className={frame}>
+          <StatsOverview stats={emptyStats} revenue={{ '30d': [], '90d': [], '12m': [] }} />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Long labels and extreme values">
-        <StatsOverview stats={longStats} />
+        <div className={frame}>
+          <StatsOverview stats={longStats} />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="In a narrow container">
-        <div className="w-full max-w-sm">
+        <div className={`${frame} max-w-sm`}>
           <StatsOverview />
         </div>
       </PreviewSection>
