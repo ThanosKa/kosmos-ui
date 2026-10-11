@@ -10,7 +10,7 @@ function TooltipProvider(props: TooltipPrimitive.Provider.Props) {
 }
 
 function Tooltip(props: TooltipPrimitive.Root.Props) {
-  return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
+  return <TooltipPrimitive.Root {...props} />;
 }
 
 /** Pass the control it describes through `render`: `<TooltipTrigger render={<Button variant="ghost" />} />`. */

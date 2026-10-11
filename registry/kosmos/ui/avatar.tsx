@@ -6,7 +6,6 @@ import { cn } from '@/registry/kosmos/lib/cn';
 const avatarVariants = cva(
   [
     'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted align-middle select-none',
-    'outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10',
   ],
   {
     variants: {
@@ -43,7 +42,10 @@ function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn('size-full object-cover transition-[opacity] data-starting-style:opacity-0', className)}
+      className={cn(
+        'size-full rounded-full object-cover outline outline-1 -outline-offset-1 outline-black/10 transition-[opacity] data-starting-style:opacity-0 dark:outline-white/10',
+        className,
+      )}
       {...props}
     />
   );
@@ -65,7 +67,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="avatar-group"
       className={cn(
-        'flex items-center -space-x-1.5 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background has-data-[size=lg]:-space-x-2 has-data-[size=sm]:-space-x-1',
+        'flex items-center -space-x-1.5 *:ring-2 *:ring-background has-data-[size=lg]:-space-x-2 has-data-[size=sm]:-space-x-1',
         className,
       )}
       {...props}
@@ -77,7 +79,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
 function AvatarGroupCount({ className, size = 'md', ...props }: React.ComponentProps<'span'> & { size?: AvatarSize }) {
   return (
     <span
-      data-slot="avatar"
+      data-slot="avatar-group-count"
       data-size={size}
       className={cn(avatarVariants({ size }), 'font-medium text-muted-foreground tabular-nums', className)}
       {...props}

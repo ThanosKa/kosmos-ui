@@ -49,11 +49,13 @@ _Decided without the user (2026-10-11), pending confirmation._ Borders are what 
 
 Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill, cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
+_Decided without the user (2026-10-11), pending confirmation._ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too.
+
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
-- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
+- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
 
 ## Typography
@@ -89,7 +91,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 
 - Exits run faster than enters with the same curve and the same distance, reversed.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
-- Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate.
+- Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Skeleton uses the same pulse, and a shimmer would need keyframes shipped through `@kosmos/tokens`.
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
 - The command palette and anything opened by a keyboard shortcut appear without animation.
 - Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
@@ -115,6 +117,8 @@ Every focusable element shows `focus-visible:outline-2 focus-visible:outline-off
 Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`nav`, `item`); a variant nothing uses is deleted.
 
 ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
+
+One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Badge supports the same link form.
 
 ## Before you finish
 

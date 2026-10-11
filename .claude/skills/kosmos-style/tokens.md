@@ -81,4 +81,4 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 - Section padding and max-width tokens, and a marketing heading scale: the studies declared them and never used them in app UI.
 - A press-scale token: press feedback is the `scale-96` utility.
 - Chart colors: the Chart component adds them when it is built.
-- Tag tones (colored category pills): Badge marks status with a dot on the neutral pill, so no tones yet. The first component that needs colored categories adds them.
+- Tag tones (colored category pills): Badge marks status with a dot on the neutral pill, so no tones yet. The first component that needs colored categories adds them. _Decided without the user (2026-10-11), pending confirmation._

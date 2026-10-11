@@ -3,7 +3,9 @@ import { useRender } from '@base-ui/react/use-render';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/registry/kosmos/lib/cn';
 
-const status = 'bg-secondary text-secondary-foreground shadow-control ps-1.5 before:content-[""] [a&]:hover:bg-muted';
+const neutral = 'bg-secondary text-secondary-foreground shadow-control [a&]:hover:bg-muted';
+/** The status looks: the neutral pill plus a dot, drawn by `::before` (sized in the base, shown here). */
+const withDot = 'ps-1.5 before:content-[""]';
 
 const badgeVariants = cva(
   [
@@ -17,10 +19,10 @@ const badgeVariants = cva(
     variants: {
       variant: {
         primary: 'bg-primary text-primary-foreground shadow-primary [a&]:hover:bg-primary/90',
-        secondary: 'bg-secondary text-secondary-foreground shadow-control [a&]:hover:bg-muted',
-        success: `${status} before:bg-success`,
-        warning: `${status} before:bg-warning`,
-        destructive: `${status} before:bg-destructive`,
+        secondary: neutral,
+        success: `${neutral} ${withDot} before:bg-success`,
+        warning: `${neutral} ${withDot} before:bg-warning`,
+        destructive: `${neutral} ${withDot} before:bg-destructive`,
       },
     },
     defaultVariants: {

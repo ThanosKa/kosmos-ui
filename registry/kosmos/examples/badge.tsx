@@ -14,6 +14,12 @@ const labels: Record<(typeof variants)[number], string> = {
   destructive: 'Failed',
 };
 
+const rows = [
+  { name: 'Acme Inc.', status: 'success', label: 'Active' },
+  { name: 'Globex Corporation', status: 'warning', label: 'Trial ends soon' },
+  { name: 'Initech', status: 'destructive', label: 'Payment failed' },
+] as const;
+
 export default function BadgePreview() {
   return (
     <PreviewStack>
@@ -59,14 +65,10 @@ export default function BadgePreview() {
 
       <PreviewSection title="In a row">
         <ul className="flex w-full max-w-md flex-col divide-y divide-border">
-          {[
-            { name: 'Acme Inc.', status: 'success', label: 'Active' },
-            { name: 'Globex Corporation', status: 'warning', label: 'Trial ends soon' },
-            { name: 'Initech', status: 'destructive', label: 'Payment failed' },
-          ].map((row) => (
+          {rows.map((row) => (
             <li key={row.name} className="flex items-center justify-between gap-3 py-2.5 text-body">
               <span className="min-w-0 truncate">{row.name}</span>
-              <Badge variant={row.status as 'success' | 'warning' | 'destructive'}>{row.label}</Badge>
+              <Badge variant={row.status}>{row.label}</Badge>
             </li>
           ))}
         </ul>
