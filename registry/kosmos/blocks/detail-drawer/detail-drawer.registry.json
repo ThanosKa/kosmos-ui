@@ -3,8 +3,10 @@
   "name": "detail-drawer",
   "type": "registry:block",
   "title": "Detail drawer",
-  "description": "A side panel with the details of one task: editable status and priority, assignee, due date, labels, description, activity and a comment field, with a more-actions menu.",
-  "dependencies": ["lucide-react"],
+  "description": "A side panel with the details of one record (a sample account): editable status, owner, ARR, health, last activity, labels, notes, activity and a note field, with a more-actions menu.",
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
@@ -13,15 +15,18 @@
     "@kosmos/button",
     "@kosmos/drawer",
     "@kosmos/dropdown-menu",
+    "@kosmos/meter",
     "@kosmos/select",
     "@kosmos/separator",
     "@kosmos/skeleton",
     "@kosmos/textarea"
   ],
-  "meta": { "group": "blocks" },
+  "meta": {
+    "group": "blocks"
+  },
   "files": [
     {
-      "path": "registry/kosmos/blocks/detail-drawer/components/detail-drawer.tsx",
+      "path": "registry/kosmos/blocks/detail-drawer/detail-drawer.tsx",
       "type": "registry:component"
     }
   ]

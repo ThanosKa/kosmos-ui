@@ -3,22 +3,29 @@
   "name": "kanban-board",
   "type": "registry:block",
   "title": "Kanban board",
-  "description": "Columns of task cards that scroll sideways inside their container. Cards move by drag and drop or from the keyboard (dnd-kit), and every move is announced to screen readers.",
-  "dependencies": ["@dnd-kit/core@^6.3.1", "@dnd-kit/sortable@^10.0.0", "@dnd-kit/utilities@^3.2.2", "lucide-react"],
+  "description": "Columns of cards (sample accounts by status) that scroll sideways inside their container. Cards move by drag and drop, touch or the keyboard (dnd-kit), and every move is announced to screen readers.",
+  "dependencies": [
+    "@dnd-kit/core@^6.3.1",
+    "@dnd-kit/sortable@^10.0.0",
+    "@dnd-kit/utilities@^3.2.2",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/motion",
     "@kosmos/avatar",
-    "@kosmos/badge",
     "@kosmos/button",
+    "@kosmos/meter",
     "@kosmos/scroll-area",
     "@kosmos/skeleton"
   ],
-  "meta": { "group": "blocks" },
+  "meta": {
+    "group": "blocks"
+  },
   "files": [
     {
-      "path": "registry/kosmos/blocks/kanban-board/components/kanban-board.tsx",
+      "path": "registry/kosmos/blocks/kanban-board/kanban-board.tsx",
       "type": "registry:component"
     }
   ]

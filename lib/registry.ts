@@ -171,9 +171,7 @@ export function toInstalledImports(code: string): string {
     .replace(/@\/registry\/kosmos\/ui\//g, '@/components/ui/')
     .replace(/@\/registry\/kosmos\/blocks\/[a-z0-9-]+\//g, '@/components/')
     .replace(/@\/registry\/kosmos\/lib\//g, '@/lib/')
-    .replace(/@\/registry\/kosmos\/hooks\//g, '@/hooks/')
-    // A block's files live in `registry/kosmos/blocks/<block>/components/` and land in `components/`.
-    .replace(/@\/registry\/kosmos\/blocks\/[a-z0-9-]+\/components\//g, '@/components/');
+    .replace(/@\/registry\/kosmos\/hooks\//g, '@/hooks/');
 }
 
 export const packageRunners = {

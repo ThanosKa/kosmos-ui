@@ -2,7 +2,7 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { CommandMenu } from '@/registry/kosmos/blocks/command-menu/components/command-menu';
+import { CommandMenu } from '@/registry/kosmos/blocks/command-menu/command-menu';
 
 const stage = 'h-[34rem]';
 
@@ -17,10 +17,10 @@ export default function CommandMenuPreview() {
         <OverlayStageGrid>
           <OverlayStage label="main list" className={stage}>
             {(container) => (
-              <CommandMenu open modal={false} container={container} initialFocus={false} trigger={null} shortcut={false} />
+              <CommandMenu open modal={false} container={container} initialFocus={false} trigger={null} hotkey={false} />
             )}
           </OverlayStage>
-          <OverlayStage label="second list: assign to" className={stage}>
+          <OverlayStage label="second list: assign owner" className={stage}>
             {(container) => (
               <CommandMenu
                 open
@@ -28,8 +28,8 @@ export default function CommandMenuPreview() {
                 container={container}
                 initialFocus={false}
                 trigger={null}
-                shortcut={false}
-                defaultPage="assign"
+                hotkey={false}
+                defaultPage="owner"
               />
             )}
           </OverlayStage>
@@ -41,8 +41,8 @@ export default function CommandMenuPreview() {
                 container={container}
                 initialFocus={false}
                 trigger={null}
-                shortcut={false}
-                defaultQuery="task"
+                hotkey={false}
+                defaultQuery="account"
               />
             )}
           </OverlayStage>
@@ -54,7 +54,7 @@ export default function CommandMenuPreview() {
                 container={container}
                 initialFocus={false}
                 trigger={null}
-                shortcut={false}
+                hotkey={false}
                 defaultQuery="Quarterly revenue forecast for the board meeting"
               />
             )}

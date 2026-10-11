@@ -3,8 +3,10 @@
   "name": "command-menu",
   "type": "registry:block",
   "title": "Command menu",
-  "description": "A ⌘K menu with a search trigger: recent tasks, actions and pages, filtered as you type, with second lists for changing status and assigning people.",
-  "dependencies": ["lucide-react"],
+  "description": "A ⌘K menu with a search trigger: sample accounts, actions and pages, filtered as you type, with second lists for changing status and assigning an owner.",
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
@@ -13,10 +15,12 @@
     "@kosmos/command",
     "@kosmos/kbd"
   ],
-  "meta": { "group": "blocks" },
+  "meta": {
+    "group": "blocks"
+  },
   "files": [
     {
-      "path": "registry/kosmos/blocks/command-menu/components/command-menu.tsx",
+      "path": "registry/kosmos/blocks/command-menu/command-menu.tsx",
       "type": "registry:component"
     }
   ]

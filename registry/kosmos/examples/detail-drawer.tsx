@@ -2,67 +2,74 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { DetailDrawer, type DetailTask } from '@/registry/kosmos/blocks/detail-drawer/components/detail-drawer';
+import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 
-const longTask: DetailTask = {
-  id: 'KOS-201',
-  title:
-    'Investigate why the weekly digest email is sent twice to workspace owners who belong to more than one organization and also manage billing',
-  meta: 'Notifications and email delivery · created by Alexandria Montgomery-Fitzgerald on Sep 18',
-  status: 'backlog',
-  priority: 'urgent',
-  assignee: { name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' },
-  due: 'Nov 30',
-  labels: ['Bug', 'Email', 'Billing', 'Needs triage', 'Customer reported'],
-  description:
-    'Owners of two or more organizations get one digest per organization, and a second copy when they also manage billing. Supercalifragilisticexpialidocious-configuration-flag decides which list they land on.',
+const longAccount: DetailAccount = {
+  id: 'long',
+  name: 'International Association of Independent Freight Forwarders and Customs Brokers',
+  domain: 'association-of-independent-freight-forwarders.example',
+  status: 'trial',
+  owner: { name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' },
+  arr: 1250000,
+  health: 100,
+  lastActivity: '2026-10-11',
+  meta: 'Enterprise plan with the compliance add-on · trial since September 2026, extended twice',
+  labels: ['Enterprise', 'Compliance add-on', 'Procurement review', 'EU data residency', 'Renewal in Q1'],
+  notes:
+    'Their procurement team wants a data processing agreement before the trial ends. Supercalifragilisticexpialidocious-configuration-flag decides which region their data lands in.',
   activity: [
     {
       id: 'a1',
       author: { name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' },
-      action: 'created the task and asked the email team to look at the delivery logs for the last two weeks',
-      time: 'Sep 18',
+      action: 'extended the trial by 30 days and asked legal to review the data processing agreement',
+      time: 'Oct 11',
     },
   ],
 };
 
-const emptyTask: DetailTask = {
-  id: 'KOS-150',
-  title: 'Untitled task',
-  status: 'todo',
-  priority: 'low',
-};
+const emptyAccount: DetailAccount = { id: 'new', name: 'Untitled account', status: 'trial' };
 
 const stage = 'h-[40rem]';
+const noop = () => {};
 
 export default function DetailDrawerPreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="Live (opens from its trigger)">
-        <div>
-          <DetailDrawer />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Open">
+      <PreviewSection title="Open, more menu pinned open">
         <OverlayStageGrid>
-          <OverlayStage label="full task" className={stage}>
-            {(container) => <DetailDrawer open modal={false} container={container} initialFocus={false} trigger={null} />}
+          <OverlayStage label="full record, more menu open" className={stage}>
+            {(container) => (
+              <DetailDrawer
+                open
+                modal={false}
+                container={container}
+                initialFocus={false}
+                trigger={null}
+                onAction={noop}
+                actionsMenu={{ open: true, modal: false }}
+              />
+            )}
           </OverlayStage>
           <OverlayStage label="long text" className={stage}>
             {(container) => (
-              <DetailDrawer task={longTask} open modal={false} container={container} initialFocus={false} trigger={null} />
+              <DetailDrawer account={longAccount} open modal={false} container={container} initialFocus={false} trigger={null} onAction={noop} />
             )}
           </OverlayStage>
           <OverlayStage label="no details yet" className={stage}>
             {(container) => (
-              <DetailDrawer task={emptyTask} open modal={false} container={container} initialFocus={false} trigger={null} />
+              <DetailDrawer account={emptyAccount} open modal={false} container={container} initialFocus={false} trigger={null} />
             )}
           </OverlayStage>
           <OverlayStage label="loading" className={stage}>
             {(container) => <DetailDrawer loading open modal={false} container={container} initialFocus={false} trigger={null} />}
           </OverlayStage>
         </OverlayStageGrid>
+      </PreviewSection>
+
+      <PreviewSection title="Live (opens from its trigger)">
+        <div>
+          <DetailDrawer onAction={noop} />
+        </div>
       </PreviewSection>
     </PreviewStack>
   );

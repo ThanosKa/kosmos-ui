@@ -1,70 +1,80 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { KanbanBoard, KanbanCard, type KanbanTask } from '@/registry/kosmos/blocks/kanban-board/components/kanban-board';
+import { KanbanBoard, KanbanCard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 
-const longTasks: KanbanTask[] = [
+const frame = 'flex w-full min-w-0 overflow-hidden rounded-xl border border-transparent bg-background p-3 shadow-card';
+
+const longItems: KanbanItem[] = [
   {
-    id: 'KOS-201',
-    columnId: 'backlog',
-    title:
-      'Investigate why the weekly digest email is sent twice to workspace owners who belong to more than one organization and also manage billing',
-    labels: ['Bug', 'Email', 'Billing', 'Needs triage'],
-    due: 'Nov 30',
-    assignee: { name: 'Maya Chen', initials: 'MC' },
-    comments: 128,
+    id: 'long',
+    name: 'International Association of Independent Freight Forwarders and Customs Brokers',
+    domain: 'association-of-independent-freight-forwarders.example',
+    status: 'trial',
+    owner: { name: 'Priya Raman', initials: 'PR' },
+    arr: 1250000,
+    health: 100,
+    lastActivity: '2026-10-11',
   },
-  { id: 'KOS-202', columnId: 'backlog', title: 'Supercalifragilisticexpialidocious-configuration-flag-cleanup', labels: ['Chore'] },
-  { id: 'KOS-203', columnId: 'todo', title: 'Short', assignee: { name: 'Leo Park', initials: 'LP' } },
+  { id: 'bare', name: 'Supercalifragilisticexpialidocious-holdings', status: 'trial' },
+  { id: 'short', name: 'Ox', domain: 'ox.example', status: 'active', owner: { name: 'Jonas Weber', initials: 'JW' }, arr: 1200, health: 3 },
 ];
 
-const sampleCard: KanbanTask = {
-  id: 'KOS-142',
-  columnId: 'in-progress',
-  title: 'Fix the billing date in the invoice email',
-  labels: ['Bug'],
-  due: 'Oct 14',
-  assignee: { name: 'Leo Park', initials: 'LP' },
-  comments: 2,
+const sample: KanbanItem = {
+  id: 'northwind',
+  name: 'Northwind Traders',
+  domain: 'northwind.example',
+  status: 'active',
+  owner: { name: 'Maya Chen', initials: 'MC' },
+  arr: 184000,
+  health: 86,
+  lastActivity: '2026-10-10',
 };
-
-function Frame({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={className ?? 'flex h-[32rem] w-full min-w-0'}>{children}</div>;
-}
 
 export default function KanbanBoardPreview() {
   return (
     <PreviewStack>
       <PreviewSection title="Full (drag a card, or Tab to it and press Space)">
-        <Frame>
-          <KanbanBoard onAddTask={() => {}} />
-        </Frame>
+        <div className={`${frame} h-[30rem]`}>
+          <KanbanBoard onAdd={() => {}} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Filtered by a search">
+        <div className={`${frame} h-72`}>
+          <KanbanBoard query="maya" />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Loading">
-        <Frame className="flex h-72 w-full min-w-0">
+        <div className={`${frame} h-72`}>
           <KanbanBoard loading />
-        </Frame>
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Empty">
-        <Frame className="flex h-48 w-full min-w-0">
-          <KanbanBoard defaultTasks={[]} onAddTask={() => {}} />
-        </Frame>
+        <div className={`${frame} h-44`}>
+          <KanbanBoard defaultItems={[]} onAdd={() => {}} />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Long text">
-        <Frame className="flex h-96 w-full min-w-0">
-          <KanbanBoard defaultTasks={longTasks} />
-        </Frame>
+        <div className={`${frame} h-96`}>
+          <KanbanBoard defaultItems={longItems} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Narrow container">
+        <div className={`${frame} h-96 max-w-xs`}>
+          <KanbanBoard />
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Card states: resting, lifted while dragged, the slot it leaves">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          <KanbanCard task={sampleCard} />
-          <KanbanCard task={sampleCard} lifted />
-          <KanbanCard task={sampleCard} placeholder />
+          <KanbanCard item={sample} />
+          <KanbanCard item={sample} lifted />
+          <KanbanCard item={sample} placeholder />
         </div>
       </PreviewSection>
     </PreviewStack>

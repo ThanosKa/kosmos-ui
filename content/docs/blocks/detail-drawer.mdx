@@ -1,6 +1,6 @@
 ---
 title: Detail drawer
-description: A side panel with the details of one task, where you change its status and priority, read its activity and add a comment.
+description: A side panel with the details of one record, where you change its status, read its activity and add a note.
 ---
 
 <ComponentPreview name="detail-drawer-demo" minHeight={680} />
@@ -9,35 +9,33 @@ description: A side panel with the details of one task, where you change its sta
 
 <ComponentInstall name="detail-drawer" />
 
-The drawer installs [Drawer](/docs/components/drawer), [Dropdown menu](/docs/components/dropdown-menu), [Select](/docs/components/select), [Textarea](/docs/components/textarea), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Separator](/docs/components/separator) and [Skeleton](/docs/components/skeleton) with it.
+The block brings [Drawer](/docs/components/drawer), [Dropdown menu](/docs/components/dropdown-menu), [Select](/docs/components/select), [Meter](/docs/components/meter), [Textarea](/docs/components/textarea), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Separator](/docs/components/separator) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/detail-drawer.tsx`.
 
 ## Usage
 
 ```tsx
 import { DetailDrawer } from '@/components/detail-drawer';
-```
 
-```tsx
 <DetailDrawer
-  task={task}
+  account={account}
   open={open}
   onOpenChange={setOpen}
   trigger={null}
-  onTaskChange={(next) => saveTask(next)}
-  onComment={(body) => addComment(task.id, body)}
-  onDelete={(task) => confirmDelete(task.id)}
-/>
+  onAccountChange={saveAccount}
+  onNote={(body) => addNote(account.id, body)}
+  onAction={(action, account) => run(action, account)}
+/>;
 ```
 
-Without props the drawer opens from an **Open task** button and shows a sample task. Pass `trigger={null}` and control `open` to open it from somewhere else, such as a card on the [Kanban board](/docs/blocks/kanban-board). Pass your own element as `trigger` to open it from that element.
+Without props the drawer opens from an **Open account** button and shows a sample account. Pass `trigger={null}` and control `open` to open it from a row of the [data table](/docs/blocks/data-table) or a card on the [kanban board](/docs/blocks/kanban-board); the sample account has the same shape as theirs. The `DetailAccount` type and the fields live in the file: change them to fit your records.
 
-Status and priority change in place and call `onTaskChange` with the updated task. A new comment appears in the activity at once and calls `onComment`; ⌘Enter (Ctrl+Enter on Windows and Linux) sends it. **Delete task** in the more menu calls `onDelete`: ask for confirmation there before you delete anything.
+## What it does
 
-The drawer slides in from the end edge and closes with Escape, a click outside, a swipe toward the edge or the close button. Focus goes back to the element that opened it.
-
-## States
-
-Pass `loading` to show placeholders while the task loads. Fields without a value say so (_Unassigned_, _No due date_), and a task without activity shows _No activity yet_.
+- **Status** changes in place and calls `onAccountChange` with the updated record.
+- **Notes**: ⌘Enter (Ctrl+Enter on Windows and Linux) or **Add note** adds one. With `onNote`, add the note to `account.activity` yourself; without it, the drawer keeps new notes until another record opens.
+- **More menu**: with `onAction`, a menu offers Copy link, Duplicate and Delete account. Ask for confirmation before you delete.
+- **Empty fields** say so (_No owner_, _Not scored_), and `loading` shows placeholders.
+- **Closing**: Escape, a click outside, a swipe toward the edge or the close button. Focus goes back to the element that opened it.
 
 ## Motion
 
@@ -49,36 +47,39 @@ The drawer slides in over 300ms and out in 150ms. With the reduced motion settin
 
 <TypeTable
   type={{
-    task: { description: 'The task to show.', type: 'DetailTask', default: 'a sample task' },
+    account: { description: 'The record to show.', type: 'DetailAccount', default: 'a sample account' },
     loading: { description: 'Shows placeholders.', type: 'boolean', default: 'false' },
     open: { description: 'Whether the drawer is open, controlled.', type: 'boolean' },
     defaultOpen: { description: 'Whether the drawer starts open, uncontrolled.', type: 'boolean', default: 'false' },
     onOpenChange: { description: 'Called when the drawer opens or closes.', type: '(open: boolean) => void' },
-    trigger: { description: 'The element that opens the drawer. `null` renders none.', type: 'ReactElement | null', default: 'an "Open task" button' },
-    onTaskChange: { description: 'Called when the status or priority changes.', type: '(task: DetailTask) => void' },
-    onComment: { description: 'Called with the text of a new comment.', type: '(body: string) => void' },
-    onDelete: { description: 'Called by Delete task in the more menu.', type: '(task: DetailTask) => void' },
+    trigger: { description: 'The element that opens the drawer. `null` renders none.', type: 'ReactElement | null', default: 'an "Open account" button' },
+    onAccountChange: { description: 'Called with the updated record when its status changes.', type: '(account: DetailAccount) => void' },
+    onNote: { description: 'Called with the text of a new note. With it set, the drawer shows only the activity you pass.', type: '(body: string) => void' },
+    onAction: { description: 'Shows the more menu and is called by its items.', type: "(action: 'copy-link' | 'duplicate' | 'delete', account: DetailAccount) => void" },
+    actionsMenu: { description: 'Root props for the more menu, such as `{ open: true, modal: false }` to pin it open.', type: 'DropdownMenu props' },
     modal: { description: 'Blocks the page behind the drawer.', type: 'boolean', default: 'true' },
     container: { description: 'The element the drawer renders into.', type: 'HTMLElement | null', default: 'document.body' },
     initialFocus: { description: 'Where focus goes when the drawer opens.', type: 'boolean | RefObject | function', default: 'the drawer' },
   }}
 />
 
-### DetailTask
+### DetailAccount
 
 <TypeTable
   type={{
-    id: { description: 'Shown at the top.', type: 'string', required: true },
-    title: { description: 'The drawer title.', type: 'string', required: true },
-    meta: { description: 'A line under the title, such as the project and who created the task.', type: 'string' },
-    status: { description: 'The status.', type: "'backlog' | 'todo' | 'in-progress' | 'done'", required: true },
-    priority: { description: 'The priority.', type: "'low' | 'medium' | 'high' | 'urgent'", required: true },
-    assignee: { description: 'Who the task is assigned to.', type: '{ name: string; initials: string }' },
-    due: { description: 'Already formatted, such as "Oct 14".', type: 'string' },
+    id: { description: 'Unique. Another id resets the edits made in the drawer.', type: 'string', required: true },
+    name: { description: 'The drawer title.', type: 'string', required: true },
+    status: { description: 'The status.', type: "'trial' | 'active' | 'at-risk' | 'churned'", required: true },
+    domain: { description: 'Shown at the top.', type: 'string' },
+    owner: { description: 'Who owns the account.', type: '{ name: string; initials: string }' },
+    arr: { description: 'Annual recurring revenue, in dollars.', type: 'number' },
+    health: { description: 'A score from 0 to 100.', type: 'number' },
+    lastActivity: { description: 'An ISO date, such as 2026-10-09.', type: 'string' },
+    meta: { description: 'A line under the name, such as the plan.', type: 'string' },
     labels: { description: 'Shown as badges.', type: 'string[]' },
-    description: { description: 'The task description.', type: 'string' },
+    notes: { description: 'The notes section.', type: 'string' },
     activity: {
-      description: 'Changes and comments, oldest first. An entry with `action` reads as "Maya Chen created the task"; one with `body` shows a comment.',
+      description: 'Changes and notes, oldest first. An entry with `action` reads as "Maya Chen changed the status to At risk"; one with `body` shows a note.',
       type: '{ id: string; author: { name: string; initials: string }; action?: string; body?: string; time: string }[]',
     },
   }}
