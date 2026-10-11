@@ -61,12 +61,12 @@ Name the action and the object in the title, say what is lost in the description
 
 ### Build your own layout
 
-`DialogContent` is `DialogPortal`, `DialogOverlay`, `DialogViewport` and `DialogPopup` put together. Use the parts directly for a different layout, such as a dialog pinned near the top of the screen:
+`DialogContent` is `DialogPortal`, `DialogBackdrop`, `DialogViewport` and `DialogPopup` put together. Use the parts directly for a different layout, such as a dialog pinned near the top of the screen:
 
 ```tsx
 <Dialog>
   <DialogPortal>
-    <DialogOverlay />
+    <DialogBackdrop />
     <DialogViewport className="items-start pt-[15vh]">
       <DialogPopup className="max-w-xl">…</DialogPopup>
     </DialogViewport>
@@ -84,7 +84,7 @@ Dialog wraps the [Base UI Dialog](https://base-ui.com/react/components/dialog). 
 
 ### DialogContent
 
-Takes every Base UI `Dialog.Popup` prop, plus:
+Takes every Base UI `Dialog.Popup` prop, such as `initialFocus` and `finalFocus`, plus:
 
 <TypeTable
   type={{
@@ -121,6 +121,6 @@ Takes every Base UI `Dialog.Popup` prop, plus:
 | `DialogBody` | The content. Scrolls when the dialog reaches the screen height. |
 | `DialogFooter` | The actions, stacked on a phone and in a row from `sm`. |
 | `DialogPortal` | Renders its children into `document.body`. Base UI `Dialog.Portal`. |
-| `DialogOverlay` | The scrim behind the dialog. Base UI `Dialog.Backdrop`. |
+| `DialogBackdrop` | The scrim behind the dialog. Base UI `Dialog.Backdrop`. |
 | `DialogViewport` | Centers the popup. Base UI `Dialog.Viewport`. |
 | `DialogPopup` | The dialog surface. Base UI `Dialog.Popup`. |

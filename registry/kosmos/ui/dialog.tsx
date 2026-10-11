@@ -23,10 +23,10 @@ function DialogClose(props: DialogPrimitive.Close.Props) {
 }
 
 /** The scrim behind the dialog. Fades in and out; nothing moves, so reduced motion keeps it as is. */
-function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) {
+function DialogBackdrop({ className, ...props }: DialogPrimitive.Backdrop.Props) {
   return (
     <DialogPrimitive.Backdrop
-      data-slot="dialog-overlay"
+      data-slot="dialog-backdrop"
       className={cn(
         'fixed inset-0 z-50 bg-scrim supports-[-webkit-touch-callout:none]:absolute',
         'transition-opacity duration-overlay data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
@@ -37,12 +37,12 @@ function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) 
   );
 }
 
-/** Centers the popup and scrolls it when it is taller than the screen. */
+/** Centers the popup and caps its height at the screen; `DialogBody` scrolls inside it. Lets clicks through around the popup. */
 function DialogViewport({ className, ...props }: DialogPrimitive.Viewport.Props) {
   return (
     <DialogPrimitive.Viewport
       data-slot="dialog-viewport"
-      className={cn('fixed inset-0 z-50 flex items-center justify-center p-4', className)}
+      className={cn('pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4', className)}
       {...props}
     />
   );
@@ -54,7 +54,7 @@ function DialogPopup({ className, ...props }: DialogPrimitive.Popup.Props) {
     <DialogPrimitive.Popup
       data-slot="dialog-popup"
       className={cn(
-        'group/dialog relative flex max-h-full w-full max-w-[30rem] min-w-0 flex-col rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-modal',
+        'group/dialog pointer-events-auto relative flex max-h-full w-full max-w-[30rem] min-w-0 flex-col rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-modal',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'transition-[opacity,scale] duration-overlay',
         'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
@@ -73,11 +73,11 @@ type DialogContentProps = DialogPrimitive.Popup.Props & {
   container?: DialogPrimitive.Portal.Props['container'];
 };
 
-/** Portal, overlay, viewport and popup in one part, with a close button in the top corner. */
+/** Portal, backdrop, viewport and popup in one part, with a close button in the top corner. */
 function DialogContent({ className, children, showCloseButton = true, container, ...props }: DialogContentProps) {
   return (
     <DialogPortal container={container}>
-      <DialogOverlay />
+      <DialogBackdrop />
       <DialogViewport>
         <DialogPopup
           data-slot="dialog-content"
@@ -159,7 +159,7 @@ export {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
+  DialogBackdrop,
   DialogPopup,
   DialogPortal,
   DialogTitle,

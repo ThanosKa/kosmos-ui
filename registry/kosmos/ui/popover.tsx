@@ -16,6 +16,46 @@ function PopoverClose(props: PopoverPrimitive.Close.Props) {
   return <PopoverPrimitive.Close data-slot="popover-close" {...props} />;
 }
 
+function PopoverPortal(props: PopoverPrimitive.Portal.Props) {
+  return <PopoverPrimitive.Portal data-slot="popover-portal" {...props} />;
+}
+
+/** Places the popup next to its trigger: 8px away, 16px clear of the screen edges, flipping when out of room. */
+function PopoverPositioner({
+  className,
+  sideOffset = 8,
+  collisionPadding = 16,
+  ...props
+}: PopoverPrimitive.Positioner.Props) {
+  return (
+    <PopoverPrimitive.Positioner
+      data-slot="popover-positioner"
+      sideOffset={sideOffset}
+      collisionPadding={collisionPadding}
+      className={cn('isolate z-50', className)}
+      {...props}
+    />
+  );
+}
+
+/** The popover surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion. */
+function PopoverPopup({ className, ...props }: PopoverPrimitive.Popup.Props) {
+  return (
+    <PopoverPrimitive.Popup
+      data-slot="popover-popup"
+      className={cn(
+        'flex max-h-(--available-height) w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-3 overflow-y-auto overscroll-contain rounded-xl border border-transparent bg-popover p-4 text-body text-popover-foreground shadow-popover',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        'transition-[opacity,scale] duration-base',
+        'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
+        'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 type PopoverContentProps = PopoverPrimitive.Popup.Props &
   Pick<
     PopoverPrimitive.Positioner.Props,
@@ -25,47 +65,30 @@ type PopoverContentProps = PopoverPrimitive.Popup.Props &
     container?: PopoverPrimitive.Portal.Props['container'];
   };
 
-/**
- * Portal, positioner and popup in one part. Grows out of its trigger (`scale-[0.97]` plus a fade),
- * or only fades under reduced motion, and flips to the other side when it runs out of room.
- */
+/** Portal, positioner and popup in one part. Opens below the trigger, centered, unless `side` and `align` say otherwise. */
 function PopoverContent({
-  className,
-  side = 'bottom',
-  sideOffset = 8,
-  align = 'center',
-  alignOffset = 0,
-  collisionPadding = 16,
+  side,
+  sideOffset,
+  align,
+  alignOffset,
+  collisionPadding,
   anchor,
   container,
   ...props
 }: PopoverContentProps) {
   return (
-    <PopoverPrimitive.Portal container={container}>
-      <PopoverPrimitive.Positioner
-        data-slot="popover-positioner"
+    <PopoverPortal container={container}>
+      <PopoverPositioner
         side={side}
         sideOffset={sideOffset}
         align={align}
         alignOffset={alignOffset}
         collisionPadding={collisionPadding}
         anchor={anchor}
-        className="isolate z-50"
       >
-        <PopoverPrimitive.Popup
-          data-slot="popover-content"
-          className={cn(
-            'flex max-h-(--available-height) w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-3 overflow-y-auto overscroll-contain rounded-xl border border-transparent bg-popover p-4 text-body text-popover-foreground shadow-popover',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-            'transition-[opacity,scale] duration-base',
-            'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
-            'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
-            className,
-          )}
-          {...props}
-        />
-      </PopoverPrimitive.Positioner>
-    </PopoverPrimitive.Portal>
+        <PopoverPopup data-slot="popover-content" {...props} />
+      </PopoverPositioner>
+    </PopoverPortal>
   );
 }
 
@@ -99,6 +122,9 @@ export {
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
+  PopoverPopup,
+  PopoverPortal,
+  PopoverPositioner,
   PopoverTitle,
   PopoverTrigger,
   type PopoverContentProps,

@@ -82,7 +82,7 @@ Drawer wraps the [Base UI Drawer](https://base-ui.com/react/components/drawer). 
       default: "'right'",
     },
     modal: {
-      description: 'Traps focus, locks page scroll and shows the scrim. `trap-focus` traps focus only.',
+      description: 'Traps focus, locks page scroll and shows the scrim. `trap-focus` traps focus only, with no scrim.',
       type: "boolean | 'trap-focus'",
       default: 'true',
     },
@@ -120,6 +120,6 @@ Takes every Base UI `Drawer.Popup` prop, plus:
 | `DrawerBody` | The content. Scrolls on its own, so header and footer stay in view. |
 | `DrawerFooter` | The actions, on the bottom edge. |
 | `DrawerPortal` | Renders its children into `document.body`. Base UI `Drawer.Portal`. |
-| `DrawerOverlay` | The scrim, which fades as the drawer is swiped. Base UI `Drawer.Backdrop`. |
+| `DrawerBackdrop` | The scrim, which fades as the drawer is swiped. Base UI `Drawer.Backdrop`. |
 | `DrawerViewport` | The full-screen layer the popup sits in. Base UI `Drawer.Viewport`. |
 | `DrawerPopup` | The drawer surface, placed by `swipeDirection`. Base UI `Drawer.Popup`. |

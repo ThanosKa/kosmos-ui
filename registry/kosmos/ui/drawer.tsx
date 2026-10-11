@@ -6,13 +6,14 @@ import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 
+/** Whether the drawer blocks the page: only then does `DrawerContent` add the backdrop. */
+const DrawerModalContext = React.createContext<DrawerPrimitive.Root.Props['modal']>(true);
+
 /**
  * A panel that slides in from an edge and follows a swipe toward that edge to close.
  * `swipeDirection` picks the edge: `right` (default) and `left` for side panels, `down` for a
  * bottom sheet, `up` for a top sheet.
  */
-const DrawerModalContext = React.createContext<DrawerPrimitive.Root.Props['modal']>(true);
-
 function Drawer({ swipeDirection = 'right', modal = true, ...props }: DrawerPrimitive.Root.Props) {
   return (
     <DrawerModalContext.Provider value={modal}>
@@ -34,13 +35,13 @@ function DrawerClose(props: DrawerPrimitive.Close.Props) {
 }
 
 /** The scrim behind a modal drawer. Fades out as the drawer is swiped away. */
-function DrawerOverlay({ className, ...props }: DrawerPrimitive.Backdrop.Props) {
+function DrawerBackdrop({ className, ...props }: DrawerPrimitive.Backdrop.Props) {
   return (
     <DrawerPrimitive.Backdrop
-      data-slot="drawer-overlay"
+      data-slot="drawer-backdrop"
       className={cn(
         'fixed inset-0 z-50 bg-scrim opacity-[calc(1-var(--drawer-swipe-progress,0))] supports-[-webkit-touch-callout:none]:absolute',
-        'transition-opacity duration-slow data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast data-swiping:duration-0',
+        'transition-opacity duration-slow data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast data-swiping:transition-none',
         className,
       )}
       {...props}
@@ -88,7 +89,7 @@ function DrawerPopup({ className, ...props }: DrawerPrimitive.Popup.Props) {
         'data-[swipe-direction=right]:[--drawer-closed:translate3d(calc(100%+0.5rem+2px),0,0)] data-[swipe-direction=left]:[--drawer-closed:translate3d(calc(-100%-0.5rem-2px),0,0)]',
         'data-[swipe-direction=down]:[--drawer-closed:translate3d(0,calc(100%+2px),0)] data-[swipe-direction=up]:[--drawer-closed:translate3d(0,calc(-100%-2px),0)]',
         // Open and close: slide, or cross-fade under reduced motion.
-        'transition-[transform,opacity] duration-slow data-ending-style:duration-fast data-swiping:duration-0',
+        'transition-[transform,opacity] duration-slow data-ending-style:duration-fast data-swiping:transition-none',
         'motion-safe:data-starting-style:[transform:var(--drawer-closed)] motion-safe:data-ending-style:[transform:var(--drawer-closed)]',
         'motion-reduce:data-starting-style:opacity-0 motion-reduce:data-ending-style:opacity-0',
         className,
@@ -106,14 +107,14 @@ type DrawerContentProps = DrawerPrimitive.Popup.Props & {
 };
 
 /**
- * Portal, overlay, viewport and popup in one part, with a close button in the top corner and a
- * grab handle on sheets. The overlay is left out when the drawer is not modal.
+ * Portal, backdrop, viewport and popup in one part, with a close button in the top corner and a
+ * grab handle on sheets. The backdrop is left out when the drawer is not modal.
  */
 function DrawerContent({ className, children, showCloseButton = true, container, ...props }: DrawerContentProps) {
   const modal = React.useContext(DrawerModalContext);
   return (
     <DrawerPortal container={container}>
-      {modal === true ? <DrawerOverlay /> : null}
+      {modal === true ? <DrawerBackdrop /> : null}
       <DrawerViewport>
         <DrawerPopup
           data-slot="drawer-content"
@@ -217,7 +218,7 @@ export {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
+  DrawerBackdrop,
   DrawerPopup,
   DrawerPortal,
   DrawerTitle,

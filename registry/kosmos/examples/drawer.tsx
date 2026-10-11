@@ -11,7 +11,7 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
+  DrawerBackdrop,
   DrawerTitle,
   DrawerTrigger,
 } from '@/registry/kosmos/ui/drawer';
@@ -56,7 +56,7 @@ export default function DrawerPreview() {
           <OverlayStage label="right (default)">
             {(container) => (
               <Drawer open modal={false}>
-                <DrawerOverlay />
+                <DrawerBackdrop />
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
                     <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
@@ -76,7 +76,7 @@ export default function DrawerPreview() {
           <OverlayStage label="down (bottom sheet)">
             {(container) => (
               <Drawer open modal={false} swipeDirection="down">
-                <DrawerOverlay />
+                <DrawerBackdrop />
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
                     <DrawerTitle>Share Q3 Roadmap</DrawerTitle>
@@ -94,7 +94,7 @@ export default function DrawerPreview() {
           <OverlayStage label="left, body scrolls">
             {(container) => (
               <Drawer open modal={false} swipeDirection="left">
-                <DrawerOverlay />
+                <DrawerBackdrop />
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
                     <DrawerTitle>Activity</DrawerTitle>
