@@ -12,6 +12,18 @@ pnpm dev
 
 Use pnpm only; the version is pinned in `package.json`.
 
+### Screenshots and browser checks
+
+Each component and block is reviewed in four screenshots and in a real browser. On a new machine, install both browsers once:
+
+```bash
+pnpm exec playwright install chromium   # the browser `pnpm screenshots` drives
+npm install -g agent-browser            # or: brew install agent-browser
+agent-browser install                   # downloads the browser agent-browser drives
+```
+
+Then, with `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs to `.screenshots/`.
+
 ### Claude Code
 
 The repo ships its Claude Code setup, so a fresh clone works on any machine:

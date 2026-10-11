@@ -20,6 +20,8 @@ pnpm dev
 
 Then open http://localhost:3000.
 
+To take the review screenshots (`pnpm screenshots <name>`), install Playwright's browser once with `pnpm exec playwright install chromium`. [CONTRIBUTING.md](CONTRIBUTING.md#screenshots-and-browser-checks) also covers `agent-browser`.
+
 Before you open a pull request:
 
 ```bash
