@@ -6,7 +6,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
 
 type MeterTone = 'primary' | 'success' | 'warning' | 'destructive';
 
-// `primary` fills with chart-1: the brand indigo, stepped lighter in dark so the fill reaches 3:1 there.
+// `primary` fills with chart-1: the brand orange, stepped lighter in dark so the fill reaches 3:1 there.
 const toneFill: Record<MeterTone, string> = {
   primary: 'bg-chart-1',
   success: 'bg-success',

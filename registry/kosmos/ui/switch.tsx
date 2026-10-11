@@ -30,6 +30,7 @@ function Switch({ className, ...props }: SwitchProps) {
         data-slot="switch-thumb"
         className={cn(
           thumbSurface,
+          'data-checked:bg-primary-foreground',
           'motion-safe:transition-[translate] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
           'data-checked:translate-x-3.5 rtl:data-checked:-translate-x-3.5',
           'motion-reduce:invisible',
@@ -42,15 +43,19 @@ function Switch({ className, ...props }: SwitchProps) {
       />
       <span
         aria-hidden
-        className={cn(thumbSurface, stillThumb, 'end-px opacity-0 group-data-checked/switch:opacity-100')}
+        className={cn(
+          thumbSurface,
+          stillThumb,
+          'end-px bg-primary-foreground opacity-0 group-data-checked/switch:opacity-100',
+        )}
       />
     </SwitchPrimitive.Root>
   );
 }
 
-// `primary-foreground` is near-white in both themes: it reads on the indigo track and on the muted one.
-const thumbSurface =
-  'pointer-events-none block size-3.5 rounded-full border border-transparent bg-primary-foreground shadow-thumb';
+// Off, the thumb is `thumb` (near-white in both themes) on the muted track. On, it takes `primary-foreground`,
+// which contrasts with the `primary` track in each theme (light on ink, ink on the light dark-mode primary).
+const thumbSurface = 'pointer-events-none block size-3.5 rounded-full border border-transparent bg-thumb shadow-thumb';
 const stillThumb = 'absolute top-px hidden transition-[opacity] motion-reduce:block';
 
 export { Switch, type SwitchProps };
