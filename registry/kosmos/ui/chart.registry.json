@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart",
+  "type": "registry:ui",
+  "title": "Chart",
+  "description": "Charts on Recharts, themed with Kosmos tokens: a container with tooltip and legend parts, a Sparkline for tiles and cells, and a GrowthChart for a value over time.",
+  "dependencies": ["recharts@^3.8.0", "react-is"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/motion"],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
