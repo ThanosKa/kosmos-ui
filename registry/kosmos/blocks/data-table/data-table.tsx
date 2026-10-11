@@ -458,4 +458,4 @@ function DataTable({
   );
 }
 
-export { DataTable, type DataTableAction, type DataTableProps, type Account, type AccountStatus, type Sort as DataTableSort };
+export { DataTable, sampleAccounts, type DataTableAction, type DataTableProps, type Account, type AccountStatus, type Sort as DataTableSort };
