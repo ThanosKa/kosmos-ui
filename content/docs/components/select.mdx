@@ -1,0 +1,174 @@
+---
+title: Select
+description: Picks one value from a list. A trigger with the same look as Input opens the list, and every step works from the keyboard. Built on Base UI.
+---
+
+<ComponentPreview name="select-demo" />
+
+## Installation
+
+<ComponentInstall name="select" />
+
+## Usage
+
+```tsx
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+```
+
+```tsx
+const statuses = [
+  { value: 'todo', label: 'To do' },
+  { value: 'done', label: 'Done' },
+];
+
+<Select name="status" items={statuses} defaultValue="todo">
+  <SelectTrigger aria-label="Status">
+    <SelectValue placeholder="Pick a status" />
+  </SelectTrigger>
+  <SelectContent>
+    {statuses.map((status) => (
+      <SelectItem key={status.value} value={status.value}>
+        {status.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>;
+```
+
+Pass `items` to Select so the trigger shows the item's label, "To do", instead of its value, `todo`, before the list has opened.
+
+## Keyboard
+
+| Key | When the list is closed | When the list is open |
+| --- | --- | --- |
+| Enter, Space, ↓, ↑ | Opens the list | Enter and Space choose the highlighted item |
+| ↓, ↑, Home, End | | Move the highlight |
+| A letter | | Jumps to the next item that starts with it |
+| Escape | | Closes the list; focus goes back to the trigger |
+| Tab | Moves to the next control | Closes the list and moves to the next control |
+
+## Examples
+
+### Groups
+
+<ComponentPreview name="select-groups" />
+
+### With a label
+
+In a form, put the Select in a [Field](/docs/components/field) and give the FieldLabel `nativeLabel={false}` and `render={<div />}`.
+
+<ComponentPreview name="select-with-field" />
+
+### Position
+
+The list opens over the trigger with the chosen item on top of the value, as native menus do on macOS. Set `alignItemWithTrigger={false}` on SelectContent to open it below the trigger instead. On touch screens it always opens below.
+
+<ComponentPreview name="select-position" />
+
+### Disabled
+
+Disable the whole Select with `disabled` on Select, or one option with `disabled` on its SelectItem.
+
+<ComponentPreview name="select-disabled" />
+
+## API
+
+Each part wraps its [Base UI Select](https://base-ui.com/react/components/select) part and accepts all of its props.
+
+### Select
+
+<TypeTable
+  type={{
+    items: {
+      description: "The options' labels, so the trigger can show a label before the list opens.",
+      type: 'Record<string, ReactNode> | { value, label }[]',
+    },
+    value: {
+      description: 'The chosen value, when you control it.',
+      type: 'any',
+    },
+    defaultValue: {
+      description: 'The starting value, when the Select manages it.',
+      type: 'any',
+    },
+    onValueChange: {
+      description: 'Called with the new value when an item is chosen.',
+      type: '(value, eventDetails) => void',
+    },
+    name: {
+      description: 'Names the value when the form is submitted.',
+      type: 'string',
+    },
+    multiple: {
+      description: 'Lets people choose several items. The value is then an array.',
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Blocks the trigger.',
+      type: 'boolean',
+      default: 'false',
+    },
+    required: {
+      description: 'Fails form validation while nothing is chosen.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### SelectValue
+
+<TypeTable
+  type={{
+    placeholder: {
+      description: 'Shown in the trigger while nothing is chosen.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### SelectContent
+
+<TypeTable
+  type={{
+    alignItemWithTrigger: {
+      description: 'Opens the list over the trigger, with the chosen item on top of the value. `false` opens it below.',
+      type: 'boolean',
+      default: 'true',
+    },
+    side: {
+      description: 'Where the list opens when it is not aligned with the trigger.',
+      type: "'top' | 'bottom' | 'left' | 'right'",
+      default: "'bottom'",
+    },
+    align: {
+      description: 'How the list lines up with the trigger along that side.',
+      type: "'start' | 'center' | 'end'",
+      default: "'start'",
+    },
+    sideOffset: {
+      description: 'The gap between the trigger and the list, in pixels.',
+      type: 'number',
+      default: '4',
+    },
+  }}
+/>
+
+### SelectItem
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The value this item sets.',
+      type: 'any',
+    },
+    disabled: {
+      description: 'Shows the item but blocks choosing it.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+SelectTrigger is the button that opens the list. SelectGroup and SelectGroupLabel group related items under a heading, and SelectSeparator draws a line between groups.
