@@ -48,7 +48,9 @@ _Decided without the user (2026-10-11), pending confirmation._ Borders are what 
 
 ## Radius
 
-Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px), cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+Controls take `rounded-lg` (8px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio; overlays `rounded-xl` (12px), cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+
+_Decided without the user (2026-10-11), pending confirmation._ The checkbox radius is 4px because 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
 ## Color
 
