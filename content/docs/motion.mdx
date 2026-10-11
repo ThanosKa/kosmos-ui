@@ -1,0 +1,93 @@
+---
+title: Motion
+description: How Kosmos components animate, which tokens set the speed, and how reduced motion is respected.
+---
+
+## Animations ship with each component
+
+Every animation lives in the component file you install. A menu that grows from its trigger, a drawer that slides in or a switch thumb that moves does the same in your app as it does on this site. You don't add an animation library or a setup step.
+
+The animations are CSS transitions written as Tailwind classes, such as `transition-[opacity,scale] duration-base`. Base UI marks the start and end of each open and close with `data-starting-style` and `data-ending-style`, and the transition runs between them. Loading states use Tailwind's built-in `animate-pulse` and `animate-spin`.
+
+Each transition names the properties it changes and reads its duration and easing from the Kosmos tokens. Exits run faster than enters, on the same curve.
+
+## The tokens
+
+The tokens come with `@kosmos/tokens`, next to the colors and shadows.
+
+| Token | Value | Used for |
+| --- | --- | --- |
+| `duration-instant` | 100ms | Menu and list item highlight |
+| `duration-fast` | 150ms | Hover, color, press, and every exit |
+| `duration-base` | 200ms | Popover, menu, select and tooltip open |
+| `duration-overlay` | 250ms | Dialog open |
+| `duration-slow` | 300ms | Drawer, sidebar width, accordion height, tab indicator, switch thumb |
+| `ease-power3-out` | `cubic-bezier(0.25, 1, 0.5, 1)` | The default curve for everything |
+| `ease-smooth-in-out` | `cubic-bezier(0.7, 0, 0, 1)` | Size and position: sidebar width, accordion height, indicators, switch thumb |
+
+The tokens also set Tailwind's defaults, `--default-transition-duration` (150ms) and `--default-transition-timing-function` (`ease-power3-out`). A plain `transition-[background-color]` with no duration class runs at those values.
+
+## Motion values for JavaScript
+
+Some animations run in JavaScript, where CSS variables don't reach. `@kosmos/motion` holds the same values as plain numbers in `lib/motion.ts`:
+
+- `ease.power3Out` and `ease.smoothInOut`, as cubic-bezier arrays.
+- `duration.instant` to `duration.slow`, in seconds.
+- `spring`, a 300ms spring with no bounce, for layout moves and drag.
+
+The Chart uses it for its Recharts animation and the Kanban board block uses it for drag and drop. The CLI adds it when you install either one. The other components don't need it.
+
+To use the same values with [Motion](https://motion.dev) in your own code, add it:
+
+<ShadcnCommand args="add @kosmos/motion" />
+
+```tsx
+import { motion, MotionConfig } from 'motion/react';
+import { duration, ease } from '@/lib/motion';
+
+export function Panel() {
+  return (
+    <MotionConfig reducedMotion="user">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: duration.base, ease: ease.power3Out }}
+      />
+    </MotionConfig>
+  );
+}
+```
+
+`reducedMotion="user"` turns off movement for people who ask for reduced motion and keeps the fade, the same as the components.
+
+## Reduced motion
+
+When the system setting asks for reduced motion (`prefers-reduced-motion: reduce`), the components don't move, scale or blur anything. The same change becomes a fade, so you still see that something opened or closed.
+
+- Popovers, menus, selects, tooltips and dialogs fade in without growing.
+- The drawer and toasts fade instead of sliding, and toasts stay spread out instead of stacking.
+- The accordion fades its content instead of growing its height, and its chevron cross-fades instead of turning.
+- The switch thumb, the tab indicator and the sidebar fade instead of sliding or resizing.
+- Buttons don't scale down when pressed.
+- The Chart draws without animating, a video in an Asset doesn't play by itself, and a dropped card on the Kanban board fades out where you let go.
+
+The loading pulse keeps running, because it only changes opacity. A loading toast swaps its spinner for the same pulse.
+
+## Change the speed
+
+Every component reads the same tokens, so one edit changes the whole app. `shadcn add @kosmos/tokens` put them in the `@theme inline` block of your global CSS. Change the values there:
+
+```css title="app/globals.css"
+@theme inline {
+  --default-transition-duration: 200ms;
+  --transition-duration-instant: 130ms;
+  --transition-duration-fast: 200ms;
+  --transition-duration-base: 270ms;
+  --transition-duration-overlay: 330ms;
+  --transition-duration-slow: 400ms;
+}
+```
+
+Keep the order from fast to slow, so exits stay quicker than enters. To change the feel rather than the speed, edit `--ease-power3-out` and `--ease-smooth-in-out`.
+
+If you use `lib/motion.ts`, change the same values there. The Chart and the Kanban board read them from that file, not from the CSS.
