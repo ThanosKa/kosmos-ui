@@ -81,6 +81,21 @@ const sampleUser: User = { name: 'Maya Chen', email: 'maya@acme.example', initia
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 
+/** What the workspace and account menus offer besides switching workspace. */
+type AppSidebarAction = 'add-workspace' | 'profile' | 'account-settings' | 'log-out';
+
+/** For values that never change after hydration: nothing to subscribe to. */
+const subscribeNever = () => () => {};
+
+/** Apple platforms show ⌘ for the shortcut, the rest Ctrl. The server renders ⌘. */
+function useIsMac() {
+  return React.useSyncExternalStore(
+    subscribeNever,
+    () => /Mac|iPhone|iPad/.test(navigator.userAgent),
+    () => true,
+  );
+}
+
 type AppSidebarContentProps = {
   /** The main pages, at the top. */
   navMain?: NavItem[];
@@ -94,11 +109,21 @@ type AppSidebarContentProps = {
   onNavigate?: (id: string, event: React.MouseEvent<HTMLElement>) => void;
   /** Called by the search button, usually to open a command menu. */
   onSearch?: () => void;
+  /**
+   * Shows ⌘K (Ctrl+K on Windows and Linux) on the search button and announces it. Turn it on only when
+   * your app binds that shortcut to the same search, as `CommandMenu` does with `hotkey`.
+   */
+  searchShortcut?: boolean;
+  /** The workspaces in the switcher. With none, the switcher is hidden. */
   workspaces?: Workspace[];
-  /** The `id` of the workspace shown in the switcher. Use with `onWorkspaceChange`; leave it out and the switcher keeps its own state. */
+  /** The `id` of the workspace shown in the switcher. Use with `onWorkspaceChange`, or leave it out and pass `defaultWorkspace`. */
   workspace?: string;
+  /** The workspace shown at first, when the switcher keeps its own state. Defaults to the first one. */
+  defaultWorkspace?: string;
   onWorkspaceChange?: (id: string) => void;
   user?: User;
+  /** Runs an action from the workspace or account menu. Those items, and the account menu, show only when this is passed. */
+  onAction?: (action: AppSidebarAction) => void;
   /** Props for the workspace menu, such as `open` and `onOpenChange`. */
   workspaceMenu?: MenuProps;
   /** Props for the account menu, such as `open` and `onOpenChange`. */
@@ -160,14 +185,18 @@ function AppSidebarContent({
   activeItem = 'accounts',
   onNavigate,
   onSearch,
+  searchShortcut = false,
   workspaces = sampleWorkspaces,
   workspace,
+  defaultWorkspace,
   onWorkspaceChange,
   user = sampleUser,
+  onAction,
   workspaceMenu,
   userMenu,
 }: AppSidebarContentProps) {
-  const [workspaceState, setWorkspaceState] = React.useState(workspaces[0]?.id);
+  const isMac = useIsMac();
+  const [workspaceState, setWorkspaceState] = React.useState(defaultWorkspace ?? workspaces[0]?.id);
   const currentId = workspace ?? workspaceState;
   const current = workspaces.find((item) => item.id === currentId) ?? workspaces[0];
   const changeWorkspace = (id: string) => {
@@ -175,56 +204,77 @@ function AppSidebarContent({
     onWorkspaceChange?.(id);
   };
 
+  const userDetails = (
+    <>
+      <Avatar size="sm" aria-hidden>
+        <AvatarFallback>{user.initials}</AvatarFallback>
+      </Avatar>
+      <span className="flex min-w-0 flex-1 flex-col text-start">
+        <span title={user.name} className="truncate font-medium">
+          {user.name}
+        </span>
+        <span title={user.email} className="truncate text-caption text-muted-foreground">
+          {user.email}
+        </span>
+      </span>
+    </>
+  );
+
   return (
     <>
       <SidebarHeader>
-        <DropdownMenu {...workspaceMenu}>
-          <DropdownMenuTrigger
-            render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
-            aria-label={`${current.name}, switch workspace`}
-          >
-            <WorkspaceMark name={current.name} />
-            <span className="flex min-w-0 flex-1 flex-col text-start">
-              <span title={current.name} className="truncate font-medium">
-                {current.name}
-              </span>
-              <span className="truncate text-caption text-muted-foreground">{current.plan}</span>
-            </span>
-            <ChevronsUpDown aria-hidden className="ms-auto" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-(--anchor-width) sm:min-w-56">
-            <DropdownMenuRadioGroup
-              value={current.id}
-              onValueChange={(value: string) => changeWorkspace(value)}
+        {current ? (
+          <DropdownMenu {...workspaceMenu}>
+            <DropdownMenuTrigger
+              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
+              aria-label={`${current.name}, switch workspace`}
             >
-              <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
-              {workspaces.map((item) => (
-                <DropdownMenuRadioItem key={item.id} value={item.id}>
-                  <WorkspaceMark name={item.name} className="size-5" />
-                  <span className="min-w-0 truncate">{item.name}</span>
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Plus />
-              Add workspace
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <WorkspaceMark name={current.name} />
+              <span className="flex min-w-0 flex-1 flex-col text-start">
+                <span title={current.name} className="truncate font-medium">
+                  {current.name}
+                </span>
+                <span className="truncate text-caption text-muted-foreground">{current.plan}</span>
+              </span>
+              <ChevronsUpDown aria-hidden className="ms-auto" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-(--anchor-width) sm:min-w-56">
+              <DropdownMenuRadioGroup value={current.id} onValueChange={(value: string) => changeWorkspace(value)}>
+                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                {workspaces.map((item) => (
+                  <DropdownMenuRadioItem key={item.id} value={item.id}>
+                    <WorkspaceMark name={item.name} className="size-5" />
+                    <span className="min-w-0 truncate">{item.name}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+              {onAction ? (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onAction('add-workspace')}>
+                    <Plus />
+                    Add workspace
+                  </DropdownMenuItem>
+                </>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
         <Button
           variant="secondary"
           className="w-full justify-start px-2 font-normal text-muted-foreground"
-          // The hint is visual; whoever passes `onSearch` binds the shortcut, so only then is it announced.
-          aria-keyshortcuts={onSearch ? 'Meta+K' : undefined}
+          // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
+          aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
           onClick={onSearch}
         >
           <Search aria-hidden />
           <span className="min-w-0 flex-1 truncate text-start">Search…</span>
-          <KbdGroup aria-hidden>
-            <Kbd>⌘</Kbd>
-            <Kbd>K</Kbd>
-          </KbdGroup>
+          {searchShortcut ? (
+            <KbdGroup aria-hidden>
+              <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
+              <Kbd>K</Kbd>
+            </KbdGroup>
+          ) : null}
         </Button>
       </SidebarHeader>
 
@@ -241,47 +291,44 @@ function AppSidebarContent({
       <SidebarSeparator />
       <SidebarFooter>
         <NavGroup items={navFooter} activeItem={activeItem} onNavigate={onNavigate} />
-        <DropdownMenu {...userMenu}>
-          <DropdownMenuTrigger
-            render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
-            aria-label={`${user.name}, account menu`}
-          >
-            <Avatar size="sm" aria-hidden>
-              <AvatarFallback>{user.initials}</AvatarFallback>
-            </Avatar>
-            <span className="flex min-w-0 flex-1 flex-col text-start">
-              <span title={user.name} className="truncate font-medium">
-                {user.name}
-              </span>
-              <span title={user.email} className="truncate text-caption text-muted-foreground">
-                {user.email}
-              </span>
-            </span>
-            <ChevronsUpDown aria-hidden className="ms-auto" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" className="min-w-(--anchor-width) sm:min-w-56">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="flex flex-col gap-0.5">
-                <span className="truncate text-body font-medium text-foreground">{user.name}</span>
-                <span className="truncate font-normal">{user.email}</span>
-              </DropdownMenuLabel>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <UserRound />
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings />
-              Account settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {onAction ? (
+          <DropdownMenu {...userMenu}>
+            <DropdownMenuTrigger
+              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 data-popup-open:bg-sidebar-accent" />}
+              aria-label={`${user.name}, account menu`}
+            >
+              {userDetails}
+              <ChevronsUpDown aria-hidden className="ms-auto" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" className="min-w-(--anchor-width) sm:min-w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="flex flex-col gap-0.5">
+                  <span className="truncate text-body font-medium text-foreground">{user.name}</span>
+                  <span className="truncate font-normal">{user.email}</span>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onAction('profile')}>
+                <UserRound />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAction('account-settings')}>
+                <Settings />
+                Account settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onAction('log-out')}>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          // Without actions there is no menu to open: the signed-in user shows as plain text.
+          <div className="flex h-10 min-w-0 items-center gap-2.5 px-1.5 text-body text-sidebar-foreground">
+            {userDetails}
+          </div>
+        )}
       </SidebarFooter>
     </>
   );
@@ -300,10 +347,13 @@ function AppSidebar({
   activeItem,
   onNavigate,
   onSearch,
+  searchShortcut,
   workspaces,
   workspace,
+  defaultWorkspace,
   onWorkspaceChange,
   user,
+  onAction,
   workspaceMenu,
   userMenu,
   label = 'Main navigation',
@@ -318,10 +368,13 @@ function AppSidebar({
         activeItem={activeItem}
         onNavigate={onNavigate}
         onSearch={onSearch}
+        searchShortcut={searchShortcut}
         workspaces={workspaces}
         workspace={workspace}
+        defaultWorkspace={defaultWorkspace}
         onWorkspaceChange={onWorkspaceChange}
         user={user}
+        onAction={onAction}
         workspaceMenu={workspaceMenu}
         userMenu={userMenu}
       />
@@ -329,4 +382,4 @@ function AppSidebar({
   );
 }
 
-export { AppSidebar, AppSidebarContent, type AppSidebarProps, type AppSidebarContentProps, type NavItem as AppSidebarNavItem };
+export { AppSidebar, AppSidebarContent, type AppSidebarAction, type AppSidebarProps, type AppSidebarContentProps, type NavItem as AppSidebarNavItem };

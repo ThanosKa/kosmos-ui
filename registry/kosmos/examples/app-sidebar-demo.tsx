@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
+import { AppSidebar, type AppSidebarAction } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 const titles: Record<string, string> = {
@@ -17,14 +17,23 @@ const titles: Record<string, string> = {
   settings: 'Settings',
 };
 
+const actionLabels: Record<AppSidebarAction, string> = {
+  'add-workspace': 'add workspace',
+  profile: 'profile',
+  'account-settings': 'account settings',
+  'log-out': 'log out',
+};
+
 export default function AppSidebarDemo() {
   const [page, setPage] = useState('accounts');
+  const [action, setAction] = useState<AppSidebarAction | null>(null);
 
   return (
     // In an app, drop the height and frame classes: the provider fills the screen.
     <SidebarProvider className="h-[36rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card">
       <AppSidebar
         activeItem={page}
+        onAction={setAction}
         onNavigate={(id, event) => {
           event.preventDefault();
           setPage(id);
@@ -36,7 +45,10 @@ export default function AppSidebarDemo() {
           <SidebarTrigger />
           <h1 className="truncate text-body font-medium">{titles[page]}</h1>
         </header>
-        <p className="p-4 text-body text-muted-foreground">Pick a page in the sidebar, or drag its edge to resize it.</p>
+        <p className="p-4 text-body text-muted-foreground">
+          Pick a page in the sidebar, or drag its edge to resize it.
+          {action ? ` Last menu action: ${actionLabels[action]}.` : ''}
+        </p>
       </SidebarInset>
     </SidebarProvider>
   );
