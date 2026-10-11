@@ -1,0 +1,141 @@
+---
+title: Slider
+description: Picks a number, or a range between two numbers, by dragging a thumb or with the arrow keys. Built on Base UI.
+---
+
+<ComponentPreview name="slider-demo" />
+
+## Installation
+
+<ComponentInstall name="slider" />
+
+## Usage
+
+```tsx
+import { Slider, SliderLabel, SliderValue } from '@/components/ui/slider';
+```
+
+```tsx
+<Slider name="volume" defaultValue={60}>
+  <div className="flex items-center justify-between gap-4">
+    <SliderLabel>Volume</SliderLabel>
+    <SliderValue />
+  </div>
+</Slider>
+```
+
+Slider renders one thumb for each value: a number gives one thumb, an array of two gives a range. Anything you put inside, such as a SliderLabel and a SliderValue, sits above the track. SliderLabel names the thumbs; without a visible label, pass `aria-label`.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| →, ↑ | Increases the value by one `step` |
+| ←, ↓ | Decreases the value by one `step` |
+| Page Up, Shift + → | Increases the value by one `largeStep` |
+| Page Down, Shift + ← | Decreases the value by one `largeStep` |
+| Home, End | Moves to `min` or `max` |
+| Tab | Moves to the next thumb, then the next control |
+
+## Examples
+
+### Range
+
+Pass two values for a range. Name each thumb with `getAriaLabel`, so a screen reader can tell them apart. `format` takes `Intl.NumberFormat` options and applies them to SliderValue and to what screen readers announce.
+
+<ComponentPreview name="slider-range" />
+
+`getAriaLabel` is a function, so a range Slider with it renders in a Client Component.
+
+### In a field
+
+Inside a [Field](/docs/components/field), give the FieldLabel `nativeLabel={false}` and `render={<div />}`. It names the slider, and the Field adds a description and an error.
+
+<ComponentPreview name="slider-field" />
+
+### Vertical
+
+Set `orientation="vertical"`. The slider fills the height of its container, at least 160px.
+
+<ComponentPreview name="slider-vertical" />
+
+## API
+
+Slider wraps the [Base UI Slider](https://base-ui.com/react/components/slider) and accepts all of its root props. It renders the control, track, indicator and thumbs for you.
+
+### Slider
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The value, or one value per thumb, when you control it.',
+      type: 'number | number[]',
+    },
+    defaultValue: {
+      description: 'The starting value, or one value per thumb, when the Slider manages it.',
+      type: 'number | number[]',
+    },
+    onValueChange: {
+      description: 'Called on every change while the thumb moves.',
+      type: '(value, eventDetails) => void',
+    },
+    onValueCommitted: {
+      description: 'Called once, when the thumb is released or a key changes the value.',
+      type: '(value, eventDetails) => void',
+    },
+    min: {
+      description: 'The lowest value.',
+      type: 'number',
+      default: '0',
+    },
+    max: {
+      description: 'The highest value.',
+      type: 'number',
+      default: '100',
+    },
+    step: {
+      description: 'The amount one arrow key press changes the value by.',
+      type: 'number',
+      default: '1',
+    },
+    largeStep: {
+      description: 'The amount Page Up, Page Down and Shift with an arrow key change the value by.',
+      type: 'number',
+      default: '10',
+    },
+    format: {
+      description: 'How to format the value for SliderValue and screen readers.',
+      type: 'Intl.NumberFormatOptions',
+    },
+    orientation: {
+      description: 'Which way the track runs.',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+    },
+    'aria-label': {
+      description: 'Names the thumb of a slider with no visible label.',
+      type: 'string',
+    },
+    getAriaLabel: {
+      description: 'Names each thumb of a range, by its index.',
+      type: '(index: number) => string',
+    },
+    getAriaValueText: {
+      description: 'What screen readers announce for each thumb, when the formatted value is not enough.',
+      type: '(formattedValue: string, value: number, index: number) => string',
+    },
+    name: {
+      description: 'Names the value when the form is submitted.',
+      type: 'string',
+    },
+    disabled: {
+      description: 'Blocks the slider and dims it.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### SliderLabel, SliderValue
+
+SliderLabel is the slider's visible name; it names every thumb. SliderValue shows the current value, or both ends of a range, formatted with `format`. Put both inside the Slider.

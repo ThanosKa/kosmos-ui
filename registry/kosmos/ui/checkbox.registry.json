@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "title": "Checkbox",
+  "description": "A checkbox on Base UI with checked, unchecked and mixed states, a focus outline and an invalid ring. Beside a FieldLabel in a horizontal Field it takes its label from the field.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/checkbox.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
