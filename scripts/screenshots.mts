@@ -56,6 +56,8 @@ try {
           throw new Error(`${url} returned ${response?.status()} (is the dev server running on ${base}?)`);
         }
         if (!values.path) await page.locator('[data-preview-root]').waitFor();
+        // Images that load after hydration (Avatar loads its image in JS) must be in the shot.
+        await page.waitForLoadState('networkidle');
         await page.evaluate(() => document.fonts.ready);
         const isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
         if (isDark !== (theme === 'dark')) throw new Error(`${url}: expected ${theme}, <html> has dark=${isDark}`);

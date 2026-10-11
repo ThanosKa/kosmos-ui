@@ -6,7 +6,7 @@
 // 3. Points `@kosmos` at the local registry and installs the documented way: `shadcn add @kosmos/tokens`
 //    (a registry:theme, the only kind the CLI lets overwrite the app's existing shadcn colors), then
 //    `shadcn add @kosmos/<name> -y -o`. Checks the files and CSS variables landed, renders `<name>-demo`
-//    (if it exists) on a page, and runs `npm run build`.
+//    (if it exists, after adding any other `@kosmos` component it imports) on a page, and runs `npm run build`.
 // The run folder is deleted on success unless --keep; on failure it is kept and printed.
 import { execFileSync, spawn, type SpawnOptions } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -146,6 +146,18 @@ function checkInstall(app: string, tree: RegistryItem[]) {
   return problems;
 }
 
+/**
+ * Other `@kosmos/*` components the `<name>-demo` imports that the item itself doesn't pull in (a Popover demo
+ * opens from a Button). A user copying the demo from the docs adds them too, so the check does the same.
+ */
+function demoExtras(name: string, tree: RegistryItem[], items: RegistryItem[]): string[] {
+  const demo = join(repo, 'registry/kosmos/examples', `${name}-demo.tsx`);
+  if (!existsSync(demo)) return [];
+  const imported = [...readFileSync(demo, 'utf8').matchAll(/from '@\/registry\/kosmos\/(?:ui|lib)\/([a-z0-9-]+)'/g)].map((m) => m[1]);
+  const inTree = new Set(tree.map((item) => item.name));
+  return [...new Set(imported)].filter((dep) => !inTree.has(dep) && items.some((item) => item.name === dep));
+}
+
 function writeSmokePage(app: string, name: string, item: RegistryItem) {
   const demo = join(repo, 'registry/kosmos/examples', `${name}-demo.tsx`);
   const dir = join(app, 'app/kosmos-check');
@@ -194,6 +206,10 @@ try {
       await run(shadcn, ['add', `${registryNamespace}/${name}`, '-y', '-o'], { cwd: app });
       const problems = checkInstall(app, tree);
       if (problems.length) throw new Error(`install check failed:\n  ${problems.join('\n  ')}`);
+      const extras = demoExtras(name, tree, items);
+      if (extras.length) {
+        await run(shadcn, ['add', ...extras.map((dep) => `${registryNamespace}/${dep}`), '-y', '-o'], { cwd: app });
+      }
       writeSmokePage(app, name, tree[0]);
       await run('npm', ['run', 'build'], { cwd: app });
       console.log(`\n✔ @kosmos/${name}: installed (${tree.map((item) => item.name).join(' + ')}) and built in ${Math.round((Date.now() - started) / 1000)}s`);

@@ -8,7 +8,7 @@ Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `
 
 | Point | Reviewer says | Kosmos value (wins) | Why |
 | --- | --- | --- | --- |
-| Press scale | Emil `0.97` (range 0.95–0.98); `better-ui` exactly `0.96` | `0.96`, 150ms, `power3-out`, enabled standalone buttons only | Inside both reviewers' accepted values. Decided without the user, pending confirmation |
+| Press scale | Emil `0.97` (range 0.95–0.98); `better-ui` exactly `0.96` | `0.96`, 150ms, `power3-out`, every enabled standalone Button, its link form included | Inside both reviewers' accepted values. Decided without the user, pending confirmation |
 | Easing curves | Emil: his own `--ease-out` `(0.23, 1, 0.32, 1)`; `ease` for hover. `better-ui`: `ease-out`, `(0.2, 0, 0, 1)` for icon swaps | `power3-out` `(0.25, 1, 0.5, 1)` for enter, exit, hover and icon swaps; `smooth-in-out` for size and position | One curve family shared by Tailwind and Motion |
 | Exit curve | Emil: never ease-in | `power3-out`, same as enter | Agrees with the reviewers; the studied overlay exits used `power3-in`, which Kosmos drops |
 | Exit shape | `better-ui`: opacity + 4px blur + `-12px` translate | The enter reversed (scale and opacity), 150ms | Exits mirror their enter, so a popover shrinks back toward its trigger |

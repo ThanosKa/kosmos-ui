@@ -48,15 +48,16 @@ _Decided without the user (2026-10-11), pending confirmation._ Borders are what 
 
 ## Radius
 
-Controls take `rounded-lg` (8px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio; overlays `rounded-xl` (12px), cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+Controls take `rounded-lg` (8px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
-_Decided without the user (2026-10-11), pending confirmation._ The checkbox radius is 4px because 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
+_Decided without the user (2026-10-11), pending confirmation._ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
-- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon.
+- `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
+- Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
 
 ## Typography
@@ -92,7 +93,8 @@ Transitions name the properties that change: `transition-[background-color,box-s
 
 - Exits run faster than enters with the same curve and the same distance, reversed.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
-- Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, a skeleton shimmer).
+- Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Skeleton uses the same pulse, and a shimmer would need keyframes shipped through `@kosmos/tokens`.
+- Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
 - The command palette and anything opened by a keyboard shortcut appear without animation.
 - Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
 
@@ -102,7 +104,9 @@ Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-m
 
 ### Press scale
 
-An enabled button scales to `0.96` while pressed: `motion-safe:enabled:not-data-disabled:active:scale-96` (`not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+An enabled button scales to `0.96` while pressed: `motion-safe:not-disabled:not-data-disabled:active:scale-96` (`not-disabled` instead of `enabled`, so a Button rendered as a link with `href` scales too, since `:enabled` never matches an `<a>`; `not-data-disabled` covers Base UI's `focusableWhenDisabled`, which drops the native `disabled`; `motion-safe:` instead of a `motion-reduce:` reset, which loses to the extra `:not()` on specificity), with `scale` in the transition list (150ms, `power3-out`). Buttons that sit in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) do not scale; they change background only.
+
+_Decided without the user (2026-10-11), pending confirmation._ A link styled as a Button presses like one: people cannot tell the two apart, and shadcn's Button applies its press feedback to every rendered element, links included.
 
 _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one value both reviewers accept: `better-ui` prescribes exactly `0.96`, and Emil Kowalski's range is `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
 
@@ -116,7 +120,15 @@ Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos c
 
 ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
 
+One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Badge supports the same link form.
+
 ## Before you finish
+
+Search the changed files for each detection. Size classes need a pattern that stops at the class name, because a plain `text-sm` also matches the valid `text-small`:
+
+```bash
+grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <files>
+```
 
 | Detection | Fix |
 | --- | --- |
@@ -126,9 +138,9 @@ ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`
 | A `shadow-*` ring without `border border-transparent` | Add it |
 | `transition-all`, bare `transition`, `ease-out`, `ease-in-out`, `ease-in`, `duration-150` | Named properties, `ease-power3-out` or `ease-smooth-in-out`, `duration-fast` |
 | `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
-| `active:scale-*` other than `scale-96`, or without `motion-safe:enabled:not-data-disabled:` | `motion-safe:enabled:not-data-disabled:active:scale-96` |
+| `active:scale-*` other than `scale-96`, or without `motion-safe:not-disabled:not-data-disabled:` | `motion-safe:not-disabled:not-data-disabled:active:scale-96` |
 | `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
-| `text-[13px]`, `text-sm`, `text-xs` or any size outside the type roles | The matching type role |
+| A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement | The focus outline above |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "title": "Popover",
+  "description": "A floating panel built on Base UI, anchored to its trigger, that grows out of it and flips side when room runs out. Closes on Escape or a click outside and returns focus to the trigger.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "overlays" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/popover.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

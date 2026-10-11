@@ -1,0 +1,81 @@
+---
+title: Table
+description: Rows and columns of data in a native table, with row hover and selection, aligned numbers and a scroll area for narrow screens.
+---
+
+<ComponentPreview name="table-demo" />
+
+## Installation
+
+<ComponentInstall name="table" />
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+```
+
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-end">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>INV-1042</TableCell>
+      <TableCell className="text-end">$1,250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+Headers are 38px tall and rows 42px. Rows are split by 1px borders, and body rows highlight on hover. The whole table uses tabular numbers, so digits line up down a column. Align number columns to the end with `text-end`.
+
+The parts and their names match shadcn's Table, so data table code written for it, such as TanStack Table examples, works unchanged.
+
+## Examples
+
+### Selected rows
+
+Mark a selected row with `data-state="selected"`. With TanStack Table, pass `data-state={row.getIsSelected() ? 'selected' : undefined}`.
+
+<ComponentPreview name="table-selection" />
+
+### Wide tables on small screens
+
+A table wider than its container scrolls sideways inside it, so the page never scrolls sideways. While columns are hidden, the clipped edge fades out and a scrollbar shows under the table. The scroll area can take keyboard focus, and the arrow keys scroll it. Narrow the preview to see it.
+
+<ComponentPreview name="table-wide" />
+
+### Long text
+
+Cells don't wrap. For a column of long text, give the table `className="table-fixed"`, set column widths on the `TableHead`s and add `truncate` to the cells. Put the full value in a `title`, or in a detail view the row opens, so it is never lost.
+
+## API
+
+Each part renders the matching native element (`<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, `<caption>`) and accepts all of its props.
+
+<TypeTable
+  type={{
+    containerClassName: {
+      description: 'Classes for the scroll area around the `<table>`, on `Table`.',
+      type: 'string',
+    },
+    'data-state': {
+      description: "Set to `'selected'` on a `TableRow` to highlight it as selected.",
+      type: "'selected'",
+    },
+  }}
+/>

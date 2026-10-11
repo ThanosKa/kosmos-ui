@@ -37,6 +37,14 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `scrim` | Backdrop behind dialogs and drawers | Light study (foreground 40%) / dark study (black 60%) |
 | `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | Light study / dark study, active item = `primary` |
 
+## Chart colors
+
+In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges repeated blocks), so component-specific tokens don't edit the core blocks.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other". Also `chart-1` fills the Meter's `primary` tone | Slot 1 is the brand indigo (light `primary`, dark `ring`, which reaches 3:1 on the dark surfaces); slots 2–5 are orange, green, amber and pink, stepped per mode. Checked as a set with a color-vision validator: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
+
 ## Shadows
 
 | Token | Surface | Structure |
@@ -81,4 +89,4 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 - Section padding and max-width tokens, and a marketing heading scale: the studies declared them and never used them in app UI.
 - A press-scale token: press feedback is the `scale-96` utility.
-- Chart colors and tag tones: the Chart and Badge components add them when they are built.
+- Tag tones (colored category pills): Badge marks status with a dot on the neutral pill, so no tones yet. The first component that needs colored categories adds them. _Decided without the user (2026-10-11), pending confirmation._
