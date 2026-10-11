@@ -32,6 +32,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
 | Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
 | Card being dragged | `shadow-lift` | `bg-card` |
+| Switch thumb, slider thumb | `shadow-thumb` | `bg-primary-foreground` |
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
@@ -48,15 +49,16 @@ _Decided without the user (2026-10-11), pending confirmation._ Borders are what 
 
 ## Radius
 
-Controls take `rounded-lg` (8px), overlays `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill, cards `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+Controls take `rounded-lg` (8px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (12px) except tooltips, which take `rounded-lg` because at one line high 12px reads as a pill. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
-_Decided without the user (2026-10-11), pending confirmation._ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too.
+_Decided without the user (2026-10-11), pending confirmation._ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill. _Decided without the user (2026-10-11), pending confirmation:_ it follows the rule above that text stays neutral, and it needs no extra color tokens.
+- Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. Lighter text roles are not available, by design.
 
 ## Typography
