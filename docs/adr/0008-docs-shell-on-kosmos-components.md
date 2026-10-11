@@ -1,0 +1,19 @@
+# Docs shell on Kosmos components
+
+The docs render their own shell instead of Fumadocs' docs layout: the landing page's site header, a docked Kosmos Sidebar, the page, and a sticky right rail with the table of contents and the edit and issue links. On phones the header's menu button opens the same Sidebar as a drawer. The docs are where a visitor first sees the product, so the frame around every page is built from the components it documents and follows the Kosmos style, and any change to the Sidebar shows up in the docs too.
+
+Fumadocs stays underneath for what it does well: the page tree, search and its ⌘K dialog, the table of contents data and headless observer, code highlighting and the MDX components.
+
+_Decided without the user (2026-10-12), pending confirmation._
+
+## Considered options
+
+- Restyle Fumadocs' docs layout with CSS. Its sidebar, collapse button and grid are its own markup, so a restyle fights `fd-*` classes on every upgrade and still never uses the Kosmos Sidebar.
+- Build the shell from Kosmos components (chosen).
+
+## Consequences
+
+- `DocsLayout` and `DocsPage` are not used. Their table of contents slot needs the layout context, so the rail uses the headless `fumadocs-core/toc` parts.
+- The landing page and the docs share `SiteHeader`; the docs pass the drawer trigger into its menu slot.
+- Sidebar links navigate on the client, so the shell stays mounted and the sidebar keeps its scroll position between pages.
+- Fumadocs CSS that targets its own layout (`#nd-sidebar`, the docs grid variables) no longer matches anything.

@@ -1,21 +1,33 @@
 ---
 title: Installation
 description: Add the Kosmos registry to a shadcn project, install the tokens, then add your first component.
+icon: Download
 ---
 
-## Before you start
+Kosmos installs with the shadcn CLI into a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components are built on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
 
-You need a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components are built on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
+<LinkCards>
+<LinkCard title="New project" href="#create-the-app">Create a Next.js app with shadcn on Base UI. Start at step 1.</LinkCard>
+<LinkCard title="Existing shadcn project" href="#add-the-registry">Your app already runs shadcn on Base UI. Start at step 2.</LinkCard>
+</LinkCards>
 
-To start a new app with shadcn on Base UI, run:
+Not sure which you have? Open `components.json`. A `style` that starts with `base-`, such as `base-nova`, means the project runs on Base UI.
+
+## Install with the CLI
+
+<Steps>
+<Step>
+
+### Create the app
 
 <ShadcnCommand args="init -t next -b base" />
 
-The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The app lands in a new folder with that name, so `cd` into it before you run the commands below.
+The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The app lands in a new folder with that name, so `cd` into it before you run the next command.
 
-Already have a shadcn project? Open `components.json`. A `style` that starts with `base-`, such as `base-nova`, means the project runs on Base UI.
+</Step>
+<Step>
 
-## Add the registry
+### Add the registry
 
 Kosmos is a shadcn registry named `@kosmos`. Tell the CLI where to find it:
 
@@ -25,7 +37,10 @@ This writes a `registries` entry into your `components.json`. You can also add i
 
 <RegistryConfig />
 
-## Install the tokens
+</Step>
+<Step>
+
+### Install the tokens
 
 The tokens are the CSS variables every Kosmos component reads: colors, shadows, radius, easing, durations and type roles, in light and dark. Add them once per project, before any component:
 
@@ -33,7 +48,10 @@ The tokens are the CSS variables every Kosmos component reads: colors, shadows, 
 
 They go into your global CSS and replace shadcn's default colors, after the CLI asks you to confirm. Run this command on its own. When a component pulls the tokens in as a dependency instead, the CLI only adds the variables you don't have yet, and shadcn's colors stay.
 
-## Add a component
+</Step>
+<Step>
+
+### Add a component
 
 <ShadcnCommand args="add @kosmos/button" />
 
@@ -41,7 +59,12 @@ The Button lands in `components/ui/button.tsx`, and the CLI adds `lib/cn.ts`, th
 
 `shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost` and `destructive`, so update any call that uses shadcn's `default`, `outline` or `link`.
 
-Then use it:
+</Step>
+<Step>
+
+### Use it
+
+Import the component from `components/ui` and render it:
 
 ```tsx
 import { Button } from '@/components/ui/button';
@@ -51,26 +74,47 @@ export function SaveBar() {
 }
 ```
 
+</Step>
+</Steps>
+
 ## Without the CLI
 
-Every Kosmos file is plain source, so you can copy it in by hand. Follow the same order: tokens, then `cn`, then the component.
+Every Kosmos file is plain source, so you can copy it in by hand. Start from a Next.js app with Tailwind CSS v4 and follow the same order: tokens, then `cn`, then the component.
 
-### Add the tokens
+<Steps>
+<Step>
+
+### Copy the tokens
 
 Merge each block below into the matching block of `app/globals.css` (`@theme inline`, `:root` and `.dark`), after the Tailwind import. Where a variable already exists, such as shadcn's `--background` or `--primary`, replace its value.
 
 <RegistryCss name="tokens" />
 
+</Step>
+<Step>
+
 ### Add cn
 
 Install the `cn` package, then copy `lib/cn.ts`:
 
-```bash
-npm install cn
-```
+<PackageInstall packages="cn" />
 
 <ComponentSource name="cn" />
 
-### Add a component
+</Step>
+<Step>
+
+### Copy a component
 
 Open the component's page and switch its install tabs to **Manual**. Install the packages it lists and copy its file into `components/ui/`. If your import aliases differ from `@/components/ui` and `@/lib`, change the imports to match.
+
+</Step>
+</Steps>
+
+## Next steps
+
+<LinkCards>
+<LinkCard title="Components" href="/docs/components">Every component, with live previews, examples and the API.</LinkCard>
+<LinkCard title="Blocks" href="/docs/blocks">Sidebars, tables, boards and dialogs, ready to drop into a page.</LinkCard>
+<LinkCard title="Foundations" href="/docs/foundations/color">The color, type, shadow and motion tokens behind every component.</LinkCard>
+</LinkCards>

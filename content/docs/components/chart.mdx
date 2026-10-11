@@ -139,4 +139,19 @@ Accepts all `<div>` props.
   }}
 />
 
-`ChartTooltip` and `ChartLegend` are Recharts' `Tooltip` and `Legend`.
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `ChartTooltip` | Recharts' `Tooltip`. Pass `content={<ChartTooltipContent />}` for rows named and colored from the config. |
+| `ChartLegend` | Recharts' `Legend`. Pass `content={<ChartLegendContent />}` for entries named and colored from the config. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Focuses a `GrowthChart` and shows the tooltip for its first point. |
+| `ArrowRight` or `ArrowLeft` | Shows the next or previous point. It stops at either end. |
+| `Escape` | Hides the tooltip. The next arrow key shows it again. |
+
+`Sparkline` takes no focus. A chart you build with `ChartContainer` and a `ChartTooltip` gets the same keys from Recharts.

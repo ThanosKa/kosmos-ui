@@ -48,16 +48,6 @@ A disabled tab stays visible and is skipped by the arrow keys.
 
 <ComponentPreview name="tabs-disabled" />
 
-## Keyboard
-
-| Key | Action |
-| --- | --- |
-| `Tab` | Moves focus to the active tab, then into the panel. |
-| `ArrowLeft` `ArrowRight` | Moves to the previous or next tab and shows its panel. Up and down in a vertical list. |
-| `Home` `End` | Moves to the first or last tab. |
-
-Tabs activate as focus reaches them. Pass `activateOnFocus={false}` to `TabsList` when a panel is slow to render, so the user moves with the arrows and picks with `Enter` or `Space`.
-
 ## Motion
 
 The underline slides to the active tab over 300ms with `smooth-in-out`. Under reduced motion it fades out under the old tab and in under the new one instead of sliding. When the tabs don't fit, the list scrolls sideways and shows the platform's thin scrollbar.
@@ -67,6 +57,8 @@ The underline slides to the active tab over 300ms with `smooth-in-out`. Under re
 Tabs wraps the [Base UI Tabs](https://base-ui.com/react/components/tabs). Each part takes every prop of the Base UI part it renders.
 
 ### Tabs
+
+Takes every Base UI `Tabs.Root` prop, such as:
 
 <TypeTable
   type={{
@@ -93,6 +85,8 @@ Tabs wraps the [Base UI Tabs](https://base-ui.com/react/components/tabs). Each p
 
 ### TabsList
 
+Takes every Base UI `Tabs.List` prop, such as:
+
 <TypeTable
   type={{
     activateOnFocus: {
@@ -115,3 +109,15 @@ Tabs wraps the [Base UI Tabs](https://base-ui.com/react/components/tabs). Each p
 | `TabsList` | The row of tabs on a 1px divider, with the sliding underline. Base UI `Tabs.List` and `Tabs.Indicator`. |
 | `TabsTrigger` | One tab. Takes `value` and `disabled`. Base UI `Tabs.Tab`. |
 | `TabsContent` | The panel for the tab with the same `value`. `keepMounted` keeps hidden panels in the page. Base UI `Tabs.Panel`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves focus to the active tab, then into the panel. |
+| `ArrowRight` or `ArrowLeft` | Moves to the next or previous tab and shows its panel. At either end, it wraps around. In a right-to-left layout, the keys swap. |
+| `ArrowDown` or `ArrowUp` | Does the same in a vertical list. |
+| `Home` or `End` | Moves to the first or last tab. |
+| `Enter` or `Space` | With `activateOnFocus={false}` on `TabsList`: shows the focused tab's panel. |
+
+Tabs show their panel as focus reaches them. Pass `activateOnFocus={false}` to `TabsList` when a panel is slow to render.

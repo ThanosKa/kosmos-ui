@@ -39,7 +39,7 @@ async function StarCount() {
 export function GitHubLink() {
   return (
     <Button
-      variant="ghost"
+      variant="secondary"
       href={githubUrl}
       className="w-7.5 px-0 has-[[data-count]]:w-auto has-[[data-count]]:px-2"
     >

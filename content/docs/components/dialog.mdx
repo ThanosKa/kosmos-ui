@@ -113,6 +113,7 @@ Takes every Base UI `Dialog.Popup` prop, such as `initialFocus` and `finalFocus`
 
 | Part | What it is |
 | --- | --- |
+| `Dialog` | Holds the open state. Base UI `Dialog.Root`. |
 | `DialogTrigger` | Opens the dialog. Base UI `Dialog.Trigger`. |
 | `DialogClose` | Closes the dialog. Base UI `Dialog.Close`. |
 | `DialogHeader` | Holds the title and description. |
@@ -124,3 +125,12 @@ Takes every Base UI `Dialog.Popup` prop, such as `initialFocus` and `finalFocus`
 | `DialogBackdrop` | The scrim behind the dialog. Base UI `Dialog.Backdrop`. |
 | `DialogViewport` | Centers the popup. Base UI `Dialog.Viewport`. |
 | `DialogPopup` | The dialog surface. Base UI `Dialog.Popup`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the trigger: opens the dialog and moves focus to its first control. |
+| `Tab` | Moves to the next control in the dialog. From the last, it goes back to the first: focus stays in the dialog. |
+| `Shift` + `Tab` | Moves to the previous control, wrapping around the same way. |
+| `Escape` | Closes the dialog and puts focus back on the trigger. |

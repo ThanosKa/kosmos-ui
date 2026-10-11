@@ -141,3 +141,15 @@ Takes every [Dialog](/docs/components/dialog) root prop, such as `open` and `onO
 | `CommandSeparator` | A 1px line between items. Base UI `Autocomplete.Separator`. |
 | `CommandShortcut` | A `KbdGroup` at the end of an item, for the command's own shortcut. |
 | `CommandFooter` | A bar under the list. Without children it shows the keys that move, run and close. |
+
+## Keyboard
+
+Focus stays in the search field: typing filters the list, and the keys below move the highlight through the matches.
+
+| Key | Action |
+| --- | --- |
+| `ArrowDown` | Highlights the next command. From the last, it goes back to the first. |
+| `ArrowUp` | Highlights the previous command. From the first, it goes to the last. |
+| `Home` or `End` | Highlights the first or last command. |
+| `Enter` | Runs the highlighted command. |
+| `Escape` | In a `CommandDialog`, closes the palette and puts focus back where it was. |

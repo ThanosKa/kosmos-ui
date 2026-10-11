@@ -57,7 +57,7 @@ Put `Empty` in a single cell that spans every column, so the headers stay and th
 
 ## API
 
-Each part renders a `<div>` (`EmptyDescription` a `<p>`) and accepts all of its props.
+Each part renders a `<div>` (`EmptyDescription` a `<p>`) and accepts all of its props. No part wraps a Base UI part.
 
 ### EmptyTitle
 
@@ -83,3 +83,12 @@ Each part renders a `<div>` (`EmptyDescription` a `<p>`) and accepts all of its 
 />
 
 The media is decorative and hidden from screen readers; the title carries the meaning.
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `Empty` | The centered block that fills the page, table or panel. |
+| `EmptyHeader` | Holds the media, title and description. |
+| `EmptyDescription` | Says why, or what to do next. A `<p>`. |
+| `EmptyContent` | The next step: one or two buttons, a link or a short form. |

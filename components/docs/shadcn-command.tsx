@@ -1,15 +1,16 @@
 import { CodeBlockTab, CodeBlockTabs, CodeBlockTabsList, CodeBlockTabsTrigger } from 'fumadocs-ui/components/codeblock';
-import { cssVarsAsCss, getRegistryItem, packageRunners, registryAddArgs, registryConfig } from '@/lib/registry';
+import { cssVarsAsCss, getRegistryItem, packageInstallers, packageRunners, registryAddArgs, registryConfig } from '@/lib/registry';
 import { HighlightedCode } from './highlighted-code';
 
-type Runner = (typeof packageRunners)[keyof typeof packageRunners];
+type Manager = keyof typeof packageRunners;
+type Runner = (typeof packageRunners)[Manager];
 
 /**
  * One code tab per package manager (the same look as a ```npm block), sharing the chosen manager across
- * the site. `code` gets each manager's `shadcn` runner, such as `pnpm dlx shadcn@latest`.
+ * the site. `code` gets each manager's `shadcn` runner, such as `pnpm dlx shadcn@latest`, and its name.
  */
-export function PackageManagerTabs({ code }: { code: (runner: Runner) => string }) {
-  const managers = Object.keys(packageRunners) as (keyof typeof packageRunners)[];
+export function PackageManagerTabs({ code }: { code: (runner: Runner, manager: Manager) => string }) {
+  const managers = Object.keys(packageRunners) as Manager[];
   return (
     <CodeBlockTabs
       groupId="package-manager"
@@ -30,7 +31,7 @@ export function PackageManagerTabs({ code }: { code: (runner: Runner) => string 
       </CodeBlockTabsList>
       {managers.map((manager) => (
         <CodeBlockTab key={manager} value={manager}>
-          <HighlightedCode code={code(packageRunners[manager])} lang="bash" embedded />
+          <HighlightedCode code={code(packageRunners[manager], manager)} lang="bash" embedded />
         </CodeBlockTab>
       ))}
     </CodeBlockTabs>
@@ -46,6 +47,11 @@ export function ShadcnCommand({ args, registryAdd }: { args?: string; registryAd
   const command = registryAdd ? registryAddArgs : args;
   if (!command) throw new Error('ShadcnCommand needs `args` or `registryAdd`');
   return <PackageManagerTabs code={(runner) => `${runner} ${command}`} />;
+}
+
+/** Adds npm packages with the chosen package manager: `<PackageInstall packages="cn" />`. */
+export function PackageInstall({ packages }: { packages: string }) {
+  return <PackageManagerTabs code={(_, manager) => `${packageInstallers[manager]} ${packages}`} />;
 }
 
 /** The `registries` entry for `components.json`. */

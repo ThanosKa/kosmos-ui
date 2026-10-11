@@ -46,7 +46,7 @@ export function SiteNavMenu({ className }: { className?: string }) {
   const active = useActiveHref();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Menu" className={className} />}>
+      <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="Menu" className={className} />}>
         <Menu aria-hidden />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-48">

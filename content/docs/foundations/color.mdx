@@ -1,0 +1,51 @@
+---
+title: Color
+description: Every Kosmos color token in light and dark, the Tailwind class it goes by, and when to use it.
+icon: Palette
+---
+
+The colors are warm neutrals with one orange accent. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS.
+
+Each swatch shows the light value on the left and the dark value on the right. Click a swatch to copy its class. Every value below is read from the tokens file, so this page always matches what you install.
+
+## Surfaces
+
+<ColorTokens group="surfaces" />
+
+## Text
+
+Grey carries the hierarchy. Values, the active item and the current page stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`.
+
+<ColorTokens group="text" />
+
+## Actions
+
+Use one `bg-primary` action per view. Its peers take the secondary or ghost look.
+
+<ColorTokens group="actions" />
+
+## Status
+
+Status colors fill dots, icons and meter segments. The text beside them stays `text-foreground` or `text-muted-foreground`, with a label or icon that carries the meaning too.
+
+<ColorTokens group="status" />
+
+## Lines
+
+<ColorTokens group="lines" />
+
+## Sidebar
+
+<ColorTokens group="sidebar" />
+
+## Chart
+
+Chart series take `chart-1` to `chart-5` in order. Labels and legends stay in text colors.
+
+<ColorTokens group="chart" />
+
+## Tags
+
+A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill.
+
+<ColorTokens group="tags" />

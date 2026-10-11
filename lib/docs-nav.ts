@@ -1,6 +1,16 @@
 import { createElement, type ReactNode } from 'react';
 import { flattenTree } from 'fumadocs-core/page-tree';
-import { ChartColumn, Compass, Layers2, LayoutDashboard, Puzzle, Shapes, TextCursorInput, type LucideIcon } from 'lucide-react';
+import {
+  ChartColumn,
+  Compass,
+  Layers2,
+  LayoutDashboard,
+  Library,
+  Puzzle,
+  Shapes,
+  TextCursorInput,
+  type LucideIcon,
+} from 'lucide-react';
 import { groups, isGroup, readRegistryItems, type Group } from './registry';
 import { source } from './source';
 
@@ -64,7 +74,7 @@ export function getDocsNav(): DocsNav {
     const section = sectionOf(page.slugs);
     if (section !== 'components' && section !== 'blocks') continue;
     if (page.slugs.length === 1) {
-      items[section].push({ title: 'Overview', url: page.url });
+      items[section].push({ title: 'Overview', url: page.url, icon: createElement(Library) });
       continue;
     }
     const group = registryGroup(page.slugs, registryItems);
@@ -114,4 +124,20 @@ export function groupOfPage(page: { slugs: string[] }): Group | undefined {
   const section = sectionOf(page.slugs);
   if ((section !== 'components' && section !== 'blocks') || page.slugs.length === 1) return undefined;
   return registryGroup(page.slugs);
+}
+
+export type DocsIndexItem = DocsNavItem & { name: string; description?: string };
+
+export type DocsIndexGroup = Omit<DocsNavGroup, 'items'> & { items: DocsIndexItem[] };
+
+/** The groups of the components or blocks index in sidebar order, each item with its registry name and page description. */
+export function getDocsIndex(section: 'components' | 'blocks', nav: DocsNav = getDocsNav()): DocsIndexGroup[] {
+  const pages = new Map(source.getPages().map((page) => [page.url, page]));
+  return (nav.sections.find((candidate) => candidate.id === section)?.groups ?? []).map((group) => ({
+    ...group,
+    items: group.items.map((item) => {
+      const page = pages.get(item.url)!;
+      return { ...item, name: page.slugs[1], description: page.data.description };
+    }),
+  }));
 }
