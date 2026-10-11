@@ -51,6 +51,7 @@
   --shadow-modal: var(--shadow-modal);
   --shadow-inset: var(--shadow-inset);
   --shadow-lift: var(--shadow-lift);
+  --shadow-thumb: var(--shadow-thumb);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -158,6 +159,10 @@
     0 0 0 4px color-mix(in oklab, var(--primary) 16%, transparent),
     0 2px 12px 0 oklch(0.256 0 0 / 0.08),
     0 6px 16px 0 oklch(0.256 0 0 / 0.12);
+  --shadow-thumb:
+    0 0 0 1px oklch(0 0 0 / 0.1),
+    0 1px 2px 0 oklch(0 0 0 / 0.12),
+    0 2px 6px 0 oklch(0 0 0 / 0.12);
 }
 
 .dark {
@@ -227,6 +232,9 @@
     0 0 0 4px color-mix(in oklab, var(--primary) 20%, transparent),
     0 8px 24px 0 oklch(0 0 0 / 0.5),
     inset 0 1px 0 0 oklch(1 0 0 / 0.08);
+  --shadow-thumb:
+    0 0 0 1px oklch(0 0 0 / 0.4),
+    0 2px 6px 0 oklch(0 0 0 / 0.5);
 }
 
 /*
