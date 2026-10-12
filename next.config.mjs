@@ -7,6 +7,10 @@ const config = {
   reactStrictMode: true,
   // `next dev` would otherwise write its own rules block into AGENTS.md.
   agentRules: false,
+  experimental: {
+    // app/global-not-found.tsx: the site has two root layouts, so no single layout can hold the 404 page.
+    globalNotFound: true,
+  },
   async redirects() {
     return [
       { source: '/docs/foundations', destination: '/docs/foundations/color', permanent: false },
