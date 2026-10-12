@@ -1,0 +1,24 @@
+---
+title: Changed menus, fields, drawers and three blocks after an audit
+description: Shortcuts are Kbd keys everywhere, focused invalid fields stay red, drawers focus their first control, and empty states fit their blocks.
+date: 2026-10-12
+---
+
+Fixes from a review of every component and block. Run `shadcn add` again for the ones you use.
+
+- **[Dropdown Menu](/docs/components/dropdown-menu)**: `DropdownMenuShortcut` is now a `KbdGroup`, like `CommandShortcut`. Put a `Kbd` per key inside (`<Kbd>⌘</Kbd><Kbd>R</Kbd>`); the menu installs [Kbd](/docs/components/kbd) with it.
+- **[Kbd](/docs/components/kbd)**: `KbdGroup` keeps its keys in left-to-right order on a right-to-left page, so ⌘ K never reads K ⌘.
+- **[Select](/docs/components/select)**: icons in items are muted, as in menu and command items.
+- **[Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select)**: an invalid field keeps its red edge and takes a red halo while it has focus.
+- **[Checkbox](/docs/components/checkbox), [Switch](/docs/components/switch)**: the red ring of an invalid control is 2px when it is ticked or on, so it shows against the dark fill. The switch track darkens on hover.
+- **[Slider](/docs/components/slider)**: the thumb takes a soft halo while you hover the slider or drag it. `SliderLabel` is 13px and muted, like a field label, and `SliderValue` is 13px.
+- **[Drawer](/docs/components/drawer)**: opening it moves focus to the first control inside, as a Dialog does, instead of the whole panel. After a tap, focus goes to the panel, so no keyboard pops up.
+- **Triggers rendered as a Button**: `DialogTrigger`, `DrawerTrigger`, `DropdownMenuTrigger`, `PopoverTrigger`, `TooltipTrigger` and the close parts keep their own `data-slot` instead of `data-slot="button"`.
+- **[Empty](/docs/components/empty)**: the description is 13px, like other descriptions.
+- **[Accordion](/docs/components/accordion)**: new `headingLevel` prop (2 to 6, default 3) sets the heading level of every section, so it fits your page outline.
+- **[Sidebar](/docs/components/sidebar)**: `SidebarInset` takes `render`. Pass `render={<div />}` when the page already has a `<main>`.
+- **[Data table](/docs/blocks/data-table)**: the empty and no-results states sit below the header at the width of the table's container, so they stay in view on a phone.
+- **[Stats overview](/docs/blocks/stats-overview)**: with no revenue, the plan card shows an empty state instead of sample shares.
+- **[Kanban board](/docs/blocks/kanban-board)**: a card with no ARR, health or last activity drops its empty lower band.
+
+Every registry item now names a version range for each package it installs: `cn@^0.4.0`, `lucide-react@^1.50.0`, `class-variance-authority@^0.7.1` and `react-is@^19.3.0`.
