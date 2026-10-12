@@ -5,6 +5,7 @@ import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
+import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
 import { groupOfPage, neighboursOf } from '@/lib/docs-nav';
@@ -19,6 +20,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const pageRef = { path: page.path, title: page.data.title };
   const group = groupOfPage(page);
   const neighbours = neighboursOf(page.url);
+  const toc = page.data.full ? [] : page.data.toc;
 
   return (
     <div className="flex w-full gap-10 xl:pe-6">
@@ -32,6 +34,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           neighbours={neighbours}
           item={group && { name: page.slugs[1], group, baseUi: page.data.baseUi }}
         />
+        <DocsTocDisclosure toc={toc} className="xl:hidden" />
         <DocsBody className="[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title">
           <MDX
             components={getMDXComponents({
@@ -43,7 +46,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         {neighbours && <PageNavCards {...neighbours} className="mt-6" />}
         <DocsPageLinks page={pageRef} className="mt-6 border-t border-border pt-6 xl:hidden" />
       </article>
-      <DocsRail page={pageRef} toc={page.data.full ? [] : page.data.toc} />
+      <DocsRail page={pageRef} toc={toc} />
     </div>
   );
 }
