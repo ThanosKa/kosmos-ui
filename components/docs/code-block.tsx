@@ -70,6 +70,14 @@ export function CodeBlock({
 
   const collapsed = overflows && !expanded;
 
+  // Under reduced motion the new height fades in from transparent, like a Base UI panel's starting style.
+  const toggle = () => {
+    const viewport = viewportRef.current;
+    viewport?.setAttribute('data-starting-style', '');
+    setExpanded((value) => !value);
+    requestAnimationFrame(() => requestAnimationFrame(() => viewport?.removeAttribute('data-starting-style')));
+  };
+
   return (
     <figure
       dir="ltr"
@@ -99,9 +107,12 @@ export function CodeBlock({
         role="region"
         aria-label={typeof title === 'string' ? title : 'Code'}
         tabIndex={collapsed ? -1 : 0}
+        data-expanded={expanded || undefined}
         className={cn(
           'overflow-x-auto overflow-y-hidden py-3.5 font-mono focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
-          'motion-safe:transition-[max-height] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
+          'duration-fast ease-power3-out data-expanded:duration-slow',
+          'motion-safe:transition-[max-height] motion-safe:ease-smooth-in-out',
+          'motion-reduce:transition-[opacity] motion-reduce:data-starting-style:opacity-0 motion-reduce:data-starting-style:transition-none',
           !title && '[--padding-right:--spacing(10)]',
           lineNumbers && '[counter-set:line_0]',
           expanded ? 'max-h-(--code-height) pb-12' : mode.height,
@@ -124,7 +135,7 @@ export function CodeBlock({
             size="sm"
             aria-expanded={expanded}
             aria-controls={viewportId}
-            onClick={() => setExpanded((value) => !value)}
+            onClick={toggle}
             className="absolute inset-x-0 bottom-3 mx-auto w-fit"
           >
             {expanded ? mode.hide : mode.show}
