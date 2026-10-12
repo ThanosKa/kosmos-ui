@@ -81,7 +81,7 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
   },
   'active-foreground': {
     group: 'text',
-    use: 'The orange label and icon of the current page in navigation: the active sidebar item and the current header tab or menu item. The only orange text.',
+    use: 'The orange label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu. The only orange text.',
   },
   primary: { group: 'actions', use: 'The one filled action per view, a checked checkbox, a switch that is on.' },
   'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill.' },
