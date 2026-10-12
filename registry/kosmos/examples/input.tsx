@@ -4,10 +4,11 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { Input } from '@/registry/kosmos/ui/input';
 
 const rows = ['placeholder', 'filled'] as const;
-const states = ['default', 'focus', 'invalid', 'disabled'] as const;
+const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
 
 function stateProps(state: (typeof states)[number]) {
   if (state === 'invalid') return { 'aria-invalid': true } as const;
+  if (state === 'invalid focus') return { 'aria-invalid': true, 'data-preview': 'focus' } as const;
   return previewState(state);
 }
 
