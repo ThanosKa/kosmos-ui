@@ -25,7 +25,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 </Accordion>
 ```
 
-Sections are split by 1px dividers. Each heading is a button inside an `<h3>`, with a chevron that turns over as its section opens. Opening another section closes the open one.
+Sections are split by 1px dividers. Each heading is a button inside an `<h3>` (set `headingLevel` to fit your page outline), with a chevron that turns over as its section opens. Opening another section closes the open one.
 
 A section grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades in and out instead, and the chevron cross-fades.
 
@@ -57,7 +57,7 @@ Pass `hiddenUntilFound` to `Accordion` so the browser's find in page also search
 
 ### Accordion
 
-Takes every Base UI [`Accordion.Root`](https://base-ui.com/react/components/accordion) prop, such as:
+Takes `headingLevel` and every Base UI [`Accordion.Root`](https://base-ui.com/react/components/accordion) prop, such as:
 
 <TypeTable
   type={{
@@ -88,6 +88,11 @@ Takes every Base UI [`Accordion.Root`](https://base-ui.com/react/components/acco
       type: 'boolean',
       default: 'false',
     },
+    headingLevel: {
+      description: "The level of every section heading, so it fits the page's outline.",
+      type: '2 | 3 | 4 | 5 | 6',
+      default: '3',
+    },
   }}
 />
 
@@ -96,7 +101,7 @@ Takes every Base UI [`Accordion.Root`](https://base-ui.com/react/components/acco
 | Part | What it is |
 | --- | --- |
 | `AccordionItem` | One section. `value` names it, and `disabled` disables it alone. Base UI `Accordion.Item`. |
-| `AccordionTrigger` | The heading row, a button inside an `<h3>`. Its children are the heading text. Base UI `Accordion.Trigger` inside `Accordion.Header`. |
+| `AccordionTrigger` | The heading row, a button inside a heading (`<h3>` unless `Accordion` sets `headingLevel`). Its children are the heading text. Base UI `Accordion.Trigger` inside `Accordion.Header`. |
 | `AccordionContent` | The section body. `className` styles the inner container that holds the content and its padding. Base UI `Accordion.Panel`. |
 
 ## Keyboard

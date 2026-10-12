@@ -181,7 +181,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `label` names the drawer for screen readers. |
 | `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
 | `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. |
-| `SidebarInset` | The page beside the sidebar. Renders `<main>`. |
+| `SidebarInset` | The page beside the sidebar. Renders `<main>`; pass `render={<div />}` when your layout already has one. |
 | `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
 | `SidebarContent` | The scrolling middle. Render it as `<nav>` with `render={<nav aria-label="Main" />}`. |
 | `SidebarFooter` | The bottom of the sidebar, for the account or help links, below a full-width line. |
