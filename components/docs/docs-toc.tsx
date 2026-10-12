@@ -3,11 +3,12 @@
 import { AnchorProvider, ScrollProvider, TOCItem, type TableOfContents } from 'fumadocs-core/toc';
 import { useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { duration } from '@/registry/kosmos/lib/motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
 import { eyebrowClass } from './classes';
 
-/** A little longer than the accordion's 150ms close. */
-const closeDuration = 180;
+/** One motion step past the accordion's `fast` close, so the panel is gone before the page jumps. */
+const jumpDelay = duration.base * 1000;
 
 function DocsTocList({ toc, itemClassName }: { toc: TableOfContents; itemClassName?: string }) {
   return (
@@ -71,12 +72,13 @@ export function DocsTocDisclosure({ toc, className }: { toc: TableOfContents; cl
     setTimeout(() => {
       history.pushState(null, '', href);
       document.getElementById(decodeURIComponent(href.slice(1)))?.scrollIntoView();
-    }, closeDuration);
+    }, jumpDelay);
   };
 
   return (
     <Accordion
       data-docs-toc-disclosure=""
+      headingLevel={2}
       value={open}
       onValueChange={setOpen}
       className={cn('rounded-2xl border border-transparent bg-card px-2 shadow-card', className)}
