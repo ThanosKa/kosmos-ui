@@ -104,7 +104,7 @@ function ScrollBar({ className, orientation = 'vertical', ...props }: ScrollArea
         data-slot="scroll-area-thumb"
         className={cn(
           // Solid, so the thumb keeps 3:1 against the track in both themes.
-          'rounded-full bg-muted-foreground',
+          'rounded-full bg-scrollbar-thumb',
           orientation === 'vertical' ? 'h-(--scroll-area-thumb-height) w-full' : 'h-full w-(--scroll-area-thumb-width)',
         )}
       />

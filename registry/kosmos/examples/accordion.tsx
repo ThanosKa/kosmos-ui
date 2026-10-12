@@ -76,6 +76,44 @@ export default function AccordionPreview() {
       </div>
 
       <div className="grid gap-10 md:grid-cols-2">
+        <PreviewSection title="Swap, equal sections: the line below holds still">
+          <div className="flex flex-col gap-3">
+            <Accordion defaultValue={['monthly']} data-swap="equal">
+              <AccordionItem value="monthly">
+                <AccordionTrigger>Monthly billing</AccordionTrigger>
+                <AccordionContent>Charged on the 1st.</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="yearly">
+                <AccordionTrigger>Yearly billing</AccordionTrigger>
+                <AccordionContent>Charged each January.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            <p data-swap-marker="equal" className="text-small text-muted-foreground">
+              Content below the accordion
+            </p>
+          </div>
+        </PreviewSection>
+
+        <PreviewSection title="Swap, unequal sections: the line below glides once">
+          <div className="flex flex-col gap-3">
+            <Accordion defaultValue={['seats']} data-swap="unequal">
+              {faq.slice(1, 3).map((item) => (
+                <AccordionItem key={item.value} value={item.value}>
+                  <AccordionTrigger>{item.question}</AccordionTrigger>
+                  <AccordionContent>
+                    {item.value === 'export' ? `${item.answer} ${faq[0].answer}` : item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <p data-swap-marker="unequal" className="text-small text-muted-foreground">
+              Content below the accordion
+            </p>
+          </div>
+        </PreviewSection>
+      </div>
+
+      <div className="grid gap-10 md:grid-cols-2">
         <PreviewSection title="Long heading in a narrow slot">
           <div className="w-full max-w-64">
             <Accordion defaultValue={['long']}>

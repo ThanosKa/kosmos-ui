@@ -1,0 +1,9 @@
+---
+title: Added shadcn names to Button
+description: Button takes shadcn's variant and size names, so shadcn's Dialog, Alert Dialog and Pagination keep working after you swap in the Kosmos Button.
+date: 2026-10-13
+---
+
+To pick it up, run `shadcn add @kosmos/button` again.
+
+- **[Button](/docs/components/button)**: takes shadcn's names as aliases. `variant="default"` renders `primary`, `outline` renders `secondary`, and `link` renders a text link that underlines on hover. `size="default"` renders `md`, `xs` renders `sm` and `icon-xs` renders `icon-sm`. The shadcn components that render a Button, such as Dialog, Alert Dialog and Pagination, keep working without edits. `data-variant` and `data-size` carry the Kosmos name.
