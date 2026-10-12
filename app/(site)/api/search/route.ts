@@ -3,9 +3,7 @@ import type { StructuredData } from 'fumadocs-core/mdx-plugins';
 import type { SortedResult } from 'fumadocs-core/search';
 import { changelogFolder } from '@/lib/changelog';
 import { docsRoute } from '@/lib/shared';
-import { source } from '@/lib/source';
-
-type DocsPage = ReturnType<typeof source.getPages>[number];
+import { source, type DocsPage } from '@/lib/source';
 
 /** Markdown read as plain text: code, emphasis and link syntax removed. */
 const plainText = (markdown: string) =>

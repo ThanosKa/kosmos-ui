@@ -20,7 +20,7 @@ import {
   toInstalledImports,
 } from './registry';
 import { appName, siteUrl } from './shared';
-import { source } from './source';
+import { source, type DocsPage } from './source';
 
 /** Absolute, so links in the Markdown work wherever it is pasted. */
 const absolute = (path: string) => `${siteUrl}${path}`;
@@ -156,8 +156,6 @@ const placeholders = {
   LinkCard: ({ attributes, children }: PlaceholderData) =>
     `- [${String(attributes.title)}](${String(attributes.href)})${children.trim() ? `: ${children.trim()}` : ''}\n`,
 };
-
-type DocsPage = ReturnType<typeof source.getPages>[number];
 
 /** An example's code, and the other `@kosmos` items it uses beyond what `pageItem` installs. */
 function previewMarkdown(data: PlaceholderData, pageItem?: string) {

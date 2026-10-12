@@ -55,3 +55,5 @@ export const source = loader({
   source: docs.toFumadocsSource(),
   plugins: [lucideIconsPlugin()],
 });
+
+export type DocsPage = ReturnType<typeof source.getPages>[number];
