@@ -155,6 +155,7 @@ type KanbanCardProps = React.ComponentProps<'div'> & {
 
 /** One record: its name, domain, owner, ARR, health and last activity. */
 function KanbanCard({ item, lifted = false, placeholder = false, className, ...props }: KanbanCardProps) {
+  const hasStats = item.arr !== undefined || Boolean(item.lastActivity) || item.health !== undefined;
   return (
     <div
       data-slot="kanban-card"
@@ -181,30 +182,32 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
           </Avatar>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5">
-        {item.arr !== undefined ? (
-          <span className="text-caption text-muted-foreground tabular-nums">
-            <span className="font-medium text-foreground">{item.arr ? usdCompact.format(item.arr) : '$0'}</span> ARR
-          </span>
-        ) : null}
-        {item.lastActivity ? (
-          <span className="flex items-center gap-1 text-caption text-muted-foreground tabular-nums">
-            <Clock aria-hidden className="size-3.5" />
-            {formatDay(item.lastActivity)}
-          </span>
-        ) : null}
-        {item.health !== undefined ? (
-          <Meter
-            value={item.health}
-            tone="auto"
-            aria-hidden
-            className="ms-auto w-20 grid-cols-[minmax(0,1fr)_1.5rem] items-center gap-x-2 gap-y-0"
-          >
-            <MeterSegments count={10} className="col-span-1 h-2" />
-            <MeterValue className="row-start-1 text-end text-caption" />
-          </Meter>
-        ) : null}
-      </div>
+      {hasStats ? (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5">
+          {item.arr !== undefined ? (
+            <span className="text-caption text-muted-foreground tabular-nums">
+              <span className="font-medium text-foreground">{item.arr ? usdCompact.format(item.arr) : '$0'}</span> ARR
+            </span>
+          ) : null}
+          {item.lastActivity ? (
+            <span className="flex items-center gap-1 text-caption text-muted-foreground tabular-nums">
+              <Clock aria-hidden className="size-3.5" />
+              {formatDay(item.lastActivity)}
+            </span>
+          ) : null}
+          {item.health !== undefined ? (
+            <Meter
+              value={item.health}
+              tone="auto"
+              aria-hidden
+              className="ms-auto w-20 grid-cols-[minmax(0,1fr)_1.5rem] items-center gap-x-2 gap-y-0"
+            >
+              <MeterSegments count={10} className="col-span-1 h-2" />
+              <MeterValue className="row-start-1 text-end text-caption" />
+            </Meter>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
