@@ -12,10 +12,10 @@ import { PageHeader } from '@/registry/kosmos/blocks/page-header/page-header';
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 const workspaces = [
-  { id: 'halden', name: 'Halden Labs', plan: 'Team plan' },
-  { id: 'sandbox', name: 'Halden Sandbox', plan: 'Free plan' },
+  { id: 'acme', name: 'Acme Inc.', plan: 'Team plan' },
+  { id: 'sandbox', name: 'Acme Sandbox', plan: 'Free plan' },
 ];
-const user = { name: 'Maya Chen', email: 'maya@haldenlabs.example', initials: 'MC' };
+const user = { name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC' };
 
 const tabs = [
   { value: 'all', label: 'All accounts', count: sampleAccounts.length },

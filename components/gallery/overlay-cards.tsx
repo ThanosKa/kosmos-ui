@@ -231,7 +231,7 @@ export function ShareStage() {
                     <PopoverDescription>People with access see live numbers, not a copy.</PopoverDescription>
                   </PopoverHeader>
                   <div className="flex gap-2">
-                    <Input readOnly aria-label="Report link" defaultValue="haldenlabs.example/r/q4-pipeline" className="h-7.5" />
+                    <Input readOnly aria-label="Report link" defaultValue="acme.example/r/q4-pipeline" className="h-7.5" />
                     <Button variant="secondary" size="icon" aria-label="Copy link">
                       <Link2 />
                     </Button>
@@ -261,7 +261,7 @@ export function ShareStage() {
 type ToastOptions = Parameters<ReturnType<typeof createToastManager>['add']>[0];
 
 const pinnedToasts: ToastOptions[] = [
-  { type: 'info', title: 'Dara Okafor joined Halden Labs', description: 'She can see every shared view.' },
+  { type: 'info', title: 'Dara Okafor joined Acme Inc.', description: 'She can see every shared view.' },
   { type: 'success', title: 'Invoice INV-2041 sent', description: 'Kestrel Analytics will get it by email.' },
   { type: 'error', title: 'Export failed', description: 'accounts-q3.csv is larger than 25 MB.', actionProps: { children: 'Retry' } },
 ];
@@ -308,7 +308,7 @@ export function DialogStage() {
             <DialogContent container={container} initialFocus={false}>
               <DialogHeader>
                 <DialogTitle>Remove Dara Okafor?</DialogTitle>
-                <DialogDescription>She loses access to Halden Labs right away.</DialogDescription>
+                <DialogDescription>She loses access to Acme Inc. right away.</DialogDescription>
               </DialogHeader>
               <DialogBody>
                 <p>Her 12 accounts move to you. You can invite her again later.</p>

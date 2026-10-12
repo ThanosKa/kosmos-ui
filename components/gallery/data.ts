@@ -1,16 +1,16 @@
 /*
- * Sample data for the gallery: one made-up workspace ("Halden Labs") with its people, invoices and
+ * Sample data for the gallery: one made-up workspace ("Acme Inc.") with its people, invoices and
  * activity. Every name and domain is invented; domains use the reserved `.example` suffix.
  */
 
 export type Person = { id: string; name: string; email: string; initials: string; avatar?: string };
 
 export const people = {
-  maya: { id: 'maya', name: 'Maya Chen', email: 'maya@haldenlabs.example', initials: 'MC', avatar: '/avatars/avatar-1.png' },
-  jonas: { id: 'jonas', name: 'Jonas Weber', email: 'jonas@haldenlabs.example', initials: 'JW', avatar: '/avatars/avatar-2.png' },
-  priya: { id: 'priya', name: 'Priya Raman', email: 'priya@haldenlabs.example', initials: 'PR', avatar: '/avatars/avatar-3.png' },
-  dara: { id: 'dara', name: 'Dara Okafor', email: 'dara@haldenlabs.example', initials: 'DO' },
-  elif: { id: 'elif', name: 'Elif Demir', email: 'elif@haldenlabs.example', initials: 'ED', avatar: '/avatars/avatar-4.png' },
+  maya: { id: 'maya', name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC', avatar: '/avatars/avatar-1.png' },
+  jonas: { id: 'jonas', name: 'Jonas Weber', email: 'jonas@acme.example', initials: 'JW', avatar: '/avatars/avatar-2.png' },
+  priya: { id: 'priya', name: 'Priya Raman', email: 'priya@acme.example', initials: 'PR', avatar: '/avatars/avatar-3.png' },
+  dara: { id: 'dara', name: 'Dara Okafor', email: 'dara@acme.example', initials: 'DO' },
+  elif: { id: 'elif', name: 'Elif Demir', email: 'elif@acme.example', initials: 'ED', avatar: '/avatars/avatar-4.png' },
   ben: { id: 'ben', name: 'Ben Carter', email: 'ben@quarry.example', initials: 'BC' },
 } satisfies Record<string, Person>;
 
@@ -61,7 +61,7 @@ export const activity = [
   { id: 'a2', person: people.priya, text: 'mentioned you on the renewal plan for Tidewater Outfitters', time: '18m', kind: 'mention' },
   { id: 'a3', person: people.maya, text: 'closed the expansion with Kestrel Analytics for 40 seats', time: '1h', kind: 'update' },
   { id: 'a4', person: people.elif, text: 'commented on Q4 pricing review: “Can we test annual-only for the Team plan?”', time: '2h', kind: 'comment' },
-  { id: 'a5', person: people.dara, text: 'accepted the invite and joined Halden Labs', time: '3h', kind: 'update' },
+  { id: 'a5', person: people.dara, text: 'accepted the invite and joined Acme Inc.', time: '3h', kind: 'update' },
   { id: 'a6', person: people.jonas, text: 'mentioned you in Onboarding checklist v2', time: 'Yesterday', kind: 'mention' },
   { id: 'a7', person: people.priya, text: 'exported 1,240 accounts to CSV', time: 'Yesterday', kind: 'update' },
   { id: 'a8', person: people.maya, text: 'commented on Billing revamp: “Shipping behind a flag on Monday.”', time: 'Oct 8', kind: 'comment' },

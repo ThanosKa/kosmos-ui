@@ -37,12 +37,12 @@ export function ReleaseCard() {
           <Button variant="secondary" href="/docs">
             Read the changelog
           </Button>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Tooltip open>
-              <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Copy link" />}>
+              <TooltipTrigger render={<Button variant="secondary" size="icon" aria-label="Copy link" />}>
                 <Link2 />
               </TooltipTrigger>
-              <TooltipContent className="flex items-center gap-2 pe-1">
+              <TooltipContent side="bottom" className="flex items-center gap-2 pe-1">
                 Copy link
                 <KbdGroup>
                   <Kbd>⌘</Kbd>
@@ -51,7 +51,7 @@ export function ReleaseCard() {
               </TooltipContent>
             </Tooltip>
             <Tooltip>
-              <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Download PDF" />}>
+              <TooltipTrigger render={<Button variant="secondary" size="icon" aria-label="Download PDF" />}>
                 <Download />
               </TooltipTrigger>
               <TooltipContent>Download PDF</TooltipContent>
@@ -131,7 +131,7 @@ export function EmptyCard() {
           </EmptyMedia>
           <EmptyTitle render={<h3 />}>No invoices yet</EmptyTitle>
           <EmptyDescription>
-            Invoices you send from Halden Labs show up here. Import past ones to see them in reports.
+            Invoices you send from Acme Inc. show up here. Import past ones to see them in reports.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

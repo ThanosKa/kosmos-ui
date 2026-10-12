@@ -1,6 +1,6 @@
 'use client';
 
-import { Ellipsis, Mail, ShieldCheck, Trash2, UserPlus } from 'lucide-react';
+import { Ellipsis, Mail, ShieldCheck, Trash2, TrendingDown, TrendingUp, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { GalleryCard } from '@/components/gallery/gallery-card';
 import { members, memberStatus, revenue, revenueSummary, type RevenueRange } from '@/components/gallery/data';
@@ -75,8 +75,8 @@ const churn = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ value }));
 /** Sparkline stat tiles, each its own card. */
 export function KpiCard() {
   const tiles = [
-    { label: 'Signups', value: '1,284', change: '+4.2% vs September', data: signups, color: 'var(--chart-1)' },
-    { label: 'Churn', value: '1.8%', change: '−0.6 pts vs September', data: churn, color: 'var(--chart-3)' },
+    { label: 'Signups', value: '1,284', change: '+4.2%', rising: true, data: signups, color: 'var(--chart-1)' },
+    { label: 'Churn', value: '1.8%', change: '−0.6 pts', rising: false, data: churn, color: 'var(--chart-3)' },
   ];
   return (
     <section aria-label="This month" className="grid grid-cols-2 gap-4">
@@ -84,11 +84,17 @@ export function KpiCard() {
         <div key={tile.label} className="flex min-w-0 flex-col gap-1 rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <span className="text-body font-medium text-muted-foreground">{tile.label}</span>
           <span className="text-display tabular-nums">{tile.value}</span>
-          <span className="truncate text-small text-muted-foreground tabular-nums">{tile.change}</span>
+          <span className="flex min-w-0 items-center gap-2 text-small tabular-nums">
+            <Badge variant="green">
+              {tile.rising ? <TrendingUp aria-hidden /> : <TrendingDown aria-hidden />}
+              {tile.change}
+            </Badge>
+            <span className="truncate text-muted-foreground">vs September</span>
+          </span>
           <Sparkline
             data={tile.data}
             color={tile.color}
-            aria-label={`${tile.label}, last 12 months, ${tile.change}`}
+            aria-label={`${tile.label}, last 12 months, ${tile.change} vs September`}
             className="mt-2 h-10 w-full"
           />
         </div>
@@ -102,7 +108,7 @@ export function MembersCard() {
   return (
     <GalleryCard
       title="Members"
-      description="5 people in Halden Labs"
+      description="5 people in Acme Inc."
       action={
         <div className="flex items-center gap-3">
           <AvatarGroup>
