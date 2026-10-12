@@ -33,10 +33,12 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the cream page; dark study |
 | `border` | Dividers between items | ADR 0007 |
 | `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0007 |
-| `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
+| `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`; the Meter's `primary` tone takes the deeper `meter-primary`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
 | `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
-| `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | ADR 0007; a step darker than the page in light, active item = `primary`, focus = `ring` |
+| `scrollbar-thumb` | The ScrollArea thumb: a warm grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
+| `meter-primary` | The Meter's `primary` tone: the brand orange, a step deeper than `ring` in light | ADR 0007: in light `ring` and `warning` share one lightness and merge in grayscale; the deeper step keeps them apart (about 1.7:1 between the two fills in each mode) and stays clear of `destructive`. Dark keeps `ring`, already lighter apart from `warning` |
+| `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar. The resize handle's hover line is `sidebar-foreground` at 20%, neutral, since `sidebar-ring` means focus | ADR 0007; a step darker than the page in light, active item = `primary`, focus = `ring` |
 
 Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
 
@@ -46,7 +48,7 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other". Also `chart-1` fills the Meter's `primary` tone | Slot 1 is the brand orange (`ring` in each mode); slots 2–5 are blue, amber, magenta and green, stepped per mode (ADR 0007). Checked as a set: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | Slot 1 is the brand orange (`ring` in each mode); slots 2–5 are blue, amber, magenta and green, stepped per mode (ADR 0007). Checked as a set: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
 
 ## Tag colors
 
