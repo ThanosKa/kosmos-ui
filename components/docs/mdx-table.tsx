@@ -3,7 +3,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 import { inlineProseClass, tableCardClass } from './classes';
 
-/** A Markdown table as a Kosmos Table on a card. Cells wrap, except the first column, which usually names a class or prop. */
+/** A Markdown table as a Kosmos Table on a card. Cells wrap; from `sm` up the first column, which usually names a class or prop, stays on one line. */
 export function MdxTable({ className, ...props }: ComponentProps<'table'>) {
   return (
     <div className={cn(tableCardClass, 'overflow-hidden', inlineProseClass)}>
@@ -26,7 +26,7 @@ export function MdxTableHead({ className, ...props }: ComponentProps<'th'>) {
 export function MdxTableCell({ className, ...props }: ComponentProps<'td'>) {
   return (
     <TableCell
-      className={cn('h-auto min-w-40 py-2.5 align-top whitespace-normal text-pretty first:ps-4 first:whitespace-nowrap last:pe-4', className)}
+      className={cn('h-auto min-w-32 py-2.5 align-top whitespace-normal text-pretty first:ps-4 last:pe-4 sm:min-w-40 sm:first:whitespace-nowrap', className)}
       {...props}
     />
   );
