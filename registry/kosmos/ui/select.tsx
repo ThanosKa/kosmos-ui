@@ -21,7 +21,7 @@ function SelectTrigger({ className, children, ...props }: SelectTriggerProps) {
         'hover:not-data-disabled:bg-muted data-popup-open:bg-muted',
         'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
-        'data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:outline-destructive aria-invalid:focus-visible:ring-destructive/20',
+        'data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-4 data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:outline-destructive aria-invalid:focus-visible:ring-4 aria-invalid:focus-visible:ring-destructive/20',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
