@@ -1,6 +1,7 @@
 ---
 title: Avatar
 description: A person's picture, with their initials while it loads or when there is none. Three sizes and an overlapping group.
+baseUi: https://base-ui.com/react/components/avatar
 ---
 
 <ComponentPreview name="avatar-demo" />
@@ -46,7 +47,7 @@ When the person's name is already next to the avatar, set `alt=""`, so a screen 
 
 ### Avatar
 
-Wraps the [Base UI Avatar](https://base-ui.com/react/components/avatar) root and accepts all of its props.
+Takes every Base UI [`Avatar.Root`](https://base-ui.com/react/components/avatar) prop, plus:
 
 <TypeTable
   type={{
@@ -58,14 +59,11 @@ Wraps the [Base UI Avatar](https://base-ui.com/react/components/avatar) root and
   }}
 />
 
-### AvatarImage
+### Parts
 
-Accepts all Base UI `Avatar.Image` props, such as `src`, `alt` and `onLoadingStatusChange`.
-
-### AvatarFallback
-
-Accepts all Base UI `Avatar.Fallback` props. Set `delay` in milliseconds to skip the fallback on fast connections.
-
-### AvatarGroup and AvatarGroupCount
-
-`AvatarGroup` is a `<div>`. `AvatarGroupCount` is a `<span>` that takes the same `size` prop as `Avatar`.
+| Part | What it is |
+| --- | --- |
+| `AvatarImage` | The photo. Takes `src`, `alt` and `onLoadingStatusChange`. Base UI `Avatar.Image`. |
+| `AvatarFallback` | The initials or icon shown until the photo loads, or when it fails. Set `delay` in milliseconds to skip it on fast connections. Base UI `Avatar.Fallback`. |
+| `AvatarGroup` | Overlaps a row of avatars. A `<div>`. |
+| `AvatarGroupCount` | The "+3" at the end of a group. A `<span>` that takes the same `size` prop as `Avatar`. |

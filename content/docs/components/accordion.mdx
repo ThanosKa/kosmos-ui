@@ -1,6 +1,7 @@
 ---
 title: Accordion
 description: Sections that open and close under their headings, for settings groups, FAQs and details people need only some of the time.
+baseUi: https://base-ui.com/react/components/accordion
 ---
 
 <ComponentPreview name="accordion-demo" />
@@ -56,7 +57,7 @@ Pass `hiddenUntilFound` to `Accordion` so the browser's find in page also search
 
 ### Accordion
 
-Wraps the [Base UI Accordion](https://base-ui.com/react/components/accordion) root and accepts all of its props.
+Takes every Base UI [`Accordion.Root`](https://base-ui.com/react/components/accordion) prop, such as:
 
 <TypeTable
   type={{
@@ -90,14 +91,20 @@ Wraps the [Base UI Accordion](https://base-ui.com/react/components/accordion) ro
   }}
 />
 
-### AccordionItem
+### Parts
 
-Accepts all Base UI `Accordion.Item` props: `value` names the section, and `disabled` disables it alone.
+| Part | What it is |
+| --- | --- |
+| `AccordionItem` | One section. `value` names it, and `disabled` disables it alone. Base UI `Accordion.Item`. |
+| `AccordionTrigger` | The heading row, a button inside an `<h3>`. Its children are the heading text. Base UI `Accordion.Trigger` inside `Accordion.Header`. |
+| `AccordionContent` | The section body. `className` styles the inner container that holds the content and its padding. Base UI `Accordion.Panel`. |
 
-### AccordionTrigger
+## Keyboard
 
-The heading row. Accepts all Base UI `Accordion.Trigger` props. Its children are the heading text.
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the next heading, or into the content of an open section. |
+| `Shift` + `Tab` | Moves to the previous heading or control. |
+| `Enter` or `Space` | Opens or closes the focused section. |
 
-### AccordionContent
-
-The section body. Accepts all Base UI `Accordion.Panel` props; `className` styles the inner container that holds the content and its padding.
+The arrow keys do not move between headings: each heading is a plain button in the tab order.

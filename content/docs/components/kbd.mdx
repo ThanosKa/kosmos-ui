@@ -42,10 +42,11 @@ A search button that shows its shortcut. The keys take the muted text color, so 
 
 ## API
 
-### Kbd
+Both parts render a `<kbd>` and take every `<kbd>` prop. No part wraps a Base UI part.
 
-Takes every `<kbd>` prop. Text sits at the caption size on a small key-shaped surface that works on any background.
+### Parts
 
-### KbdGroup
-
-Takes every `<kbd>` prop. Lines up its keys 4px apart.
+| Part | What it is |
+| --- | --- |
+| `Kbd` | One key. Text sits at the caption size on a small key-shaped surface that works on any background. |
+| `KbdGroup` | Lines up its keys 4px apart, for a shortcut such as ⌘ K. |

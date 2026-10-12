@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { Fragment, type ReactNode } from 'react';
-import { ServerCodeBlock } from 'fumadocs-ui/components/codeblock.rsc';
+import type { ReactNode } from 'react';
 import { Tab } from 'fumadocs-ui/components/tabs';
 import {
   cssVarsAsCss,
@@ -12,26 +11,42 @@ import {
   type RegistryItem,
 } from '@/lib/registry';
 import { DocsTabs } from './docs-tabs';
-import { PackageManagerTabs } from './shadcn-command';
-
-function Step({ children }: { children: ReactNode }) {
-  return <p className="mt-4 mb-2 text-small text-fd-muted-foreground first:mt-0">{children}</p>;
-}
+import { HighlightedCode } from './highlighted-code';
+import { PackageInstall, PackageManagerTabs } from './shadcn-command';
+import { Step, Steps } from './steps';
 
 /** The source files of an item, as they land in the user's project. */
-export function ComponentSource({ name, item }: { name: string; item?: RegistryItem }) {
+export function ComponentSource({
+  name,
+  item,
+  lineNumbers,
+}: {
+  name: string;
+  item?: RegistryItem;
+  lineNumbers?: boolean;
+}) {
   const target = item ?? resolveRegistryTree(name)[0];
   return (
     <>
       {(target.files ?? []).map((file) => (
-        <ServerCodeBlock
+        <HighlightedCode
           key={file.path}
           code={toInstalledImports(readFileSync(join(/*turbopackIgnore: true*/ process.cwd(), file.path), 'utf8'))}
           lang={file.path.split('.').pop() ?? 'tsx'}
-          codeblock={{ title: installedPath(file), className: 'my-0' }}
+          title={installedPath(file)}
+          lineNumbers={lineNumbers}
         />
       ))}
     </>
+  );
+}
+
+function InstallStep({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <Step>
+      <p className="pt-1 text-body font-medium text-foreground">{title}</p>
+      {children}
+    </Step>
   );
 }
 
@@ -46,35 +61,31 @@ export function ComponentInstall({ name }: { name: string }) {
         <PackageManagerTabs code={(runner) => installCommands(name, runner)} />
       </Tab>
       <Tab value="Manual">
-        {packages.length > 0 && (
-          <>
-            <Step>Install the dependencies.</Step>
-            <ServerCodeBlock code={`npm install ${packages.join(' ')}`} lang="bash" codeblock={{ className: 'my-0' }} />
-          </>
-        )}
-        {deps.map((dep) => (
-          // A Fragment, not a wrapper, so `first:mt-0` on Step matches only the panel's first step.
-          <Fragment key={dep.name}>
-            {dep.cssVars && (
-              <>
-                <Step>Add the {dep.title ?? dep.name} to your global CSS, after the Tailwind import.</Step>
-                <ServerCodeBlock
-                  code={cssVarsAsCss(dep.cssVars)}
-                  lang="css"
-                  codeblock={{ title: 'app/globals.css', className: 'my-0 max-h-80' }}
-                />
-              </>
-            )}
-            {(dep.files ?? []).length > 0 && (
-              <>
-                <Step>Copy {dep.title ?? dep.name}.</Step>
-                <ComponentSource name={dep.name} item={dep} />
-              </>
-            )}
-          </Fragment>
-        ))}
-        <Step>Copy the component.</Step>
-        <ComponentSource name={name} item={item} />
+        <Steps data-slot="manual-install" className="my-0">
+          {packages.length > 0 && (
+            <InstallStep title="Install the dependencies.">
+              <PackageInstall packages={packages.join(' ')} />
+            </InstallStep>
+          )}
+          {deps.flatMap((dep) => [
+            dep.cssVars && (
+              <InstallStep
+                key={`${dep.name}-css`}
+                title={`Add the ${dep.title ?? dep.name} to your global CSS, after the Tailwind import.`}
+              >
+                <HighlightedCode code={cssVarsAsCss(dep.cssVars)} lang="css" title="app/globals.css" />
+              </InstallStep>
+            ),
+            (dep.files ?? []).length > 0 && (
+              <InstallStep key={`${dep.name}-files`} title={`Copy ${dep.title ?? dep.name}.`}>
+                <ComponentSource name={dep.name} item={dep} lineNumbers />
+              </InstallStep>
+            ),
+          ])}
+          <InstallStep title="Copy the component.">
+            <ComponentSource name={name} item={item} lineNumbers />
+          </InstallStep>
+        </Steps>
       </Tab>
     </DocsTabs>
   );

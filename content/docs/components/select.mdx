@@ -1,6 +1,7 @@
 ---
 title: Select
 description: Picks one value from a list. A trigger with the same look as Input opens the list, and every step works from the keyboard. Built on Base UI.
+baseUi: https://base-ui.com/react/components/select
 ---
 
 <ComponentPreview name="select-demo" />
@@ -37,16 +38,6 @@ const statuses = [
 
 Pass `items` to Select so the trigger shows the item's label, "To do", instead of its value, `todo`, before the list has opened.
 
-## Keyboard
-
-| Key | When the list is closed | When the list is open |
-| --- | --- | --- |
-| Enter, Space, ↓, ↑ | Opens the list | Enter and Space choose the highlighted item |
-| ↓, ↑, Home, End | | Move the highlight |
-| A letter | | Jumps to the next item that starts with it |
-| Escape | | Closes the list; focus goes back to the trigger |
-| Tab | Moves to the next control | Closes the list and moves to the next control |
-
 ## Examples
 
 ### Groups
@@ -73,9 +64,11 @@ Disable the whole Select with `disabled` on Select, or one option with `disabled
 
 ## API
 
-Each part wraps its [Base UI Select](https://base-ui.com/react/components/select) part and accepts all of its props.
+Select wraps the [Base UI Select](https://base-ui.com/react/components/select). Each part takes the props of the Base UI part it renders.
 
 ### Select
+
+Takes every Base UI `Select.Root` prop, such as:
 
 <TypeTable
   type={{
@@ -119,6 +112,8 @@ Each part wraps its [Base UI Select](https://base-ui.com/react/components/select
 
 ### SelectValue
 
+Shows the selected item's label in the trigger. Takes every Base UI `Select.Value` prop, such as:
+
 <TypeTable
   type={{
     placeholder: {
@@ -129,6 +124,8 @@ Each part wraps its [Base UI Select](https://base-ui.com/react/components/select
 />
 
 ### SelectContent
+
+The list's popup: Base UI `Select.Portal`, `Select.Positioner` and `Select.Popup` put together, with `Select.List` and the scroll arrows inside. Takes every `Select.Popup` prop, plus:
 
 <TypeTable
   type={{
@@ -157,6 +154,8 @@ Each part wraps its [Base UI Select](https://base-ui.com/react/components/select
 
 ### SelectItem
 
+One option, with a check on the selected one. Takes every Base UI `Select.Item` prop, such as:
+
 <TypeTable
   type={{
     value: {
@@ -171,4 +170,23 @@ Each part wraps its [Base UI Select](https://base-ui.com/react/components/select
   }}
 />
 
-SelectTrigger is the button that opens the list. SelectGroup and SelectGroupLabel group related items under a heading, and SelectSeparator draws a line between groups.
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `SelectTrigger` | The button that opens the list, with a chevron. Base UI `Select.Trigger` and `Select.Icon`. |
+| `SelectGroup` | Groups related items. Base UI `Select.Group`. |
+| `SelectGroupLabel` | The heading of a group. Base UI `Select.GroupLabel`. |
+| `SelectSeparator` | A line between groups. Base UI `Select.Separator`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter`, `Space`, `ArrowDown` or `ArrowUp` | On the trigger: opens the list with the selected item highlighted. |
+| `A`–`Z` | On the trigger: selects the next item that starts with the letters typed, without opening the list. In the list: highlights it. |
+| `ArrowDown` or `ArrowUp` | Highlights the next or previous item. It stops at either end. |
+| `Home` or `End` | Highlights the first or last item. |
+| `Enter` or `Space` | Selects the highlighted item and closes the list. |
+| `Escape` | Closes the list without changing the value, and puts focus back on the trigger. |
+| `Tab` | Closes the list without changing the value, and moves to the next control. |

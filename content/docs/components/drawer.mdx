@@ -1,6 +1,7 @@
 ---
 title: Drawer
 description: A panel that slides in from an edge of the screen, for details next to a list or a bottom sheet on a phone. Built on Base UI, it follows a swipe to close.
+baseUi: https://base-ui.com/react/components/drawer
 ---
 
 <ComponentPreview name="drawer-demo" />
@@ -70,9 +71,11 @@ The drawer slides in from its edge over 300ms and out over 150ms, both with `pow
 
 ## API
 
-Drawer wraps the [Base UI Drawer](https://base-ui.com/react/components/drawer). `Drawer` takes every Base UI `Drawer.Root` prop, such as `open`, `onOpenChange`, `snapPoints` and `disablePointerDismissal`. Each part takes the props of the Base UI part it renders.
+Drawer wraps the [Base UI Drawer](https://base-ui.com/react/components/drawer). Each part takes the props of the Base UI part it renders.
 
 ### Drawer
+
+Takes every Base UI `Drawer.Root` prop, such as `open`, `onOpenChange`, `snapPoints` and `disablePointerDismissal`. Two of them shape it most:
 
 <TypeTable
   type={{
@@ -123,3 +126,12 @@ Takes every Base UI `Drawer.Popup` prop, plus:
 | `DrawerBackdrop` | The scrim, which fades as the drawer is swiped. Base UI `Drawer.Backdrop`. |
 | `DrawerViewport` | The full-screen layer the popup sits in. Base UI `Drawer.Viewport`. |
 | `DrawerPopup` | The drawer surface, placed by `swipeDirection`. Base UI `Drawer.Popup`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the trigger: opens the drawer and moves focus into it. |
+| `Tab` | Moves to the next control in the drawer. From the last, it goes back to the first. With `modal={false}`, focus moves on to the page and the drawer stays open. |
+| `Shift` + `Tab` | Moves to the previous control, wrapping around the same way. |
+| `Escape` | Closes the drawer and puts focus back on the trigger. |

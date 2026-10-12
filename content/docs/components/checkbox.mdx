@@ -1,6 +1,7 @@
 ---
 title: Checkbox
 description: Turns one option on or off, with a mixed state for a parent of a partly selected list. Built on Base UI.
+baseUi: https://base-ui.com/react/components/checkbox
 ---
 
 <ComponentPreview name="checkbox-demo" />
@@ -26,13 +27,6 @@ import { Field, FieldLabel } from '@/components/ui/field';
 Put the Checkbox first in a horizontal [Field](/docs/components/field), with its FieldLabel beside it. The label names the checkbox, and clicking it ticks the box. Without a Field, wrap the Checkbox and its text in a `<label>`, as in the demo above, or give it an `aria-label`.
 
 A ticked checkbox submits `on`, or its `value` when you set one. An unticked one submits nothing, as a native checkbox does.
-
-## Keyboard
-
-| Key | Action |
-| --- | --- |
-| Space | Ticks or unticks the focused checkbox |
-| Tab | Moves to the next control |
 
 ## Examples
 
@@ -112,3 +106,10 @@ Checkbox wraps the [Base UI Checkbox](https://base-ui.com/react/components/check
 ### FieldItem
 
 FieldItem comes with [Field](/docs/components/field). It holds one option of a group, the control beside its own FieldLabel, while the Field names the whole group and carries its error.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Space` | Ticks or unticks the focused checkbox. |
+| `Tab` | Moves to the next control. |

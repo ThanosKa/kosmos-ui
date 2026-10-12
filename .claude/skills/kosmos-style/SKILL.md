@@ -125,7 +125,7 @@ Every focusable element shows `focus-visible:outline-2 focus-visible:outline-off
 
 Text fields (Input, Textarea, Select trigger) light up their own edge instead: `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20`, a flush 1px outline over the field ring plus a soft halo. The outline keeps forced colors working; the halo is decoration.
 
-Two more exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: a tab inside a scrolling tab list draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ the scrolling list clips anything outside its padding box.
+Two more exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: an element a clipping container would cut (a tab in a scrolling tab list, an item in a collapsible panel, a scrolling code viewport inside its card) draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ a container with `overflow` other than `visible` clips anything outside its padding box.
 
 ## Buttons
 

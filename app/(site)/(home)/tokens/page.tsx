@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { readKosmosTokens } from '@/lib/tokens';
 import { ease, duration } from '@/registry/kosmos/lib/motion';
-import { EasingDemo } from './easing-demo';
+import { EasingDemo } from '@/components/docs/easing-demo';
 
 export const metadata: Metadata = {
   title: 'Tokens',

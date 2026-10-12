@@ -1,6 +1,7 @@
 ---
 title: Popover
 description: A small panel anchored to its trigger, for extra details or a quick action without leaving the page. Built on Base UI, it flips side when it runs out of room.
+baseUi: https://base-ui.com/react/components/popover
 ---
 
 <ComponentPreview name="popover-demo" />
@@ -98,6 +99,7 @@ Takes every Base UI `Popover.Popup` prop, plus:
 
 | Part | What it is |
 | --- | --- |
+| `Popover` | Holds the open state. Base UI `Popover.Root`. |
 | `PopoverTrigger` | Opens the popover. Base UI `Popover.Trigger`. |
 | `PopoverClose` | Closes the popover. Base UI `Popover.Close`. |
 | `PopoverHeader` | Holds the title and description. |
@@ -108,3 +110,14 @@ Takes every Base UI `Popover.Popup` prop, plus:
 | `PopoverPopup` | The popover surface. Base UI `Popover.Popup`. |
 
 `PopoverContent` is `PopoverPortal`, `PopoverPositioner` and `PopoverPopup` put together.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the trigger: opens the popover and moves focus to its first control, or closes it. |
+| `Tab` | Moves through the popover's controls. Past the last one, the popover closes and focus moves on to the next control on the page. |
+| `Shift` + `Tab` | From the first control, goes back to the trigger. The popover stays open. |
+| `Escape` | Closes the popover and puts focus back on the trigger. |
+
+With `modal` on `Popover` and a `PopoverClose` inside, focus stays in the popover until it closes.

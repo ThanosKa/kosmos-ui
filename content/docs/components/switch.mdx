@@ -1,6 +1,7 @@
 ---
 title: Switch
 description: Turns a setting on or off, and the change applies at once. Built on Base UI.
+baseUi: https://base-ui.com/react/components/switch
 ---
 
 <ComponentPreview name="switch-demo" />
@@ -29,13 +30,6 @@ import { Switch } from '@/components/ui/switch';
 Put the Switch in a horizontal [Field](/docs/components/field) with its FieldLabel. The label names the switch, and clicking it flips the switch. Without a Field, wrap the Switch and its text in a `<label>`, as in the demo above, or give it an `aria-label`.
 
 Use a Switch for a setting that takes effect right away. For a choice that waits for a Save or Submit button, use a [Checkbox](/docs/components/checkbox). Name the setting for what happens when it's on: "Email notifications", not "Turn off emails".
-
-## Keyboard
-
-| Key | Action |
-| --- | --- |
-| Space, Enter | Turns the focused switch on or off |
-| Tab | Moves to the next control |
 
 ## Examples
 
@@ -94,3 +88,10 @@ Switch wraps the [Base UI Switch](https://base-ui.com/react/components/switch) a
     },
   }}
 />
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Space` or `Enter` | Turns the focused switch on or off. |
+| `Tab` | Moves to the next control. |

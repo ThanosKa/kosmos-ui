@@ -1,6 +1,7 @@
 ---
 title: Segmented control
 description: Picks one of a few options, like a view mode or a time range, from a row of segments. Built on Base UI Radio Group.
+baseUi: https://base-ui.com/react/components/radio
 ---
 
 <ComponentPreview name="segmented-control-demo" />
@@ -47,23 +48,17 @@ Pass `value` and `onValueChange` to drive other parts of the page from the selec
 
 <ComponentPreview name="segmented-control-controlled" />
 
-## Keyboard
-
-| Key | Action |
-| --- | --- |
-| `Tab` | Moves focus to the selected item. |
-| `ArrowLeft` `ArrowRight` | Selects the previous or next item, wrapping at the ends. |
-| `Space` | Selects the focused item. |
-
 ## Motion
 
 The raised surface fades onto the selected item over 150ms, so nothing slides and reduced motion needs no change. When the control is wider than its container, the labels wrap instead of overflowing.
 
 ## API
 
-SegmentedControl wraps the [Base UI Radio Group](https://base-ui.com/react/components/radio) and each item a Base UI `Radio.Root`. Both take every prop of the part they render, such as `name`, `disabled` and `required`.
+SegmentedControl wraps the [Base UI Radio Group](https://base-ui.com/react/components/radio), and each item a Base UI Radio.
 
 ### SegmentedControl
+
+Takes every Base UI `RadioGroup` prop, such as `name` and `required`, plus `size`:
 
 <TypeTable
   type={{
@@ -94,6 +89,8 @@ SegmentedControl wraps the [Base UI Radio Group](https://base-ui.com/react/compo
 
 ### SegmentedControlItem
 
+Takes every Base UI `Radio.Root` prop, such as:
+
 <TypeTable
   type={{
     value: {
@@ -108,3 +105,14 @@ SegmentedControl wraps the [Base UI Radio Group](https://base-ui.com/react/compo
     },
   }}
 />
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves focus to the selected item, then on to the next control. |
+| `ArrowRight` or `ArrowDown` | Selects the next item. From the last, it goes back to the first. |
+| `ArrowLeft` or `ArrowUp` | Selects the previous item. From the first, it goes to the last. |
+| `Space` | Selects the focused item. |
+
+In a right-to-left layout, `ArrowLeft` and `ArrowRight` swap.

@@ -1,0 +1,21 @@
+---
+title: Shadows
+description: The layered shadows that draw each surface's edge and depth, and the radius scale.
+icon: Layers
+---
+
+Kosmos surfaces draw their edge and depth with one layered shadow, not a border. In dark mode each shadow adds a dark outer ring and a 1px inner rim of light, so edges still read on a dark page.
+
+Every value below is read from the tokens file, and each surface is shown on the light page and on the dark page.
+
+## Surfaces
+
+<ShadowSurfaces />
+
+Every element with a shadow also takes `border border-transparent`. Forced-colors mode drops shadows, and the transparent border then draws the edge.
+
+## Radius
+
+`--radius` sets the control radius, and the rest of the scale steps from it. Tags, badges and pills take `rounded-full`. A surface nested inside another with even padding takes the outer radius minus the padding.
+
+<RadiusScale />

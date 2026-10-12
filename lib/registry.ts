@@ -180,6 +180,14 @@ export const packageRunners = {
   bun: 'bunx --bun shadcn@latest',
 } as const;
 
+/** The command each package manager adds a package with, keyed like `packageRunners`. */
+export const packageInstallers = {
+  npm: 'npm install',
+  pnpm: 'pnpm add',
+  yarn: 'yarn add',
+  bun: 'bun add',
+} as const satisfies Record<keyof typeof packageRunners, string>;
+
 /** The `shadcn add` lines for an item, in the documented order. */
 export function installCommands(name: string, runner: string = packageRunners.npm): string {
   return [

@@ -1,6 +1,7 @@
 ---
 title: Scroll area
 description: A scroll container with a thin scrollbar that looks the same on every platform, and fades on the edges where content is hidden.
+baseUi: https://base-ui.com/react/components/scroll-area
 ---
 
 <ComponentPreview name="scroll-area-demo" />
@@ -49,7 +50,11 @@ In a right-to-left layout, wrap the app in Base UI's [`DirectionProvider`](https
 
 ## API
 
-Wraps the [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area) root and accepts all of its props.
+Scroll Area wraps the [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area).
+
+### ScrollArea
+
+Takes every Base UI `ScrollArea.Root` prop, plus:
 
 <TypeTable
   type={{
@@ -71,4 +76,26 @@ Wraps the [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area
 
 ### ScrollBar
 
-`ScrollArea` renders both scrollbars itself, so you only need `ScrollBar` to build a scroll area from the Base UI parts. It accepts all Base UI `ScrollArea.Scrollbar` props, such as `orientation`. Code written for shadcn's ScrollArea that passes `<ScrollBar orientation="horizontal" />` as a child keeps working: the child renders nothing.
+`ScrollArea` renders both scrollbars itself, so you only need `ScrollBar` to build a scroll area from the Base UI parts. It takes every Base UI `ScrollArea.Scrollbar` prop, such as:
+
+<TypeTable
+  type={{
+    orientation: {
+      description: 'The axis the scrollbar runs along.',
+      type: "'vertical' | 'horizontal'",
+      default: "'vertical'",
+    },
+  }}
+/>
+
+Code written for shadcn's ScrollArea that passes `<ScrollBar orientation="horizontal" />` as a child keeps working: the child renders nothing.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Focuses the scroll area while its content overflows. Content that fits is skipped. |
+| `ArrowDown` or `ArrowUp` | Scrolls down or up by a line. |
+| `ArrowRight` or `ArrowLeft` | Scrolls sideways by a line. |
+| `PageDown` or `PageUp` | Scrolls down or up by a screen. `Space` and `Shift` + `Space` do the same. |
+| `Home` or `End` | Scrolls to the top or the bottom. |

@@ -1,6 +1,7 @@
 ---
 title: Dropdown Menu
 description: A list of actions that opens from a button. Built on Base UI Menu, with keyboard navigation, typeahead, check and radio items, shortcuts and submenus.
+baseUi: https://base-ui.com/react/components/menu
 ---
 
 <ComponentPreview name="dropdown-menu-demo" />
@@ -121,6 +122,7 @@ Takes every Base UI `Menu.Item` prop, such as `onClick`, `disabled`, `label` and
 
 | Part | What it is |
 | --- | --- |
+| `DropdownMenu` | Holds the open state. Base UI `Menu.Root`. |
 | `DropdownMenuTrigger` | Opens the menu. Base UI `Menu.Trigger`. |
 | `DropdownMenuItem` | One action. Base UI `Menu.Item`. |
 | `DropdownMenuLinkItem` | An item that navigates. Base UI `Menu.LinkItem`. |
@@ -129,13 +131,28 @@ Takes every Base UI `Menu.Item` prop, such as `onClick`, `disabled`, `label` and
 | `DropdownMenuRadioItem` | One choice in a radio group. Base UI `Menu.RadioItem`. |
 | `DropdownMenuGroup` | Groups related items. Base UI `Menu.Group`. |
 | `DropdownMenuLabel` | Names a group. Base UI `Menu.GroupLabel`. |
-| `DropdownMenuSeparator` | A 1px line between groups. Base UI `Separator`. |
+| `DropdownMenuSeparator` | A 1px line between groups. Base UI `Menu.Separator`. |
 | `DropdownMenuShortcut` | A keyboard shortcut at the end of an item. Text only. |
 | `DropdownMenuSub` | Holds a submenu. Base UI `Menu.SubmenuRoot`. |
 | `DropdownMenuSubTrigger` | The item that opens a submenu. Base UI `Menu.SubmenuTrigger`. |
-| `DropdownMenuSubContent` | The submenu's popup. |
+| `DropdownMenuSubContent` | The submenu's popup. Base UI `Menu.Portal`, `Menu.Positioner` and `Menu.Popup`, like `DropdownMenuContent`. |
 | `DropdownMenuPortal` | Renders its children into `document.body`. Base UI `Menu.Portal`. |
 | `DropdownMenuPositioner` | Places the popup next to the trigger. Base UI `Menu.Positioner`. |
 | `DropdownMenuPopup` | The menu surface. Base UI `Menu.Popup`. |
 
 `DropdownMenuContent` is `DropdownMenuPortal`, `DropdownMenuPositioner` and `DropdownMenuPopup` put together.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter`, `Space` or `ArrowDown` | On the trigger: opens the menu with the first item highlighted. |
+| `ArrowUp` | On the trigger: opens the menu with the last item highlighted. |
+| `ArrowDown` or `ArrowUp` | Highlights the next or previous item. At either end, it wraps around. |
+| `Home` or `End` | Highlights the first or last item. |
+| `A`–`Z` | Highlights the next item whose label starts with the letters typed. |
+| `Enter` or `Space` | Runs the highlighted item and closes the menu. A checkbox or radio item changes, and the menu stays open. |
+| `ArrowRight` | On a submenu item: opens the submenu with its first item highlighted. `Enter` and `Space` do the same. In a right-to-left layout, use `ArrowLeft`. |
+| `ArrowLeft` | In a submenu: closes it and highlights the item that opened it. In a right-to-left layout, use `ArrowRight`. |
+| `Escape` | Closes the menu and puts focus back on the trigger. In a submenu, closes only the submenu. |
+| `Tab` | Closes the menu and moves to the next control on the page. |
