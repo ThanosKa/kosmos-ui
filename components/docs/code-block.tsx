@@ -52,12 +52,16 @@ export function CodeBlock({
   const [expanded, setExpanded] = useState(false);
   const [overflows, setOverflows] = useState(collapse === 'peek');
   const [fullHeight, setFullHeight] = useState(0);
+  const [scrollsSideways, setScrollsSideways] = useState(false);
+  const [firstLine, setFirstLine] = useState('');
 
   useLayoutEffect(() => {
     const viewport = viewportRef.current;
     const content = viewport?.firstElementChild;
     if (!viewport || !content) return;
+    setFirstLine(content.textContent?.trim().split('\n')[0].slice(0, 48) ?? '');
     const measure = () => {
+      setScrollsSideways(viewport.scrollWidth > viewport.clientWidth + 1);
       if (expanded) return;
       setFullHeight(viewport.scrollHeight);
       setOverflows(viewport.scrollHeight > viewport.clientHeight + 1);
@@ -65,6 +69,7 @@ export function CodeBlock({
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(content);
+    observer.observe(viewport);
     return () => observer.disconnect();
   }, [expanded]);
 
@@ -104,9 +109,9 @@ export function CodeBlock({
       <div
         ref={viewportRef}
         id={viewportId}
-        role="region"
-        aria-label={typeof title === 'string' ? title : 'Code'}
-        tabIndex={collapsed ? -1 : 0}
+        role={scrollsSideways ? 'region' : undefined}
+        aria-label={scrollsSideways ? (typeof title === 'string' ? title : `Code: ${firstLine}`) : undefined}
+        tabIndex={scrollsSideways ? 0 : undefined}
         data-expanded={expanded || undefined}
         className={cn(
           'overflow-x-auto overflow-y-hidden py-3.5 font-mono focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
