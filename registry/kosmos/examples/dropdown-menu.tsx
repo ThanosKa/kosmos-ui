@@ -113,7 +113,7 @@ export default function DropdownMenuPreview() {
                         <DropdownMenuItem>Invite by email…</DropdownMenuItem>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
-                    <DropdownMenuLinkItem href="#docs">
+                    <DropdownMenuLinkItem href="#docs" onClick={(event) => event.preventDefault()}>
                       <ExternalLink />
                       Open in new tab
                     </DropdownMenuLinkItem>

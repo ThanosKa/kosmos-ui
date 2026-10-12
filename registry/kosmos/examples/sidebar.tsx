@@ -1,5 +1,6 @@
 'use client';
 
+import type * as React from 'react';
 import { BarChart3, Folder, Home, Inbox, LifeBuoy, Settings, Users } from 'lucide-react';
 import { OverlayStage } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
@@ -47,7 +48,7 @@ function SidebarBody() {
           <SidebarMenu>
             {pages.map(({ label, icon: Icon, active, count }) => (
               <SidebarMenuItem key={label}>
-                <SidebarMenuButton href="#" isActive={active}>
+                <SidebarMenuButton href="#" isActive={active} onClick={stay}>
                   <Icon aria-hidden />
                   <span>{label}</span>
                   {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -61,7 +62,7 @@ function SidebarBody() {
           <SidebarMenu>
             {projects.map((project) => (
               <SidebarMenuItem key={project}>
-                <SidebarMenuButton href="#">
+                <SidebarMenuButton href="#" onClick={stay}>
                   <Folder aria-hidden />
                   <span>{project}</span>
                 </SidebarMenuButton>
@@ -73,13 +74,13 @@ function SidebarBody() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#">
+            <SidebarMenuButton href="#" onClick={stay}>
               <LifeBuoy aria-hidden />
               <span>Help</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#">
+            <SidebarMenuButton href="#" onClick={stay}>
               <Settings aria-hidden />
               <span>Settings</span>
             </SidebarMenuButton>
@@ -100,6 +101,9 @@ function PageHeader({ title }: { title: string }) {
 }
 
 const frame = 'min-h-0 overflow-hidden rounded-xl border border-transparent shadow-card';
+
+/** The preview's links go nowhere: a click must not change the page URL. */
+const stay = (event: React.MouseEvent) => event.preventDefault();
 
 export default function SidebarPreview() {
   return (

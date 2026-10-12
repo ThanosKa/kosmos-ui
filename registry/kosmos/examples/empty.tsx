@@ -1,3 +1,5 @@
+'use client';
+
 import { FolderPlus, Inbox, Plus, SearchX, TriangleAlert } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -91,7 +93,9 @@ export default function EmptyPreview() {
               <EmptyHeader>
                 <EmptyTitle render={<h3 />}>Nothing scheduled</EmptyTitle>
                 <EmptyDescription>
-                  Meetings you accept appear here. <a href="#calendar">Connect a calendar</a>
+                  Meetings you accept appear here. <a href="#calendar" onClick={(event) => event.preventDefault()}>
+                    Connect a calendar
+                  </a>
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
