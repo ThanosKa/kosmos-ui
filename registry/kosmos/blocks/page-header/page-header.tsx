@@ -212,34 +212,36 @@ function PageHeader({
         </div>
 
         <div className="flex flex-col gap-2 @3xl:flex-row @3xl:items-center @3xl:justify-between @3xl:gap-4">
-          <TabsList
-            aria-label="Views"
-            className={cn(
-              'w-fit max-w-full gap-0.5 rounded-lg border border-transparent bg-muted p-0.5 shadow-inset',
-              'data-[orientation=horizontal]:border-b-transparent',
-              '*:data-[slot=tabs-indicator]:hidden',
-            )}
-          >
-            {tabs.map((item) => (
-              <TabsTrigger
-                key={item.value}
-                value={item.value}
-                className={cn(
-                  'h-6.5 rounded-md px-2.5',
-                  'transition-[color,background-color,box-shadow] data-active:bg-secondary data-active:shadow-control',
-                  // The raised surface marks the selected view, so the underline and its reduced-motion twin stay hidden.
-                  'after:hidden',
-                )}
-              >
-                {item.label}
-                {item.count !== undefined ? (
-                  <span className="text-caption font-normal text-muted-foreground tabular-nums">
-                    {compact.format(item.count)}
-                  </span>
-                ) : null}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <div className="min-w-0">
+            <TabsList
+              aria-label="Views"
+              className={cn(
+                'w-fit max-w-full gap-0.5 rounded-lg border border-transparent bg-muted p-0.5 shadow-inset',
+                'data-[orientation=horizontal]:border-b-transparent',
+                '*:data-[slot=tabs-indicator]:hidden',
+              )}
+            >
+              {tabs.map((item) => (
+                <TabsTrigger
+                  key={item.value}
+                  value={item.value}
+                  className={cn(
+                    'h-6.5 rounded-md px-2.5',
+                    'transition-[color,background-color,box-shadow] data-active:bg-secondary data-active:shadow-control',
+                    // The raised surface marks the selected view, so the underline and its reduced-motion twin stay hidden.
+                    'after:hidden',
+                  )}
+                >
+                  {item.label}
+                  {item.count !== undefined ? (
+                    <span className="text-caption font-normal text-muted-foreground tabular-nums">
+                      {compact.format(item.count)}
+                    </span>
+                  ) : null}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2">
             <div className="relative min-w-0 flex-1 @3xl:w-56 @3xl:flex-none">

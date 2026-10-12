@@ -17,6 +17,7 @@ import {
 import { useState } from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   DropdownMenu,
@@ -38,6 +39,41 @@ import {
 import { Kbd } from '@/registry/kosmos/ui/kbd';
 
 const stageClass = 'h-[24rem]';
+
+const projects = [
+  'Q3 Roadmap',
+  'Website refresh',
+  'Mobile app',
+  'Billing migration',
+  'Onboarding emails',
+  'Design system',
+  'Help center',
+  'Data warehouse',
+  'Security review',
+  'Hiring plan',
+  'Partner portal',
+  'Year-end report',
+];
+
+function MoveToMenu({ container, scrolled }: { container: HTMLElement; scrolled?: boolean }) {
+  return (
+    <DropdownMenu open modal={false}>
+      <DropdownMenuTrigger render={<Button variant="secondary" />}>
+        Move to
+        <ChevronDown data-icon="inline-end" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent container={container} className="max-h-60">
+        {scrolled ? <ScrollToMiddle /> : null}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Projects</DropdownMenuLabel>
+          {projects.map((project) => (
+            <DropdownMenuItem key={project}>{project}</DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export default function DropdownMenuPreview() {
   return (
@@ -149,6 +185,14 @@ export default function DropdownMenuPreview() {
                 </DropdownMenu>
               </div>
             )}
+          </OverlayStage>
+
+          <OverlayStage label="more items than fit, at the top" className={stageClass}>
+            {(container) => <MoveToMenu container={container} />}
+          </OverlayStage>
+
+          <OverlayStage label="more items than fit, scrolled halfway" className={stageClass}>
+            {(container) => <MoveToMenu container={container} scrolled />}
           </OverlayStage>
         </OverlayStageGrid>
       </PreviewSection>

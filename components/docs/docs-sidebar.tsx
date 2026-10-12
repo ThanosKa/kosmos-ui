@@ -4,17 +4,21 @@ import { Collapsible } from '@base-ui/react/collapsible';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import { SiteNav } from '@/components/site/site-nav';
 import type { DocsNav, DocsNavGroup, DocsNavItem, DocsNavSectionId } from '@/lib/docs-nav';
+import { docsTabOf } from '@/lib/docs-tabs';
 import { cn } from '@/registry/kosmos/lib/cn';
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/registry/kosmos/ui/sidebar';
 
 const scrollKey = 'kosmos:docs-sidebar-scroll';
@@ -95,18 +99,27 @@ const countNoun: Partial<Record<DocsNavSectionId, [string, string]>> = {
 };
 
 /**
- * The docs navigation: a docked Kosmos Sidebar from `md` up and a drawer below, opened from the header. Get started and
- * Foundations list their pages; Components and Blocks list an Overview, then one group per registry group that opens and closes.
+ * The docs navigation of the current header tab: a docked Kosmos Sidebar from `md` up and a drawer below, opened from the
+ * header, with the header tabs on top. The Docs tab lists Get started and Foundations; Components and Blocks list an
+ * Overview, then one group per registry group that opens and closes.
  */
 export function DocsSidebar({ nav }: { nav: DocsNav }) {
   const pathname = usePathname();
+  const tab = docsTabOf(pathname);
+  const sections = nav.sections.filter((section) => section.tab === tab);
+  const { isMobile } = useSidebar();
   const scrollRef = useSidebarScroll(pathname);
   const { isOpen, toggle } = useOpenGroups(nav, pathname);
 
   return (
     <Sidebar label="Docs">
+      {isMobile && (
+        <SidebarHeader>
+          <SiteNav />
+        </SidebarHeader>
+      )}
       <SidebarContent render={<nav aria-label="Docs" ref={scrollRef} />}>
-        {nav.sections.map((section) => (
+        {sections.map((section) => (
           <SidebarGroup key={section.id}>
             <SidebarGroupLabel render={<h2 />}>{section.label}</SidebarGroupLabel>
             <SidebarMenu>
@@ -159,7 +172,10 @@ type DocsSidebarGroupProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-/** One registry group: a toggle with the group's icon, name and, while closed, its item count, over its pages A–Z. */
+/**
+ * One registry group: a toggle with the group's icon, name and, while closed, its item count, over its pages A–Z. The count
+ * fades out as the group opens and keeps its place, so the chevron stays put; screen readers always hear it.
+ */
 function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSidebarGroupProps) {
   const count = group.items.length;
   return (
@@ -170,13 +186,13 @@ function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSid
         <span className="sr-only">
           {count} {noun[count === 1 ? 0 : 1]}
         </span>
-        <SidebarMenuBadge aria-hidden className="group-data-panel-open/group-trigger:hidden">
+        <SidebarMenuBadge aria-hidden className="transition-[opacity] duration-fast group-data-panel-open/group-trigger:opacity-0">
           {count}
         </SidebarMenuBadge>
         {/* Turns as the group opens; under reduced motion the right and down chevrons cross-fade instead. */}
         <span
           aria-hidden
-          className="relative -me-0.5 size-3.5 shrink-0 group-data-panel-open/group-trigger:ms-auto *:absolute *:inset-0"
+          className="relative -me-0.5 size-3.5 shrink-0 *:absolute *:inset-0"
         >
           <ChevronRight
             className={cn(

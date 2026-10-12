@@ -5,7 +5,7 @@
   "title": "Drawer",
   "description": "A panel built on Base UI that slides in from an edge: a side panel for details, or a bottom sheet on phones. Follows a swipe to close, traps focus when modal and returns focus to its trigger.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/scroll-area"],
   "meta": { "group": "overlays" },
   "files": [
     {

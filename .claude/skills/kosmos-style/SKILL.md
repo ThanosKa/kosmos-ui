@@ -52,6 +52,10 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 
 _Decided without the user (2026-10-11), pending confirmation._ Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and `better-ui` keeps borders for dividers. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
 
+## Overflow
+
+Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover, a horizontal tab list, a command list) scrolls in `ScrollArea`, and its edge fade is the one overflow cue: each edge with content hidden past it fades out over 2rem, and the fade leaves as the scroll reaches that edge. The scrollbar shows beside it. No shadow, divider, gradient overlay or arrow marks overflow. The frame keeps its fill and shadow and clips; the padding sits inside the scroll area, so content fades out at the frame's edge. A list whose items take focus and scroll themselves into view (a menu, a tab list) passes `focusable={false}`; other scrolling content keeps the viewport focusable, so the keyboard can scroll it.
+
 ## Radius
 
 `--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
@@ -83,9 +87,10 @@ Text in components sits between 12 and 14px. Each size is a type role, which set
 | `text-small` | 13 / 1.4 / 400 / -0.005em | Descriptions, hints, errors, field labels above a control |
 | `text-body` | 14 / 20 / 400 / -0.01em | Default UI text: buttons, menu items, table cells, checkbox and switch labels |
 | `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium` |
-| `text-heading` | 20 / 28 / 600 / -0.01em | Headings of whole pages outside the app frame (docs, gallery), never in app chrome |
+| `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens), never in app chrome |
 | `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`) |
 
+- The site has three more roles, outside this table because no component uses them: `text-page-title`, the title of every docs page (28 / 1.25 / 600 / -0.02em on phones, 32px from `md`), and `text-hero` and `text-lead` for the landing page hero. They live in `app/global.css` and never ship in `@kosmos/tokens` (tokens.md, Site-only roles).
 - Chrome is 500, content is 400. Buttons, nav items, tabs, menu, select and command items, segmented items, field labels, badges and the titles of board cards and list rows take `font-medium`; table cells, descriptions, input values and prose stay 400. Table headers are 400, muted.
 - Hierarchy comes from weight and color (`text-muted-foreground`), not from more sizes.
 - Icons are 14px (`size-3.5`) in 30px controls (buttons, nav items, menu items, inputs) and 16px in 36px rows and `lg` buttons; 12px in `sm` buttons and badges.
@@ -178,3 +183,4 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | A category label as a neutral or status Badge | A hue variant |
 | `text-heading` in an app page header | `text-title font-medium` |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
+| `overflow-auto`, `overflow-y-auto` or `overflow-x-auto` on content inside a frame | `ScrollArea`, as in Overflow above |
