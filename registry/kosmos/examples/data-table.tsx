@@ -22,7 +22,7 @@ const longRows: Project[] = [
     id: 'long-2',
     name: 'Kiln',
     domain: 'kiln.example',
-    platform: 'android',
+    platform: 'web',
     plan: 'free',
     status: 'paused',
     users: 1,

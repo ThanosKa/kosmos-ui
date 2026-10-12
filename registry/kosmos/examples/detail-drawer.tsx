@@ -10,12 +10,12 @@ const longProject: DetailProject = {
   domain: 'marketplace.independent-booksellers.fernhill.example',
   platform: 'server',
   plan: 'scale',
-  status: 'trial',
+  status: 'live',
   users: 1284300,
   events: 912480600,
   mrr: 124800,
   lastEventAt: '2026-10-11',
-  meta: 'Added on September 28, 2026 · trial extended twice while their engineers move every storefront to the server SDK',
+  meta: 'Added on September 28, 2026 · moved from Pro to Scale on October 9 while their engineers move every storefront to the server SDK',
   trend: [
     { date: '2026-10-09', events: 0 },
     { date: '2026-10-10', events: 412800300 },
@@ -27,7 +27,7 @@ const longProject: DetailProject = {
     {
       id: 'a1',
       author: { name: 'Tomás Ortega', initials: 'TO' },
-      action: 'extended the trial by 30 days and raised the event rate limit for the import of three years of order history',
+      action: 'changed the plan to Scale and raised the event rate limit for the import of three years of order history',
       time: 'Oct 11',
     },
   ],

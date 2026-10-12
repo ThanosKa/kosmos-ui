@@ -63,12 +63,14 @@ type DetailProject = {
 };
 
 // Sample data: replace it with the record your page opens.
-const kai = { name: 'Kai Nakamura', initials: 'KN' };
-const tomas = { name: 'Tomás Ortega', initials: 'TO' };
-const lena = { name: 'Lena Park', initials: 'LP' };
+const lena: DetailPerson = { name: 'Lena Park', initials: 'LP' };
+const tomas: DetailPerson = { name: 'Tomás Ortega', initials: 'TO' };
+const kai: DetailPerson = { name: 'Kai Nakamura', initials: 'KN' };
+/** Signs the notes the drawer keeps when you leave out `onNote`. */
+const signedInUser = lena;
 
 /** Events per day from September 12 to October 11, 2026: 2,391,700 in all, with a storm in early October. */
-const cirrusEvents = [
+const cirrusEvents: number[] = [
   73100, 73400, 65400, 65700, 66100, 66400, 66700, 75300, 75700, 67700, 68000, 68300, 68600, 69000, 77600, 77900, 69900,
   70300, 70600, 113500, 149600, 151800, 112300, 72200, 72500, 72900, 73200, 73500, 82100, 82400,
 ];
@@ -158,11 +160,10 @@ function Property({ label, labelId, children }: { label: string; labelId?: strin
   );
 }
 
-function Empty({ children }: { children: React.ReactNode }) {
+function EmptyValue({ children }: { children: React.ReactNode }) {
   return <span className="text-muted-foreground">{children}</span>;
 }
 
-/** A dash for a missing number, read as "None". */
 function NoValue() {
   return (
     <>
@@ -250,7 +251,7 @@ type DetailDrawerProps = {
   modal?: boolean;
   /** The element the drawer renders into. Defaults to `document.body`. */
   container?: React.ComponentProps<typeof DrawerContent>['container'];
-  /** Where focus goes when the drawer opens. Defaults to the drawer itself. */
+  /** Where focus goes when the drawer opens. Defaults to the first control, or the drawer itself when a tap opened it. */
   initialFocus?: React.ComponentProps<typeof DrawerContent>['initialFocus'];
 };
 
@@ -298,7 +299,7 @@ function DetailDrawer({
 
   const status = local.status ?? project.status;
   const activity = [...(project.activity ?? []), ...local.notes];
-  const shown = { ...project, status };
+  const projectWithStatus = { ...project, status };
   const platform = project.platform ? platforms[project.platform] : undefined;
   const usage = [
     { label: 'Active users', value: project.users === undefined ? undefined : count.format(project.users) },
@@ -322,7 +323,7 @@ function DetailDrawer({
     else {
       setLocal({
         ...local,
-        notes: [...local.notes, { id: `note-${local.notes.length}`, author: { name: 'You', initials: 'YO' }, body, time: 'Just now' }],
+        notes: [...local.notes, { id: `note-${local.notes.length}`, author: signedInUser, body, time: 'Just now' }],
       });
     }
     setDraft('');
@@ -358,16 +359,16 @@ function DetailDrawer({
                   <MoreHorizontal aria-hidden />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" container={container}>
-                  <DropdownMenuItem onClick={() => onAction('copy-link', shown)}>
+                  <DropdownMenuItem onClick={() => onAction('copy-link', projectWithStatus)}>
                     <Copy aria-hidden />
                     Copy link
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onAction('copy-id', shown)}>
+                  <DropdownMenuItem onClick={() => onAction('copy-id', projectWithStatus)}>
                     <Hash aria-hidden />
                     Copy project ID
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive" onClick={() => onAction('delete', shown)}>
+                  <DropdownMenuItem variant="destructive" onClick={() => onAction('delete', projectWithStatus)}>
                     <Trash2 aria-hidden />
                     Delete project
                   </DropdownMenuItem>
@@ -412,7 +413,7 @@ function DetailDrawer({
                   {project.plan ? (
                     <Badge variant={plans[project.plan].variant}>{plans[project.plan].label}</Badge>
                   ) : (
-                    <Empty>No plan</Empty>
+                    <EmptyValue>No plan</EmptyValue>
                   )}
                 </Property>
                 <Property label="Platform">
@@ -422,7 +423,7 @@ function DetailDrawer({
                       {platform.label}
                     </span>
                   ) : (
-                    <Empty>Not set</Empty>
+                    <EmptyValue>Not set</EmptyValue>
                   )}
                 </Property>
                 <Property label="Last event">
@@ -431,7 +432,7 @@ function DetailDrawer({
                       {day.format(toDate(project.lastEventAt))}
                     </time>
                   ) : (
-                    <Empty>No events yet</Empty>
+                    <EmptyValue>No events yet</EmptyValue>
                   )}
                 </Property>
               </dl>

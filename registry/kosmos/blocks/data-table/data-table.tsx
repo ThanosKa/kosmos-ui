@@ -111,10 +111,10 @@ function compare(a: Project, b: Project, key: SortKey) {
   return a[key] - b[key];
 }
 
-/** Keeps a row on one of the plans that are on and one of the platforms that are on. */
+/** Plans that are on widen the match among themselves, as do platforms; the two groups narrow each other. */
 function matchesFilters(row: Project, filters: string[]) {
-  const planFilters = filters.filter((value) => value in plans);
-  const platformFilters = filters.filter((value) => value in platforms);
+  const planFilters = filters.filter((value) => Object.hasOwn(plans, value));
+  const platformFilters = filters.filter((value) => Object.hasOwn(platforms, value));
   return (
     (!planFilters.length || planFilters.includes(row.plan)) &&
     (!platformFilters.length || platformFilters.includes(row.platform))
