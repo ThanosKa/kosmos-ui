@@ -138,7 +138,7 @@ Takes every Base UI `Menu.Item` prop, such as `onClick`, `disabled`, `label` and
 | `DropdownMenuSubContent` | The submenu's popup. Base UI `Menu.Portal`, `Menu.Positioner` and `Menu.Popup`, like `DropdownMenuContent`. |
 | `DropdownMenuPortal` | Renders its children into `document.body`. Base UI `Menu.Portal`. |
 | `DropdownMenuPositioner` | Places the popup next to the trigger. Base UI `Menu.Positioner`. |
-| `DropdownMenuPopup` | The menu surface. Base UI `Menu.Popup`. |
+| `DropdownMenuPopup` | The menu surface. Its items scroll in a scroll area when the menu is taller than the room it has, with the edge that hides items faded out. `className` styles the surface, such as its width. Base UI `Menu.Popup`. |
 
 `DropdownMenuContent` is `DropdownMenuPortal`, `DropdownMenuPositioner` and `DropdownMenuPopup` put together.
 

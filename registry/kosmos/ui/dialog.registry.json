@@ -5,7 +5,7 @@
   "title": "Dialog",
   "description": "A modal window built on Base UI that traps focus, closes on Escape or a click outside and returns focus to its trigger. Composable parts (backdrop, viewport, popup) plus a ready header, body and footer.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/scroll-area"],
   "meta": { "group": "overlays" },
   "files": [
     {
