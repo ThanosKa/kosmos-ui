@@ -24,6 +24,17 @@ agent-browser install                   # downloads the browser agent-browser dr
 
 Then, with `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs to `.screenshots/`.
 
+### Index thumbnails
+
+The cards on `/docs/components` and `/docs/blocks` show a light and a dark thumbnail of each item, committed in `public/thumbs/`. Shoot them again when you add a component or block, or when its demo changes how it looks:
+
+```bash
+pnpm thumbnails --port 3000                # every component and block
+pnpm thumbnails button badge --port 3000   # only these, by registry name
+```
+
+It needs `pnpm dev` running; `--port` is the dev server's port (3000 by default). Each thumbnail is the preview the item's docs page opens with (its first `<ComponentPreview>`, usually `<name>-demo`), saved as `public/thumbs/<name>-light.png` and `<name>-dark.png`. Demos render overlays closed, so a dialog or menu shows only its trigger.
+
 ### Install smoke test
 
 `pnpm registry:smoke` installs the whole registry the way `content/docs/installation.mdx` tells users to, then checks that it builds. Run it after you change a `*.registry.json`, a dependency, or the installation page.
