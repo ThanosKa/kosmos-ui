@@ -15,7 +15,9 @@ const docs = defineDocs({
     postprocess: {
       // Docs components render through lib/llms.ts placeholders, so llms.txt gets code, not JSX.
       includeProcessedMarkdown: {
+        headingIds: false,
         mdxAsPlaceholder: [
+          'TypeTable',
           'ComponentPreview',
           'ComponentInstall',
           'ComponentSource',
