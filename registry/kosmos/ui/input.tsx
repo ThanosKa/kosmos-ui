@@ -19,8 +19,7 @@ function Input({ className, type = 'text', ...props }: InputProps) {
         'dark:scheme-dark',
         'transition-[box-shadow]',
         'placeholder:text-muted-foreground',
-        // The focus line is a 1px ring offset and the halo a ring, so both fade on the box-shadow transition.
-        // The transparent outline paints only in forced-colors mode, which drops box-shadow.
+        // The transparent outline paints only in forced-colors mode, which drops the box-shadow focus line and halo.
         'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-transparent focus-visible:ring-offset-1 focus-visible:ring-offset-ring focus-visible:ring-3 focus-visible:ring-ring/20',
         // Invalid adds a destructive ring over the control ring. `aria-invalid` covers forms that set validity without a Field.
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
