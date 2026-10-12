@@ -165,12 +165,12 @@ export function MenuStage() {
                   <DropdownMenuItem className="bg-accent">
                     <Pencil />
                     Rename
-                    <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>R</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Copy />
                     Duplicate
-                    <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>D</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
@@ -199,7 +199,7 @@ export function MenuStage() {
                 <DropdownMenuItem variant="destructive">
                   <Trash2 />
                   Delete view
-                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                  <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>⌫</Kbd></DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuPopup>
             </DropdownMenuPositioner>

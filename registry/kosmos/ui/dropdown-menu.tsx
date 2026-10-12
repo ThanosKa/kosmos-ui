@@ -1,16 +1,28 @@
 'use client';
 
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
+import { mergeProps } from '@base-ui/react/merge-props';
 import { Check, ChevronRight } from 'lucide-react';
-import type * as React from 'react';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { KbdGroup } from '@/registry/kosmos/ui/kbd';
+
+/**
+ * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
+ * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
+ */
+function withSlot<Render>(render: Render, slot: string) {
+  if (!React.isValidElement<Record<string, unknown>>(render)) return render;
+  return (props: React.ComponentProps<'button'>) =>
+    React.cloneElement(render, { ...mergeProps<'button'>(props, render.props), 'data-slot': slot, ref: props.ref });
+}
 
 function DropdownMenu(props: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
-function DropdownMenuTrigger(props: MenuPrimitive.Trigger.Props) {
-  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
+function DropdownMenuTrigger({ render, ...props }: MenuPrimitive.Trigger.Props) {
+  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" render={withSlot(render, 'dropdown-menu-trigger')} {...props} />;
 }
 
 function DropdownMenuPortal(props: MenuPrimitive.Portal.Props) {
@@ -209,15 +221,9 @@ function DropdownMenuSeparator({ className, ...props }: MenuPrimitive.Separator.
   );
 }
 
-/** A keyboard shortcut at the end of an item. Text only; the menu does not bind the keys. */
-function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'span'>) {
-  return (
-    <span
-      data-slot="dropdown-menu-shortcut"
-      className={cn('ms-auto ps-4 text-small font-normal text-muted-foreground', className)}
-      {...props}
-    />
-  );
+/** The shortcut that runs an item, at its end. Put a `Kbd` per key inside; the menu does not bind the keys. */
+function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<typeof KbdGroup>) {
+  return <KbdGroup data-slot="dropdown-menu-shortcut" className={cn('ms-auto ps-4', className)} {...props} />;
 }
 
 function DropdownMenuSub(props: MenuPrimitive.SubmenuRoot.Props) {

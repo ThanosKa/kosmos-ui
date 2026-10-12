@@ -11,6 +11,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
+import { Kbd } from '@/registry/kosmos/ui/kbd';
 
 export default function DropdownMenuDemo() {
   return (
@@ -23,12 +24,12 @@ export default function DropdownMenuDemo() {
         <DropdownMenuItem>
           <Pencil />
           Rename
-          <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+          <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>R</Kbd></DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Copy />
           Duplicate
-          <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+          <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>D</Kbd></DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Share2 />
