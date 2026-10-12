@@ -9,7 +9,7 @@ import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
 import { groupOfPage, neighboursOf } from '@/lib/docs-nav';
-import { docsSourceUrl, getPageImageUrl, getPageMarkdownUrl } from '@/lib/shared';
+import { docsSourceUrl, getPageImageUrl, getPageMarkdownUrl, siteOpenGraph } from '@/lib/shared';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -64,6 +64,8 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     title: page.data.title,
     description: page.data.description,
     openGraph: {
+      ...siteOpenGraph,
+      url: page.url,
       images: getPageImageUrl(page).url,
     },
   };

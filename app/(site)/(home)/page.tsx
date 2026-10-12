@@ -2,14 +2,15 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DashboardShowcase } from '@/components/site/dashboard-showcase';
 import { itemsInGroup, readRegistryItems } from '@/lib/registry';
+import { appDescription, appName, siteOpenGraph } from '@/lib/shared';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
 
-const description =
-  'Components and blocks for dashboard apps, built on Base UI and installed from the shadcn registry. Free and open source under MIT.';
+const title = `${appName}: Components and blocks for dashboard apps`;
 
 export const metadata: Metadata = {
-  title: 'Kosmos UI: Components and blocks for dashboard apps',
-  description,
+  title: { absolute: title },
+  description: appDescription,
+  openGraph: { ...siteOpenGraph, title, description: appDescription, url: '/' },
 };
 
 export default function HomePage() {
@@ -22,16 +23,16 @@ export default function HomePage() {
       <section className="flex flex-col items-center pt-14 pb-12 text-center sm:pt-24 sm:pb-16">
         <h1 className="max-w-[14em] text-hero text-balance">Dashboard UI with the details already done</h1>
         <p className="mt-5 max-w-[34em] text-lead text-pretty text-muted-foreground">
-          {componentCount} premium components and {blockCount} blocks for dashboard apps, installed from the shadcn
+          {componentCount} components and {blockCount} blocks for dashboard apps, installed from the shadcn
           registry. Free and open source under MIT.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {/* Router links styled as buttons: `Button href` renders a plain <a>, which reloads the page. */}
           <Link href="/docs/installation" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
-            Get Started
+            Get started
           </Link>
           <Link href="/docs/components" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
-            Browse Components
+            Browse components
           </Link>
         </div>
       </section>

@@ -22,6 +22,35 @@ function parseBezier(value: string) {
     .map((part) => Number(part.trim()));
 }
 
+const rootFontSize = 16;
+
+function toPx(value: string, base: number) {
+  const rem = /^([\d.]+)rem$/.exec(value);
+  if (rem) return Number(rem[1]) * rootFontSize;
+  const px = /^([\d.]+)px$/.exec(value);
+  if (px) return Number(px[1]);
+  const ratio = /^calc\(\s*([\d.]+)\s*\/\s*([\d.]+)\s*\)$/.exec(value);
+  if (ratio) return (Number(ratio[1]) / Number(ratio[2])) * base;
+  const unitless = Number(value);
+  return Number.isNaN(unitless) ? null : unitless * base;
+}
+
+/** A type role as size / line-height / weight in px, the way the style skill writes it. */
+function typeSpec(theme: Record<string, string>, role: string) {
+  const size = toPx(theme[`text-${role}`] ?? '', rootFontSize);
+  const lineHeight = size === null ? null : toPx(theme[`text-${role}--line-height`] ?? '', size);
+  const weight = theme[`text-${role}--font-weight`] ?? '400';
+  return [size, lineHeight].map((px) => (px === null ? '?' : `${Math.round(px * 10) / 10}`)).concat(weight).join(' / ');
+}
+
+/** A radius token in px, resolving `calc(var(--radius) ± Npx)` against the base radius. */
+function radiusPx(value: string, base: number) {
+  if (value === 'var(--radius)') return base;
+  const offset = /^calc\(var\(--radius\)\s*([+-])\s*([\d.]+)px\)$/.exec(value);
+  if (offset) return base + (offset[1] === '+' ? 1 : -1) * Number(offset[2]);
+  return toPx(value, rootFontSize);
+}
+
 function Section({
   title,
   description,
@@ -56,6 +85,7 @@ export default function TokensPage() {
   const radii = Object.keys(tokens.themeInline).filter((name) =>
     name.startsWith('radius-'),
   );
+  const baseRadius = toPx(tokens.light.radius ?? '', rootFontSize);
   const easings = Object.entries(tokens.theme)
     .filter(([name]) => name.startsWith('ease-'))
     .map(([name, value]) => ({
@@ -107,7 +137,7 @@ export default function TokensPage() {
             <li
               key={name}
               data-token-swatch={name}
-              className="flex items-center gap-3 rounded-xl border border-transparent bg-card p-2 shadow-card"
+              className="flex items-center gap-3 rounded-2xl border border-transparent bg-card p-2 shadow-card"
             >
               <span
                 style={{ background: `var(--${name})` }}
@@ -209,11 +239,7 @@ export default function TokensPage() {
               <div className="flex flex-col">
                 <code className="text-body font-medium">text-{role}</code>
                 <span className="font-mono text-caption tabular-nums text-muted-foreground">
-                  {tokens.theme[`text-${role}`]} /{' '}
-                  {tokens.theme[`text-${role}--line-height`]}
-                  {tokens.theme[`text-${role}--font-weight`]
-                    ? ` / ${tokens.theme[`text-${role}--font-weight`]}`
-                    : ''}
+                  {typeSpec(tokens.theme, role)}
                 </span>
               </div>
               <p
@@ -223,7 +249,7 @@ export default function TokensPage() {
                   fontWeight: `var(--text-${role}--font-weight, 400)`,
                   letterSpacing: `var(--text-${role}--letter-spacing, 0)`,
                 }}
-                className="truncate tabular-nums"
+                className="min-w-0 text-pretty tabular-nums"
               >
                 Revenue grew 12.4% to $48,210 in Q3
               </p>
@@ -237,15 +263,22 @@ export default function TokensPage() {
         description="Controls take rounded-lg, overlays rounded-xl, cards rounded-2xl, sheet tops rounded-3xl, tags and badges rounded-full."
       >
         <ul className="flex flex-wrap gap-6">
-          {radii.map((name) => (
-            <li key={name} className="flex flex-col items-center gap-2">
-              <span
-                style={{ borderRadius: tokens.themeInline[name] }}
-                className="size-16 border border-transparent bg-card shadow-card"
-              />
-              <code className="text-small">{name.replace('radius-', 'rounded-')}</code>
-            </li>
-          ))}
+          {[...radii.map((name) => ({ name, value: tokens.themeInline[name] })), { name: 'radius-full', value: 'calc(infinity * 1px)' }].map(
+            ({ name, value }) => {
+              const px = name === 'radius-full' ? null : radiusPx(value, baseRadius ?? 0);
+              return (
+                <li key={name} className="flex flex-col items-center gap-2">
+                  <span style={{ borderRadius: value }} className="size-16 border border-transparent bg-card shadow-card" />
+                  <div className="flex flex-col items-center">
+                    <code className="text-small">{name.replace('radius-', 'rounded-')}</code>
+                    <span className="font-mono text-caption tabular-nums text-muted-foreground">
+                      {px === null ? 'pill' : `${px}px`}
+                    </span>
+                  </div>
+                </li>
+              );
+            },
+          )}
         </ul>
       </Section>
     </main>

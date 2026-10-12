@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu } from 'lucide-react';
+import { Check, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
@@ -55,9 +55,9 @@ export function SiteNavMenu({ className }: { className?: string }) {
             key={item.href}
             render={<Link href={item.href} />}
             aria-current={item.href === active ? 'page' : undefined}
-            className="aria-[current=page]:font-medium"
           >
             {item.label}
+            {item.href === active ? <Check aria-hidden className="ms-auto text-foreground" /> : null}
           </DropdownMenuLinkItem>
         ))}
       </DropdownMenuContent>

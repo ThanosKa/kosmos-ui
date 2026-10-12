@@ -25,7 +25,7 @@ export function SiteHeader({ menu = <SiteNavMenu className="me-2 md:hidden" />, 
         {menu}
         <Link
           href="/"
-          className="-mx-1 flex items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="-mx-1 flex shrink-0 items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <KosmosMark className="size-5" />
           {appName}

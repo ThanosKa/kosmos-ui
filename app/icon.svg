@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <style>
+    .mark { color: #26251e; }
+    @media (prefers-color-scheme: dark) { .mark { color: #f5f5f2; } }
+  </style>
+  <defs>
+    <mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+      <rect width="24" height="24" fill="white" />
+      <circle cx="12" cy="12" r="7.5" fill="black" />
+    </mask>
+  </defs>
+  <g class="mark" transform="rotate(-24 12 12)" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+    <ellipse cx="12" cy="12" rx="11" ry="4" mask="url(#gap)" />
+    <circle cx="12" cy="12" r="6.5" fill="currentColor" stroke="none" />
+    <path d="M1 12 A11 4 0 0 0 23 12" />
+  </g>
+</svg>

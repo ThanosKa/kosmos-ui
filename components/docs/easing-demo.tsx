@@ -58,7 +58,7 @@ export function EasingDemo({ items }: { items: { name: string; bezier: number[] 
               className="grid grid-cols-[64px_1fr] items-center gap-4 sm:grid-cols-[64px_160px_1fr]"
             >
               <svg
-                viewBox="-4 -4 108 108"
+                viewBox="-16 -16 132 132"
                 className="size-16 rounded-lg border border-transparent bg-card text-foreground shadow-card"
                 aria-hidden
               >
@@ -66,7 +66,8 @@ export function EasingDemo({ items }: { items: { name: string; bezier: number[] 
                   d={`M0 100 C${x1 * 100} ${100 - y1 * 100} ${x2 * 100} ${100 - y2 * 100} 100 0`}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="3"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
                 />
               </svg>
               <div className="flex min-w-0 flex-col gap-1">
