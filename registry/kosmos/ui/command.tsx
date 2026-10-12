@@ -88,12 +88,16 @@ function CommandDialog({
     <Dialog {...props}>
       <DialogPortal container={container}>
         <DialogBackdrop className="transition-none" />
-        <DialogViewport className="items-start pt-[12vh] sm:pt-[15vh]">
+        {/* Offsets in container units, so a palette rendered into a `container` sits as high in it as on a screen. */}
+        <DialogViewport className="items-start pt-0 [container-type:size]">
           <DialogPopup
             data-slot="command-dialog"
             initialFocus={initialFocus}
             finalFocus={finalFocus}
-            className={cn('max-h-[min(30rem,100%)] max-w-[36rem] overflow-hidden shadow-popover transition-none', className)}
+            className={cn(
+              'mt-[12cqh] max-h-[min(30rem,88cqh)] max-w-[36rem] overflow-hidden shadow-popover transition-none sm:mt-[15cqh] sm:max-h-[min(30rem,85cqh)]',
+              className,
+            )}
           >
             <DialogTitle className="sr-only">{title}</DialogTitle>
             <DialogDescription className="sr-only">{description}</DialogDescription>
