@@ -52,12 +52,12 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
         {...props}
       >
         {children}
-        {/* Turns over as the section opens; under reduced motion the down and up chevrons cross-fade instead. */}
+        {/* Turns with its section, on the same timing; under reduced motion the down and up chevrons cross-fade instead. */}
         <span aria-hidden className="relative size-5 shrink-0 text-muted-foreground *:absolute *:inset-0.5 *:size-4">
           <ChevronDown
             className={cn(
-              'transition-[rotate,opacity] duration-fast ease-power3-out group-data-panel-open/accordion-trigger:duration-slow',
-              'motion-safe:group-data-panel-open/accordion-trigger:rotate-180 motion-safe:group-data-panel-open/accordion-trigger:ease-smooth-in-out',
+              'transition-[rotate,opacity] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
+              'motion-safe:group-data-panel-open/accordion-trigger:rotate-180',
               'motion-reduce:group-data-panel-open/accordion-trigger:opacity-0',
             )}
           />
