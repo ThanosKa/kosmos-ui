@@ -4,7 +4,7 @@ import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@
 import { Switch } from '@/registry/kosmos/ui/switch';
 
 const rows = ['off', 'on'] as const;
-const states = ['default', 'focus', 'invalid', 'disabled'] as const;
+const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
 
 function stateProps(state: (typeof states)[number]) {
   if (state === 'invalid') return { 'aria-invalid': true } as const;
