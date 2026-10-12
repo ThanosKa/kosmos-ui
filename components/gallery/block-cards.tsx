@@ -31,6 +31,8 @@ export function AppFrame() {
   return (
     <SidebarProvider
       defaultWidth={232}
+      storageKey={false}
+      keyboardShortcut={false}
       className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[36rem]"
     >
       <AppSidebar

@@ -35,6 +35,7 @@ export default function SidebarControlled() {
       minWidth={160}
       maxWidth={320}
       mobileBreakpoint={480}
+      keyboardShortcut={false}
       className="h-72 min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card"
     >
       <Sidebar>
