@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartNoAxesCombined, TrendingDown, TrendingUp } from 'lucide-react';
+import { ChartNoAxesCombined, ChartPie, TrendingDown, TrendingUp } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Badge } from '@/registry/kosmos/ui/badge';
@@ -145,7 +145,7 @@ type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
   stats?: Stat[];
   /** The chart's points for each range. An empty list shows the empty state. */
   revenue?: Record<Range, RevenuePoint[]>;
-  /** Each plan's share of revenue, in percent. */
+  /** Each plan's share of revenue, in percent. An empty list, or a range with no revenue, shows the empty state. */
   plans?: PlanShare[];
   /** The chart's range. Use with `onRangeChange`, or leave it out and pass `defaultRange`. */
   range?: Range;
@@ -249,29 +249,43 @@ function StatsOverview({
             <h2 className="text-title">Revenue by plan</h2>
             <p className="text-small text-muted-foreground">Share of the last {ranges[range].label}</p>
           </div>
-          <div className="flex flex-col gap-5">
-            {loading
-              ? Array.from({ length: 3 }, (_, index) => (
-                  <div key={index} className="flex flex-col gap-2">
-                    <Skeleton className="h-3.5 w-24" />
-                    <Skeleton className="h-1.5 w-full rounded-full" />
-                  </div>
-                ))
-              : plans.map((plan) => (
-                  <Meter key={plan.plan} value={plan.share}>
-                    <MeterLabel className="truncate">{plan.plan}</MeterLabel>
-                    <MeterValue>
-                      {(formatted) => (
-                        <>
-                          <span className="text-foreground">{usdCompact.format((total * plan.share) / 100)}</span>
-                          <span className="ms-2">{formatted}</span>
-                        </>
-                      )}
-                    </MeterValue>
-                    <MeterBar />
-                  </Meter>
-                ))}
-          </div>
+          {loading ? (
+            <div className="flex flex-col gap-5">
+              {Array.from({ length: 3 }, (_, index) => (
+                <div key={index} className="flex flex-col gap-2">
+                  <Skeleton className="h-3.5 w-24" />
+                  <Skeleton className="h-1.5 w-full rounded-full" />
+                </div>
+              ))}
+            </div>
+          ) : plans.length === 0 || total === 0 ? (
+            <Empty className="flex-1 p-0 py-6">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <ChartPie />
+                </EmptyMedia>
+                <EmptyTitle render={<h3 />}>No plan revenue yet</EmptyTitle>
+                <EmptyDescription>Each plan’s share shows up here once revenue comes in.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <div className="flex flex-col gap-5">
+              {plans.map((plan) => (
+                <Meter key={plan.plan} value={plan.share}>
+                  <MeterLabel className="truncate">{plan.plan}</MeterLabel>
+                  <MeterValue>
+                    {(formatted) => (
+                      <>
+                        <span className="text-foreground">{usdCompact.format((total * plan.share) / 100)}</span>
+                        <span className="ms-2">{formatted}</span>
+                      </>
+                    )}
+                  </MeterValue>
+                  <MeterBar />
+                </Meter>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
