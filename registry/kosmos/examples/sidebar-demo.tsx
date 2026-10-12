@@ -43,16 +43,21 @@ export default function SidebarDemo() {
       mobileBreakpoint={480}
       className="h-[28rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card"
     >
-      <Sidebar>
+      <Sidebar collapsible="icon">
         <SidebarHeader>
-          <div className="flex h-8 items-center px-2 text-body font-medium">Acme Inc.</div>
+          <div className="flex h-8 items-center gap-2 px-1.5">
+            <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
+              A
+            </span>
+            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0">Acme Inc.</span>
+          </div>
         </SidebarHeader>
         <SidebarContent render={<nav aria-label="Main" />}>
           <SidebarGroup>
             <SidebarMenu>
               {pages.map(({ label, icon: Icon, href, count }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton href={href} isActive={active === label} onClick={open(label)}>
+                  <SidebarMenuButton href={href} isActive={active === label} tooltip={label} onClick={open(label)}>
                     <Icon aria-hidden />
                     <span>{label}</span>
                     {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -66,7 +71,7 @@ export default function SidebarDemo() {
             <SidebarMenu>
               {projects.map((project) => (
                 <SidebarMenuItem key={project}>
-                  <SidebarMenuButton href="/projects" isActive={active === project} onClick={open(project)}>
+                  <SidebarMenuButton href="/projects" isActive={active === project} tooltip={project} onClick={open(project)}>
                     <Folder aria-hidden />
                     <span>{project}</span>
                   </SidebarMenuButton>
@@ -78,7 +83,7 @@ export default function SidebarDemo() {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="/settings" isActive={active === 'Settings'} onClick={open('Settings')}>
+              <SidebarMenuButton href="/settings" isActive={active === 'Settings'} tooltip="Settings" onClick={open('Settings')}>
                 <Settings aria-hidden />
                 <span>Settings</span>
               </SidebarMenuButton>
@@ -92,7 +97,7 @@ export default function SidebarDemo() {
           <SidebarTrigger />
           <h1 className="truncate text-body font-medium">{active}</h1>
         </header>
-        <p className="p-4 text-body text-muted-foreground">Drag the sidebar’s edge to resize it.</p>
+        <p className="p-4 text-body text-muted-foreground">Collapse the sidebar to icons with the button, and drag its edge to resize it.</p>
       </SidebarInset>
     </SidebarProvider>
   );

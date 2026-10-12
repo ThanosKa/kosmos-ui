@@ -180,7 +180,11 @@ export function DashboardShowcase() {
   const listPage = viewState[page];
 
   return (
-    <SidebarProvider className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[50rem]">
+    <SidebarProvider
+      storageKey={false}
+      keyboardShortcut={false}
+      className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[50rem]"
+    >
       <AppSidebar activeItem={page} onNavigate={navigate} navViews={views} onSearch={() => setCommandOpen(true)} />
       <SidebarResizeHandle />
       <div className="relative flex min-w-0 flex-1 flex-col bg-background md:overflow-y-auto">

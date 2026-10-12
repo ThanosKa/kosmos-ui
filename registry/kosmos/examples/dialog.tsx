@@ -2,6 +2,7 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Dialog,
@@ -83,6 +84,32 @@ export default function DialogPreview() {
                     <DialogDescription>12 people have access to Q3 Roadmap.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
+                    <ul className="flex flex-col divide-y divide-border">
+                      {members.map((name) => (
+                        <li key={name} className="py-2">
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogClose render={<Button variant="primary" />}>Done</DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="body scrolled halfway">
+            {(container) => (
+              <Dialog open modal={false}>
+                <DialogContent container={container} initialFocus={false}>
+                  <DialogHeader>
+                    <DialogTitle>Members</DialogTitle>
+                    <DialogDescription>12 people have access to Q3 Roadmap.</DialogDescription>
+                  </DialogHeader>
+                  <DialogBody>
+                    <ScrollToMiddle />
                     <ul className="flex flex-col divide-y divide-border">
                       {members.map((name) => (
                         <li key={name} className="py-2">

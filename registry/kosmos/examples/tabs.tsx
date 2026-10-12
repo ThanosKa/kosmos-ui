@@ -2,6 +2,7 @@
 
 import { Activity, FileText, Settings } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
@@ -94,16 +95,21 @@ export default function TabsPreview() {
         </Tabs>
       </PreviewSection>
 
-      <PreviewSection title="More tabs than fit (scrolls sideways)">
-        <Tabs defaultValue="q3" className="max-w-sm">
-          <TabsList>
-            <TabsTrigger value="q1">First quarter</TabsTrigger>
-            <TabsTrigger value="q2">Second quarter</TabsTrigger>
-            <TabsTrigger value="q3">Third quarter</TabsTrigger>
-            <TabsTrigger value="q4">Fourth quarter</TabsTrigger>
-            <TabsTrigger value="fy">Full fiscal year</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <PreviewSection title="More tabs than fit (scrolls sideways): at the start, scrolled halfway">
+        <div className="flex flex-col gap-6">
+          {[false, true].map((scrolled) => (
+            <Tabs key={String(scrolled)} defaultValue="q1" className="max-w-sm">
+              <TabsList>
+                {scrolled ? <ScrollToMiddle axis="x" /> : null}
+                <TabsTrigger value="q1">First quarter</TabsTrigger>
+                <TabsTrigger value="q2">Second quarter</TabsTrigger>
+                <TabsTrigger value="q3">Third quarter</TabsTrigger>
+                <TabsTrigger value="q4">Fourth quarter</TabsTrigger>
+                <TabsTrigger value="fy">Full fiscal year</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          ))}
+        </div>
       </PreviewSection>
     </PreviewStack>
   );

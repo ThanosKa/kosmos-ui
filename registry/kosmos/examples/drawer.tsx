@@ -2,6 +2,7 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Drawer,
@@ -91,7 +92,7 @@ export default function DrawerPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="left, body scrolls">
+          <OverlayStage label="left, body scrolls" className="h-[22rem]">
             {(container) => (
               <Drawer open modal={false} swipeDirection="left">
                 <DrawerBackdrop />
@@ -101,6 +102,30 @@ export default function DrawerPreview() {
                     <DrawerDescription>Everything that happened on this task.</DrawerDescription>
                   </DrawerHeader>
                   <DrawerBody>
+                    <ul className="flex flex-col divide-y divide-border">
+                      {activity.map((item) => (
+                        <li key={item} className="py-2.5">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="left, body scrolled halfway" className="h-[22rem]">
+            {(container) => (
+              <Drawer open modal={false} swipeDirection="left">
+                <DrawerBackdrop />
+                <DrawerContent container={container} initialFocus={false}>
+                  <DrawerHeader>
+                    <DrawerTitle>Activity</DrawerTitle>
+                    <DrawerDescription>Everything that happened on this task.</DrawerDescription>
+                  </DrawerHeader>
+                  <DrawerBody>
+                    <ScrollToMiddle />
                     <ul className="flex flex-col divide-y divide-border">
                       {activity.map((item) => (
                         <li key={item} className="py-2.5">
