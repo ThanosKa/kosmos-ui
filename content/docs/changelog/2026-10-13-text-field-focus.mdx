@@ -1,0 +1,9 @@
+---
+title: Changed text field focus fade
+description: The orange focus line on Input, Textarea and Select now fades in with its halo instead of snapping on.
+date: 2026-10-13
+---
+
+To pick it up, run `shadcn add` again for each field.
+
+- **[Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select)**: the 1px focus line now fades in and out with the halo, over the same 150ms, instead of appearing at full strength on the first frame. Once settled, the field looks the same as before, and an invalid field still turns red while it has focus. In forced-colors mode the focused field still shows its edge.

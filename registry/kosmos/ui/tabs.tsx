@@ -1,36 +1,45 @@
 'use client';
 
 import { Tabs as TabsPrimitive } from '@base-ui/react/tabs';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+const TabsOrientation = React.createContext<TabsPrimitive.Root.Props['orientation']>('horizontal');
 
 /**
  * Switches between panels that share one spot on the page. Arrow keys move between tabs and
  * activate them as they go; `orientation="vertical"` stacks the tabs and uses the up and down keys.
  */
-function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
+function Tabs({ className, orientation = 'horizontal', ...props }: TabsPrimitive.Root.Props) {
   return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn('flex flex-col gap-4 data-[orientation=vertical]:flex-row', className)}
-      {...props}
-    />
+    <TabsOrientation value={orientation}>
+      <TabsPrimitive.Root
+        data-slot="tabs"
+        orientation={orientation}
+        className={cn('flex flex-col gap-4 data-[orientation=vertical]:flex-row', className)}
+        {...props}
+      />
+    </TabsOrientation>
   );
 }
 
 /**
  * The row of tabs, drawn on a 1px divider, with an indicator that slides to the active tab. The indicator
- * sits just inside the divider, because the scrolling list clips anything drawn over its border.
+ * sits just inside the divider, because the scrolling row clips anything drawn over its border.
  * Under reduced motion the indicator cross-fades between tabs instead of sliding.
- * Scrolls sideways when the tabs do not fit, with the platform's thin scrollbar as the cue.
+ * A horizontal row scrolls sideways in a `ScrollArea` when the tabs do not fit: the edge with tabs hidden past it
+ * fades out. `className` styles the row inside it.
  */
 function TabsList({ className, children, activateOnFocus = true, ...props }: TabsPrimitive.List.Props) {
-  return (
+  const orientation = React.use(TabsOrientation);
+  const list = (
     <TabsPrimitive.List
       data-slot="tabs-list"
       activateOnFocus={activateOnFocus}
       className={cn(
-        'group/tabs-list relative flex shrink-0 items-center gap-1 [scrollbar-width:thin]',
-        'data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:border-b data-[orientation=horizontal]:border-border',
+        'group/tabs-list relative flex shrink-0 items-center gap-1',
+        'data-[orientation=horizontal]:border-b data-[orientation=horizontal]:border-border',
         'data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch data-[orientation=vertical]:border-s data-[orientation=vertical]:border-border',
         className,
       )}
@@ -48,6 +57,12 @@ function TabsList({ className, children, activateOnFocus = true, ...props }: Tab
         )}
       />
     </TabsPrimitive.List>
+  );
+  if (orientation === 'vertical') return list;
+  return (
+    <ScrollArea data-slot="tabs-scroll-area" focusable={false} className="min-w-0 shrink-0 rounded-none">
+      {list}
+    </ScrollArea>
   );
 }
 

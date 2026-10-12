@@ -104,7 +104,7 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 ### Site-only roles
 
-`text-hero` and `text-lead` exist only for the landing page hero. They are declared in `app/global.css`, not in `tokens.css`, so they never ship in `@kosmos/tokens`, and no component, block or docs page uses them; component text stays on the six roles above. Use them as plain classes, not through `cn`, which does not know them.
+`text-hero` and `text-lead` exist only for the landing page hero, and `text-page-title` only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). They are declared in `app/global.css`, not in `tokens.css`, so they never ship in `@kosmos/tokens`, and no component or block uses them; component text stays on the six roles above. Use them as plain classes, not through `cn`, which does not know them.
 
 ## Left out on purpose
 

@@ -55,8 +55,8 @@ export function AppFrame() {
           onTabChange={setTab}
           query={query}
           onQueryChange={setQuery}
+          description=""
           filterOptions={[{ value: 'mine', label: 'Owned by me' }]}
-          defaultView="table"
         >
           <div className="p-4">
             <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">

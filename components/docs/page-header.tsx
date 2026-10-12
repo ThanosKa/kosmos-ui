@@ -64,7 +64,7 @@ export function DocsPageHeader({ title, description, date, markdownUrl, githubUr
         )}
       </p>
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-        <h1 className="min-w-0 text-heading text-pretty text-foreground">{title}</h1>
+        <h1 className="min-w-0 text-page-title text-pretty text-foreground">{title}</h1>
         <div className="flex items-center gap-2">
           <PageActions markdownUrl={markdownUrl} githubUrl={githubUrl} />
           {neighbours && <PageNavButtons {...neighbours} />}

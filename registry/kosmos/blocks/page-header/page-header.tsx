@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, Ellipsis, KanbanSquare, Link2, ListFilter, Plus, Rows3, Search, Upload } from 'lucide-react';
+import { Download, Ellipsis, Link2, ListFilter, Plus, Search, Upload, X } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -15,28 +15,30 @@ import {
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Input } from '@/registry/kosmos/ui/input';
-import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
-// Sample data: replace it with your page's views and filters.
 type PageTab = { value: string; label: string; count?: number };
-type FilterOption = { value: string; label: string };
-type PageView = 'table' | 'board';
+/** One option of the Filter menu. Options that share a `group` sit under its name, in the menu and on the chip. */
+type FilterOption = { value: string; label: string; group?: string };
 /** What the More actions menu offers. */
 type PageHeaderAction = 'import' | 'export' | 'copy-link';
 
+// Sample data: replace it with your page's views and filters.
 const sampleTabs: PageTab[] = [
-  { value: 'all', label: 'All accounts', count: 128 },
-  { value: 'active', label: 'Active', count: 96 },
-  { value: 'at-risk', label: 'At risk', count: 12 },
-  { value: 'churned', label: 'Churned', count: 20 },
+  { value: 'all', label: 'All', count: 12 },
+  { value: 'live', label: 'Live', count: 8 },
+  { value: 'trial', label: 'Trial', count: 2 },
+  { value: 'paused', label: 'Paused', count: 2 },
 ];
 
 const sampleFilters: FilterOption[] = [
-  { value: 'maya', label: 'Owned by Maya Chen' },
-  { value: 'jonas', label: 'Owned by Jonas Weber' },
-  { value: 'priya', label: 'Owned by Priya Raman' },
-  { value: 'enterprise', label: 'Enterprise plan' },
+  { value: 'free', label: 'Free', group: 'Plan' },
+  { value: 'pro', label: 'Pro', group: 'Plan' },
+  { value: 'scale', label: 'Scale', group: 'Plan' },
+  { value: 'web', label: 'Web', group: 'Platform' },
+  { value: 'ios', label: 'iOS', group: 'Platform' },
+  { value: 'android', label: 'Android', group: 'Platform' },
+  { value: 'server', label: 'Server', group: 'Platform' },
 ];
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
@@ -54,10 +56,24 @@ function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (val
   return [current, setValue] as const;
 }
 
+/** Options in their order, gathered under each group's name. */
+function groupOptions(options: FilterOption[]) {
+  const groups: { name: string; options: FilterOption[] }[] = [];
+  for (const option of options) {
+    const name = option.group ?? 'Filter by';
+    const group = groups.find((item) => item.name === name);
+    if (group) group.options.push(option);
+    else groups.push({ name, options: [option] });
+  }
+  return groups;
+}
+
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
 type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> & {
   title?: string;
+  /** One line under the title that says what the page lists. */
+  description?: string;
   /** The heading level of the title. Keep `1` when the header tops the page; lower it when the page already has an `<h1>`. */
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Goes before the title, usually a `SidebarTrigger`. */
@@ -78,10 +94,6 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
   filters?: string[];
   defaultFilters?: string[];
   onFiltersChange?: (filters: string[]) => void;
-  /** The selected layout. Use with `onViewChange`, or leave it out and pass `defaultView`. */
-  view?: PageView;
-  defaultView?: PageView;
-  onViewChange?: (view: PageView) => void;
   /** The label of the primary action. */
   newLabel?: string;
   /** Runs the primary action, usually opening a dialog. */
@@ -97,13 +109,14 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
 };
 
 /**
- * The top of a list page: a title with a primary action and a More actions menu, tabs for saved views
- * with counts, and a toolbar with search, filters and a table or board switch. Pass the page body as
- * `children`: it becomes the panel of the selected tab. Lays itself out by its own width, not the
- * screen's, so it fits next to a sidebar or inside a panel.
+ * The top of a list page: a title and a description with a primary action and a More actions menu,
+ * saved views as tabs with counts, search, a grouped filter menu, and a chip for each filter that is on.
+ * Pass the page body as `children`: it becomes the panel of the selected tab. Lays itself out by its own
+ * width, not the screen's, so it fits next to a sidebar or inside a panel.
  */
 function PageHeader({
-  title = 'Accounts',
+  title = 'Projects',
+  description = 'Every site and app that sends events to Parallax.',
   headingLevel = 1,
   leading,
   tabs = sampleTabs,
@@ -117,10 +130,7 @@ function PageHeader({
   filters: filtersProp,
   defaultFilters = [],
   onFiltersChange,
-  view: viewProp,
-  defaultView = 'table',
-  onViewChange,
-  newLabel = 'New account',
+  newLabel = 'New project',
   onNew,
   onAction,
   filterMenu,
@@ -132,9 +142,32 @@ function PageHeader({
   const [tab, setTab] = useControlled(tabProp, defaultTab ?? tabs[0]?.value ?? '', onTabChange);
   const [query, setQuery] = useControlled(queryProp, defaultQuery, onQueryChange);
   const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
-  const [view, setView] = useControlled<PageView>(viewProp, defaultView, onViewChange);
   const searchId = React.useId();
   const Heading = `h${headingLevel}` as const;
+  const noun = title.toLowerCase();
+  const activeOptions = filters.flatMap((value) => filterOptions.filter((option) => option.value === value));
+  const toggleFilter = (value: string, on: boolean) =>
+    setFilters(on ? [...filters, value] : filters.filter((item) => item !== value));
+
+  // A removed chip takes its focus with it, so focus moves to the chip that takes its place, or to Filter.
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const focusAfterRemove = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    const target = focusAfterRemove.current;
+    if (target === null) return;
+    focusAfterRemove.current = null;
+    const chip = target ? headerRef.current?.querySelector<HTMLElement>(`[data-filter-chip="${CSS.escape(target)}"]`) : null;
+    (chip ?? headerRef.current?.querySelector<HTMLElement>('[data-filter-trigger]'))?.focus();
+  }, [filters]);
+  const removeFilter = (index: number) => {
+    const next = activeOptions[index + 1] ?? activeOptions[index - 1];
+    focusAfterRemove.current = next?.value ?? '';
+    toggleFilter(activeOptions[index].value, false);
+  };
+  const clearFilters = () => {
+    focusAfterRemove.current = '';
+    setFilters([]);
+  };
 
   return (
     <Tabs
@@ -143,10 +176,13 @@ function PageHeader({
       className={cn('@container min-w-0 gap-0', className)}
       {...props}
     >
-      <div data-slot="page-header" className="flex flex-col">
-        <div className="flex h-14 items-center gap-2 px-4">
+      <div ref={headerRef} data-slot="page-header" className="flex flex-col gap-3 border-b border-border px-4 py-3">
+        <div className="flex min-h-7.5 items-center gap-2">
           {leading}
-          <Heading className="min-w-0 flex-1 truncate text-title font-medium">{title}</Heading>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <Heading className="text-title font-medium text-pretty break-words">{title}</Heading>
+            {description ? <p className="text-small text-pretty text-muted-foreground">{description}</p> : null}
+          </div>
           {onAction ? (
             <DropdownMenu {...moreMenu}>
               <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="More actions" />}>
@@ -175,32 +211,46 @@ function PageHeader({
           </Button>
         </div>
 
-        <div className="flex flex-col @3xl:flex-row @3xl:items-end @3xl:gap-4 @3xl:border-b @3xl:border-border @3xl:pe-4">
-          <TabsList aria-label="Views" className="min-w-0 px-3 @3xl:flex-1 @3xl:data-[orientation=horizontal]:border-b-0">
-            {tabs.map((item) => (
-              <TabsTrigger key={item.value} value={item.value}>
-                {item.label}
-                {item.count !== undefined ? (
-                  <span className="text-caption font-normal text-muted-foreground tabular-nums">
-                    {compact.format(item.count)}
-                  </span>
-                ) : null}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <div className="flex flex-col gap-2 @3xl:flex-row @3xl:items-center @3xl:justify-between @3xl:gap-4">
+          <div className="min-w-0">
+            <TabsList
+              aria-label="Views"
+              className={cn(
+                'w-fit max-w-full gap-0.5 rounded-lg border border-transparent bg-muted p-0.5 shadow-inset',
+                'data-[orientation=horizontal]:border-b-transparent',
+                '*:data-[slot=tabs-indicator]:hidden',
+              )}
+            >
+              {tabs.map((item) => (
+                <TabsTrigger
+                  key={item.value}
+                  value={item.value}
+                  className={cn(
+                    'h-6.5 rounded-md px-2.5',
+                    'transition-[color,background-color,box-shadow] data-active:bg-secondary data-active:shadow-control',
+                    // The raised surface marks the selected view, so the underline and its reduced-motion twin stay hidden.
+                    'after:hidden',
+                  )}
+                >
+                  {item.label}
+                  {item.count !== undefined ? (
+                    <span className="text-caption font-normal text-muted-foreground tabular-nums">
+                      {compact.format(item.count)}
+                    </span>
+                  ) : null}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
-          <div
-            role="group"
-            aria-label={`Search and filter ${title.toLowerCase()}`}
-            className="flex min-w-0 items-center gap-2 border-b border-border px-4 py-2 @3xl:h-9 @3xl:border-b-0 @3xl:px-0 @3xl:py-0 @3xl:pb-1"
-          >
-            <div className="relative min-w-0 flex-1 @3xl:w-52 @3xl:flex-none">
+          <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2">
+            <div className="relative min-w-0 flex-1 @3xl:w-56 @3xl:flex-none">
               <Search
                 aria-hidden
                 className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <label htmlFor={searchId} className="sr-only">
-                Search {title.toLowerCase()}
+                Search {noun}
               </label>
               <Input
                 id={searchId}
@@ -214,6 +264,7 @@ function PageHeader({
 
             <DropdownMenu {...filterMenu}>
               <DropdownMenuTrigger
+                data-filter-trigger=""
                 render={<Button variant="secondary" />}
                 aria-label={filters.length ? `Filter, ${filters.length} on` : 'Filter'}
               >
@@ -226,45 +277,59 @@ function PageHeader({
                 ) : null}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="sm:min-w-56">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  {filterOptions.map((option) => (
-                    <DropdownMenuCheckboxItem
-                      key={option.value}
-                      checked={filters.includes(option.value)}
-                      onCheckedChange={(checked) =>
-                        setFilters(
-                          checked ? [...filters, option.value] : filters.filter((value) => value !== option.value),
-                        )
-                      }
-                    >
-                      {option.label}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuGroup>
+                {groupOptions(filterOptions).map((group, index) => (
+                  <React.Fragment key={group.name}>
+                    {index > 0 ? <DropdownMenuSeparator /> : null}
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel>{group.name}</DropdownMenuLabel>
+                      {group.options.map((option) => (
+                        <DropdownMenuCheckboxItem
+                          key={option.value}
+                          checked={filters.includes(option.value)}
+                          onCheckedChange={(checked) => toggleFilter(option.value, checked)}
+                        >
+                          {option.label}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  </React.Fragment>
+                ))}
                 {filters.length ? (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setFilters([])}>Clear filters</DropdownMenuItem>
+                    <DropdownMenuItem onClick={clearFilters}>Clear filters</DropdownMenuItem>
                   </>
                 ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <SegmentedControl
-              aria-label="Layout"
-              value={view}
-              onValueChange={(value) => setView(value as PageView)}
-            >
-              <SegmentedControlItem value="table" aria-label="Table">
-                <Rows3 aria-hidden />
-              </SegmentedControlItem>
-              <SegmentedControlItem value="board" aria-label="Board">
-                <KanbanSquare aria-hidden />
-              </SegmentedControlItem>
-            </SegmentedControl>
           </div>
         </div>
+
+        {activeOptions.length ? (
+          <div role="group" aria-label="Filters on" className="flex flex-wrap items-center gap-1.5">
+            {activeOptions.map((option, index) => {
+              const name = option.group ? `${option.group}: ${option.label}` : option.label;
+              return (
+                <Button
+                  key={option.value}
+                  variant="secondary"
+                  size="sm"
+                  data-filter-chip={option.value}
+                  aria-label={`Remove filter ${name}`}
+                  onClick={() => removeFilter(index)}
+                  className="max-w-full"
+                >
+                  {option.group ? <span className="text-muted-foreground">{option.group}</span> : null}
+                  <span className="truncate">{option.label}</span>
+                  <X aria-hidden data-icon="inline-end" />
+                </Button>
+              );
+            })}
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              Clear all
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       {children !== undefined ? (
@@ -276,4 +341,4 @@ function PageHeader({
   );
 }
 
-export { PageHeader, type PageHeaderAction, type PageHeaderProps, type PageTab, type PageView, type FilterOption };
+export { PageHeader, type PageHeaderAction, type PageHeaderProps, type PageTab, type FilterOption };

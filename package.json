@@ -12,6 +12,7 @@
     "registry:build": "node --env-file-if-exists=.env.local scripts/registry-build.mts",
     "registry:check": "node --env-file-if-exists=.env.local scripts/registry-check.mts",
     "registry:smoke": "node --env-file-if-exists=.env.local scripts/registry-smoke.mts",
+    "docs:check": "node scripts/docs-check.mts",
     "screenshots": "node scripts/screenshots.mts",
     "thumbnails": "node scripts/screenshots.mts --thumbnails"
   },

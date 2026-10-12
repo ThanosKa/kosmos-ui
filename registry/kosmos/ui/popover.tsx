@@ -3,6 +3,7 @@
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 /**
  * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
@@ -46,13 +47,17 @@ function PopoverPositioner({
   );
 }
 
-/** The popover surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion. */
-function PopoverPopup({ className, ...props }: PopoverPrimitive.Popup.Props) {
+/**
+ * The popover surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion.
+ * The content stacks 12px apart and scrolls in a `ScrollArea` when it is taller than the room it has: the edge with
+ * content hidden past it fades out.
+ */
+function PopoverPopup({ className, children, ...props }: PopoverPrimitive.Popup.Props) {
   return (
     <PopoverPrimitive.Popup
       data-slot="popover-popup"
       className={cn(
-        'flex max-h-(--available-height) w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-3 overflow-y-auto overscroll-contain rounded-xl border border-transparent bg-popover p-4 text-body text-popover-foreground shadow-popover',
+        'flex max-h-(--available-height) w-72 max-w-(--available-width) origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'transition-[opacity,scale] duration-base',
         'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
@@ -60,7 +65,22 @@ function PopoverPopup({ className, ...props }: PopoverPrimitive.Popup.Props) {
         className,
       )}
       {...props}
-    />
+    >
+      <ScrollArea
+        data-slot="popover-scroll-area"
+        className={cn(
+          'rounded-[inherit]',
+          // The popup clips anything outside it, so the scrolling content draws its focus outline inside.
+          'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
+        )}
+        // The 16px padding already clears the scrollbar. `min-w-0!` beats the content's inline `min-width: fit-content`, so text wraps to the popup's width.
+        viewportClassName="overscroll-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
+      >
+        <div data-slot="popover-body" className="flex flex-col gap-3 p-4">
+          {children}
+        </div>
+      </ScrollArea>
+    </PopoverPrimitive.Popup>
   );
 }
 

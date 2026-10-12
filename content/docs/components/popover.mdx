@@ -107,7 +107,7 @@ Takes every Base UI `Popover.Popup` prop, plus:
 | `PopoverDescription` | Describes the popover. Base UI `Popover.Description`. |
 | `PopoverPortal` | Renders its children into `document.body`. Base UI `Popover.Portal`. |
 | `PopoverPositioner` | Places the popup next to the trigger, 8px away and 16px clear of the screen edges. Base UI `Popover.Positioner`. |
-| `PopoverPopup` | The popover surface. Base UI `Popover.Popup`. |
+| `PopoverPopup` | The popover surface. Its content stacks 12px apart inside 16px of padding, and scrolls in a scroll area when it is taller than the room it has, with the edge that hides content faded out. `className` styles the surface, such as its width. Base UI `Popover.Popup`. |
 
 `PopoverContent` is `PopoverPortal`, `PopoverPositioner` and `PopoverPopup` put together.
 

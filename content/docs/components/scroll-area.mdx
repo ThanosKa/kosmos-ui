@@ -26,7 +26,9 @@ Give the scroll area a height (`h-64`) or a maximum height (`max-h-80`). Content
 
 While content is hidden past an edge, that edge fades out and a 6px scrollbar shows, so people can tell there is more. Content that fits shows neither. The scrollbar never covers content: the scroll area makes room for it on the side where it shows.
 
-While the content scrolls, the scroll area can take keyboard focus: Tab reaches it, and the arrow keys, Page Up, Page Down, Home and End scroll it.
+While the content scrolls, the scroll area can take keyboard focus: Tab reaches it, and the arrow keys, Page Up, Page Down, Home and End scroll it. Pass `focusable={false}` when the content is a list whose items take focus themselves.
+
+Dialog, Drawer, Dropdown Menu, Popover, Tabs and Command scroll their content in a scroll area, so overflow looks the same everywhere.
 
 ## Examples
 
@@ -60,6 +62,12 @@ Takes every Base UI `ScrollArea.Root` prop, plus:
   type={{
     fade: {
       description: 'Fades out each edge that has hidden content past it.',
+      type: 'boolean',
+      default: 'true',
+    },
+    focusable: {
+      description:
+        'Lets the element that scrolls take keyboard focus while it overflows. Turn it off when every item inside takes focus and scrolls itself into view, as in a menu or a tab list.',
       type: 'boolean',
       default: 'true',
     },
