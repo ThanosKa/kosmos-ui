@@ -110,7 +110,7 @@ export function CodeBlock({
         ref={viewportRef}
         id={viewportId}
         role={scrollsSideways ? 'region' : undefined}
-        aria-label={scrollsSideways ? (typeof title === 'string' ? title : `Code: ${firstLine}`) : undefined}
+        aria-label={scrollsSideways ? `${typeof title === 'string' ? title : 'Code'}: ${firstLine}` : undefined}
         tabIndex={scrollsSideways ? 0 : undefined}
         data-expanded={expanded || undefined}
         className={cn(
