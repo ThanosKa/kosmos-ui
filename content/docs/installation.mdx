@@ -57,16 +57,18 @@ They go into your global CSS and replace shadcn's default colors, after the CLI 
 
 The Button lands in `components/ui/button.tsx`, and the CLI adds `lib/cn.ts`, the class helper it imports. Each component page lists everything it installs.
 
-`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost`, `destructive` and `item`, and its sizes are `sm`, `md`, `lg`, `icon-sm`, `icon` and `icon-lg`. Update every call that uses a shadcn name, including the ones inside shadcn components you already have:
+`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost`, `destructive` and `item`, and its sizes are `sm`, `md`, `lg`, `icon-sm`, `icon` and `icon-lg`. It also takes shadcn's names, so the shadcn components you already have, such as Dialog, Alert Dialog and Pagination, keep working unchanged:
 
-| shadcn | Kosmos |
+| shadcn | Renders as |
 | --- | --- |
 | `variant="default"` | `variant="primary"` |
 | `variant="outline"` | `variant="secondary"` |
-| `variant="link"` | A plain link, or `variant="ghost"` |
+| `variant="link"` | A text link that underlines on hover |
 | `size="default"` | `size="md"` |
 | `size="xs"` | `size="sm"` |
 | `size="icon-xs"` | `size="icon-sm"` |
+
+Use the Kosmos names in the code you write, so every Button reads the same way.
 
 </Step>
 <Step>

@@ -62,12 +62,13 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1` and `shadow-lift`. The Meter's `primary` tone takes `meter-primary`, the same orange a step deeper in light, so it never shares a lightness with `warning`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
+- One exception: the current page in navigation colors its label and icon `text-active-foreground`, a darker orange in light that passes 4.5:1 on every nav surface. That covers the active sidebar item and the current header tab, which both stand on `bg-secondary shadow-control` because the orange and the idle `muted-foreground` have the same lightness (about 1.05:1), and the current item in a nav menu, which keeps its check mark. Buttons, links and every other text stay ink or muted.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - Orange means focus, so hover never turns anything orange: a hover line or halo is neutral (the sidebar resize handle shows `sidebar-foreground/20`, a slider thumb a `foreground/10` halo).
 - Two tones a reader must tell apart (Meter tones, status colors side by side) differ in lightness, not only in hue, so they still read in grayscale and for color-blind readers.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
 - A category (segment, plan, label) is a tag: a Badge hue variant (`orange`, `blue`, `amber`, `magenta`, `green`, `red`). Its fill is the matching `tag-*` token (a chart hue at low alpha), its edge a 1px border of `tag-*-foreground/20`, and its text `tag-*-foreground`, which passes 4.5:1 on the fill. A category keeps one hue everywhere. A change in a stat tile is a `green` or `red` tag beside its muted context.
-- Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. The active item, the current page and values stay `text-foreground`.
+- Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. Values and the selected tab of a Tabs component stay `text-foreground`; the current page in navigation takes `text-active-foreground`.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
 - A scrollbar thumb is `bg-scrollbar-thumb`, lighter than `muted-foreground`, and keeps 3:1 against its `muted` track.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. It is the faintest text role: a fainter grey for meta, placeholders or eyebrows would drop below 4.5:1 (see conflicts.md, Accessibility floor).
@@ -144,7 +145,9 @@ Buttons are 30px (`md`) with 14px icons and `px-2.5`; text fields are 34px with 
 
 Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers); a variant nothing uses is deleted.
 
-ESLint enforces both in this repo (`no-restricted-syntax` in `eslint.config.mjs`). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
+One exception to that deletion: the Button also takes shadcn's names as aliases, so shadcn components (Dialog, Alert Dialog, Pagination) keep working in an app that swaps shadcn's Button for ours. Variant `default` renders `primary`, `outline` renders `secondary`, and `link` is an ink text link that underlines on hover and does not press-scale; size `default` renders `md`, `xs` renders `sm` and `icon-xs` renders `icon-sm`. `data-variant` and `data-size` carry the Kosmos name. Kosmos code never writes an alias, and `pnpm registry:smoke` proves the swap builds.
+
+ESLint enforces all three in this repo (`no-restricted-syntax` in `eslint.config.mjs`, which also lints the tsx code blocks of the docs pages). The prop itself stays optional with a `primary` default, so an app that swaps shadcn's Button for ours with `shadcn add -o` still builds. The destructive variant is red text on the secondary surface, not a red fill: the dark `destructive` is too light to carry white text.
 
 One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Badge supports the same link form.
 
@@ -166,10 +169,12 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
 | `active:scale-*` other than `scale-96`, or without `motion-safe:not-disabled:not-data-disabled:` | `motion-safe:not-disabled:not-data-disabled:active:scale-96` |
 | `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
+| A shadcn name on a Button (`variant` `default`, `outline`, `link`; `size` `default`, `xs`, `icon-xs`) | The Kosmos name it renders as |
 | A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
-| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-sidebar-foreground` when active |
+| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-active-foreground` (label and icon) when active |
+| `text-ring`, or orange text other than the current page in navigation | `text-foreground` or `text-muted-foreground`; the current nav item takes `text-active-foreground` |
 | A category label as a neutral or status Badge | A hue variant |
 | `text-heading` in an app page header | `text-title font-medium` |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |

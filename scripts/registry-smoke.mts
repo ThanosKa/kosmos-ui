@@ -9,7 +9,9 @@
 //    (one by one if the batch fails, to name the item that breaks it). Checks the files, packages and tokens landed.
 // 4. Writes /kosmos-smoke (every item's docs preview, else `<name>-demo`, on one page) plus /kosmos-smoke/<name> per item, imports
 //    every installed module, then runs the app's `npm run typecheck` and `npm run build`.
-// 5. Prints a pass/fail line per item: install, dependencies, types, build. Exits 1 if any item fails.
+// 5. In a second clean app, adds shadcn's Dialog, Alert Dialog and Pagination, swaps shadcn's Button for ours with
+//    `add @kosmos/button -o`, and type checks and builds a page that uses them and shadcn's Button names (the aliases).
+// 6. Prints a pass/fail line per item and for the swap: install, dependencies, types, build. Exits 1 if any fails.
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -269,6 +271,120 @@ function buildFailures(out: string, all: RegistryItem[]): Map<string, string> {
   return named;
 }
 
+// ── shadcn's components on the Kosmos Button ─────────────────────────────────────────────────────
+const swapCase = '(shadcn swap)';
+const swapPage = `import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
+export default function Page() {
+  return (
+    <main className="flex flex-col items-start gap-6 p-10">
+      <Dialog>
+        <DialogTrigger render={<Button variant="outline" />}>Edit profile</DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit profile</DialogTitle>
+            <DialogDescription>Change your name and email.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter showCloseButton>
+            <Button>Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog>
+        <AlertDialogTrigger render={<Button variant="destructive" />}>Delete project</AlertDialogTrigger>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this project?</AlertDialogTitle>
+            <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel size="xs">Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious href="#" />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" isActive>
+              1
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">2</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext href="#" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      <div className="flex items-center gap-2">
+        <Button variant="link" size="default">Forgot password?</Button>
+        <Button variant="default" size="xs">Small</Button>
+        <Button variant="ghost" size="icon-xs" aria-label="Close">×</Button>
+        <a href="/" className={buttonVariants({ variant: 'outline', size: 'default' })}>Home</a>
+      </div>
+    </main>
+  );
+}
+`;
+
+/**
+ * A clean shadcn app with shadcn's Dialog, Alert Dialog and Pagination swaps shadcn's Button for ours (`add -o`, as the
+ * installation page says) and still type checks and builds, because the Button takes shadcn's names as aliases.
+ */
+async function checkShadcnSwap() {
+  step('Swapping shadcn\'s Button for ours in a clean app with shadcn\'s Dialog, Alert Dialog and Pagination');
+  skip(swapCase, 'deps');
+  const swap = join(work, 'swap');
+  const init = await run(runner, ['-y', ...runnerArgs, 'init', '-t', 'next', '-b', 'base', '-p', values.preset, '-n', 'swap', '--no-monorepo', '-y'], work);
+  if (!init.ok) return fail(swapCase, 'install', 'shadcn init exited with an error');
+  const inSwap = (args: string[]) => run(runner, ['-y', ...runnerArgs, ...args], swap);
+  if (!(await inSwap(['add', 'dialog', 'alert-dialog', 'pagination', '-y'])).ok) return fail(swapCase, 'install', 'shadcn add dialog alert-dialog pagination exited with an error');
+  await inSwap(['registry', 'add', `${registryNamespace}=${registry.url}`]);
+  if (!(await inSwap(['add', `${registryNamespace}/button`, '-y', '-o'])).ok) return fail(swapCase, 'install', `shadcn add ${registryNamespace}/button -o exited with an error`);
+  if (!readFileSync(join(swap, 'components/ui/button.tsx'), 'utf8').includes('data-variant')) fail(swapCase, 'install', 'components/ui/button.tsx is still shadcn\'s Button');
+
+  mkdirSync(join(swap, 'app/swap'), { recursive: true });
+  writeFileSync(join(swap, 'app/swap/page.tsx'), swapPage);
+  const types = await run('npm', ['run', 'typecheck'], swap);
+  for (const match of plain(types.output).matchAll(/^(\S+?)\((\d+),\d+\): error (TS\d+: .+)$/gm)) fail(swapCase, 'types', `${match[1].replace(/^\.\//, '')}:${match[2]} ${match[3]}`);
+  if (!types.ok && !findings.get(swapCase)?.types.length) fail(swapCase, 'types', tail(types.output, 1));
+  const next = await run('npm', ['run', 'build'], swap);
+  if (!next.ok) return fail(swapCase, 'build', tail(next.output, 3).replace(/\n/g, ' '));
+  const html = readFileSync(join(swap, '.next/server/app/swap.html'), 'utf8');
+  if (/data-variant="outline"|data-size="default"/.test(html) || !html.includes('data-variant="secondary"')) {
+    fail(swapCase, 'build', '/swap does not render shadcn\'s names as their Kosmos variants');
+  }
+}
+
 // ── run ──────────────────────────────────────────────────────────────────────────────────────────
 const started = Date.now();
 step('Building the registry');
@@ -341,18 +457,20 @@ try {
     if (!fresh.length || attempt === 6) break;
     for (const name of fresh) excluded.add(name);
   }
+
+  await checkShadcnSwap();
 } catch (error) {
   fail('(app)', 'install', (error as Error).message);
-  for (const item of all) for (const check of ['install', 'types', 'build'] as Check[]) if (!findings.get(item.name)?.[check].length) skip(item.name, check);
+  for (const name of [...all.map((item) => item.name), swapCase]) for (const check of ['install', 'types', 'build'] as Check[]) if (!findings.get(name)?.[check].length) skip(name, check);
 } finally {
   registry.close();
 }
 
 // ── summary ──────────────────────────────────────────────────────────────────────────────────────
 step('Summary');
-const width = Math.max(...all.map((item) => item.name.length), 6) + 2;
+const itemNames = new Set([...all.map((item) => item.name), swapCase]);
+const width = Math.max(...[...itemNames].map((name) => name.length), 6) + 2;
 console.log(`  ${'item'.padEnd(width)}${checks.map((check) => check.padEnd(9)).join('')}`);
-const itemNames = new Set(all.map((item) => item.name));
 const rows = [...itemNames, ...[...findings.keys()].filter((name) => !itemNames.has(name))];
 for (const name of rows) {
   const found = findings.get(name);
