@@ -24,7 +24,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `background`, `foreground` | Page surface and its text: cream and warm ink in light, warm near-black and off-white in dark | ADR 0007 |
 | `card`, `card-foreground` | Cards, tiles: a step lighter than the page in light, a step lighter in dark | ADR 0007 |
 | `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0007 |
-| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range, active sidebar item. Warm ink with light text in light; light fill with ink text in dark | ADR 0007 (never orange: white on the orange is 3.3:1) |
+| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range. Warm ink with light text in light; light fill with ink text in dark | ADR 0007 (never orange: white on the orange is 3.3:1) |
 | `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0007 |
 | `muted` | Track and quiet fills | ADR 0007 |
 | `muted-foreground` | Secondary text | Set in both modes to pass 4.5:1 on `background`, `card`, `muted` and `sidebar` |
@@ -34,9 +34,10 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `border` | Dividers between items | ADR 0007 |
 | `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0007 |
 | `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
+| `active-foreground` | The label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu. The one orange text | ADR 0007 exception. Light `oklch(0.53 0.17 38)`, the `ring` hue darkened to pass 4.5:1; dark = `ring`. Measured 4.61:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
 | `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
-| `sidebar-*` | Sidebar surface, text, active item, border, focus; also themes the docs sidebar | ADR 0007; a step darker than the page in light, active item = `primary`, focus = `ring` |
+| `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0007; a step darker than the page in light, focus = `ring` |
 
 Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
 

@@ -14,5 +14,6 @@ This replaces the first palette, which kept neutral grays and used an indigo for
 
 - The values live in `tokens.css` only, and `kosmos-style` `tokens.md` records each role. Apps that install Kosmos still restyle everything through the same shadcn variables.
 - The orange is 3.3:1 on the light page. That is enough for focus outlines and chart marks (3:1), but not for text (4.5:1), so text stays ink or muted, and links are ink with an underline.
+- One exception colors text orange: the current page in navigation (the active sidebar item, the current header tab and the current item in the phone menu) takes `active-foreground`, so people see where they are at a glance. It is a darker orange in light, `oklch(0.53 0.17 38)`, and equal to `ring` in dark, measured at 4.6:1 or more on the page, secondary, sidebar and hover surfaces in both modes. The active sidebar item keeps its raised surface, and buttons stay ink. Any other orange text needs a new decision.
 - Dark mode inverts the primary to a light fill with ink text, so switch and slider thumbs take their own `thumb` token instead of `primary-foreground`.
 - Chart series are orange, blue, amber, magenta and green, in that order. The order was checked so that every adjacent pair stays apart for protan, deutan and tritan vision.

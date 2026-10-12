@@ -62,10 +62,11 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1`, the Meter's `primary` tone and `shadow-lift`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
+- One exception: the current page in navigation colors its label and icon `text-active-foreground`, a darker orange in light that passes 4.5:1 on every nav surface. That covers the active sidebar item and the current header tab, which both stand on `bg-secondary shadow-control` because the orange and the idle `muted-foreground` have the same lightness (about 1.05:1), and the current item in a nav menu, which keeps its check mark. Buttons, links and every other text stay ink or muted.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
 - A category (segment, plan, label) is a tag: a Badge hue variant (`orange`, `blue`, `amber`, `magenta`, `green`, `red`). Its fill is the matching `tag-*` token (a chart hue at low alpha), its edge a 1px border of `tag-*-foreground/20`, and its text `tag-*-foreground`, which passes 4.5:1 on the fill. A category keeps one hue everywhere. A change in a stat tile is a `green` or `red` tag beside its muted context.
-- Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. The active item, the current page and values stay `text-foreground`.
+- Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. Values and the selected tab of a Tabs component stay `text-foreground`; the current page in navigation takes `text-active-foreground`.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. It is the faintest text role: a fainter grey for meta, placeholders or eyebrows would drop below 4.5:1 (see conflicts.md, Accessibility floor).
 
@@ -162,7 +163,8 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
-| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-sidebar-foreground` when active |
+| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-active-foreground` (label and icon) when active |
+| `text-ring`, or orange text other than the current page in navigation | `text-foreground` or `text-muted-foreground`; the current nav item takes `text-active-foreground` |
 | A category label as a neutral or status Badge | A hue variant |
 | `text-heading` in an app page header | `text-title font-medium` |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
