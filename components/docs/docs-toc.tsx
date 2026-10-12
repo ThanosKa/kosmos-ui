@@ -4,8 +4,9 @@ import { Collapsible } from '@base-ui/react/collapsible';
 import { AnchorProvider, ScrollProvider, TOCItem, type TableOfContents } from 'fumadocs-core/toc';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useRef, type CSSProperties } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { eyebrowClass } from './classes';
 
 function DocsTocList({ toc, itemClassName }: { toc: TableOfContents; itemClassName?: string }) {
   return (
@@ -39,7 +40,7 @@ export function DocsToc({ toc, className }: { toc: TableOfContents; className?: 
   return (
     <AnchorProvider toc={toc}>
       <nav aria-labelledby="docs-toc-label" className={cn('flex min-h-0 flex-col gap-2', className)}>
-        <h2 id="docs-toc-label" className="px-1 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase">
+        <h2 id="docs-toc-label" className={cn('px-1', eyebrowClass)}>
           On this page
         </h2>
         <div ref={viewport} className="min-h-0 overflow-y-auto overscroll-contain p-1">

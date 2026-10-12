@@ -9,7 +9,7 @@ import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
 import { groupOfPage, neighboursOf } from '@/lib/docs-nav';
-import { getPageImageUrl, getPageMarkdownUrl, gitConfig } from '@/lib/shared';
+import { docsSourceUrl, getPageImageUrl, getPageMarkdownUrl } from '@/lib/shared';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -30,7 +30,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           description={page.data.description}
           date={page.data.date}
           markdownUrl={getPageMarkdownUrl(page).url}
-          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
+          githubUrl={docsSourceUrl(page.path, 'blob')}
           neighbours={neighbours}
           item={group && { name: page.slugs[1], group, baseUi: page.data.baseUi }}
         />

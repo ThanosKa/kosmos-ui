@@ -9,7 +9,7 @@ export function ShadowSurfaces() {
 
   return (
     <ul className="not-prose my-6 flex flex-col gap-8">
-      {shadowTokens(tokens).map((shadow) => (
+      {shadowTokens().map((shadow) => (
         <li key={shadow.name} data-token-shadow={shadow.name} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">

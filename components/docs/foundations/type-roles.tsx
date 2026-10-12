@@ -8,7 +8,7 @@ export function TypeRoles() {
 
   return (
     <ul className="not-prose my-6 flex flex-col gap-8">
-      {typeRoles(tokens).map((role) => (
+      {typeRoles().map((role) => (
         <li key={role.role} data-token-type={role.role} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

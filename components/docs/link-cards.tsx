@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
+import { cardLinkClass } from './classes';
 
 /** A grid of `LinkCard`s: one column on a phone, as many 12rem columns as fit beside each other. */
 export function LinkCards({ children }: { children: ReactNode }) {
@@ -11,10 +12,7 @@ export function LinkCards({ children }: { children: ReactNode }) {
 export function LinkCard({ title, href, children }: { title: string; href: string; children?: ReactNode }) {
   const Arrow = href.startsWith('#') ? ArrowDown : ArrowRight;
   return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-1 rounded-2xl border border-transparent bg-card p-4 shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-    >
+    <Link href={href} className={cardLinkClass}>
       <span className="flex items-center justify-between gap-2 text-body font-medium text-foreground">
         {title}
         <Arrow

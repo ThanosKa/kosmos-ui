@@ -1,7 +1,7 @@
 import type { TableOfContents } from 'fumadocs-core/toc';
 import { CircleAlert, SquarePen } from 'lucide-react';
-import { cn } from '@/lib/cn';
-import { gitConfig, githubUrl } from '@/lib/shared';
+import { cn } from '@/registry/kosmos/lib/cn';
+import { docsSourceUrl, githubUrl } from '@/lib/shared';
 import { DocsToc } from './docs-toc';
 
 type DocsPageRef = { path: string; title: string };
@@ -9,7 +9,7 @@ type DocsPageRef = { path: string; title: string };
 /** "Edit this page" and "Report an issue", pointing at the page's source file and a new issue named after it. */
 export function DocsPageLinks({ page, className }: { page: DocsPageRef; className?: string }) {
   const links = [
-    { label: 'Edit this page', href: `${githubUrl}/edit/${gitConfig.branch}/content/docs/${page.path}`, Icon: SquarePen },
+    { label: 'Edit this page', href: docsSourceUrl(page.path, 'edit'), Icon: SquarePen },
     { label: 'Report an issue', href: `${githubUrl}/issues/new?title=${encodeURIComponent(`Docs: ${page.title}`)}`, Icon: CircleAlert },
   ];
   return (

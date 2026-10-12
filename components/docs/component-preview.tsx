@@ -21,19 +21,19 @@ export async function ComponentPreview({ name }: { name: string }) {
   return (
     <div
       data-slot="component-preview"
-      className="not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card shadow-card"
+      className="not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
     >
       {Example ? (
         // The same box as the /view page around an example, so it renders as it does there.
-        <div className="flex min-h-80 min-w-0 items-center justify-center rounded-t-[calc(var(--radius-2xl)-1px)] bg-background p-6 text-base text-foreground sm:min-h-112 sm:p-10">
+        <div className="flex min-h-80 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-base text-foreground sm:min-h-112 sm:p-10">
           <div className="flex w-full min-w-0 justify-center">
             <Example />
           </div>
         </div>
       ) : (
-        <PreviewFrame name={name} minHeight={blockFrameHeight} className="rounded-none rounded-t-[calc(var(--radius-2xl)-1px)]" />
+        <PreviewFrame name={name} minHeight={blockFrameHeight} className="rounded-none rounded-t-(--inner-radius)" />
       )}
-      <HighlightedCode code={code} lang="tsx" collapse="peek" embedded className="rounded-b-[calc(var(--radius-2xl)-1px)] border-t border-border" />
+      <HighlightedCode code={code} lang="tsx" collapse="peek" embedded className="rounded-b-(--inner-radius) border-t border-border" />
     </div>
   );
 }

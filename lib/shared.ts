@@ -16,6 +16,10 @@ export const gitConfig = {
   branch: 'main',
 };
 export const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
+/** A docs page's source file on GitHub: `blob` to read it, `edit` to change it. */
+export function docsSourceUrl(path: string, view: 'blob' | 'edit') {
+  return `${githubUrl}/${view}/${gitConfig.branch}/content/docs/${path}`;
+}
 export const licenseUrl = `${githubUrl}/blob/${gitConfig.branch}/LICENSE`;
 export const author = {
   name: 'Thanos Kazakis',

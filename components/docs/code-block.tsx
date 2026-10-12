@@ -1,8 +1,8 @@
 'use client';
 
 import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react';
+import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import {
-  useEffect,
   useId,
   useLayoutEffect,
   useRef,
@@ -12,7 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 
 /** How tall a collapsed block is, and what its toggle says. */
@@ -148,20 +148,9 @@ export function CodeBlock({
 }
 
 function CopyButton({ viewportRef }: { viewportRef: RefObject<HTMLDivElement | null> }) {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timeout);
-  }, [copied]);
-
-  const copy = async () => {
-    const pre = viewportRef.current?.querySelector('pre');
-    if (!pre) return;
-    await navigator.clipboard.writeText(pre.textContent ?? '');
-    setCopied(true);
-  };
+  const [copied, copy] = useCopyButton(() =>
+    navigator.clipboard.writeText(viewportRef.current?.querySelector('pre')?.textContent ?? ''),
+  );
 
   return (
     <>

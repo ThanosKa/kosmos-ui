@@ -1,7 +1,5 @@
-import { colorTokens, modes, type ColorGroup } from '@/lib/foundations';
+import { colorTokens, modeLabels, modes, type ColorGroup } from '@/lib/foundations';
 import { CopySwatch } from './copy-swatch';
-
-const modeLabels = { light: 'Light', dark: 'Dark' } as const;
 
 export function ColorTokens({ group }: { group: ColorGroup }) {
   const colors = colorTokens().filter((color) => color.group === group);

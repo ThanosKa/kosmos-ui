@@ -1,7 +1,8 @@
 'use client';
 
 import { Check, Copy } from 'lucide-react';
-import { useEffect, useState, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import type { Mode } from '@/lib/foundations';
 import { Button } from '@/registry/kosmos/ui/button';
 
@@ -9,13 +10,7 @@ type Swatch = { color: string; background: string; line: string };
 
 /** A color token in light and dark, side by side. Clicking it copies its Tailwind class. */
 export function CopySwatch({ tokenClass, swatches }: { tokenClass: string; swatches: Record<Mode, Swatch> }) {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timeout);
-  }, [copied]);
+  const [copied, copy] = useCopyButton(() => navigator.clipboard.writeText(tokenClass));
 
   return (
     <>
@@ -23,10 +18,7 @@ export function CopySwatch({ tokenClass, swatches }: { tokenClass: string; swatc
         variant="item"
         data-copy-swatch={tokenClass}
         aria-label={`Copy ${tokenClass}`}
-        onClick={async () => {
-          await navigator.clipboard.writeText(tokenClass);
-          setCopied(true);
-        }}
+        onClick={copy}
         className="h-auto w-full flex-col items-stretch gap-2 p-1.5"
       >
         <span className="grid h-16 grid-cols-2 overflow-hidden rounded-sm">

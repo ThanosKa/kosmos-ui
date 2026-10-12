@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import { highlight } from 'fumadocs-core/highlight';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 import { CodeBlock, Pre } from './code-block';
 
 type HighlightedCodeProps = Omit<ComponentProps<typeof CodeBlock>, 'children'> & { code: string; lang: string };

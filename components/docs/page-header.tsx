@@ -3,6 +3,7 @@ import { formatChangelogDate } from '@/lib/changelog';
 import type { DocsNeighbours } from '@/lib/docs-nav';
 import { groups, packageRunners, registryNamespace, type Group } from '@/lib/registry';
 import { Button } from '@/registry/kosmos/ui/button';
+import { eyebrowClass } from './classes';
 import { InstallChip } from './install-chip';
 import { PageActions } from './page-actions';
 import { PageNavButtons } from './page-nav';
@@ -41,7 +42,7 @@ export function DocsPageHeader({ title, description, date, markdownUrl, githubUr
         </time>
       )}
       {item && (
-        <p data-docs-eyebrow="" className="text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase">
+        <p data-docs-eyebrow="" className={eyebrowClass}>
           {item.group === 'blocks' ? groups.blocks : `Components · ${groups[item.group]}`}
         </p>
       )}

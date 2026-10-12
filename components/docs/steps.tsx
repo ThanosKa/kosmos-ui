@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 
 /** Numbered steps. Each `Step` usually opens with a `###` heading, which the number lines up with. */
 export function Steps({ className, ...props }: ComponentProps<'ol'>) {

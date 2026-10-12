@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 import type { DocsNeighbours } from '@/lib/docs-nav';
 import { Button, buttonVariants } from '@/registry/kosmos/ui/button';
+import { cardLinkClass } from './classes';
 
 const defaultLabels = { previous: 'Previous', next: 'Next' };
 
@@ -51,10 +52,7 @@ export function PageNavCards({ previous, next, labels = defaultLabels, className
             key={rel}
             href={link.url}
             rel={rel}
-            className={cn(
-              'group flex min-w-0 flex-col gap-1 rounded-2xl border border-transparent bg-card p-4 shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-              rel === 'next' && 'items-end text-end sm:col-start-2',
-            )}
+            className={cn(cardLinkClass, 'min-w-0', rel === 'next' && 'items-end text-end sm:col-start-2')}
           >
             <span className="flex items-center gap-1.5 text-small text-muted-foreground">
               {rel === 'prev' && <Icon aria-hidden className="size-3.5 transition-[color] group-hover:text-foreground" />}

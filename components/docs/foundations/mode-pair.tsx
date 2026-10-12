@@ -1,9 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { modes, modeVars } from '@/lib/foundations';
+import { modeLabels, modes, modeVars } from '@/lib/foundations';
 import type { KosmosTokens } from '@/lib/tokens';
 import { cn } from '@/registry/kosmos/lib/cn';
-
-const modeLabels = { light: 'Light', dark: 'Dark' } as const;
+import { eyebrowClass } from '../classes';
 
 /**
  * Renders its children twice, on the light page and on the dark page, whatever the site theme is.
@@ -28,7 +27,7 @@ export function ModePair({
           style={modeVars(tokens, mode) as CSSProperties}
           className={cn('flex min-w-0 flex-col gap-3 bg-background p-4 text-foreground', className)}
         >
-          <span className="text-caption tracking-[0.05em] text-muted-foreground uppercase">{modeLabels[mode]}</span>
+          <span className={eyebrowClass}>{modeLabels[mode]}</span>
           {children}
         </div>
       ))}

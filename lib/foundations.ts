@@ -4,6 +4,7 @@ import { readKosmosTokens, type Declarations, type KosmosTokens } from './tokens
 
 export type Mode = 'light' | 'dark';
 export const modes: Mode[] = ['light', 'dark'];
+export const modeLabels: Record<Mode, string> = { light: 'Light', dark: 'Dark' };
 
 function docsFor<T>(docs: Record<string, T>, name: string, kind: string): T {
   const entry = docs[name];
@@ -51,8 +52,6 @@ function evaluate(value: string): number {
 }
 
 const px = (value: number) => `${Math.round(value * 100) / 100}px`;
-
-// Colors
 
 export const colorGroups = {
   surfaces: 'Surfaces',
@@ -127,7 +126,8 @@ function colorClass(name: string) {
   return `bg-${name}`;
 }
 
-export function colorTokens(tokens: KosmosTokens = readKosmosTokens()) {
+export function colorTokens() {
+  const tokens = readKosmosTokens();
   const light = modeDeclarations(tokens, 'light');
   const dark = modeDeclarations(tokens, 'dark');
   return Object.keys(tokens.light)
@@ -144,8 +144,6 @@ export function colorTokens(tokens: KosmosTokens = readKosmosTokens()) {
     }));
 }
 
-// Typography
-
 const typeDocs: Record<string, string> = {
   caption: 'Meta, badges, keyboard hints, table headers, and eyebrows in uppercase.',
   small: 'Descriptions, hints, errors, menu shortcuts, and field labels above a control.',
@@ -155,7 +153,8 @@ const typeDocs: Record<string, string> = {
   display: 'Stat values, always with tabular-nums.',
 };
 
-export function typeRoles(tokens: KosmosTokens = readKosmosTokens()) {
+export function typeRoles() {
+  const tokens = readKosmosTokens();
   return Object.keys(tokens.theme)
     .filter((name) => name.startsWith('text-') && !name.includes('--'))
     .map((name) => {
@@ -178,8 +177,6 @@ export function typeRoles(tokens: KosmosTokens = readKosmosTokens()) {
     });
 }
 
-// Shadows
-
 const shadowDocs: Record<string, { fill: string; surface: string }> = {
   'shadow-control': { fill: 'bg-secondary', surface: 'Secondary buttons, the segmented group, the active sidebar item.' },
   'shadow-primary': { fill: 'bg-primary', surface: 'The primary button. Flat in light, raised in dark.' },
@@ -192,7 +189,8 @@ const shadowDocs: Record<string, { fill: string; surface: string }> = {
   'shadow-field': { fill: 'bg-secondary', surface: 'Inputs, textareas and select triggers: a ring with no drop.' },
 };
 
-export function shadowTokens(tokens: KosmosTokens = readKosmosTokens()) {
+export function shadowTokens() {
+  const tokens = readKosmosTokens();
   const dark = modeDeclarations(tokens, 'dark');
   return Object.keys(tokens.light)
     .filter((name) => name.startsWith('shadow-'))
@@ -212,7 +210,8 @@ const radiusDocs: Record<string, string> = {
   'radius-3xl': 'The top of a bottom sheet.',
 };
 
-export function radiusScale(tokens: KosmosTokens = readKosmosTokens()) {
+export function radiusScale() {
+  const tokens = readKosmosTokens();
   return Object.keys(tokens.themeInline)
     .filter((name) => name.startsWith('radius-'))
     .map((name) => ({
@@ -223,8 +222,6 @@ export function radiusScale(tokens: KosmosTokens = readKosmosTokens()) {
       px: px(evaluate(resolveVars(tokens.themeInline[name], tokens.light))),
     }));
 }
-
-// Motion
 
 const motionDocs: Record<string, string> = {
   'transition-duration-instant': 'Menu and list item highlight.',
@@ -242,14 +239,16 @@ function parseBezier(value: string) {
   return (/cubic-bezier\(([^)]+)\)/.exec(value)?.[1] ?? '').split(',').map((part) => Number(part.trim()));
 }
 
-export function easings(tokens: KosmosTokens = readKosmosTokens()) {
+export function easings() {
+  const tokens = readKosmosTokens();
   return Object.entries(tokens.theme)
     .filter(([name]) => name.startsWith('ease-'))
     .map(([name, value]) => ({ name: name.replace('ease-', ''), value, bezier: parseBezier(value) }));
 }
 
 /** Durations, then easings, then Tailwind's defaults, in that order. */
-export function motionTokens(tokens: KosmosTokens = readKosmosTokens()) {
+export function motionTokens() {
+  const tokens = readKosmosTokens();
   const row = (name: string, className: string) => ({
     name,
     className,

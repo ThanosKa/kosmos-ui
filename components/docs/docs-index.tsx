@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDocsIndex, type DocsIndexGroup, type DocsIndexItem } from '@/lib/docs-nav';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { eyebrowClass } from './classes';
 
 type Folder = 'components' | 'blocks';
 
@@ -38,7 +39,7 @@ function IndexGroup({ group }: { group: DocsIndexGroup }) {
     <section data-docs-group aria-labelledby={headingId} className="flex flex-col gap-3">
       <h2
         id={headingId}
-        className="flex items-center gap-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase [&_svg]:size-3.5"
+        className={cn('flex items-center gap-2 [&_svg]:size-3.5', eyebrowClass)}
       >
         {group.icon}
         {group.label} <span className="tabular-nums">{group.items.length}</span>

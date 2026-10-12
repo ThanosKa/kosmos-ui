@@ -5,7 +5,7 @@ import { renderPlaceholder, type PlaceholderData } from 'fumadocs-core/mdx-plugi
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
 import { getDocsIndex, type DocsIndexItem } from './docs-nav';
-import { colorTokens, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
+import { colorTokens, modeLabels, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
   cssVarsAsCss,
   getRegistryItem,
@@ -66,7 +66,7 @@ const placeholders = {
   Step: ({ children }: PlaceholderData) => `${children.trim()}\n`,
   ColorTokens: ({ attributes }: PlaceholderData) =>
     markdownTable(
-      ['Class', 'Light', 'Dark', 'Use'],
+      ['Class', modeLabels.light, modeLabels.dark, 'Use'],
       colorTokens()
         .filter((color) => color.group === (String(attributes.group) as ColorGroup))
         .map((color) => [code(color.className), code(color.value.light), code(color.value.dark), color.use]),
@@ -85,7 +85,7 @@ const placeholders = {
     ),
   ShadowSurfaces: () =>
     markdownTable(
-      ['Shadow', 'Fill', 'Surface', 'Light', 'Dark'],
+      ['Shadow', 'Fill', 'Surface', modeLabels.light, modeLabels.dark],
       shadowTokens().map((shadow) => [
         code(shadow.name),
         code(shadow.fill),

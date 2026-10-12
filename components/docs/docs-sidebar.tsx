@@ -191,7 +191,6 @@ function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSid
           'motion-reduce:transition-[opacity] motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:opacity-0',
         )}
       >
-        {/* Indented so the item labels line up with the group name. */}
         <SidebarMenu className="ps-5.5 pt-0.5">
           {group.items.map((item) => (
             <SidebarMenuItem key={item.url}>
