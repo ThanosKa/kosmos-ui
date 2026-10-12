@@ -48,15 +48,15 @@ function AlsoUses({ items }: { items: RegistryItem[] }) {
  * examples render in the page, so their menus, popovers and dialogs portal to `document.body` and float over
  * the docs like they would in an app; `tall` gives one more room. Block examples (`<block>-demo`) render in
  * `/view/<name>` inside an iframe, with a link to open that page on its own. A line under the preview names any
- * other `@kosmos` item the example imports.
+ * other `@kosmos` item the example imports beyond `pageItem`, the item the docs page installs.
  */
-export async function ComponentPreview({ name, tall }: { name: string; tall?: boolean }) {
+export async function ComponentPreview({ name, tall, pageItem }: { name: string; tall?: boolean; pageItem?: string }) {
   const source = readExampleSource(name);
   const code = toInstalledImports(source);
   const isBlock = getRegistryItem(name.replace(/-demo$/, ''))?.type === 'registry:block';
   const Example = isBlock ? null : await loadExample(name);
   if (!isBlock && !Example) throw new Error(`No example "${name}" in registry/kosmos/examples`);
-  const extras = exampleExtras(name, source);
+  const extras = exampleExtras(name, source, pageItem);
 
   return (
     <div

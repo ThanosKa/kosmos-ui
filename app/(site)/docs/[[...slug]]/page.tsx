@@ -3,11 +3,13 @@ import { DocsBody } from 'fumadocs-ui/layouts/docs/page';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
+import type { ComponentProps } from 'react';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
 import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
+import { ComponentPreview } from '@/components/docs/component-preview';
 import { HashAnchor } from '@/components/docs/hash-anchor';
 import { changelogFolder, getChangelogEntries } from '@/lib/changelog';
 import { eyebrowOf, groupOfPage, neighboursOf } from '@/lib/docs-nav';
@@ -48,6 +50,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
             components={getMDXComponents({
               // this allows you to link to other pages with relative file paths
               a: createRelativeLink(source, page),
+              ComponentPreview: (props: ComponentProps<typeof ComponentPreview>) => (
+                <ComponentPreview {...props} pageItem={group && page.slugs[1]} />
+              ),
             })}
           />
         </DocsBody>

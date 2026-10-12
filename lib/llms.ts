@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { renderPlaceholder, type PlaceholderData } from 'fumadocs-core/mdx-plugins/remark-llms.runtime';
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
-import { getDocsIndex, getDocsNav, type DocsIndexItem } from './docs-nav';
+import { getDocsIndex, getDocsNav, groupOfPage, type DocsIndexItem } from './docs-nav';
 import { colorTokens, modeLabels, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
   cssVarsAsCss,
@@ -88,12 +88,6 @@ const placeholders = {
         cell(prop.description ?? ''),
       ]),
     ),
-  ComponentPreview: (data: PlaceholderData) => {
-    const source = readExampleSource(nameOf(data));
-    const extras = exampleExtras(nameOf(data), source).map((item) => code(`${registryNamespace}/${item.name}`));
-    const note = extras.length ? `\n\nThis example also uses ${new Intl.ListFormat('en').format(extras)}.` : '';
-    return `${fence('tsx', toInstalledImports(source))}${note}`;
-  },
   ComponentInstall: (data: PlaceholderData) => fence('bash', installCommands(nameOf(data))),
   ComponentSource: (data: PlaceholderData) => sourceFiles(nameOf(data)),
   ShadcnCommand: ({ attributes }: PlaceholderData) =>
@@ -165,6 +159,14 @@ const placeholders = {
 
 type DocsPage = ReturnType<typeof source.getPages>[number];
 
+/** An example's code, and the other `@kosmos` items it uses beyond what `pageItem` installs. */
+function previewMarkdown(data: PlaceholderData, pageItem?: string) {
+  const source = readExampleSource(nameOf(data));
+  const extras = exampleExtras(nameOf(data), source, pageItem).map((item) => code(`${registryNamespace}/${item.name}`));
+  const note = extras.length ? `\n\nThis example also uses ${new Intl.ListFormat('en').format(extras)}.` : '';
+  return `${fence('tsx', toInstalledImports(source))}${note}`;
+}
+
 /** Root-relative links in a page body, made absolute. */
 const absoluteLinks = (markdown: string) => markdown.replace(/\]\((\/[^)\s]*)\)/g, (_, path: string) => `](${absolute(path)})`);
 
@@ -173,7 +175,11 @@ const markdownPath = (page: DocsPage) => `${page.url}.md`;
 
 /** A docs page as Markdown: the title, the description as a quote, its address, then the body. */
 export async function pageMarkdown(page: DocsPage): Promise<string> {
-  const body = await renderPlaceholder(await page.data.getText('processed'), placeholders);
+  const pageItem = groupOfPage(page) && page.slugs[1];
+  const body = await renderPlaceholder(await page.data.getText('processed'), {
+    ...placeholders,
+    ComponentPreview: (data: PlaceholderData) => previewMarkdown(data, pageItem),
+  });
   return [
     `# ${page.data.title}`,
     page.data.description && `> ${page.data.description}`,

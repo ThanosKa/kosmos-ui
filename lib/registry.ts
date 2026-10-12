@@ -154,9 +154,12 @@ export function exampleOwner(example: string, items: RegistryItem[] = readRegist
     .sort((a, b) => b.name.length - a.name.length)[0];
 }
 
-/** The `@kosmos` items the example `example` (with source `code`) imports beyond what its own item installs. */
-export function exampleExtras(example: string, code: string, items: RegistryItem[] = readRegistryItems()): RegistryItem[] {
-  const owner = exampleOwner(example, items);
+/**
+ * The `@kosmos` items the example `example` (with source `code`) imports beyond what `page` installs: the item
+ * of the docs page that shows it, or else the item the example is named after.
+ */
+export function exampleExtras(example: string, code: string, page?: string, items: RegistryItem[] = readRegistryItems()): RegistryItem[] {
+  const owner = items.find((item) => item.name === page) ?? exampleOwner(example, items);
   return owner ? extraImportedItems(code, resolveRegistryTree(owner.name, items), items) : [];
 }
 
