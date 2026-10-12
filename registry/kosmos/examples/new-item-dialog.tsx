@@ -23,12 +23,12 @@ export default function NewItemDialogPreview() {
                 initialFocus={false}
                 trigger={null}
                 defaultValues={{
-                  name: 'Northwind Traders',
-                  domain: 'northwind.example',
-                  status: 'active',
-                  owner: 'maya',
-                  arr: 184000,
-                  notes: 'Signed the enterprise plan after a two-week pilot with their logistics team.',
+                  title: 'Retention cohorts by plan',
+                  description: 'Scale customers want to see whether users on each plan come back in their second month.',
+                  stage: 'planned',
+                  area: 'insights',
+                  assignee: 'kai',
+                  target: 'Q1 2027',
                 }}
               />
             )}
@@ -42,7 +42,7 @@ export default function NewItemDialogPreview() {
                 initialFocus={false}
                 trigger={null}
                 defaultSubmitted
-                defaultValues={{ domain: 'https://northwind' }}
+                defaultValues={{ description: 'Alert the project team in Slack when page views drop by a third in an hour.' }}
               />
             )}
           </OverlayStage>
@@ -54,15 +54,16 @@ export default function NewItemDialogPreview() {
                 container={container}
                 initialFocus={false}
                 trigger={null}
-                people={[{ id: 'am', name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' }]}
+                people={[{ id: 'tomas', name: 'Tomás Ortega Villanueva de la Fuente', initials: 'TO' }]}
+                areas={[{ value: 'ingestion', label: 'Ingestion and event collection', hue: 'green' }]}
                 defaultValues={{
-                  name: 'International Association of Independent Freight Forwarders and Customs Brokers',
-                  domain: 'association-of-independent-freight-forwarders.example',
-                  status: 'at-risk',
-                  owner: 'am',
-                  arr: 1250000,
-                  notes:
-                    'Their procurement team wants a data processing agreement before the trial ends. Supercalifragilisticexpialidocious-configuration-flag decides which region their data lands in, and nobody remembers why it exists.',
+                  title: 'Server-side batching for every ingestion endpoint, with retries and a dead letter queue per region',
+                  description:
+                    'Copperline Bank and Ironbark Logistics send millions of events a day from their servers. Supercalifragilisticexpialidocious-batch-size decides how many events go in one request, and nobody remembers why it is 37.',
+                  stage: 'in-progress',
+                  area: 'ingestion',
+                  assignee: 'tomas',
+                  target: 'Q4 2026',
                 }}
               />
             )}
