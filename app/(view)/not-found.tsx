@@ -1,12 +1,19 @@
+'use client';
+
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { SearchX } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 
-/** An unknown `/view/<name>` or `/approve/<group>`, inside the preview layout in the stored theme. */
+const themes = ['light', 'dark'] as const;
+
+/** An unknown `/view/<name>` or `/approve/<group>`, inside the preview layout. Takes `?theme=` like a preview. */
 export default function ViewNotFound() {
+  const theme = useSearchParams().get('theme');
+  const forcedTheme = themes.find((value) => value === theme);
   return (
-    <RootProvider search={{ enabled: false }} theme={{ hotKey: false }}>
+    <RootProvider search={{ enabled: false }} theme={{ forcedTheme, hotKey: false }}>
       <main className="flex min-h-dvh items-center justify-center p-6">
         <Empty>
           <EmptyHeader>
