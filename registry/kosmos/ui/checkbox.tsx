@@ -24,8 +24,9 @@ function Checkbox({ className, ...props }: CheckboxProps) {
         'data-checked:bg-primary data-checked:shadow-primary data-indeterminate:bg-primary data-indeterminate:shadow-primary',
         'hover:not-data-disabled:data-checked:bg-primary/90 hover:not-data-disabled:data-indeterminate:bg-primary/90',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-        // Invalid adds a destructive ring over the control ring, as on Input.
+        // Invalid adds a destructive ring over the control ring, as on Input; 2px on the ink fill of a ticked box, where 1px disappears.
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
+        'data-invalid:data-checked:ring-2 data-invalid:data-indeterminate:ring-2 aria-invalid:data-checked:ring-2 aria-invalid:data-indeterminate:ring-2',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
