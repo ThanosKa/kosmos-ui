@@ -1,12 +1,22 @@
 import { source } from '@/lib/source';
-import { DocsBody, DocsDescription, DocsTitle, MarkdownCopyButton, ViewOptionsPopover } from 'fumadocs-ui/layouts/docs/page';
+import { DocsBody } from 'fumadocs-ui/layouts/docs/page';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
+import { DocsPageHeader } from '@/components/docs/page-header';
+import { PageNavCards, type DocsNeighbours } from '@/components/docs/page-nav';
+import { flattenDocsNav, groupOfPage } from '@/lib/docs-nav';
 import { getPageImageUrl, getPageMarkdownUrl, gitConfig } from '@/lib/shared';
-import { formatChangelogDate } from '@/lib/changelog';
+
+/** Previous and next in sidebar order; none for pages outside the sidebar, such as changelog entries. */
+function neighboursOf(url: string): DocsNeighbours | undefined {
+  const items = flattenDocsNav();
+  const index = items.findIndex((item) => item.url === url);
+  if (index === -1) return undefined;
+  return { previous: items[index - 1], next: items[index + 1] };
+}
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -14,27 +24,23 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   if (!page) notFound();
 
   const MDX = page.data.body;
-  const markdownUrl = getPageMarkdownUrl(page).url;
   const pageRef = { path: page.path, title: page.data.title };
+  const group = groupOfPage(page);
+  const neighbours = neighboursOf(page.url);
 
   return (
     <div className="flex w-full gap-10 xl:pe-6">
       <article className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-4 px-4 py-8 sm:px-6 md:py-10">
-        {page.data.date && (
-          <time dateTime={page.data.date.toISOString().slice(0, 10)} className="text-small text-muted-foreground">
-            {formatChangelogDate(page.data.date)}
-          </time>
-        )}
-        <DocsTitle>{page.data.title}</DocsTitle>
-        <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-        <div className="flex flex-row items-center gap-2 border-b pb-6">
-          <MarkdownCopyButton markdownUrl={markdownUrl} />
-          <ViewOptionsPopover
-            markdownUrl={markdownUrl}
-            githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
-          />
-        </div>
-        <DocsBody>
+        <DocsPageHeader
+          title={page.data.title}
+          description={page.data.description}
+          date={page.data.date}
+          markdownUrl={getPageMarkdownUrl(page).url}
+          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
+          neighbours={neighbours}
+          item={group && { name: page.slugs[1], group, baseUi: page.data.baseUi }}
+        />
+        <DocsBody className="[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title">
           <MDX
             components={getMDXComponents({
               // this allows you to link to other pages with relative file paths
@@ -42,6 +48,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
             })}
           />
         </DocsBody>
+        {neighbours && <PageNavCards {...neighbours} className="mt-6" />}
         <DocsPageLinks page={pageRef} className="mt-6 border-t border-border pt-6 xl:hidden" />
       </article>
       <DocsRail page={pageRef} toc={page.data.full ? [] : page.data.toc} />
