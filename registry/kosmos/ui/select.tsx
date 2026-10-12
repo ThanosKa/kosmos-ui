@@ -114,7 +114,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
         'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body font-medium outline-none select-none',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",
         className,
       )}
       {...props}
