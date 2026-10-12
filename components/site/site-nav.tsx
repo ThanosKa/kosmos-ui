@@ -31,8 +31,9 @@ export function SiteNav({ className }: { className?: string }) {
           key={item.href}
           href={item.href}
           aria-current={item.href === active ? 'page' : undefined}
-          // A nav item: the ghost look without the press scale, which dense rows of items skip.
-          className="inline-flex h-7.5 items-center rounded-lg px-3 text-body font-medium text-muted-foreground transition-[background-color,color] hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-[current=page]:text-foreground"
+          // A nav item: the ghost look without the press scale, which dense rows of items skip. The current page also takes
+          // the raised surface of the active sidebar item, since its orange and the idle grey have the same lightness.
+          className="inline-flex h-7.5 items-center rounded-lg border border-transparent px-3 text-body font-medium text-muted-foreground transition-[background-color,color,box-shadow] hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-[current=page]:bg-secondary aria-[current=page]:text-active-foreground aria-[current=page]:shadow-control"
         >
           {item.label}
         </Link>
@@ -55,9 +56,10 @@ export function SiteNavMenu({ className }: { className?: string }) {
             key={item.href}
             render={<Link href={item.href} />}
             aria-current={item.href === active ? 'page' : undefined}
+            className="aria-[current=page]:text-active-foreground"
           >
             {item.label}
-            {item.href === active ? <Check aria-hidden className="ms-auto text-foreground" /> : null}
+            {item.href === active ? <Check aria-hidden className="ms-auto text-active-foreground" /> : null}
           </DropdownMenuLinkItem>
         ))}
       </DropdownMenuContent>
