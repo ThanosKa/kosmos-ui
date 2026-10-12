@@ -20,6 +20,9 @@ const KEYBOARD_STEP = 16;
 /** The width of the icon column (px) a sidebar with `collapsible="icon"` collapses to. */
 const ICON_WIDTH = 48;
 
+/** Sets an item's tooltip 6px past the icon column's edge, which sits 9px beyond the item. */
+const ICON_TOOLTIP_OFFSET = 15;
+
 type SidebarCollapsible = 'offcanvas' | 'icon';
 
 type SidebarContextValue = {
@@ -236,7 +239,9 @@ function SidebarProvider({
   React.useEffect(() => {
     if (!keyboardShortcut) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key.toLowerCase() !== keyboardShortcut || !(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+      // Ctrl+B on a Mac moves the caret back in a text field, so there only ⌘ counts.
+      const modifier = /Mac|iPhone|iPad/.test(navigator.userAgent) ? event.metaKey : event.ctrlKey;
+      if (event.key.toLowerCase() !== keyboardShortcut || !modifier || event.altKey || event.shiftKey) return;
       // ⌘B is bold in a rich text editor.
       if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.isContentEditable)) return;
       event.preventDefault();
@@ -300,7 +305,7 @@ function SidebarProvider({
         )}
         {...props}
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        {children}
       </div>
     </SidebarContext.Provider>
   );
@@ -377,7 +382,7 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
           {...props}
           id={sidebarId}
         >
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
         </div>
       </div>
     </div>
@@ -512,6 +517,7 @@ type SidebarTriggerProps = Omit<Extract<ButtonProps, { href?: undefined }>, 'var
 function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
   const { toggleSidebar, isMobile, open, openMobile, keyboardShortcut, sidebarId } = useSidebar();
   const isMac = useIsMac();
+  const key = keyboardShortcut?.toUpperCase();
   return (
     <Tooltip>
       <TooltipPrimitive.Trigger
@@ -523,7 +529,7 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
             aria-label="Toggle sidebar"
             aria-expanded={isMobile ? openMobile : open}
             aria-controls={isMobile && !openMobile ? undefined : sidebarId}
-            aria-keyshortcuts={keyboardShortcut ? `${isMac ? 'Meta' : 'Control'}+${keyboardShortcut.toUpperCase()}` : undefined}
+            aria-keyshortcuts={key ? `${isMac ? 'Meta' : 'Control'}+${key}` : undefined}
             className={className}
             onClick={(event) => {
               onClick?.(event);
@@ -535,12 +541,12 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
           </Button>
         }
       />
-      <TooltipContent side="bottom" className={cn(keyboardShortcut && 'flex items-center gap-2 pe-1')}>
+      <TooltipContent side="bottom" className={cn(key && 'flex items-center gap-2 pe-1')}>
         Toggle sidebar
-        {keyboardShortcut ? (
+        {key ? (
           <KbdGroup>
             <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
-            <Kbd>{keyboardShortcut.toUpperCase()}</Kbd>
+            <Kbd>{key}</Kbd>
           </KbdGroup>
         ) : null}
       </TooltipContent>
@@ -675,7 +681,6 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
         'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
         'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
-        // In icon mode the label and the count fade, and the icon stays where it was.
         '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span]:opacity-0',
         className,
       )}
@@ -691,7 +696,7 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
   return (
     <Tooltip disabled={!iconsOnly}>
       <TooltipPrimitive.Trigger render={button} />
-      <TooltipContent side="inline-end" sideOffset={15}>
+      <TooltipContent side="inline-end" sideOffset={ICON_TOOLTIP_OFFSET}>
         {tooltip}
       </TooltipContent>
     </Tooltip>
