@@ -170,7 +170,6 @@ function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSid
         <span className="sr-only">
           {count} {noun[count === 1 ? 0 : 1]}
         </span>
-        {/* The count tells what a closed group holds; an open group shows its items instead. */}
         <SidebarMenuBadge aria-hidden className="group-data-panel-open/group-trigger:hidden">
           {count}
         </SidebarMenuBadge>
