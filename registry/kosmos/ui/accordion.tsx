@@ -1,19 +1,33 @@
+'use client';
+
 import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+
+type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+const HeadingLevelContext = React.createContext<HeadingLevel>(3);
+
+type AccordionProps = AccordionPrimitive.Root.Props & {
+  /** The level of every section heading, so it fits the page's outline. Defaults to `3` (`<h3>`). */
+  headingLevel?: HeadingLevel;
+};
 
 /**
  * A stack of sections that open and close under their headings, split by 1px dividers. One section
  * opens at a time; pass `multiple` to allow more. Tab moves between headings, Enter and Space open
  * and close them.
  */
-function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
+function Accordion({ className, headingLevel = 3, ...props }: AccordionProps) {
   return (
-    <AccordionPrimitive.Root
-      data-slot="accordion"
-      className={cn('flex w-full flex-col divide-y divide-border', className)}
-      {...props}
-    />
+    <HeadingLevelContext.Provider value={headingLevel}>
+      <AccordionPrimitive.Root
+        data-slot="accordion"
+        className={cn('flex w-full flex-col divide-y divide-border', className)}
+        {...props}
+      />
+    </HeadingLevelContext.Provider>
   );
 }
 
@@ -21,10 +35,11 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   return <AccordionPrimitive.Item data-slot="accordion-item" className={className} {...props} />;
 }
 
-/** The heading row that opens and closes its section. Renders an `<h3>` around a button. */
+/** The heading row that opens and closes its section. Renders a heading (`<h3>` unless the Accordion sets `headingLevel`) around a button. */
 function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.Trigger.Props) {
+  const Heading = `h${React.useContext(HeadingLevelContext)}` as const;
   return (
-    <AccordionPrimitive.Header data-slot="accordion-header" className="flex py-1">
+    <AccordionPrimitive.Header data-slot="accordion-header" render={<Heading />} className="flex py-1">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(

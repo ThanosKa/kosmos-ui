@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 
 export default function AccordionDemo() {
   return (
-    <Accordion defaultValue={['plans']} className="max-w-md">
+    <Accordion defaultValue={['plans']} headingLevel={2} className="max-w-md">
       <AccordionItem value="plans">
         <AccordionTrigger>Can I change plans later?</AccordionTrigger>
         <AccordionContent>
