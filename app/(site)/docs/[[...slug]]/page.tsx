@@ -6,17 +6,9 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
 import { DocsPageHeader } from '@/components/docs/page-header';
-import { PageNavCards, type DocsNeighbours } from '@/components/docs/page-nav';
-import { flattenDocsNav, groupOfPage } from '@/lib/docs-nav';
+import { PageNavCards } from '@/components/docs/page-nav';
+import { groupOfPage, neighboursOf } from '@/lib/docs-nav';
 import { getPageImageUrl, getPageMarkdownUrl, gitConfig } from '@/lib/shared';
-
-/** Previous and next in sidebar order; none for pages outside the sidebar, such as changelog entries. */
-function neighboursOf(url: string): DocsNeighbours | undefined {
-  const items = flattenDocsNav();
-  const index = items.findIndex((item) => item.url === url);
-  if (index === -1) return undefined;
-  return { previous: items[index - 1], next: items[index + 1] };
-}
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;

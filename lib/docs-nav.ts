@@ -11,7 +11,8 @@ import {
   TextCursorInput,
   type LucideIcon,
 } from 'lucide-react';
-import { groups, isGroup, readRegistryItems, type Group } from './registry';
+import { getChangelogEntries } from './changelog';
+import { groups, isGroup, readRegistryItems, type Group, type RegistryItem } from './registry';
 import { source } from './source';
 
 export type DocsNavSectionId = 'get-started' | 'foundations' | 'components' | 'blocks';
@@ -101,7 +102,7 @@ export function getDocsNav(): DocsNav {
 }
 
 /** The registry group of a page under `components/` or `blocks/`; throws so no page silently leaves the nav. */
-function registryGroup(slugs: string[], registryItems = readRegistryItems()): Group {
+function registryGroup(slugs: string[], registryItems: RegistryItem[]): Group {
   const [folder, name, ...rest] = slugs;
   const item = registryItems.find((candidate) => candidate.name === name);
   const group = item?.meta?.group;
@@ -115,15 +116,39 @@ function registryGroup(slugs: string[], registryItems = readRegistryItems()): Gr
 }
 
 /** Every nav item in sidebar order, top to bottom: the order of previous and next. */
-export function flattenDocsNav(nav: DocsNav = getDocsNav()): DocsNavItem[] {
-  return nav.sections.flatMap((section) => [...section.items, ...section.groups.flatMap((group) => group.items)]);
+function flattenDocsNav(): DocsNavItem[] {
+  return getDocsNav().sections.flatMap((section) => [...section.items, ...section.groups.flatMap((group) => group.items)]);
+}
+
+export type DocsPageLink = { title: string; url: string };
+
+export type DocsNeighbours = {
+  previous?: DocsPageLink;
+  next?: DocsPageLink;
+  /** What previous and next mean here, when it isn't the sidebar order. */
+  labels?: { previous: string; next: string };
+};
+
+function neighboursIn(links: DocsPageLink[], url: string, labels?: DocsNeighbours['labels']): DocsNeighbours | undefined {
+  const index = links.findIndex((link) => link.url === url);
+  if (index === -1) return undefined;
+  return { previous: links[index - 1], next: links[index + 1], labels };
+}
+
+/**
+ * The pages before and after `url`: in sidebar order, or for a changelog entry, which sits outside the
+ * sidebar, the newer and older entries.
+ */
+export function neighboursOf(url: string): DocsNeighbours | undefined {
+  const changelog = getChangelogEntries().map(({ page }) => ({ title: page.data.title, url: page.url }));
+  return neighboursIn(flattenDocsNav(), url) ?? neighboursIn(changelog, url, { previous: 'Newer', next: 'Older' });
 }
 
 /** The registry group of a component or block page; `undefined` for every other page. */
 export function groupOfPage(page: { slugs: string[] }): Group | undefined {
   const section = sectionOf(page.slugs);
   if ((section !== 'components' && section !== 'blocks') || page.slugs.length === 1) return undefined;
-  return registryGroup(page.slugs);
+  return registryGroup(page.slugs, readRegistryItems());
 }
 
 export type DocsIndexItem = DocsNavItem & { name: string; description?: string };
@@ -131,9 +156,9 @@ export type DocsIndexItem = DocsNavItem & { name: string; description?: string }
 export type DocsIndexGroup = Omit<DocsNavGroup, 'items'> & { items: DocsIndexItem[] };
 
 /** The groups of the components or blocks index in sidebar order, each item with its registry name and page description. */
-export function getDocsIndex(section: 'components' | 'blocks', nav: DocsNav = getDocsNav()): DocsIndexGroup[] {
+export function getDocsIndex(section: 'components' | 'blocks'): DocsIndexGroup[] {
   const pages = new Map(source.getPages().map((page) => [page.url, page]));
-  return (nav.sections.find((candidate) => candidate.id === section)?.groups ?? []).map((group) => ({
+  return (getDocsNav().sections.find((candidate) => candidate.id === section)?.groups ?? []).map((group) => ({
     ...group,
     items: group.items.map((item) => {
       const page = pages.get(item.url)!;

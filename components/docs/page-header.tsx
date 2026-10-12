@@ -1,10 +1,11 @@
 import { ArrowUpRight } from 'lucide-react';
 import { formatChangelogDate } from '@/lib/changelog';
+import type { DocsNeighbours } from '@/lib/docs-nav';
 import { groups, packageRunners, registryNamespace, type Group } from '@/lib/registry';
 import { Button } from '@/registry/kosmos/ui/button';
 import { InstallChip } from './install-chip';
 import { PageActions } from './page-actions';
-import { PageNavButtons, type DocsNeighbours } from './page-nav';
+import { PageNavButtons } from './page-nav';
 
 /** `https://base-ui.com/react/components/scroll-area` → `Scroll Area`. */
 function baseUiName(url: string) {
