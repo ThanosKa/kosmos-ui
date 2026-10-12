@@ -5,7 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  // `next dev` would otherwise write its own rules block to AGENTS.md; the agent instructions live in CLAUDE.md.
+  // `next dev` would otherwise write its own rules block into AGENTS.md.
   agentRules: false,
   async redirects() {
     return [
