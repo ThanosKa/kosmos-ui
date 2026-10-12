@@ -93,7 +93,7 @@ export default function EmptyPreview() {
               <EmptyHeader>
                 <EmptyTitle render={<h3 />}>Nothing scheduled</EmptyTitle>
                 <EmptyDescription>
-                  Meetings you accept appear here. <a href="#calendar" onClick={(event) => event.preventDefault()}>
+                  Meetings you accept appear here. <a href="/settings/calendar" onClick={(event) => event.preventDefault()}>
                     Connect a calendar
                   </a>
                 </EmptyDescription>

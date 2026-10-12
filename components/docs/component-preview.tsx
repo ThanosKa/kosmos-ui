@@ -46,11 +46,11 @@ function AlsoUses({ items }: { items: RegistryItem[] }) {
  * A live example stacked over the first lines of its code, which "Show code" expands in place. `name` is a
  * file in `registry/kosmos/examples/`; the code shows the imports a user gets after `shadcn add`. Component
  * examples render in the page, so their menus, popovers and dialogs portal to `document.body` and float over
- * the docs like they would in an app; `tall` gives one more room. Block examples (`<block>-demo`) render in
- * `/view/<name>` inside an iframe, with a link to open that page on its own. A line under the preview names any
- * other `@kosmos` item the example imports beyond `pageItem`, the item the docs page installs.
+ * the docs like they would in an app. Block examples (`<block>-demo`) render in `/view/<name>` inside an iframe,
+ * with a link to open that page on its own. A line under the preview names any other `@kosmos` item the example
+ * imports beyond `pageItem`, the item the docs page installs.
  */
-export async function ComponentPreview({ name, tall, pageItem }: { name: string; tall?: boolean; pageItem?: string }) {
+export async function ComponentPreview({ name, pageItem }: { name: string; pageItem?: string }) {
   const source = readExampleSource(name);
   const code = toInstalledImports(source);
   const isBlock = getRegistryItem(name.replace(/-demo$/, ''))?.type === 'registry:block';
@@ -65,12 +65,7 @@ export async function ComponentPreview({ name, tall, pageItem }: { name: string;
     >
       {Example ? (
         // The same box as the /view page around an example, so it renders as it does there.
-        <div
-          className={cn(
-            'flex min-h-56 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-body text-foreground sm:p-10',
-            tall ? 'sm:min-h-112' : 'sm:min-h-72',
-          )}
-        >
+        <div className="flex min-h-56 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-body text-foreground sm:min-h-72 sm:p-10">
           <div className="flex w-full min-w-0 justify-center">
             <Example />
           </div>
