@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { AppFrame, CommandMenuStage, DetailDrawerStage, NewItemStage, PipelineCard } from '@/components/gallery/block-cards';
+import { AppFrame, CommandMenuStage, DetailDrawerStage, NewItemStage, RoadmapCard } from '@/components/gallery/block-cards';
 import { ActivityCard, EmptyCard, ReleaseCard } from '@/components/gallery/content-cards';
 import { KpiCard, LoadingCard, MembersCard, RevenueCard, UsageCard } from '@/components/gallery/data-cards';
 import { NotificationsCard, PlansCard, ProfileCard } from '@/components/gallery/form-cards';
@@ -81,7 +81,7 @@ export function Gallery() {
         <Section id="gallery-blocks" title="Blocks" description="Cuts of the blocks, with their sample data.">
           <StatsOverview />
           <AppFrame />
-          <PipelineCard />
+          <RoadmapCard />
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
             <NewItemStage />
             <CommandMenuStage />

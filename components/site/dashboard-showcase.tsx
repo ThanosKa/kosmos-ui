@@ -6,8 +6,8 @@ import { AppSidebar, type AppSidebarNavItem } from '@/registry/kosmos/blocks/app
 import { CommandMenu, type CommandMenuGroup } from '@/registry/kosmos/blocks/command-menu/command-menu';
 import { DataTable, sampleAccounts, type Account, type AccountStatus } from '@/registry/kosmos/blocks/data-table/data-table';
 import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
-import { KanbanBoard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
-import { NewItemDialog, type NewItemStatus, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
+import { KanbanBoard, sampleRoadmapItems, type KanbanPerson, type KanbanTag } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
+import { NewItemDialog, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
 import { PageHeader, type PageTab } from '@/registry/kosmos/blocks/page-header/page-header';
 import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -16,9 +16,9 @@ import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry
 
 /*
  * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
- * Parallax sample data; the other blocks still share one array of sample records, so a change in the table shows
- * on the board, in the drawer and in the command menu. Only the list page, its saved views and the board are
- * wired up; the other pages say so and link back.
+ * Parallax sample data, and the board is the Parallax roadmap, where the new item dialog adds its cards. The other
+ * blocks still share one array of sample records, so a change in the table shows in the drawer and in the command
+ * menu. Only the list page, its saved views and the board are wired up; the other pages say so and link back.
  */
 
 const maya = { name: 'Maya Chen', initials: 'MC' };
@@ -56,12 +56,19 @@ const details: Record<string, Pick<DetailAccount, 'meta' | 'labels' | 'notes' | 
 const tabStatus = { all: 'all', active: 'active', 'at-risk': 'at-risk', churned: 'churned' } as const;
 type TabValue = keyof typeof tabStatus;
 
-const columns = [
-  { id: 'trial', title: 'Trial', tone: 'muted' },
-  { id: 'active', title: 'Active', tone: 'success' },
-  { id: 'at-risk', title: 'At risk', tone: 'warning' },
-  { id: 'churned', title: 'Churned', tone: 'destructive' },
-] as const;
+/** The dialog names areas and people by id; the board's cards carry the tag and the person. */
+const roadmapAreas: Record<string, KanbanTag> = {
+  insights: { label: 'Insights', hue: 'amber' },
+  ingestion: { label: 'Ingestion', hue: 'green' },
+  billing: { label: 'Billing', hue: 'red' },
+  platform: { label: 'Platform', hue: 'blue' },
+};
+const roadmapTeam: Record<string, KanbanPerson> = {
+  lena: { name: 'Lena Park', initials: 'LP' },
+  tomas: { name: 'Tomás Ortega', initials: 'TO' },
+  ama: { name: 'Ama Mensah', initials: 'AM' },
+  kai: { name: 'Kai Nakamura', initials: 'KN' },
+};
 
 const statusDot: Record<AccountStatus, string> = {
   trial: 'bg-muted-foreground',
@@ -103,7 +110,7 @@ const slug = (name: string) =>
   name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '') || 'account';
+    .replace(/^-|-$/g, '') || 'item';
 
 export function DashboardShowcase() {
   const [accounts, setAccounts] = React.useState(initialAccounts);
@@ -115,7 +122,8 @@ export function DashboardShowcase() {
   const [openId, setOpenId] = React.useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [newOpen, setNewOpen] = React.useState(false);
-  const [newStatus, setNewStatus] = React.useState<NewItemStatus>('trial');
+  const [roadmap, setRoadmap] = React.useState(sampleRoadmapItems);
+  const [newStage, setNewStage] = React.useState('ideas');
   const [commandOpen, setCommandOpen] = React.useState(false);
 
   const showPage = (id: string) => {
@@ -137,29 +145,28 @@ export function DashboardShowcase() {
     setDrawerOpen(true);
   };
 
-  const openNew = (status: NewItemStatus) => {
-    setNewStatus(status);
+  // Every new item lands on the roadmap, so opening the dialog from another page shows the board behind it.
+  const openNew = (stage: string) => {
+    showPage('deals');
+    setNewStage(stage);
     setNewOpen(true);
   };
 
   const create = (values: NewItemValues) => {
-    const base = slug(values.name);
-    const id = accounts.some((row) => row.id === base) ? `${base}-${accounts.length}` : base;
-    const owner = values.owner ? owners[values.owner as OwnerKey] : undefined;
-    setAccounts([
-      {
-        id,
-        name: values.name,
-        domain: values.domain,
-        status: values.status,
-        // The table needs an owner: an account created without one goes to the signed-in user.
-        owner: owner ?? maya,
-        arr: values.arr ?? 0,
-        health: 50,
-        lastActivity: '2026-10-11',
-      },
-      ...accounts,
-    ]);
+    const base = slug(values.title);
+    const id = roadmap.some((item) => item.id === base) ? `${base}-${roadmap.length}` : base;
+    const item = {
+      id,
+      title: values.title,
+      column: values.stage,
+      area: values.area ? roadmapAreas[values.area] : undefined,
+      votes: 0,
+      assignee: values.assignee ? roadmapTeam[values.assignee] : undefined,
+      target: values.target ?? undefined,
+    };
+    // A new card goes to the top of its column.
+    const first = roadmap.findIndex((card) => card.column === item.column);
+    setRoadmap(first < 0 ? [...roadmap, item] : [...roadmap.slice(0, first), item, ...roadmap.slice(first)]);
   };
 
   const ownerFiltered = React.useMemo(
@@ -198,20 +205,11 @@ export function DashboardShowcase() {
   ];
 
   const runCommand = (value: string) => {
-    if (value === 'new-account') openNew('trial');
+    if (value === 'new-account') openNew('ideas');
     else if (value.startsWith('open:')) {
       showPage('accounts');
       openAccount(value.slice('open:'.length));
     } else if (value.startsWith('go:')) showPage(value.slice('go:'.length));
-  };
-
-  const moveOnBoard = (items: KanbanItem[]) => {
-    const moved = new Map(items.map((item) => [item.id, item]));
-    const reordered = items.map((item) => {
-      const row = accounts.find((account) => account.id === item.id)!;
-      return { ...row, status: item.status as AccountStatus };
-    });
-    setAccounts([...reordered, ...accounts.filter((row) => !moved.has(row.id))]);
   };
 
   const opened = accounts.find((row) => row.id === openId);
@@ -237,7 +235,7 @@ export function DashboardShowcase() {
             filterOptions={filterOptions}
             filters={filters}
             onFiltersChange={setFilters}
-            onNew={() => openNew(tab === 'all' ? 'trial' : tab)}
+            onNew={() => openNew('ideas')}
           >
             <div className="flex flex-col gap-4 p-4">
               <StatsOverview />
@@ -260,16 +258,10 @@ export function DashboardShowcase() {
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">
               <SidebarTrigger />
-              <h3 className="min-w-0 flex-1 truncate text-title font-medium">Board</h3>
+              <h3 className="min-w-0 flex-1 truncate text-title font-medium">Roadmap</h3>
             </div>
             <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
-              <KanbanBoard
-                columns={[...columns]}
-                items={accounts}
-                onItemsChange={moveOnBoard}
-                onOpen={(item) => openAccount(item.id)}
-                onAdd={(status) => openNew(status as NewItemStatus)}
-              />
+              <KanbanBoard items={roadmap} onItemsChange={setRoadmap} onAdd={openNew} />
             </div>
           </>
         ) : (
@@ -313,7 +305,7 @@ export function DashboardShowcase() {
         trigger={null}
         open={newOpen}
         onOpenChange={setNewOpen}
-        defaultValues={{ status: newStatus, owner: 'maya' }}
+        defaultValues={{ stage: newStage }}
         onCreate={create}
       />
       <CommandMenu
