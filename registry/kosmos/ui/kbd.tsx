@@ -19,9 +19,9 @@ function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
   );
 }
 
-/** Keys pressed together, such as ⌘ K. Sets the keys 4px apart. */
+/** Keys pressed together, such as ⌘ K. Sets the keys 4px apart, in the same left-to-right order on a right-to-left page. */
 function KbdGroup({ className, ...props }: React.ComponentProps<'kbd'>) {
-  return <kbd data-slot="kbd-group" className={cn('inline-flex items-center gap-1 font-sans', className)} {...props} />;
+  return <kbd data-slot="kbd-group" dir="ltr" className={cn('inline-flex items-center gap-1 font-sans', className)} {...props} />;
 }
 
 export { Kbd, KbdGroup };
