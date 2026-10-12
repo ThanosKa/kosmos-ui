@@ -1,6 +1,6 @@
 ---
 title: Page header
-description: The top of a list page, with a title and a primary action, tabs for saved views, and a toolbar with search, filters and a table or board switch.
+description: The top of a list page, with a title, a description and a primary action, saved views as tabs, search, a grouped filter menu and a chip for each filter that is on.
 ---
 
 <ComponentPreview name="page-header-demo" />
@@ -9,7 +9,7 @@ description: The top of a list page, with a title and a primary action, tabs for
 
 <ComponentInstall name="page-header" />
 
-The block brings [Tabs](/docs/components/tabs), [Input](/docs/components/input), [Dropdown menu](/docs/components/dropdown-menu), [Segmented control](/docs/components/segmented-control) and [Button](/docs/components/button) with it, and lands in `components/page-header.tsx`.
+The block brings [Tabs](/docs/components/tabs), [Input](/docs/components/input), [Dropdown menu](/docs/components/dropdown-menu) and [Button](/docs/components/button) with it, and lands in `components/page-header.tsx`.
 
 ## Usage
 
@@ -20,13 +20,29 @@ import { useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
-export default function AccountsPage() {
+export default function ProjectsPage() {
   const [tab, setTab] = useState('all');
   const [query, setQuery] = useState('');
+  const [filters, setFilters] = useState<string[]>([]);
+
+  const shown = projects.filter(
+    (project) =>
+      (tab === 'all' || project.status === tab) &&
+      project.name.toLowerCase().includes(query.toLowerCase()) &&
+      (filters.length === 0 || filters.includes(project.plan)),
+  );
 
   return (
-    <PageHeader leading={<SidebarTrigger />} tab={tab} onTabChange={setTab} query={query} onQueryChange={setQuery}>
-      {/* the page body, filtered by tab and query */}
+    <PageHeader
+      leading={<SidebarTrigger />}
+      tab={tab}
+      onTabChange={setTab}
+      query={query}
+      onQueryChange={setQuery}
+      filters={filters}
+      onFiltersChange={setFilters}
+    >
+      {/* the list of shown projects */}
     </PageHeader>
   );
 }
@@ -34,9 +50,15 @@ export default function AccountsPage() {
 
 `SidebarTrigger` comes from [Sidebar](/docs/components/sidebar), which the block doesn't install. Add it with `shadcn add @kosmos/sidebar`, or leave `leading` out when the page has no sidebar.
 
-Pass the page body as `children`: it becomes the panel of the selected tab, so screen readers hear which view it shows. Every value (tab, search text, filters, layout) works controlled, with its `on…Change` callback, or keeps its own state when you leave it out. The tabs and filters at the top of the file are sample data.
+The header holds the state; your page does the filtering, as above. Pass the page body as `children`: it becomes the panel of the selected tab, so screen readers hear which view it shows. Every value (tab, search text, filters) works controlled, with its `on…Change` callback, or keeps its own state when you leave it out. The tabs and filters at the top of the file are sample data.
 
-The header lays itself out by its own width, with container queries, not by the screen's. From 768px wide the tabs and the toolbar share a row; narrower, the toolbar moves under the tabs. Below 448px the primary action and Filter shrink to icons. The tabs scroll sideways when they do not fit.
+## What it does
+
+- **Title and description**: the description says in one line what the page lists. Both wrap instead of cutting off.
+- **Views**: the tabs sit in a track, each with an optional count, and scroll sideways when they don't fit.
+- **Filter menu**: options that share a `group` sit under its name. Within a group, filters usually widen the list (Pro or Scale); across groups they narrow it (Pro and iOS). That logic is yours, in the page.
+- **Chips**: each filter that is on shows as a chip under the toolbar, named with its group. Removing one moves focus to the next chip, or back to Filter.
+- **Width**: the header lays itself out by its own width, with container queries, not by the screen's. From 768px wide the tabs and the search share a row; narrower, the search moves under the tabs. Below 448px the primary action and Filter shrink to icons.
 
 ## API
 
@@ -46,7 +68,8 @@ Takes every `<div>` prop, plus:
 
 <TypeTable
   type={{
-    title: { description: 'The page heading.', type: 'string', default: "'Accounts'" },
+    title: { description: 'The page heading.', type: 'string', default: "'Projects'" },
+    description: { description: 'One line under the title that says what the page lists. Pass an empty string to leave it out.', type: 'string' },
     headingLevel: { description: 'The heading level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
     leading: { description: 'Goes before the title, usually a `SidebarTrigger`.', type: 'ReactNode' },
     tabs: { description: 'The views the tabs switch between, each with an optional count.', type: '{ value: string; label: string; count?: number }[]' },
@@ -56,14 +79,11 @@ Takes every `<div>` prop, plus:
     query: { description: 'The search text. Use with `onQueryChange`.', type: 'string' },
     defaultQuery: { description: 'The search text at first, when the header keeps its own state.', type: 'string', default: "''" },
     onQueryChange: { description: 'Called as the search text changes.', type: '(query: string) => void' },
-    filterOptions: { description: 'What the Filter menu offers.', type: '{ value: string; label: string }[]' },
+    filterOptions: { description: 'What the Filter menu offers. Options with the same `group` sit together under its name.', type: '{ value: string; label: string; group?: string }[]' },
     filters: { description: 'The values of the filters that are on. Use with `onFiltersChange`.', type: 'string[]' },
     defaultFilters: { description: 'The filters on at first, when the header keeps its own state.', type: 'string[]', default: '[]' },
     onFiltersChange: { description: 'Called when a filter is turned on or off, or all are cleared.', type: '(filters: string[]) => void' },
-    view: { description: 'The selected layout. Use with `onViewChange`.', type: "'table' | 'board'" },
-    defaultView: { description: 'The layout at first, when the header keeps its own state.', type: "'table' | 'board'", default: "'table'" },
-    onViewChange: { description: 'Called with the newly selected layout.', type: "(view: 'table' | 'board') => void" },
-    newLabel: { description: 'The label of the primary action.', type: 'string', default: "'New account'" },
+    newLabel: { description: 'The label of the primary action.', type: 'string', default: "'New project'" },
     onNew: { description: 'Runs the primary action, usually opening a dialog.', type: '() => void' },
     onAction: { description: 'Runs an action from the More actions menu. Without it, the menu is hidden.', type: "(action: 'import' | 'export' | 'copy-link') => void" },
     filterMenu: { description: 'Props for the Filter menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },

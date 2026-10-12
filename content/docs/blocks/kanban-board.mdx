@@ -21,7 +21,7 @@ import { KanbanBoard } from '@/components/kanban-board';
 </div>;
 ```
 
-The board fills the height of its container, and each column scrolls on its own when its cards don't fit. When the columns are wider than the container, the board scrolls sideways. The sample data is accounts by status, shaped like the rows of the [data table](/docs/blocks/data-table), so one array can feed both, and the [page header](/docs/blocks/page-header)'s table and board switch can swap them. Change the columns, the `KanbanItem` type and the card in the file to fit your records.
+The board fills the height of its container, and each column scrolls on its own when its cards don't fit. When the columns are wider than the container, the board scrolls sideways. The sample data is accounts by status, shaped like the rows of the [data table](/docs/blocks/data-table), so one array can feed both. Change the columns, the `KanbanItem` type and the card in the file to fit your records.
 
 Each item names its column in `status`. The order of `items` is the order of the cards, so save the array `onItemsChange` gives you as it is. It fires once per move, when the card is dropped.
 
