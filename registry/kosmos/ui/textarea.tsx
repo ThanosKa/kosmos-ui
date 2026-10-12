@@ -33,6 +33,7 @@ function Textarea({ className, value, defaultValue, disabled, name, id, onValueC
         'placeholder:text-muted-foreground',
         'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
+        'data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:outline-destructive aria-invalid:focus-visible:ring-destructive/20',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
