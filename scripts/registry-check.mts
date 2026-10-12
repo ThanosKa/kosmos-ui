@@ -16,6 +16,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import {
+  extraImportedItems,
   installedPath,
   readRegistryItems,
   registryNamespace,
@@ -153,9 +154,7 @@ function checkInstall(app: string, tree: RegistryItem[]) {
 function demoExtras(name: string, tree: RegistryItem[], items: RegistryItem[]): string[] {
   const demo = join(repo, 'registry/kosmos/examples', `${name}-demo.tsx`);
   if (!existsSync(demo)) return [];
-  const imported = [...readFileSync(demo, 'utf8').matchAll(/from '@\/registry\/kosmos\/(?:ui|lib)\/([a-z0-9-]+)'/g)].map((m) => m[1]);
-  const inTree = new Set(tree.map((item) => item.name));
-  return [...new Set(imported)].filter((dep) => !inTree.has(dep) && items.some((item) => item.name === dep));
+  return extraImportedItems(readFileSync(demo, 'utf8'), tree, items).map((item) => item.name);
 }
 
 function writeSmokePage(app: string, name: string, item: RegistryItem) {

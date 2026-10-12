@@ -137,6 +137,29 @@ export function resolveRegistryTree(name: string, items: RegistryItem[] = readRe
   return [byName.get(name)!, ...deps];
 }
 
+/**
+ * Other `@kosmos/*` items that `code` (an example) imports and `tree` doesn't pull in, such as the Button a Popover
+ * example opens from. Someone copying the example adds them too.
+ */
+export function extraImportedItems(code: string, tree: RegistryItem[], items: RegistryItem[] = readRegistryItems()): RegistryItem[] {
+  const imported = new Set([...code.matchAll(/from '@\/registry\/kosmos\/(?:ui|lib)\/([a-z0-9-]+)'/g)].map((match) => match[1]));
+  const inTree = new Set(tree.map((item) => item.name));
+  return items.filter((item) => imported.has(item.name) && !inTree.has(item.name));
+}
+
+/** The item an example belongs to, by its name: `button-with-icon` → `button`, `page-header-demo` → `page-header`. */
+export function exampleOwner(example: string, items: RegistryItem[] = readRegistryItems()): RegistryItem | undefined {
+  return items
+    .filter((item) => example === item.name || example.startsWith(`${item.name}-`))
+    .sort((a, b) => b.name.length - a.name.length)[0];
+}
+
+/** The `@kosmos` items the example `example` (with source `code`) imports beyond what its own item installs. */
+export function exampleExtras(example: string, code: string, items: RegistryItem[] = readRegistryItems()): RegistryItem[] {
+  const owner = exampleOwner(example, items);
+  return owner ? extraImportedItems(code, resolveRegistryTree(owner.name, items), items) : [];
+}
+
 /** A theme item's `cssVars` as the CSS the CLI writes, for manual installation. */
 export function cssVarsAsCss(cssVars: NonNullable<RegistryItem['cssVars']>): string {
   const block = (selector: string, vars: Record<string, string> = {}) =>

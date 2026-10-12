@@ -7,6 +7,7 @@ import { getDocsIndex, getDocsNav, type DocsIndexItem } from './docs-nav';
 import { colorTokens, modeLabels, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
   cssVarsAsCss,
+  exampleExtras,
   getRegistryItem,
   installCommands,
   installedPath,
@@ -14,6 +15,7 @@ import {
   packageRunners,
   registryAddArgs,
   registryConfig,
+  registryNamespace,
   registryUrl,
   resolveRegistryTree,
   toInstalledImports,
@@ -89,7 +91,12 @@ const placeholders = {
         cell(prop.description ?? ''),
       ]),
     ),
-  ComponentPreview: (data: PlaceholderData) => fence('tsx', toInstalledImports(readExampleSource(nameOf(data)))),
+  ComponentPreview: (data: PlaceholderData) => {
+    const source = readExampleSource(nameOf(data));
+    const extras = exampleExtras(nameOf(data), source).map((item) => code(`${registryNamespace}/${item.name}`));
+    const note = extras.length ? `\n\nThis example also uses ${new Intl.ListFormat('en').format(extras)}.` : '';
+    return `${fence('tsx', toInstalledImports(source))}${note}`;
+  },
   ComponentInstall: (data: PlaceholderData) => fence('bash', installCommands(nameOf(data))),
   ComponentSource: (data: PlaceholderData) => sourceFiles(nameOf(data)),
   ShadcnCommand: ({ attributes }: PlaceholderData) =>
