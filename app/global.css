@@ -54,3 +54,12 @@ html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
+
+/* Fumadocs' heading anchors ship no focus style and keep the copy-link button at opacity 0 while it has focus. */
+.group\/heading > :is(a, button):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+.group\/heading > button:focus-visible {
+  opacity: 1;
+}
