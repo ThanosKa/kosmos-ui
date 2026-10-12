@@ -83,6 +83,8 @@ Text in components sits between 12 and 14px. Each size is a type role, which set
 - Chrome is 500, content is 400. Buttons, nav items, tabs, menu, select and command items, segmented items, field labels, badges and the titles of board cards and list rows take `font-medium`; table cells, descriptions, input values and prose stay 400. Table headers are 400, muted.
 - Hierarchy comes from weight and color (`text-muted-foreground`), not from more sizes.
 - Icons are 14px (`size-3.5`) in 30px controls (buttons, nav items, menu items, inputs) and 16px in 36px rows and `lg` buttons; 12px in `sm` buttons and badges.
+- Menu and select items are 30px rows (`min-h-7.5`) with 14px icons: a short list that opens beside its trigger and matches its height. Command items are 36px rows (`min-h-9`) with 16px icons: the palette is a wide search surface read at a glance while typing, and its rows carry a shortcut. In all three, item icons are `text-muted-foreground` and the label stays `text-foreground`. _Decided without the user (2026-10-12), pending confirmation._
+- A keyboard shortcut is always a `KbdGroup` of `Kbd` keys (`DropdownMenuShortcut`, `CommandShortcut`, inside a tooltip), never plain text or a bare `<kbd>`, so it reads the same everywhere and keeps its left-to-right order on a right-to-left page.
 - Numbers that change or line up (tables, stats, counters, timers, prices) take `tabular-nums`.
 - Single-line text in a fixed-width slot takes `truncate`; multi-line takes `line-clamp-*`. Prose measure is set in `em` (`max-w-[40em]`).
 - Inputs render `text-base sm:text-body`, so iOS never zooms on focus.
