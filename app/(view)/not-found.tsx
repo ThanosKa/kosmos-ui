@@ -1,7 +1,7 @@
 'use client';
 
 import { RootProvider } from 'fumadocs-ui/provider/next';
-import { SearchX } from 'lucide-react';
+import { FileQuestion } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
@@ -18,10 +18,10 @@ export default function ViewNotFound() {
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
-              <SearchX />
+              <FileQuestion />
             </EmptyMedia>
-            <EmptyTitle render={<h1 />}>No preview by that name</EmptyTitle>
-            <EmptyDescription>Check the name in the address, or find the component in the gallery.</EmptyDescription>
+            <EmptyTitle render={<h1 />}>Preview not found</EmptyTitle>
+            <EmptyDescription>No component, block or group goes by that name. Check the address, or find it in the gallery.</EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <Button variant="secondary" href="/gallery">
