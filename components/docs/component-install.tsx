@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ReactNode } from 'react';
-import { Tab } from 'fumadocs-ui/components/tabs';
 import {
   cssVarsAsCss,
   installCommands,
@@ -12,7 +11,7 @@ import {
 } from '@/lib/registry';
 import { DocsTabs } from './docs-tabs';
 import { HighlightedCode } from './highlighted-code';
-import { PackageInstall, PackageManagerTabs } from './shadcn-command';
+import { PackageInstall, PackageManagerCode } from './shadcn-command';
 import { Step, Steps } from './steps';
 
 /** The source files of an item, as they land in the user's project. */
@@ -56,37 +55,40 @@ export function ComponentInstall({ name }: { name: string }) {
   const packages = [...new Set([item, ...deps].flatMap((entry) => entry.dependencies ?? []))];
 
   return (
-    <DocsTabs items={['CLI', 'Manual']}>
-      <Tab value="CLI">
-        <PackageManagerTabs code={(runner) => installCommands(name, runner)} />
-      </Tab>
-      <Tab value="Manual">
-        <Steps data-slot="manual-install" className="my-0">
-          {packages.length > 0 && (
-            <InstallStep title="Install the dependencies.">
-              <PackageInstall packages={packages.join(' ')} />
-            </InstallStep>
-          )}
-          {deps.flatMap((dep) => [
-            dep.cssVars && (
-              <InstallStep
-                key={`${dep.name}-css`}
-                title={`Add the ${dep.title ?? dep.name} to your global CSS, after the Tailwind import.`}
-              >
-                <HighlightedCode code={cssVarsAsCss(dep.cssVars)} lang="css" title="app/globals.css" />
+    <DocsTabs
+      tabs={[
+        { label: 'CLI', content: <PackageManagerCode code={(runner) => installCommands(name, runner)} /> },
+        {
+          label: 'Manual',
+          content: (
+            <Steps data-slot="manual-install" className="my-0">
+              {packages.length > 0 && (
+                <InstallStep title="Install the dependencies.">
+                  <PackageInstall packages={packages.join(' ')} />
+                </InstallStep>
+              )}
+              {deps.flatMap((dep) => [
+                dep.cssVars && (
+                  <InstallStep
+                    key={`${dep.name}-css`}
+                    title={`Add the ${dep.title ?? dep.name} to your global CSS, after the Tailwind import.`}
+                  >
+                    <HighlightedCode code={cssVarsAsCss(dep.cssVars)} lang="css" title="app/globals.css" />
+                  </InstallStep>
+                ),
+                (dep.files ?? []).length > 0 && (
+                  <InstallStep key={`${dep.name}-files`} title={`Copy ${dep.title ?? dep.name}.`}>
+                    <ComponentSource name={dep.name} item={dep} lineNumbers />
+                  </InstallStep>
+                ),
+              ])}
+              <InstallStep title="Copy the component.">
+                <ComponentSource name={name} item={item} lineNumbers />
               </InstallStep>
-            ),
-            (dep.files ?? []).length > 0 && (
-              <InstallStep key={`${dep.name}-files`} title={`Copy ${dep.title ?? dep.name}.`}>
-                <ComponentSource name={dep.name} item={dep} lineNumbers />
-              </InstallStep>
-            ),
-          ])}
-          <InstallStep title="Copy the component.">
-            <ComponentSource name={name} item={item} lineNumbers />
-          </InstallStep>
-        </Steps>
-      </Tab>
-    </DocsTabs>
+            </Steps>
+          ),
+        },
+      ]}
+    />
   );
 }

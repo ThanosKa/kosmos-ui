@@ -1,40 +1,29 @@
-import { CodeBlockTab, CodeBlockTabs, CodeBlockTabsList, CodeBlockTabsTrigger } from 'fumadocs-ui/components/codeblock';
+import type { ReactNode } from 'react';
 import { cssVarsAsCss, getRegistryItem, packageInstallers, packageRunners, registryAddArgs, registryConfig } from '@/lib/registry';
+import { PackageManagerTabs } from './docs-tabs';
 import { HighlightedCode } from './highlighted-code';
 
 type Manager = keyof typeof packageRunners;
 type Runner = (typeof packageRunners)[Manager];
 
 /**
- * One code tab per package manager (the same look as a ```npm block), sharing the chosen manager across
- * the site. `code` gets each manager's `shadcn` runner, such as `pnpm dlx shadcn@latest`, and its name.
+ * One code tab per package manager, sharing the chosen manager across the site. `code` gets each manager's
+ * `shadcn` runner, such as `pnpm dlx shadcn@latest`, and its name.
  */
-export function PackageManagerTabs({ code }: { code: (runner: Runner, manager: Manager) => string }) {
+export function PackageManagerCode({ code }: { code: (runner: Runner, manager: Manager) => string }) {
   const managers = Object.keys(packageRunners) as Manager[];
   return (
-    <CodeBlockTabs
-      groupId="package-manager"
-      persist
-      defaultValue={managers[0]}
-      className="not-prose min-w-0 rounded-2xl border-transparent bg-card shadow-card"
-    >
-      <CodeBlockTabsList className="border-b border-border">
-        {managers.map((manager) => (
-          <CodeBlockTabsTrigger
-            key={manager}
-            value={manager}
-            className="rounded-lg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
-          >
-            {manager}
-          </CodeBlockTabsTrigger>
-        ))}
-      </CodeBlockTabsList>
-      {managers.map((manager) => (
-        <CodeBlockTab key={manager} value={manager}>
-          <HighlightedCode code={code(packageRunners[manager], manager)} lang="bash" embedded />
-        </CodeBlockTab>
-      ))}
-    </CodeBlockTabs>
+    <PackageManagerTabs
+      managers={managers}
+      panels={
+        Object.fromEntries(
+          managers.map((manager) => [
+            manager,
+            <HighlightedCode key={manager} code={code(packageRunners[manager], manager)} lang="bash" embedded />,
+          ]),
+        ) as Record<Manager, ReactNode>
+      }
+    />
   );
 }
 
@@ -46,12 +35,12 @@ export function PackageManagerTabs({ code }: { code: (runner: Runner, manager: M
 export function ShadcnCommand({ args, registryAdd }: { args?: string; registryAdd?: boolean }) {
   const command = registryAdd ? registryAddArgs : args;
   if (!command) throw new Error('ShadcnCommand needs `args` or `registryAdd`');
-  return <PackageManagerTabs code={(runner) => `${runner} ${command}`} />;
+  return <PackageManagerCode code={(runner) => `${runner} ${command}`} />;
 }
 
 /** Adds npm packages with the chosen package manager: `<PackageInstall packages="cn" />`. */
 export function PackageInstall({ packages }: { packages: string }) {
-  return <PackageManagerTabs code={(_, manager) => `${packageInstallers[manager]} ${packages}`} />;
+  return <PackageManagerCode code={(_, manager) => `${packageInstallers[manager]} ${packages}`} />;
 }
 
 /** The `registries` entry for `components.json`. */
