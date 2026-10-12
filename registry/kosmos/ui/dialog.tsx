@@ -1,7 +1,6 @@
 'use client';
 
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
-import { mergeProps } from '@base-ui/react/merge-props';
 import { XIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -12,9 +11,7 @@ import { Button } from '@/registry/kosmos/ui/button';
  * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
  */
 function withSlot<Render>(render: Render, slot: string) {
-  if (!React.isValidElement<Record<string, unknown>>(render)) return render;
-  return (props: React.ComponentProps<'button'>) =>
-    React.cloneElement(render, { ...mergeProps<'button'>(props, render.props), 'data-slot': slot, ref: props.ref });
+  return React.isValidElement<{ 'data-slot'?: string }>(render) ? React.cloneElement(render, { 'data-slot': slot }) : render;
 }
 
 function Dialog(props: DialogPrimitive.Root.Props) {

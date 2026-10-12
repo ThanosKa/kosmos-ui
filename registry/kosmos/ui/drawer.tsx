@@ -1,7 +1,6 @@
 'use client';
 
 import { Drawer as DrawerPrimitive } from '@base-ui/react/drawer';
-import { mergeProps } from '@base-ui/react/merge-props';
 import { XIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -12,9 +11,7 @@ import { Button } from '@/registry/kosmos/ui/button';
  * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
  */
 function withSlot<Render>(render: Render, slot: string) {
-  if (!React.isValidElement<Record<string, unknown>>(render)) return render;
-  return (props: React.ComponentProps<'button'>) =>
-    React.cloneElement(render, { ...mergeProps<'button'>(props, render.props), 'data-slot': slot, ref: props.ref });
+  return React.isValidElement<{ 'data-slot'?: string }>(render) ? React.cloneElement(render, { 'data-slot': slot }) : render;
 }
 
 /** Whether the drawer blocks the page: only then does `DrawerContent` add the backdrop. */
