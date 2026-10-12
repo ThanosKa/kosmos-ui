@@ -20,16 +20,22 @@ import { useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
+const plans = ['free', 'pro', 'scale'];
+
 export default function ProjectsPage() {
   const [tab, setTab] = useState('all');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<string[]>([]);
 
+  // Filters in one group widen the list, filters in different groups narrow it.
+  const planFilters = filters.filter((value) => plans.includes(value));
+  const platformFilters = filters.filter((value) => !plans.includes(value));
   const shown = projects.filter(
     (project) =>
       (tab === 'all' || project.status === tab) &&
-      project.name.toLowerCase().includes(query.toLowerCase()) &&
-      (filters.length === 0 || filters.includes(project.plan)),
+      `${project.name} ${project.domain}`.toLowerCase().includes(query.toLowerCase()) &&
+      (planFilters.length === 0 || planFilters.includes(project.plan)) &&
+      (platformFilters.length === 0 || platformFilters.includes(project.platform)),
   );
 
   return (

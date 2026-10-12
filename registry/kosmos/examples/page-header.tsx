@@ -61,7 +61,7 @@ export default function PageHeaderPreview() {
         <div className={`${frame} max-w-sm`}>
           <PageHeader
             leading={toggle}
-            title="Projects on the Scale plan in every region"
+            title="Scale plan projects that are live, on trial or paused"
             description=""
             newLabel="New project"
             defaultFilters={['scale', 'server']}

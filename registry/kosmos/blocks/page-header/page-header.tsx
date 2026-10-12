@@ -295,7 +295,7 @@ function PageHeader({
                 {filters.length ? (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setFilters([])}>Clear filters</DropdownMenuItem>
+                    <DropdownMenuItem onClick={clearFilters}>Clear filters</DropdownMenuItem>
                   </>
                 ) : null}
               </DropdownMenuContent>

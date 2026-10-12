@@ -4,6 +4,8 @@ Every block's sample data, review preview, demo and docs page uses this world an
 
 **Parallax** is a fictional product analytics SaaS. A customer adds a **project** for each site or app, Parallax collects its **events**, and the customer pays a **plan**. The blocks show Parallax from the inside: the dashboard its own team uses to run the product, with its users, revenue, events, customer projects and roadmap.
 
+A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Parallax would show.
+
 Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Acme, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status.
 
 ## Workspace, domains, dates
@@ -84,6 +86,17 @@ The four numbers a Parallax dashboard leads with, for the last 30 days against t
 | Events | 28495200 | +14.2% | number, compact from a million |
 | Monthly revenue | 14628 | +6.8% | currency |
 | Live projects | 8 | −11.1% (Hollow Oak Games paused on 18 September) | number |
+
+The other ranges, each against the same span before it:
+
+| Metric | 7 days | 90 days |
+| --- | --- | --- |
+| Active users | 61240, +3.1% | 312800, +21.4% |
+| Events | 6838800, +2.4% | 88335100, +31.8% |
+| Monthly revenue | 14628, +1.2% | 14628, +18.9% |
+| Live projects | 8, no change | 8, +14.3% (7 in mid-July) |
+
+A chart over a range plots one point per day (7 and 30 days) or per week (90 days), so its points are daily or weekly figures, not the headline: about 29,400 active users and 1,012,000 events a day at the end of the range, and 74,800 users and 7,040,000 events a week. Monthly revenue is $14,628 on the last day of every range, and Live projects steps from 9 to 8 on 18 September.
 
 ## Roadmap
 

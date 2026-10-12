@@ -15,10 +15,10 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 /*
- * The live dashboard on the landing page, composed from the eight free blocks with the same "Acme Inc."
- * sample workspace they ship with. One array of accounts feeds the stat tiles, the table, the board, the
- * drawer and the command menu, so a change in one shows in the others. Only the Accounts page, its saved views and the
- * Deals board are wired up; the other pages say so and link back.
+ * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
+ * Parallax sample data; the other blocks still share one array of sample records, so a change in the table shows
+ * on the board, in the drawer and in the command menu. Only the list page, its saved views and the board are
+ * wired up; the other pages say so and link back.
  */
 
 const maya = { name: 'Maya Chen', initials: 'MC' };

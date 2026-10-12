@@ -51,15 +51,15 @@ const curve = (length: number, end: number, rise: number, swing: number, phase: 
     return Math.round(end * (1 - rise * (1 - progress) + swing * wobble));
   });
 
+const steps = (labels: string[], current: number[], previous: number[]) =>
+  labels.map((label, i) => ({ label, current: current[i], previous: previous[i] }));
+
 function samplePoints(range: Range, end: number, change: number, rise: number, swing: number, phase: number) {
   const labels = sampleLabels[range];
   const current = curve(labels.length, end, rise, swing, phase);
   const previous = curve(labels.length, end / (1 + change / 100), rise, swing, phase + 2);
-  return labels.map((label, i) => ({ label, current: current[i], previous: previous[i] }));
+  return steps(labels, current, previous);
 }
-
-const steps = (labels: string[], current: number[], previous: number[]) =>
-  labels.map((label, i) => ({ label, current: current[i], previous: previous[i] }));
 
 const sampleMetrics: Record<Range, Metric[]> = {
   '7d': [
@@ -92,7 +92,7 @@ const sampleMetrics: Record<Range, Metric[]> = {
       value: 8,
       format: 'number',
       change: 14.3,
-      points: steps(sampleLabels['90d'], [7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 8, 8, 8], [6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7]),
+      points: steps(sampleLabels['90d'], [7, 7, 8, 8, 8, 9, 9, 9, 9, 8, 8, 8, 8], [6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7]),
     },
   ],
 };
@@ -167,7 +167,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
     <TabsTrigger
       value={metric.id}
       className={cn(
-        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-xl px-3 py-2.5 text-start whitespace-normal @xs:grid-cols-1',
+        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-lg px-3 py-2.5 text-start whitespace-normal @xs:grid-cols-1',
         'transition-[color,background-color,box-shadow] hover:not-data-active:bg-accent',
         'data-active:bg-secondary data-active:shadow-control',
         // The raised surface marks the selected metric, so the tab list's underline and its reduced-motion twin stay hidden.
@@ -246,7 +246,17 @@ function TopEvents({ events, loading, rangeLabel }: { events: TopEvent[]; loadin
   );
 }
 
-type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
+function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
+  const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
+  const current = value === undefined ? uncontrolled : value;
+  const setValue = (next: T) => {
+    if (value === undefined) setUncontrolled(next);
+    onChange?.(next);
+  };
+  return [current, setValue] as const;
+}
+
+type StatsOverviewProps =Omit<React.ComponentProps<'section'>, 'children'> & {
   /** The metrics for each range, as tabs over the chart. Four fit one row on a wide container. */
   metrics?: Record<Range, Metric[]>;
   /** The most frequent events for each range, most frequent first. An empty list shows the empty state. */
@@ -281,20 +291,9 @@ function StatsOverview({
   className,
   ...props
 }: StatsOverviewProps) {
-  const [rangeState, setRangeState] = React.useState<Range>(defaultRange);
-  const range = rangeProp ?? rangeState;
-  const setRange = (next: Range) => {
-    if (rangeProp === undefined) setRangeState(next);
-    onRangeChange?.(next);
-  };
-
+  const [range, setRange] = useControlled(rangeProp, defaultRange, onRangeChange);
   const list = metrics[range];
-  const [metricState, setMetricState] = React.useState(defaultMetric ?? list[0]?.id ?? '');
-  const metricId = metricProp ?? metricState;
-  const setMetric = (next: string) => {
-    if (metricProp === undefined) setMetricState(next);
-    onMetricChange?.(next);
-  };
+  const [metricId, setMetric] = useControlled(metricProp, defaultMetric ?? list[0]?.id ?? '', onMetricChange);
   const active = list.find((item) => item.id === metricId) ?? list[0];
   const rangeLabel = ranges[range].label;
 
@@ -343,8 +342,8 @@ function StatsOverview({
               <TabsList
                 aria-label="Metric"
                 className={cn(
-                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl bg-muted p-1 shadow-inset @xs:grid-cols-2 @3xl:grid-cols-4',
-                  'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-0',
+                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @xs:grid-cols-2 @3xl:grid-cols-4',
+                  'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-transparent',
                   '*:data-[slot=tabs-indicator]:hidden',
                 )}
               >
