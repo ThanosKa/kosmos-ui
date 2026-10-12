@@ -61,12 +61,15 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
-- The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1`, the Meter's `primary` tone and `shadow-lift`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
+- The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1` and `shadow-lift`. The Meter's `primary` tone takes `meter-primary`, the same orange a step deeper in light, so it never shares a lightness with `warning`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
+- Orange means focus, so hover never turns anything orange: a hover line or halo is neutral (the sidebar resize handle shows `sidebar-foreground/20`, a slider thumb a `foreground/10` halo).
+- Two tones a reader must tell apart (Meter tones, status colors side by side) differ in lightness, not only in hue, so they still read in grayscale and for color-blind readers.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
 - A category (segment, plan, label) is a tag: a Badge hue variant (`orange`, `blue`, `amber`, `magenta`, `green`, `red`). Its fill is the matching `tag-*` token (a chart hue at low alpha), its edge a 1px border of `tag-*-foreground/20`, and its text `tag-*-foreground`, which passes 4.5:1 on the fill. A category keeps one hue everywhere. A change in a stat tile is a `green` or `red` tag beside its muted context.
 - Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. The active item, the current page and values stay `text-foreground`.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
+- A scrollbar thumb is `bg-scrollbar-thumb`, lighter than `muted-foreground`, and keeps 3:1 against its `muted` track.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. It is the faintest text role: a fainter grey for meta, placeholders or eyebrows would drop below 4.5:1 (see conflicts.md, Accessibility floor).
 
 ## Typography
