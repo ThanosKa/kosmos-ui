@@ -187,7 +187,6 @@ Status: open
 
 ### Καθάρισμα
 
-- Τα παλιά remote branches που έχουν γίνει merge σβήνονται.
 - Νεκρός κώδικας: ο κλάδος για table rows στο site search, τα `href="#…"` στα examples του Badge και του Button, το αχρησιμοποίητο prop `tall` του ComponentPreview.
 - Το `docs/backlog.md` σβήνεται, γιατί το αντικαθιστά αυτό το spec.
 - Τα παλιά audit και redesign αρχεία στο `.scratch/` σβήνονται όταν κλείσουν τα ευρήματά τους.
@@ -195,16 +194,19 @@ Status: open
 
 ### Σειρά υλοποίησης
 
-1. Καθάρισμα.
-2. Μικρές διορθώσεις και χρώματα, μαζί με τις αλλαγές στο `kosmos-style` και τα ADRs.
-3. Sidebar icon mode.
-4. Ταυτότητα των 8 blocks (νέος demo κόσμος).
-5. Δομή docs και block viewer.
-6. Landing.
-7. Domain και launch.
-8. Ιδιωτικό repo, και Pro εκδοχές ανά κατηγορία, με τη σειρά της παραπάνω λίστας.
-9. Templates.
-10. Πακετάρισμα (τιμές, άδεια, registry με license key, πληρωμές), μόνο όταν το πει ο Θάνος.
+1. Μικρές διορθώσεις, χρώματα και νεκρός κώδικας, μαζί με τις αλλαγές στο `kosmos-style` και τα ADRs.
+2. Sidebar icon mode.
+3. Ταυτότητα των 8 blocks (νέος demo κόσμος).
+4. Δομή docs και block viewer.
+5. Landing.
+6. Domain και launch.
+7. Ιδιωτικό repo, και Pro εκδοχές ανά κατηγορία, με τη σειρά της παραπάνω λίστας.
+8. Templates.
+9. Πακετάρισμα (τιμές, άδεια, registry με license key, πληρωμές), μόνο όταν το πει ο Θάνος.
+
+### Για μετά
+
+- Δύο kits με components για agent UI, που σημείωσε ο Θάνος, για ιδέες σε περισσότερα components (π.χ. task rows). Δεν έχουν μελετηθεί ακόμα. Τα κοιτάμε μετά το τρέχον ticket. Τα links είναι στο `.scratch/research/ideas-later.md`.
 
 ## Testing Decisions
 
