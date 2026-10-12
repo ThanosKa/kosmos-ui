@@ -42,7 +42,7 @@ function Slider({
       max={max}
       thumbAlignment="edge"
       className={cn(
-        'flex w-full flex-col gap-1 data-disabled:opacity-50',
+        'group/slider flex w-full flex-col gap-1 data-disabled:opacity-50',
         'data-[orientation=vertical]:h-full data-[orientation=vertical]:w-auto data-[orientation=vertical]:items-center',
         className,
       )}
@@ -82,6 +82,8 @@ function Slider({
                 // A 28px hit area around the 16px thumb.
                 'after:absolute after:-inset-1.5 after:rounded-full',
                 'transition-[box-shadow]',
+                // Hovering the slider or dragging a thumb rings it in a soft halo.
+                'group-hover/slider:not-data-disabled:ring-4 group-hover/slider:not-data-disabled:ring-foreground/10 data-dragging:ring-4 data-dragging:ring-foreground/10',
                 'has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring',
                 'data-invalid:ring-1 data-invalid:ring-destructive',
                 'data-disabled:cursor-not-allowed',
@@ -101,7 +103,7 @@ function SliderLabel({ className, ...props }: SliderLabelProps) {
   return (
     <SliderPrimitive.Label
       data-slot="slider-label"
-      className={cn('w-fit text-body font-medium text-foreground', className)}
+      className={cn('w-fit text-small font-medium text-muted-foreground', className)}
       {...props}
     />
   );
@@ -114,7 +116,7 @@ function SliderValue({ className, ...props }: SliderValueProps) {
   return (
     <SliderPrimitive.Value
       data-slot="slider-value"
-      className={cn('text-body text-muted-foreground tabular-nums', className)}
+      className={cn('text-small text-foreground tabular-nums', className)}
       {...props}
     />
   );
