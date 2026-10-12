@@ -20,67 +20,87 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Clock, Plus } from 'lucide-react';
+import { CalendarDays, Circle, CircleCheck, CircleDashed, CircleDot, Plus, ThumbsUp, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration, ease } from '@/registry/kosmos/lib/motion';
 import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
-import { Meter, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 
 type KanbanTone = 'muted' | 'success' | 'warning' | 'destructive';
 
 type KanbanColumn = {
-  /** Matched by each item's `status`. */
+  /** Matched by each item's `column`. */
   id: string;
   title: string;
-  /** Colors the dot beside the title, like a status badge. */
+  /** The stage glyph beside the title. Without one, a dot. */
+  icon?: LucideIcon;
+  /** Colors the glyph or the dot, like a status badge. */
   tone?: KanbanTone;
 };
 
 type KanbanPerson = { name: string; initials: string };
 
-/** One card. Shaped like an account in the data table block, so one array can feed both. */
+/** A category on the card, shown as a tag in one of the Badge hues. */
+type KanbanTag = { label: string; hue: 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' };
+
+/** One card: a roadmap item. */
 type KanbanItem = {
   id: string;
-  name: string;
-  domain?: string;
+  title: string;
   /** The column the card sits in: a column's `id`. */
-  status: string;
-  owner?: KanbanPerson;
-  /** Annual recurring revenue, in dollars. */
-  arr?: number;
-  /** Health score from 0 to 100. */
-  health?: number;
-  /** The day of the last activity, as an ISO date (`2026-10-09`). */
-  lastActivity?: string;
+  column: string;
+  /** The part of the product it belongs to. */
+  area?: KanbanTag;
+  /** How many customers asked for it. */
+  votes?: number;
+  /** Who builds it. */
+  assignee?: KanbanPerson;
+  /** When it should ship, such as `Q4 2026`. */
+  target?: string;
 };
 
 // Sample data: replace it with your columns and records.
-const maya = { name: 'Maya Chen', initials: 'MC' };
-const jonas = { name: 'Jonas Weber', initials: 'JW' };
-const priya = { name: 'Priya Raman', initials: 'PR' };
+const lena = { name: 'Lena Park', initials: 'LP' };
+const tomas = { name: 'Tomás Ortega', initials: 'TO' };
+const ama = { name: 'Ama Mensah', initials: 'AM' };
+const kai = { name: 'Kai Nakamura', initials: 'KN' };
+
+const insights: KanbanTag = { label: 'Insights', hue: 'amber' };
+const ingestion: KanbanTag = { label: 'Ingestion', hue: 'green' };
+const billing: KanbanTag = { label: 'Billing', hue: 'red' };
+const platform: KanbanTag = { label: 'Platform', hue: 'blue' };
 
 const sampleColumns: KanbanColumn[] = [
-  { id: 'trial', title: 'Trial', tone: 'muted' },
-  { id: 'active', title: 'Active', tone: 'success' },
-  { id: 'at-risk', title: 'At risk', tone: 'warning' },
-  { id: 'churned', title: 'Churned', tone: 'destructive' },
+  { id: 'ideas', title: 'Ideas', icon: CircleDashed, tone: 'muted' },
+  { id: 'planned', title: 'Planned', icon: Circle, tone: 'muted' },
+  { id: 'in-progress', title: 'In progress', icon: CircleDot, tone: 'warning' },
+  { id: 'shipped', title: 'Shipped', icon: CircleCheck, tone: 'success' },
 ];
 
 const sampleItems: KanbanItem[] = [
-  { id: 'lumen', name: 'Lumen Health', domain: 'lumenhealth.example', status: 'trial', owner: maya, arr: 0, health: 55, lastActivity: '2026-10-11' },
-  { id: 'northwind', name: 'Northwind Traders', domain: 'northwind.example', status: 'active', owner: maya, arr: 184000, health: 86, lastActivity: '2026-10-10' },
-  { id: 'orbit', name: 'Orbit Freight', domain: 'orbitfreight.example', status: 'active', owner: jonas, arr: 238000, health: 91, lastActivity: '2026-10-09' },
-  { id: 'cedar', name: 'Cedar & Pine', domain: 'cedarpine.example', status: 'active', owner: priya, arr: 42000, health: 74, lastActivity: '2026-10-08' },
-  { id: 'vela', name: 'Vela Robotics', domain: 'vela.example', status: 'active', owner: priya, arr: 127000, health: 68, lastActivity: '2026-10-06' },
-  { id: 'bluebird', name: 'Bluebird Labs', domain: 'bluebird.example', status: 'at-risk', owner: jonas, arr: 96500, health: 38, lastActivity: '2026-09-21' },
-  { id: 'quill', name: 'Quill Studio', domain: 'quill.example', status: 'at-risk', owner: maya, arr: 18400, health: 41, lastActivity: '2026-09-28' },
-  { id: 'harbor', name: 'Harbor Savings Bank', domain: 'harborbank.example', status: 'churned', owner: priya, arr: 0, health: 12, lastActivity: '2026-08-30' },
+  { id: 'slack-alerts', title: 'Slack alerts for traffic drops', column: 'ideas', area: platform, votes: 64 },
+  { id: 'usage-invoices', title: 'Usage-based invoices', column: 'ideas', area: billing, votes: 27 },
+  { id: 'shareable-links', title: 'Shareable dashboard links', column: 'ideas', area: insights, votes: 51 },
+  { id: 'retention-cohorts', title: 'Retention cohorts by plan', column: 'planned', area: insights, votes: 88, assignee: kai, target: 'Q1 2027' },
+  { id: 'saml-sso', title: 'SAML single sign-on', column: 'planned', area: platform, votes: 73, assignee: tomas, target: 'Q1 2027' },
+  { id: 'mobile-sdk', title: 'Mobile SDK 3.0', column: 'planned', area: ingestion, votes: 39, assignee: tomas, target: 'Q4 2026' },
+  { id: 'funnel-comparisons', title: 'Funnel comparisons', column: 'in-progress', area: insights, votes: 112, assignee: ama, target: 'Q4 2026' },
+  { id: 'server-batching', title: 'Server-side batching', column: 'in-progress', area: ingestion, votes: 45, assignee: tomas, target: 'Q4 2026' },
+  { id: 'eu-region', title: 'EU data region', column: 'shipped', area: ingestion, votes: 97, assignee: tomas, target: 'Q3 2026' },
+  { id: 'annual-billing', title: 'Annual billing', column: 'shipped', area: billing, votes: 58, assignee: lena, target: 'Q3 2026' },
 ];
+
+const toneText: Record<KanbanTone, string> = {
+  muted: 'text-muted-foreground',
+  success: 'text-success',
+  warning: 'text-warning',
+  destructive: 'text-destructive',
+};
 
 const toneDot: Record<KanbanTone, string> = {
   muted: 'bg-muted-foreground',
@@ -89,11 +109,9 @@ const toneDot: Record<KanbanTone, string> = {
   destructive: 'bg-destructive',
 };
 
-// Fixed locale and time zone, so the server and the browser render the same text.
-const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
-const day = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-const formatDay = (iso: string) => day.format(new Date(`${iso}T00:00:00Z`));
+// A fixed locale, so the server and the browser render the same text.
+const count = new Intl.NumberFormat('en-US');
+const votesLabel = (votes: number) => `${count.format(votes)} ${votes === 1 ? 'vote' : 'votes'}`;
 
 /** Sibling cards slide aside with the Kosmos base duration and curve. */
 const sortTransition = { duration: duration.base * 1000, easing: `cubic-bezier(${ease.power3Out.join(', ')})` };
@@ -134,12 +152,11 @@ function useMounted() {
 
 function itemLabel(item: KanbanItem) {
   return [
-    item.name,
-    item.domain,
-    item.owner ? `owned by ${item.owner.name}` : 'no owner',
-    item.arr ? `${usd.format(item.arr)} ARR` : null,
-    item.health !== undefined ? `health ${item.health}` : null,
-    item.lastActivity ? `last activity ${formatDay(item.lastActivity)}` : null,
+    item.title,
+    item.area?.label,
+    item.votes !== undefined ? votesLabel(item.votes) : null,
+    item.target ? `target ${item.target}` : null,
+    item.assignee ? `assigned to ${item.assignee.name}` : 'unassigned',
   ]
     .filter(Boolean)
     .join(', ');
@@ -153,9 +170,9 @@ type KanbanCardProps = React.ComponentProps<'div'> & {
   placeholder?: boolean;
 };
 
-/** One record: its name, domain, owner, ARR, health and last activity. */
+/** One roadmap item: its area and title, then its votes, target quarter and assignee. */
 function KanbanCard({ item, lifted = false, placeholder = false, className, ...props }: KanbanCardProps) {
-  const hasStats = item.arr !== undefined || Boolean(item.lastActivity) || item.health !== undefined;
+  const hasMeta = item.votes !== undefined || Boolean(item.target) || Boolean(item.assignee);
   return (
     <div
       data-slot="kanban-card"
@@ -171,40 +188,32 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
       )}
       {...props}
     >
-      <div className="flex items-start gap-2 p-3">
-        <div className="flex min-w-0 flex-1 flex-col">
-          <p className="line-clamp-2 text-body font-medium text-pretty wrap-break-word">{item.name}</p>
-          {item.domain ? <p className="truncate text-caption text-muted-foreground">{item.domain}</p> : null}
-        </div>
-        {item.owner ? (
-          <Avatar size="sm" title={item.owner.name}>
-            <AvatarFallback>{item.owner.initials}</AvatarFallback>
-          </Avatar>
+      <div className="flex flex-col items-start gap-2 p-3">
+        {item.area ? (
+          <Badge variant={item.area.hue} className="max-w-full">
+            <span className="truncate">{item.area.label}</span>
+          </Badge>
         ) : null}
+        <p className="line-clamp-3 text-body font-medium text-pretty wrap-break-word">{item.title}</p>
       </div>
-      {hasStats ? (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5">
-          {item.arr !== undefined ? (
-            <span className="text-caption text-muted-foreground tabular-nums">
-              <span className="font-medium text-foreground">{item.arr ? usdCompact.format(item.arr) : '$0'}</span> ARR
+      {hasMeta ? (
+        <div className="flex min-h-10 items-center gap-3 px-3 py-2">
+          {item.votes !== undefined ? (
+            <span className="flex shrink-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
+              <ThumbsUp aria-hidden className="size-3.5" />
+              <span className="font-medium text-foreground">{count.format(item.votes)}</span>
             </span>
           ) : null}
-          {item.lastActivity ? (
-            <span className="flex items-center gap-1 text-caption text-muted-foreground tabular-nums">
-              <Clock aria-hidden className="size-3.5" />
-              {formatDay(item.lastActivity)}
+          {item.target ? (
+            <span className="flex min-w-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
+              <CalendarDays aria-hidden className="size-3.5 shrink-0" />
+              <span className="truncate">{item.target}</span>
             </span>
           ) : null}
-          {item.health !== undefined ? (
-            <Meter
-              value={item.health}
-              tone="auto"
-              aria-hidden
-              className="ms-auto w-20 grid-cols-[minmax(0,1fr)_1.5rem] items-center gap-x-2 gap-y-0"
-            >
-              <MeterSegments count={10} className="col-span-1 h-2" />
-              <MeterValue className="row-start-1 text-end text-caption" />
-            </Meter>
+          {item.assignee ? (
+            <Avatar size="sm" title={item.assignee.name} className="ms-auto">
+              <AvatarFallback>{item.assignee.initials}</AvatarFallback>
+            </Avatar>
           ) : null}
         </div>
       ) : null}
@@ -277,16 +286,17 @@ function KanbanColumnView({
 }) {
   const { setNodeRef } = useDroppable({ id: column.id, data: { type: 'column' } });
   const headingId = React.useId();
-  const total = items.reduce((sum, item) => sum + (item.arr ?? 0), 0);
+  const tone = column.tone ?? 'muted';
+  const Icon = column.icon;
   return (
-    <section
-      data-slot="kanban-column"
-      aria-labelledby={headingId}
-      className="flex max-h-full w-72 shrink-0 flex-col"
-    >
+    <section data-slot="kanban-column" aria-labelledby={headingId} className="flex max-h-full w-72 shrink-0 flex-col">
       {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
       <header className="relative flex h-11 shrink-0 items-center gap-2 ps-3.5 pe-2">
-        <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[column.tone ?? 'muted'])} />
+        {Icon ? (
+          <Icon aria-hidden className={cn('size-3.5 shrink-0', toneText[tone])} />
+        ) : (
+          <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[tone])} />
+        )}
         <h3 id={headingId} className="truncate text-body font-medium">
           {column.title}
         </h3>
@@ -298,17 +308,11 @@ function KanbanColumnView({
             <span className="sr-only">{items.length === 1 ? ' card' : ' cards'}</span>
           </span>
         )}
-        {!loading && total > 0 ? (
-          <span className="ms-auto text-caption text-muted-foreground tabular-nums">
-            {usdCompact.format(total)}
-            <span className="sr-only"> ARR</span>
-          </span>
-        ) : null}
         {onAdd ? (
           <Button
             variant="ghost"
             size="icon-sm"
-            className={cn('text-muted-foreground', (loading || total === 0) && 'ms-auto')}
+            className="ms-auto text-muted-foreground"
             aria-label={`Add to ${column.title}`}
             onClick={() => onAdd(column.id)}
           >
@@ -346,15 +350,15 @@ function KanbanColumnView({
 }
 
 type KanbanBoardProps = Omit<React.ComponentProps<'div'>, 'children'> & {
-  /** The columns, in order. Defaults to the account statuses: Trial, Active, At risk, Churned. */
+  /** The columns, in order. Defaults to the roadmap stages: Ideas, Planned, In progress, Shipped. */
   columns?: KanbanColumn[];
-  /** The cards, controlled. Each names its column in `status`; their order is the order on the board. */
+  /** The cards, controlled. Each names its column in `column`; their order is the order on the board. */
   items?: KanbanItem[];
-  /** The cards to start with when `items` is not controlled. Defaults to sample accounts. */
+  /** The cards to start with when `items` is not controlled. Defaults to a sample roadmap. */
   defaultItems?: KanbanItem[];
   /** Called once per move, when a card is dropped in a new place, with every card in the new order. */
   onItemsChange?: (items: KanbanItem[]) => void;
-  /** Shows only cards whose name, domain or owner contains this text. */
+  /** Shows only cards whose title, area or assignee contains this text. */
   query?: string;
   /** Called when a card is clicked or opened with Enter. */
   onOpen?: (item: KanbanItem) => void;
@@ -410,26 +414,26 @@ function KanbanBoard({
 
   const needle = query.trim().toLowerCase();
   const matches = (item: KanbanItem) =>
-    !needle || [item.name, item.domain, item.owner?.name].some((text) => text?.toLowerCase().includes(needle));
+    !needle || [item.title, item.area?.label, item.assignee?.name].some((text) => text?.toLowerCase().includes(needle));
   const visibleIn = (columnId: string, list = latestItems.current) =>
-    list.filter((item) => item.status === columnId && matches(item));
+    list.filter((item) => item.column === columnId && matches(item));
 
   const columnOf = (id: UniqueIdentifier, list = latestItems.current) =>
-    columns.some((column) => column.id === id) ? String(id) : list.find((item) => item.id === id)?.status;
+    columns.some((column) => column.id === id) ? String(id) : list.find((item) => item.id === id)?.column;
   const columnTitle = (id: string | undefined) => columns.find((column) => column.id === id)?.title ?? 'no column';
   const position = (id: UniqueIdentifier) => {
     const columnId = columnOf(id);
     const inColumn = columnId ? visibleIn(columnId) : [];
     return `${columnTitle(columnId)}, position ${inColumn.findIndex((item) => item.id === id) + 1} of ${inColumn.length}`;
   };
-  const nameOf = (id: UniqueIdentifier) => latestItems.current.find((item) => item.id === id)?.name ?? String(id);
+  const titleOf = (id: UniqueIdentifier) => latestItems.current.find((item) => item.id === id)?.title ?? String(id);
 
   const announcements: Announcements = {
-    onDragStart: ({ active }) => `Picked up ${nameOf(active.id)}, in ${position(active.id)}.`,
-    onDragOver: ({ active, over }) => (over ? `${nameOf(active.id)} is now in ${position(active.id)}.` : undefined),
-    onDragEnd: ({ active }) => `Dropped ${nameOf(active.id)} in ${position(active.id)}.`,
+    onDragStart: ({ active }) => `Picked up ${titleOf(active.id)}, in ${position(active.id)}.`,
+    onDragOver: ({ active, over }) => (over ? `${titleOf(active.id)} is now in ${position(active.id)}.` : undefined),
+    onDragEnd: ({ active }) => `Dropped ${titleOf(active.id)} in ${position(active.id)}.`,
     // Runs after the cancel has put every card back, so the position is the original one.
-    onDragCancel: ({ active }) => `Move cancelled. ${nameOf(active.id)} is back in ${position(active.id)}.`,
+    onDragCancel: ({ active }) => `Move cancelled. ${titleOf(active.id)} is back in ${position(active.id)}.`,
   };
 
   // Up and Down move within a column (the sortable default); Left and Right jump to the same
@@ -480,10 +484,10 @@ function KanbanBoard({
       index = overIndex + (below ? 1 : 0);
     } else {
       // Over the column itself: after its last card, or at the end of the list.
-      const lastInColumn = rest.findLastIndex((item) => item.status === to);
+      const lastInColumn = rest.findLastIndex((item) => item.column === to);
       index = lastInColumn >= 0 ? lastInColumn + 1 : rest.length;
     }
-    rest.splice(index, 0, { ...moving, status: to });
+    rest.splice(index, 0, { ...moving, column: to });
     preview(rest);
   }
 
@@ -493,7 +497,7 @@ function KanbanBoard({
     if (over && active.id !== over.id) {
       const from = list.findIndex((item) => item.id === active.id);
       const to = list.findIndex((item) => item.id === over.id);
-      if (from >= 0 && to >= 0 && list[from].status === list[to].status) list = arrayMove(list, from, to);
+      if (from >= 0 && to >= 0 && list[from].column === list[to].column) list = arrayMove(list, from, to);
     }
     if (list === committed) setDragItems(null);
     else commit(list);
@@ -536,7 +540,7 @@ function KanbanBoard({
               <KanbanColumnView
                 key={column.id}
                 column={column}
-                items={items.filter((item) => item.status === column.id && matches(item))}
+                items={items.filter((item) => item.column === column.id && matches(item))}
                 loading={loading}
                 reducedMotion={reducedMotion}
                 dragging={activeId !== null}
@@ -559,4 +563,14 @@ function KanbanBoard({
   );
 }
 
-export { KanbanBoard, KanbanCard, type KanbanBoardProps, type KanbanCardProps, type KanbanColumn, type KanbanItem, type KanbanPerson };
+export {
+  KanbanBoard,
+  KanbanCard,
+  sampleItems as sampleRoadmapItems,
+  type KanbanBoardProps,
+  type KanbanCardProps,
+  type KanbanColumn,
+  type KanbanItem,
+  type KanbanPerson,
+  type KanbanTag,
+};
