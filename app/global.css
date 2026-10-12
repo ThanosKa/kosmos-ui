@@ -54,10 +54,3 @@ html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
-
-/* Fumadocs draws the code block copy button's focus as a box-shadow ring, which forced-colors mode drops. */
-figure.shiki button:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-  box-shadow: none;
-}
