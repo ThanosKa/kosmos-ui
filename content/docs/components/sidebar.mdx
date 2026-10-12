@@ -1,6 +1,6 @@
 ---
 title: Sidebar
-description: The app sidebar, made of parts you compose. Resize it by dragging its edge or with the keyboard, collapse it to the edge, and open it as a drawer on phones.
+description: The app sidebar, made of parts you compose. Resize it by dragging its edge or with the keyboard, collapse it to a column of icons or to the edge, and open it as a drawer on phones.
 ---
 
 <ComponentPreview name="sidebar-demo" />
@@ -9,7 +9,7 @@ description: The app sidebar, made of parts you compose. Resize it by dragging i
 
 <ComponentInstall name="sidebar" />
 
-The sidebar brings [Button](/docs/components/button), [Drawer](/docs/components/drawer) and [Separator](/docs/components/separator) with it.
+The sidebar brings [Button](/docs/components/button), [Drawer](/docs/components/drawer), [Kbd](/docs/components/kbd), [Separator](/docs/components/separator) and [Tooltip](/docs/components/tooltip) with it.
 
 ## Usage
 
@@ -34,14 +34,14 @@ import {
 
 ```tsx
 <SidebarProvider>
-  <Sidebar>
+  <Sidebar collapsible="icon">
     <SidebarHeader>Acme Inc.</SidebarHeader>
     <SidebarContent render={<nav aria-label="Main" />}>
       <SidebarGroup>
         <SidebarGroupLabel>Workspace</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="/inbox" isActive>
+            <SidebarMenuButton href="/inbox" isActive tooltip="Inbox">
               <Inbox />
               <span>Inbox</span>
               <SidebarMenuBadge>12</SidebarMenuBadge>
@@ -66,18 +66,31 @@ import {
 
 From 768px up the sidebar sits beside the page. Below that it leaves the layout, `SidebarTrigger` opens it as a drawer from the left edge, and a click on a link closes the drawer. `mobileBreakpoint` moves that point.
 
+## Collapsing
+
+`SidebarTrigger`, `⌘B` (`Ctrl+B` on Windows and Linux) and the resize handle collapse the sidebar beside the page. `collapsible` on `Sidebar` sets where it goes:
+
+| `collapsible` | Collapsed |
+| --- | --- |
+| `offcanvas` (default) | The sidebar slides off to the edge and gives the page its space. |
+| `icon` | A 48px column of icons stays. The labels, counts and group labels fade out, the active item keeps its highlight, and each item shows its `tooltip` on hover and keyboard focus. |
+
+In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. Your own content in the header or footer can fade with it: `group-data-[collapsible=icon]/sidebar:opacity-0` hides a workspace name and leaves its logo, as in the example at the top. On phones the drawer always shows the full sidebar.
+
+The sidebar remembers whether it was collapsed. It saves the state in local storage under `storageKey` (`'sidebar-state'`), and a small script puts it back before the page paints, so a collapsed sidebar never flashes open on reload. Give each sidebar on a page its own key, or pass `storageKey={false}` to keep nothing. `keyboardShortcut` changes the key, and `false` turns the shortcut off.
+
 ## Resizing
 
 `SidebarResizeHandle` sits on the sidebar's edge, between `Sidebar` and `SidebarInset`. It is a window splitter:
 
 | Input | Action |
 | --- | --- |
-| Drag | Resizes between `minWidth` and `maxWidth`. Dragging past half of `minWidth` collapses the sidebar. |
+| Drag | Resizes between `minWidth` and `maxWidth`. Dragging below halfway from `minWidth` to the collapsed width collapses the sidebar, to the edge or to icons. |
 | Double click | Returns to `defaultWidth`. |
 
 It also takes focus and resizes from the keyboard: see [Keyboard](#keyboard).
 
-The sidebar remembers nothing between visits. To keep the layout, control `width` and `open` and save them, as in the example below.
+The width resets on every visit. To keep it, control `width` and save it, as in the example below. A controlled `open` is yours to save too: the sidebar stores nothing while `open` is controlled.
 
 ## Examples
 
@@ -87,7 +100,7 @@ The sidebar remembers nothing between visits. To keep the layout, control `width
 
 ## Motion
 
-The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar fades out, then gives up its space; on reopen it takes the space back and fades in.
+The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`; in icon mode the labels fade out in 150ms as it narrows. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar (in icon mode, its labels) fades out, then the width changes at once; on reopen the width comes back first and the content fades in.
 
 ## API
 
@@ -140,6 +153,16 @@ Takes every `<div>` prop, plus:
       type: 'number',
       default: '768',
     },
+    storageKey: {
+      description: 'The local storage key that keeps the collapsed state between visits. `false` keeps nothing. Unused while `open` is controlled.',
+      type: 'string | false',
+      default: "'sidebar-state'",
+    },
+    keyboardShortcut: {
+      description: 'The key that collapses and reopens the sidebar with ⌘ or Ctrl. `false` turns the shortcut off.',
+      type: 'string | false',
+      default: "'b'",
+    },
   }}
 />
 
@@ -153,6 +176,11 @@ Takes every `<div>` prop, plus:
       description: 'The name screen readers announce for the drawer on phones.',
       type: 'string',
       default: "'Sidebar'",
+    },
+    collapsible: {
+      description: 'Where the sidebar collapses to: off to the edge, or a column of icons with tooltips.',
+      type: "'offcanvas' | 'icon'",
+      default: "'offcanvas'",
     },
   }}
 />
@@ -168,19 +196,23 @@ Takes every [Button](/docs/components/button) prop except `variant` and `size`, 
       type: 'boolean',
       default: 'false',
     },
+    tooltip: {
+      description: 'The name shown beside the icon on hover and keyboard focus while the sidebar is collapsed to icons.',
+      type: 'ReactNode',
+    },
   }}
 />
 
 ### Parts
 
-Each part is a styled element you can rearrange. `useSidebar()` reads and sets the state from any component inside the provider: `open`, `setOpen`, `openMobile`, `setOpenMobile`, `toggleSidebar`, `isMobile`, `width` and `setWidth`.
+Each part is a styled element you can rearrange. `useSidebar()` reads and sets the state from any component inside the provider: `open`, `setOpen`, `openMobile`, `setOpenMobile`, `toggleSidebar`, `isMobile`, `collapsible`, `width` and `setWidth`.
 
 | Part | What it is |
 | --- | --- |
 | `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
-| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `label` names the drawer for screen readers. |
+| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `collapsible` sets where it collapses to; `label` names the drawer for screen readers. |
 | `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
-| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. |
+| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. Its tooltip shows the keyboard shortcut. |
 | `SidebarInset` | The page beside the sidebar. Renders `<main>`; pass `render={<div />}` when your layout already has one. |
 | `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
 | `SidebarContent` | The scrolling middle. Render it as `<nav>` with `render={<nav aria-label="Main" />}`. |
@@ -197,6 +229,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 
 | Key | Action |
 | --- | --- |
+| `⌘B` or `Ctrl+B` | Anywhere on the page: collapses or reopens the sidebar, or opens and closes the drawer on phones. Set by `keyboardShortcut`. |
 | `ArrowRight` or `ArrowLeft` | On the resize handle: widens or narrows the sidebar by 16px. A collapsed sidebar reopens on the key that widens it. In a right-to-left layout, the keys swap. |
 | `Shift` + `ArrowRight` or `Shift` + `ArrowLeft` | Resizes by 64px. |
 | `Home` or `End` | On the resize handle: sets the width to `minWidth` or `maxWidth`, and reopens a collapsed sidebar. |
@@ -204,4 +237,4 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `Enter` or `Space` | On `SidebarTrigger`: opens or closes the sidebar, or the drawer on phones. |
 | `Escape` | On phones: closes the drawer and puts focus back on the trigger. |
 
-A collapsed sidebar is out of the tab order, so `Tab` skips its links until it opens again.
+A sidebar collapsed to the edge is out of the tab order, so `Tab` skips its links until it opens again. In icon mode the icons stay in the tab order, and each one shows its name as it takes focus.
