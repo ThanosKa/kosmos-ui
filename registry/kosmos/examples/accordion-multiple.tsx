@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 
 export default function AccordionMultiple() {
   return (
-    <Accordion multiple defaultValue={['email', 'push']} className="max-w-md">
+    <Accordion multiple defaultValue={['email', 'push']} headingLevel={4} className="max-w-md">
       <AccordionItem value="email">
         <AccordionTrigger>Email</AccordionTrigger>
         <AccordionContent>A daily summary of mentions, assignments and failed deploys.</AccordionContent>

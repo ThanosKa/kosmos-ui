@@ -4,12 +4,13 @@
 // Shoots /view/<name>?theme=<theme> from a running dev server at 375 and 1280 wide, light and dark:
 // 4 PNGs per name, <out>/<name>-<theme>-<width>.png. Prints each path; exits 1 on any page error.
 // --thumbnails shoots the hero preview of every component and block docs page (or only the names given)
-// into public/thumbs/<name>-<theme>.png, the images on the components and blocks indexes.
+// into public/thumbs/<name>-<theme>.png, the images on the components and blocks indexes. An overlay, whose
+// hero is a closed trigger, shoots registry/kosmos/examples/<name>-thumb.tsx instead, with the overlay pinned open.
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import { chromium, type Browser } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright';
 import { readRegistryItems } from '../lib/registry.ts';
 
 const { positionals: names, values } = parseArgs({
@@ -31,6 +32,7 @@ if (names.length === 0 && !values.thumbnails) {
 const base = values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`;
 const outDir = resolve(values.out ?? (values.thumbnails ? 'public/thumbs' : '.screenshots'));
 const widths = [375, 1280] as const;
+const reviewHeight = 800;
 const themes = ['light', 'dark'] as const;
 type Theme = (typeof themes)[number];
 // Hide the Next.js dev indicator and overlay for the shot.
@@ -69,6 +71,11 @@ function heroExample(folder: string, name: string) {
   return hero;
 }
 
+/** The example a thumbnail shows: `<name>-thumb` when it exists, else the docs page's hero. */
+function thumbnailExample(folder: string, name: string) {
+  return existsSync(`registry/kosmos/examples/${name}-thumb.tsx`) ? `${name}-thumb` : heroExample(folder, name);
+}
+
 /**
  * Every component and block with its thumbnail source and frame. Blocks lay out in a desktop-wide frame;
  * `minWidth` caps the zoom on small examples such as a single badge.
@@ -83,7 +90,7 @@ function thumbnailTargets() {
       const isBlock = item.type === 'registry:block';
       return {
         name: item.name,
-        example: heroExample(isBlock ? 'blocks' : 'components', item.name),
+        example: thumbnailExample(isBlock ? 'blocks' : 'components', item.name),
         viewport: isBlock ? { width: 960, height: 600 } : { width: 560, height: 350 },
         minWidth: isBlock ? 480 : 320,
         deviceScaleFactor: isBlock ? 1.5 : 2,
@@ -91,13 +98,26 @@ function thumbnailTargets() {
     });
 }
 
+/**
+ * Grows the viewport to the page's full height before a full-page shot. Pinned overlays (an open menu,
+ * select or tooltip) position against the viewport, so below its first screen they would flip toward it
+ * or stick to its edge; in one viewport as tall as the page they sit where they do for a user who scrolled there.
+ */
+async function fitViewportToPage(page: Page, width: number) {
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  if (height <= reviewHeight) return;
+  await page.setViewportSize({ width, height });
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+}
+
 async function shootReview(browser: Browser) {
   let failed = false;
   for (const name of names) {
     for (const theme of themes) {
       for (const width of widths) {
-        const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: 800 }, 2);
+        const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: reviewHeight }, 2);
         const file = `${outDir}/${name}-${theme}-${width}.png`;
+        await fitViewportToPage(page, width);
         await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide', style: shotStyle });
         if (errors.length) failed = true;
         console.log(file + (errors.length ? `  page errors: ${errors.join(' | ')}` : ''));
@@ -111,14 +131,14 @@ async function shootReview(browser: Browser) {
 /**
  * A 16:10 box around what the example draws (text, controls, filled or shadowed surfaces, but not the empty
  * wrappers around them) with 24px of room, at least `minWidth` wide and inside the viewport, so small
- * examples fill the thumbnail instead of floating in the middle of it.
+ * examples fill the thumbnail instead of floating in the middle of it. Popups portalled to `<body>` (a pinned
+ * tooltip or select list) count too.
  */
 function contentClip(minWidth: number) {
   const room = 24;
   const aspect = 16 / 10;
-  const root = document.querySelector('[data-preview-content]')!;
   const rects: DOMRect[] = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     if (node instanceof Text) {
       if (!node.textContent?.trim()) continue;

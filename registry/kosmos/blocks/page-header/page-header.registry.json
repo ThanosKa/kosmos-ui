@@ -4,7 +4,7 @@
   "type": "registry:block",
   "title": "Page header",
   "description": "The top of a list page: a title with a primary action and a More actions menu, tabs for saved views with counts, and a toolbar with search, a filter menu and a table or board switch. Lays itself out by its own width.",
-  "dependencies": ["lucide-react"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

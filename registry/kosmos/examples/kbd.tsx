@@ -88,7 +88,10 @@ export default function KbdPreview() {
             </Button>
             <Button variant="ghost">
               Save
-              <Kbd>⌘S</Kbd>
+              <KbdGroup>
+                <Kbd>⌘</Kbd>
+                <Kbd>S</Kbd>
+              </KbdGroup>
             </Button>
           </div>
         </div>

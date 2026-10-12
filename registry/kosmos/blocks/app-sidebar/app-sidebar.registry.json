@@ -4,7 +4,7 @@
   "type": "registry:block",
   "title": "App sidebar",
   "description": "A dashboard sidebar: workspace switcher, search with a keyboard hint, main pages with unread counts, saved views, help and settings links, and an account menu. Resizable, collapsible, and a drawer on phones.",
-  "dependencies": ["lucide-react"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

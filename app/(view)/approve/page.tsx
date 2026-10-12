@@ -20,7 +20,7 @@ export default function ApproveIndexPage() {
             const count = itemsInGroup(group, items).length;
             return (
               <li key={group} className="flex items-center justify-between gap-4 py-2">
-                <Button variant="ghost" href={`/approve/${group}`}>
+                <Button variant="item" href={`/approve/${group}`}>
                   {groups[group]}
                 </Button>
                 <span className="text-small text-muted-foreground tabular-nums">

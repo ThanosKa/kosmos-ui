@@ -18,9 +18,10 @@ function Switch({ className, ...props }: SwitchProps) {
         // A 26px tall hit area around the 18px track.
         'after:absolute after:-inset-1',
         'transition-[background-color,box-shadow]',
-        'data-checked:bg-primary',
+        'hover:not-data-disabled:bg-input data-checked:bg-primary hover:not-data-disabled:data-checked:bg-primary/90',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
+        'data-invalid:data-checked:ring-2 aria-invalid:data-checked:ring-2',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}

@@ -6,6 +6,14 @@ import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 
+/**
+ * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
+ * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
+ */
+function withSlot<Render>(render: Render, slot: string) {
+  return React.isValidElement<{ 'data-slot'?: string }>(render) ? React.cloneElement(render, { 'data-slot': slot }) : render;
+}
+
 /** Whether the drawer blocks the page: only then does `DrawerContent` add the backdrop. */
 const DrawerModalContext = React.createContext<DrawerPrimitive.Root.Props['modal']>(true);
 
@@ -22,16 +30,16 @@ function Drawer({ swipeDirection = 'right', modal = true, ...props }: DrawerPrim
   );
 }
 
-function DrawerTrigger(props: DrawerPrimitive.Trigger.Props) {
-  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
+function DrawerTrigger({ render, ...props }: DrawerPrimitive.Trigger.Props) {
+  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" render={withSlot(render, 'drawer-trigger')} {...props} />;
 }
 
 function DrawerPortal(props: DrawerPrimitive.Portal.Props) {
   return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
 }
 
-function DrawerClose(props: DrawerPrimitive.Close.Props) {
-  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
+function DrawerClose({ render, ...props }: DrawerPrimitive.Close.Props) {
+  return <DrawerPrimitive.Close data-slot="drawer-close" render={withSlot(render, 'drawer-close')} {...props} />;
 }
 
 /** The scrim behind a modal drawer. Fades out as the drawer is swiped away. */
@@ -65,11 +73,19 @@ function DrawerViewport({ className, ...props }: DrawerPrimitive.Viewport.Props)
  * screen edges; sheets sit flush on the bottom or top edge, at most 36rem wide, with `rounded-3xl`
  * corners on the open side.
  * Swipes move it with the pointer; open and close slide it, or cross-fade under reduced motion.
+ * Opening focuses the first focusable element inside, as a Dialog does, or the panel itself after a tap.
  */
-function DrawerPopup({ className, ...props }: DrawerPrimitive.Popup.Props) {
+function DrawerPopup({ className, initialFocus, ref, ...props }: DrawerPrimitive.Popup.Props) {
+  const popupRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <DrawerPrimitive.Popup
       data-slot="drawer-popup"
+      ref={(node) => {
+        popupRef.current = node;
+        if (typeof ref === 'function') return ref(node);
+        if (ref) ref.current = node;
+      }}
+      initialFocus={initialFocus ?? ((openType) => (openType === 'touch' ? popupRef.current : true))}
       className={cn(
         'group/drawer pointer-events-auto fixed flex min-h-0 flex-col border border-transparent bg-popover text-body text-popover-foreground shadow-modal',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',

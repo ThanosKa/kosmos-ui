@@ -7,6 +7,7 @@ import { Asset, AssetImage } from '@/registry/kosmos/ui/asset';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
+import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
@@ -36,17 +37,21 @@ export function ReleaseCard() {
           <Button variant="secondary" href="/docs">
             Read the changelog
           </Button>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Tooltip open>
-              <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Copy link" />}>
+              <TooltipTrigger render={<Button variant="secondary" size="icon" aria-label="Copy link" />}>
                 <Link2 />
               </TooltipTrigger>
-              <TooltipContent>
-                Copy link <kbd className="ms-1 font-sans text-muted-foreground">⌘L</kbd>
+              <TooltipContent side="bottom" className="flex items-center gap-2 pe-1">
+                Copy link
+                <KbdGroup>
+                  <Kbd>⌘</Kbd>
+                  <Kbd>L</Kbd>
+                </KbdGroup>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
-              <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Download PDF" />}>
+              <TooltipTrigger render={<Button variant="secondary" size="icon" aria-label="Download PDF" />}>
                 <Download />
               </TooltipTrigger>
               <TooltipContent>Download PDF</TooltipContent>
@@ -126,7 +131,7 @@ export function EmptyCard() {
           </EmptyMedia>
           <EmptyTitle render={<h3 />}>No invoices yet</EmptyTitle>
           <EmptyDescription>
-            Invoices you send from Halden Labs show up here. Import past ones to see them in reports.
+            Invoices you send from Acme Inc. show up here. Import past ones to see them in reports.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

@@ -4,7 +4,7 @@
   "type": "registry:ui",
   "title": "Command",
   "description": "A searchable list of commands built on Base UI Autocomplete and Scroll Area, inline or as a ⌘K palette in a Dialog. Filters as you type, keeps the first match highlighted, and moves with the arrow keys.",
-  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react"],
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/dialog", "@kosmos/kbd", "@kosmos/scroll-area"],
   "meta": { "group": "overlays" },
   "files": [

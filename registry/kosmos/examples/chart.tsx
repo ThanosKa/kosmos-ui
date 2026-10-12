@@ -1,7 +1,9 @@
 'use client';
 
+import { TrendingDown, TrendingUp } from 'lucide-react';
 import * as Recharts from 'recharts';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { Badge } from '@/registry/kosmos/ui/badge';
 import {
   ChartContainer,
   ChartLegend,
@@ -48,9 +50,9 @@ const usd = (value: number) =>
 const trend = (values: number[]) => values.map((value) => ({ value }));
 
 const tiles = [
-  { label: 'Revenue', value: '$45.6K', change: '+10.7%', data: trend(revenue), color: 'var(--chart-1)' },
-  { label: 'Signups', value: '1,284', change: '+4.2%', data: trend([30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81]), color: 'var(--chart-3)' },
-  { label: 'Churn', value: '2.1%', change: '−0.3 pts', data: trend([3.1, 3, 2.9, 3.2, 2.8, 2.7, 2.6, 2.6, 2.4, 2.3, 2.2, 2.1]), color: 'var(--chart-2)' },
+  { label: 'Revenue', value: '$45.6K', change: '+10.7%', rising: true, data: trend(revenue), color: 'var(--chart-1)' },
+  { label: 'Signups', value: '1,284', change: '+4.2%', rising: true, data: trend([30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81]), color: 'var(--chart-3)' },
+  { label: 'Churn', value: '2.1%', change: '−0.3 pts', rising: false, data: trend([3.1, 3, 2.9, 3.2, 2.8, 2.7, 2.6, 2.6, 2.4, 2.3, 2.2, 2.1]), color: 'var(--chart-2)' },
 ];
 
 export default function ChartPreview() {
@@ -99,7 +101,13 @@ export default function ChartPreview() {
               <div className="flex items-end justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="text-display tabular-nums">{tile.value}</span>
-                  <span className="text-small text-muted-foreground tabular-nums">{tile.change} vs last month</span>
+                  <span className="flex items-center gap-2 text-small tabular-nums">
+                    <Badge variant="green">
+                      {tile.rising ? <TrendingUp aria-hidden /> : <TrendingDown aria-hidden />}
+                      {tile.change}
+                    </Badge>
+                    <span className="truncate text-muted-foreground">vs last month</span>
+                  </span>
                 </div>
                 <Sparkline
                   data={tile.data}

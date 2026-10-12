@@ -1,14 +1,26 @@
 'use client';
 
+import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Slider, SliderLabel, SliderValue } from '@/registry/kosmos/ui/slider';
 
 const rows = ['single', 'range'] as const;
-// Focus sits on the range input inside the thumb, which a pinned state cannot reach;
-// the focus outline is checked with the keyboard instead.
-const states = ['default', 'invalid', 'disabled'] as const;
+const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
+
+/** Pins focus on the first thumb: focus sits on the range input inside it, which the Slider does not expose. */
+function PinThumbFocus({ children }: { children: React.ReactNode }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    ref.current?.querySelector('input[type="range"]')?.setAttribute('data-preview', 'focus');
+  }, []);
+  return (
+    <div ref={ref} className="contents">
+      {children}
+    </div>
+  );
+}
 
 const rangeLabel = (index: number) => (index === 0 ? 'Minimum volume' : 'Maximum volume');
 const thresholdLabel = (index: number) => (index === 0 ? 'Minimum threshold' : 'Maximum threshold');
@@ -22,15 +34,19 @@ export default function SliderPreview() {
         <StateMatrix
           rows={rows}
           states={states}
-          render={(row, state) => (
-            <Field invalid={state === 'invalid'} disabled={state === 'disabled'} className="w-full">
-              <Slider
-                aria-label={`Volume, ${state}`}
-                getAriaLabel={row === 'range' ? rangeLabel : undefined}
-                defaultValue={row === 'range' ? [25, 75] : 40}
-              />
-            </Field>
-          )}
+          render={(row, state) => {
+            const slider = (
+              <Field invalid={state === 'invalid'} disabled={state === 'disabled'} className="w-full">
+                <Slider
+                  aria-label={`Volume, ${state}`}
+                  getAriaLabel={row === 'range' ? rangeLabel : undefined}
+                  defaultValue={row === 'range' ? [25, 75] : 40}
+                  data-preview={state === 'hover' ? 'hover' : undefined}
+                />
+              </Field>
+            );
+            return state === 'focus' ? <PinThumbFocus>{slider}</PinThumbFocus> : slider;
+          }}
         />
       </PreviewSection>
 

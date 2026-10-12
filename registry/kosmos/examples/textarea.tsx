@@ -3,10 +3,11 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
 
 const rows = ['placeholder', 'filled'] as const;
-const states = ['default', 'focus', 'invalid', 'disabled'] as const;
+const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
 
 function stateProps(state: (typeof states)[number]) {
   if (state === 'invalid') return { 'aria-invalid': true } as const;
+  if (state === 'invalid focus') return { 'aria-invalid': true, 'data-preview': 'focus' } as const;
   return previewState(state);
 }
 

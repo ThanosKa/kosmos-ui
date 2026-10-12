@@ -21,6 +21,7 @@ function SelectTrigger({ className, children, ...props }: SelectTriggerProps) {
         'hover:not-data-disabled:bg-muted data-popup-open:bg-muted',
         'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
+        'data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-4 data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:outline-destructive aria-invalid:focus-visible:ring-4 aria-invalid:focus-visible:ring-destructive/20',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
@@ -113,7 +114,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
         'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body font-medium outline-none select-none',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",
         className,
       )}
       {...props}

@@ -19,7 +19,7 @@ import { Textarea } from '@/registry/kosmos/ui/textarea';
 /** Field, Input (valid and invalid), Select, Textarea, Checkbox, Separator, Button. */
 export function ProfileCard() {
   return (
-    <GalleryCard title="Profile" description="How other members of Halden Labs see you.">
+    <GalleryCard title="Profile" description="How other members of Acme Inc. see you.">
       <form className="flex flex-col gap-4" onSubmit={(event) => event.preventDefault()}>
         <Field name="name">
           <FieldLabel>Full name</FieldLabel>
@@ -27,7 +27,7 @@ export function ProfileCard() {
         </Field>
         <Field name="email">
           <FieldLabel>Email</FieldLabel>
-          <Input type="email" defaultValue="maya@haldenlabs.example" autoComplete="email" />
+          <Input type="email" defaultValue="maya@acme.example" autoComplete="email" />
           <FieldDescription>Used for sign-in and notifications.</FieldDescription>
         </Field>
         <Field name="handle" invalid>

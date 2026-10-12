@@ -1,19 +1,27 @@
 'use client';
 
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
-import type * as React from 'react';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+
+/**
+ * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
+ * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
+ */
+function withSlot<Render>(render: Render, slot: string) {
+  return React.isValidElement<{ 'data-slot'?: string }>(render) ? React.cloneElement(render, { 'data-slot': slot }) : render;
+}
 
 function Popover(props: PopoverPrimitive.Root.Props) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
-function PopoverTrigger(props: PopoverPrimitive.Trigger.Props) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
+function PopoverTrigger({ render, ...props }: PopoverPrimitive.Trigger.Props) {
+  return <PopoverPrimitive.Trigger data-slot="popover-trigger" render={withSlot(render, 'popover-trigger')} {...props} />;
 }
 
-function PopoverClose(props: PopoverPrimitive.Close.Props) {
-  return <PopoverPrimitive.Close data-slot="popover-close" {...props} />;
+function PopoverClose({ render, ...props }: PopoverPrimitive.Close.Props) {
+  return <PopoverPrimitive.Close data-slot="popover-close" render={withSlot(render, 'popover-close')} {...props} />;
 }
 
 function PopoverPortal(props: PopoverPrimitive.Portal.Props) {

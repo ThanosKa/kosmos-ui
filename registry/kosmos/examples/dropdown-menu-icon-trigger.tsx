@@ -1,3 +1,5 @@
+'use client';
+
 import { Archive, Ellipsis, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
@@ -28,7 +30,13 @@ export default function DropdownMenuIconTrigger() {
             <Archive />
             Archive
           </DropdownMenuItem>
-          <DropdownMenuLinkItem href="#" target="_blank" rel="noreferrer">
+          {/* A demo: stays on this page. In an app, the link opens the project in a new tab. */}
+          <DropdownMenuLinkItem
+            href="/projects/q3-roadmap"
+            target="_blank"
+            rel="noreferrer"
+            onClick={(event) => event.preventDefault()}
+          >
             <ExternalLink />
             Open in new tab
           </DropdownMenuLinkItem>

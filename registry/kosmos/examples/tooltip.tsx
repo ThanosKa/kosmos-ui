@@ -1,6 +1,7 @@
 import { Bold, Italic, Settings, Strikethrough, Underline } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
+import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/registry/kosmos/ui/tooltip';
 
 const sides = ['top', 'right', 'bottom', 'left'] as const;
@@ -28,8 +29,12 @@ export default function TooltipPreview() {
               <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Bold" aria-keyshortcuts="Meta+B" />}>
                 <Bold />
               </TooltipTrigger>
-              <TooltipContent>
-                Bold <kbd className="ms-1 font-sans text-muted-foreground">⌘B</kbd>
+              <TooltipContent className="flex items-center gap-2 pe-1">
+                Bold
+                <KbdGroup>
+                  <Kbd>⌘</Kbd>
+                  <Kbd>B</Kbd>
+                </KbdGroup>
               </TooltipContent>
             </Tooltip>
           </div>

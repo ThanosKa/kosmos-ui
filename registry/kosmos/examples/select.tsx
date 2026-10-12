@@ -20,10 +20,11 @@ const statuses = [
 ];
 
 const rows = ['placeholder', 'value'] as const;
-const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
+const states = ['default', 'hover', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
 
 function stateProps(state: (typeof states)[number]) {
   if (state === 'invalid') return { 'aria-invalid': true } as const;
+  if (state === 'invalid focus') return { 'aria-invalid': true, 'data-preview': 'focus' } as const;
   return previewState(state);
 }
 

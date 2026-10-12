@@ -42,7 +42,7 @@ export default function StatsOverviewPreview() {
 
       <PreviewSection title="No data yet">
         <div className={frame}>
-          <StatsOverview stats={emptyStats} revenue={{ '30d': [], '90d': [], '12m': [] }} />
+          <StatsOverview stats={emptyStats} revenue={{ '30d': [], '90d': [], '12m': [] }} plans={[]} />
         </div>
       </PreviewSection>
 

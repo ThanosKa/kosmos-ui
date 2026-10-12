@@ -4,7 +4,7 @@
   "type": "registry:lib",
   "title": "cn",
   "description": "Class merging that knows the Kosmos type roles (text-caption to text-display) are font sizes, so they never drop a text color.",
-  "dependencies": ["cn"],
+  "dependencies": ["cn@^0.4.0"],
   "files": [
     {
       "path": "registry/kosmos/lib/cn.ts",

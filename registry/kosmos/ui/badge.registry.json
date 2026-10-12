@@ -4,7 +4,7 @@
   "type": "registry:ui",
   "title": "Badge",
   "description": "A small pill for a status, a count or a label, built on Base UI's useRender. A neutral and a primary look, plus success, warning and destructive with a colored dot.",
-  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority"],
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "basics" },
   "files": [

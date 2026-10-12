@@ -25,6 +25,7 @@ export default function SidebarControlled() {
   // Save these two values (a cookie or local storage) to restore the layout on the next visit.
   const [open, setOpen] = useState(true);
   const [width, setWidth] = useState(208);
+  const [active, setActive] = useState('Home');
   return (
     <SidebarProvider
       open={open}
@@ -40,9 +41,17 @@ export default function SidebarControlled() {
         <SidebarContent render={<nav aria-label="Main" />}>
           <SidebarGroup>
             <SidebarMenu>
-              {pages.map(({ label, icon: Icon }, index) => (
+              {pages.map(({ label, icon: Icon }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton href={`#${label.toLowerCase()}`} isActive={index === 0}>
+                  <SidebarMenuButton
+                    href={`/${label.toLowerCase()}`}
+                    isActive={active === label}
+                    onClick={(event) => {
+                      // A demo: stays on this page. In an app, let the link navigate.
+                      event.preventDefault();
+                      setActive(label);
+                    }}
+                  >
                     <Icon aria-hidden />
                     <span>{label}</span>
                   </SidebarMenuButton>
@@ -53,7 +62,7 @@ export default function SidebarControlled() {
         </SidebarContent>
       </Sidebar>
       <SidebarResizeHandle />
-      <SidebarInset>
+      <SidebarInset render={<div />}>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
           <p className="text-body text-muted-foreground tabular-nums">

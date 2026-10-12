@@ -4,7 +4,7 @@
   "type": "registry:ui",
   "title": "Empty state",
   "description": "What a page, table or panel shows when it has nothing yet: an icon, a title, a description and the next step.",
-  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority"],
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "data" },
   "files": [

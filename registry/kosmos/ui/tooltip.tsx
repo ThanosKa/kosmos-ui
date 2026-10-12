@@ -1,5 +1,16 @@
+'use client';
+
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+
+/**
+ * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
+ * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
+ */
+function withSlot<Render>(render: Render, slot: string) {
+  return React.isValidElement<{ 'data-slot'?: string }>(render) ? React.cloneElement(render, { 'data-slot': slot }) : render;
+}
 
 /**
  * Shares the open delay between tooltips: once one is open, its neighbors open at once.
@@ -14,8 +25,8 @@ function Tooltip(props: TooltipPrimitive.Root.Props) {
 }
 
 /** Pass the control it describes through `render`: `<TooltipTrigger render={<Button variant="ghost" />} />`. */
-function TooltipTrigger(props: TooltipPrimitive.Trigger.Props) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+function TooltipTrigger({ render, ...props }: TooltipPrimitive.Trigger.Props) {
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" render={withSlot(render, 'tooltip-trigger')} {...props} />;
 }
 
 type TooltipContentProps = TooltipPrimitive.Popup.Props &

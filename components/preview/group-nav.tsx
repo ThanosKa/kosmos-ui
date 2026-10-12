@@ -8,11 +8,11 @@ export function GroupNav({ current }: { current?: Group }) {
       {(Object.keys(groups) as Group[]).map((key) => (
         <Button
           key={key}
-          variant="ghost"
+          variant="item"
           size="sm"
           href={`/approve/${key}`}
           aria-current={key === current ? 'page' : undefined}
-          className="aria-[current=page]:bg-accent"
+          className="text-muted-foreground aria-[current=page]:bg-secondary aria-[current=page]:text-foreground aria-[current=page]:shadow-control"
         >
           {groups[key]}
         </Button>

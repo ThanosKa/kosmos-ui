@@ -35,6 +35,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
+import { Kbd } from '@/registry/kosmos/ui/kbd';
 
 const stageClass = 'h-[24rem]';
 
@@ -55,17 +56,17 @@ export default function DropdownMenuPreview() {
                   <DropdownMenuItem className="bg-accent">
                     <Pencil />
                     Rename
-                    <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>R</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Copy />
                     Duplicate
-                    <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>D</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem disabled>
                     <Share2 />
                     Share
-                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>S</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Archive />
@@ -75,7 +76,7 @@ export default function DropdownMenuPreview() {
                   <DropdownMenuItem variant="destructive">
                     <Trash2 />
                     Delete
-                    <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>⌫</Kbd></DropdownMenuShortcut>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -112,7 +113,7 @@ export default function DropdownMenuPreview() {
                         <DropdownMenuItem>Invite by email…</DropdownMenuItem>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
-                    <DropdownMenuLinkItem href="#docs">
+                    <DropdownMenuLinkItem href="#docs" onClick={(event) => event.preventDefault()}>
                       <ExternalLink />
                       Open in new tab
                     </DropdownMenuLinkItem>
@@ -163,12 +164,12 @@ export default function DropdownMenuPreview() {
               <DropdownMenuItem>
                 <Pencil />
                 Rename
-                <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+                <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>R</Kbd></DropdownMenuShortcut>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Copy />
                 Duplicate
-                <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+                <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>D</Kbd></DropdownMenuShortcut>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <Share2 />

@@ -1,4 +1,7 @@
+'use client';
+
 import { BarChart3, Folder, Home, Inbox, Settings, Users } from 'lucide-react';
+import { useState, type MouseEvent } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -17,15 +20,21 @@ import {
 } from '@/registry/kosmos/ui/sidebar';
 
 const pages = [
-  { label: 'Home', icon: Home, href: '#home', active: true },
-  { label: 'Inbox', icon: Inbox, href: '#inbox', count: 12 },
-  { label: 'Reports', icon: BarChart3, href: '#reports' },
-  { label: 'Customers', icon: Users, href: '#customers' },
+  { label: 'Home', icon: Home, href: '/home' },
+  { label: 'Inbox', icon: Inbox, href: '/inbox', count: 12 },
+  { label: 'Reports', icon: BarChart3, href: '/reports' },
+  { label: 'Customers', icon: Users, href: '/customers' },
 ];
 
 const projects = ['Q3 Roadmap', 'Billing revamp', 'Onboarding'];
 
 export default function SidebarDemo() {
+  const [active, setActive] = useState('Home');
+  // A demo: links stay on this page. In an app, let them navigate and set `isActive` from the current route.
+  const open = (page: string) => (event: MouseEvent) => {
+    event.preventDefault();
+    setActive(page);
+  };
   return (
     // In an app, drop the height and frame classes: the provider fills the screen.
     <SidebarProvider
@@ -41,9 +50,9 @@ export default function SidebarDemo() {
         <SidebarContent render={<nav aria-label="Main" />}>
           <SidebarGroup>
             <SidebarMenu>
-              {pages.map(({ label, icon: Icon, href, active, count }) => (
+              {pages.map(({ label, icon: Icon, href, count }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton href={href} isActive={active}>
+                  <SidebarMenuButton href={href} isActive={active === label} onClick={open(label)}>
                     <Icon aria-hidden />
                     <span>{label}</span>
                     {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -57,7 +66,7 @@ export default function SidebarDemo() {
             <SidebarMenu>
               {projects.map((project) => (
                 <SidebarMenuItem key={project}>
-                  <SidebarMenuButton href="#projects">
+                  <SidebarMenuButton href="/projects" isActive={active === project} onClick={open(project)}>
                     <Folder aria-hidden />
                     <span>{project}</span>
                   </SidebarMenuButton>
@@ -69,7 +78,7 @@ export default function SidebarDemo() {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#settings">
+              <SidebarMenuButton href="/settings" isActive={active === 'Settings'} onClick={open('Settings')}>
                 <Settings aria-hidden />
                 <span>Settings</span>
               </SidebarMenuButton>
@@ -78,10 +87,10 @@ export default function SidebarDemo() {
         </SidebarFooter>
       </Sidebar>
       <SidebarResizeHandle />
-      <SidebarInset>
+      <SidebarInset render={<div />}>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="truncate text-body font-medium">Home</h1>
+          <h1 className="truncate text-body font-medium">{active}</h1>
         </header>
         <p className="p-4 text-body text-muted-foreground">Drag the sidebar’s edge to resize it.</p>
       </SidebarInset>

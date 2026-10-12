@@ -7,6 +7,7 @@ import type { ComponentType } from 'react';
  * (default export) renders at `/view/<name>`. Convention:
  * - `<component>.tsx`: the review preview (state matrix, sizes, ...), the screenshot target.
  * - `<component>-<example>.tsx`: a docs example, embedded with `<ComponentPreview name="..." />`.
+ * - `<component>-thumb.tsx`: an overlay pinned open in a `ThumbStage`, shot for the index thumbnail instead of the docs hero.
  * No index file lists them, so adding an example touches no shared file.
  */
 export const examplesDir = 'registry/kosmos/examples';

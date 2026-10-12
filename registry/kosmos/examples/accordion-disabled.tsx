@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 
 export default function AccordionDisabled() {
   return (
-    <Accordion className="max-w-md">
+    <Accordion headingLevel={4} className="max-w-md">
       <AccordionItem value="general">
         <AccordionTrigger>General</AccordionTrigger>
         <AccordionContent>Workspace name, URL and time zone.</AccordionContent>

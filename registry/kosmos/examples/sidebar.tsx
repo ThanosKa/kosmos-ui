@@ -1,5 +1,6 @@
 'use client';
 
+import type * as React from 'react';
 import { BarChart3, Folder, Home, Inbox, LifeBuoy, Settings, Users } from 'lucide-react';
 import { OverlayStage } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
@@ -47,7 +48,7 @@ function SidebarBody() {
           <SidebarMenu>
             {pages.map(({ label, icon: Icon, active, count }) => (
               <SidebarMenuItem key={label}>
-                <SidebarMenuButton href="#" isActive={active}>
+                <SidebarMenuButton href="#" isActive={active} onClick={stay}>
                   <Icon aria-hidden />
                   <span>{label}</span>
                   {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -61,7 +62,7 @@ function SidebarBody() {
           <SidebarMenu>
             {projects.map((project) => (
               <SidebarMenuItem key={project}>
-                <SidebarMenuButton href="#">
+                <SidebarMenuButton href="#" onClick={stay}>
                   <Folder aria-hidden />
                   <span>{project}</span>
                 </SidebarMenuButton>
@@ -73,13 +74,13 @@ function SidebarBody() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#">
+            <SidebarMenuButton href="#" onClick={stay}>
               <LifeBuoy aria-hidden />
               <span>Help</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#">
+            <SidebarMenuButton href="#" onClick={stay}>
               <Settings aria-hidden />
               <span>Settings</span>
             </SidebarMenuButton>
@@ -101,6 +102,9 @@ function PageHeader({ title }: { title: string }) {
 
 const frame = 'min-h-0 overflow-hidden rounded-xl border border-transparent shadow-card';
 
+/** The preview's links go nowhere: a click must not change the page URL. */
+const stay = (event: React.MouseEvent) => event.preventDefault();
+
 export default function SidebarPreview() {
   return (
     <PreviewStack>
@@ -110,7 +114,7 @@ export default function SidebarPreview() {
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
-          <SidebarInset>
+          <SidebarInset render={<div />}>
             <PageHeader title="Home" />
             <div className="flex flex-col gap-2 p-4 text-muted-foreground">
               <p>Drag the sidebar edge, or focus it with Tab and use the arrow keys.</p>
@@ -125,7 +129,7 @@ export default function SidebarPreview() {
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
-          <SidebarInset>
+          <SidebarInset render={<div />}>
             <PageHeader title="Reports" />
           </SidebarInset>
         </SidebarProvider>
@@ -153,13 +157,16 @@ export default function SidebarPreview() {
           rows={['handle'] as const}
           states={['default', 'hover', 'focus', 'dragging'] as const}
           render={(_, state) => (
-            <SidebarProvider defaultWidth={64} minWidth={48} className={`${frame} h-20`}>
-              <Sidebar aria-hidden />
-              <SidebarResizeHandle
-                {...(state === 'dragging' ? { 'data-dragging': '' } : previewState(state))}
-              />
-              <SidebarInset />
-            </SidebarProvider>
+            <>
+              <SidebarProvider defaultWidth={64} minWidth={48} className={`${frame} h-20 max-md:hidden`}>
+                <Sidebar aria-hidden />
+                <SidebarResizeHandle
+                  {...(state === 'dragging' ? { 'data-dragging': '' } : previewState(state))}
+                />
+                <SidebarInset render={<div />} />
+              </SidebarProvider>
+              <p className="text-caption text-muted-foreground md:hidden">Below 768px the sidebar is a drawer, with no handle.</p>
+            </>
           )}
         />
       </PreviewSection>
