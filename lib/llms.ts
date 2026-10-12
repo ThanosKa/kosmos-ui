@@ -4,6 +4,7 @@ import { llms } from 'fumadocs-core/source';
 import { renderPlaceholder, type PlaceholderData } from 'fumadocs-core/mdx-plugins/remark-llms.runtime';
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
+import { getDocsIndex, type DocsIndexItem } from './docs-nav';
 import { colorTokens, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
   cssVarsAsCss,
@@ -53,13 +54,14 @@ const placeholders = {
     getChangelogEntries()
       .map(({ page, displayDate }) => `- ${displayDate}: [${page.data.title}](${page.url})${page.data.description ? `. ${page.data.description}` : ''}`)
       .join('\n'),
-  DocsIndex: ({ attributes }: PlaceholderData) =>
-    source
-      .getPages()
-      .filter((page) => page.slugs.length === 2 && page.slugs[0] === String(attributes.folder))
-      .sort((a, b) => a.data.title.localeCompare(b.data.title))
-      .map((page) => `- [${page.data.title}](${page.url})${page.data.description ? `: ${page.data.description}` : ''}`)
-      .join('\n'),
+  DocsIndex: ({ attributes }: PlaceholderData) => {
+    const folder = String(attributes.folder) as 'components' | 'blocks';
+    const list = (items: DocsIndexItem[]) =>
+      items.map((item) => `- [${item.title}](${item.url})${item.description ? `: ${item.description}` : ''}`).join('\n');
+    const groups = getDocsIndex(folder);
+    if (folder === 'blocks') return list(groups.flatMap((group) => group.items));
+    return groups.map((group) => `## ${group.label}\n\n${list(group.items)}`).join('\n\n');
+  },
   Steps: ({ children }: PlaceholderData) => children.trim(),
   Step: ({ children }: PlaceholderData) => `${children.trim()}\n`,
   ColorTokens: ({ attributes }: PlaceholderData) =>
