@@ -149,6 +149,26 @@ function PageHeader({
   const toggleFilter = (value: string, on: boolean) =>
     setFilters(on ? [...filters, value] : filters.filter((item) => item !== value));
 
+  // A removed chip takes its focus with it, so focus moves to the chip that takes its place, or to Filter.
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const focusAfterRemove = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    const target = focusAfterRemove.current;
+    if (target === null) return;
+    focusAfterRemove.current = null;
+    const chip = target ? headerRef.current?.querySelector<HTMLElement>(`[data-filter-chip="${CSS.escape(target)}"]`) : null;
+    (chip ?? headerRef.current?.querySelector<HTMLElement>('[data-filter-trigger]'))?.focus();
+  }, [filters]);
+  const removeFilter = (index: number) => {
+    const next = activeOptions[index + 1] ?? activeOptions[index - 1];
+    focusAfterRemove.current = next?.value ?? '';
+    toggleFilter(activeOptions[index].value, false);
+  };
+  const clearFilters = () => {
+    focusAfterRemove.current = '';
+    setFilters([]);
+  };
+
   return (
     <Tabs
       value={tab}
@@ -156,16 +176,12 @@ function PageHeader({
       className={cn('@container min-w-0 gap-0', className)}
       {...props}
     >
-      <div data-slot="page-header" className="flex flex-col gap-3 border-b border-border px-4 py-3">
+      <div ref={headerRef} data-slot="page-header" className="flex flex-col gap-3 border-b border-border px-4 py-3">
         <div className="flex min-h-7.5 items-center gap-2">
           {leading}
           <div className="flex min-w-0 flex-1 flex-col">
-            <Heading className="truncate text-title font-medium">{title}</Heading>
-            {description ? (
-              <p className="truncate text-small text-muted-foreground">
-                {description}
-              </p>
-            ) : null}
+            <Heading className="text-title font-medium text-pretty break-words">{title}</Heading>
+            {description ? <p className="text-small text-pretty text-muted-foreground">{description}</p> : null}
           </div>
           {onAction ? (
             <DropdownMenu {...moreMenu}>
@@ -246,6 +262,7 @@ function PageHeader({
 
             <DropdownMenu {...filterMenu}>
               <DropdownMenuTrigger
+                data-filter-trigger=""
                 render={<Button variant="secondary" />}
                 aria-label={filters.length ? `Filter, ${filters.length} on` : 'Filter'}
               >
@@ -288,15 +305,16 @@ function PageHeader({
 
         {activeOptions.length ? (
           <div role="group" aria-label="Filters on" className="flex flex-wrap items-center gap-1.5">
-            {activeOptions.map((option) => {
+            {activeOptions.map((option, index) => {
               const name = option.group ? `${option.group}: ${option.label}` : option.label;
               return (
                 <Button
                   key={option.value}
                   variant="secondary"
                   size="sm"
+                  data-filter-chip={option.value}
                   aria-label={`Remove filter ${name}`}
-                  onClick={() => toggleFilter(option.value, false)}
+                  onClick={() => removeFilter(index)}
                   className="max-w-full"
                 >
                   {option.group ? <span className="text-muted-foreground">{option.group}</span> : null}
@@ -305,7 +323,7 @@ function PageHeader({
                 </Button>
               );
             })}
-            <Button variant="ghost" size="sm" onClick={() => setFilters([])}>
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
               Clear all
             </Button>
           </div>

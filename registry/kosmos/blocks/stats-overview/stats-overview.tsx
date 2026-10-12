@@ -142,7 +142,7 @@ function formatValue(value: number, format: StatFormat) {
 const formatChange = (change: number, format: StatFormat) =>
   `${signed.format(change).replace('-', '−')}${format === 'percent' ? ' pts' : '%'}`;
 
-function MetricChange({ metric }: { metric: Metric }) {
+function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
   const { change } = metric;
   if (change === undefined) return <span className="truncate text-muted-foreground">No earlier period</span>;
   const rising = change > 0;
@@ -152,17 +152,22 @@ function MetricChange({ metric }: { metric: Metric }) {
     <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
       {good === null ? null : <Icon aria-hidden />}
       {formatChange(change, metric.format)}
+      <span className="sr-only">against the previous {rangeLabel}</span>
     </Badge>
   );
 }
 
+/** Where the value sits: beside the label and the change in a container under 320px, under the label from there up. */
+const valueSlot =
+  'col-start-2 row-span-2 row-start-1 justify-self-end @xs:col-start-1 @xs:row-span-1 @xs:row-start-auto @xs:justify-self-start';
+
 /** One metric as a tab: its label, its value and its change. The selected one lifts onto a raised surface. */
-function MetricTab({ metric, loading }: { metric: Metric; loading: boolean }) {
+function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: boolean; rangeLabel: string }) {
   return (
     <TabsTrigger
       value={metric.id}
       className={cn(
-        'h-auto min-w-0 flex-col items-start justify-start gap-1 rounded-xl px-3 py-2.5 text-start whitespace-normal',
+        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-xl px-3 py-2.5 text-start whitespace-normal @xs:grid-cols-1',
         'transition-[color,background-color,box-shadow] hover:not-data-active:bg-accent',
         'data-active:bg-secondary data-active:shadow-control',
         // The raised surface marks the selected metric, so the tab list's underline and its reduced-motion twin stay hidden.
@@ -174,16 +179,17 @@ function MetricTab({ metric, loading }: { metric: Metric; loading: boolean }) {
       </span>
       {loading ? (
         <>
-          <Skeleton className="my-1.5 h-6 w-24" />
-          <Skeleton className="h-4 w-14" />
+          {/* The track is the skeleton's own fill, so these take a darker one. */}
+          <Skeleton className={cn('h-6 w-24 bg-foreground/10 @xs:my-1.5', valueSlot)} />
+          <Skeleton className="h-4 w-14 bg-foreground/10" />
         </>
       ) : (
         <>
-          <span className="max-w-full truncate text-display text-foreground tabular-nums">
+          <span className={cn('max-w-full truncate text-display text-foreground tabular-nums', valueSlot)}>
             {formatValue(metric.value, metric.format)}
           </span>
           <span className="flex min-w-0 items-center text-small tabular-nums">
-            <MetricChange metric={metric} />
+            <MetricChange metric={metric} rangeLabel={rangeLabel} />
           </span>
         </>
       )}
@@ -227,7 +233,7 @@ function TopEvents({ events, loading, rangeLabel }: { events: TopEvent[]; loadin
               className="relative isolate flex h-8 min-w-0 items-center justify-between gap-3 px-2.5 text-small"
               style={{ '--share': `${(event.count / top) * 100}%` } as React.CSSProperties}
             >
-              <span aria-hidden className="absolute inset-y-0 start-0 -z-10 w-(--share) min-w-1 rounded-lg bg-muted" />
+              <span aria-hidden className="absolute inset-y-0 start-0 -z-10 w-(--share) rounded-lg bg-muted" />
               <span title={event.name} className="min-w-0 truncate font-mono">
                 {event.name}
               </span>
@@ -302,82 +308,84 @@ function StatsOverview({
       data-slot="stats-overview"
       aria-label="Overview"
       aria-busy={loading || undefined}
-      className={cn('@container grid min-w-0 grid-cols-1 gap-4 @4xl:grid-cols-3', className)}
+      className={cn('@container min-w-0', className)}
       {...props}
     >
-      <Tabs
-        value={active?.id ?? ''}
-        onValueChange={(value) => setMetric(String(value))}
-        className="min-w-0 gap-0 rounded-2xl border border-transparent bg-card text-card-foreground shadow-card @4xl:col-span-2"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4">
-          <h2 className="text-title">Overview</h2>
-          <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
-            {(Object.keys(ranges) as Range[]).map((key) => (
-              <SegmentedControlItem key={key} value={key}>
-                {ranges[key].label}
-              </SegmentedControlItem>
-            ))}
-          </SegmentedControl>
-        </div>
-
-        {list.length === 0 ? (
-          <Empty className="h-80 flex-none p-0">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <ChartNoAxesCombined />
-              </EmptyMedia>
-              <EmptyTitle render={<h3 />}>No metrics yet</EmptyTitle>
-              <EmptyDescription>Your numbers show up here once the first project sends events.</EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        ) : (
-          <>
-            <TabsList
-              aria-label="Metric"
-              className={cn(
-                'm-3 mb-0 grid grid-cols-2 gap-1 rounded-xl bg-muted p-1 shadow-inset @3xl:grid-cols-4',
-                'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-0',
-                '*:data-[slot=tabs-indicator]:hidden',
-              )}
-            >
-              {list.map((item) => (
-                <MetricTab key={item.id} metric={item} loading={loading} />
+      <div className="grid grid-cols-1 gap-4 @6xl:grid-cols-3">
+        <Tabs
+          value={active?.id ?? ''}
+          onValueChange={(value) => setMetric(String(value))}
+          className="min-w-0 gap-0 rounded-2xl border border-transparent bg-card text-card-foreground shadow-card @6xl:col-span-2"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4">
+            <h2 className="text-title">Overview</h2>
+            <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
+              {(Object.keys(ranges) as Range[]).map((key) => (
+                <SegmentedControlItem key={key} value={key}>
+                  {ranges[key].label}
+                </SegmentedControlItem>
               ))}
-            </TabsList>
+            </SegmentedControl>
+          </div>
 
-            {active ? (
-              <TabsContent value={active.id} className="p-4 pt-3">
-                {loading ? (
-                  <Skeleton className="h-60 w-full" />
-                ) : active.points.length === 0 ? (
-                  <Empty className="h-60 flex-none p-0">
-                    <EmptyHeader>
-                      <EmptyMedia variant="icon">
-                        <ChartNoAxesCombined />
-                      </EmptyMedia>
-                      <EmptyTitle render={<h3 />}>No data in this range</EmptyTitle>
-                      <EmptyDescription>Pick a longer range, or check back once events come in.</EmptyDescription>
-                    </EmptyHeader>
-                  </Empty>
-                ) : (
-                  <GrowthChart
-                    key={`${active.id}-${range}`}
-                    title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
-                    data={active.points}
-                    config={chartConfig}
-                    xKey="label"
-                    xLabel={ranges[range].xLabel}
-                    valueFormatter={(value) => formatValue(value, active.format)}
-                  />
+          {list.length === 0 ? (
+            <Empty className="h-80 flex-none p-0">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <ChartNoAxesCombined />
+                </EmptyMedia>
+                <EmptyTitle render={<h3 />}>No metrics yet</EmptyTitle>
+                <EmptyDescription>Your numbers show up here once the first project sends events.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <>
+              <TabsList
+                aria-label="Metric"
+                className={cn(
+                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl bg-muted p-1 shadow-inset @xs:grid-cols-2 @3xl:grid-cols-4',
+                  'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-0',
+                  '*:data-[slot=tabs-indicator]:hidden',
                 )}
-              </TabsContent>
-            ) : null}
-          </>
-        )}
-      </Tabs>
+              >
+                {list.map((item) => (
+                  <MetricTab key={item.id} metric={item} loading={loading} rangeLabel={rangeLabel} />
+                ))}
+              </TabsList>
 
-      <TopEvents events={topEvents[range]} loading={loading} rangeLabel={rangeLabel} />
+              {active ? (
+                <TabsContent value={active.id} className="p-4 pt-3">
+                  {loading ? (
+                    <Skeleton className="h-60 w-full" />
+                  ) : active.points.length === 0 ? (
+                    <Empty className="h-60 flex-none p-0">
+                      <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                          <ChartNoAxesCombined />
+                        </EmptyMedia>
+                        <EmptyTitle render={<h3 />}>No data in this range</EmptyTitle>
+                        <EmptyDescription>Pick a longer range, or check back once events come in.</EmptyDescription>
+                      </EmptyHeader>
+                    </Empty>
+                  ) : (
+                    <GrowthChart
+                      key={`${active.id}-${range}`}
+                      title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
+                      data={active.points}
+                      config={chartConfig}
+                      xKey="label"
+                      xLabel={ranges[range].xLabel}
+                      valueFormatter={(value) => formatValue(value, active.format)}
+                    />
+                  )}
+                </TabsContent>
+              ) : null}
+            </>
+          )}
+        </Tabs>
+
+        <TopEvents events={topEvents[range]} loading={loading} rangeLabel={rangeLabel} />
+      </div>
     </section>
   );
 }
