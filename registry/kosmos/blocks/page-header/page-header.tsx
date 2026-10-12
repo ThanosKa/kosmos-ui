@@ -176,18 +176,20 @@ function PageHeader({
         </div>
 
         <div className="flex flex-col @3xl:flex-row @3xl:items-end @3xl:gap-4 @3xl:border-b @3xl:border-border @3xl:pe-4">
-          <TabsList aria-label="Views" className="min-w-0 px-3 @3xl:flex-1 @3xl:data-[orientation=horizontal]:border-b-0">
-            {tabs.map((item) => (
-              <TabsTrigger key={item.value} value={item.value}>
-                {item.label}
-                {item.count !== undefined ? (
-                  <span className="text-caption font-normal text-muted-foreground tabular-nums">
-                    {compact.format(item.count)}
-                  </span>
-                ) : null}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <div className="min-w-0 @3xl:flex-1">
+            <TabsList aria-label="Views" className="px-3 @3xl:data-[orientation=horizontal]:border-b-0">
+              {tabs.map((item) => (
+                <TabsTrigger key={item.value} value={item.value}>
+                  {item.label}
+                  {item.count !== undefined ? (
+                    <span className="text-caption font-normal text-muted-foreground tabular-nums">
+                      {compact.format(item.count)}
+                    </span>
+                  ) : null}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           <div
             role="group"
