@@ -36,10 +36,8 @@ export function tokenColors(mode: 'light' | 'dark') {
   const color = (name: string) => oklchToHex(tokens[mode][name] ?? tokens.light[name]);
   return {
     background: color('background'),
-    card: color('card'),
     foreground: color('foreground'),
     mutedForeground: color('muted-foreground'),
-    border: color('border'),
     ring: color('ring'),
   };
 }
