@@ -82,7 +82,7 @@ const sampleColumns: KanbanColumn[] = [
   { id: 'shipped', title: 'Shipped', icon: CircleCheck, tone: 'success' },
 ];
 
-const sampleItems: KanbanItem[] = [
+const sampleRoadmapItems: KanbanItem[] = [
   { id: 'slack-alerts', title: 'Slack alerts for traffic drops', column: 'ideas', area: platform, votes: 64 },
   { id: 'usage-invoices', title: 'Usage-based invoices', column: 'ideas', area: billing, votes: 27 },
   { id: 'shareable-links', title: 'Shareable dashboard links', column: 'ideas', area: insights, votes: 51 },
@@ -376,7 +376,7 @@ type KanbanBoardProps = Omit<React.ComponentProps<'div'>, 'children'> & {
 function KanbanBoard({
   columns = sampleColumns,
   items: itemsProp,
-  defaultItems = sampleItems,
+  defaultItems = sampleRoadmapItems,
   onItemsChange,
   query = '',
   onOpen,
@@ -566,7 +566,7 @@ function KanbanBoard({
 export {
   KanbanBoard,
   KanbanCard,
-  sampleItems as sampleRoadmapItems,
+  sampleRoadmapItems,
   type KanbanBoardProps,
   type KanbanCardProps,
   type KanbanColumn,

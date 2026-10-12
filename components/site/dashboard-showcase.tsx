@@ -200,12 +200,12 @@ export function DashboardShowcase() {
         dot: statusDot[row.status],
       })),
     },
-    { value: 'Actions', items: [{ value: 'new-account', label: 'New account', icon: Plus }] },
+    { value: 'Actions', items: [{ value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus }] },
     { value: 'Go to', items: goTo.map((item) => ({ value: `go:${item.id}`, label: item.label, icon: item.icon })) },
   ];
 
   const runCommand = (value: string) => {
-    if (value === 'new-account') openNew('ideas');
+    if (value === 'new-roadmap-item') openNew('ideas');
     else if (value.startsWith('open:')) {
       showPage('accounts');
       openAccount(value.slice('open:'.length));
