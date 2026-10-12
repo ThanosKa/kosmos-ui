@@ -43,10 +43,11 @@ const groups: Group[] = [
 export default function CommandDemo() {
   const [open, setOpen] = useState(false);
 
-  // ⌘K on a Mac, Ctrl+K elsewhere, toggles the palette from anywhere on the page.
+  // ⌘J on a Mac, Ctrl+J elsewhere, toggles the palette from anywhere on the page. Your app would use ⌘K;
+  // on this site ⌘K already opens the docs search.
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+      if (event.key === 'j' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         setOpen((value) => !value);
       }
@@ -68,7 +69,7 @@ export default function CommandDemo() {
         </span>
         <KbdGroup>
           <Kbd>⌘</Kbd>
-          <Kbd>K</Kbd>
+          <Kbd>J</Kbd>
         </KbdGroup>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
