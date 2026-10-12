@@ -5,18 +5,22 @@ import { changelogFolder } from '@/lib/changelog';
 import { docsRoute } from '@/lib/shared';
 import { source, type DocsPage } from '@/lib/source';
 
-/** Markdown read as plain text: code, emphasis and link syntax removed. */
+/**
+ * Markdown with link and emphasis syntax removed outside code spans. Code spans stay, so the dialog shows a tag
+ * like `<a>` as code instead of parsing it as HTML.
+ */
 const plainText = (markdown: string) =>
   markdown
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/`|\*/g, '')
+    .split(/(`[^`]*`)/)
+    .map((part, index) => (index % 2 === 1 ? part : part.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\*/g, '')))
+    .join('')
     .trim();
 
 /** A table row as its cells, without the header row the record repeats. */
 const tableRowText = (markdown: string) =>
   (markdown.trim().split('\n').at(-1) ?? '')
-    .split('|')
-    .map((cell) => plainText(cell))
+    .split(/(?<!\\)\|/)
+    .map((cell) => plainText(cell.replaceAll('\\|', '|')))
     .filter(Boolean)
     .join(' · ');
 
@@ -56,9 +60,7 @@ function changelogLast(results: SortedResult[]): SortedResult[] {
 }
 
 export async function GET(request: Request) {
-  const params = new URL(request.url).searchParams;
-  const query = params.get('query') ?? '';
-  const tag = params.get('tag')?.split(',') ?? undefined;
-  const locale = params.get('locale') ?? undefined;
-  return Response.json(changelogLast(await api.search(query, { tag, locale })));
+  const query = new URL(request.url).searchParams.get('query');
+  if (!query) return Response.json([]);
+  return Response.json(changelogLast(await api.search(query)));
 }
