@@ -1,12 +1,13 @@
 'use client';
 
-import { Collapsible } from '@base-ui/react/collapsible';
 import { AnchorProvider, ScrollProvider, TOCItem, type TableOfContents } from 'fumadocs-core/toc';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useRef, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Button } from '@/registry/kosmos/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
 import { eyebrowClass } from './classes';
+
+/** A little longer than the accordion's 150ms close. */
+const closeDuration = 180;
 
 function DocsTocList({ toc, itemClassName }: { toc: TableOfContents; itemClassName?: string }) {
   return (
@@ -53,44 +54,43 @@ export function DocsToc({ toc, className }: { toc: TableOfContents; className?: 
   );
 }
 
-/** The same headings behind an "On this page" toggle, for widths where the right rail is hidden. Starts closed. */
+/**
+ * The same headings in a Kosmos Accordion, for widths where the right rail is hidden. Starts closed and closes again
+ * once a heading is picked, so the page it jumps to is not pushed down.
+ */
 export function DocsTocDisclosure({ toc, className }: { toc: TableOfContents; className?: string }) {
+  const [open, setOpen] = useState<string[]>([]);
   if (toc.length === 0) return null;
 
+  // The list closes first and the page jumps after, so the closing panel doesn't pull the heading out of view.
+  const jumpAfterClosing = (event: MouseEvent<HTMLElement>) => {
+    const href = (event.target as Element).closest('a')?.getAttribute('href');
+    if (!href?.startsWith('#') || event.metaKey || event.ctrlKey || event.shiftKey) return;
+    event.preventDefault();
+    setOpen([]);
+    setTimeout(() => {
+      history.pushState(null, '', href);
+      document.getElementById(decodeURIComponent(href.slice(1)))?.scrollIntoView();
+    }, closeDuration);
+  };
+
   return (
-    <Collapsible.Root
+    <Accordion
       data-docs-toc-disclosure=""
-      className={cn('rounded-2xl border border-transparent bg-card shadow-card', className)}
+      value={open}
+      onValueChange={setOpen}
+      className={cn('rounded-2xl border border-transparent bg-card px-2 shadow-card', className)}
     >
-      <Collapsible.Trigger
-        render={<Button variant="item" className="group/toc-trigger h-10 w-full justify-between rounded-2xl px-4" />}
-      >
-        On this page
-        <span aria-hidden className="relative size-3.5 shrink-0 text-muted-foreground *:absolute *:inset-0">
-          <ChevronDown
-            className={cn(
-              'transition-[rotate,opacity] duration-fast ease-power3-out group-data-panel-open/toc-trigger:duration-slow',
-              'motion-safe:group-data-panel-open/toc-trigger:rotate-180 motion-safe:group-data-panel-open/toc-trigger:ease-smooth-in-out',
-              'motion-reduce:group-data-panel-open/toc-trigger:opacity-0',
-            )}
-          />
-          <ChevronUp className="opacity-0 transition-[opacity] duration-fast motion-reduce:group-data-panel-open/toc-trigger:opacity-100" />
-        </span>
-      </Collapsible.Trigger>
-      <Collapsible.Panel
-        render={<nav aria-label="On this page" />}
-        className={cn(
-          'h-(--collapsible-panel-height) overflow-hidden duration-fast ease-power3-out data-open:duration-slow',
-          'motion-safe:transition-[height] motion-safe:data-open:ease-smooth-in-out motion-safe:data-ending-style:h-0 motion-safe:data-starting-style:h-0',
-          'motion-reduce:transition-[opacity] motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:opacity-0',
-        )}
-      >
-        <AnchorProvider toc={toc}>
-          <div className="border-t border-border px-2 py-2">
-            <DocsTocList toc={toc} itemClassName="px-2 focus-visible:-outline-offset-2" />
-          </div>
-        </AnchorProvider>
-      </Collapsible.Panel>
-    </Collapsible.Root>
+      <AccordionItem value="toc">
+        <AccordionTrigger>On this page</AccordionTrigger>
+        <AccordionContent className="px-0 pb-2">
+          <nav aria-label="On this page" onClickCapture={jumpAfterClosing}>
+            <AnchorProvider toc={toc}>
+              <DocsTocList toc={toc} itemClassName="px-2 focus-visible:-outline-offset-2" />
+            </AnchorProvider>
+          </nav>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
