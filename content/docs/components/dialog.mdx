@@ -56,7 +56,7 @@ Name the action and the object in the title, say what is lost in the description
 
 ### Long content
 
-`DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view.
+`DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view. It scrolls in a [Scroll area](/docs/components/scroll-area): while content is hidden past its top or bottom, that edge fades out and a scrollbar shows.
 
 <ComponentPreview name="dialog-scroll" />
 
@@ -120,7 +120,7 @@ Takes every Base UI `Dialog.Popup` prop, such as `initialFocus` and `finalFocus`
 | `DialogHeader` | Holds the title and description. |
 | `DialogTitle` | Names the dialog. Base UI `Dialog.Title`. |
 | `DialogDescription` | Describes the dialog. Base UI `Dialog.Description`. |
-| `DialogBody` | The content. Scrolls when the dialog reaches the screen height. |
+| `DialogBody` | The content, in a scroll area that scrolls when the dialog reaches the screen height. `className` styles the padded box inside. |
 | `DialogFooter` | The actions, stacked on a phone and in a row from `sm`. |
 | `DialogPortal` | Renders its children into `document.body`. Base UI `Dialog.Portal`. |
 | `DialogBackdrop` | The scrim behind the dialog. Base UI `Dialog.Backdrop`. |

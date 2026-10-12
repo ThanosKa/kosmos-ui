@@ -31,9 +31,10 @@ function Textarea({ className, value, defaultValue, disabled, name, id, onValueC
         'dark:scheme-dark',
         'transition-[box-shadow]',
         'placeholder:text-muted-foreground',
-        'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20',
+        // The transparent outline paints only in forced-colors mode, which drops the box-shadow focus line and halo.
+        'focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-transparent focus-visible:ring-offset-1 focus-visible:ring-offset-ring focus-visible:ring-3 focus-visible:ring-ring/20',
         'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
-        'data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-4 data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:outline-destructive aria-invalid:focus-visible:ring-4 aria-invalid:focus-visible:ring-destructive/20',
+        'data-invalid:focus-visible:ring-offset-destructive data-invalid:focus-visible:ring-3 data-invalid:focus-visible:ring-destructive/20 aria-invalid:focus-visible:ring-offset-destructive aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-destructive/20',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
