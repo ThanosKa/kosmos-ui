@@ -2,18 +2,25 @@
 
 import { useDirection } from '@base-ui/react/direction-provider';
 import { mergeProps } from '@base-ui/react/merge-props';
+import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
 import { useRender } from '@base-ui/react/use-render';
 import { PanelLeftIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button, type ButtonProps } from '@/registry/kosmos/ui/button';
 import { Drawer, DrawerContent, DrawerTitle } from '@/registry/kosmos/ui/drawer';
+import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { Separator } from '@/registry/kosmos/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider } from '@/registry/kosmos/ui/tooltip';
 
 /** Below this viewport width (px) the sidebar leaves the layout and opens as a drawer from the left edge. */
 const MOBILE_BREAKPOINT = 768;
 /** Arrow keys resize by this much; with Shift, by four times as much. */
 const KEYBOARD_STEP = 16;
+/** The width of the icon column (px) a sidebar with `collapsible="icon"` collapses to. */
+const ICON_WIDTH = 48;
+
+type SidebarCollapsible = 'offcanvas' | 'icon';
 
 type SidebarContextValue = {
   /** Whether the sidebar shows next to the page (from `mobileBreakpoint` up). */
@@ -24,6 +31,13 @@ type SidebarContextValue = {
   setOpenMobile: (open: boolean) => void;
   /** Opens or closes the sidebar, or the drawer on phones. */
   toggleSidebar: () => void;
+  /** How the sidebar collapses, set by `Sidebar`: to the edge (`offcanvas`) or to a column of icons (`icon`). */
+  collapsible: SidebarCollapsible;
+  setCollapsible: (collapsible: SidebarCollapsible) => void;
+  /** The local storage key that keeps the open state between visits, or `null` when nothing is kept. */
+  storageKey: string | null;
+  /** The key that toggles the sidebar with ⌘ or Ctrl, or `null` when the shortcut is off. */
+  keyboardShortcut: string | null;
   isMobile: boolean;
   /** Whether `mobileBreakpoint` is the default 768px, which CSS also knows before hydration. */
   usesDefaultBreakpoint: boolean;
@@ -65,6 +79,72 @@ function useIsMobile(breakpoint: number) {
   );
 }
 
+/** For values that never change after hydration: nothing to subscribe to. */
+const subscribeNever = () => () => {};
+
+/** False while the server renders and while the page hydrates, true after. */
+function useHydrated() {
+  return React.useSyncExternalStore(
+    subscribeNever,
+    () => true,
+    () => false,
+  );
+}
+
+/** Apple platforms show ⌘ for the shortcut, the rest Ctrl. The server renders ⌘. */
+function useIsMac() {
+  return React.useSyncExternalStore(
+    subscribeNever,
+    () => /Mac|iPhone|iPad/.test(navigator.userAgent),
+    () => true,
+  );
+}
+
+const storageListeners = new Set<() => void>();
+
+function subscribeStorage(onChange: () => void) {
+  storageListeners.add(onChange);
+  window.addEventListener('storage', onChange);
+  return () => {
+    storageListeners.delete(onChange);
+    window.removeEventListener('storage', onChange);
+  };
+}
+
+function readStorage(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    return;
+  }
+  storageListeners.forEach((listener) => listener());
+}
+
+/** The open state saved under `key`: `true`, `false`, or `null` when nothing is saved or `key` is `null`. */
+function useStoredOpen(key: string | null) {
+  const stored = React.useSyncExternalStore(
+    subscribeStorage,
+    () => (key ? readStorage(key) : null),
+    () => null,
+  );
+  return stored === 'expanded' ? true : stored === 'collapsed' ? false : null;
+}
+
+/**
+ * Runs before the page paints, ahead of hydration: applies the saved state to the sidebar it sits in, so a
+ * collapsed sidebar never flashes open. Arguments: the sidebar element, the storage key and the collapse mode.
+ */
+const restoreScript = (key: string, collapsible: SidebarCollapsible) =>
+  `(function(e,k,m){try{var v=localStorage.getItem(k);if(v!=='expanded'&&v!=='collapsed')return;e.setAttribute('data-state',v);e.setAttribute('data-collapsible',v==='collapsed'?m:'')}catch(_){}})(document.currentScript.parentElement,${JSON.stringify(key)},${JSON.stringify(collapsible)})`;
+
 function useControllable<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
   const current = value === undefined ? uncontrolled : value;
@@ -93,6 +173,13 @@ type SidebarProviderProps = React.ComponentProps<'div'> & {
   maxWidth?: number;
   /** Below this viewport width in pixels the sidebar opens as a drawer instead. */
   mobileBreakpoint?: number;
+  /**
+   * The local storage key that keeps the open state between visits; `false` keeps nothing. Unused while `open` is
+   * controlled. Give each sidebar on a page its own key.
+   */
+  storageKey?: string | false;
+  /** The key that collapses and reopens the sidebar together with ⌘ (Ctrl on Windows and Linux); `false` turns it off. */
+  keyboardShortcut?: string | false;
 };
 
 /**
@@ -109,6 +196,8 @@ function SidebarProvider({
   minWidth = 208,
   maxWidth = 384,
   mobileBreakpoint = MOBILE_BREAKPOINT,
+  storageKey: storageKeyProp = 'sidebar-state',
+  keyboardShortcut: keyboardShortcutProp = 'b',
   className,
   style,
   children,
@@ -116,11 +205,24 @@ function SidebarProvider({
 }: SidebarProviderProps) {
   const isMobile = useIsMobile(mobileBreakpoint);
   const usesDefaultBreakpoint = mobileBreakpoint === MOBILE_BREAKPOINT;
-  const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange);
+  const storageKey = openProp === undefined && storageKeyProp !== false ? storageKeyProp : null;
+  const keyboardShortcut = keyboardShortcutProp === false ? null : keyboardShortcutProp.toLowerCase();
+  const storedOpen = useStoredOpen(storageKey);
+  const [openState, setOpenState] = useControllable(openProp, defaultOpen, onOpenChange);
+  const open = openProp === undefined && storedOpen !== null ? storedOpen : openState;
   const [width, setWidthState] = useControllable(widthProp, defaultWidth, onWidthChange);
   const [openMobile, setOpenMobile] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
+  const [collapsible, setCollapsible] = React.useState<SidebarCollapsible>('offcanvas');
   const sidebarId = React.useId();
+
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      setOpenState(next);
+      if (storageKey) writeStorage(storageKey, next ? 'expanded' : 'collapsed');
+    },
+    [setOpenState, storageKey],
+  );
 
   const setWidth = React.useCallback(
     (next: number) => setWidthState(Math.round(Math.min(maxWidth, Math.max(minWidth, next)))),
@@ -131,6 +233,19 @@ function SidebarProvider({
     else setOpen(!open);
   }, [isMobile, open, setOpen]);
 
+  React.useEffect(() => {
+    if (!keyboardShortcut) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key.toLowerCase() !== keyboardShortcut || !(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+      // ⌘B is bold in a rich text editor.
+      if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.isContentEditable)) return;
+      event.preventDefault();
+      toggleSidebar();
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [keyboardShortcut, toggleSidebar]);
+
   const context = React.useMemo<SidebarContextValue>(
     () => ({
       open,
@@ -138,6 +253,10 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      collapsible,
+      setCollapsible,
+      storageKey,
+      keyboardShortcut,
       isMobile,
       usesDefaultBreakpoint,
       width,
@@ -149,7 +268,24 @@ function SidebarProvider({
       setResizing,
       sidebarId,
     }),
-    [open, setOpen, openMobile, toggleSidebar, isMobile, usesDefaultBreakpoint, width, setWidth, defaultWidth, minWidth, maxWidth, resizing, sidebarId],
+    [
+      open,
+      setOpen,
+      openMobile,
+      toggleSidebar,
+      collapsible,
+      storageKey,
+      keyboardShortcut,
+      isMobile,
+      usesDefaultBreakpoint,
+      width,
+      setWidth,
+      defaultWidth,
+      minWidth,
+      maxWidth,
+      resizing,
+      sidebarId,
+    ],
   );
 
   return (
@@ -157,14 +293,14 @@ function SidebarProvider({
       <div
         data-slot="sidebar-wrapper"
         data-resizing={resizing ? '' : undefined}
-        style={{ '--sidebar-width': `${width}px`, ...style } as React.CSSProperties}
+        style={{ '--sidebar-width': `${width}px`, '--sidebar-width-icon': `${ICON_WIDTH}px`, ...style } as React.CSSProperties}
         className={cn(
           'group/sidebar-wrapper flex min-h-svh w-full bg-background text-foreground data-resizing:cursor-col-resize data-resizing:select-none',
           className,
         )}
         {...props}
       >
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
       </div>
     </SidebarContext.Provider>
   );
@@ -173,17 +309,22 @@ function SidebarProvider({
 type SidebarProps = React.ComponentProps<'div'> & {
   /** The drawer's accessible name on phones, where the sidebar opens as a dialog. */
   label?: string;
+  /** How the sidebar collapses: to the edge (`offcanvas`), or to a column of icons that name their item in a tooltip (`icon`). */
+  collapsible?: SidebarCollapsible;
 };
 
 /**
  * The sidebar surface. From `mobileBreakpoint` (768px) up it sits next to the page, sticks to the top while the page scrolls
- * and collapses to the left edge; below it, it opens as a drawer from the left edge.
- * Fill it with `SidebarHeader`, `SidebarContent` and `SidebarFooter`.
+ * and collapses to the left edge, or to a column of icons with `collapsible="icon"`; below it, it opens as a drawer from
+ * the left edge. Fill it with `SidebarHeader`, `SidebarContent` and `SidebarFooter`.
  */
-function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarProps) {
-  const { isMobile, usesDefaultBreakpoint, open, openMobile, setOpenMobile, sidebarId } = useSidebar();
+function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcanvas', ...props }: SidebarProps) {
+  const { isMobile, usesDefaultBreakpoint, open, openMobile, setOpenMobile, setCollapsible, storageKey, sidebarId } = useSidebar();
+  const hydrated = useHydrated();
   // The drawer opens from the side the sidebar sits on: the right edge in a right-to-left layout.
   const side = useDirection() === 'rtl' ? 'right' : 'left';
+
+  React.useLayoutEffect(() => setCollapsible(collapsible), [collapsible, setCollapsible]);
 
   if (isMobile) {
     return (
@@ -210,24 +351,29 @@ function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarPr
     <div
       data-slot="sidebar"
       data-state={open ? 'expanded' : 'collapsed'}
+      data-collapsible={open ? '' : collapsible}
+      // The restore script below may already have set the saved state on this element.
+      suppressHydrationWarning
       className={cn(
-        'group/sidebar relative w-(--sidebar-width) shrink-0 data-[state=collapsed]:w-0',
+        'group/sidebar relative w-(--sidebar-width) shrink-0 data-[collapsible=icon]:w-(--sidebar-width-icon) data-[collapsible=offcanvas]:w-0',
         // Hidden on phones before hydration too, so the page never flashes the side-by-side layout.
         usesDefaultBreakpoint && 'max-md:hidden',
-        // Collapse and expand: the width eases, or the panel fades under reduced motion. Resizing follows the pointer.
+        // Collapse and expand: the width eases. Under reduced motion the panel (or the labels, in icon mode) fades
+        // out before the width changes, and fades in after. Resizing follows the pointer.
         'motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
-        'motion-reduce:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s] motion-reduce:data-[state=collapsed]:opacity-0',
+        'motion-reduce:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s] motion-reduce:data-[collapsible=offcanvas]:opacity-0',
         'motion-reduce:data-[state=collapsed]:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s_var(--transition-duration-fast)]',
         'group-data-resizing/sidebar-wrapper:transition-none',
       )}
     >
+      {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: restoreScript(storageKey, collapsible) }} /> : null}
       <div
         data-slot="sidebar-inner"
-        className="sticky top-0 h-svh max-h-full overflow-hidden border-e border-sidebar-border bg-sidebar text-sidebar-foreground group-data-[state=collapsed]/sidebar:border-e-0"
+        className="sticky top-0 h-svh max-h-full overflow-hidden border-e border-sidebar-border bg-sidebar text-sidebar-foreground group-data-[collapsible=offcanvas]/sidebar:border-e-0"
       >
         <div
-          inert={!open}
-          className={cn('flex h-full w-(--sidebar-width) flex-col', className)}
+          inert={!open && collapsible === 'offcanvas'}
+          className={cn('flex h-full flex-col', collapsible === 'icon' ? 'w-full' : 'w-(--sidebar-width)', className)}
           {...props}
           id={sidebarId}
         >
@@ -241,8 +387,8 @@ function Sidebar({ className, children, label = 'Sidebar', ...props }: SidebarPr
 /**
  * The drag handle on the sidebar's edge, a window splitter: drag it, or focus it and use the arrow keys
  * (Shift for bigger steps), Home and End. Enter collapses and reopens the sidebar; a double click returns
- * to the default width. Dragging past half the minimum width collapses it. Place it between `Sidebar`
- * and `SidebarInset`. It is not rendered on phones.
+ * to the default width. Dragging below halfway between the collapsed width and the minimum width collapses it.
+ * Place it between `Sidebar` and `SidebarInset`. It is not rendered on phones.
  */
 function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'>) {
   const {
@@ -256,8 +402,10 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
     minWidth,
     maxWidth,
     setResizing,
+    collapsible,
     sidebarId,
   } = useSidebar();
+  const collapsedWidth = collapsible === 'icon' ? ICON_WIDTH : 0;
   const drag = React.useRef<{ startX: number; startWidth: number; direction: number } | null>(null);
   const [dragging, setDragging] = React.useState(false);
 
@@ -270,7 +418,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     event.currentTarget.focus({ preventScroll: true });
-    drag.current = { startX: event.clientX, startWidth: open ? width : 0, direction: direction(event.currentTarget) };
+    drag.current = { startX: event.clientX, startWidth: open ? width : collapsedWidth, direction: direction(event.currentTarget) };
     setDragging(true);
     setResizing(true);
   };
@@ -278,7 +426,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!drag.current) return;
     const next = drag.current.startWidth + (event.clientX - drag.current.startX) * drag.current.direction;
-    if (next < minWidth / 2) {
+    if (next < (collapsedWidth + minWidth) / 2) {
       if (open) setOpen(false);
       return;
     }
@@ -324,10 +472,10 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
       aria-orientation="vertical"
       aria-controls={sidebarId}
       aria-label="Resize sidebar"
-      aria-valuenow={open ? width : 0}
-      aria-valuemin={0}
+      aria-valuenow={open ? width : collapsedWidth}
+      aria-valuemin={collapsedWidth}
       aria-valuemax={maxWidth}
-      aria-valuetext={open ? `${width} pixels` : 'Collapsed'}
+      aria-valuetext={open ? `${width} pixels` : collapsible === 'icon' ? 'Collapsed to icons' : 'Collapsed'}
       data-slot="sidebar-resize-handle"
       data-state={open ? 'expanded' : 'collapsed'}
       data-dragging={dragging ? '' : undefined}
@@ -360,26 +508,43 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
 
 type SidebarTriggerProps = Omit<Extract<ButtonProps, { href?: undefined }>, 'variant' | 'size'>;
 
-/** Opens and closes the sidebar, or the drawer on phones. */
+/** Opens and closes the sidebar, or the drawer on phones. Its tooltip names the keyboard shortcut. */
 function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
-  const { toggleSidebar, isMobile, open, openMobile, sidebarId } = useSidebar();
+  const { toggleSidebar, isMobile, open, openMobile, keyboardShortcut, sidebarId } = useSidebar();
+  const isMac = useIsMac();
   return (
-    <Button
-      variant="secondary"
-      size="icon"
-      data-slot="sidebar-trigger"
-      aria-label="Toggle sidebar"
-      aria-expanded={isMobile ? openMobile : open}
-      aria-controls={isMobile && !openMobile ? undefined : sidebarId}
-      className={className}
-      onClick={(event) => {
-        onClick?.(event);
-        toggleSidebar();
-      }}
-      {...props}
-    >
-      <PanelLeftIcon aria-hidden />
-    </Button>
+    <Tooltip>
+      <TooltipPrimitive.Trigger
+        render={
+          <Button
+            variant="secondary"
+            size="icon"
+            data-slot="sidebar-trigger"
+            aria-label="Toggle sidebar"
+            aria-expanded={isMobile ? openMobile : open}
+            aria-controls={isMobile && !openMobile ? undefined : sidebarId}
+            aria-keyshortcuts={keyboardShortcut ? `${isMac ? 'Meta' : 'Control'}+${keyboardShortcut.toUpperCase()}` : undefined}
+            className={className}
+            onClick={(event) => {
+              onClick?.(event);
+              toggleSidebar();
+            }}
+            {...props}
+          >
+            <PanelLeftIcon aria-hidden />
+          </Button>
+        }
+      />
+      <TooltipContent side="bottom" className={cn(keyboardShortcut && 'flex items-center gap-2 pe-1')}>
+        Toggle sidebar
+        {keyboardShortcut ? (
+          <KbdGroup>
+            <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
+            <Kbd>{keyboardShortcut.toUpperCase()}</Kbd>
+          </KbdGroup>
+        ) : null}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -459,6 +624,8 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
       {
         className: cn(
           'flex h-6 shrink-0 items-center truncate px-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase',
+          // In icon mode the label fades but keeps its row, so the icons below it never move.
+          'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0',
           className,
         ),
       },
@@ -483,17 +650,20 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K>
 type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> & {
   /** Marks the current page: `aria-current="page"` on a link, a raised highlight and an orange label and icon. */
   isActive?: boolean;
+  /** The item's name, shown in a tooltip beside the icon while the sidebar is collapsed to icons. */
+  tooltip?: React.ReactNode;
 };
 
 /**
  * The clickable row of an item: a Button with `href` for a page, without it for an action.
  * Put an icon first and the label in a `<span>`, which truncates. On phones a link closes the drawer.
+ * In icon mode only the icon shows, and `tooltip` names the item.
  */
-function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMenuButtonProps) {
+function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: SidebarMenuButtonProps) {
   const sidebar = React.useContext(SidebarContext);
   const isLink = props.href !== undefined;
   const { onClickCapture } = props as { onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void };
-  return (
+  const button = (
     <Button
       variant="item"
       size="md"
@@ -501,10 +671,12 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
       className={cn(
-        'h-7.5 w-full min-w-0 justify-start gap-2 px-2 text-muted-foreground',
+        'h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden px-2 text-muted-foreground',
         'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
         'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
+        // In icon mode the label and the count fade, and the icon stays where it was.
+        '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span]:opacity-0',
         className,
       )}
       {...props}
@@ -513,6 +685,16 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
         if (isLink && sidebar?.isMobile) sidebar.setOpenMobile(false);
       }}
     />
+  );
+  if (tooltip === undefined) return button;
+  const iconsOnly = sidebar !== null && !sidebar.isMobile && !sidebar.open && sidebar.collapsible === 'icon';
+  return (
+    <Tooltip disabled={!iconsOnly}>
+      <TooltipPrimitive.Trigger render={button} />
+      <TooltipContent side="inline-end" sideOffset={15}>
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -547,6 +729,7 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  type SidebarCollapsible,
   type SidebarMenuButtonProps,
   type SidebarTriggerProps,
   type SidebarProps,
