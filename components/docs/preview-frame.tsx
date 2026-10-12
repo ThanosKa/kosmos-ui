@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
  * The preview route in an iframe, sized to its content. Without `theme` the frame follows
@@ -59,7 +59,7 @@ export function PreviewFrame({
       title={theme ? `${name} preview, ${theme}` : `${name} preview`}
       loading="lazy"
       style={{ height }}
-      className={cn('block w-full rounded-lg bg-fd-background', className)}
+      className={cn('block w-full rounded-lg bg-background', className)}
     />
   );
 }
