@@ -1,31 +1,55 @@
-import type { ReactNode } from 'react';
-import { Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs';
+'use client';
 
-/** The value Fumadocs gives a `<Tab value="…">`, so the triggers below match their panels. */
-const toValue = (item: string) => item.toLowerCase().replace(/\s/, '-');
+import type { ReactNode } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+import { usePackageManager } from './use-package-manager';
+
+export type DocsTab = { label: string; content: ReactNode };
+
+/** A Kosmos tab row over open panels, such as the CLI and Manual install paths. The first tab starts selected. */
+export function DocsTabs({ tabs }: { tabs: DocsTab[] }) {
+  return (
+    <Tabs defaultValue={tabs[0].label} className="not-prose my-6 min-w-0">
+      <TabsList>
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab.label} value={tab.label}>
+            {tab.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {tabs.map((tab) => (
+        <TabsContent key={tab.label} value={tab.label} keepMounted>
+          {tab.content}
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
 
 /**
- * Fumadocs `Tabs` as a plain tab row over open panels, with triggers that draw the focus outline inside,
- * since the tab list scrolls and clips anything outside it. Children are `<Tab value="…">` panels, one per item.
+ * One code panel per package manager on a code card, with the tabs in the card's header. The choice is shared
+ * with every other install tab and the install chip, and remembered on later visits.
  */
-export function DocsTabs({ items, children }: { items: string[]; children: ReactNode }) {
+export function PackageManagerTabs<T extends string>({ managers, panels }: { managers: readonly T[]; panels: Record<T, ReactNode> }) {
+  const [manager, setManager] = usePackageManager(managers);
   return (
     <Tabs
-      defaultValue={toValue(items[0])}
-      className="not-prose min-w-0 overflow-visible rounded-none border-0 bg-transparent [&>[role=tabpanel]]:rounded-none [&>[role=tabpanel]]:bg-transparent [&>[role=tabpanel]]:px-0 [&>[role=tabpanel]]:pt-4 [&>[role=tabpanel]]:pb-0"
+      value={manager}
+      onValueChange={(value) => setManager(value as T)}
+      className="not-prose min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card"
     >
-      <TabsList className="gap-0 border-b border-border px-0">
-        {items.map((item) => (
-          <TabsTrigger
-            key={item}
-            value={toValue(item)}
-            className="relative rounded-lg border-b-0 px-2 after:absolute after:inset-x-2 after:bottom-0 after:h-px data-[active]:after:bg-fd-primary focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
-          >
+      <TabsList aria-label="Package manager" className="px-2">
+        {managers.map((item) => (
+          <TabsTrigger key={item} value={item}>
             {item}
           </TabsTrigger>
         ))}
       </TabsList>
-      {children}
+      {managers.map((item) => (
+        <TabsContent key={item} value={item} keepMounted className="focus-visible:-outline-offset-2">
+          {panels[item]}
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }

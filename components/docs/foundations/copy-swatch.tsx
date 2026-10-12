@@ -17,7 +17,6 @@ export function CopySwatch({ tokenClass, swatches }: { tokenClass: string; swatc
       <Button
         variant="item"
         data-copy-swatch={tokenClass}
-        aria-label={`Copy ${tokenClass}`}
         onClick={copy}
         className="h-auto w-full flex-col items-stretch gap-2 p-1.5"
       >

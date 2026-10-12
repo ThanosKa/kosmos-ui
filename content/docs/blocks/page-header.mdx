@@ -14,12 +14,15 @@ The block brings [Tabs](/docs/components/tabs), [Input](/docs/components/input),
 ## Usage
 
 ```tsx
+'use client';
+
+import { useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export default function AccountsPage() {
-  const [tab, setTab] = React.useState('all');
-  const [query, setQuery] = React.useState('');
+  const [tab, setTab] = useState('all');
+  const [query, setQuery] = useState('');
 
   return (
     <PageHeader leading={<SidebarTrigger />} tab={tab} onTabChange={setTab} query={query} onQueryChange={setQuery}>
@@ -28,6 +31,8 @@ export default function AccountsPage() {
   );
 }
 ```
+
+`SidebarTrigger` comes from [Sidebar](/docs/components/sidebar), which the block doesn't install. Add it with `shadcn add @kosmos/sidebar`, or leave `leading` out when the page has no sidebar.
 
 Pass the page body as `children`: it becomes the panel of the selected tab, so screen readers hear which view it shows. Every value (tab, search text, filters, layout) works controlled, with its `on…Change` callback, or keeps its own state when you leave it out. The tabs and filters at the top of the file are sample data.
 

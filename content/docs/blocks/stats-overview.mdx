@@ -44,7 +44,7 @@ Takes every `<section>` prop, plus:
       description: 'The chart points for each range.',
       type: "Record<'30d' | '90d' | '12m', { label: string; newBusiness: number; expansion: number }[]>",
     },
-    plans: { description: "Each plan's share of revenue, in percent.", type: '{ plan: string; share: number }[]' },
+    plans: { description: "Each plan's share of revenue, in percent. An empty list, or a range with no revenue, shows the empty state.", type: '{ plan: string; share: number }[]' },
     range: { description: 'The chart range. Use with `onRangeChange`.', type: "'30d' | '90d' | '12m'" },
     defaultRange: { description: 'The range shown at first, when the overview keeps its own state.', type: "'30d' | '90d' | '12m'", default: "'12m'" },
     onRangeChange: { description: 'Called with the newly selected range.', type: "(range: '30d' | '90d' | '12m') => void" },

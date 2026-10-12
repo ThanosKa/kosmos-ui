@@ -1,31 +1,30 @@
 import { EasingDemo } from '@/components/docs/easing-demo';
 import { easings, motionTokens } from '@/lib/foundations';
+import { MdxTable, MdxTableBody, MdxTableCell, MdxTableHead, MdxTableHeader, MdxTableRow } from '@/components/docs/mdx-table';
 
 export function MotionTokens() {
   return (
-    <div className="relative my-6 overflow-auto prose-no-margin">
-      <table>
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Used for</th>
-          </tr>
-        </thead>
-        <tbody>
-          {motionTokens().map((token) => (
-            <tr key={token.name} data-token-motion={token.name}>
-              <td>
-                <div className="flex flex-col items-start gap-1">
-                  <code>{token.className}</code>
-                  <span className="font-mono text-small text-muted-foreground">{token.value}</span>
-                </div>
-              </td>
-              <td>{token.use}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <MdxTable>
+      <MdxTableHeader>
+        <MdxTableRow>
+          <MdxTableHead>Token</MdxTableHead>
+          <MdxTableHead>Used for</MdxTableHead>
+        </MdxTableRow>
+      </MdxTableHeader>
+      <MdxTableBody>
+        {motionTokens().map((token) => (
+          <MdxTableRow key={token.name} data-token-motion={token.name}>
+            <MdxTableCell>
+              <div className="flex flex-col items-start gap-1">
+                <code>{token.className}</code>
+                <span className="font-mono text-small text-muted-foreground">{token.value}</span>
+              </div>
+            </MdxTableCell>
+            <MdxTableCell>{token.use}</MdxTableCell>
+          </MdxTableRow>
+        ))}
+      </MdxTableBody>
+    </MdxTable>
   );
 }
 

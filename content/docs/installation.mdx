@@ -22,7 +22,7 @@ Not sure which you have? Open `components.json`. A `style` that starts with `bas
 
 <ShadcnCommand args="init -t next -b base" />
 
-The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The app lands in a new folder with that name, so `cd` into it before you run the next command.
+The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The preset's fonts stay; [Fonts](#fonts) below shows how to switch to Geist. The app lands in a new folder with that name, so `cd` into it before you run the next command.
 
 </Step>
 <Step>
@@ -57,7 +57,16 @@ They go into your global CSS and replace shadcn's default colors, after the CLI 
 
 The Button lands in `components/ui/button.tsx`, and the CLI adds `lib/cn.ts`, the class helper it imports. Each component page lists everything it installs.
 
-`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost` and `destructive`, so update any call that uses shadcn's `default`, `outline` or `link`.
+`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost`, `destructive` and `item`, and its sizes are `sm`, `md`, `lg`, `icon-sm`, `icon` and `icon-lg`. Update every call that uses a shadcn name, including the ones inside shadcn components you already have:
+
+| shadcn | Kosmos |
+| --- | --- |
+| `variant="default"` | `variant="primary"` |
+| `variant="outline"` | `variant="secondary"` |
+| `variant="link"` | A plain link, or `variant="ghost"` |
+| `size="default"` | `size="md"` |
+| `size="xs"` | `size="sm"` |
+| `size="icon-xs"` | `size="icon-sm"` |
 
 </Step>
 <Step>
@@ -77,9 +86,38 @@ export function SaveBar() {
 </Step>
 </Steps>
 
+## Fonts
+
+Kosmos is designed for Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
+
+```tsx title="app/layout.tsx"
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="font-sans antialiased">{children}</body>
+    </html>
+  );
+}
+```
+
+Then point the font families at them in the `@theme inline` block of `app/globals.css`, replacing the lines your preset wrote:
+
+```css title="app/globals.css"
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+```
+
 ## Without the CLI
 
-Every Kosmos file is plain source, so you can copy it in by hand. Start from a Next.js app with Tailwind CSS v4 and follow the same order: tokens, then `cn`, then the component.
+Every Kosmos file is plain source, so you can copy it in by hand. Start from a Next.js app with Tailwind CSS v4 and follow the same order: tokens, dark mode, then `cn`, then the component. Load the [fonts](#fonts) the same way as above.
 
 <Steps>
 <Step>
@@ -89,6 +127,19 @@ Every Kosmos file is plain source, so you can copy it in by hand. Start from a N
 Merge each block below into the matching block of `app/globals.css` (`@theme inline`, `:root` and `.dark`), after the Tailwind import. Where a variable already exists, such as shadcn's `--background` or `--primary`, replace its value.
 
 <RegistryCss name="tokens" />
+
+</Step>
+<Step>
+
+### Turn on dark mode
+
+The dark values apply under a `.dark` class on `<html>`. Add this line after the Tailwind import, so `dark:` classes follow the same class instead of the system setting:
+
+```css title="app/globals.css"
+@custom-variant dark (&:is(.dark *));
+```
+
+Then set the class from your theme switch. With [next-themes](https://github.com/pacocoursey/next-themes), wrap your app in `<ThemeProvider attribute="class">`. `shadcn init` sets up the same line, so the CLI path already has it.
 
 </Step>
 <Step>

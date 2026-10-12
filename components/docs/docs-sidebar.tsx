@@ -159,7 +159,7 @@ type DocsSidebarGroupProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-/** One registry group: a toggle with the group's icon, name and item count, over its pages A–Z. */
+/** One registry group: a toggle with the group's icon, name and, while closed, its item count, over its pages A–Z. */
 function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSidebarGroupProps) {
   const count = group.items.length;
   return (
@@ -170,9 +170,14 @@ function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSid
         <span className="sr-only">
           {count} {noun[count === 1 ? 0 : 1]}
         </span>
-        <SidebarMenuBadge aria-hidden>{count}</SidebarMenuBadge>
+        <SidebarMenuBadge aria-hidden className="group-data-panel-open/group-trigger:hidden">
+          {count}
+        </SidebarMenuBadge>
         {/* Turns as the group opens; under reduced motion the right and down chevrons cross-fade instead. */}
-        <span aria-hidden className="relative -me-0.5 size-3.5 shrink-0 *:absolute *:inset-0">
+        <span
+          aria-hidden
+          className="relative -me-0.5 size-3.5 shrink-0 group-data-panel-open/group-trigger:ms-auto *:absolute *:inset-0"
+        >
           <ChevronRight
             className={cn(
               'transition-[rotate,opacity] duration-fast ease-power3-out group-data-panel-open/group-trigger:duration-slow',

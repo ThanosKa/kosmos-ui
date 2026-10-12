@@ -1,7 +1,17 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/shadcn.css';
 @import 'fumadocs-ui/css/preset.css';
+@import 'shadcn/tailwind.css';
 @import '../registry/kosmos/styles/tokens.css';
+
+/* The variants and base styles a shadcn project gives the components, so the site renders them the way user apps do. */
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
 
 /*
  * State pinning for preview routes (/view/[name]): `data-preview="hover focus"`
@@ -36,11 +46,6 @@
   --text-lead--line-height: 1.6;
 }
 
-:root,
-.dark {
-  --color-fd-overlay: var(--scrim);
-}
-
 html {
   scrollbar-gutter: stable;
 }
@@ -48,18 +53,4 @@ html {
 /* The landing page's sticky header (3.5rem): focused and anchored elements stop below it. */
 html:has(#site-header) {
   scroll-padding-top: 4.5rem;
-}
-
-html > body[data-scroll-locked] {
-  margin-right: 0px !important;
-  --removed-body-scroll-bar-size: 0px !important;
-}
-
-/* Fumadocs' heading anchors ship no focus style and keep the copy-link button at opacity 0 while it has focus. */
-.group\/heading > :is(a, button):focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-}
-.group\/heading > button:focus-visible {
-  opacity: 1;
 }

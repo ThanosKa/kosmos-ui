@@ -1,32 +1,9 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { Button } from '@/registry/kosmos/ui/button';
-
-/** The storage key and values the package manager tabs (`PackageManagerTabs`) remember the visitor's choice under. */
-const managerKey = 'package-manager';
-
-function readManager(managers: string[]) {
-  try {
-    const saved = sessionStorage.getItem(managerKey) ?? localStorage.getItem(managerKey);
-    return saved && managers.includes(saved) ? saved : managers[0];
-  } catch {
-    return managers[0];
-  }
-}
-
-function subscribeToManager(onChange: () => void) {
-  // Fumadocs keeps its tab-group listeners private, so a tab picked on this page is noticed after the click or key press that picked it.
-  const events = ['click', 'keyup'] as const;
-  for (const type of events) document.addEventListener(type, onChange);
-  window.addEventListener('storage', onChange);
-  return () => {
-    for (const type of events) document.removeEventListener(type, onChange);
-    window.removeEventListener('storage', onChange);
-  };
-}
+import { usePackageManager } from './use-package-manager';
 
 /**
  * One-click copy of a component's `shadcn add` command, in the package manager the visitor last picked in
@@ -34,9 +11,9 @@ function subscribeToManager(onChange: () => void) {
  */
 export function InstallChip({ commands }: { commands: Record<string, string> }) {
   const managers = Object.keys(commands);
-  const manager = useSyncExternalStore(subscribeToManager, () => readManager(managers), () => managers[0]);
+  const [manager] = usePackageManager(managers);
   const command = commands[manager];
-  const [copied, onCopy] = useCopyButton(() => navigator.clipboard.writeText(commands[readManager(managers)]));
+  const [copied, onCopy] = useCopyButton(() => navigator.clipboard.writeText(command));
 
   return (
     <>
