@@ -187,17 +187,12 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more items than fit: at the top, scrolled halfway" className={stageClass}>
-            {(container) => (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <MoveToMenu container={container} />
-                </div>
-                <div>
-                  <MoveToMenu container={container} scrolled />
-                </div>
-              </div>
-            )}
+          <OverlayStage label="more items than fit, at the top" className={stageClass}>
+            {(container) => <MoveToMenu container={container} />}
+          </OverlayStage>
+
+          <OverlayStage label="more items than fit, scrolled halfway" className={stageClass}>
+            {(container) => <MoveToMenu container={container} scrolled />}
           </OverlayStage>
         </OverlayStageGrid>
       </PreviewSection>

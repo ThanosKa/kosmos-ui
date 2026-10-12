@@ -139,15 +139,18 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more content than fits: at the top, scrolled halfway" className={stageClass}>
+          <OverlayStage label="more content than fits, at the top" className={stageClass}>
             {(container) => (
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div>
-                  <ChangesPopover container={container} />
-                </div>
-                <div>
-                  <ChangesPopover container={container} scrolled />
-                </div>
+              <div className="pt-4">
+                <ChangesPopover container={container} />
+              </div>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="more content than fits, scrolled halfway" className={stageClass}>
+            {(container) => (
+              <div className="pt-4">
+                <ChangesPopover container={container} scrolled />
               </div>
             )}
           </OverlayStage>
