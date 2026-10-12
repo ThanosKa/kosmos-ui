@@ -4,14 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { inlineProseClass, tableCardClass } from './classes';
 import { InlineMarkdown } from './inline-markdown';
 
-export type ApiProp = {
-  description?: string;
-  type: string;
-  /** A longer explanation of `type`, shown under it. */
-  typeDescription?: string;
-  default?: string;
-  required?: boolean;
-};
+export type ApiProp = { description?: string; type: string; default?: string; required?: boolean };
 
 const codeClass = 'font-mono text-small break-words';
 
@@ -26,21 +19,14 @@ function PropName({ name, prop }: { name: string; prop: ApiProp }) {
 
 function PropType({ prop }: { prop: ApiProp }) {
   return (
-    <>
-      <code className={cn(codeClass, 'text-foreground')}>
-        {prop.type.split(' | ').map((member, index) => (
-          <Fragment key={index}>
-            {index > 0 && ' | '}
-            <span className={cn(member.length <= 24 && 'whitespace-nowrap')}>{member}</span>
-          </Fragment>
-        ))}
-      </code>
-      {prop.typeDescription && (
-        <span className={cn('mt-1 block text-small text-muted-foreground', inlineProseClass)}>
-          <InlineMarkdown text={prop.typeDescription} />
-        </span>
-      )}
-    </>
+    <code className={cn(codeClass, 'text-foreground')}>
+      {prop.type.split(' | ').map((member, index) => (
+        <Fragment key={index}>
+          {index > 0 && ' | '}
+          <span className={cn(member.length <= 24 && 'whitespace-nowrap')}>{member}</span>
+        </Fragment>
+      ))}
+    </code>
   );
 }
 

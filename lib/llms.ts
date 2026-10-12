@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderPlaceholder, type PlaceholderData } from 'fumadocs-core/mdx-plugins/remark-llms.runtime';
+import type { ApiProp } from '../components/docs/api-table';
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
 import { getDocsIndex, getDocsNav, groupOfPage, type DocsIndexItem } from './docs-nav';
@@ -61,8 +62,6 @@ function expressionAttribute(data: PlaceholderData, name: string): unknown {
   if (!expression) throw new Error(`Expected a {…} expression in the "${name}" attribute of <${data.name}>`);
   return literalValue(expression);
 }
-
-type ApiProp = { description?: string; type: string; default?: string; required?: boolean };
 
 /** Text for a Markdown table cell: pipes escaped, on one line. */
 const cell = (value: string) => value.replaceAll('|', '\\|').replaceAll('\n', ' ');
