@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { changelogFolder, getChangelogEntries } from './changelog';
+import { docsTabOf, type DocsTabId } from './docs-tabs';
 import { groups, isGroup, readRegistryItems, type Group, type RegistryItem } from './registry';
 import { docsRoute } from './shared';
 import { source } from './source';
@@ -22,6 +23,8 @@ export type DocsNavItem = { title: string; url: string; icon?: ReactNode };
 
 export type DocsNavSection = {
   id: DocsNavSectionId;
+  /** The header tab whose sidebar shows this section. */
+  tab: DocsTabId;
   label: string;
   items: DocsNavItem[];
   groups: DocsNavGroup[];
@@ -36,6 +39,13 @@ const sectionLabels: Record<DocsNavSectionId, string> = {
   foundations: 'Foundations',
   components: 'Components',
   blocks: 'Blocks',
+};
+
+const sectionTabs: Record<DocsNavSectionId, DocsTabId> = {
+  'get-started': 'docs',
+  foundations: 'docs',
+  components: 'components',
+  blocks: 'blocks',
 };
 
 const groupIcons: Record<Group, LucideIcon> = {
@@ -54,8 +64,8 @@ function sectionOf(slugs: string[]): DocsNavSectionId {
 }
 
 /**
- * The docs sidebar, top to bottom. Server only (reads the registry from disk): pass the result to client components.
- * Sections come from slug prefixes, so moving a page into `foundations/` moves it in the nav. Get started and
+ * Every docs sidebar section, top to bottom, each with the header tab that shows it. Server only (reads the registry
+ * from disk): pass the result to client components. Sections come from slug prefixes, so moving a page into `foundations/` moves it in the nav. Get started and
  * Foundations keep the page tree order of `meta.json`; Components and Blocks start with an Overview item, then
  * one group per registry `meta.group` in `groups` order, each A–Z by title.
  */
@@ -95,6 +105,7 @@ export function getDocsNav(): DocsNav {
 
   const sections = (Object.keys(sectionLabels) as DocsNavSectionId[]).map((id) => ({
     id,
+    tab: sectionTabs[id],
     label: sectionLabels[id],
     items: items[id],
     groups: id === 'components' || id === 'blocks' ? groupsOf(id) : [],
@@ -116,9 +127,11 @@ function registryGroup(slugs: string[], registryItems: RegistryItem[]): Group {
   return group;
 }
 
-/** Every nav item in sidebar order, top to bottom: the order of previous and next. */
-function flattenDocsNav(): DocsNavItem[] {
-  return getDocsNav().sections.flatMap((section) => [...section.items, ...section.groups.flatMap((group) => group.items)]);
+/** Every item in the sidebar of `tab`, top to bottom: the order of previous and next. */
+function flattenDocsNav(tab: DocsTabId | undefined): DocsNavItem[] {
+  return getDocsNav()
+    .sections.filter((section) => section.tab === tab)
+    .flatMap((section) => [...section.items, ...section.groups.flatMap((group) => group.items)]);
 }
 
 export type DocsPageLink = { title: string; url: string };
@@ -137,12 +150,12 @@ function neighboursIn(links: DocsPageLink[], url: string, labels?: DocsNeighbour
 }
 
 /**
- * The pages before and after `url`: in sidebar order, or for a changelog entry, which sits outside the
- * sidebar, the newer and older entries.
+ * The pages before and after `url` in the sidebar of its tab, so previous and next never switch tabs; for a changelog
+ * entry, which sits outside the sidebar, the newer and older entries.
  */
 export function neighboursOf(url: string): DocsNeighbours | undefined {
   const changelog = getChangelogEntries().map(({ page }) => ({ title: page.data.title, url: page.url }));
-  return neighboursIn(flattenDocsNav(), url) ?? neighboursIn(changelog, url, { previous: 'Newer', next: 'Older' });
+  return neighboursIn(flattenDocsNav(docsTabOf(url)), url) ?? neighboursIn(changelog, url, { previous: 'Newer', next: 'Older' });
 }
 
 /** The registry group of a component or block page; `undefined` for every other page. */
