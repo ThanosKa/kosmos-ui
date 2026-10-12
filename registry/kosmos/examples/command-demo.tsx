@@ -43,8 +43,7 @@ const groups: Group[] = [
 export default function CommandDemo() {
   const [open, setOpen] = useState(false);
 
-  // ⌘J on a Mac, Ctrl+J elsewhere, toggles the palette from anywhere on the page. Your app would use ⌘K;
-  // on this site ⌘K already opens the docs search.
+  // ⌘J on a Mac, Ctrl+J elsewhere, toggles the palette from anywhere on the page.
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'j' && (event.metaKey || event.ctrlKey)) {
