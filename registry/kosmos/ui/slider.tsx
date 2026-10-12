@@ -82,7 +82,6 @@ function Slider({
                 // A 28px hit area around the 16px thumb.
                 'after:absolute after:-inset-1.5 after:rounded-full',
                 'transition-[box-shadow]',
-                // Hovering the slider or dragging a thumb rings it in a soft halo.
                 'group-hover/slider:not-data-disabled:ring-4 group-hover/slider:not-data-disabled:ring-foreground/10 data-dragging:ring-4 data-dragging:ring-foreground/10',
                 'has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring',
                 'data-invalid:ring-1 data-invalid:ring-destructive',

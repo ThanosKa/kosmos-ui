@@ -32,6 +32,7 @@ if (names.length === 0 && !values.thumbnails) {
 const base = values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`;
 const outDir = resolve(values.out ?? (values.thumbnails ? 'public/thumbs' : '.screenshots'));
 const widths = [375, 1280] as const;
+const reviewHeight = 800;
 const themes = ['light', 'dark'] as const;
 type Theme = (typeof themes)[number];
 // Hide the Next.js dev indicator and overlay for the shot.
@@ -99,12 +100,12 @@ function thumbnailTargets() {
 
 /**
  * Grows the viewport to the page's full height before a full-page shot. Pinned overlays (an open menu,
- * select or tooltip) position against the viewport, so below the first 800px they would flip toward it
+ * select or tooltip) position against the viewport, so below its first screen they would flip toward it
  * or stick to its edge; in one viewport as tall as the page they sit where they do for a user who scrolled there.
  */
 async function fitViewportToPage(page: Page, width: number) {
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
-  if (height <= 800) return;
+  if (height <= reviewHeight) return;
   await page.setViewportSize({ width, height });
   await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
 }
@@ -114,7 +115,7 @@ async function shootReview(browser: Browser) {
   for (const name of names) {
     for (const theme of themes) {
       for (const width of widths) {
-        const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: 800 }, 2);
+        const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: reviewHeight }, 2);
         const file = `${outDir}/${name}-${theme}-${width}.png`;
         await fitViewportToPage(page, width);
         await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide', style: shotStyle });

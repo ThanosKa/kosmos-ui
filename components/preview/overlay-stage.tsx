@@ -51,7 +51,7 @@ export function OverlayStage({
 
 /**
  * An `OverlayStage` with no label, frame, fill or scrim, for a thumbnail (`<name>-thumb.tsx`): the overlay pinned
- * open inside it is all the shot shows. Render the overlay the same way as in an `OverlayStage`.
+ * open inside it is all the shot shows. The same `transform` holds its `fixed` overlays; render them as in an `OverlayStage`.
  */
 export function ThumbStage({
   className,
