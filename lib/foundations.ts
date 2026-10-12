@@ -155,7 +155,7 @@ const typeDocs: Record<string, string> = {
   small: 'Descriptions, hints, errors, menu shortcuts, and field labels above a control.',
   body: 'The default UI text: buttons, menu items, table cells, checkbox and switch labels.',
   title: 'Dialog, drawer and card titles. Page titles in app chrome take it at medium weight.',
-  heading: 'Headings of whole pages outside the app, such as these docs.',
+  heading: 'Section headings on pages outside the app, such as these docs.',
   display: 'Stat values, always with tabular-nums.',
 };
 
