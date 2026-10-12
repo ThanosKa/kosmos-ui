@@ -87,9 +87,10 @@ Text in components sits between 12 and 14px. Each size is a type role, which set
 | `text-small` | 13 / 1.4 / 400 / -0.005em | Descriptions, hints, errors, field labels above a control |
 | `text-body` | 14 / 20 / 400 / -0.01em | Default UI text: buttons, menu items, table cells, checkbox and switch labels |
 | `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium` |
-| `text-heading` | 20 / 28 / 600 / -0.01em | Headings of whole pages outside the app frame (docs, gallery), never in app chrome |
+| `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens), never in app chrome |
 | `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`) |
 
+- The site has three more roles, outside this table because no component uses them: `text-page-title`, the title of every docs page (28 / 1.25 / 600 / -0.02em on phones, 32px from `md`), and `text-hero` and `text-lead` for the landing page hero. They live in `app/global.css` and never ship in `@kosmos/tokens` (tokens.md, Site-only roles).
 - Chrome is 500, content is 400. Buttons, nav items, tabs, menu, select and command items, segmented items, field labels, badges and the titles of board cards and list rows take `font-medium`; table cells, descriptions, input values and prose stay 400. Table headers are 400, muted.
 - Hierarchy comes from weight and color (`text-muted-foreground`), not from more sizes.
 - Icons are 14px (`size-3.5`) in 30px controls (buttons, nav items, menu items, inputs) and 16px in 36px rows and `lg` buttons; 12px in `sm` buttons and badges.
