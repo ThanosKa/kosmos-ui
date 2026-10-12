@@ -74,7 +74,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
 
 function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) {
   return (
-    <caption data-slot="table-caption" className={cn('mt-3 text-small text-muted-foreground', className)} {...props} />
+    <caption data-slot="table-caption" className={cn('mt-3 px-3 text-start text-small text-muted-foreground', className)} {...props} />
   );
 }
 
