@@ -33,7 +33,7 @@ pnpm thumbnails --port 3000                # every component and block
 pnpm thumbnails button badge --port 3000   # only these, by registry name
 ```
 
-It needs `pnpm dev` running; `--port` is the dev server's port (3000 by default). Each thumbnail is the preview the item's docs page opens with (its first `<ComponentPreview>`, usually `<name>-demo`), saved as `public/thumbs/<name>-light.png` and `<name>-dark.png`. Demos render overlays closed, so a dialog or menu shows only its trigger.
+It needs `pnpm dev` running; `--port` is the dev server's port (3000 by default). Each thumbnail is the preview the item's docs page opens with (its first `<ComponentPreview>`, usually `<name>-demo`), saved as `public/thumbs/<name>-light.png` and `<name>-dark.png`. A demo renders an overlay closed, so an overlay (a dialog, menu, select or tooltip) gets its own `<name>-thumb.tsx` in `registry/kosmos/examples/` with the overlay pinned open in a `ThumbStage`, and the thumbnail shoots that file instead.
 
 ### Install smoke test
 
