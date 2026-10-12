@@ -35,22 +35,22 @@ const palettes = {
 
 type Palette = (typeof palettes)[keyof typeof palettes];
 
-function kosmosTheme(name: string, type: 'light' | 'dark', color: Palette): ThemeRegistration {
+function kosmosTheme(name: string, type: 'light' | 'dark', palette: Palette): ThemeRegistration {
   return {
     name,
     type,
-    colors: { 'editor.background': color.background, 'editor.foreground': color.text },
+    colors: { 'editor.background': palette.background, 'editor.foreground': palette.text },
     tokenColors: [
-      { scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: color.comment, fontStyle: 'italic' } },
-      { scope: ['punctuation', 'meta.brace', 'meta.delimiter'], settings: { foreground: color.punctuation } },
+      { scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: palette.comment, fontStyle: 'italic' } },
+      { scope: ['punctuation', 'meta.brace', 'meta.delimiter'], settings: { foreground: palette.punctuation } },
       {
         scope: ['keyword', 'storage', 'storage.type', 'keyword.operator.new', 'keyword.control', 'variable.language'],
-        settings: { foreground: color.keyword },
+        settings: { foreground: palette.keyword },
       },
-      { scope: ['keyword.operator', 'keyword.operator.assignment'], settings: { foreground: color.punctuation } },
+      { scope: ['keyword.operator', 'keyword.operator.assignment'], settings: { foreground: palette.punctuation } },
       {
         scope: ['string', 'string.template', 'punctuation.definition.string', 'markup.inline.raw'],
-        settings: { foreground: color.string },
+        settings: { foreground: palette.string },
       },
       {
         scope: [
@@ -63,17 +63,17 @@ function kosmosTheme(name: string, type: 'light' | 'dark', color: Palette): Them
           'variable.other.constant',
           'support.type.property-name',
         ],
-        settings: { foreground: color.function },
+        settings: { foreground: palette.function },
       },
       {
         scope: ['entity.name.tag', 'support.class.component', 'entity.name.type', 'entity.name.class', 'support.type'],
-        settings: { foreground: color.tag },
+        settings: { foreground: palette.tag },
       },
       {
         scope: ['entity.other.attribute-name', 'variable.parameter', 'meta.object-literal.key', 'support.type.property-name.css'],
-        settings: { foreground: color.attribute },
+        settings: { foreground: palette.attribute },
       },
-      { scope: ['markup.heading', 'markup.bold'], settings: { foreground: color.text, fontStyle: 'bold' } },
+      { scope: ['markup.heading', 'markup.bold'], settings: { foreground: palette.text, fontStyle: 'bold' } },
     ],
   };
 }
