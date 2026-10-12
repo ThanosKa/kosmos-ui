@@ -4,8 +4,8 @@ import { BarChart3, Building2, Handshake, Home, Inbox, Layers, Plus, Settings } 
 import * as React from 'react';
 import { AppSidebar, type AppSidebarNavItem } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { CommandMenu, type CommandMenuGroup } from '@/registry/kosmos/blocks/command-menu/command-menu';
-import { DataTable, sampleAccounts, type Account, type AccountStatus } from '@/registry/kosmos/blocks/data-table/data-table';
-import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
+import { DataTable, sampleProjects, type Project, type ProjectStatus } from '@/registry/kosmos/blocks/data-table/data-table';
+import { DetailDrawer, sampleProject, type DetailProject } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { KanbanBoard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog, type NewItemStatus, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
 import { PageHeader, type PageTab } from '@/registry/kosmos/blocks/page-header/page-header';
@@ -16,70 +16,40 @@ import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry
 
 /*
  * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
- * Parallax sample data; the other blocks still share one array of sample records, so a change in the table shows
- * on the board, in the drawer and in the command menu. Only the list page, its saved views and the board are
+ * Parallax sample data; the table, the board, the drawer and the command menu share the data table's sample
+ * projects, so a change in one shows in the others. Only the list page, its saved views and the board are
  * wired up; the other pages say so and link back.
  */
 
-const maya = { name: 'Maya Chen', initials: 'MC' };
-const jonas = { name: 'Jonas Weber', initials: 'JW' };
-const priya = { name: 'Priya Raman', initials: 'PR' };
-const owners = { maya, jonas, priya };
-type OwnerKey = keyof typeof owners;
-
-// The data table's sample accounts, plus two more so the board's columns fill up.
-const initialAccounts: Account[] = [
-  ...sampleAccounts,
-  { id: 'tidewater', name: 'Tidewater Outfitters', domain: 'tidewater.example', status: 'active', owner: jonas, arr: 64800, health: 79, lastActivity: '2026-10-07' },
-  { id: 'kestrel', name: 'Kestrel Analytics', domain: 'kestrel.example', status: 'trial', owner: priya, arr: 0, health: 62, lastActivity: '2026-10-10' },
-];
-
-/** What the drawer shows beyond the table's columns, for a few accounts. */
-const details: Record<string, Pick<DetailAccount, 'meta' | 'labels' | 'notes' | 'activity'>> = {
-  bluebird: {
-    meta: 'Enterprise plan · customer since March 2024',
-    labels: ['Enterprise', 'Renewal in Q1'],
-    notes: 'Usage dropped by a third after their team moved to a new data warehouse. The renewal is due in January.',
-    activity: [
-      { id: 'b1', author: jonas, action: 'changed the status to At risk', time: 'Sep 21' },
-      { id: 'b2', author: maya, body: 'Booked a call with their data lead for next week.', time: 'Sep 23' },
-    ],
-  },
-  northwind: {
-    meta: 'Enterprise plan · customer since June 2022',
-    labels: ['Enterprise', 'Reference customer'],
-    notes: 'Rolling out to their European offices this quarter.',
-    activity: [{ id: 'n1', author: maya, body: 'Signed the expansion for 120 more seats.', time: 'Oct 10' }],
+/** What the drawer shows beyond the table's columns, for the projects that have it. */
+const details: Record<string, Pick<DetailProject, 'meta' | 'trend' | 'notes' | 'activity'>> = {
+  [sampleProject.id]: {
+    meta: sampleProject.meta,
+    trend: sampleProject.trend,
+    notes: sampleProject.notes,
+    activity: sampleProject.activity,
   },
 };
 
-const tabStatus = { all: 'all', active: 'active', 'at-risk': 'at-risk', churned: 'churned' } as const;
-type TabValue = keyof typeof tabStatus;
+type TabValue = 'all' | ProjectStatus;
 
 const columns = [
   { id: 'trial', title: 'Trial', tone: 'muted' },
-  { id: 'active', title: 'Active', tone: 'success' },
-  { id: 'at-risk', title: 'At risk', tone: 'warning' },
-  { id: 'churned', title: 'Churned', tone: 'destructive' },
+  { id: 'live', title: 'Live', tone: 'success' },
+  { id: 'paused', title: 'Paused', tone: 'warning' },
 ] as const;
 
-const statusDot: Record<AccountStatus, string> = {
+const statusDot: Record<ProjectStatus, string> = {
+  live: 'bg-success',
   trial: 'bg-muted-foreground',
-  active: 'bg-success',
-  'at-risk': 'bg-warning',
-  churned: 'bg-destructive',
+  paused: 'bg-warning',
 };
 
-const filterOptions = (Object.keys(owners) as OwnerKey[]).map((key) => ({
-  value: key,
-  label: `Owned by ${owners[key].name}`,
-}));
-
-/** What each saved view sets on the Accounts page. */
+/** What each saved view sets on the Projects page. */
 const viewState: Record<string, { title: string; tab: TabValue; filters: string[] }> = {
-  accounts: { title: 'Accounts', tab: 'all', filters: [] },
-  'view-mine': { title: 'Owned by me', tab: 'all', filters: ['maya'] },
-  'view-at-risk': { title: 'At risk', tab: 'at-risk', filters: [] },
+  accounts: { title: 'Projects', tab: 'all', filters: [] },
+  'view-scale': { title: 'Scale plan', tab: 'all', filters: ['scale'] },
+  'view-trials': { title: 'Trials', tab: 'trial', filters: [] },
 };
 
 const pageTitles: Record<string, string> = {
@@ -103,15 +73,15 @@ const slug = (name: string) =>
   name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '') || 'account';
+    .replace(/^-|-$/g, '') || 'project';
 
 export function DashboardShowcase() {
-  const [accounts, setAccounts] = React.useState(initialAccounts);
+  const [projects, setProjects] = React.useState<Project[]>(sampleProjects);
   const [page, setPage] = React.useState('accounts');
   const [tab, setTab] = React.useState<TabValue>('all');
   const [query, setQuery] = React.useState('');
   const [filters, setFilters] = React.useState<string[]>([]);
-  // The drawer keeps showing the last account while it closes, so `openId` outlives `drawerOpen`.
+  // The drawer keeps showing the last project while it closes, so `openId` outlives `drawerOpen`.
   const [openId, setOpenId] = React.useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [newOpen, setNewOpen] = React.useState(false);
@@ -132,7 +102,7 @@ export function DashboardShowcase() {
     showPage(id);
   };
 
-  const openAccount = (id: string) => {
+  const openProject = (id: string) => {
     setOpenId(id);
     setDrawerOpen(true);
   };
@@ -144,48 +114,40 @@ export function DashboardShowcase() {
 
   const create = (values: NewItemValues) => {
     const base = slug(values.name);
-    const id = accounts.some((row) => row.id === base) ? `${base}-${accounts.length}` : base;
-    const owner = values.owner ? owners[values.owner as OwnerKey] : undefined;
-    setAccounts([
+    const id = projects.some((row) => row.id === base) ? `${base}-${projects.length}` : base;
+    setProjects([
       {
         id,
         name: values.name,
         domain: values.domain,
-        status: values.status,
-        // The table needs an owner: an account created without one goes to the signed-in user.
-        owner: owner ?? maya,
-        arr: values.arr ?? 0,
-        health: 50,
-        lastActivity: '2026-10-11',
+        platform: 'web',
+        plan: 'free',
+        status: 'trial',
+        users: 0,
+        events: 0,
+        mrr: 0,
+        lastEventAt: '2026-10-11',
       },
-      ...accounts,
+      ...projects,
     ]);
   };
 
-  const ownerFiltered = React.useMemo(
-    () =>
-      filters.length
-        ? accounts.filter((row) => filters.some((key) => owners[key as OwnerKey]?.name === row.owner.name))
-        : accounts,
-    [accounts, filters],
-  );
-
   const tabs: PageTab[] = [
-    { value: 'all', label: 'All accounts', count: accounts.length },
-    { value: 'active', label: 'Active', count: accounts.filter((row) => row.status === 'active').length },
-    { value: 'at-risk', label: 'At risk', count: accounts.filter((row) => row.status === 'at-risk').length },
-    { value: 'churned', label: 'Churned', count: accounts.filter((row) => row.status === 'churned').length },
+    { value: 'all', label: 'All', count: projects.length },
+    { value: 'live', label: 'Live', count: projects.filter((row) => row.status === 'live').length },
+    { value: 'trial', label: 'Trial', count: projects.filter((row) => row.status === 'trial').length },
+    { value: 'paused', label: 'Paused', count: projects.filter((row) => row.status === 'paused').length },
   ];
 
   const views: AppSidebarNavItem[] = [
-    { id: 'view-mine', label: 'Owned by me', href: '#view-mine', icon: Layers },
-    { id: 'view-at-risk', label: 'At risk', href: '#view-at-risk', icon: Layers, badge: tabs[2].count, badgeLabel: 'accounts' },
+    { id: 'view-scale', label: 'Scale plan', href: '#view-scale', icon: Layers },
+    { id: 'view-trials', label: 'Trials', href: '#view-trials', icon: Layers, badge: tabs[2].count, badgeLabel: 'projects' },
   ];
 
   const commandGroups: CommandMenuGroup[] = [
     {
-      value: 'Accounts',
-      items: accounts.map((row) => ({
+      value: 'Projects',
+      items: projects.map((row) => ({
         value: `open:${row.id}`,
         label: `${row.name} ${row.domain}`,
         title: row.name,
@@ -193,38 +155,38 @@ export function DashboardShowcase() {
         dot: statusDot[row.status],
       })),
     },
-    { value: 'Actions', items: [{ value: 'new-account', label: 'New account', icon: Plus }] },
+    { value: 'Actions', items: [{ value: 'new-project', label: 'New project', icon: Plus }] },
     { value: 'Go to', items: goTo.map((item) => ({ value: `go:${item.id}`, label: item.label, icon: item.icon })) },
   ];
 
   const runCommand = (value: string) => {
-    if (value === 'new-account') openNew('trial');
+    if (value === 'new-project') openNew('trial');
     else if (value.startsWith('open:')) {
       showPage('accounts');
-      openAccount(value.slice('open:'.length));
+      openProject(value.slice('open:'.length));
     } else if (value.startsWith('go:')) showPage(value.slice('go:'.length));
   };
 
   const moveOnBoard = (items: KanbanItem[]) => {
     const moved = new Map(items.map((item) => [item.id, item]));
     const reordered = items.map((item) => {
-      const row = accounts.find((account) => account.id === item.id)!;
-      return { ...row, status: item.status as AccountStatus };
+      const row = projects.find((project) => project.id === item.id)!;
+      return { ...row, status: item.status as ProjectStatus };
     });
-    setAccounts([...reordered, ...accounts.filter((row) => !moved.has(row.id))]);
+    setProjects([...reordered, ...projects.filter((row) => !moved.has(row.id))]);
   };
 
-  const opened = accounts.find((row) => row.id === openId);
-  const accountsPage = viewState[page];
+  const opened = projects.find((row) => row.id === openId);
+  const listPage = viewState[page];
 
   return (
     <SidebarProvider className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[50rem]">
       <AppSidebar activeItem={page} onNavigate={navigate} navViews={views} onSearch={() => setCommandOpen(true)} />
       <SidebarResizeHandle />
       <div className="relative flex min-w-0 flex-1 flex-col bg-background md:overflow-y-auto">
-        {accountsPage ? (
+        {listPage ? (
           <PageHeader
-            title={accountsPage.title}
+            title={listPage.title}
             description=""
             // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
             headingLevel={3}
@@ -234,19 +196,19 @@ export function DashboardShowcase() {
             onTabChange={(value) => setTab(value as TabValue)}
             query={query}
             onQueryChange={setQuery}
-            filterOptions={filterOptions}
             filters={filters}
             onFiltersChange={setFilters}
-            onNew={() => openNew(tab === 'all' ? 'trial' : tab)}
+            onNew={() => openNew('trial')}
           >
             <div className="flex flex-col gap-4 p-4">
               <StatsOverview />
               <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
                 <DataTable
-                  rows={ownerFiltered}
+                  rows={projects}
                   query={query}
-                  status={tabStatus[tab]}
-                  onOpen={(row) => openAccount(row.id)}
+                  status={tab}
+                  filters={filters}
+                  onOpen={(row) => openProject(row.id)}
                   onClearFilters={() => {
                     setQuery('');
                     setFilters([]);
@@ -265,10 +227,10 @@ export function DashboardShowcase() {
             <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
               <KanbanBoard
                 columns={[...columns]}
-                items={accounts}
+                items={projects}
                 onItemsChange={moveOnBoard}
-                onOpen={(item) => openAccount(item.id)}
-                onAdd={(status) => openNew(status as NewItemStatus)}
+                onOpen={(item) => openProject(item.id)}
+                onAdd={() => openNew('trial')}
               />
             </div>
           </>
@@ -285,12 +247,12 @@ export function DashboardShowcase() {
                 </EmptyMedia>
                 <EmptyTitle render={<h4 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
                 <EmptyDescription>
-                  Accounts and its saved views are live. Everything there is built from Kosmos blocks.
+                  Projects and its saved views are live. Everything there is built from Kosmos blocks.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Button variant="secondary" onClick={(event) => navigate('accounts', event)}>
-                  Go to Accounts
+                  Go to Projects
                 </Button>
               </EmptyContent>
             </Empty>
@@ -303,9 +265,9 @@ export function DashboardShowcase() {
           trigger={null}
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
-          account={{ ...opened, ...details[opened.id] }}
-          onAccountChange={(next) =>
-            setAccounts(accounts.map((row) => (row.id === next.id ? { ...row, status: next.status } : row)))
+          project={{ ...opened, ...details[opened.id] }}
+          onProjectChange={(next) =>
+            setProjects(projects.map((row) => (row.id === next.id ? { ...row, status: next.status } : row)))
           }
         />
       ) : null}
@@ -313,7 +275,7 @@ export function DashboardShowcase() {
         trigger={null}
         open={newOpen}
         onOpenChange={setNewOpen}
-        defaultValues={{ status: newStatus, owner: 'maya' }}
+        defaultValues={{ status: newStatus }}
         onCreate={create}
       />
       <CommandMenu

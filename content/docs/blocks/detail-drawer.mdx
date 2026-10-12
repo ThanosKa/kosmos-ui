@@ -1,6 +1,6 @@
 ---
 title: Detail drawer
-description: A side panel with the details of one record, where you change its status, read its activity and add a note.
+description: A side panel with the details of one project, where you change its status, read its usage and activity, and add a note.
 ---
 
 <ComponentPreview name="detail-drawer-demo" />
@@ -9,7 +9,7 @@ description: A side panel with the details of one record, where you change its s
 
 <ComponentInstall name="detail-drawer" />
 
-The block brings [Drawer](/docs/components/drawer), [Dropdown menu](/docs/components/dropdown-menu), [Select](/docs/components/select), [Meter](/docs/components/meter), [Textarea](/docs/components/textarea), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Separator](/docs/components/separator) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/detail-drawer.tsx`.
+The block brings [Drawer](/docs/components/drawer), [Dropdown menu](/docs/components/dropdown-menu), [Select](/docs/components/select), [Chart](/docs/components/chart), [Textarea](/docs/components/textarea), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Separator](/docs/components/separator) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/detail-drawer.tsx`.
 
 ## Usage
 
@@ -17,29 +17,31 @@ The block brings [Drawer](/docs/components/drawer), [Dropdown menu](/docs/compon
 import { DetailDrawer } from '@/components/detail-drawer';
 
 <DetailDrawer
-  account={account}
+  project={project}
   open={open}
   onOpenChange={setOpen}
   trigger={null}
-  onAccountChange={saveAccount}
-  onNote={(body) => addNote(account.id, body)}
-  onAction={(action, account) => run(action, account)}
+  onProjectChange={saveProject}
+  onNote={(body) => addNote(project.id, body)}
+  onAction={(action, project) => run(action, project)}
 />;
 ```
 
-Without props the drawer opens from an **Open account** button and shows a sample account. Pass `trigger={null}` and control `open` to open it from a row of the [data table](/docs/blocks/data-table) or a card on the [kanban board](/docs/blocks/kanban-board); the sample account has the same shape as theirs. The `DetailAccount` type and the fields live in the file: change them to fit your records.
+Without props the drawer opens from an **Open project** button and shows a sample project. Pass `trigger={null}` and control `open` to open it from a row of the [data table](/docs/blocks/data-table): a row of the table is a `DetailProject` already, so spread it in and add the fields only the drawer shows, such as `trend`, `notes` and `activity`. The `DetailProject` type and the fields live in the file: change them to fit your records.
 
 ## What it does
 
-- **Status** changes in place and calls `onAccountChange` with the updated record. When `account.status` changes from outside, the drawer shows the new status.
-- **Notes**: ⌘Enter (Ctrl+Enter on Windows and Linux) or **Add note** adds one. With `onNote`, add the note to `account.activity` yourself; without it, the drawer keeps new notes until another record opens.
-- **More menu**: with `onAction`, a menu offers Copy link, Duplicate and Delete account. Ask for confirmation before you delete.
-- **Empty fields** say so (_No owner_, _Not scored_), and `loading` shows placeholders.
+- **Status** changes in place and calls `onProjectChange` with the updated record. When `project.status` changes from outside, the drawer shows the new status.
+- **Properties**: the plan as a colored tag, the platform and the day of the last event.
+- **Last 30 days**: active users, events and monthly revenue, with a line of events per day from `trend`. The line has one accessible name that gives the range and the busiest day.
+- **Notes**: ⌘Enter (Ctrl+Enter on Windows and Linux) or **Add note** adds one. With `onNote`, add the note to `project.activity` yourself; without it, the drawer keeps new notes until another record opens.
+- **More menu**: with `onAction`, a menu offers Copy link, Copy project ID and Delete project. Ask for confirmation before you delete.
+- **Empty fields** say so (_No plan_, _No events yet_), a missing number shows a dash, and `loading` shows placeholders.
 - **Closing**: Escape, a click outside, a swipe toward the edge or the close button. Focus goes back to the element that opened it.
 
 ## Motion
 
-The drawer slides in over 300ms and out in 150ms. With the reduced motion setting on, it fades in and out instead.
+The drawer slides in over 300ms and out in 150ms, and the events line draws in over 300ms. With the reduced motion setting on, the drawer fades in and out instead, and the line appears at once.
 
 ## API
 
@@ -47,15 +49,15 @@ The drawer slides in over 300ms and out in 150ms. With the reduced motion settin
 
 <TypeTable
   type={{
-    account: { description: 'The record to show.', type: 'DetailAccount', default: 'a sample account' },
+    project: { description: 'The record to show.', type: 'DetailProject', default: 'a sample project' },
     loading: { description: 'Shows placeholders.', type: 'boolean', default: 'false' },
     open: { description: 'Whether the drawer is open, controlled.', type: 'boolean' },
     defaultOpen: { description: 'Whether the drawer starts open, uncontrolled.', type: 'boolean', default: 'false' },
     onOpenChange: { description: 'Called when the drawer opens or closes.', type: '(open: boolean) => void' },
-    trigger: { description: 'The element that opens the drawer. `null` renders none.', type: 'ReactElement | null', default: 'an "Open account" button' },
-    onAccountChange: { description: 'Called with the updated record when its status changes.', type: '(account: DetailAccount) => void' },
+    trigger: { description: 'The element that opens the drawer. `null` renders none.', type: 'ReactElement | null', default: 'an "Open project" button' },
+    onProjectChange: { description: 'Called with the updated record when its status changes.', type: '(project: DetailProject) => void' },
     onNote: { description: 'Called with the text of a new note. With it set, the drawer shows only the activity you pass.', type: '(body: string) => void' },
-    onAction: { description: 'Shows the more menu and is called by its items.', type: "(action: 'copy-link' | 'duplicate' | 'delete', account: DetailAccount) => void" },
+    onAction: { description: 'Shows the more menu and is called by its items.', type: "(action: 'copy-link' | 'copy-id' | 'delete', project: DetailProject) => void" },
     actionsMenu: { description: 'Root props for the more menu, such as `{ open: true, modal: false }` to pin it open.', type: 'DropdownMenu props' },
     modal: { description: 'Blocks the page behind the drawer.', type: 'boolean', default: 'true' },
     container: { description: 'The element the drawer renders into.', type: 'HTMLElement | null', default: 'document.body' },
@@ -63,23 +65,25 @@ The drawer slides in over 300ms and out in 150ms. With the reduced motion settin
   }}
 />
 
-### DetailAccount
+### DetailProject
 
 <TypeTable
   type={{
     id: { description: 'Unique. Another id resets the edits made in the drawer.', type: 'string', required: true },
     name: { description: 'The drawer title.', type: 'string', required: true },
-    status: { description: 'The status.', type: "'trial' | 'active' | 'at-risk' | 'churned'", required: true },
+    status: { description: 'The status.', type: "'live' | 'trial' | 'paused'", required: true },
     domain: { description: 'Shown at the top.', type: 'string' },
-    owner: { description: 'Who owns the account.', type: '{ name: string; initials: string }' },
-    arr: { description: 'Annual recurring revenue, in dollars.', type: 'number' },
-    health: { description: 'A score from 0 to 100.', type: 'number' },
-    lastActivity: { description: 'An ISO date, such as 2026-10-09.', type: 'string' },
-    meta: { description: 'A line under the name, such as the plan.', type: 'string' },
-    labels: { description: 'Shown as badges.', type: 'string[]' },
+    platform: { description: 'Where the events come from.', type: "'web' | 'ios' | 'android' | 'server'" },
+    plan: { description: 'Shown as a tag.', type: "'free' | 'pro' | 'scale'" },
+    users: { description: 'Monthly active users.', type: 'number' },
+    events: { description: 'Events received in the last 30 days.', type: 'number' },
+    mrr: { description: 'Monthly recurring revenue, in dollars.', type: 'number' },
+    lastEventAt: { description: 'The day of the last event, as an ISO date such as 2026-10-11.', type: 'string' },
+    meta: { description: 'A line under the name, such as when the project was added.', type: 'string' },
+    trend: { description: 'Events per day, oldest first, for the line.', type: '{ date: string; events: number }[]' },
     notes: { description: 'The notes section.', type: 'string' },
     activity: {
-      description: 'Changes and notes, oldest first. An entry with `action` reads as "Maya Chen changed the status to At risk"; one with `body` shows a note.',
+      description: 'Changes and notes, oldest first. An entry with `action` reads as "Kai Nakamura changed the plan to Pro"; one with `body` shows a note.',
       type: '{ id: string; author: { name: string; initials: string }; action?: string; body?: string; time: string }[]',
     },
   }}

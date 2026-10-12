@@ -1,6 +1,6 @@
 ---
 title: Data table
-description: A table of records with sortable columns, row selection and bulk actions, status badges, owners, a health meter, row actions, and loading and empty states.
+description: A table of projects with sortable columns, plan and platform filters, row selection and bulk actions, plan tags, status dots, totals, and loading and empty states.
 ---
 
 <ComponentPreview name="data-table-demo" />
@@ -9,32 +9,35 @@ description: A table of records with sortable columns, row selection and bulk ac
 
 <ComponentInstall name="data-table" />
 
-The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Avatar](/docs/components/avatar), [Meter](/docs/components/meter), [Dropdown menu](/docs/components/dropdown-menu), [Empty state](/docs/components/empty), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button) with it, and lands in `components/data-table.tsx`.
+The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Avatar](/docs/components/avatar), [Dropdown menu](/docs/components/dropdown-menu), [Empty state](/docs/components/empty), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button) with it, and lands in `components/data-table.tsx`.
 
 ## Usage
 
 ```tsx
 import { DataTable } from '@/components/data-table';
 
-<DataTable rows={accounts} query={query} status={tab} onOpen={(account) => setOpen(account)} />;
+<DataTable rows={projects} query={query} status={tab} filters={filters} onOpen={(project) => setOpen(project)} />;
 ```
 
-The `Account` type, the columns and the sample rows live in the file: change them to fit your records. Pair the table with the [page header](/docs/blocks/page-header) and pass its `query` and tab straight through: the tab values match `status`.
+The `Project` type, the columns and the sample rows live in the file: change them to fit your records. Pair the table with the [page header](/docs/blocks/page-header) and pass its `query`, tab and filters straight through: its tabs are `all`, `live`, `trial` and `paused`, the values of `status`, and its filter values are the plans and platforms `filters` reads.
 
 ## What it does
 
-- **Sorting**: click a column header to sort, and again to reverse. The header carries `aria-sort`.
-- **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Clear selection, plus Export and Delete when you pass `onAction`.
-- **Opening a row**: with `onOpen`, the account name becomes a button and a click anywhere on the row opens it too. Clicks on the checkbox and the actions menu do not.
-- **Row actions**: each row has a menu with Open account (with `onOpen`) and Copy link and Delete account (with `onAction`). Without either, the menu is hidden.
-- **Loading and empty**: `loading` shows skeleton rows. When a search or status hides every row, the table says so and offers Clear filters through `onClearFilters`.
+- **Columns**: each project shows its name and domain, platform, plan as a colored tag, monthly active users, events in the last 30 days, monthly revenue, a status dot and the day of its last event.
+- **Sorting**: click the Project, Users, Events, MRR or Last event header to sort, and again to reverse. The header carries `aria-sort`.
+- **Filtering**: `query` matches the name and the domain, `status` keeps one status, and `filters` keeps the plans and platforms that are on. Within plans or within platforms a row needs any one of them; with both, it needs one of each.
+- **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Clear selection, plus Export, Pause (Resume when every selected project is paused) and Delete when you pass `onAction`.
+- **Totals**: the footer adds up the users, events and revenue of the visible rows.
+- **Opening a row**: with `onOpen`, the project name becomes a button and a click anywhere on the row opens it too, for example in the [detail drawer](/docs/blocks/detail-drawer). Clicks on the checkbox and the actions menu do not.
+- **Row actions**: each row has a menu with Open project (with `onOpen`), and Copy link, Pause project or Resume project, and Delete project (with `onAction`). Without either, the menu is hidden.
+- **Loading and empty**: `loading` shows skeleton rows. When a search, status or filter hides every row, the table says so and offers Clear filters through `onClearFilters`.
 - **Narrow screens**: the table scrolls sideways inside its own frame, and the page stays put.
 
 The Delete actions are placeholders. Wire them to a confirmation dialog or an undo toast before you ship.
 
 ## API
 
-`DataTableSort` is `{ key: 'name' | 'arr' | 'health' | 'lastActivity'; direction: 'ascending' | 'descending' }`.
+`DataTableSort` is `{ key: 'name' | 'users' | 'events' | 'mrr' | 'lastEventAt'; direction: 'ascending' | 'descending' }`.
 
 ### DataTable
 
@@ -42,18 +45,36 @@ Takes every `<div>` prop, plus:
 
 <TypeTable
   type={{
-    rows: { description: 'The rows.', type: 'Account[]', default: 'sample accounts' },
+    rows: { description: 'The rows.', type: 'Project[]', default: 'sample projects' },
     loading: { description: 'Shows skeleton rows while the data loads.', type: 'boolean', default: 'false' },
-    query: { description: 'Keeps rows whose name, domain or owner contains this text.', type: 'string' },
-    status: { description: 'Keeps rows with this status; `all` keeps every row.', type: "'all' | 'active' | 'trial' | 'at-risk' | 'churned'", default: "'all'" },
-    onOpen: { description: 'Called when a row is opened, by its name or a click on the row.', type: '(row: Account) => void' },
-    onAction: { description: 'Runs Copy link or Delete account from a row menu, with that row, or Export or Delete from the bulk bar, with the selected rows. Those items show only when this is passed.', type: "(action: 'copy-link' | 'export' | 'delete', rows: Account[]) => void" },
-    onClearFilters: { description: 'Adds Clear filters to the empty state shown when a search or status hides every row.', type: '() => void' },
+    query: { description: 'Keeps rows whose name or domain contains this text.', type: 'string' },
+    status: { description: 'Keeps rows with this status; `all` keeps every row.', type: "'all' | 'live' | 'trial' | 'paused'", default: "'all'" },
+    filters: { description: 'Keeps rows on these plans (`free`, `pro`, `scale`) and platforms (`web`, `ios`, `android`, `server`). Other values are ignored.', type: 'string[]', default: '[]' },
+    onOpen: { description: 'Called when a row is opened, by its name or a click on the row.', type: '(row: Project) => void' },
+    onAction: { description: 'Runs Copy link, Pause, Resume or Delete project from a row menu, with that row, or Export, Pause, Resume or Delete from the bulk bar, with the selected rows. Those items show only when this is passed.', type: "(action: 'copy-link' | 'export' | 'pause' | 'resume' | 'delete', rows: Project[]) => void" },
+    onClearFilters: { description: 'Adds Clear filters to the empty state shown when a search, status or filter hides every row.', type: '() => void' },
     selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
     defaultSelection: { description: 'The ids selected at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
     onSelectionChange: { description: 'Called with the ids of the selected rows.', type: '(ids: string[]) => void' },
     sort: { description: 'The sort. Use with `onSortChange`; `null` keeps the rows in their own order.', type: 'DataTableSort | null' },
     defaultSort: { description: 'The sort at first, when the table keeps its own state.', type: 'DataTableSort' },
     onSortChange: { description: 'Called with the new sort when a header is clicked.', type: '(sort: DataTableSort) => void' },
+  }}
+/>
+
+### Project
+
+<TypeTable
+  type={{
+    id: { description: 'Unique. Selection and opening use it.', type: 'string', required: true },
+    name: { description: 'The project name.', type: 'string', required: true },
+    domain: { description: 'Shown under the name.', type: 'string', required: true },
+    platform: { description: 'Where the events come from.', type: "'web' | 'ios' | 'android' | 'server'", required: true },
+    plan: { description: 'Shown as a tag: Free in blue, Pro in orange, Scale in magenta.', type: "'free' | 'pro' | 'scale'", required: true },
+    status: { description: 'Shown as a dot and a label.', type: "'live' | 'trial' | 'paused'", required: true },
+    users: { description: 'Monthly active users.', type: 'number', required: true },
+    events: { description: 'Events received in the last 30 days.', type: 'number', required: true },
+    mrr: { description: 'Monthly recurring revenue, in dollars. 0 shows a dash.', type: 'number', required: true },
+    lastEventAt: { description: 'The day of the last event, as an ISO date such as 2026-10-11.', type: 'string', required: true },
   }}
 />
