@@ -4,7 +4,7 @@
   "type": "registry:ui",
   "title": "Avatar",
   "description": "A person's picture with initials as the fallback, built on Base UI. Three sizes, a hairline outline on images, and an overlapping group with a count.",
-  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority"],
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "basics" },
   "files": [

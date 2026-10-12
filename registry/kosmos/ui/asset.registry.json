@@ -4,7 +4,7 @@
   "type": "registry:ui",
   "title": "Asset",
   "description": "A frame with a fixed aspect ratio for an image or a video: a pulsing placeholder while it loads, a fade-in once loaded, a fallback on error, and autoplay that respects reduced motion.",
-  "dependencies": ["lucide-react"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
   "meta": { "group": "misc" },
   "files": [

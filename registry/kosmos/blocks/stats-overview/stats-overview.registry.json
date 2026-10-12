@@ -4,7 +4,7 @@
   "type": "registry:block",
   "title": "Stats overview",
   "description": "The overview of a dashboard: stat tiles with a trend and a sparkline, a revenue chart with a range switch, and each plan's share of revenue as meters. Loading and empty states included. Lays itself out by its own width.",
-  "dependencies": ["lucide-react"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

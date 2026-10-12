@@ -4,7 +4,7 @@
   "type": "registry:block",
   "title": "Data table",
   "description": "A table of records with sortable columns, row selection and a bulk action bar, status badges, owners, a health meter, a row actions menu, a totals footer, and loading and empty states.",
-  "dependencies": ["lucide-react"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
