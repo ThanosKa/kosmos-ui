@@ -52,12 +52,12 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
         {...props}
       >
         {children}
-        {/* Turns over as the section opens; under reduced motion the down and up chevrons cross-fade instead. */}
+        {/* Turns with its section, on the same timing; under reduced motion the down and up chevrons cross-fade instead. */}
         <span aria-hidden className="relative size-5 shrink-0 text-muted-foreground *:absolute *:inset-0.5 *:size-4">
           <ChevronDown
             className={cn(
-              'transition-[rotate,opacity] duration-fast ease-power3-out group-data-panel-open/accordion-trigger:duration-slow',
-              'motion-safe:group-data-panel-open/accordion-trigger:rotate-180 motion-safe:group-data-panel-open/accordion-trigger:ease-smooth-in-out',
+              'transition-[rotate,opacity] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
+              'motion-safe:group-data-panel-open/accordion-trigger:rotate-180',
               'motion-reduce:group-data-panel-open/accordion-trigger:opacity-0',
             )}
           />
@@ -69,17 +69,18 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
 }
 
 /**
- * The section body. It grows to its height as it opens (300ms) and shrinks back faster as it closes
- * (150ms); under reduced motion it fades in and out instead.
+ * The section body. It grows to its height as it opens and shrinks back as it closes, both in 300ms on
+ * the same curve, so when one section opens as another closes the content below holds still. Under
+ * reduced motion the height changes at once and the opening section fades in.
  */
 function AccordionContent({ className, children, ...props }: AccordionPrimitive.Panel.Props) {
   return (
     <AccordionPrimitive.Panel
       data-slot="accordion-content"
       className={cn(
-        'h-(--accordion-panel-height) overflow-hidden duration-fast ease-power3-out data-open:duration-slow',
-        'motion-safe:transition-[height] motion-safe:data-open:ease-smooth-in-out motion-safe:data-ending-style:h-0 motion-safe:data-starting-style:h-0',
-        'motion-reduce:transition-[opacity] motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:opacity-0',
+        'h-(--accordion-panel-height) overflow-hidden duration-slow',
+        'motion-safe:transition-[height] motion-safe:ease-smooth-in-out motion-safe:data-ending-style:h-0 motion-safe:data-starting-style:h-0',
+        'motion-reduce:transition-[opacity] motion-reduce:data-closed:h-0 motion-reduce:data-starting-style:opacity-0',
       )}
       {...props}
     >
