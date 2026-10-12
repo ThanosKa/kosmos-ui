@@ -106,8 +106,10 @@ Transitions name the properties that change: `transition-[background-color,box-s
 | Dialog open | `duration-overlay` (250ms) | `ease-power3-out` |
 | Drawer open, sidebar resize, accordion height, sliding indicator, switch thumb | `duration-slow` (300ms) | `ease-smooth-in-out` for size and position, `ease-power3-out` for slides |
 | Any exit | `duration-fast` (150ms) | `ease-power3-out` |
+| Accordion close (height and chevron) | `duration-slow` (300ms) | `ease-smooth-in-out` |
 
 - Exits run faster than enters with the same curve and the same distance, reversed.
+- One exception: an accordion section closes as it opens, height and chevron, 300ms on `ease-smooth-in-out`. When one section opens as another closes, the two heights then add up to a total that moves one way only, so the content below never bounces. Under reduced motion the closing section collapses at once and the opening one fades in, so the page shifts once. _Decided without the user (2026-10-13), pending confirmation:_ the chevron following its section's timing, and the closing section collapsing without a fade under reduced motion, since a fade at full height would shift the page twice.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
 - Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Skeleton uses the same pulse, and a shimmer would need keyframes shipped through `@kosmos/tokens`.
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).

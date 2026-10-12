@@ -59,7 +59,7 @@ export default function ButtonPreview() {
           <Button variant="ghost" size="icon" aria-label="Open settings">
             <Settings />
           </Button>
-          <Button variant="secondary" href="#docs">
+          <Button variant="secondary" href="/docs">
             Read the docs
           </Button>
         </div>
