@@ -104,6 +104,10 @@ _Avoid_: widget, element
 Ένα έτοιμο κομμάτι σελίδας φτιαγμένο από πολλά components (π.χ. sidebar με navigation, φόρμα login). Ο χρήστης το εγκαθιστά και αλλάζει τα κείμενα.
 _Avoid_: section, pattern
 
+**Block category**:
+Μια οικογένεια από blocks για την ίδια δουλειά (π.χ. Sign-up, Settings, Pricing). Κάθε κατηγορία έχει πολλές εκδοχές, και ο χρήστης διαλέγει αυτή που ταιριάζει στο app του. Είναι το ίδιο με το `categories` των blocks στο shadcn.
+_Avoid_: subcategory, group (το group είναι για την έγκριση)
+
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
 _Avoid_: theme, starter
