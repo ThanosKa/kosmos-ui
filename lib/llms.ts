@@ -16,17 +16,14 @@ import {
   registryAddArgs,
   registryConfig,
   registryNamespace,
-  registryUrl,
   resolveRegistryTree,
   toInstalledImports,
 } from './registry';
-import { appName } from './shared';
+import { appName, siteUrl } from './shared';
 import { source } from './source';
 
-/** The production site, read from the registry URL, so links in the Markdown work wherever it is pasted. */
-export const siteOrigin = new URL(registryUrl.replace('{name}', 'index')).origin;
-
-const absolute = (path: string) => `${siteOrigin}${path}`;
+/** Absolute, so links in the Markdown work wherever it is pasted. */
+const absolute = (path: string) => `${siteUrl}${path}`;
 
 const fence = (lang: string, code: string, title?: string) =>
   `\`\`\`${lang}${title ? ` title="${title}"` : ''}\n${code.trimEnd()}\n\`\`\``;
