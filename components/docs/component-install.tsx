@@ -12,7 +12,7 @@ import {
 } from '@/lib/registry';
 import { DocsTabs } from './docs-tabs';
 import { HighlightedCode } from './highlighted-code';
-import { PackageManagerTabs } from './shadcn-command';
+import { PackageInstall, PackageManagerTabs } from './shadcn-command';
 import { Step, Steps } from './steps';
 
 /** The source files of an item, as they land in the user's project. */
@@ -64,7 +64,7 @@ export function ComponentInstall({ name }: { name: string }) {
         <Steps data-slot="manual-install" className="my-0">
           {packages.length > 0 && (
             <InstallStep title="Install the dependencies.">
-              <HighlightedCode code={`npm install ${packages.join(' ')}`} lang="bash" />
+              <PackageInstall packages={packages.join(' ')} />
             </InstallStep>
           )}
           {deps.flatMap((dep) => [
