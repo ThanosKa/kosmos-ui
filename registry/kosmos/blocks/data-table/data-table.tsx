@@ -111,8 +111,6 @@ function SortableHead({
   );
 }
 
-const columnCount = 8;
-
 type DataTableProps = Omit<React.ComponentProps<'div'>, 'children'> & {
   /** The rows. Defaults to sample accounts. */
   rows?: Account[];
@@ -269,29 +267,6 @@ function DataTable({
                 <TableCell className="pe-4" />
               </TableRow>
             ))
-          ) : visible.length === 0 ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={columnCount} className="h-auto whitespace-normal">
-                <Empty className="py-10">
-                  <EmptyHeader>
-                    <EmptyMedia variant="icon">{filtering ? <SearchX /> : <Building2 />}</EmptyMedia>
-                    <EmptyTitle render={<h2 />}>{!filtering ? 'No accounts yet' : query.trim() ? `No accounts match “${query.trim()}”` : 'No accounts match'}</EmptyTitle>
-                    <EmptyDescription>
-                      {filtering
-                        ? 'Try another search, or clear the filters to see every account.'
-                        : 'Accounts you add or import show up here.'}
-                    </EmptyDescription>
-                  </EmptyHeader>
-                  {filtering && onClearFilters ? (
-                    <EmptyContent>
-                      <Button variant="secondary" onClick={onClearFilters}>
-                        Clear filters
-                      </Button>
-                    </EmptyContent>
-                  ) : null}
-                </Empty>
-              </TableCell>
-            </TableRow>
           ) : (
             visible.map((row) => {
               const isSelected = selection.includes(row.id);
@@ -416,6 +391,27 @@ function DataTable({
           )}
         </TableBody>
       </Table>
+
+      {!loading && visible.length === 0 ? (
+        <Empty className="py-10">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">{filtering ? <SearchX /> : <Building2 />}</EmptyMedia>
+            <EmptyTitle render={<h2 />}>{!filtering ? 'No accounts yet' : query.trim() ? `No accounts match “${query.trim()}”` : 'No accounts match'}</EmptyTitle>
+            <EmptyDescription>
+              {filtering
+                ? 'Try another search, or clear the filters to see every account.'
+                : 'Accounts you add or import show up here.'}
+            </EmptyDescription>
+          </EmptyHeader>
+          {filtering && onClearFilters ? (
+            <EmptyContent>
+              <Button variant="secondary" onClick={onClearFilters}>
+                Clear filters
+              </Button>
+            </EmptyContent>
+          ) : null}
+        </Empty>
+      ) : null}
 
       <div className="flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border px-4 py-1.5 text-small text-muted-foreground tabular-nums">
         {loading ? (
