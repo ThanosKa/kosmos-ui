@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import { chromium, type Browser } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright';
 import { readRegistryItems } from '../lib/registry.ts';
 
 const { positionals: names, values } = parseArgs({
@@ -91,6 +91,18 @@ function thumbnailTargets() {
     });
 }
 
+/**
+ * Grows the viewport to the page's full height before a full-page shot. Pinned overlays (an open menu,
+ * select or tooltip) position against the viewport, so below the first 800px they would flip toward it
+ * or stick to its edge; in one viewport as tall as the page they sit where they do for a user who scrolled there.
+ */
+async function fitViewportToPage(page: Page, width: number) {
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  if (height <= 800) return;
+  await page.setViewportSize({ width, height });
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+}
+
 async function shootReview(browser: Browser) {
   let failed = false;
   for (const name of names) {
@@ -98,6 +110,7 @@ async function shootReview(browser: Browser) {
       for (const width of widths) {
         const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: 800 }, 2);
         const file = `${outDir}/${name}-${theme}-${width}.png`;
+        await fitViewportToPage(page, width);
         await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide', style: shotStyle });
         if (errors.length) failed = true;
         console.log(file + (errors.length ? `  page errors: ${errors.join(' | ')}` : ''));
