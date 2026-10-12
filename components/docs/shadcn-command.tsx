@@ -1,6 +1,6 @@
 import { CodeBlockTab, CodeBlockTabs, CodeBlockTabsList, CodeBlockTabsTrigger } from 'fumadocs-ui/components/codeblock';
-import { ServerCodeBlock } from 'fumadocs-ui/components/codeblock.rsc';
 import { cssVarsAsCss, getRegistryItem, packageInstallers, packageRunners, registryAddArgs, registryConfig } from '@/lib/registry';
+import { HighlightedCode } from './highlighted-code';
 
 type Manager = keyof typeof packageRunners;
 type Runner = (typeof packageRunners)[Manager];
@@ -12,8 +12,13 @@ type Runner = (typeof packageRunners)[Manager];
 export function PackageManagerTabs({ code }: { code: (runner: Runner, manager: Manager) => string }) {
   const managers = Object.keys(packageRunners) as Manager[];
   return (
-    <CodeBlockTabs groupId="package-manager" persist defaultValue={managers[0]}>
-      <CodeBlockTabsList>
+    <CodeBlockTabs
+      groupId="package-manager"
+      persist
+      defaultValue={managers[0]}
+      className="not-prose min-w-0 rounded-2xl border-transparent bg-card shadow-card"
+    >
+      <CodeBlockTabsList className="border-b border-border">
         {managers.map((manager) => (
           <CodeBlockTabsTrigger
             key={manager}
@@ -26,7 +31,7 @@ export function PackageManagerTabs({ code }: { code: (runner: Runner, manager: M
       </CodeBlockTabsList>
       {managers.map((manager) => (
         <CodeBlockTab key={manager} value={manager}>
-          <ServerCodeBlock code={code(packageRunners[manager], manager)} lang="bash" />
+          <HighlightedCode code={code(packageRunners[manager], manager)} lang="bash" embedded />
         </CodeBlockTab>
       ))}
     </CodeBlockTabs>
@@ -51,18 +56,12 @@ export function PackageInstall({ packages }: { packages: string }) {
 
 /** The `registries` entry for `components.json`. */
 export function RegistryConfig() {
-  return <ServerCodeBlock code={registryConfig} lang="json" codeblock={{ title: 'components.json' }} />;
+  return <HighlightedCode code={registryConfig} lang="json" title="components.json" />;
 }
 
 /** A registry item's CSS variables as the CSS `shadcn add` writes, for manual installation. */
 export function RegistryCss({ name }: { name: string }) {
   const item = getRegistryItem(name);
   if (!item?.cssVars) throw new Error(`Registry item "${name}" has no cssVars`);
-  return (
-    <ServerCodeBlock
-      code={cssVarsAsCss(item.cssVars)}
-      lang="css"
-      codeblock={{ title: 'app/globals.css', className: 'max-h-96' }}
-    />
-  );
+  return <HighlightedCode code={cssVarsAsCss(item.cssVars)} lang="css" title="app/globals.css" />;
 }

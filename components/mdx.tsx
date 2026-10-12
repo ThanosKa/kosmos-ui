@@ -13,6 +13,8 @@ import { EasingCurves, MotionTokens } from '@/components/docs/foundations/motion
 import { RadiusScale, ShadowSurfaces } from '@/components/docs/foundations/shadow-surfaces';
 import { TypeRoles } from '@/components/docs/foundations/type-roles';
 import { LinkCard, LinkCards } from '@/components/docs/link-cards';
+import { CodeBlock, Pre } from '@/components/docs/code-block';
+import type { ComponentProps } from 'react';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -39,6 +41,11 @@ export function getMDXComponents(components?: MDXComponents) {
     PackageInstall,
     LinkCards,
     LinkCard,
+    pre: ({ title, className, style, children }: ComponentProps<'pre'>) => (
+      <CodeBlock title={title} className={className} style={style}>
+        <Pre>{children}</Pre>
+      </CodeBlock>
+    ),
     ...components,
   } satisfies MDXComponents;
 }
