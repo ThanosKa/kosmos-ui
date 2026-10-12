@@ -1,25 +1,36 @@
 'use client';
 
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
+import { mergeProps } from '@base-ui/react/merge-props';
 import { XIcon } from 'lucide-react';
-import type * as React from 'react';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+
+/**
+ * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
+ * rendered on the server, whose `data-slot="button"` would otherwise win the prop merge.
+ */
+function withSlot<Render>(render: Render, slot: string) {
+  if (!React.isValidElement<Record<string, unknown>>(render)) return render;
+  return (props: React.ComponentProps<'button'>) =>
+    React.cloneElement(render, { ...mergeProps<'button'>(props, render.props), 'data-slot': slot, ref: props.ref });
+}
 
 function Dialog(props: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
-function DialogTrigger(props: DialogPrimitive.Trigger.Props) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+function DialogTrigger({ render, ...props }: DialogPrimitive.Trigger.Props) {
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" render={withSlot(render, 'dialog-trigger')} {...props} />;
 }
 
 function DialogPortal(props: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose(props: DialogPrimitive.Close.Props) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+function DialogClose({ render, ...props }: DialogPrimitive.Close.Props) {
+  return <DialogPrimitive.Close data-slot="dialog-close" render={withSlot(render, 'dialog-close')} {...props} />;
 }
 
 /** The scrim behind the dialog. Fades in and out; nothing moves, so reduced motion keeps it as is. */
