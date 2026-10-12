@@ -32,6 +32,8 @@ export default function AccountsPage() {
 }
 ```
 
+`SidebarTrigger` comes from [Sidebar](/docs/components/sidebar), which the block doesn't install. Add it with `shadcn add @kosmos/sidebar`, or leave `leading` out when the page has no sidebar.
+
 Pass the page body as `children`: it becomes the panel of the selected tab, so screen readers hear which view it shows. Every value (tab, search text, filters, layout) works controlled, with its `on…Change` callback, or keeps its own state when you leave it out. The tabs and filters at the top of the file are sample data.
 
 The header lays itself out by its own width, with container queries, not by the screen's. From 768px wide the tabs and the toolbar share a row; narrower, the toolbar moves under the tabs. Below 448px the primary action and Filter shrink to icons. The tabs scroll sideways when they do not fit.
