@@ -69,17 +69,18 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
 }
 
 /**
- * The section body. It grows to its height as it opens (300ms) and shrinks back faster as it closes
- * (150ms); under reduced motion it fades in and out instead.
+ * The section body. It grows to its height as it opens and shrinks back as it closes, both in 300ms on
+ * the same curve, so when one section opens as another closes the content below holds still. Under
+ * reduced motion the height changes at once and the opening section fades in.
  */
 function AccordionContent({ className, children, ...props }: AccordionPrimitive.Panel.Props) {
   return (
     <AccordionPrimitive.Panel
       data-slot="accordion-content"
       className={cn(
-        'h-(--accordion-panel-height) overflow-hidden duration-fast ease-power3-out data-open:duration-slow',
-        'motion-safe:transition-[height] motion-safe:data-open:ease-smooth-in-out motion-safe:data-ending-style:h-0 motion-safe:data-starting-style:h-0',
-        'motion-reduce:transition-[opacity] motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:opacity-0',
+        'h-(--accordion-panel-height) overflow-hidden duration-slow',
+        'motion-safe:transition-[height] motion-safe:ease-smooth-in-out motion-safe:data-ending-style:h-0 motion-safe:data-starting-style:h-0',
+        'motion-reduce:transition-[opacity] motion-reduce:data-closed:h-0 motion-reduce:data-starting-style:opacity-0',
       )}
       {...props}
     >
