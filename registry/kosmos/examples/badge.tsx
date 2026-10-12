@@ -39,7 +39,7 @@ export default function BadgePreview() {
             ) : (
               <Badge
                 variant={variant}
-                render={<a href="#badge" />}
+                render={<a href="https://base-ui.com/react/overview/releases" />}
                 {...previewState(state === 'link' ? 'default' : state)}
               >
                 {labels[variant]}
@@ -59,7 +59,7 @@ export default function BadgePreview() {
             <Clock />
             2 days left
           </Badge>
-          <Badge variant="secondary" render={<a href="#badge" />}>
+          <Badge variant="secondary" render={<a href="https://base-ui.com/react/overview/releases" />}>
             Changelog
             <ArrowUpRight />
           </Badge>

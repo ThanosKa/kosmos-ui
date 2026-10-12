@@ -350,7 +350,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
         'before:absolute before:inset-y-0 before:-start-1 before:w-2',
         // The line that shows on hover and while dragging; focus draws the outline instead.
         'after:pointer-events-none after:absolute after:inset-y-0 after:-start-px after:w-0.5 after:bg-transparent after:transition-[background-color]',
-        'hover:after:bg-sidebar-ring data-dragging:after:bg-sidebar-ring',
+        'hover:after:bg-sidebar-foreground/20 data-dragging:after:bg-sidebar-foreground/20',
         className,
       )}
       {...props}

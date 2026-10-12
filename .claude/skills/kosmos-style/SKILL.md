@@ -61,12 +61,15 @@ _Decided without the user (2026-10-11), pending confirmation._ The tooltip excep
 ## Color
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
-- The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1`, the Meter's `primary` tone and `shadow-lift`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
+- The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1` and `shadow-lift`. The Meter's `primary` tone takes `meter-primary`, the same orange a step deeper in light, so it never shares a lightness with `warning`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
+- Orange means focus, so hover never turns anything orange: a hover line or halo is neutral (the sidebar resize handle shows `sidebar-foreground/20`, a slider thumb a `foreground/10` halo).
+- Two tones a reader must tell apart (Meter tones, status colors side by side) differ in lightness, not only in hue, so they still read in grayscale and for color-blind readers.
 - `success`, `warning` and `destructive` color dots, icons, meter segments and fills. The text beside them stays `text-foreground` or `text-muted-foreground`, with the meaning also carried by a label or icon. A status Badge is the neutral pill plus a colored dot, never a tinted fill.
 - A category (segment, plan, label) is a tag: a Badge hue variant (`orange`, `blue`, `amber`, `magenta`, `green`, `red`). Its fill is the matching `tag-*` token (a chart hue at low alpha), its edge a 1px border of `tag-*-foreground/20`, and its text `tag-*-foreground`, which passes 4.5:1 on the fill. A category keeps one hue everywhere. A change in a stat tile is a `green` or `red` tag beside its muted context.
 - Grey carries the hierarchy. Idle chrome steps back to `text-muted-foreground`: sidebar items, tabs, table headers, counts, field labels above a control, and icons in secondary and ghost buttons. The active item, the current page and values stay `text-foreground`.
 - Chart series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005). Values, labels and legends stay in text colors; the colored mark beside them carries the series.
+- A scrollbar thumb is `bg-scrollbar-thumb`, lighter than `muted-foreground`, and keeps 3:1 against its `muted` track.
 - `text-muted-foreground` passes 4.5:1 on `background`, `card` and `muted`. It is the faintest text role: a fainter grey for meta, placeholders or eyebrows would drop below 4.5:1 (see conflicts.md, Accessibility floor).
 
 ## Typography
@@ -103,8 +106,10 @@ Transitions name the properties that change: `transition-[background-color,box-s
 | Dialog open | `duration-overlay` (250ms) | `ease-power3-out` |
 | Drawer open, sidebar resize, accordion height, sliding indicator, switch thumb | `duration-slow` (300ms) | `ease-smooth-in-out` for size and position, `ease-power3-out` for slides |
 | Any exit | `duration-fast` (150ms) | `ease-power3-out` |
+| Accordion close (height and chevron) | `duration-slow` (300ms) | `ease-smooth-in-out` |
 
 - Exits run faster than enters with the same curve and the same distance, reversed.
+- One exception: an accordion section closes as it opens, height and chevron, 300ms on `ease-smooth-in-out`. When one section opens as another closes, the two heights then add up to a total that moves one way only, so the content below never bounces. Under reduced motion the closing section collapses at once and the opening one fades in, so the page shifts once. _Decided without the user (2026-10-13), pending confirmation:_ the chevron following its section's timing, and the closing section collapsing without a fade under reduced motion, since a fade at full height would shift the page twice.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
 - Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate. _Decided without the user (2026-10-11), pending confirmation:_ shadcn's Skeleton uses the same pulse, and a shimmer would need keyframes shipped through `@kosmos/tokens`.
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).

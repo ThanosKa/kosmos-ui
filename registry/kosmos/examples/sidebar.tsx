@@ -48,7 +48,7 @@ function SidebarBody() {
           <SidebarMenu>
             {pages.map(({ label, icon: Icon, active, count }) => (
               <SidebarMenuItem key={label}>
-                <SidebarMenuButton href="#" isActive={active} onClick={stay}>
+                <SidebarMenuButton href={`/${label.toLowerCase()}`} isActive={active} onClick={stay}>
                   <Icon aria-hidden />
                   <span>{label}</span>
                   {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -62,7 +62,7 @@ function SidebarBody() {
           <SidebarMenu>
             {projects.map((project) => (
               <SidebarMenuItem key={project}>
-                <SidebarMenuButton href="#" onClick={stay}>
+                <SidebarMenuButton href="/projects" onClick={stay}>
                   <Folder aria-hidden />
                   <span>{project}</span>
                 </SidebarMenuButton>
@@ -74,13 +74,13 @@ function SidebarBody() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#" onClick={stay}>
+            <SidebarMenuButton href="/help" onClick={stay}>
               <LifeBuoy aria-hidden />
               <span>Help</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#" onClick={stay}>
+            <SidebarMenuButton href="/settings" onClick={stay}>
               <Settings aria-hidden />
               <span>Settings</span>
             </SidebarMenuButton>
