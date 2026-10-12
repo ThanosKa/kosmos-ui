@@ -11,7 +11,7 @@ import {
   TextCursorInput,
   type LucideIcon,
 } from 'lucide-react';
-import { getChangelogEntries } from './changelog';
+import { changelogFolder, getChangelogEntries } from './changelog';
 import { groups, isGroup, readRegistryItems, type Group, type RegistryItem } from './registry';
 import { docsRoute } from './shared';
 import { source } from './source';
@@ -175,7 +175,7 @@ export type DocsEyebrowPart = { label: string; url?: string };
  * component page. Sections and groups with an index page link to it; a changelog entry names the changelog.
  */
 export function eyebrowOf(page: { slugs: string[] }): DocsEyebrowPart[] {
-  if (page.slugs[0] === 'changelog' && page.slugs.length === 2) return [{ label: 'Changelog', url: `${docsRoute}/changelog` }];
+  if (page.slugs[0] === changelogFolder && page.slugs.length === 2) return [{ label: 'Changelog', url: `${docsRoute}/${changelogFolder}` }];
   const section = sectionOf(page.slugs);
   if (section !== 'components' && section !== 'blocks') return [{ label: sectionLabels[section] }];
   const sectionPart = { label: sectionLabels[section], url: `${docsRoute}/${section}` };
