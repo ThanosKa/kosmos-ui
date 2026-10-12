@@ -8,16 +8,16 @@ import { DataTable, sampleAccounts, type Account, type AccountStatus } from '@/r
 import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { KanbanBoard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog, type NewItemStatus, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
-import { PageHeader, type PageTab, type PageView } from '@/registry/kosmos/blocks/page-header/page-header';
-import { StatsOverview, type Stat } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
+import { PageHeader, type PageTab } from '@/registry/kosmos/blocks/page-header/page-header';
+import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 /*
- * The live dashboard on the landing page, composed from the eight free blocks with the same "Acme Inc."
- * sample workspace they ship with. One array of accounts feeds the stat tiles, the table, the board, the
- * drawer and the command menu, so a change in one shows in the others. Only the Accounts page and its saved views are
+ * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
+ * Parallax sample data; the other blocks still share one array of sample records, so a change in the table shows
+ * on the board, in the drawer and in the command menu. Only the list page, its saved views and the board are
  * wired up; the other pages say so and link back.
  */
 
@@ -85,7 +85,6 @@ const viewState: Record<string, { title: string; tab: TabValue; filters: string[
 const pageTitles: Record<string, string> = {
   home: 'Home',
   inbox: 'Inbox',
-  deals: 'Deals',
   reports: 'Reports',
   help: 'Help and feedback',
   settings: 'Settings',
@@ -100,23 +99,6 @@ const goTo = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-/** A sparkline shape that ends on the live value. */
-const trendTo = (value: number, shape: number[]) => shape.map((point) => (point / shape[shape.length - 1]) * value);
-
-/** The stat tiles, computed from the accounts so they agree with the table and the board. */
-function accountStats(accounts: Account[]): Stat[] {
-  const open = accounts.filter((row) => row.status !== 'churned');
-  const arr = open.reduce((sum, row) => sum + row.arr, 0);
-  const health = Math.round(open.reduce((sum, row) => sum + row.health, 0) / Math.max(open.length, 1));
-  const atRisk = accounts.filter((row) => row.status === 'at-risk').length;
-  return [
-    { id: 'arr', label: 'Total ARR', value: arr, format: 'currency', change: 12.4, trend: trendTo(arr, [52, 55, 54, 60, 63, 61, 68, 72, 70, 77, 80, 84]) },
-    { id: 'accounts', label: 'Accounts', value: accounts.length, format: 'number', change: 8.1, trend: trendTo(accounts.length, [22, 25, 24, 28, 27, 31, 30, 29, 33, 35, 34, 38]) },
-    { id: 'health', label: 'Average health', value: health, format: 'number', change: 3.2, trend: trendTo(health, [58, 60, 59, 61, 60, 62, 63, 62, 64, 63, 65, 66]) },
-    { id: 'at-risk', label: 'At risk', value: atRisk, format: 'number', change: -20, goodWhen: 'down', trend: trendTo(atRisk, [5, 5, 4, 5, 4, 4, 3, 4, 3, 3, 3, 2]) },
-  ];
-}
-
 const slug = (name: string) =>
   name
     .toLowerCase()
@@ -129,7 +111,6 @@ export function DashboardShowcase() {
   const [tab, setTab] = React.useState<TabValue>('all');
   const [query, setQuery] = React.useState('');
   const [filters, setFilters] = React.useState<string[]>([]);
-  const [view, setView] = React.useState<PageView>('table');
   // The drawer keeps showing the last account while it closes, so `openId` outlives `drawerOpen`.
   const [openId, setOpenId] = React.useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -224,8 +205,6 @@ export function DashboardShowcase() {
     } else if (value.startsWith('go:')) showPage(value.slice('go:'.length));
   };
 
-  // On the board, a tab other than All shows only its column.
-  const boardColumns = tab === 'all' ? [...columns] : columns.filter((column) => column.id === tab);
   const moveOnBoard = (items: KanbanItem[]) => {
     const moved = new Map(items.map((item) => [item.id, item]));
     const reordered = items.map((item) => {
@@ -246,6 +225,7 @@ export function DashboardShowcase() {
         {accountsPage ? (
           <PageHeader
             title={accountsPage.title}
+            description=""
             // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
             headingLevel={3}
             leading={<SidebarTrigger />}
@@ -257,40 +237,41 @@ export function DashboardShowcase() {
             filterOptions={filterOptions}
             filters={filters}
             onFiltersChange={setFilters}
-            view={view}
-            onViewChange={setView}
             onNew={() => openNew(tab === 'all' ? 'trial' : tab)}
           >
-            {view === 'table' ? (
-              <div className="flex flex-col gap-4 p-4">
-                <StatsOverview stats={accountStats(accounts)} />
-                <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-                  <DataTable
-                    rows={ownerFiltered}
-                    query={query}
-                    status={tabStatus[tab]}
-                    onOpen={(row) => openAccount(row.id)}
-                    onClearFilters={() => {
-                      setQuery('');
-                      setFilters([]);
-                      setTab('all');
-                    }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
-                <KanbanBoard
-                  columns={boardColumns}
-                  items={ownerFiltered}
-                  onItemsChange={moveOnBoard}
+            <div className="flex flex-col gap-4 p-4">
+              <StatsOverview />
+              <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
+                <DataTable
+                  rows={ownerFiltered}
                   query={query}
-                  onOpen={(item) => openAccount(item.id)}
-                  onAdd={(status) => openNew(status as NewItemStatus)}
+                  status={tabStatus[tab]}
+                  onOpen={(row) => openAccount(row.id)}
+                  onClearFilters={() => {
+                    setQuery('');
+                    setFilters([]);
+                    setTab('all');
+                  }}
                 />
               </div>
-            )}
+            </div>
           </PageHeader>
+        ) : page === 'deals' ? (
+          <>
+            <div className="flex h-14 items-center gap-2 border-b border-border px-4">
+              <SidebarTrigger />
+              <h3 className="min-w-0 flex-1 truncate text-title font-medium">Board</h3>
+            </div>
+            <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
+              <KanbanBoard
+                columns={[...columns]}
+                items={accounts}
+                onItemsChange={moveOnBoard}
+                onOpen={(item) => openAccount(item.id)}
+                onAdd={(status) => openNew(status as NewItemStatus)}
+              />
+            </div>
+          </>
         ) : (
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">

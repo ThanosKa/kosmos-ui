@@ -3,7 +3,7 @@
   "name": "stats-overview",
   "type": "registry:block",
   "title": "Stats overview",
-  "description": "The overview of a dashboard: stat tiles with a trend and a sparkline, a revenue chart with a range switch, and each plan's share of revenue as meters. Loading and empty states included. Lays itself out by its own width.",
+  "description": "The overview of an analytics dashboard: the headline metrics as tabs over one chart that compares the range with the period before it, a 7, 30 or 90 day switch, and the top events. Loading and empty states included. Lays itself out by its own width.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
@@ -11,9 +11,9 @@
     "@kosmos/badge",
     "@kosmos/chart",
     "@kosmos/empty",
-    "@kosmos/meter",
     "@kosmos/segmented-control",
-    "@kosmos/skeleton"
+    "@kosmos/skeleton",
+    "@kosmos/tabs"
   ],
   "meta": { "group": "blocks" },
   "files": [
