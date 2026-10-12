@@ -1,6 +1,6 @@
 ---
 title: Kanban board
-description: Columns of cards that move by drag and drop, touch or the keyboard, and scroll sideways inside their container.
+description: A product roadmap in columns of cards that move by drag and drop, touch or the keyboard, and scroll sideways inside their container.
 ---
 
 <ComponentPreview name="kanban-board-demo" />
@@ -9,7 +9,7 @@ description: Columns of cards that move by drag and drop, touch or the keyboard,
 
 <ComponentInstall name="kanban-board" />
 
-The block brings [Avatar](/docs/components/avatar), [Button](/docs/components/button), [Meter](/docs/components/meter), [Scroll area](/docs/components/scroll-area) and [Skeleton](/docs/components/skeleton) with it, plus [dnd-kit](https://dndkit.com) for drag and drop, and lands in `components/kanban-board.tsx`.
+The block brings [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Scroll area](/docs/components/scroll-area) and [Skeleton](/docs/components/skeleton) with it, plus [dnd-kit](https://dndkit.com) for drag and drop, and lands in `components/kanban-board.tsx`.
 
 ## Usage
 
@@ -17,22 +17,23 @@ The block brings [Avatar](/docs/components/avatar), [Button](/docs/components/bu
 import { KanbanBoard } from '@/components/kanban-board';
 
 <div className="flex h-[32rem]">
-  <KanbanBoard items={accounts} onItemsChange={setAccounts} query={query} onOpen={(account) => setOpen(account)} />
+  <KanbanBoard items={roadmap} onItemsChange={setRoadmap} query={query} onOpen={(item) => setOpen(item)} />
 </div>;
 ```
 
-The board fills the height of its container, and each column scrolls on its own when its cards don't fit. When the columns are wider than the container, the board scrolls sideways. The sample data is accounts by status, shaped like the rows of the [data table](/docs/blocks/data-table), so one array can feed both. Change the columns, the `KanbanItem` type and the card in the file to fit your records.
+The board fills the height of its container, and each column scrolls on its own when its cards don't fit. When the columns are wider than the container, the board scrolls sideways. The sample data is a product roadmap: Ideas, Planned, In progress and Shipped, with cards that show the area of the product, how many customers asked for the feature, the target quarter and who builds it. Change the columns, the `KanbanItem` type and the card in the file to fit your records.
 
-Each item names its column in `status`. The order of `items` is the order of the cards, so save the array `onItemsChange` gives you as it is. It fires once per move, when the card is dropped.
+Each item names its column in `column`. The order of `items` is the order of the cards, so save the array `onItemsChange` gives you as it is. It fires once per move, when the card is dropped.
 
 ## What it does
 
 - **Pointer**: drag a card to another place or column. A short press without moving opens it.
 - **Touch**: press and hold a card for a moment, then drag.
 - **Keyboard**: Tab to a card and press Space to pick it up. Up and Down move it within its column; Left and Right move it to the same place in the next column. Space drops it and Escape puts it back. Enter opens the card.
-- **Screen readers** hear how to move a card when they reach it, and where it is after every step.
-- **Columns** are open lanes split by full-height lines, and each card splits who it is from its numbers with a line. Columns show their card count and total ARR. With `onAdd`, a + button in each header adds to that column: open the [new item dialog](/docs/blocks/new-item-dialog) there with the column as the status.
-- **Search**: `query` keeps the cards whose name, domain or owner contains it.
+- **Screen readers** hear how to move a card when they reach it, and where it is after every step. Each card reads as one line: title, area, votes, target and assignee.
+- **Columns** are open lanes split by full-height lines. Each shows its stage glyph, its title and its card count. With `onAdd`, a + button in each header adds to that column: open the [new item dialog](/docs/blocks/new-item-dialog) there with the column as the stage.
+- **Cards** put the area tag and the title on top, and split them with a line from the votes, the target quarter and the assignee.
+- **Search**: `query` keeps the cards whose title, area or assignee contains it.
 - **Loading and empty**: `loading` shows placeholder cards. A column with no cards says so, and becomes a drop target while a card is dragged.
 
 ## Motion
@@ -47,11 +48,11 @@ Takes every `<div>` prop, plus:
 
 <TypeTable
   type={{
-    columns: { description: 'The columns, in order.', type: 'KanbanColumn[]', default: 'Trial, Active, At risk, Churned' },
+    columns: { description: 'The columns, in order.', type: 'KanbanColumn[]', default: 'Ideas, Planned, In progress, Shipped' },
     items: { description: 'The cards, controlled. Their order is the order on the board.', type: 'KanbanItem[]' },
-    defaultItems: { description: 'The cards to start with when `items` is not controlled.', type: 'KanbanItem[]', default: 'sample accounts' },
+    defaultItems: { description: 'The cards to start with when `items` is not controlled.', type: 'KanbanItem[]', default: 'a sample roadmap' },
     onItemsChange: { description: 'Called once per move, on drop, with every card in the new order.', type: '(items: KanbanItem[]) => void' },
-    query: { description: 'Keeps the cards whose name, domain or owner contains this text.', type: 'string', default: "''" },
+    query: { description: 'Keeps the cards whose title, area or assignee contains this text.', type: 'string', default: "''" },
     onOpen: { description: 'Called when a card is clicked or opened with Enter.', type: '(item: KanbanItem) => void' },
     onAdd: { description: 'Shows a + button in each column header that calls this with the column id.', type: '(columnId: string) => void' },
     loading: { description: 'Shows placeholder cards.', type: 'boolean', default: 'false' },
@@ -62,9 +63,10 @@ Takes every `<div>` prop, plus:
 
 <TypeTable
   type={{
-    id: { description: 'Matched by each item’s `status`.', type: 'string', required: true },
+    id: { description: 'Matched by each item’s `column`.', type: 'string', required: true },
     title: { description: 'The column heading.', type: 'string', required: true },
-    tone: { description: 'Colors the dot beside the title, like a status badge.', type: "'muted' | 'success' | 'warning' | 'destructive'", default: "'muted'" },
+    icon: { description: 'The stage glyph beside the title. Without one, a dot.', type: 'LucideIcon' },
+    tone: { description: 'Colors the glyph or the dot, like a status badge.', type: "'muted' | 'success' | 'warning' | 'destructive'", default: "'muted'" },
   }}
 />
 
@@ -73,14 +75,13 @@ Takes every `<div>` prop, plus:
 <TypeTable
   type={{
     id: { description: 'Unique.', type: 'string', required: true },
-    name: { description: 'Up to two lines on the card.', type: 'string', required: true },
-    status: { description: 'The column the card sits in.', type: 'string', required: true },
-    domain: { description: 'Shown under the name.', type: 'string' },
-    owner: { description: 'Shown as an avatar with initials.', type: '{ name: string; initials: string }' },
-    arr: { description: 'Annual recurring revenue, in dollars.', type: 'number' },
-    health: { description: 'A score from 0 to 100, shown as a meter.', type: 'number' },
-    lastActivity: { description: 'An ISO date, such as 2026-10-09.', type: 'string' },
+    title: { description: 'Up to three lines on the card.', type: 'string', required: true },
+    column: { description: 'The column the card sits in.', type: 'string', required: true },
+    area: { description: 'The part of the product, shown as a tag in a Badge hue.', type: "{ label: string; hue: 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' }" },
+    votes: { description: 'How many customers asked for it.', type: 'number' },
+    assignee: { description: 'Shown as an avatar with initials.', type: '{ name: string; initials: string }' },
+    target: { description: 'When it should ship, such as Q4 2026.', type: 'string' },
   }}
 />
 
-`KanbanCard` is exported too, for a card outside the board.
+`KanbanCard` is exported too, for a card outside the board, and `sampleRoadmapItems` holds the sample cards.

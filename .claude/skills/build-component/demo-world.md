@@ -104,6 +104,8 @@ The kanban board is Parallax's own roadmap. Columns, in order: **Ideas**, **Plan
 
 Areas are tags: Insights `amber`, Ingestion `green`, Billing `red`, Platform `blue`.
 
+Each column carries a stage glyph (lucide) colored like a status dot: Ideas `CircleDashed` and Planned `Circle` in `muted-foreground`, In progress `CircleDot` in `warning`, Shipped `CircleCheck` in `success`. Ids are `ideas`, `planned`, `in-progress` and `shipped`; team members go by their lowercase first name without accents (`lena`, `tomas`, `ama`, `kai`).
+
 | Title | Area | Column | Assignee | Votes | Target |
 | --- | --- | --- | --- | --- | --- |
 | Slack alerts for traffic drops | Platform | Ideas | none | 64 | none |
@@ -126,6 +128,6 @@ Areas are tags: Insights `amber`, Ingestion `green`, Billing `red`, Platform `bl
 | Data table | The projects: name with domain, platform, plan, users, events, revenue, status and last event. |
 | Detail drawer | One project: plan, platform, status, its events trend, notes and the team's activity on it. |
 | Kanban board | The roadmap above. |
-| New item dialog | "New project": name, domain, platform and plan. |
+| New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
 | App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue, Roadmap and Settings; saved views "Scale plan" and "Trials"; Lena Park in the user menu. |
 | Command menu | Projects (each with its domain and status dot), actions "New project" and "Invite teammate", and Go to the sidebar's pages. |

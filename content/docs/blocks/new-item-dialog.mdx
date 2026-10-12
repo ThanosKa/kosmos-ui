@@ -1,6 +1,6 @@
 ---
 title: New item dialog
-description: A dialog with the form for a new record. Only the name is required, and Create more keeps it open for the next one.
+description: A dialog with the form for a new roadmap item. Only the title is required, and Create more keeps it open for the next one.
 ---
 
 <ComponentPreview name="new-item-dialog-demo" />
@@ -9,37 +9,51 @@ description: A dialog with the form for a new record. Only the name is required,
 
 <ComponentInstall name="new-item-dialog" />
 
-The block brings [Dialog](/docs/components/dialog), [Field](/docs/components/field), [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), [Switch](/docs/components/switch), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it, and lands in `components/new-item-dialog.tsx`.
+The block brings [Dialog](/docs/components/dialog), [Field](/docs/components/field), [Input](/docs/components/input), [Textarea](/docs/components/textarea), [Select](/docs/components/select), [Switch](/docs/components/switch), [Badge](/docs/components/badge), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it, and lands in `components/new-item-dialog.tsx`.
 
 ## Usage
 
 ```tsx
 import { NewItemDialog } from '@/components/new-item-dialog';
 
-<NewItemDialog people={members} onCreate={(values) => createAccount(values)} />;
+<NewItemDialog people={team} onCreate={(values) => addToRoadmap(values)} />;
 ```
 
-The dialog opens from a **New account** button and puts focus in the name field. The sample form makes an account, shaped like the rows of the [data table](/docs/blocks/data-table); change the fields and `NewItemValues` in the file to fit your records.
+The dialog opens from a **New item** button and puts focus in the title field. The sample form makes a roadmap item: a title and a description, then its stage, area, assignee and target quarter. Pass your own `stages`, `areas`, `targets` and `people`, or change the fields and `NewItemValues` in the file to fit your records.
 
-To open it from the [page header](/docs/blocks/page-header)'s New button or a column of the [kanban board](/docs/blocks/kanban-board), pass `trigger={null}`, control `open`, and start the form in that column:
+To open it from a column of the [kanban board](/docs/blocks/kanban-board), pass `trigger={null}`, control `open`, and start the form in that column. `onCreate` gets ids, so map them to what your card shows:
 
 ```tsx
+<KanbanBoard items={roadmap} onItemsChange={setRoadmap} onAdd={(column) => openNew(column)} />
 <NewItemDialog
   open={open}
   onOpenChange={setOpen}
   trigger={null}
-  defaultValues={{ status: columnId }}
-  onCreate={addAccount}
+  defaultValues={{ stage: column }}
+  onCreate={(values) =>
+    setRoadmap([
+      ...roadmap,
+      {
+        id: crypto.randomUUID(),
+        title: values.title,
+        column: values.stage,
+        area: values.area ? areas[values.area] : undefined,
+        assignee: values.assignee ? team[values.assignee] : undefined,
+        target: values.target ?? undefined,
+        votes: 0,
+      },
+    ])
+  }
 />
 ```
 
 ## What it does
 
-- **Validation**: submitting without a name, or with a domain that isn't one, shows the error under the field and moves focus to it.
-- **Creating**: `onCreate` gets the trimmed values, the domain in lowercase and ARR as a number (or `null`), then the dialog closes.
-- **Create more**: with the switch on, the dialog stays open. It clears the text fields, keeps the status and owner, and confirms the record just created.
+- **Validation**: submitting without a title shows the error under the field and moves focus to it.
+- **Creating**: `onCreate` gets the trimmed title and description, the stage, and the area, assignee and target as ids (or `null`), then the dialog closes.
+- **Create more**: with the switch on, the dialog stays open. It clears the title and description, keeps the stage, area, assignee and target, and confirms the item just created.
 - **Fresh form**: each time the dialog opens, the form starts from `defaultValues` again. To hold the form yourself, pass `values` and `onValuesChange`; a controlled form stays as you set it.
-- **Narrow containers**: the fields stack in one column when the dialog is narrower than 28rem.
+- **Narrow containers**: the stage, area, assignee and target selects stack in one column when the dialog is narrower than 20rem.
 
 ## Motion
 
@@ -51,19 +65,22 @@ The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. Wit
 
 <TypeTable
   type={{
-    onCreate: { description: 'Called with the form values when a record is created.', type: '(values: NewItemValues) => void' },
-    people: { description: 'The people who can own the record.', type: '{ id: string; name: string; initials: string }[]', default: 'sample people' },
+    onCreate: { description: 'Called with the form values when an item is created.', type: '(values: NewItemValues) => void' },
+    stages: { description: 'The stages, in board order. The first is the default.', type: '{ value: string; label: string; icon?: LucideIcon; tone?: string }[]', default: 'Ideas, Planned, In progress, Shipped' },
+    areas: { description: 'The areas an item can belong to, each with a Badge hue.', type: '{ value: string; label: string; hue: string }[]', default: 'Insights, Ingestion, Billing, Platform' },
+    targets: { description: 'The quarters an item can target.', type: 'string[]', default: 'Q4 2026 to Q3 2027' },
+    people: { description: 'The people who can be assigned.', type: '{ id: string; name: string; initials: string }[]', default: 'sample team' },
     defaultValues: { description: 'Values to start the form with each time it opens.', type: 'Partial<NewItemValues>' },
-    values: { description: 'The form as it stands, controlled, with ARR as text. Use with `onValuesChange`.', type: 'NewItemFormValues' },
-    onValuesChange: { description: 'Called with the whole form each time a field changes.', type: '(values: NewItemFormValues) => void' },
+    values: { description: 'The form as it stands, controlled. Use with `onValuesChange`.', type: 'NewItemValues' },
+    onValuesChange: { description: 'Called with the whole form each time a field changes.', type: '(values: NewItemValues) => void' },
     open: { description: 'Whether the dialog is open, controlled.', type: 'boolean' },
     defaultOpen: { description: 'Whether the dialog starts open, uncontrolled.', type: 'boolean', default: 'false' },
     onOpenChange: { description: 'Called when the dialog opens or closes.', type: '(open: boolean) => void' },
-    trigger: { description: 'The element that opens the dialog. `null` renders none.', type: 'ReactElement | null', default: 'a "New account" button' },
+    trigger: { description: 'The element that opens the dialog. `null` renders none.', type: 'ReactElement | null', default: 'a "New item" button' },
     defaultSubmitted: { description: 'Shows validation errors from the start, as after a failed submit. For previews.', type: 'boolean', default: 'false' },
     modal: { description: 'Blocks the page behind the dialog.', type: 'boolean', default: 'true' },
     container: { description: 'The element the dialog renders into.', type: 'HTMLElement | null', default: 'document.body' },
-    initialFocus: { description: 'Where focus goes when the dialog opens.', type: 'boolean | RefObject | function', default: 'the name field' },
+    initialFocus: { description: 'Where focus goes when the dialog opens.', type: 'boolean | RefObject | function', default: 'the title field' },
   }}
 />
 
@@ -71,11 +88,11 @@ The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. Wit
 
 <TypeTable
   type={{
-    name: { description: 'Trimmed, never empty.', type: 'string' },
-    domain: { description: 'Lowercase, or empty.', type: 'string' },
-    status: { description: 'The status.', type: "'trial' | 'active' | 'at-risk' | 'churned'", default: "'trial'" },
-    owner: { description: 'The id of a person in `people`, or `null`.', type: 'string | null', default: 'null' },
-    arr: { description: 'Annual recurring revenue in dollars, or `null` when left blank.', type: 'number | null', default: 'null' },
-    notes: { description: 'Trimmed; empty when left blank.', type: 'string' },
+    title: { description: 'Trimmed, never empty.', type: 'string' },
+    description: { description: 'Trimmed; empty when left blank.', type: 'string' },
+    stage: { description: 'The value of a stage in `stages`.', type: 'string', default: 'the first stage' },
+    area: { description: 'The value of an area in `areas`, or `null`.', type: 'string | null', default: 'null' },
+    assignee: { description: 'The id of a person in `people`, or `null`.', type: 'string | null', default: 'null' },
+    target: { description: 'One of `targets`, or `null`.', type: 'string | null', default: 'null' },
   }}
 />
