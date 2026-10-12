@@ -4,14 +4,14 @@ import { getSearchLabels } from '@/components/site/search-index';
 import { SiteProvider } from '@/components/site/site-provider';
 import { tokenColors } from '@/components/site/token-colors';
 import { htmlFontClassName } from '@/lib/fonts';
-import { appDescription, appName, siteUrl } from '@/lib/shared';
+import { appDescription, appName, siteOpenGraph, siteUrl } from '@/lib/shared';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: appName, template: `%s · ${appName}` },
   description: appDescription,
   applicationName: appName,
-  openGraph: { siteName: appName, type: 'website' },
+  openGraph: siteOpenGraph,
   twitter: { card: 'summary_large_image' },
 };
 

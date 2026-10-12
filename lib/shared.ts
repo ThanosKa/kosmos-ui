@@ -3,6 +3,8 @@ import { createGetUrl } from 'fumadocs-core/source';
 export const appName = 'Kosmos UI';
 export const appDescription =
   'Components and blocks for dashboard apps, built on Base UI and installed from the shadcn registry. Free and open source under MIT.';
+/** A page's own `openGraph` replaces the layout's instead of merging with it, so a page that sets one spreads this in. */
+export const siteOpenGraph = { siteName: appName, type: 'website' } as const;
 /** The site's origin, for absolute URLs in metadata, the sitemap and robots.txt. Set `NEXT_PUBLIC_SITE_URL` once the domain is chosen. */
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??

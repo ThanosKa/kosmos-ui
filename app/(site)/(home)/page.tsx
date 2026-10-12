@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DashboardShowcase } from '@/components/site/dashboard-showcase';
 import { itemsInGroup, readRegistryItems } from '@/lib/registry';
-import { appDescription, appName } from '@/lib/shared';
+import { appDescription, appName, siteOpenGraph } from '@/lib/shared';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
@@ -10,7 +10,7 @@ const title = `${appName}: Components and blocks for dashboard apps`;
 export const metadata: Metadata = {
   title: { absolute: title },
   description: appDescription,
-  openGraph: { siteName: appName, type: 'website', title, description: appDescription, url: '/' },
+  openGraph: { ...siteOpenGraph, title, description: appDescription, url: '/' },
 };
 
 export default function HomePage() {
