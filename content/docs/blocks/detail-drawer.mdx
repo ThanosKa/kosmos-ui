@@ -59,7 +59,7 @@ The drawer slides in over 300ms and out in 150ms. With the reduced motion settin
     actionsMenu: { description: 'Root props for the more menu, such as `{ open: true, modal: false }` to pin it open.', type: 'DropdownMenu props' },
     modal: { description: 'Blocks the page behind the drawer.', type: 'boolean', default: 'true' },
     container: { description: 'The element the drawer renders into.', type: 'HTMLElement | null', default: 'document.body' },
-    initialFocus: { description: 'Where focus goes when the drawer opens.', type: 'boolean | RefObject | function', default: 'the drawer' },
+    initialFocus: { description: 'Where focus goes when the drawer opens.', type: 'boolean | RefObject | function', default: 'the first control in the drawer (the panel after a tap)' },
   }}
 />
 
