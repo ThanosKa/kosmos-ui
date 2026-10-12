@@ -78,7 +78,7 @@ export default function SidebarDemo() {
         </SidebarFooter>
       </Sidebar>
       <SidebarResizeHandle />
-      <SidebarInset>
+      <SidebarInset render={<div />}>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
           <h1 className="truncate text-body font-medium">Home</h1>

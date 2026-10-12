@@ -110,7 +110,7 @@ export default function SidebarPreview() {
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
-          <SidebarInset>
+          <SidebarInset render={<div />}>
             <PageHeader title="Home" />
             <div className="flex flex-col gap-2 p-4 text-muted-foreground">
               <p>Drag the sidebar edge, or focus it with Tab and use the arrow keys.</p>
@@ -125,7 +125,7 @@ export default function SidebarPreview() {
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
-          <SidebarInset>
+          <SidebarInset render={<div />}>
             <PageHeader title="Reports" />
           </SidebarInset>
         </SidebarProvider>
@@ -153,13 +153,16 @@ export default function SidebarPreview() {
           rows={['handle'] as const}
           states={['default', 'hover', 'focus', 'dragging'] as const}
           render={(_, state) => (
-            <SidebarProvider defaultWidth={64} minWidth={48} className={`${frame} h-20`}>
-              <Sidebar aria-hidden />
-              <SidebarResizeHandle
-                {...(state === 'dragging' ? { 'data-dragging': '' } : previewState(state))}
-              />
-              <SidebarInset />
-            </SidebarProvider>
+            <>
+              <SidebarProvider defaultWidth={64} minWidth={48} className={`${frame} h-20 max-md:hidden`}>
+                <Sidebar aria-hidden />
+                <SidebarResizeHandle
+                  {...(state === 'dragging' ? { 'data-dragging': '' } : previewState(state))}
+                />
+                <SidebarInset render={<div />} />
+              </SidebarProvider>
+              <p className="text-caption text-muted-foreground md:hidden">Below 768px the sidebar is a drawer, with no handle.</p>
+            </>
           )}
         />
       </PreviewSection>

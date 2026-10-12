@@ -383,15 +383,14 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
   );
 }
 
-/** The page next to the sidebar. Renders `<main>`. */
-function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
-  return (
-    <main
-      data-slot="sidebar-inset"
-      className={cn('relative flex min-w-0 flex-1 flex-col bg-background', className)}
-      {...props}
-    />
-  );
+/** The page next to the sidebar. Renders `<main>`; pass `render={<div />}` when the page already has one. */
+function SidebarInset({ className, render, ...props }: useRender.ComponentProps<'main'>) {
+  return useRender({
+    defaultTagName: 'main',
+    render,
+    props: mergeProps<'main'>({ className: cn('relative flex min-w-0 flex-1 flex-col bg-background', className) }, props),
+    state: { slot: 'sidebar-inset' },
+  });
 }
 
 /** The top of the sidebar, for the workspace or product name. Stays put while the content scrolls. */

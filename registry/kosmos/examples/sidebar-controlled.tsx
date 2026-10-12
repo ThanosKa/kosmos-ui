@@ -53,7 +53,7 @@ export default function SidebarControlled() {
         </SidebarContent>
       </Sidebar>
       <SidebarResizeHandle />
-      <SidebarInset>
+      <SidebarInset render={<div />}>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
           <p className="text-body text-muted-foreground tabular-nums">
