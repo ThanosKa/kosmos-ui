@@ -1,5 +1,6 @@
 import { globSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { siteUrl } from './shared.ts';
 import { kosmosTokensAsCssVars } from './tokens.ts';
 
 /**
@@ -11,11 +12,10 @@ import { kosmosTokensAsCssVars } from './tokens.ts';
 export const registryItemGlob = 'registry/**/*.registry.json';
 export const registryNamespace = '@kosmos';
 /**
- * The public registry URL users put in `components.json`. The only place the production domain is written:
- * docs, llms.txt and install commands all read it from here. The domain is not bought yet, so
- * `kosmosui.com` is a placeholder to be confirmed.
+ * The public registry URL users put in `components.json`, on the site's origin (`NEXT_PUBLIC_SITE_URL`):
+ * docs, llms.txt and install commands all read it from here.
  */
-export const registryUrl = 'https://kosmosui.com/r/{name}.json';
+export const registryUrl = `${siteUrl}/r/{name}.json`;
 /** Arguments for `shadcn registry add`, which writes the `@kosmos` entry into `components.json`. */
 export const registryAddArgs = `registry add ${registryNamespace}=${registryUrl}`;
 /** The `registries` entry that `shadcn registry add` writes, for users who edit `components.json` by hand. */

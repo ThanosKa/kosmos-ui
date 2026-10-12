@@ -1,6 +1,6 @@
 import { author, githubUrl, licenseUrl } from '@/lib/shared';
 import { Button } from '@/registry/kosmos/ui/button';
-import { GitHubIcon, XIcon } from './brand-icons';
+import { GitHubIcon, LinkedInIcon, XIcon } from './brand-icons';
 
 const link =
   'rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
@@ -20,6 +20,9 @@ export function SiteFooter() {
           <div className="flex items-center">
             <Button variant="ghost" size="icon-sm" href={author.xUrl} aria-label={`${author.name} on X`}>
               <XIcon className="size-3" />
+            </Button>
+            <Button variant="ghost" size="icon-sm" href={author.linkedinUrl} aria-label={`${author.name} on LinkedIn`}>
+              <LinkedInIcon className="size-3" />
             </Button>
             <Button variant="ghost" size="icon-sm" href={author.githubUrl} aria-label={`${author.name} on GitHub`}>
               <GitHubIcon className="size-3.5" />

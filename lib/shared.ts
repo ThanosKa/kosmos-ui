@@ -20,7 +20,6 @@ export const docsContentRoute = '/llms.mdx/docs';
 /**
  * Where the code and its author live. The only place these URLs are written: the site header and footer,
  * the docs and the star count all read them from here.
- * TODO-confirm: the X account is a placeholder.
  */
 export const gitConfig = {
   user: 'ThanosKa',
@@ -37,7 +36,8 @@ export function docsSourceUrl(path: string, view: 'blob' | 'edit') {
 export const licenseUrl = `${githubUrl}/blob/HEAD/LICENSE`;
 export const author = {
   name: 'Thanos Kazakis',
-  xUrl: 'https://x.com/thanoskazakis',
+  xUrl: 'https://x.com/KazakisThanos',
+  linkedinUrl: 'https://www.linkedin.com/in/thanos-kazakis-922977205/',
   githubUrl: 'https://github.com/ThanosKa',
 };
 
