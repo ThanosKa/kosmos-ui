@@ -32,7 +32,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the cream page; dark study |
 | `border` | Dividers between items | ADR 0007 |
-| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also `border-input` in components installed from shadcn | ADR 0007 |
+| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0007 |
 | `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
 | `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |

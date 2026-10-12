@@ -35,6 +35,8 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Card being dragged | `shadow-lift` | `bg-card` |
 | Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 
+An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a switch that is on) the ring is 2px, since 1px vanishes against the ink. Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`); hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo, neutral because orange means focus. _Decided without the user (2026-10-12), pending confirmation._
+
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. A text field's edge is a ring with no drop (`shadow-field`), so it reads as a place to type rather than a button. Small pills with a colored edge (tags, the sidebar count) draw it with a real 1px border, since the edge is part of the pill, not depth. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
 ## Dividers between items
@@ -125,7 +127,7 @@ _Decided without the user (2026-10-11), pending confirmation._ `0.96` is the one
 
 Every focusable element shows `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`. An outline keeps the surface's shadow stack intact and survives forced-colors mode. `ring` reaches 3:1 against `background` in both themes.
 
-Text fields (Input, Textarea, Select trigger) light up their own edge instead: `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20`, a flush 1px outline over the field ring plus a soft halo. The outline keeps forced colors working; the halo is decoration.
+Text fields (Input, Textarea, Select trigger) light up their own edge instead: `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:ring-4 focus-visible:ring-ring/20`, a flush 1px outline over the field ring plus a soft halo. The outline keeps forced colors working; the halo is decoration. An invalid field keeps its meaning while focused: the same outline and halo turn `destructive` (`data-invalid:focus-visible:outline-destructive data-invalid:focus-visible:ring-destructive/20`, with `aria-invalid:` twins).
 
 Two more exceptions keep the outline visible where an offset outline would be clipped or have nothing to surround: an element a clipping container would cut (a tab in a scrolling tab list, an item in a collapsible panel, a scrolling code viewport inside its card) draws it inside (`-outline-offset-2`), and the zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line. _Decided without the user (2026-10-11), pending confirmation:_ a container with `overflow` other than `visible` clips anything outside its padding box.
 
