@@ -34,6 +34,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-active-foreground: var(--active-foreground);
   --color-scrim: var(--scrim);
   --color-thumb: var(--thumb);
   --color-sidebar: var(--sidebar);
@@ -125,6 +126,7 @@
   --border: oklch(0.915 0.006 97);
   --input: oklch(0.915 0.006 97);
   --ring: oklch(0.652 0.214 38);
+  --active-foreground: oklch(0.53 0.17 38);
   --scrim: oklch(0.263 0.013 100.5 / 0.4);
   --thumb: oklch(0.99 0.002 106.5);
 
@@ -189,6 +191,7 @@
   --border: oklch(0.26 0.006 95);
   --input: oklch(0.345 0.006 95);
   --ring: oklch(0.7 0.18 42);
+  --active-foreground: oklch(0.7 0.18 42);
   --scrim: oklch(0 0 0 / 0.6);
   --thumb: oklch(0.97 0.004 106.5);
 

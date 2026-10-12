@@ -481,7 +481,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> & {
-  /** Marks the current page: `aria-current="page"` on a link, a highlight and a primary icon. */
+  /** Marks the current page: `aria-current="page"` on a link, a raised highlight and an orange label and icon. */
   isActive?: boolean;
 };
 
@@ -503,8 +503,8 @@ function SidebarMenuButton({ isActive = false, className, ...props }: SidebarMen
       className={cn(
         'h-7.5 w-full min-w-0 justify-start gap-2 px-2 text-muted-foreground',
         'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
-        'data-active:bg-secondary data-active:text-sidebar-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary',
-        '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-sidebar-primary',
+        'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
+        '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
         className,
       )}
       {...props}
