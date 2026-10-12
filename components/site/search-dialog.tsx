@@ -129,7 +129,7 @@ export function SearchDialog({ open, onOpenChange }: SharedProps) {
   }
 
   const query = search.trim();
-  const groups = useMemo(() => (query && data ? groupHits(data.items, labels) : []), [query, data, labels]);
+  const groups = useMemo(() => (query && data && !error ? groupHits(data.items, labels) : []), [query, data, error, labels]);
   const pattern = useMemo(() => queryPattern(data?.query ?? ''), [data?.query]);
   const settled = !isLoading && data?.query === search;
 
