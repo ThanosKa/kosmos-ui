@@ -9,7 +9,8 @@ const docs = defineDocs({
   dir: 'content/docs',
   docs: {
     // `date` is required on changelog entries (checked in lib/changelog.ts) and unused elsewhere.
-    schema: pageSchema.extend({ date: z.coerce.date().optional() }),
+    // `baseUi` is the Base UI page of the primitive a component page wraps, linked under its description.
+    schema: pageSchema.extend({ date: z.coerce.date().optional(), baseUi: z.url().optional() }),
     postprocess: {
       // Docs components render through lib/llms.ts placeholders, so llms.txt gets code, not JSX.
       includeProcessedMarkdown: {
