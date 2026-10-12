@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { getChangelogEntries } from './changelog';
 import { groups, isGroup, readRegistryItems, type Group, type RegistryItem } from './registry';
+import { docsRoute } from './shared';
 import { source } from './source';
 
 export type DocsNavSectionId = 'get-started' | 'foundations' | 'components' | 'blocks';
@@ -165,4 +166,20 @@ export function getDocsIndex(section: 'components' | 'blocks'): DocsIndexGroup[]
       return { ...item, name: page.slugs[1], description: page.data.description };
     }),
   }));
+}
+
+export type DocsEyebrowPart = { label: string; url?: string };
+
+/**
+ * Where a page sits in the sidebar, for the eyebrow over its title: the section, plus the registry group on a
+ * component page. Sections and groups with an index page link to it; a changelog entry names the changelog.
+ */
+export function eyebrowOf(page: { slugs: string[] }): DocsEyebrowPart[] {
+  if (page.slugs[0] === 'changelog' && page.slugs.length === 2) return [{ label: 'Changelog', url: `${docsRoute}/changelog` }];
+  const section = sectionOf(page.slugs);
+  if (section !== 'components' && section !== 'blocks') return [{ label: sectionLabels[section] }];
+  const sectionPart = { label: sectionLabels[section], url: `${docsRoute}/${section}` };
+  const group = groupOfPage(page);
+  if (!group || group === 'blocks') return [sectionPart];
+  return [sectionPart, { label: groups[group], url: `${docsRoute}/components#group-${group}` }];
 }
