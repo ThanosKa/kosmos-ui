@@ -64,7 +64,7 @@ function expressionAttribute(data: PlaceholderData, name: string): unknown {
 }
 
 /** Text for a Markdown table cell: pipes escaped, on one line. */
-const cell = (value: string) => value.replaceAll('|', '\\|').replaceAll('\n', ' ');
+const tableCellText = (value: string) => value.replaceAll('|', '\\|').replaceAll('\n', ' ');
 
 function sourceFiles(name: string) {
   const [item] = resolveRegistryTree(name);
@@ -82,9 +82,9 @@ const placeholders = {
       ['Prop', 'Type', 'Default', 'Description'],
       Object.entries(expressionAttribute(data, 'type') as Record<string, ApiProp>).map(([name, prop]) => [
         `${code(name)}${prop.required ? ' (required)' : ''}`,
-        code(cell(prop.type)),
-        prop.default ? code(cell(prop.default)) : '',
-        cell(prop.description ?? ''),
+        code(tableCellText(prop.type)),
+        prop.default ? code(tableCellText(prop.default)) : '',
+        tableCellText(prop.description ?? ''),
       ]),
     ),
   ComponentInstall: (data: PlaceholderData) => fence('bash', installCommands(nameOf(data))),
