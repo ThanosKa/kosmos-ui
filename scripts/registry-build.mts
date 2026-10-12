@@ -6,6 +6,7 @@ import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { registryItemSchema, registrySchema } from 'shadcn/schema';
 import { readRegistryItems } from '../lib/registry.ts';
+import { siteUrl } from '../lib/shared.ts';
 
 const root = process.cwd();
 const outDir = join(root, 'public/r');
@@ -14,7 +15,7 @@ const items = readRegistryItems(root);
 const registry = {
   $schema: 'https://ui.shadcn.com/schema/registry.json',
   name: 'kosmos',
-  homepage: 'https://kosmosui.com',
+  homepage: siteUrl,
   items,
 };
 registrySchema.parse(registry);

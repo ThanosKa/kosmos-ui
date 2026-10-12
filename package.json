@@ -9,9 +9,9 @@
     "start": "next start",
     "types:check": "next typegen && tsc --noEmit",
     "lint": "eslint",
-    "registry:build": "node scripts/registry-build.mts",
-    "registry:check": "node scripts/registry-check.mts",
-    "registry:smoke": "node scripts/registry-smoke.mts",
+    "registry:build": "node --env-file-if-exists=.env.local scripts/registry-build.mts",
+    "registry:check": "node --env-file-if-exists=.env.local scripts/registry-check.mts",
+    "registry:smoke": "node --env-file-if-exists=.env.local scripts/registry-smoke.mts",
     "screenshots": "node scripts/screenshots.mts",
     "thumbnails": "node scripts/screenshots.mts --thumbnails"
   },
