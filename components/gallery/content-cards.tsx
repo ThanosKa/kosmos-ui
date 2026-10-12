@@ -7,6 +7,7 @@ import { Asset, AssetImage } from '@/registry/kosmos/ui/asset';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
+import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
@@ -41,8 +42,12 @@ export function ReleaseCard() {
               <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Copy link" />}>
                 <Link2 />
               </TooltipTrigger>
-              <TooltipContent>
-                Copy link <kbd className="ms-1 font-sans text-muted-foreground">⌘L</kbd>
+              <TooltipContent className="flex items-center gap-2 pe-1">
+                Copy link
+                <KbdGroup>
+                  <Kbd>⌘</Kbd>
+                  <Kbd>L</Kbd>
+                </KbdGroup>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
