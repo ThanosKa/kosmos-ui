@@ -119,6 +119,9 @@ const platforms: Record<DetailPlatform, { label: string; icon: LucideIcon }> = {
 
 // Fixed locale and time zone, so the server and the browser render the same text.
 const count = new Intl.NumberFormat('en-US');
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+/** Exact below a million, compact from there (2.4M), so the three usage figures fit side by side. */
+const formatEvents = (value: number) => (value < 1_000_000 ? count.format(value) : compact.format(value));
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 const day = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const shortDay = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
@@ -299,7 +302,7 @@ function DetailDrawer({
   const platform = project.platform ? platforms[project.platform] : undefined;
   const usage = [
     { label: 'Active users', value: project.users === undefined ? undefined : count.format(project.users) },
-    { label: 'Events', value: project.events === undefined ? undefined : count.format(project.events) },
+    { label: 'Events', value: project.events === undefined ? undefined : formatEvents(project.events) },
     { label: 'MRR', value: project.mrr ? usd.format(project.mrr) : undefined },
   ];
 
@@ -342,7 +345,9 @@ function DetailDrawer({
           {loading ? (
             <DrawerTitle className="sr-only">Loading project</DrawerTitle>
           ) : (
-            <span className="min-w-0 truncate text-caption text-muted-foreground">{project.domain}</span>
+            <span title={project.domain} className="min-w-0 truncate text-caption text-muted-foreground">
+              {project.domain}
+            </span>
           )}
           <div className="ms-auto flex shrink-0 items-center gap-1">
             {loading || !onAction ? null : (
@@ -441,7 +446,7 @@ function DetailDrawer({
                   {usage.map((item) => (
                     <div key={item.label} className="flex min-w-0 flex-col gap-0.5">
                       <dt className="text-small text-muted-foreground">{item.label}</dt>
-                      <dd className="text-title font-medium tabular-nums wrap-break-word">{item.value ?? <NoValue />}</dd>
+                      <dd className="text-title font-medium whitespace-nowrap tabular-nums">{item.value ?? <NoValue />}</dd>
                     </div>
                   ))}
                 </dl>

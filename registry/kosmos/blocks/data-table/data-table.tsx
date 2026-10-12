@@ -280,7 +280,7 @@ function DataTable({
 
   const openFromRow = (event: React.MouseEvent<HTMLTableRowElement>, row: Project) => {
     // Clicks on the checkbox, the name or the actions menu do their own thing.
-    if ((event.target as HTMLElement).closest('button, a, input, [role="menuitem"]')) return;
+    if ((event.target as HTMLElement).closest('button, a, input, [role="checkbox"], [role="menuitem"]')) return;
     onOpen?.(row);
   };
 
