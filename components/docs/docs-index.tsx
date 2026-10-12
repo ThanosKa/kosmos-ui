@@ -6,6 +6,9 @@ import { eyebrowClass } from './classes';
 
 type Folder = 'components' | 'blocks';
 
+/** Cards in the first row, at the widest grid: their thumbnails load eagerly, since one is the page's largest paint. */
+const firstRow: Record<Folder, number> = { components: 3, blocks: 2 };
+
 const imageSizes: Record<Folder, string> = {
   components: '(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw',
   blocks: '(min-width: 1024px) 480px, 100vw',
@@ -20,20 +23,20 @@ export function DocsIndex({ folder }: { folder: Folder }) {
   if (folder === 'blocks') {
     return (
       <div className="not-prose @container">
-        <IndexGrid folder={folder} items={groups.flatMap((group) => group.items)} />
+        <IndexGrid folder={folder} items={groups.flatMap((group) => group.items)} eager />
       </div>
     );
   }
   return (
     <div className="not-prose flex flex-col gap-10 @container">
-      {groups.map((group) => (
-        <IndexGroup key={group.id} group={group} />
+      {groups.map((group, index) => (
+        <IndexGroup key={group.id} group={group} eager={index === 0} />
       ))}
     </div>
   );
 }
 
-function IndexGroup({ group }: { group: DocsIndexGroup }) {
+function IndexGroup({ group, eager }: { group: DocsIndexGroup; eager: boolean }) {
   const headingId = `group-${group.id}`;
   return (
     <section data-docs-group aria-labelledby={headingId} className="flex flex-col gap-3">
@@ -44,24 +47,25 @@ function IndexGroup({ group }: { group: DocsIndexGroup }) {
         {group.icon}
         {group.label} <span className="tabular-nums">{group.items.length}</span>
       </h2>
-      <IndexGrid folder="components" items={group.items} />
+      <IndexGrid folder="components" items={group.items} eager={eager} />
     </section>
   );
 }
 
-function IndexGrid({ folder, items }: { folder: Folder; items: DocsIndexItem[] }) {
+function IndexGrid({ folder, items, eager = false }: { folder: Folder; items: DocsIndexItem[]; eager?: boolean }) {
   return (
     <ul className={cn('grid grid-cols-1 gap-4', folder === 'components' ? '@md:grid-cols-2 @2xl:grid-cols-3' : '@3xl:grid-cols-2')}>
-      {items.map((item) => (
+      {items.map((item, index) => (
         <li key={item.url} className="flex min-w-0">
-          <IndexCard item={item} sizes={imageSizes[folder]} />
+          <IndexCard item={item} sizes={imageSizes[folder]} eager={eager && index < firstRow[folder]} />
         </li>
       ))}
     </ul>
   );
 }
 
-function IndexCard({ item, sizes }: { item: DocsIndexItem; sizes: string }) {
+function IndexCard({ item, sizes, eager }: { item: DocsIndexItem; sizes: string; eager: boolean }) {
+  const loading = eager ? 'eager' : 'lazy';
   return (
     <Link
       href={item.url}
@@ -69,8 +73,8 @@ function IndexCard({ item, sizes }: { item: DocsIndexItem; sizes: string }) {
       className="relative flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-transparent bg-card p-1 pb-3.5 text-card-foreground shadow-card after:pointer-events-none after:absolute after:inset-0 after:rounded-2xl after:bg-accent after:opacity-0 after:transition-[opacity] hover:after:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       <div className="relative aspect-[8/5] overflow-hidden rounded-xl bg-background outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10">
-        <Image src={`/thumbs/${item.name}-light.png`} alt="" fill sizes={sizes} className="object-cover dark:hidden" />
-        <Image src={`/thumbs/${item.name}-dark.png`} alt="" fill sizes={sizes} className="hidden object-cover dark:block" />
+        <Image src={`/thumbs/${item.name}-light.png`} alt="" fill sizes={sizes} loading={loading} className="object-cover dark:hidden" />
+        <Image src={`/thumbs/${item.name}-dark.png`} alt="" fill sizes={sizes} loading={loading} className="hidden object-cover dark:block" />
       </div>
       <div className="flex min-w-0 flex-col gap-0.5 px-3">
         <span className="truncate text-title">{item.title}</span>
