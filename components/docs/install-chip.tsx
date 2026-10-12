@@ -9,8 +9,12 @@ import { Button } from '@/registry/kosmos/ui/button';
 const managerKey = 'package-manager';
 
 function readManager(managers: string[]) {
-  const saved = sessionStorage.getItem(managerKey) ?? localStorage.getItem(managerKey);
-  return saved && managers.includes(saved) ? saved : managers[0];
+  try {
+    const saved = sessionStorage.getItem(managerKey) ?? localStorage.getItem(managerKey);
+    return saved && managers.includes(saved) ? saved : managers[0];
+  } catch {
+    return managers[0];
+  }
 }
 
 function subscribeToManager(onChange: () => void) {
