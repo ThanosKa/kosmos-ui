@@ -8,6 +8,7 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 - **Style**: load the `kosmos-style` skill before you write or change any component or block. It is the single source of truth for values and rules and wins every conflict with a review skill.
 - **Terms**: `GLOSSARY.md`. Use its terms and avoid the ones it lists under _Avoid_.
 - **Why**: `docs/adr/`. Read the relevant ADR before reversing a decision; record new hard-to-reverse decisions there.
+- **Plans**: `docs/work/` holds the open spec, tickets and handoffs. Delete each one in the PR that finishes it. Research that names products stays in the gitignored `.scratch/`.
 
 ## Code
 
