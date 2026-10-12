@@ -49,6 +49,29 @@ export function OverlayStage({
   );
 }
 
+/**
+ * An `OverlayStage` with no label, frame, fill or scrim, for a thumbnail (`<name>-thumb.tsx`): the overlay pinned
+ * open inside it is all the shot shows. Render the overlay the same way as in an `OverlayStage`.
+ */
+export function ThumbStage({
+  className,
+  children,
+}: {
+  className?: string;
+  children: (container: HTMLElement) => ReactNode;
+}) {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  return (
+    <div
+      ref={setContainer}
+      data-overlay-stage
+      className={cn('relative w-full [transform:translateZ(0)] [&_[data-slot$=backdrop]]:hidden', className)}
+    >
+      {container ? children(container) : null}
+    </div>
+  );
+}
+
 /** A responsive grid of `OverlayStage`s: one column on a phone, two from `md`. */
 export function OverlayStageGrid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 gap-6 md:grid-cols-2">{children}</div>;

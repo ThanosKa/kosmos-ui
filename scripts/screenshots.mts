@@ -4,7 +4,8 @@
 // Shoots /view/<name>?theme=<theme> from a running dev server at 375 and 1280 wide, light and dark:
 // 4 PNGs per name, <out>/<name>-<theme>-<width>.png. Prints each path; exits 1 on any page error.
 // --thumbnails shoots the hero preview of every component and block docs page (or only the names given)
-// into public/thumbs/<name>-<theme>.png, the images on the components and blocks indexes.
+// into public/thumbs/<name>-<theme>.png, the images on the components and blocks indexes. An overlay, whose
+// hero is a closed trigger, shoots registry/kosmos/examples/<name>-thumb.tsx instead, with the overlay pinned open.
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -69,6 +70,11 @@ function heroExample(folder: string, name: string) {
   return hero;
 }
 
+/** The example a thumbnail shows: `<name>-thumb` when it exists, else the docs page's hero. */
+function thumbnailExample(folder: string, name: string) {
+  return existsSync(`registry/kosmos/examples/${name}-thumb.tsx`) ? `${name}-thumb` : heroExample(folder, name);
+}
+
 /**
  * Every component and block with its thumbnail source and frame. Blocks lay out in a desktop-wide frame;
  * `minWidth` caps the zoom on small examples such as a single badge.
@@ -83,7 +89,7 @@ function thumbnailTargets() {
       const isBlock = item.type === 'registry:block';
       return {
         name: item.name,
-        example: heroExample(isBlock ? 'blocks' : 'components', item.name),
+        example: thumbnailExample(isBlock ? 'blocks' : 'components', item.name),
         viewport: isBlock ? { width: 960, height: 600 } : { width: 560, height: 350 },
         minWidth: isBlock ? 480 : 320,
         deviceScaleFactor: isBlock ? 1.5 : 2,
@@ -124,14 +130,14 @@ async function shootReview(browser: Browser) {
 /**
  * A 16:10 box around what the example draws (text, controls, filled or shadowed surfaces, but not the empty
  * wrappers around them) with 24px of room, at least `minWidth` wide and inside the viewport, so small
- * examples fill the thumbnail instead of floating in the middle of it.
+ * examples fill the thumbnail instead of floating in the middle of it. Popups portalled to `<body>` (a pinned
+ * tooltip or select list) count too.
  */
 function contentClip(minWidth: number) {
   const room = 24;
   const aspect = 16 / 10;
-  const root = document.querySelector('[data-preview-content]')!;
   const rects: DOMRect[] = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     if (node instanceof Text) {
       if (!node.textContent?.trim()) continue;
