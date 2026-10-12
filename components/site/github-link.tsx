@@ -5,6 +5,9 @@ import { GitHubIcon } from './brand-icons';
 
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
+/** Below this the count reads as a warning rather than proof, so the link shows only the GitHub mark. */
+const minStarsShown = 10;
+
 /**
  * The repo's star count, or `null` when GitHub can't be reached, rate-limits us or the repo doesn't
  * exist yet. Cached for an hour; a build without network renders the link without a count.
@@ -26,7 +29,7 @@ async function getStars(): Promise<number | null> {
 
 async function StarCount() {
   const stars = await getStars();
-  if (stars === null) return null;
+  if (stars === null || stars < minStarsShown) return null;
   return (
     <span data-count className="text-caption text-muted-foreground tabular-nums">
       {compact.format(stars)}
@@ -35,7 +38,7 @@ async function StarCount() {
   );
 }
 
-/** The GitHub repo, with its star count when GitHub answers. */
+/** The GitHub repo, with its star count once GitHub answers and the count is worth showing. */
 export function GitHubLink() {
   return (
     <Button

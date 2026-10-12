@@ -9,15 +9,15 @@ import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detai
 import { KanbanBoard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog, type NewItemStatus, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
 import { PageHeader, type PageTab, type PageView } from '@/registry/kosmos/blocks/page-header/page-header';
-import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
+import { StatsOverview, type Stat } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 /*
  * The live dashboard on the landing page, composed from the eight free blocks with the same "Acme Inc."
- * sample workspace they ship with. One array of accounts feeds the table, the board, the drawer and the
- * command menu, so a change in one shows in the others. Only the Accounts page and its saved views are
+ * sample workspace they ship with. One array of accounts feeds the stat tiles, the table, the board, the
+ * drawer and the command menu, so a change in one shows in the others. Only the Accounts page and its saved views are
  * wired up; the other pages say so and link back.
  */
 
@@ -99,6 +99,23 @@ const goTo = [
   { id: 'reports', label: 'Reports', icon: BarChart3 },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
+
+/** A sparkline shape that ends on the live value. */
+const trendTo = (value: number, shape: number[]) => shape.map((point) => (point / shape[shape.length - 1]) * value);
+
+/** The stat tiles, computed from the accounts so they agree with the table and the board. */
+function accountStats(accounts: Account[]): Stat[] {
+  const open = accounts.filter((row) => row.status !== 'churned');
+  const arr = open.reduce((sum, row) => sum + row.arr, 0);
+  const health = Math.round(open.reduce((sum, row) => sum + row.health, 0) / Math.max(open.length, 1));
+  const atRisk = accounts.filter((row) => row.status === 'at-risk').length;
+  return [
+    { id: 'arr', label: 'Total ARR', value: arr, format: 'currency', change: 12.4, trend: trendTo(arr, [52, 55, 54, 60, 63, 61, 68, 72, 70, 77, 80, 84]) },
+    { id: 'accounts', label: 'Accounts', value: accounts.length, format: 'number', change: 8.1, trend: trendTo(accounts.length, [22, 25, 24, 28, 27, 31, 30, 29, 33, 35, 34, 38]) },
+    { id: 'health', label: 'Average health', value: health, format: 'number', change: 3.2, trend: trendTo(health, [58, 60, 59, 61, 60, 62, 63, 62, 64, 63, 65, 66]) },
+    { id: 'at-risk', label: 'At risk', value: atRisk, format: 'number', change: -20, goodWhen: 'down', trend: trendTo(atRisk, [5, 5, 4, 5, 4, 4, 3, 4, 3, 3, 3, 2]) },
+  ];
+}
 
 const slug = (name: string) =>
   name
@@ -246,7 +263,7 @@ export function DashboardShowcase() {
           >
             {view === 'table' ? (
               <div className="flex flex-col gap-4 p-4">
-                <StatsOverview />
+                <StatsOverview stats={accountStats(accounts)} />
                 <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
                   <DataTable
                     rows={ownerFiltered}
