@@ -321,11 +321,14 @@ function KanbanColumnView({
         ) : null}
       </header>
       {/*
-        Native scrolling: the cards that pass through a column while a card is dragged change its height
-        faster than Scroll area re-measures, which left a stale scrollbar gutter after the drag. The 4px
-        inset leaves room for the card ring and focus outline, which the scroll container would clip.
+        The cards' own inset already leaves room for the scrollbar, so the column drops Scroll area's gutter:
+        cards that pass through while a card is dragged must not change the column's width.
       */}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin] dark:scheme-dark">
+      <ScrollArea
+        focusable={false}
+        className="min-h-0 flex-1 rounded-none"
+        viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0"
+      >
         <SortableContext id={column.id} items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
           <div ref={setNodeRef} className="flex min-h-20 flex-col gap-2 px-3 py-1">
             {loading ? (
@@ -344,7 +347,7 @@ function KanbanColumnView({
             )}
           </div>
         </SortableContext>
-      </div>
+      </ScrollArea>
     </section>
   );
 }
