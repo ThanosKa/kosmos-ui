@@ -59,7 +59,7 @@ Every handler can return a promise: the form shows its loading state until it se
 
 - **Other ways in**: pass buttons such as single sign-on as `alternatives`, and they sit above the log in and sign up forms with an "or" line under them.
 - **Log in**: email and password, with a link to reset the password beside its label and a link to sign up under the card. When `onLogIn` succeeds it says who is logged in, with a button to continue.
-- **Sign up**: name, work email and a password of at least 8 characters, with your terms under the button. When `onSignUp` succeeds, `onViewChange` gets `'email-code'`, the next step.
+- **Sign up**: name, email and a password of at least 8 characters, with your terms under the button. When `onSignUp` succeeds, `onViewChange` gets `'email-code'`, the next step. On its own route, send people to the code form from `onSignUp` instead.
 - **Email code**: one box per character of the code. Pasting it, or the code autofill on phones, fills every box, and the form submits itself when the last one is filled. A new code can be sent once `resendAfter` seconds have passed.
 - **Forgot password**: asks for the email and sends a reset link. Then it says to check the inbox without telling whether an account uses that address.
 - **Errors**: each field says what is wrong under it once the form is submitted, and focus moves to the first field to fix. Errors from your server show above the fields, or under the code.
@@ -81,6 +81,7 @@ Takes the shared props below, plus every handler of the four forms (`onLogIn`, `
     email: { description: 'The email address, shared by every view so it stays filled in. Use with `onEmailChange`.', type: 'string' },
     defaultEmail: { description: 'The email address at first, when the forms keep their own state.', type: 'string', default: "''" },
     onEmailChange: { description: 'Called as the email address changes.', type: '(email: string) => void' },
+    emailPlaceholder: { description: 'An example address in the empty email field.', type: 'string', default: "'name@parallax.example'" },
   }}
 />
 
@@ -96,12 +97,15 @@ Every form takes these.
     onViewChange: { description: 'Called with the view a link leads to. With it, those links switch the view instead of navigating.', type: '(view: AuthView) => void' },
     headingLevel: { description: 'The level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
     autoFocus: { description: 'Moves focus to the first field when the form appears.', type: 'boolean', default: 'false' },
+    className: { description: 'Classes for the outer element, which holds the card and the line under it.', type: 'string' },
   }}
 />
 
+For previews and tests, every form also takes `pending` (shows the loading state), `defaultError` (an error from the server), and `defaultSubmitted` (shows the field errors). Log in and the email code take `defaultSuccess`, and forgot password takes `defaultSent`, to start in their success state.
+
 ### LogInForm
 
-Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+Takes the shared props and the `email`, `defaultEmail`, `onEmailChange` and `emailPlaceholder` of AuthForms, plus:
 
 <TypeTable
   type={{
@@ -112,7 +116,7 @@ Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of Au
 
 ### SignUpForm
 
-Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+Takes the shared props and the `email`, `defaultEmail`, `onEmailChange` and `emailPlaceholder` of AuthForms, plus:
 
 <TypeTable
   type={{
@@ -134,12 +138,15 @@ Takes the shared props, plus:
     onResendCode: { description: 'Sends a new code.', type: '(email: string) => Promise<void> | void' },
     resendAfter: { description: 'Seconds to wait before a new code can be sent. The wait starts when the form appears and after each new code.', type: 'number', default: '30' },
     backView: { description: 'Where "Use a different email" leads.', type: 'AuthView', default: "'sign-up'" },
+    code: { description: 'The code typed so far. Use with `onCodeChange`.', type: 'string' },
+    defaultCode: { description: 'The code at first, when the form keeps its own state.', type: 'string', default: "''" },
+    onCodeChange: { description: 'Called as the code changes.', type: '(code: string) => void' },
   }}
 />
 
 ### ForgotPasswordForm
 
-Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+Takes the shared props and the `email`, `defaultEmail`, `onEmailChange` and `emailPlaceholder` of AuthForms, plus:
 
 <TypeTable
   type={{
