@@ -19,6 +19,7 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 - Commits: `type(scope): description`, one line, imperative, no body, no footer, no `Co-Authored-By`.
 - Types: `feat`, `fix`, `refactor`, `style`, `docs`, `test`, `chore`. Scope is the component or area (`button`, `docs`, `registry`).
 - Branches: `main` is production, `dev` is integration. Short-lived `feature/`, `fix/`, `refactor/`, `docs/` branches start from `dev`, and their PRs go into `dev`, never straight into `main`.
+- PRs are for code. A change that touches only Markdown under `docs/work/` (spec, tickets, handoffs) is committed straight to `dev`. Any other Markdown (ADRs, skills, `GLOSSARY.md`, `AGENTS.md`) goes in the PR of the code it belongs to, and gets its own PR only when it stands alone and changes a rule.
 - PRs: `gh pr create --base dev`, with the body written by the `pr` skill. Squash merge only; the PR title becomes the commit on `dev`, so write it in commit format.
 - Releases: the maintainer opens a PR from `dev` into `main` and merges it with a merge commit, so `main` keeps the commits from `dev`.
 

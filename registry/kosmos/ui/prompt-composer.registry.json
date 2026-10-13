@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "prompt-composer",
+  "type": "registry:ui",
+  "title": "Prompt composer",
+  "description": "Where a user writes to an agent: a text box that grows with the text, attachment chips, the model select and the context usage meter, and Send that turns into Stop while the agent answers.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/button",
+    "@kosmos/kbd",
+    "@kosmos/model-select",
+    "@kosmos/textarea",
+    "@kosmos/tooltip",
+    "@kosmos/usage-meter"
+  ],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/prompt-composer.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

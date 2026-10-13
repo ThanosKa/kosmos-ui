@@ -1,0 +1,93 @@
+---
+title: Run timeline
+description: One agent run in a card, with who started it, its status, time, tokens and cost, then its plan, reasoning, tool calls and approvals in order.
+---
+
+## Installation
+
+<ComponentInstall name="run-timeline" />
+
+The block brings [Tool call](/docs/components/tool-call), [Tool approval](/docs/components/tool-approval), [Plan checklist](/docs/components/plan-checklist), [Reasoning](/docs/components/reasoning), [Status](/docs/components/status), [Collapsible](/docs/components/collapsible), [Empty state](/docs/components/empty), [Avatar](/docs/components/avatar), [Button](/docs/components/button) and [Tooltip](/docs/components/tooltip) with it, and lands in `components/run-timeline.tsx`.
+
+## Usage
+
+```tsx
+import { RunTimeline } from '@/components/run-timeline';
+
+<RunTimeline
+  run={run}
+  onDecide={(stepId, decision) => sendDecision(run.id, stepId, decision)}
+  onStop={() => stopRun(run.id)}
+  onRetry={(fromStepId) => retryRun(run.id, fromStepId)}
+/>;
+```
+
+Without props it shows a sample run waiting for an approval. Pass the run as your agent reports it and update `run` as steps arrive; the timeline renders what it is given and keeps no copy of the run. The `Run` and `RunStep` types live in the file: change them to fit your agent.
+
+## What it does
+
+- **Header**: the task as the title, then the status, who started the run, the model, the run number, the elapsed time, tokens and cost. **Stop run** shows while the run is queued, running or waiting, and **Copy link** copies `run.url`, or calls `onCopyLink` when you pass it.
+- **Steps**: each step sits on a line with its time since the start of the run (**+0:14**); hover it for the clock time. A step is a plan, a reasoning block, a tool call, an approval or a message, and each brings the component that shows it, so its status and details work as they do on their own.
+- **Approvals**: an approval step asks inline and calls `onDecide` with the step id and the decision. Set the step's `status` to `submitting` while you send it and to `decided` with `decidedBy` and `decidedAt` once it lands; it then folds to a record of who decided and when.
+- **While running**: a **Working…** row closes the timeline. New steps fade in.
+- **Finished**: a done run folds its steps behind a summary such as **7 steps · 3 tool calls · 1 approval**. A failed or cancelled run keeps them open. Control this with `stepsOpen` and `onStepsOpenChange`, or set where it starts with `defaultStepsOpen`.
+- **Failed**: `run.error` shows its message under the steps with **Retry from step 3**, which calls `onRetry` with the id of the step that failed.
+- **Queued**: an empty state says the run starts when a worker is free, and how many runs are ahead when you pass `queuePosition`.
+- **Width**: the block lays itself out by its own width. In a narrow container the step times hide and the header wraps.
+
+## Motion
+
+New steps fade in and rise 4px over 200ms. The summary opens over 300ms and closes in 150ms. With the reduced motion setting on, steps only fade and the summary fades instead of changing height.
+
+## API
+
+### RunTimeline
+
+<TypeTable
+  type={{
+    run: { description: 'The run to show.', type: 'Run', default: 'a sample run' },
+    stepsOpen: { description: 'Whether the steps of a finished run show, controlled. Queued, running and waiting runs always show them.', type: 'boolean' },
+    defaultStepsOpen: { description: 'Whether the steps of a finished run start open, uncontrolled.', type: 'boolean', default: "true, except for a done run" },
+    onStepsOpenChange: { description: 'Called when the summary opens or closes the steps.', type: '(open: boolean) => void' },
+    onStop: { description: 'Called by Stop run, or Cancel run while queued.', type: '() => void' },
+    onRetry: { description: 'Called by the retry button of a failed run with the id of the step that failed.', type: '(fromStepId: string) => void' },
+    onDecide: { description: 'Called when someone answers an approval step.', type: "(stepId: string, decision: 'allow-once' | 'always-allow' | 'deny') => void | Promise<void>" },
+    onCopyLink: { description: 'Replaces copying `run.url` to the clipboard.', type: '(run: Run) => void' },
+    className: { description: 'Classes for the card.', type: 'string' },
+  }}
+/>
+
+### Run
+
+<TypeTable
+  type={{
+    id: { description: 'Unique.', type: 'string', required: true },
+    number: { description: 'Shown as Run #482.', type: 'number', required: true },
+    title: { description: 'The task, shown as the title.', type: 'string', required: true },
+    status: { description: 'The state of the run.', type: "'queued' | 'running' | 'waiting' | 'done' | 'failed' | 'cancelled'", required: true },
+    startedBy: { description: 'Who started the run, with initials as the avatar unless you pass `avatarUrl`.', type: '{ name: string; avatarUrl?: string }', required: true },
+    model: { description: 'The model, such as Claude Sonnet 5.5.', type: 'string', required: true },
+    startedAt: { description: 'The clock time it started, `HH:MM:SS`. Step tooltips add their offsets to it.', type: 'string', required: true },
+    elapsedMs: { description: 'Time so far, or in total once finished.', type: 'number', required: true },
+    tokens: { description: 'Tokens used.', type: 'number', required: true },
+    costUsd: { description: 'Cost in dollars.', type: 'number', required: true },
+    url: { description: 'What Copy link copies.', type: 'string' },
+    queuePosition: { description: 'Runs ahead of this one while it is queued.', type: 'number' },
+    error: { description: 'Why a failed run stopped, and the step it failed on.', type: '{ stepId: string; message: string }' },
+    steps: { description: 'The steps, oldest first.', type: 'RunStep[]', required: true },
+  }}
+/>
+
+### RunStep
+
+Every step has an `id` and an `offsetMs`, the time since the run started. The rest depends on its `kind`:
+
+<TypeTable
+  type={{
+    plan: { description: 'A Plan checklist. It starts open until every step is done.', type: "{ kind: 'plan'; title?: string; steps: PlanStep[] }" },
+    reasoning: { description: 'A Reasoning block with prose or steps.', type: "{ kind: 'reasoning'; status: 'thinking' | 'done'; durationMs?: number; text?: string; steps?: ReasoningStep[] }" },
+    tool: { description: 'A Tool call. `call` takes its props.', type: "{ kind: 'tool'; call: ToolCallProps }" },
+    approval: { description: 'A Tool approval without its card. `approval` takes its props; `onDecide` on the timeline answers it.', type: "{ kind: 'approval'; approval: ToolApprovalProps }" },
+    message: { description: 'What the agent said, as text.', type: "{ kind: 'message'; text: string }" },
+  }}
+/>

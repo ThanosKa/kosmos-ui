@@ -180,6 +180,17 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 - Bento: title "From the first event to the answer", one line "Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." Tiles, in order: Live events (wide; a feed of `signup_completed`, `checkout_started`, `trial_converted` and `page_viewed` from the first projects), Funnels (meters: Viewed pricing 100%, Started a trial 38%, Paid 12%), Every platform (Web, iOS, Android and Server with their SDKs) and Alerts (wide; switches for "Signups drop below 40 a day", "Error events pass 2%" and "Weekly summary").
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
 
+## AI agents
+
+The AI components and the run timeline and usage overview blocks show the **Acme agent**, the assistant inside the Acme dashboard that the team asks about its own projects. Real model names are fine: Claude Opus 5.5 (most capable), Claude Sonnet 5.5 (balanced, the default) and Claude Haiku 5.5 (fastest), each with the efforts low, medium and high; the 1M context variant of Opus is disabled with the hint "Not on your plan".
+
+- Author "Acme agent"; the people who ask it are the Acme team, and Lena Park is the one who approves. A run is "Run #482", started at 14:02 on 11 October 2026.
+- Agent budget: Acme has $2,000 a month for agents (Acme Staging $200). When it is used up, the composer says "Acme has used this month's agent budget. Lena Park can raise it in Settings."
+- Usage shares by member: Lena Park 38%, Tomás Ortega 29%, Kai Nakamura 19%, Ama Mensah 14%. The usage overview's last day is 11 October.
+- Tasks the agent does, with the numbers to use: find out why Hollow Oak Games stopped sending events (96,200 events up to 18 September, none since, because the project was paused); check the event quota (Copperline Bank 109%, Cirrus Weather 80%, Ironbark Logistics 79%); raise Cirrus Weather from Pro to Scale; delete 12,480 test events (`debug_ping`) from Tidepool Notes; draft the weekly summary (6,838,800 events in 7 days) and email it to the team.
+- Tools are dotted lowercase names: `events.query`, `events.compare`, `events.export`, `events.delete`, `projects.update_plan`, `email.send`, `dashboards.export`, `billing.revenue_by_plan`. Revenue by plan is Scale $13,700, Pro $928 and Free $0 a month.
+- Files people attach: `cirrus-events-30d.csv`, `events-dashboard.png`, `weekly-summary-brief.pdf`.
+
 ## Creating things
 
 The Acme team runs the product; its customers add their own projects. So the one thing a block creates is a roadmap item: the command menu and the landing dashboard offer "New roadmap item", which opens the new item dialog. The page header's "New project" is the primary action of a Projects page in an app that does let people add projects; it shows only when the app passes `onNew`, so the landing dashboard's Projects page has no primary action.

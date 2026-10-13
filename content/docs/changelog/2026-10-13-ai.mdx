@@ -1,0 +1,26 @@
+---
+title: Added AI components and blocks
+description: Components for agent interfaces, from tool calls and approvals to the prompt composer, plus two blocks and a Collapsible.
+date: 2026-10-13
+---
+
+A new AI group, for interfaces where an agent plans, thinks, calls tools and asks before it acts:
+
+- [Tool call](/docs/components/tool-call): one row per tool the agent runs, with its status and duration. It opens to show the input and the output.
+- [Tool approval](/docs/components/tool-approval): asks before the agent runs a tool, with Allow once, Always allow and Deny. Once decided, it folds into a one-line record of who decided and when.
+- [Plan checklist](/docs/components/plan-checklist): the agent's plan as a live checklist, from pending to running to done.
+- [Reasoning](/docs/components/reasoning): a quiet disclosure that reads "Thinking…" while the agent thinks, then "Thought for 12s", and opens to the steps.
+- [Assistant message](/docs/components/assistant-message): an answer with its sources, actions and suggested follow-ups. The body is `children`, so any renderer fits.
+- [Usage meter](/docs/components/usage-meter): context or spend against a limit, as a small ring that opens to the breakdown by category.
+- [Model select](/docs/components/model-select): picks the model and the reasoning effort in one menu.
+- [Prompt composer](/docs/components/prompt-composer): the input for an agent, with a text box that grows, attachments, the model select and the usage meter. Send turns into Stop while the agent runs.
+- [Status](/docs/components/status): six states for a task, a step or a run, as a row icon and as a Badge. The AI components share it.
+
+Two new blocks:
+
+- [Run timeline](/docs/blocks/run-timeline): one agent run, with who started it, its time, tokens and cost, then its plan, reasoning, tool calls and approvals in order.
+- [Usage overview](/docs/blocks/usage-overview): agent tokens and cost per period, as stat tiles, a chart and a table by model or by member.
+
+And one new component outside the group:
+
+- [Collapsible](/docs/components/collapsible): one panel that opens and closes under a Button. It grows open with a height animation, which becomes a fade when the reduced motion setting is on.

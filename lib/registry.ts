@@ -51,6 +51,7 @@ export const groups = {
   navigation: 'Navigation',
   data: 'Data',
   misc: 'Misc',
+  ai: 'AI',
   blocks: 'Blocks',
 } as const;
 export type Group = keyof typeof groups;

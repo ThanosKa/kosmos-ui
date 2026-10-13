@@ -1,0 +1,119 @@
+---
+title: Usage meter
+description: Shows how full a token limit is and what fills it, such as an agent's context window. A small ring opens the breakdown, or the breakdown sits in place.
+baseUi: https://base-ui.com/react/components/meter
+---
+
+<ComponentPreview name="usage-meter-demo" />
+
+## Installation
+
+<ComponentInstall name="usage-meter" />
+
+## Usage
+
+```tsx
+import { UsageMeter, type UsageBreakdownRow } from '@/components/ui/usage-meter';
+```
+
+```tsx
+const breakdown: UsageBreakdownRow[] = [
+  { label: 'System prompt', value: 2400 },
+  { label: 'Tool definitions', value: 6100 },
+  { label: 'Conversation', value: 61_600 },
+];
+
+<UsageMeter breakdown={breakdown} limit={200_000} />;
+```
+
+The ring fills as the limit fills, and hovering or focusing it shows a tooltip with the percent and the counts. Clicking it opens a panel with the percent full, the tokens used out of the limit, one bar split by category and a list of the categories with their counts.
+
+Each row of `breakdown` is a segment of the bar and a line of the list, in the order you pass them. Categories take their color by position: the five chart colors, then ink, then grey for every row after that. Keep the order the same everywhere, so a category keeps its color.
+
+The meter shows what you pass and never changes it. Pass a new `breakdown` when the usage changes.
+
+## Examples
+
+### In place
+
+`variant="inline"` shows the panel without the ring, for a settings page or a side panel.
+
+<ComponentPreview name="usage-meter-inline" />
+
+### Near the limit
+
+From `warnAt` (80% by default) the ring takes the warning color and the panel adds a "Near limit" badge. From `criticalAt` (95%) the ring turns red and the badge reads "Almost full", then "Limit reached" once the usage reaches the limit.
+
+<ComponentPreview name="usage-meter-thresholds" />
+
+### Live usage
+
+Keep the breakdown in your state and pass it on every change. The ring and the bar grow to the new value in 300ms.
+
+<ComponentPreview name="usage-meter-live" />
+
+## Motion
+
+The ring arc and the bar segments grow to a new value over 300ms with `smooth-in-out`, and the ring changes color with them. Under reduced motion the value changes at once and only the ring's color fades, over 150ms. The panel opens like a [Popover](/docs/components/popover).
+
+## API
+
+<TypeTable
+  type={{
+    breakdown: {
+      description: 'What fills the limit, one row per category. Each row is a segment of the bar and a line of the list, in this order.',
+      type: 'UsageBreakdownRow[]',
+      required: true,
+    },
+    limit: { description: 'The most that can be used, in tokens.', type: 'number', required: true },
+    label: {
+      description: 'The panel title, and the name screen readers give the ring and the bar.',
+      type: 'string',
+      default: "'Context usage'",
+    },
+    variant: {
+      description: '`compact` is a ring that opens the panel; `inline` shows the panel in place.',
+      type: "'compact' | 'inline'",
+      default: "'compact'",
+    },
+    warnAt: {
+      description: 'Fraction of the limit where the ring takes the warning color and the panel notes the usage is near the limit.',
+      type: 'number',
+      default: '0.8',
+    },
+    criticalAt: {
+      description: 'Fraction of the limit where the ring turns red and the panel notes the usage is almost full.',
+      type: 'number',
+      default: '0.95',
+    },
+    open: { description: 'Whether the panel is open, to control it.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the panel is open at first.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the panel opens or closes.', type: '(open: boolean) => void' },
+    modal: { description: 'Keeps focus in the panel until it closes.', type: 'boolean', default: 'false' },
+    container: {
+      description: 'The element the panel renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+    className: { description: 'Classes for the ring button, or for the wrapper with `variant="inline"`.', type: 'string' },
+  }}
+/>
+
+### UsageBreakdownRow
+
+<TypeTable
+  type={{
+    label: { description: 'The category name.', type: 'string', required: true },
+    value: { description: 'Tokens this category uses.', type: 'number', required: true },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the ring, which shows the tooltip. |
+| `Enter` or `Space` | Opens the panel and moves focus to its close button, or closes it. |
+| `Escape` | Closes the panel and puts focus back on the ring. |
+
+Screen readers announce the ring as "Context usage, 50% full", the bar as a meter and the categories as a list of terms and values.

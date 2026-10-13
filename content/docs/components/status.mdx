@@ -1,0 +1,97 @@
+---
+title: Status
+description: Six states for a task, a step or a run, as a row icon and as a Badge, so every agent view shows progress the same way.
+---
+
+<ComponentPreview name="status-demo" />
+
+## Installation
+
+<ComponentInstall name="status" />
+
+## Usage
+
+```tsx
+import { StatusBadge, StatusIcon, type Status } from '@/components/ui/status';
+```
+
+```tsx
+<StatusIcon status="done" label="Done" />
+<StatusBadge status="running">Running</StatusBadge>
+```
+
+There are six states: `pending`, `running`, `waiting`, `done`, `error` and `skipped`. Map your own words onto them, such as queued to `pending`, needs approval to `waiting` and failed to `error`, and write those words as the label.
+
+The color sits on the icon or the dot, never on the text, and each state has its own icon shape, so the label and the shape carry the meaning without the color.
+
+The running icon spins. When the reduced motion setting is on, it pulses instead. A new icon fades in as a status changes, with a small scale that the reduced motion setting turns off.
+
+## Examples
+
+### Icons
+
+`StatusIcon` is 16px, to lead a row. Pass `className="size-3.5"` for a 14px icon beside 13px text.
+
+<ComponentPreview name="status-icons" />
+
+### Badges
+
+`StatusBadge` is the neutral Badge with a colored dot for `waiting`, `done` and `error`, and with the row icon for `pending`, `running` and `skipped`. A label too long for its slot truncates, so keep it to a word or two, or pass `title` with the full text.
+
+<ComponentPreview name="status-badges" />
+
+### Steps
+
+A list of steps, each led by its icon. When no text beside the icon names the status, pass `label`, so screen readers read it.
+
+<ComponentPreview name="status-steps" />
+
+## API
+
+### StatusIcon
+
+<TypeTable
+  type={{
+    status: {
+      description: 'The state to show.',
+      type: "'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped'",
+      required: true,
+    },
+    label: {
+      description: 'Names the status for screen readers. Leave it out when text beside the icon already says it, and the icon stays hidden from them.',
+      type: 'string',
+    },
+    className: {
+      description: 'Classes for the icon, such as `size-3.5`.',
+      type: 'string',
+    },
+  }}
+/>
+
+### StatusBadge
+
+Takes every [Badge](/docs/components/badge) prop except `variant`, and:
+
+<TypeTable
+  type={{
+    status: {
+      description: 'The state to show. It picks the dot or icon.',
+      type: "'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped'",
+      required: true,
+    },
+    children: {
+      description: 'The label, in your own words.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### formatDuration
+
+The AI components write durations with `formatDuration` from `@kosmos/format`, which installs with them: `1.4s` under 10 seconds, `30s` under a minute, then `2m 05s` and `1h 02m`.
+
+```tsx
+import { formatDuration } from '@/lib/format';
+
+formatDuration(125_000); // "2m 05s"
+```

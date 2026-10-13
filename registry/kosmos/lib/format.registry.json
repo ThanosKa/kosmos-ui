@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "format",
+  "type": "registry:lib",
+  "title": "Format",
+  "description": "Formatting helpers the Kosmos AI components share, such as durations written 1.4s, 30s and 2m 05s.",
+  "files": [
+    {
+      "path": "registry/kosmos/lib/format.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

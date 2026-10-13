@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "usage-meter",
+  "type": "registry:ui",
+  "title": "Usage meter",
+  "description": "How full a token limit is and what fills it: a small ring that opens a panel with the percent, one segmented bar and a list of categories, or the same panel in place. Built on Base UI Meter and Popover.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/button", "@kosmos/popover", "@kosmos/tooltip"],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/usage-meter.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

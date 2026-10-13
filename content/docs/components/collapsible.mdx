@@ -1,0 +1,132 @@
+---
+title: Collapsible
+description: One panel that opens and closes under its trigger, for details people need only some of the time, such as project details, an error log or extra settings.
+baseUi: https://base-ui.com/react/components/collapsible
+---
+
+<ComponentPreview name="collapsible-demo" />
+
+## Installation
+
+<ComponentInstall name="collapsible" />
+
+## Usage
+
+```tsx
+import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+```
+
+```tsx
+<Collapsible>
+  <CollapsibleTrigger variant="item" className="h-9 w-full justify-between px-2">
+    Project details
+    <CollapsibleChevron />
+  </CollapsibleTrigger>
+  <CollapsibleContent>Sends events from the iOS app only.</CollapsibleContent>
+</Collapsible>
+```
+
+The trigger is a [Button](/docs/components/button), so it takes any Button `variant` and `size`. Use `variant="item"` for a full-width 36px row, as in the example above, and `variant="ghost" size="sm"` for a small link-like trigger under some content. Put a `CollapsibleChevron` inside it: it turns over as the panel opens.
+
+The panel grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades in and out instead, and the chevron cross-fades.
+
+The panel clips what overflows it while it moves, so leave room for the focus outline of controls inside it: `-mx-1 px-1` on `CollapsibleContent` gives a 4px margin.
+
+To stack several sections under headings, where opening one can close the others, use [Accordion](/docs/components/accordion).
+
+## Examples
+
+### Show details
+
+A small ghost trigger under the content it explains, with a 12px chevron (`size="sm"`). Change its label with the open state, so it says what a click will do.
+
+<ComponentPreview name="collapsible-details" />
+
+### Controlled, without a trigger
+
+Pass `open` and `onOpenChange` to `Collapsible` to open it from your own state. The panel works without a `CollapsibleTrigger`, so another control, such as a switch, can open it.
+
+<ComponentPreview name="collapsible-controlled" />
+
+### Long labels
+
+For a label that can wrap, let the row grow and keep the chevron on the first line: `h-auto min-h-9 items-start py-2 text-start whitespace-normal`.
+
+## API
+
+### Collapsible
+
+Takes every Base UI [`Collapsible.Root`](https://base-ui.com/react/components/collapsible) prop, such as:
+
+<TypeTable
+  type={{
+    defaultOpen: {
+      description: 'Whether the panel is open at first.',
+      type: 'boolean',
+      default: 'false',
+    },
+    open: {
+      description: 'Whether the panel is open, to control it.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called with the new state when the panel opens or closes.',
+      type: '(open: boolean) => void',
+    },
+    disabled: {
+      description: 'Disables the trigger.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### CollapsibleTrigger
+
+Takes every Base UI `Collapsible.Trigger` prop and these Button props:
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The Button look. `item` for a full-width row, `ghost` for a small trigger.',
+      type: "'primary' | 'secondary' | 'ghost' | 'destructive' | 'item'",
+      default: "'ghost'",
+    },
+    size: {
+      description: 'The Button size.',
+      type: "'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'",
+      default: "'md'",
+    },
+    className: {
+      description: 'Classes for the Button, such as `w-full justify-between` for a row.',
+      type: 'string',
+    },
+  }}
+/>
+
+### CollapsibleChevron
+
+<TypeTable
+  type={{
+    size: {
+      description: '`md` is 16px in a 20px box, for 36px rows. `sm` is 12px, for `sm` buttons.',
+      type: "'md' | 'sm'",
+      default: "'md'",
+    },
+    className: {
+      description: 'Classes for the chevron box.',
+      type: 'string',
+    },
+  }}
+/>
+
+### CollapsibleContent
+
+The panel. Takes every Base UI `Collapsible.Panel` prop, such as `keepMounted` and `hiddenUntilFound`. `className` goes on the panel itself.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the trigger, then into the panel when it is open. |
+| `Enter` or `Space` | Opens or closes the panel. |

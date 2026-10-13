@@ -1,0 +1,141 @@
+---
+title: Tool approval
+description: Asks before an agent runs a tool, then keeps a one-line record of who decided and when.
+---
+
+<ComponentPreview name="tool-approval-demo" />
+
+## Installation
+
+<ComponentInstall name="tool-approval" />
+
+## Usage
+
+```tsx
+import { ToolApproval } from '@/components/ui/tool-approval';
+```
+
+```tsx
+<ToolApproval
+  tool="projects.update_plan"
+  title="Raise Cirrus Weather to the Scale plan?"
+  description="Scale includes 8,000,000 events a month."
+  details={[{ label: 'New plan', value: 'Scale' }]}
+  status={status}
+  decision={decision}
+  decidedBy="Lena Park"
+  decidedAt="14:02"
+  onDecide={decide}
+/>
+```
+
+The title asks the question in plain words, and the tool id below it shows exactly what will run. Details stay folded under **Show details** until someone needs them.
+
+Tool approval holds no state of its own: you pass `status` and `decision`, and `onDecide` tells you which button was pressed. While your request runs, set `status="submitting"` with the `decision` being sent. The pressed button shows a spinner and all three stay disabled but focusable, so focus never jumps. Once it lands, set `status="decided"`.
+
+A decided approval folds the details and the buttons away in 300ms and leaves a record line, such as "Allowed once by you · 14:02". When the reduced motion setting is on, they fade instead. If focus was on a button, it moves to the record line, and screen readers announce the record.
+
+## Examples
+
+### Irreversible action
+
+Set `danger` for an action that can't be undone. Allow once turns red, Deny gets the raised secondary look, Always allow hides, and the `consequence` line shows above the buttons.
+
+<ComponentPreview name="tool-approval-danger" />
+
+### Decided
+
+The badge turns to Allowed or Denied, and the record says what was decided, by whom and when. Pass `decidedBy` as a role or a name from your own data.
+
+<ComponentPreview name="tool-approval-decided" />
+
+### Inside a host
+
+Set `surface="none"` to drop the card and sit flat inside a card, a chat message or a timeline that already draws one. Set `allowAlways={false}` when a tool must be approved every time.
+
+<ComponentPreview name="tool-approval-flat" />
+
+## API
+
+### ToolApproval
+
+<TypeTable
+  type={{
+    tool: {
+      description: 'The id of the tool the agent wants to run, shown in mono under the title.',
+      type: 'string',
+      required: true,
+    },
+    title: {
+      description: 'The question, naming the action and its object. Also the accessible name of the section.',
+      type: 'string',
+      required: true,
+    },
+    description: {
+      description: 'What happens if the tool runs.',
+      type: 'string',
+    },
+    details: {
+      description: 'Label and value rows folded under Show details. `mono` sets a value in code type.',
+      type: '{ label: string; value: ReactNode; mono?: boolean }[]',
+    },
+    defaultDetailsOpen: {
+      description: 'Opens the details at first.',
+      type: 'boolean',
+      default: 'false',
+    },
+    danger: {
+      description: 'Marks an irreversible action: Allow once turns destructive, Always allow hides and the consequence shows.',
+      type: 'boolean',
+      default: 'false',
+    },
+    consequence: {
+      description: 'What is lost for good. Shows only with `danger`.',
+      type: 'string',
+    },
+    allowAlways: {
+      description: 'Shows the Always allow button and the note that Allow once covers this run only. Ignored with `danger`.',
+      type: 'boolean',
+      default: 'true',
+    },
+    status: {
+      description: 'Waiting for a decision, sending one, or decided.',
+      type: "'pending' | 'submitting' | 'decided'",
+      default: "'pending'",
+    },
+    decision: {
+      description: 'While submitting, the decision being sent; once decided, the decision taken.',
+      type: "'allow-once' | 'always-allow' | 'deny'",
+    },
+    decidedBy: {
+      description: 'Who decided, shown in the record after "by".',
+      type: 'string',
+    },
+    decidedAt: {
+      description: 'When the decision was taken, such as 14:02.',
+      type: 'string',
+    },
+    onDecide: {
+      description: 'Called with the decision when a button is pressed.',
+      type: "(decision: 'allow-once' | 'always-allow' | 'deny') => void | Promise<void>",
+    },
+    surface: {
+      description: '`card` draws its own card; `none` sits flat in the surface that hosts it.',
+      type: "'card' | 'none'",
+      default: "'card'",
+    },
+    className: {
+      description: 'Classes for the outer section.',
+      type: 'string',
+    },
+  }}
+/>
+
+The types `ApprovalDecision`, `ToolApprovalDetail` and `ToolApprovalProps` are exported too.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to Show details, then Allow once, Always allow and Deny. |
+| `Enter` or `Space` | Opens or closes the details, or presses the focused button. |

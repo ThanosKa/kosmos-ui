@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "assistant-message",
+  "type": "registry:ui",
+  "title": "Assistant message",
+  "description": "One message in an agent thread: the reply with its author, model and time, inline citations, a list of sources, copy, retry and feedback actions and follow-up questions, or the user's prompt as a bubble. The body is any content you render.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/collapsible",
+    "@kosmos/tooltip"
+  ],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/assistant-message.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+---
+title: Usage overview
+description: Agent usage and cost for a workspace, with stat tiles, tokens per day by model, and a breakdown by model or member against the monthly budget.
+---
+
+## Installation
+
+<ComponentInstall name="usage-overview" />
+
+The block brings [Chart](/docs/components/chart), [Table](/docs/components/table), [Meter](/docs/components/meter), [Segmented control](/docs/components/segmented-control), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/usage-overview.tsx`.
+
+## Usage
+
+```tsx
+import { UsageOverview } from '@/components/usage-overview';
+
+<UsageOverview workspace="Acme" usage={usage} budget={{ usedUsd: 1062.99, limitUsd: 2000 }} />;
+```
+
+Without props it shows sample usage for three models. The overview lays itself out by its own width: four tiles in a row on a wide container, two or one on a narrower one, and the breakdown drops its Share, then its Runs column, when space runs short.
+
+## What it does
+
+- **Period**: 7, 30 or 90 days. Each period has its own data in `usage`, and the header names the workspace and the dates it covers.
+- **Stat tiles**: tokens, runs, spend and cost per run, each with the change against the previous period. The change is green when it is good news and red when it is bad: more tokens and runs are good, more spend and a higher cost per run are bad. Cost per run is worked out from spend and runs.
+- **Tokens per day**: a bar per day, stacked by model, with a tooltip, a legend and a hidden data table for screen readers. Each model in `models` is a series, up to five, read from the key in `daily` that matches its `id`.
+- **Breakdown**: runs, tokens, share and cost for each model or each member. Members show an avatar with their initials, or `avatarUrl` when you pass one.
+- **Monthly budget**: a meter under the breakdown, which turns to the warning tone at 90%. Leave `budget` out to hide it.
+- **Empty and loading**: a period with no runs shows an empty state with a link to your agents, and `loading` swaps every value for a skeleton of the same shape.
+
+## API
+
+### UsageOverview
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    workspace: { description: 'The workspace named under the title.', type: 'string', default: "'Acme'" },
+    usage: {
+      description: 'The data of each period. A period with no runs shows the empty state.',
+      type: "Record<'7d' | '30d' | '90d', UsageDataset>",
+    },
+    budget: { description: 'The monthly budget, shown as a meter under the breakdown. Leave it out for no meter.', type: '{ usedUsd: number; limitUsd: number }' },
+    range: { description: 'The period shown. Use with `onRangeChange`.', type: "'7d' | '30d' | '90d'" },
+    defaultRange: { description: 'The period shown at first, when the overview keeps its own state.', type: "'7d' | '30d' | '90d'", default: "'30d'" },
+    onRangeChange: { description: 'Called with the newly selected period.', type: "(range: '7d' | '30d' | '90d') => void" },
+    breakdown: { description: 'The breakdown shown. Use with `onBreakdownChange`.', type: "'model' | 'member'" },
+    defaultBreakdown: { description: 'The breakdown shown at first, when the overview keeps its own state.', type: "'model' | 'member'", default: "'model'" },
+    onBreakdownChange: { description: 'Called with the newly selected breakdown.', type: "(breakdown: 'model' | 'member') => void" },
+    agentsHref: { description: "Where the empty state's button goes.", type: 'string', default: "'#'" },
+    loading: { description: 'Shows skeletons while the data loads.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### UsageDataset
+
+<TypeTable
+  type={{
+    periodLabel: { description: 'The dates the period covers, shown under the title.', type: 'string' },
+    totals: {
+      description: 'The totals of the period, and their change against the previous period in percent.',
+      type: '{ tokens: number; runs: number; costUsd: number; changePct: { tokens: number; runs: number; costUsd: number } }',
+    },
+    daily: { description: 'One point per day: the `date` label and the tokens of each model, keyed by model id.', type: '({ date: string } & Record<string, number | string>)[]' },
+    models: { description: "One row per model. The first five are the chart's series, keyed in `daily` by their `id`.", type: 'UsageRow[]' },
+    members: { description: 'One row per member.', type: 'UsageRow[]' },
+  }}
+/>
+
+`UsageRow` is `{ id: string; name: string; avatarUrl?: string; runs: number; tokens: number; costUsd: number }`.
