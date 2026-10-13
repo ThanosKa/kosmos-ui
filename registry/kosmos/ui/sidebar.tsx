@@ -144,11 +144,17 @@ function useStoredOpen(key: string | null) {
 
 /**
  * Runs before the page paints, ahead of hydration: applies the saved state to the sidebar it sits in, so a
- * collapsed sidebar never flashes open, and makes a sidebar collapsed off canvas inert, so its hidden links take no
- * focus. Arguments: the sidebar element, its panel, the storage key and the collapse mode.
+ * collapsed sidebar never flashes open. Arguments: the sidebar element, the storage key and the collapse mode.
  */
 const restoreScript = (key: string, collapsible: SidebarCollapsible) =>
-  `(function(e,p,k,m){try{var v=localStorage.getItem(k);if(v!=='expanded'&&v!=='collapsed')return;e.setAttribute('data-state',v);e.setAttribute('data-collapsible',v==='collapsed'?m:'');p.inert=v==='collapsed'&&m==='offcanvas'}catch(_){}})(document.currentScript.parentElement,document.currentScript.previousElementSibling.firstElementChild,${JSON.stringify(key)},${JSON.stringify(collapsible)})`;
+  `(function(e,k,m){try{var v=localStorage.getItem(k);if(v!=='expanded'&&v!=='collapsed')return;e.setAttribute('data-state',v);e.setAttribute('data-collapsible',v==='collapsed'?m:'')}catch(_){}})(document.currentScript.parentElement,${JSON.stringify(key)},${JSON.stringify(collapsible)})`;
+
+/**
+ * Runs after the sidebar's panel is parsed, ahead of hydration: makes the panel of a sidebar collapsed off canvas
+ * inert, reading the state the restore script set, so its hidden links take no focus.
+ */
+const inertScript =
+  "(function(e){e.previousElementSibling.firstElementChild.inert=e.parentElement.getAttribute('data-collapsible')==='offcanvas'})(document.currentScript)";
 
 function useControllable<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
@@ -376,13 +382,14 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
         'group-data-resizing/sidebar-wrapper:transition-none',
       )}
     >
+      {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: restoreScript(storageKey, collapsible) }} /> : null}
       <div
         data-slot="sidebar-inner"
         className="sticky top-0 h-svh max-h-full overflow-hidden border-e border-sidebar-border bg-sidebar text-sidebar-foreground group-data-[collapsible=offcanvas]/sidebar:border-e-0"
       >
         <div
           inert={!open && collapsible === 'offcanvas'}
-          // The restore script below may already have set `inert` on this element.
+          // The inert script below may already have set `inert` on this element.
           suppressHydrationWarning
           className={cn('flex h-full flex-col', collapsible === 'icon' ? 'w-full' : 'w-(--sidebar-width)', className)}
           {...props}
@@ -391,7 +398,7 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
           <TooltipProvider>{children}</TooltipProvider>
         </div>
       </div>
-      {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: restoreScript(storageKey, collapsible) }} /> : null}
+      {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: inertScript }} /> : null}
     </div>
   );
 }
