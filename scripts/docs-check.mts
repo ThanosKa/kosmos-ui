@@ -301,6 +301,16 @@ const checks: Check[] = [
       }
       assert.ok(stageWidth > 900, `Desktop: the viewer spans the content width (${stageWidth}px)`);
       await close();
+
+      // Beside the sidebar on a small laptop the viewer is narrower than the tablet frame, so it offers no widths.
+      const narrow = await openPage(browser, '/docs/blocks/stats-overview', { width: 1040, height: 800 });
+      const narrowViewer = blockViewer(narrow.page, 'stats-overview');
+      await narrowViewer.locator('iframe').scrollIntoViewIfNeeded();
+      const narrowStage = await narrowViewer.locator('[data-block-viewer-stage]').evaluate((stage) => stage.clientWidth);
+      assert.ok(narrowStage < 770, `1040px window: the viewer is narrower than the tablet frame (${narrowStage}px)`);
+      assert.equal(await narrowViewer.getByRole('radiogroup', { name: 'Preview width' }).isVisible(), false, '1040px window: no width control');
+      assert.equal(await narrowViewer.locator('iframe').evaluate((iframe) => iframe.getBoundingClientRect().width), narrowStage, '1040px window: the preview fills the viewer');
+      await narrow.close();
     },
   },
   {
