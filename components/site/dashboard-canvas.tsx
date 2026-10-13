@@ -38,7 +38,8 @@ function ControlLabel({ id, children }: { id: string; children: React.ReactNode 
  */
 export function DashboardCanvas() {
   const frame = React.useRef<HTMLIFrameElement>(null);
-  const [ready, setReady] = React.useState(false);
+  // Counts the dashboard's loads: each fresh document starts on Overview in the Kosmos look and needs the look sent again.
+  const [loads, setLoads] = React.useState(0);
   const [screen, setScreen] = React.useState<string>(dashboardScreens[0].id);
   const [accent, setAccent] = React.useState<DashboardAccent>(defaultDashboardLook.accent);
   const [radius, setRadius] = React.useState<DashboardRadius>(defaultDashboardLook.radius);
@@ -54,7 +55,10 @@ export function DashboardCanvas() {
     const onMessage = (event: MessageEvent) => {
       if (event.source !== frame.current?.contentWindow) return;
       const message = readMessage<DashboardMessage>(event, dashboardSource);
-      if (message?.type === 'ready') setReady(true);
+      if (message?.type === 'ready') {
+        setLoads((count) => count + 1);
+        setScreen(dashboardScreens[0].id);
+      }
       else if (message?.type === 'page') setScreen(message.page);
     };
     window.addEventListener('message', onMessage);
@@ -64,8 +68,8 @@ export function DashboardCanvas() {
   }, []);
 
   React.useEffect(() => {
-    if (ready && theme) toDashboard(frame.current, { type: 'look', look: { accent, radius, theme } });
-  }, [ready, accent, radius, theme]);
+    if (loads > 0 && theme) toDashboard(frame.current, { type: 'look', look: { accent, radius, theme } });
+  }, [loads, accent, radius, theme]);
 
   const showScreen = (value: string) => {
     setScreen(value);
