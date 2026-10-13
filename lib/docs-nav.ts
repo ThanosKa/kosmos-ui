@@ -18,6 +18,7 @@ import { docsTabOf, type DocsTabId } from './docs-tabs';
 import {
   blockSections,
   groups,
+  isBlockSection,
   isGroup,
   readBlockCategories,
   readRegistryItems,
@@ -88,7 +89,8 @@ const blockSectionIcons: Record<BlockSection, LucideIcon> = {
   ai: Sparkles,
 };
 
-const isBlockSection = (id: DocsNavSectionId): id is BlockSection => Object.hasOwn(blockSections, id);
+/** The element id of a heading on the components or blocks index: a component group or a block section. */
+const indexAnchor = (id: ComponentGroup | BlockSection) => (isBlockSection(id) ? `section-${id}` : `group-${id}`);
 
 function sectionOf(slugs: string[]): DocsNavSectionId {
   const [folder] = slugs;
@@ -253,7 +255,7 @@ export function getDocsIndex(folder: 'components' | 'blocks'): DocsIndexGroup[] 
   if (folder === 'components') {
     return (sections.find((section) => section.id === 'components')?.groups ?? []).map((group) => ({
       ...group,
-      anchor: `group-${group.id}`,
+      anchor: indexAnchor(group.id),
       items: group.items.map(indexItem),
     }));
   }
@@ -262,7 +264,7 @@ export function getDocsIndex(folder: 'components' | 'blocks'): DocsIndexGroup[] 
       ? [
           {
             id: section.id,
-            anchor: `section-${section.id}`,
+            anchor: indexAnchor(section.id),
             label: section.label,
             icon: createElement(blockSectionIcons[section.id]),
             items: section.items.map(indexItem),
@@ -285,8 +287,8 @@ export function eyebrowOf(page: { slugs: string[] }): DocsEyebrowPart[] {
   if (section !== 'components' && section !== 'blocks') return [{ label: sectionLabels[section] }];
   const sectionPart = { label: sectionLabels[section], url: `${docsRoute}/${section}` };
   const category = blockCategoryOfPage(page);
-  if (category) return [sectionPart, { label: blockSections[category.section], url: `${docsRoute}/blocks#section-${category.section}` }];
+  if (category) return [sectionPart, { label: blockSections[category.section], url: `${docsRoute}/blocks#${indexAnchor(category.section)}` }];
   const group = groupOfPage(page);
   if (!group) return [sectionPart];
-  return [sectionPart, { label: groups[group], url: `${docsRoute}/components#group-${group}` }];
+  return [sectionPart, { label: groups[group], url: `${docsRoute}/components#${indexAnchor(group)}` }];
 }

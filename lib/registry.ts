@@ -106,7 +106,7 @@ export type BlockSection = keyof typeof blockSections;
 export const blockTiers = { free: 'Free', pro: 'Pro' } as const;
 export type BlockTier = keyof typeof blockTiers;
 
-const isBlockSection = (value: unknown): value is BlockSection => typeof value === 'string' && Object.hasOwn(blockSections, value);
+export const isBlockSection = (value: unknown): value is BlockSection => typeof value === 'string' && Object.hasOwn(blockSections, value);
 const blockCategoryPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
