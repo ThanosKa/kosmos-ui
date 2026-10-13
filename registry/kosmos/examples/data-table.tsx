@@ -13,9 +13,9 @@ const longRows: Project[] = [
     platform: 'server',
     plan: 'scale',
     status: 'live',
-    users: 1284300,
-    events: 912480600,
-    mrr: 124800,
+    users: 128430,
+    events: 9124800,
+    mrr: 4800,
     lastEventAt: '2026-10-11',
   },
   {
