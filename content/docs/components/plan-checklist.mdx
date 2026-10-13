@@ -18,12 +18,12 @@ import { PlanChecklist, type PlanStep } from '@/components/ui/plan-checklist';
 
 ```tsx
 const steps: PlanStep[] = [
-  { id: 'events', label: 'Pull Q3 usage events', status: 'done', detail: '48,210 events' },
-  { id: 'quota', label: 'Flag projects over quota', status: 'running', detail: '40%' },
-  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
+  { id: 'events', label: 'Pull the last 7 days of events', status: 'done', detail: '6,838,800 events' },
+  { id: 'quota', label: 'Flag projects near their quota', status: 'running', detail: '40%' },
+  { id: 'summary', label: 'Draft the summary for Lena Park', status: 'pending' },
 ];
 
-<PlanChecklist title="Prepare the Q3 usage review" steps={steps} />;
+<PlanChecklist title="Prepare the weekly summary for Acme" steps={steps} />;
 ```
 
 The header shows the title and how many steps are done, such as "1 of 3". Click it to open or close the list. Each step leads with a status mark:

@@ -17,13 +17,13 @@ import { ToolApproval } from '@/components/ui/tool-approval';
 
 ```tsx
 <ToolApproval
-  tool="projects.update_owner"
-  title="Reassign 3 projects to the Growth team?"
-  description="Owners receive alerts and can edit dashboards."
-  details={[{ label: 'New owner', value: 'Growth team' }]}
+  tool="projects.update_plan"
+  title="Raise Cirrus Weather to the Scale plan?"
+  description="Scale includes 8,000,000 events a month."
+  details={[{ label: 'New plan', value: 'Scale' }]}
   status={status}
   decision={decision}
-  decidedBy="you"
+  decidedBy="Lena Park"
   decidedAt="14:02"
   onDecide={decide}
 />

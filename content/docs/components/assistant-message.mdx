@@ -16,9 +16,9 @@ import { AssistantMessage, Citation } from '@/components/ui/assistant-message';
 ```
 
 ```tsx
-<AssistantMessage role="user">How many events did we ingest in Q3?</AssistantMessage>
+<AssistantMessage role="user">How many events did Acme collect in the last 30 days?</AssistantMessage>
 <AssistantMessage author={{ name: 'Acme agent' }} time="14:02" model="Claude Sonnet 5.5" sources={sources}>
-  We tracked 48,210 events in Q3<Citation n={1} source={sources[0]} />.
+  Acme collected 28,495,200 events in the last 30 days<Citation n={1} source={sources[0]} />.
 </AssistantMessage>
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: Collapsible
-description: One panel that opens and closes under its trigger, for details people need only some of the time, such as an order summary, an error log or extra settings.
+description: One panel that opens and closes under its trigger, for details people need only some of the time, such as project details, an error log or extra settings.
 baseUi: https://base-ui.com/react/components/collapsible
 ---
 
@@ -19,10 +19,10 @@ import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger
 ```tsx
 <Collapsible>
   <CollapsibleTrigger variant="item" className="h-9 w-full justify-between px-2">
-    Order details
+    Project details
     <CollapsibleChevron />
   </CollapsibleTrigger>
-  <CollapsibleContent>Ships in 2 days.</CollapsibleContent>
+  <CollapsibleContent>Sends events from the iOS app only.</CollapsibleContent>
 </Collapsible>
 ```
 

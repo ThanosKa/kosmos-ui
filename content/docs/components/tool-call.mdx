@@ -18,13 +18,13 @@ import { ToolCall } from '@/components/ui/tool-call';
 
 ```tsx
 <ToolCall
-  name="warehouse.query"
-  title="Query Q3 events for Checkout"
+  name="events.query"
+  title="Query the last 30 days of Cirrus Weather events"
   icon={Database}
   status="done"
   durationMs={1400}
-  input={{ workspace: 'acme', project: 'Checkout' }}
-  output="48,210 rows · 4 columns"
+  input={{ project: 'cirrus', range: '2026-09-12..2026-10-11' }}
+  output="30 rows · 2 columns"
 />
 ```
 

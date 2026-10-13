@@ -3,8 +3,6 @@ title: Usage overview
 description: Agent usage and cost for a workspace, with stat tiles, tokens per day by model, and a breakdown by model or member against the monthly budget.
 ---
 
-<ComponentPreview name="usage-overview-demo" />
-
 ## Installation
 
 <ComponentInstall name="usage-overview" />
@@ -16,7 +14,7 @@ The block brings [Chart](/docs/components/chart), [Table](/docs/components/table
 ```tsx
 import { UsageOverview } from '@/components/usage-overview';
 
-<UsageOverview workspace="Acme Inc." usage={usage} budget={{ usedUsd: 1062.99, limitUsd: 1500 }} />;
+<UsageOverview workspace="Acme" usage={usage} budget={{ usedUsd: 1062.99, limitUsd: 2000 }} />;
 ```
 
 Without props it shows sample usage for three models. The overview lays itself out by its own width: four tiles in a row on a wide container, two or one on a narrower one, and the breakdown drops its Share, then its Runs column, when space runs short.
@@ -38,7 +36,7 @@ Takes every `<section>` prop, plus:
 
 <TypeTable
   type={{
-    workspace: { description: 'The workspace named under the title.', type: 'string', default: "'Acme Inc.'" },
+    workspace: { description: 'The workspace named under the title.', type: 'string', default: "'Acme'" },
     usage: {
       description: 'The data of each period. A period with no runs shows the empty state.',
       type: "Record<'7d' | '30d' | '90d', UsageDataset>",
