@@ -192,14 +192,6 @@ export function readProVariants(deploymentUrl: string | undefined = proDeploymen
   return proVariants.map(({ previewPath, ...variant }) => ({ ...variant, previewUrl: `${deploymentUrl}${previewPath}` }));
 }
 
-/** A whole app or site built from blocks. Templates are Pro, so the public repo knows only where each one runs. */
-export type Template = { name: string; title: string; previewUrl: string };
-
-/** The templates the site shows. None yet: they arrive with the Pro deployment. */
-export function readTemplates(): Template[] {
-  return [];
-}
-
 /**
  * Every block category, A–Z by name, with its variants: free first, then by name. The one reader of block categories,
  * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections,

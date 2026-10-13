@@ -564,7 +564,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the inventory counts components, block categories and variants from the registry, and templates only once they exist',
+    name: 'the inventory counts components, block categories and variants from the registry',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="inventory"]');
@@ -580,7 +580,7 @@ const checks: Check[] = [
           'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
           Variants: String(authoredBlocks.length + proVariants.length),
         },
-        'inventory counts (no Templates while there are none)',
+        'inventory counts',
       );
       const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
       assert.deepEqual(labels, ['/docs/blocks/bento'], 'inventory: labelled with the Bento block');
