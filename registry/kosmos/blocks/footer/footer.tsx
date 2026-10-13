@@ -106,7 +106,7 @@ function Footer({
 }: FooterProps) {
   return (
     <footer data-slot="footer" className={cn('@container border-t border-border', className)} {...props}>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 @2xl:px-6 @4xl:flex-row @4xl:justify-between @4xl:gap-16">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 @min-[40rem]:px-6 @4xl:flex-row @4xl:justify-between @4xl:gap-16">
         <div className="flex max-w-xs flex-col items-start gap-3">
           <Link
             href={homeHref}
@@ -122,9 +122,9 @@ function Footer({
             {columns.map((column) => (
               <div key={column.title} className="flex min-w-0 flex-col gap-3">
                 <h2 className="text-small font-medium text-foreground">{column.title}</h2>
-                <ul className="flex flex-col gap-2.5">
+                <ul className="flex flex-col gap-2.5 text-small">
                   {column.links.map((link) => (
-                    <li key={link.href} className="min-w-0">
+                    <li key={`${link.label}:${link.href}`} className="min-w-0">
                       <Link href={link.href} className={linkClass}>
                         {link.label}
                       </Link>
@@ -138,12 +138,12 @@ function Footer({
       </div>
       {legal || social.length > 0 ? (
         <div className="border-t border-border">
-          <div className="mx-auto flex w-full max-w-7xl flex-col-reverse items-start gap-3 px-4 py-4 @md:flex-row @md:items-center @md:justify-between @2xl:px-6">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-3 px-4 py-4 @md:flex-row @md:items-center @md:justify-between @min-[40rem]:px-6">
             {legal ? <div className="text-small text-pretty text-muted-foreground">{legal}</div> : <span />}
             {social.length > 0 ? (
               <ul className="-ms-1.5 flex flex-wrap items-center gap-1 @md:-me-1.5 @md:ms-0">
                 {social.map((link) => (
-                  <li key={link.href}>
+                  <li key={`${link.label}:${link.href}`}>
                     <Button variant="ghost" size="icon" href={link.href} aria-label={link.label}>
                       {link.icon}
                     </Button>
