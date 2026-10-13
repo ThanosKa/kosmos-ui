@@ -124,9 +124,10 @@ export function DashboardCanvas() {
               </SegmentedControlItem>
             </SegmentedControl>
           </div>
-          <Button variant="ghost" onClick={reset}>
+          <Button variant="ghost" onClick={reset} className="max-sm:w-7.5 max-sm:px-0">
             <RotateCcw aria-hidden data-icon="inline-start" />
-            Reset
+            {/* On a phone the button shrinks to its icon, so it fits the row beside the theme. */}
+            <span className="max-sm:sr-only">Reset</span>
           </Button>
         </div>
       </div>
