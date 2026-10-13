@@ -2,6 +2,7 @@
 // Checks the docs site from a running dev server in a real browser: each check opens pages and asserts what a
 // visitor sees. Prints one line per check; exits 1 when any check fails. --only runs the checks whose name holds <text>.
 import assert from 'node:assert/strict';
+import { globSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
 
@@ -114,8 +115,20 @@ const oldBlockUrls = [
   'stats-overview',
 ].map((name) => `/docs/blocks/${name}`);
 
-/** Every block category in the Application group. */
-const applicationCategoryUrls = [...oldBlockUrls, '/docs/blocks/auth'];
+type AuthoredItem = { name: string; type: string; categories?: string[]; meta?: { section?: string } };
+
+/** The registry items as authored, read straight from their files: what the site's lists and counts must match. */
+const authoredItems = globSync('registry/**/*.registry.json').map((file) => JSON.parse(readFileSync(file, 'utf8')) as AuthoredItem);
+const authoredBlocks = authoredItems.filter((item) => item.type === 'registry:block');
+const categoryUrl = (block: AuthoredItem) => `/docs/blocks/${block.categories![0]}`;
+
+/** The page of every block category in a section, A–Z. */
+function categoryUrls(section: string) {
+  return [...new Set(authoredBlocks.filter((block) => block.meta?.section === section).map(categoryUrl))].sort();
+}
+
+/** How many variants the block category at `url` holds: its free variants, since Pro ones never enter this repo. */
+const variantCount = (url: string) => authoredBlocks.filter((block) => categoryUrl(block) === url).length;
 
 const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
@@ -230,11 +243,14 @@ const checks: Check[] = [
         'sidebar sections (AI has no categories yet)',
       );
       const [, application, marketing] = sections.map((section) => section.items);
-      assert.deepEqual(application.map((item) => item.url).sort(), applicationCategoryUrls.toSorted(), 'Application lists every application block category');
-      assert.deepEqual(marketing.map((item) => item.url), ['/docs/blocks/hero'], 'Marketing lists the Hero');
+      assert.deepEqual(application.map((item) => item.url).sort(), categoryUrls('application'), 'Application lists every application block category');
+      assert.deepEqual(marketing.map((item) => item.url).sort(), categoryUrls('marketing'), 'Marketing lists every marketing block category');
+      for (const url of oldBlockUrls) assert.ok(categoryUrls('application').includes(url), `Application keeps ${url}`);
+      for (const url of ['/docs/blocks/hero', '/docs/blocks/bento']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
       for (const item of [...application, ...marketing]) {
-        assert.equal(item.count, '1', `${item.url}: variant count`);
-        assert.match(item.text ?? '', /1 variant(?!s)/, `${item.url}: screen reader count`);
+        const count = variantCount(item.url);
+        assert.equal(item.count, String(count), `${item.url}: variant count`);
+        assert.match(item.text ?? '', new RegExp(`${count} variants?(?!s)`), `${item.url}: screen reader count`);
       }
       await close();
     },
@@ -384,7 +400,11 @@ const checks: Check[] = [
           links: [...section.querySelectorAll('[data-block-label] a[href]')].map((link) => new URL((link as HTMLAnchorElement).href).pathname),
         })),
       );
-      assert.deepEqual(sections.slice(0, 2).map((section) => section.id), ['hero', 'dashboard'], 'the landing starts with the hero, then the dashboard');
+      assert.deepEqual(
+        sections.slice(0, 4).map((section) => section.id),
+        ['hero', 'dashboard', 'bento', 'inventory'],
+        'the landing opens with the hero, the dashboard, the bento and the inventory',
+      );
       for (const section of sections) {
         assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
         for (const url of section.links) assert.match(url, /^\/docs\/blocks\/[a-z-]+$/, `${section.id}: label links to a block category page`);
@@ -413,6 +433,63 @@ const checks: Check[] = [
       assert.equal(await variant.getAttribute('id'), 'hero', 'the free Hero variant');
       assert.equal(await variant.getAttribute('data-tier'), 'free', 'Hero is free');
       await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the bento shows real Kosmos components, each with a one-line caption and a link to its docs',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="bento"]');
+      assert.equal(await section.locator('h2').count(), 1, 'the bento has a heading');
+      const tiles = await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+        items.map((item) => ({
+          title: item.querySelector('h3')?.textContent?.trim(),
+          href: item.querySelector('h3 a[href]')?.getAttribute('href'),
+          caption: item.querySelector('[data-slot="bento-item-description"]')?.textContent?.trim(),
+          components: [...item.querySelectorAll('[data-slot="bento-item-visual"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
+        })),
+      );
+      assert.ok(tiles.length >= 4, `bento tiles: ${tiles.length}`);
+      for (const tile of tiles) {
+        assert.ok(tile.title, 'a tile has a title');
+        assert.match(tile.href ?? '', /^\/docs\/components\/[a-z-]+$/, `${tile.title}: links to its component page`);
+        assert.ok(tile.caption && !tile.caption.includes('\n'), `${tile.title}: one line of caption`);
+        assert.ok(tile.components.length > 0, `${tile.title}: shows a real component`);
+        await fetchText(tile.href!);
+      }
+      const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
+      assert.deepEqual(labels, ['/docs/blocks/bento'], 'bento: labelled with the Bento block');
+      const variants = await openPage(browser, '/docs/blocks/bento');
+      const variant = variants.page.locator('[data-block-variant]');
+      assert.equal(await variant.count(), 1, 'the Bento category page shows one variant');
+      assert.equal(await variant.getAttribute('id'), 'bento', 'the free Bento variant');
+      assert.equal(await variant.getAttribute('data-tier'), 'free', 'Bento is free');
+      await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the inventory counts components, block categories and variants from the registry, and templates only once they exist',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="inventory"]');
+      const counts = Object.fromEntries(
+        await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+          items.map((item) => [item.querySelector('h3')?.textContent?.trim(), item.querySelector('[data-slot="bento-item-visual"]')?.textContent?.trim()]),
+        ),
+      );
+      assert.deepEqual(
+        counts,
+        {
+          Components: String(authoredItems.filter((item) => item.type === 'registry:ui').length),
+          'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
+          Variants: String(authoredBlocks.length),
+        },
+        'inventory counts (no Templates while there are none)',
+      );
+      const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
+      assert.deepEqual(labels, ['/docs/blocks/bento'], 'inventory: labelled with the Bento block');
       await close();
     },
   },
