@@ -68,10 +68,10 @@ Takes every `<footer>` prop, plus:
   type={{
     name: { description: 'The product name beside the logo, linking to `homeHref`.', type: 'ReactNode', default: "'Parallax'" },
     logo: { description: 'Replaces the letter tile beside the name, usually with your logo. Decorative: the name names the link.', type: 'ReactNode' },
-    description: { description: 'One line under the name. `null` leaves it out.', type: 'ReactNode' },
+    description: { description: 'One line under the name. `null` leaves it out.', type: 'ReactNode', default: 'sample line' },
     homeHref: { description: 'Where the name links.', type: 'string', default: "'/'" },
-    columns: { description: 'Columns of links, each under its title. An empty array leaves them out.', type: '{ title: string; links: { label: string; href: string }[] }[]' },
-    social: { description: 'Icon links at the end of the bottom row. `label` is the accessible name of each.', type: '{ label: string; href: string; icon: ReactNode }[]' },
+    columns: { description: 'Columns of links, each under its title. An empty array leaves them out.', type: '{ title: string; links: { label: string; href: string }[] }[]', default: 'sample columns' },
+    social: { description: 'Icon links at the end of the bottom row, such as your profiles. `label` is the accessible name of each; an empty array leaves them out.', type: '{ label: string; href: string; icon: ReactNode }[]', default: 'sample links' },
     legal: { description: 'The start of the bottom row, such as a copyright. `null` leaves it out.', type: 'ReactNode', default: "'© 2026 Parallax'" },
     linkComponent: { description: "Renders the name and the column links, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
   }}
