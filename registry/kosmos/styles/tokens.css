@@ -103,6 +103,13 @@
   --text-display--line-height: 1.25;
   --text-display--font-weight: 500;
   --text-display--letter-spacing: -0.02em;
+  --text-hero: 3rem;
+  --text-hero--line-height: 1.1;
+  --text-hero--font-weight: 600;
+  --text-hero--letter-spacing: -0.03em;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.6;
+  --text-lead--letter-spacing: -0.01em;
 }
 
 :root {

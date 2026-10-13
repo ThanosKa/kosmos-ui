@@ -100,14 +100,14 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 ## Type roles
 
-`text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`; sizes in the SKILL.md table. Each sets size, line-height, letter-spacing and, where it differs from 400, weight. Sizes are in `rem`, line-heights unitless. Tracking tightens as size grows (caption 0, small -0.005em, body -0.01em, title and display -0.02em); caption declares its 0 so it resets the tracking it would inherit from body text.
+`text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`, and for marketing blocks `text-hero` and `text-lead`; sizes in the SKILL.md table. Each sets size, line-height, letter-spacing and, where it differs from 400, weight. Sizes are in `rem`, line-heights unitless. Tracking tightens as size grows (caption 0, small -0.005em, body -0.01em, title and display -0.02em); caption declares its 0 so it resets the tracking it would inherit from body text.
 
 ### Site-only roles
 
-`text-hero` and `text-lead` exist only for the landing page hero, and `text-page-title` only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). They are declared in `app/global.css`, not in `tokens.css`, so they never ship in `@kosmos/tokens`, and no component or block uses them; component text stays on the six roles above. Use them as plain classes, not through `cn`, which does not know them.
+`text-page-title` exists only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). It is declared in `app/global.css`, not in `tokens.css`, so it never ships in `@kosmos/tokens`, and no component or block uses it. Use it as a plain class, not through `cn`, which does not know it.
 
 ## Left out on purpose
 
-- Section padding and max-width tokens, and a marketing heading scale: the studies declared them and never used them in app UI.
+- Section padding and max-width tokens, and a marketing heading scale beyond `hero` and `lead`: the studies declared them and never used them in app UI. A marketing block that needs another size adds its role then.
 - A press-scale token: press feedback is the `scale-96` utility.
 - A fainter text role below `muted-foreground` (for meta, placeholders, eyebrows): it would fall under 4.5:1 in light mode, where `muted-foreground` already sits near the floor. See conflicts.md, Accessibility floor.
