@@ -185,8 +185,9 @@ function PromptComposer({
           onKeyDown={handleKeyDown}
           className={cn(
             'flex flex-col gap-1.5 rounded-2xl border border-transparent bg-secondary p-1.5 shadow-field transition-[box-shadow]',
-            'has-[textarea:focus-visible]:outline-1 has-[textarea:focus-visible]:outline-offset-0 has-[textarea:focus-visible]:outline-ring has-[textarea:focus-visible]:ring-4 has-[textarea:focus-visible]:ring-ring/20',
-            'data-invalid:ring-1 data-invalid:ring-destructive data-invalid:has-[textarea:focus-visible]:outline-destructive data-invalid:has-[textarea:focus-visible]:ring-4 data-invalid:has-[textarea:focus-visible]:ring-destructive/20',
+            // The text field focus: a line and a halo in box-shadow that fade together. The transparent outline paints only in forced-colors mode.
+            'has-[textarea:focus-visible]:outline-1 has-[textarea:focus-visible]:outline-offset-0 has-[textarea:focus-visible]:outline-transparent has-[textarea:focus-visible]:ring-offset-1 has-[textarea:focus-visible]:ring-offset-ring has-[textarea:focus-visible]:ring-3 has-[textarea:focus-visible]:ring-ring/20',
+            'data-invalid:ring-1 data-invalid:ring-destructive data-invalid:has-[textarea:focus-visible]:ring-offset-destructive data-invalid:has-[textarea:focus-visible]:ring-3 data-invalid:has-[textarea:focus-visible]:ring-destructive/20',
             // The whole composer dims once, so the controls inside keep their own dimming from stacking on top.
             'data-disabled:opacity-50 data-disabled:**:data-disabled:opacity-100',
           )}
@@ -240,7 +241,7 @@ function PromptComposer({
               composing.current = false;
             }}
             // The form carries the field ring, the focus outline and the disabled dimming, so the textarea drops its own.
-            className="max-h-60 min-h-[3lh] resize-none bg-transparent shadow-none disabled:opacity-100 focus-visible:ring-0 focus-visible:outline-0 aria-invalid:ring-0 aria-invalid:focus-visible:ring-0"
+            className="max-h-60 min-h-[3lh] resize-none bg-transparent shadow-none disabled:opacity-100 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0 aria-invalid:ring-0 aria-invalid:focus-visible:ring-0 aria-invalid:focus-visible:ring-offset-0"
           />
           <div className="flex min-w-0 items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-1">

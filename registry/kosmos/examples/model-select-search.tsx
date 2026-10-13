@@ -38,7 +38,7 @@ const groups: ModelGroup[] = [
     value: 'More models',
     items: [
       { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', tag: { label: 'Most capable', hue: 'magenta' } },
-      { id: 'claude-opus-5-5-1m', name: 'Claude Opus 5.5 (1M context)', hint: 'Ask an admin', disabled: true },
+      { id: 'claude-opus-5-5-1m', name: 'Claude Opus 5.5 (1M context)', hint: 'Not on your plan', disabled: true },
     ],
   },
 ];
@@ -57,7 +57,7 @@ export default function ModelSelectSearch() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger render={<ModelSelectButton model={selected} effort={shownEffort} />} />
-      <PopoverContent align="start" className="w-80 gap-0 overflow-hidden p-0">
+      <PopoverContent align="start" className="w-80 [&_[data-slot=popover-body]]:gap-0 [&_[data-slot=popover-body]]:p-0">
         <Command
           items={groups}
           itemToStringValue={(model: SearchModel) => model.name}

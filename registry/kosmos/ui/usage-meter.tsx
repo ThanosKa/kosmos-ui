@@ -226,7 +226,7 @@ function UsageMeter({
         align="start"
         container={container}
         initialFocus={(openType) => openType === 'keyboard'}
-        className="w-72 p-3"
+        className="w-72 [&_[data-slot=popover-body]]:p-3"
       >
         <UsagePanel
           title={<PopoverTitle className="min-w-0">{label}</PopoverTitle>}
