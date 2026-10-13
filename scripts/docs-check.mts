@@ -10,16 +10,16 @@ import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
 import { readProVariants } from '../lib/registry.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
+import { openSitePage, serverBase, serverOptions } from './site.mts';
 
 const { values } = parseArgs({
   options: {
-    port: { type: 'string' },
-    base: { type: 'string' },
+    ...serverOptions,
     only: { type: 'string' },
   },
 });
 
-const base = values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`;
+const base = serverBase(values);
 const phone = { width: 375, height: 800 };
 const desktop = { width: 1280, height: 800 };
 
@@ -27,23 +27,7 @@ type Viewport = { width: number; height: number };
 
 /** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
 async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
-  const context = await browser.newContext({ viewport, colorScheme: 'light', reducedMotion: 'reduce' });
-  await context.addInitScript(() => {
-    localStorage.setItem('theme', 'light');
-    // The dev server's indicator would sit in every screenshot, block viewer iframes included.
-    document.addEventListener('DOMContentLoaded', () => {
-      document.head.append(Object.assign(document.createElement('style'), { textContent: 'nextjs-portal { display: none !important; }' }));
-    });
-  });
-  const page = await context.newPage();
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
-  const url = new URL(path, base).href;
-  const response = await page.goto(url, { waitUntil: 'load' });
-  if (!response?.ok()) throw new Error(`${url} returned ${response?.status()} (is the dev server running on ${base}?)`);
+  const { page, context, errors } = await openSitePage(browser, base, path, { viewport });
   await page.evaluate(() => document.fonts.ready);
   return {
     page,

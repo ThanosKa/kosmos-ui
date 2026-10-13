@@ -12,12 +12,12 @@ import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
 import { readRegistryItems } from '../lib/registry.ts';
+import { openSitePage, serverBase, serverOptions, type Theme } from './site.mts';
 
 const { positionals: names, values } = parseArgs({
   allowPositionals: true,
   options: {
-    port: { type: 'string' },
-    base: { type: 'string' },
+    ...serverOptions,
     out: { type: 'string' },
     path: { type: 'string' },
     thumbnails: { type: 'boolean', default: false },
@@ -29,37 +29,21 @@ if (names.length === 0 && !values.thumbnails) {
   process.exit(1);
 }
 
-const base = values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`;
+const base = serverBase(values);
 const outDir = resolve(values.out ?? (values.thumbnails ? 'public/thumbs' : '.screenshots'));
 const widths = [375, 1280] as const;
 const reviewHeight = 800;
 const themes = ['light', 'dark'] as const;
-type Theme = (typeof themes)[number];
-// Hide the Next.js dev indicator and overlay for the shot.
-const shotStyle = 'nextjs-portal { display: none !important; }';
 
 /** Opens `path` pinned to `theme` and waits until it is ready to shoot. Page errors land in `errors`. */
 async function openPage(browser: Browser, path: string, theme: Theme, viewport: { width: number; height: number }, deviceScaleFactor: number) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor, colorScheme: theme, reducedMotion: 'reduce' });
-  // next-themes reads localStorage first; pinning it makes pages without ?theme deterministic too.
-  await context.addInitScript((value) => localStorage.setItem('theme', value), theme);
-  const page = await context.newPage();
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
-  const url = new URL(path, base).href;
-  const response = await page.goto(url, { waitUntil: 'load' });
-  if (!response?.ok()) {
-    throw new Error(`${url} returned ${response?.status()} (is the dev server running on ${base}?)`);
-  }
+  const { page, context, errors } = await openSitePage(browser, base, path, { theme, viewport, deviceScaleFactor });
   if (path.startsWith('/view/')) await page.locator('[data-preview-root]').waitFor();
   // Images that load after hydration (Avatar loads its image in JS) must be in the shot.
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => document.fonts.ready);
   const isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
-  if (isDark !== (theme === 'dark')) throw new Error(`${url}: expected ${theme}, <html> has dark=${isDark}`);
+  if (isDark !== (theme === 'dark')) throw new Error(`${page.url()}: expected ${theme}, <html> has dark=${isDark}`);
   return { page, errors, close: () => context.close() };
 }
 
@@ -122,7 +106,7 @@ async function shootReview(browser: Browser) {
         const { page, errors, close } = await openPage(browser, values.path ?? `/view/${name}?theme=${theme}`, theme, { width, height: reviewHeight }, 2);
         const file = `${outDir}/${name}-${theme}-${width}.png`;
         await fitViewportToPage(page, width);
-        await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide', style: shotStyle });
+        await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });
         if (errors.length) failed = true;
         console.log(file + (errors.length ? `  page errors: ${errors.join(' | ')}` : ''));
         await close();
@@ -185,7 +169,7 @@ async function shootThumbnails(browser: Browser) {
     for (const theme of themes) {
       const { page, errors, close } = await openPage(browser, `/view/${target.example}?theme=${theme}`, theme, target.viewport, target.deviceScaleFactor);
       const file = `${outDir}/${target.name}-${theme}.png`;
-      await page.addStyleTag({ content: `${shotStyle} * { scrollbar-width: none; }` });
+      await page.addStyleTag({ content: '* { scrollbar-width: none; }' });
       const clip = await page.evaluate(contentClip, target.minWidth);
       await page.screenshot({ path: file, clip, animations: 'disabled', caret: 'hide' });
       if (errors.length) failed = true;

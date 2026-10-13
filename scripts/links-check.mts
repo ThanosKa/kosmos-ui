@@ -6,16 +6,16 @@
 // that does not answer 404. --external also requests every outside link once. Exits 1 on any failure.
 import { parseArgs } from 'node:util';
 import { chromium, type BrowserContext } from 'playwright';
+import { serverBase, serverOptions } from './site.mts';
 
 const { values } = parseArgs({
   options: {
-    port: { type: 'string' },
-    base: { type: 'string' },
+    ...serverOptions,
     external: { type: 'boolean', default: false },
   },
 });
 
-const base = new URL(values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`).origin;
+const base = new URL(serverBase(values)).origin;
 const concurrency = 6;
 
 type Visit = { status: number; type: string; ids?: Set<string> };
