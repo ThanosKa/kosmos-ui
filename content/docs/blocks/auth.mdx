@@ -1,0 +1,148 @@
+---
+title: Auth
+description: Log in, sign up, the email code that confirms a new account, and password reset, with labels, inline errors, loading and success states.
+---
+
+## Installation
+
+<ComponentInstall name="auth-forms" />
+
+The block brings [Field](/docs/components/field), [Input](/docs/components/input), [OTP field](/docs/components/otp-field) and [Button](/docs/components/button) with it, and lands in `components/auth-forms.tsx`.
+
+## Usage
+
+Give each form its own route, and call your auth server from its handler:
+
+```tsx
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { LogInForm } from '@/components/auth-forms';
+
+export default function LogInPage() {
+  const router = useRouter();
+
+  return (
+    <main className="flex min-h-svh items-center justify-center p-4">
+      <LogInForm
+        productName="Parallax"
+        links={{ 'sign-up': '/sign-up', 'forgot-password': '/forgot-password', continue: '/projects' }}
+        onLogIn={async ({ email, password }) => {
+          const response = await fetch('/api/log-in', { method: 'POST', body: JSON.stringify({ email, password }) });
+          if (!response.ok) throw new Error("That email and password don't match. Try again, or reset your password.");
+          router.push('/projects');
+        }}
+      />
+    </main>
+  );
+}
+```
+
+Or keep the whole flow on one route with `AuthForms`, which switches between the views in place:
+
+```tsx
+import { AuthForms } from '@/components/auth-forms';
+
+<AuthForms
+  defaultView="sign-up"
+  onSignUp={createAccount}
+  onVerify={confirmEmail}
+  onResendCode={sendCode}
+  onLogIn={logIn}
+  onResetPassword={sendResetLink}
+/>;
+```
+
+Every handler can return a promise: the form shows its loading state until it settles. Throw an `Error` to show its message, such as a wrong password or an expired code. Without handlers, the forms wait a moment and succeed, so you can try the flow before you wire it up. The product name, routes and that stand-in request are at the top of the file.
+
+## What it does
+
+- **Other ways in**: pass buttons such as single sign-on as `alternatives`, and they sit above the log in and sign up forms with an "or" line under them.
+- **Log in**: email and password, with a link to reset the password beside its label and a link to sign up under the card. When `onLogIn` succeeds it says who is logged in, with a button to continue.
+- **Sign up**: name, work email and a password of at least 8 characters, with your terms under the button. When `onSignUp` succeeds, `onViewChange` gets `'email-code'`, the next step.
+- **Email code**: one box per character of the code. Pasting it, or the code autofill on phones, fills every box, and the form submits itself when the last one is filled. A new code can be sent once `resendAfter` seconds have passed.
+- **Forgot password**: asks for the email and sends a reset link. Then it says to check the inbox without telling whether an account uses that address.
+- **Errors**: each field says what is wrong under it once the form is submitted, and focus moves to the first field to fix. Errors from your server show above the fields, or under the code.
+- **Loading**: the button shows a spinner and says what is happening, the fields can't change, and pressing the button again does nothing.
+- **Keyboard and screen readers**: every field has a visible label. When a link switches the view in `AuthForms`, focus moves to its first field. When a success state replaces a form, focus moves to its title.
+- **Width**: the card is at most 384px wide and fills a narrower container, with less padding below 384px.
+
+## API
+
+### AuthForms
+
+Takes the shared props below, plus every handler of the four forms (`onLogIn`, `alternatives`, `onSignUp`, `legal`, `onVerify`, `onResendCode`, `resendAfter`, `onResetPassword`) and:
+
+<TypeTable
+  type={{
+    view: { description: 'The view shown. Use with `onViewChange`.', type: "'log-in' | 'sign-up' | 'email-code' | 'forgot-password'" },
+    defaultView: { description: 'The view shown at first, when the forms keep their own state.', type: 'AuthView', default: "'log-in'" },
+    onViewChange: { description: 'Called with the view a link or a finished sign-up leads to.', type: '(view: AuthView) => void' },
+    email: { description: 'The email address, shared by every view so it stays filled in. Use with `onEmailChange`.', type: 'string' },
+    defaultEmail: { description: 'The email address at first, when the forms keep their own state.', type: 'string', default: "''" },
+    onEmailChange: { description: 'Called as the email address changes.', type: '(email: string) => void' },
+  }}
+/>
+
+### Shared props
+
+Every form takes these.
+
+<TypeTable
+  type={{
+    productName: { description: 'Names the product in the titles and in the mark above them.', type: 'string', default: "'Parallax'" },
+    logo: { description: 'Replaces the mark above the title, usually with your logo.', type: 'ReactNode' },
+    links: { description: 'Where the links point. Links to another view switch it instead when `onViewChange` is passed.', type: "Partial<{ 'log-in', 'sign-up', 'forgot-password', terms, privacy, continue: string }>" },
+    onViewChange: { description: 'Called with the view a link leads to. With it, those links switch the view instead of navigating.', type: '(view: AuthView) => void' },
+    headingLevel: { description: 'The level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
+    autoFocus: { description: 'Moves focus to the first field when the form appears.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### LogInForm
+
+Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+
+<TypeTable
+  type={{
+    onLogIn: { description: 'Logs in. Throw an `Error` to show its message above the fields.', type: '(values: { email: string; password: string }) => Promise<void> | void' },
+    alternatives: { description: 'Other ways in, such as single sign-on buttons, shown above the form with an "or" line under them.', type: 'ReactNode' },
+  }}
+/>
+
+### SignUpForm
+
+Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+
+<TypeTable
+  type={{
+    onSignUp: { description: 'Creates the account and sends the email code. Throw an `Error` to show its message, such as an email already in use.', type: '(values: { name: string; email: string; password: string }) => Promise<void> | void' },
+    alternatives: { description: 'Other ways in, such as single sign-on buttons, shown above the form with an "or" line under them.', type: 'ReactNode' },
+    legal: { description: 'Shown under the button.', type: 'ReactNode', default: 'a line that links your terms and privacy policy' },
+  }}
+/>
+
+### EmailCodeForm
+
+Takes the shared props, plus:
+
+<TypeTable
+  type={{
+    email: { description: 'The address the code went to.', type: 'string' },
+    length: { description: 'The number of characters in the code.', type: 'number', default: '6' },
+    onVerify: { description: 'Checks the code. Throw an `Error` to show its message under the code.', type: '(code: string, email: string) => Promise<void> | void' },
+    onResendCode: { description: 'Sends a new code.', type: '(email: string) => Promise<void> | void' },
+    resendAfter: { description: 'Seconds to wait before a new code can be sent. The wait starts when the form appears and after each new code.', type: 'number', default: '30' },
+    backView: { description: 'Where "Use a different email" leads.', type: 'AuthView', default: "'sign-up'" },
+  }}
+/>
+
+### ForgotPasswordForm
+
+Takes the shared props and the `email`, `defaultEmail` and `onEmailChange` of AuthForms, plus:
+
+<TypeTable
+  type={{
+    onResetPassword: { description: 'Sends the reset link. Resolve whether or not an account uses the address, so the form never tells who has one.', type: '(email: string) => Promise<void> | void' },
+  }}
+/>
