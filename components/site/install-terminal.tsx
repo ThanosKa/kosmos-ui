@@ -1,34 +1,28 @@
 'use client';
 
 import { Check, Copy } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
+import { useState } from 'react';
 import { usePackageManager } from '@/components/docs/use-package-manager';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
-/** How long the copy button shows its check mark. */
-const copiedFor = 2000;
-
 function CopyCommand({ command }: { command: string }) {
-  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  useEffect(() => () => clearTimeout(timer.current), []);
-  const copy = () =>
-    navigator.clipboard.writeText(command).then(
-      () => {
-        setStatus('copied');
-        clearTimeout(timer.current);
-        timer.current = setTimeout(() => setStatus('idle'), copiedFor);
-      },
-      () => setStatus('failed'),
-    );
+  const [failed, setFailed] = useState(false);
+  const [copied, copy] = useCopyButton(() => {
+    setFailed(false);
+    return navigator.clipboard.writeText(command).catch((error: unknown) => {
+      setFailed(true);
+      throw error;
+    });
+  });
   return (
     <>
       <Button variant="ghost" size="icon" aria-label={`Copy install command: ${command}`} onClick={copy}>
-        {status === 'copied' ? <Check aria-hidden /> : <Copy aria-hidden />}
+        {copied ? <Check aria-hidden /> : <Copy aria-hidden />}
       </Button>
       <span role="status" className="sr-only">
-        {status === 'copied' ? 'Install command copied' : status === 'failed' ? 'Unable to copy. Select the command to copy it.' : ''}
+        {copied ? 'Install command copied' : failed ? 'Unable to copy. Select the command to copy it.' : ''}
       </span>
     </>
   );
