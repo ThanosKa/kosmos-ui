@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
+import { Meter, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
@@ -100,6 +101,9 @@ const sampleProject: DetailProject = {
   ],
 };
 
+/** Events each plan includes per month. */
+const planAllowance: Record<DetailPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
+
 const statuses: Record<DetailStatus, { label: string; dot: string }> = {
   live: { label: 'Live', dot: 'bg-success' },
   trial: { label: 'Trial', dot: 'bg-muted-foreground' },
@@ -171,6 +175,32 @@ function NoValue() {
       <span aria-hidden className="text-muted-foreground">–</span>
       <span className="sr-only">None</span>
     </>
+  );
+}
+
+/** The share of the plan's monthly event allowance used: ten segments that stop at full, and the real percentage, which can pass 100. */
+function EventQuota({ events, plan }: { events: number; plan: DetailPlan }) {
+  const allowance = planAllowance[plan];
+  const quota = Math.round((events / allowance) * 100);
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Meter
+        value={Math.min(quota, 100)}
+        tone="auto"
+        low={75}
+        high={95}
+        optimum={0}
+        getAriaValueText={() => `${quota}% of ${count.format(allowance)} events used`}
+        className="gap-y-1.5"
+      >
+        <MeterLabel className="text-small font-normal text-muted-foreground">Event quota</MeterLabel>
+        <MeterValue className="text-small">{() => `${quota}%`}</MeterValue>
+        <MeterSegments count={10} />
+      </Meter>
+      <p className="text-small text-muted-foreground tabular-nums">
+        {count.format(events)} of {count.format(allowance)} events this month
+      </p>
+    </div>
   );
 }
 
@@ -458,6 +488,9 @@ function DetailDrawer({
                     </div>
                   ))}
                 </dl>
+                {project.plan && project.events !== undefined ? (
+                  <EventQuota events={project.events} plan={project.plan} />
+                ) : null}
                 {project.trend?.length ? (
                   <EventsTrend trend={project.trend} />
                 ) : (

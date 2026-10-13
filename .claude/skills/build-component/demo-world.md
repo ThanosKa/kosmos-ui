@@ -61,6 +61,33 @@ A block that needs fewer rows takes the first ones, in this order:
 
 These twelve are every project Acme has, so totals computed from them match the overview metrics: 8 live, 2 trial, 2 paused; 5 web, 3 iOS, 2 Android, 2 server; 2 free, 6 pro, 4 scale; 144,600 users, 28,495,200 events, $14,628 a month.
 
+### Event quota
+
+Each plan includes a monthly **event allowance**. A project's **quota** is its events in the last 30 days divided by its plan's allowance, as a rounded percentage. It can pass 100.
+
+| Plan | Allowance (events a month) |
+| --- | --- |
+| Free | 50000 |
+| Pro | 3000000 |
+| Scale | 8000000 |
+
+| Project | Quota |
+| --- | --- |
+| Fernhill Books | 49% |
+| Brightloop Fitness | 65% |
+| Copperline Bank | 109% (over) |
+| Saltmarsh Coffee | 14% |
+| Driftwood Travel | 37% |
+| Hollow Oak Games | 3% |
+| Cirrus Weather | 80% (near) |
+| Pebble & Pine | 62% |
+| Marigold Recipes | 2% |
+| Kiln Studio | 5% |
+| Tidepool Notes | 6% |
+| Ironbark Logistics | 79% (near) |
+
+The quota is a Meter with 10 segments, `tone="auto"`, `low` 75, `high` 95 and `optimum` 0: up to 75% is `success`, to 95% `warning`, above `destructive`. The bar stops at full and the number shows the real percentage. The detail drawer adds "2,391,700 of 3,000,000 events this month" for Cirrus Weather.
+
 ## Project detail: Cirrus Weather
 
 The project a block opens by default (the detail drawer) is Cirrus Weather, with the fields of its row above plus:
@@ -134,8 +161,8 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | --- | --- |
 | Stats overview | The overview metrics as tabs over one chart that compares the range with the period before it (7, 30 or 90 days), and the top events. |
 | Page header | The Projects page: title "Projects", tabs All, Live, Trial and Paused with counts, search, a filter menu grouped by Plan and Platform, and the primary action "New project" where the app passes `onNew`. |
-| Data table | The projects: name with domain, platform, plan, users, events, revenue, status and last event. |
-| Detail drawer | One project: plan, platform, status, its events trend, notes and the team's activity on it. |
+| Data table | The projects: name with domain, platform, plan, users, events, event quota, revenue, status and last event. |
+| Detail drawer | One project: plan, platform, status, its event quota, its events trend, notes and the team's activity on it. |
 | Kanban board | The roadmap above. |
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
 | App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |

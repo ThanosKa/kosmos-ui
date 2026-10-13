@@ -15,6 +15,7 @@
     "@kosmos/button",
     "@kosmos/dropdown-menu",
     "@kosmos/empty",
+    "@kosmos/meter",
     "@kosmos/skeleton"
   ],
   "categories": ["data-table"],

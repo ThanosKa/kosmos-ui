@@ -21,8 +21,9 @@ The `Project` type, the columns and the sample rows live in the file: change the
 
 ## What it does
 
-- **Columns**: each project shows its name and domain, platform, plan as a colored tag, monthly active users, events in the last 30 days, monthly revenue, a status dot and the day of its last event.
-- **Sorting**: click the Project, Users, Events, MRR or Last event header to sort, and again to reverse. The header carries `aria-sort`.
+- **Columns**: each project shows its name and domain, platform, plan as a colored tag, monthly active users, events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
+- **Event quota**: a [meter](/docs/components/meter) of how much of its plan's monthly event allowance (Free 50,000, Pro 3 million, Scale 8 million) the project used in the last 30 days. Up to 75% is green, up to 95% amber and above that red. The bar stops at full and the number beside it does not, so a project at 112% reads as red and 112%.
+- **Sorting**: click the Project, Users, Events, Event quota, MRR or Last event header to sort, and again to reverse. The header carries `aria-sort`.
 - **Filtering**: `query` matches the name and the domain, `status` keeps one status, and `filters` keeps the plans and platforms that are on. Within plans or within platforms a row needs any one of them; with both, it needs one of each.
 - **Selection**: a checkbox per row and one for every visible row, which shows a mixed state when some are selected. With a selection, the footer swaps the row count for Clear selection, plus Export, Pause (Resume when every selected project is paused) and Delete when you pass `onAction`.
 - **Totals**: the footer adds up the users, events and revenue of the visible rows.
@@ -35,7 +36,7 @@ The Delete actions are placeholders. Wire them to a confirmation dialog or an un
 
 ## API
 
-`DataTableSort` is `{ key: 'name' | 'users' | 'events' | 'mrr' | 'lastEventAt'; direction: 'ascending' | 'descending' }`.
+`DataTableSort` is `{ key: 'name' | 'users' | 'events' | 'quota' | 'mrr' | 'lastEventAt'; direction: 'ascending' | 'descending' }`.
 
 ### DataTable
 

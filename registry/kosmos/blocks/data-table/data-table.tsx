@@ -33,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { Meter, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
@@ -87,6 +88,12 @@ const plans: Record<ProjectPlan, { label: string; variant: BadgeProps['variant']
   scale: { label: 'Scale', variant: 'magenta' },
 };
 
+/** Events each plan includes per month. */
+const planAllowance: Record<ProjectPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
+
+/** The share of its plan's monthly allowance a project used in the last 30 days, in percent. It can pass 100. */
+const eventQuota = (row: Project) => Math.round((row.events / planAllowance[row.plan]) * 100);
+
 const statuses: Record<ProjectStatus, { label: string; dot: string }> = {
   live: { label: 'Live', dot: 'bg-success' },
   trial: { label: 'Trial', dot: 'bg-muted-foreground' },
@@ -100,7 +107,7 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',
 const day = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const formatDay = (iso: string) => day.format(new Date(`${iso}T00:00:00Z`));
 
-type SortKey = 'name' | 'users' | 'events' | 'mrr' | 'lastEventAt';
+type SortKey = 'name' | 'users' | 'events' | 'quota' | 'mrr' | 'lastEventAt';
 type Sort = { key: SortKey; direction: 'ascending' | 'descending' };
 /** What the row menu and the bulk bar offer. */
 type DataTableAction = 'copy-link' | 'export' | 'pause' | 'resume' | 'delete';
@@ -108,6 +115,7 @@ type DataTableAction = 'copy-link' | 'export' | 'pause' | 'resume' | 'delete';
 function compare(a: Project, b: Project, key: SortKey) {
   if (key === 'name') return a.name.localeCompare(b.name);
   if (key === 'lastEventAt') return a.lastEventAt.localeCompare(b.lastEventAt);
+  if (key === 'quota') return eventQuota(a) - eventQuota(b);
   return a[key] - b[key];
 }
 
@@ -154,6 +162,26 @@ function SortableHead({
         <Icon aria-hidden className={cn('size-3', !active && 'opacity-60')} />
       </Button>
     </TableHead>
+  );
+}
+
+/** Ten segments for the share of the plan's allowance used: green up to 75%, amber to 95%, red above. The bar stops at full; the number does not. */
+function EventQuota({ row }: { row: Project }) {
+  const quota = eventQuota(row);
+  return (
+    <Meter
+      value={Math.min(quota, 100)}
+      tone="auto"
+      low={75}
+      high={95}
+      optimum={0}
+      aria-label={`${row.name} event quota`}
+      getAriaValueText={() => `${quota}% of ${count.format(planAllowance[row.plan])} events used`}
+      className="w-36 grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-y-0"
+    >
+      <MeterSegments count={10} className="col-span-1 h-3" />
+      <MeterValue className="row-start-1 text-caption">{() => `${quota}%`}</MeterValue>
+    </Meter>
   );
 }
 
@@ -213,7 +241,7 @@ type DataTableProps = Omit<React.ComponentProps<'div'>, 'children'> & {
 
 /**
  * A table of projects: sortable columns, row selection with a bulk action bar, platform, plan tags,
- * usage and revenue, a status dot, a row actions menu, totals in the footer, and loading and empty states.
+ * usage, an event quota meter and revenue, a status dot, a row actions menu, totals in the footer, and loading and empty states.
  * Scrolls sideways on narrow screens.
  */
 function DataTable({
@@ -286,7 +314,7 @@ function DataTable({
 
   return (
     <div data-slot="data-table" className={cn('flex min-w-0 flex-col', className)} {...props}>
-      <Table aria-label="Projects" aria-busy={loading || undefined} className="min-w-[62rem]">
+      <Table aria-label="Projects" aria-busy={loading || undefined} className="min-w-[74rem]">
         <TableHeader>
           <TableRow>
             <TableHead className="w-10 ps-4 pe-0">
@@ -309,6 +337,7 @@ function DataTable({
             <TableHead>Plan</TableHead>
             <SortableHead label="Users" sortKey="users" sort={sort} onSort={onSort} align="end" />
             <SortableHead label="Events" sortKey="events" sort={sort} onSort={onSort} align="end" />
+            <SortableHead label="Event quota" sortKey="quota" sort={sort} onSort={onSort} />
             <SortableHead label="MRR" sortKey="mrr" sort={sort} onSort={onSort} align="end" />
             <TableHead>Status</TableHead>
             <SortableHead label="Last event" sortKey="lastEventAt" sort={sort} onSort={onSort} />
@@ -344,6 +373,9 @@ function DataTable({
                 </TableCell>
                 <TableCell>
                   <Skeleton className="ms-auto h-3.5 w-16" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-3 w-32" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="ms-auto h-3.5 w-12" />
@@ -407,6 +439,9 @@ function DataTable({
                   </TableCell>
                   <TableCell className="text-end">{count.format(row.users)}</TableCell>
                   <TableCell className="text-end">{count.format(row.events)}</TableCell>
+                  <TableCell>
+                    <EventQuota row={row} />
+                  </TableCell>
                   <TableCell className="text-end">
                     {row.mrr ? (
                       usd.format(row.mrr)

@@ -31,7 +31,7 @@ Without props the drawer opens from an **Open project** button and shows a sampl
 
 - **Status** changes in place and calls `onProjectChange` with the updated record. When `project.status` changes from outside, the drawer shows the new status.
 - **Properties**: the plan as a colored tag, the platform and the day of the last event.
-- **Last 30 days**: active users, events and monthly revenue, with a line of events per day from `trend`. The line has one accessible name that gives the range and the busiest day.
+- **Last 30 days**: active users, events and monthly revenue, the event quota as a [meter](/docs/components/meter) with the events used out of the plan's allowance, and a line of events per day from `trend`. The line has one accessible name that gives the range and the busiest day.
 - **Notes**: ⌘Enter (Ctrl+Enter on Windows and Linux) or **Add note** adds one. With `onNote`, add the note to `project.activity` yourself; without it, the drawer keeps new notes until another record opens.
 - **More menu**: with `onAction`, a menu offers Copy link, Copy project ID and Delete project. Ask for confirmation before you delete.
 - **Empty fields** say so (_No plan_, _No events yet_), a missing number shows a dash, and `loading` shows placeholders.
