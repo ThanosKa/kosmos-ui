@@ -127,3 +127,15 @@ _Avoid_: «free tier» (δεν υπάρχει λογαριασμός ή συνδ
 **Pro**:
 Τα blocks και templates που πουλιούνται εφάπαξ (από τη Φάση 2), με δική τους άδεια χρήσης (EULA). Ο κώδικάς τους δεν μπαίνει ποτέ στο δημόσιο repo.
 _Avoid_: premium, paid
+
+**Free variant**:
+Η δωρεάν εκδοχή μιας **block category**, registry item σε αυτό το repo (`"meta": { "tier": "free" }`). Κάθε κατηγορία έχει τουλάχιστον μία, και στη σελίδα της κατηγορίας έρχεται πρώτη.
+_Avoid_: basic version, lite
+
+**Pro variant**:
+Μια εκδοχή μιας **block category** που ανήκει στο **Pro**. Ο κώδικάς της ζει στο ιδιωτικό repo `kosmos-pro`, και το δημόσιο repo κρατά μόνο τα metadata της (όνομα, τίτλο, περιγραφή, κατηγορία, preview path) στο `proVariants` του `lib/registry.ts`. Στα docs φαίνεται στον ίδιο **block viewer** με badge Pro, live μέσα σε iframe από το **Pro deployment**, με κλειδωμένη την καρτέλα Code.
+_Avoid_: premium block, paid variant
+
+**Pro deployment**:
+Το deployment του ιδιωτικού app `kosmos-pro`, που δείχνει κάθε Pro variant μόνη της σε ένα preview route (`/view/<name>-demo?theme=light|dark`). Το δημόσιο site το βρίσκει από το env var `NEXT_PUBLIC_KOSMOS_PRO_URL`. Χωρίς αυτό, οι Pro variants δεν φαίνονται πουθενά και τίποτα άλλο δεν αλλάζει.
+_Avoid_: Pro site, Pro server
