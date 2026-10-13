@@ -1,25 +1,26 @@
 'use client';
 
 import {
-  BarChart3,
-  Building2,
+  Activity,
   ChevronsUpDown,
+  CircleDollarSign,
   CircleHelp,
-  Handshake,
-  Home,
-  Inbox,
+  FolderKanban,
   Layers,
+  LayoutDashboard,
   LogOut,
+  Milestone,
   Plus,
   Search,
   Settings,
+  SlidersHorizontal,
   UserRound,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
-import { Button } from '@/registry/kosmos/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,17 +54,17 @@ type Workspace = { id: string; name: string; plan: string };
 type User = { name: string; email: string; initials: string };
 
 const sampleNavMain: NavItem[] = [
-  { id: 'home', label: 'Home', href: '#home', icon: Home },
-  { id: 'inbox', label: 'Inbox', href: '#inbox', icon: Inbox, badge: 3, badgeLabel: 'unread' },
-  { id: 'accounts', label: 'Accounts', href: '#accounts', icon: Building2 },
-  { id: 'deals', label: 'Deals', href: '#deals', icon: Handshake },
-  { id: 'reports', label: 'Reports', href: '#reports', icon: BarChart3 },
+  { id: 'overview', label: 'Overview', href: '#overview', icon: LayoutDashboard },
+  { id: 'projects', label: 'Projects', href: '#projects', icon: FolderKanban },
+  { id: 'events', label: 'Events', href: '#events', icon: Activity },
+  { id: 'users', label: 'Users', href: '#users', icon: Users },
+  { id: 'revenue', label: 'Revenue', href: '#revenue', icon: CircleDollarSign },
+  { id: 'roadmap', label: 'Roadmap', href: '#roadmap', icon: Milestone },
 ];
 
 const sampleNavViews: NavItem[] = [
-  { id: 'view-enterprise', label: 'Enterprise accounts', href: '#view-enterprise', icon: Layers },
-  { id: 'view-renewals', label: 'Renewals this quarter', href: '#view-renewals', icon: Layers },
-  { id: 'view-at-risk', label: 'At risk', href: '#view-at-risk', icon: Layers, badge: 4, badgeLabel: 'accounts' },
+  { id: 'view-scale', label: 'Scale plan', href: '#view-scale', icon: Layers },
+  { id: 'view-trials', label: 'Trials', href: '#view-trials', icon: Layers, badge: 2, badgeLabel: 'projects' },
 ];
 
 const sampleNavFooter: NavItem[] = [
@@ -72,16 +73,16 @@ const sampleNavFooter: NavItem[] = [
 ];
 
 const sampleWorkspaces: Workspace[] = [
-  { id: 'acme', name: 'Acme Inc.', plan: 'Business plan' },
-  { id: 'globex', name: 'Globex', plan: 'Free plan' },
+  { id: 'parallax', name: 'Parallax', plan: 'Scale plan' },
+  { id: 'parallax-staging', name: 'Parallax Staging', plan: 'Free plan' },
 ];
 
-const sampleUser: User = { name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC' };
+const sampleUser: User = { name: 'Lena Park', email: 'lena@parallax.example', initials: 'LP' };
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 
-/** What the workspace and account menus offer besides switching workspace. */
-type AppSidebarAction = 'add-workspace' | 'profile' | 'account-settings' | 'log-out';
+/** What the workspace and user menus offer besides switching workspace. */
+type AppSidebarAction = 'add-workspace' | 'profile' | 'preferences' | 'log-out';
 
 /** For values that never change after hydration: nothing to subscribe to. */
 const subscribeNever = () => () => {};
@@ -100,7 +101,7 @@ type AppSidebarContentProps = {
   navMain?: NavItem[];
   /** The saved views, under their own heading. */
   navViews?: NavItem[];
-  /** The links above the account menu, such as help and settings. */
+  /** The links above the user menu, such as help and settings. */
   navFooter?: NavItem[];
   /** The `id` of the current page; its item is highlighted and marked `aria-current="page"`. */
   activeItem?: string;
@@ -121,13 +122,19 @@ type AppSidebarContentProps = {
   defaultWorkspace?: string;
   onWorkspaceChange?: (id: string) => void;
   user?: User;
-  /** Runs an action from the workspace or account menu. Those items, and the account menu, show only when this is passed. */
+  /** Runs an action from the workspace or user menu. Those items, and the user menu, show only when this is passed. */
   onAction?: (action: AppSidebarAction) => void;
   /** Props for the workspace menu, such as `open` and `onOpenChange`. */
   workspaceMenu?: MenuProps;
-  /** Props for the account menu, such as `open` and `onOpenChange`. */
+  /** Props for the user menu, such as `open` and `onOpenChange`. */
   userMenu?: MenuProps;
 };
+
+/** The workspace and user menu triggers: two lines of text beside a 24px mark, which stays centered in the icon column. */
+const menuTrigger =
+  'h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]/sidebar:px-1';
+const fadeInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0';
+const menuChevron = cn('ms-auto', fadeInIconMode);
 
 function WorkspaceMark({ name, className }: { name: string; className?: string }) {
   return (
@@ -156,7 +163,7 @@ function NavGroup({
     <SidebarMenu>
       {items.map(({ id, label, href, icon: Icon, badge, badgeLabel }) => (
         <SidebarMenuItem key={id}>
-          <SidebarMenuButton href={href} isActive={id === activeItem} onClick={(event) => onNavigate?.(id, event)}>
+          <SidebarMenuButton href={href} isActive={id === activeItem} tooltip={label} onClick={(event) => onNavigate?.(id, event)}>
             <Icon aria-hidden />
             <span>{label}</span>
             {badge ? (
@@ -174,14 +181,14 @@ function NavGroup({
 
 /**
  * What goes inside the sidebar: the workspace switcher and search, the pages and saved views, and the
- * help, settings and account links at the bottom. `AppSidebar` wraps it in a `Sidebar`; render it on its
+ * help and settings links and the user menu at the bottom. `AppSidebar` wraps it in a `Sidebar`; render it on its
  * own to put the same content in another surface, such as your own drawer.
  */
 function AppSidebarContent({
   navMain = sampleNavMain,
   navViews = sampleNavViews,
   navFooter = sampleNavFooter,
-  activeItem = 'accounts',
+  activeItem = 'projects',
   onNavigate,
   onSearch,
   searchShortcut = false,
@@ -225,7 +232,7 @@ function AppSidebarContent({
         {current ? (
           <DropdownMenu {...workspaceMenu}>
             <DropdownMenuTrigger
-              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent" />}
+              render={<SidebarMenuButton tooltip={current.name} className={menuTrigger} />}
               aria-label={`${current.name}, switch workspace`}
             >
               <WorkspaceMark name={current.name} />
@@ -235,7 +242,7 @@ function AppSidebarContent({
                 </span>
                 <span className="truncate text-caption text-muted-foreground">{current.plan}</span>
               </span>
-              <ChevronsUpDown aria-hidden className="ms-auto" />
+              <ChevronsUpDown aria-hidden className={menuChevron} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-(--anchor-width) sm:min-w-56">
               <DropdownMenuRadioGroup value={current.id} onValueChange={(value: string) => changeWorkspace(value)}>
@@ -259,22 +266,25 @@ function AppSidebarContent({
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null}
-        <Button
-          variant="secondary"
-          className="w-full justify-start px-2 font-normal text-muted-foreground"
+        <SidebarMenuButton
+          tooltip="Search"
+          className={cn(
+            'bg-secondary font-normal shadow-control hover:not-data-disabled:bg-muted hover:not-data-disabled:text-muted-foreground',
+            'transition-[background-color,color,box-shadow,scale] motion-safe:not-disabled:not-data-disabled:active:scale-96',
+          )}
           // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
           aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
           onClick={onSearch}
         >
           <Search aria-hidden />
-          <span className="min-w-0 flex-1 truncate text-start">Search…</span>
+          <span className="flex-1 text-start">Search…</span>
           {searchShortcut ? (
-            <KbdGroup aria-hidden>
+            <KbdGroup aria-hidden className={fadeInIconMode}>
               <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
               <Kbd>K</Kbd>
             </KbdGroup>
           ) : null}
-        </Button>
+        </SidebarMenuButton>
       </SidebarHeader>
 
       <SidebarContent render={<nav aria-label="Main" />}>
@@ -292,11 +302,11 @@ function AppSidebarContent({
         {onAction ? (
           <DropdownMenu {...userMenu}>
             <DropdownMenuTrigger
-              render={<SidebarMenuButton className="h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent" />}
-              aria-label={`${user.name}, account menu`}
+              render={<SidebarMenuButton tooltip={user.name} className={menuTrigger} />}
+              aria-label={`${user.name}, user menu`}
             >
               {userDetails}
-              <ChevronsUpDown aria-hidden className="ms-auto" />
+              <ChevronsUpDown aria-hidden className={menuChevron} />
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" className="min-w-(--anchor-width) sm:min-w-56">
               <DropdownMenuGroup>
@@ -310,9 +320,9 @@ function AppSidebarContent({
                 <UserRound />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAction('account-settings')}>
-                <Settings />
-                Account settings
+              <DropdownMenuItem onClick={() => onAction('preferences')}>
+                <SlidersHorizontal />
+                Preferences
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => onAction('log-out')}>
@@ -323,7 +333,7 @@ function AppSidebarContent({
           </DropdownMenu>
         ) : (
           // Without actions there is no menu to open: the signed-in user shows as plain text.
-          <div className="flex h-10 min-w-0 items-center gap-2.5 px-1.5 text-body text-sidebar-foreground">
+          <div className="flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1 [&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0">
             {userDetails}
           </div>
         )}
@@ -335,8 +345,9 @@ function AppSidebarContent({
 type AppSidebarProps = SidebarProps & AppSidebarContentProps;
 
 /**
- * The app's sidebar: a workspace switcher, search, the main pages with unread counts, saved views and
- * an account menu. Place it inside a `SidebarProvider`, next to a `SidebarResizeHandle` and `SidebarInset`.
+ * The app's sidebar: a workspace switcher, search, the main pages, saved views with counts and a user menu.
+ * It collapses to a column of icons that name their page in a tooltip; pass `collapsible="offcanvas"` to hide it
+ * at the edge instead. Place it inside a `SidebarProvider`, next to a `SidebarResizeHandle` and `SidebarInset`.
  */
 function AppSidebar({
   navMain,
@@ -355,10 +366,11 @@ function AppSidebar({
   workspaceMenu,
   userMenu,
   label = 'Main navigation',
+  collapsible = 'icon',
   ...props
 }: AppSidebarProps) {
   return (
-    <Sidebar label={label} {...props}>
+    <Sidebar label={label} collapsible={collapsible} {...props}>
       <AppSidebarContent
         navMain={navMain}
         navViews={navViews}
