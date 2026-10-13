@@ -223,12 +223,13 @@ const checks: Check[] = [
       );
       assert.deepEqual(
         sections.map((section) => section.label),
-        ['Blocks', 'Application'],
-        'sidebar sections (Marketing and AI have no categories yet)',
+        ['Blocks', 'Application', 'Marketing'],
+        'sidebar sections (AI has no categories yet)',
       );
-      const application = sections[1].items;
-      assert.deepEqual(application.map((item) => item.url).sort(), oldBlockUrls.toSorted(), 'Application lists every block category');
-      for (const item of application) {
+      const [, application, marketing] = sections.map((section) => section.items);
+      assert.deepEqual(application.map((item) => item.url).sort(), oldBlockUrls.toSorted(), 'Application lists every application block category');
+      assert.deepEqual(marketing.map((item) => item.url), ['/docs/blocks/hero'], 'Marketing lists the Hero');
+      for (const item of [...application, ...marketing]) {
         assert.equal(item.count, '1', `${item.url}: variant count`);
         assert.match(item.text ?? '', /1 variant(?!s)/, `${item.url}: screen reader count`);
       }
@@ -272,7 +273,8 @@ const checks: Check[] = [
       const widths = viewer.getByRole('radiogroup', { name: 'Preview width' });
       for (const [label, width, columns] of [
         ['Tablet', 768, 2],
-        ['Phone', 375, 2],
+        // At phone width each metric takes a row, so a value such as 144,600 never truncates.
+        ['Phone', 375, 1],
         ['Desktop', stageWidth, 4],
       ] as const) {
         await widths.getByRole('radio', { name: label }).click();
@@ -366,6 +368,113 @@ const checks: Check[] = [
         await free.evaluate((section, pro) => !!(section.compareDocumentPosition(pro!) & Node.DOCUMENT_POSITION_FOLLOWING), await viewer.elementHandle()),
         'free before Pro',
       );
+      await close();
+    },
+  },
+  {
+    name: 'the landing is an ordered list of sections, each labelled with the blocks it is built from',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const sections = await page.locator('main [data-landing-section]').evaluateAll((elements) =>
+        elements.map((section) => ({
+          id: section.getAttribute('data-landing-section'),
+          links: [...section.querySelectorAll('[data-block-label] a[href]')].map((link) => new URL((link as HTMLAnchorElement).href).pathname),
+        })),
+      );
+      assert.deepEqual(sections.slice(0, 2).map((section) => section.id), ['hero', 'dashboard'], 'the landing starts with the hero, then the dashboard');
+      for (const section of sections) {
+        assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
+        for (const url of section.links) assert.match(url, /^\/docs\/blocks\/[a-z-]+$/, `${section.id}: label links to a block category page`);
+      }
+      assert.deepEqual(sections[0].links, ['/docs/blocks/hero'], 'hero: labelled with the Hero block');
+      assert.equal(sections[1].links.length, 8, 'dashboard: labelled with the 8 application blocks');
+      for (const url of new Set(sections.flatMap((section) => section.links))) await fetchText(url);
+      assert.equal(await page.locator('[role="dialog"]:visible, [role="alertdialog"]:visible').count(), 0, 'nothing pops up on load');
+      await close();
+    },
+  },
+  {
+    name: 'the hero shows the title, one line, Browse components and GitHub, and the install command',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const hero = page.locator('[data-landing-section="hero"]');
+      assert.equal(await hero.locator('h1').count(), 1, 'one h1');
+      assert.equal(await hero.locator('h1 + p, [data-slot="hero-description"]').count() > 0, true, 'one line under the title');
+      assert.equal(await hero.getByRole('link', { name: 'Browse components' }).getAttribute('href'), '/docs/components', 'Browse components');
+      assert.match((await hero.getByRole('link', { name: 'GitHub' }).getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'GitHub');
+      const copy = hero.getByRole('button', { name: /^Copy install command: .*shadcn@latest/ });
+      assert.equal(await copy.count(), 1, 'install command with a copy button');
+      const variants = await openPage(browser, '/docs/blocks/hero');
+      const variant = variants.page.locator('[data-block-variant]');
+      assert.equal(await variant.count(), 1, 'the Hero category page shows one variant');
+      assert.equal(await variant.getAttribute('id'), 'hero', 'the free Hero variant');
+      assert.equal(await variant.getAttribute('data-tier'), 'free', 'Hero is free');
+      await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the dashboard switches whole screens with its tabs',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="dashboard"]');
+      const frame = section.locator('iframe').contentFrame();
+      const screens = section.getByRole('tablist', { name: 'Dashboard screens' });
+      for (const name of ['Projects', 'Roadmap', 'Overview']) {
+        await screens.getByRole('tab', { name }).click();
+        await frame.getByRole('heading', { name, exact: true, level: 1 }).waitFor();
+        assert.equal(await screens.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
+      }
+      await frame.getByRole('link', { name: 'Roadmap' }).click();
+      await page.waitForFunction(() => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === 'Roadmap');
+      await close();
+    },
+  },
+  {
+    name: 'accent, radius and theme change only the dashboard, and Reset brings them back',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="dashboard"]');
+      const iframe = section.locator('iframe');
+      await iframe.contentFrame().locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      const look = (target: 'page' | 'dashboard') =>
+        (target === 'page' ? page.locator('html') : iframe.contentFrame().locator('html')).evaluate((html) => {
+          const style = getComputedStyle(html);
+          return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: html.classList.contains('dark') };
+        });
+      const pageBefore = await look('page');
+      const dashboardBefore = await look('dashboard');
+      assert.deepEqual(dashboardBefore, pageBefore, 'the dashboard starts in the page look');
+      await section.getByRole('radiogroup', { name: 'Accent' }).getByRole('radio', { name: 'Violet' }).click();
+      await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
+      await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
+      await page.waitForFunction(() => (document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
+      const changed = await look('dashboard');
+      assert.notEqual(changed.ring, dashboardBefore.ring, 'accent changes the dashboard');
+      assert.match(changed.radius, /^0(px|rem)?$/, 'radius changes the dashboard');
+      assert.equal(changed.dark, true, 'theme changes the dashboard');
+      assert.deepEqual(await look('page'), pageBefore, 'the page keeps its look');
+      await section.getByRole('button', { name: 'Reset' }).click();
+      await page.waitForFunction(() => !(document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
+      assert.deepEqual(await look('dashboard'), dashboardBefore, 'Reset restores the dashboard');
+      await close();
+    },
+  },
+  {
+    name: 'the landing fits a 375px phone with no sideways scroll, and the dashboard values never truncate',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/', phone);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
+      const frame = page.locator('[data-landing-section="dashboard"] iframe').contentFrame();
+      await frame.locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      const frameOverflow = await frame.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth);
+      assert.ok(frameOverflow <= 0, `the dashboard scrolls ${frameOverflow}px sideways`);
+      const cut = await frame.locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
+        spans.filter((span) => span.scrollWidth > span.clientWidth + 1).map((span) => span.textContent),
+      );
+      assert.deepEqual(cut, [], 'truncated metric text');
+      await page.screenshot({ path: '.screenshots/landing-check-375.png', fullPage: true });
       await close();
     },
   },

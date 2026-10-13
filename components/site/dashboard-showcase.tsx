@@ -15,12 +15,13 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 /*
- * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
- * Parallax sample data, and the board is the Parallax roadmap, where the new item dialog adds its cards. The table,
- * the drawer and the command menu share the data table's sample projects, so a change in one shows in the others.
- * Only the Projects page, its saved views and the roadmap are wired up; the other pages say so and link back. The
- * Parallax team doesn't add its customers' projects, so the Projects page has no primary action: every new item is a
- * roadmap item.
+ * The live dashboard of the landing page, composed from the eight free blocks. It renders as a whole app in its own
+ * document (`/dashboard`), which the landing shows in an iframe, so the look a visitor picks there stays inside it.
+ * The Overview page is the stats overview's Parallax sample data, and the board is the Parallax roadmap, where the new
+ * item dialog adds its cards. The table, the drawer and the command menu share the data table's sample projects, so a
+ * change in one shows in the others. Only Overview, Projects, its saved views and the roadmap are wired up; the other
+ * pages say so and link back. The Parallax team doesn't add its customers' projects, so the Projects page has no
+ * primary action: every new item is a roadmap item.
  */
 
 /** What the drawer shows beyond the table's columns, for the projects that have it. */
@@ -63,7 +64,6 @@ const viewState: Record<string, { title: string; tab: TabValue; filters: string[
 };
 
 const pageTitles: Record<string, string> = {
-  overview: 'Overview',
   events: 'Events',
   users: 'Users',
   revenue: 'Revenue',
@@ -87,9 +87,36 @@ const slug = (name: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'item';
 
-export function DashboardShowcase() {
+/** The bar on top of a page that has no page header: the sidebar toggle, the page title and an optional action. */
+function PageBar({ title, children }: { title: string; children?: React.ReactNode }) {
+  return (
+    <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
+      <SidebarTrigger />
+      <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+      {children}
+    </div>
+  );
+}
+
+export function DashboardShowcase({
+  page: pageProp,
+  defaultPage = 'overview',
+  onPageChange,
+  className,
+}: {
+  /** The page shown, a sidebar item id. Use with `onPageChange`. */
+  page?: string;
+  defaultPage?: string;
+  onPageChange?: (page: string) => void;
+  className?: string;
+}) {
   const [projects, setProjects] = React.useState<Project[]>(sampleProjects);
-  const [page, setPage] = React.useState('projects');
+  const [ownPage, setOwnPage] = React.useState(defaultPage);
+  const page = pageProp ?? ownPage;
+  const setPage = (next: string) => {
+    setOwnPage(next);
+    onPageChange?.(next);
+  };
   const [tab, setTab] = React.useState<TabValue>('all');
   const [query, setQuery] = React.useState('');
   const [filters, setFilters] = React.useState<string[]>([]);
@@ -103,6 +130,10 @@ export function DashboardShowcase() {
 
   const showPage = (id: string) => {
     setPage(id);
+    applyView(id);
+  };
+  // A page switched from outside (the landing's screen tabs) resets its saved view the same way.
+  const applyView = (id: string) => {
     const preset = viewState[id];
     if (preset) {
       setTab(preset.tab);
@@ -110,6 +141,11 @@ export function DashboardShowcase() {
       setQuery('');
     }
   };
+  const [shownPage, setShownPage] = React.useState(page);
+  if (shownPage !== page) {
+    setShownPage(page);
+    applyView(page);
+  }
   const navigate = (id: string, event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     showPage(id);
@@ -190,20 +226,21 @@ export function DashboardShowcase() {
   const listPage = viewState[page];
 
   return (
-    <SidebarProvider
-      storageKey={false}
-      keyboardShortcut={false}
-      className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[50rem]"
-    >
+    <SidebarProvider storageKey={false} keyboardShortcut={false} className={className}>
       <AppSidebar activeItem={page} onNavigate={navigate} navViews={views} onSearch={() => setCommandOpen(true)} />
       <SidebarResizeHandle />
-      <div className="relative flex min-w-0 flex-1 flex-col bg-background md:overflow-y-auto">
-        {listPage ? (
+      <main className="relative flex min-w-0 flex-1 flex-col bg-background">
+        {page === 'overview' ? (
+          <>
+            <PageBar title="Overview" />
+            <div className="p-4">
+              <StatsOverview />
+            </div>
+          </>
+        ) : listPage ? (
           <PageHeader
             title={listPage.title}
             description=""
-            // The landing page has its own <h1>, and the dashboard sits under the "Live dashboard" <h2>.
-            headingLevel={3}
             leading={<SidebarTrigger />}
             tabs={tabs}
             tab={tab}
@@ -213,8 +250,7 @@ export function DashboardShowcase() {
             filters={filters}
             onFiltersChange={setFilters}
           >
-            <div className="flex flex-col gap-4 p-4">
-              <StatsOverview />
+            <div className="p-4">
               <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
                 <DataTable
                   rows={projects}
@@ -233,43 +269,39 @@ export function DashboardShowcase() {
           </PageHeader>
         ) : page === 'roadmap' ? (
           <>
-            <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-              <SidebarTrigger />
-              <h3 className="min-w-0 flex-1 truncate text-title font-medium">Roadmap</h3>
+            <PageBar title="Roadmap">
               <Button variant="primary" onClick={() => openNew('ideas')}>
                 <Plus aria-hidden data-icon="inline-start" />
                 New roadmap item
               </Button>
-            </div>
-            <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
+            </PageBar>
+            {/* The board fills the rest of the screen and scrolls inside its columns. */}
+            <div className="flex h-[calc(100svh-3.5rem)] min-h-96 min-w-0 p-4">
               <KanbanBoard items={roadmap} onItemsChange={setRoadmap} onAdd={openNew} />
             </div>
           </>
         ) : (
           <>
-            <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-              <SidebarTrigger />
-              <h3 className="min-w-0 flex-1 truncate text-title font-medium">{pageTitles[page]}</h3>
-            </div>
+            <PageBar title={pageTitles[page]} />
             <Empty className="flex-1 py-16">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <Layers />
                 </EmptyMedia>
-                <EmptyTitle render={<h4 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
+                <EmptyTitle render={<h2 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
                 <EmptyDescription>
-                  Projects, its saved views and the roadmap are live. Everything there is built from Kosmos blocks.
+                  Overview, Projects, its saved views and the roadmap are live. Everything there is built from Kosmos blocks.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button variant="secondary" onClick={(event) => navigate('projects', event)}>
-                  Go to Projects
+                <Button variant="secondary" onClick={(event) => navigate('overview', event)}>
+                  Go to Overview
                 </Button>
               </EmptyContent>
             </Empty>
           </>
         )}
-      </div>
+      </main>
 
       {opened ? (
         <DetailDrawer
