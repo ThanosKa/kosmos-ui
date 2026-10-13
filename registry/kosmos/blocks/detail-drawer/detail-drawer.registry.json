@@ -16,6 +16,7 @@
     "@kosmos/chart",
     "@kosmos/drawer",
     "@kosmos/dropdown-menu",
+    "@kosmos/scroll-area",
     "@kosmos/select",
     "@kosmos/separator",
     "@kosmos/skeleton",

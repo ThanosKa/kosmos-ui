@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
@@ -388,7 +389,13 @@ function DetailDrawer({
           <DetailSkeleton />
         ) : (
           <>
-            <div ref={bodyRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <ScrollArea
+              viewportRef={bodyRef}
+              // The body spans the drawer's full width, so it draws its focus outline inside.
+              className="min-h-0 flex-1 has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2"
+              // The 20px padding already clears the scrollbar.
+              viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
+            >
               <div className="flex flex-col gap-1 px-5">
                 <DrawerTitle className="wrap-break-word">{project.name}</DrawerTitle>
                 {project.meta ? <DrawerDescription>{project.meta}</DrawerDescription> : null}
@@ -504,7 +511,7 @@ function DetailDrawer({
                   <p className="text-body text-muted-foreground">No activity yet.</p>
                 )}
               </section>
-            </div>
+            </ScrollArea>
 
             <form onSubmit={submitNote} className="flex shrink-0 items-end gap-2 border-t border-border px-5 py-4">
               <label htmlFor={noteId} className="sr-only">
