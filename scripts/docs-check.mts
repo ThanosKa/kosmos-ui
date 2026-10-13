@@ -22,7 +22,13 @@ type Viewport = { width: number; height: number };
 /** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
 async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
   const context = await browser.newContext({ viewport, colorScheme: 'light', reducedMotion: 'reduce' });
-  await context.addInitScript(() => localStorage.setItem('theme', 'light'));
+  await context.addInitScript(() => {
+    localStorage.setItem('theme', 'light');
+    // The dev server's indicator would sit in every screenshot, block viewer iframes included.
+    document.addEventListener('DOMContentLoaded', () => {
+      document.head.append(Object.assign(document.createElement('style'), { textContent: 'nextjs-portal { display: none !important; }' }));
+    });
+  });
   const page = await context.newPage();
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -295,7 +301,16 @@ const checks: Check[] = [
           .map((element) => element.outerHTML.slice(0, 80)),
       );
       assert.deepEqual(unnamed, [], 'controls without an accessible name');
-      await viewer.getByRole('tab', { name: 'Preview' }).focus();
+      const preview = viewer.getByRole('tab', { name: 'Preview' });
+      await preview.focus();
+      await page.keyboard.press('Shift+Tab');
+      assert.match(
+        (await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))) ?? '',
+        /^Copy install command: .*add @kosmos\/data-table$/,
+        'the install command comes before the tabs',
+      );
+      await page.keyboard.press('Tab');
+      assert.ok(await preview.evaluate((tab) => tab === document.activeElement), 'Tab returns to Preview');
       await page.keyboard.press('ArrowRight');
       assert.equal(await viewer.getByRole('tab', { name: 'Code' }).getAttribute('aria-selected'), 'true', 'ArrowRight selects Code');
       await viewer.locator('[data-slot="code-block"]').first().waitFor();
@@ -309,12 +324,6 @@ const checks: Check[] = [
       const open = viewer.getByRole('link', { name: 'Open Data table in a new tab' });
       assert.ok(await open.evaluate((link) => link === document.activeElement), 'Tab reaches Open in a new tab');
       assert.equal(await open.getAttribute('target'), '_blank', 'opens a new tab');
-      await page.keyboard.press('Tab');
-      assert.match(
-        (await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))) ?? '',
-        /^Copy install command: .*add @kosmos\/data-table$/,
-        'Tab reaches the install command',
-      );
       const [tab] = await Promise.all([page.context().waitForEvent('page'), open.click()]);
       await tab.waitForLoadState('load');
       assert.equal(new URL(tab.url()).pathname, '/view/data-table-demo', 'new tab address');
