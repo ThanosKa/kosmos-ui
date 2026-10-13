@@ -38,9 +38,9 @@ function SidebarBody() {
       <SidebarHeader>
         <div className="flex h-8 items-center gap-2 px-1.5">
           <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
-            A
+            P
           </span>
-          <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0">Acme Inc.</span>
+          <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0">Parallax</span>
         </div>
       </SidebarHeader>
       <SidebarContent render={<nav aria-label="Main" />}>
