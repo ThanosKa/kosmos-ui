@@ -101,7 +101,6 @@ const sampleProject: DetailProject = {
   ],
 };
 
-/** Events each plan includes per month. */
 const planAllowance: Record<DetailPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
 
 const statuses: Record<DetailStatus, { label: string; dot: string }> = {

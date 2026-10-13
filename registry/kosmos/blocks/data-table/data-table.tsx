@@ -88,7 +88,6 @@ const plans: Record<ProjectPlan, { label: string; variant: BadgeProps['variant']
   scale: { label: 'Scale', variant: 'magenta' },
 };
 
-/** Events each plan includes per month. */
 const planAllowance: Record<ProjectPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
 
 /** The share of its plan's monthly allowance a project used in the last 30 days, in percent. It can pass 100. */
