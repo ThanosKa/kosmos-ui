@@ -20,7 +20,7 @@ type BentoItem = {
 
 // Sample data: replace it with your product's title, line and tiles.
 const sampleTitle = 'From the first event to the answer';
-const sampleDescription = 'Parallax collects your events, joins them to your users and keeps the numbers your team asks about ready to read.';
+const sampleDescription = 'Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read.';
 
 const fragment = 'w-full max-w-sm rounded-xl border border-transparent bg-card shadow-card';
 

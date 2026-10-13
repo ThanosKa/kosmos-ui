@@ -169,10 +169,10 @@ export default function DropdownMenuPreview() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent container={container} align="end" className="w-56">
                     <DropdownMenuGroup>
-                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.parallax.example</DropdownMenuLabel>
+                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.acme.example</DropdownMenuLabel>
                       <DropdownMenuItem>
                         <Settings />
-                        Workspace settings and billing for Parallax Staging
+                        Workspace settings and billing for Acme Staging
                       </DropdownMenuItem>
                       <DropdownMenuItem inset>Keyboard shortcuts</DropdownMenuItem>
                     </DropdownMenuGroup>

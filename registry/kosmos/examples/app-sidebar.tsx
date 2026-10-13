@@ -82,8 +82,8 @@ function Shell({
 }
 
 const longNames: Pick<AppSidebarProps, 'workspaces' | 'user' | 'navViews'> = {
-  workspaces: [{ id: 'parallax-eu', name: 'Parallax Europe Data Region Workspace', plan: 'Scale plan, billed yearly in euros' }],
-  user: { name: 'Tomás Ortega Villanueva de la Fuente', email: 'tomas.ortega.villanueva@parallax.example', initials: 'TO' },
+  workspaces: [{ id: 'acme-eu', name: 'Acme Europe Data Region Workspace', plan: 'Scale plan, billed yearly in euros' }],
+  user: { name: 'Tomás Ortega Villanueva de la Fuente', email: 'tomas.ortega.villanueva@acme.example', initials: 'TO' },
   navViews: [
     { id: 'view-scale-ios', label: 'Scale plan projects on iOS with more than 10,000 users', href: '#view-scale-ios', icon: Layers },
     { id: 'view-trials', label: 'Trials', href: '#view-trials', icon: Layers, badge: 1280, badgeLabel: 'projects' },

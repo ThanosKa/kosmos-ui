@@ -73,11 +73,11 @@ const sampleNavFooter: NavItem[] = [
 ];
 
 const sampleWorkspaces: Workspace[] = [
-  { id: 'parallax', name: 'Parallax', plan: 'Scale plan' },
-  { id: 'parallax-staging', name: 'Parallax Staging', plan: 'Free plan' },
+  { id: 'acme', name: 'Acme', plan: 'Scale plan' },
+  { id: 'acme-staging', name: 'Acme Staging', plan: 'Free plan' },
 ];
 
-const sampleUser: User = { name: 'Lena Park', email: 'lena@parallax.example', initials: 'LP' };
+const sampleUser: User = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 

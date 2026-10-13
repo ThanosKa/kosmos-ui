@@ -22,10 +22,10 @@ export default function DialogThumb() {
           <DialogContent container={container} initialFocus={false}>
             <DialogHeader>
               <DialogTitle>Invite to workspace</DialogTitle>
-              <DialogDescription>New members can see every project in Parallax.</DialogDescription>
+              <DialogDescription>New members can see every project in Acme.</DialogDescription>
             </DialogHeader>
             <DialogBody>
-              <p>We&apos;ll email an invite to kai@parallax.example. It expires in 7 days.</p>
+              <p>We&apos;ll email an invite to kai@acme.example. It expires in 7 days.</p>
             </DialogBody>
             <DialogFooter>
               <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>

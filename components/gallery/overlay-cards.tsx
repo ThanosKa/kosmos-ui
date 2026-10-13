@@ -231,7 +231,7 @@ export function ShareStage() {
                     <PopoverDescription>People with access see live numbers, not a copy.</PopoverDescription>
                   </PopoverHeader>
                   <div className="flex gap-2">
-                    <Input readOnly aria-label="Report link" defaultValue="parallax.example/r/weekly-events" className="h-7.5" />
+                    <Input readOnly aria-label="Report link" defaultValue="acme.example/r/weekly-events" className="h-7.5" />
                     <Button variant="secondary" size="icon" aria-label="Copy link">
                       <Link2 />
                     </Button>
@@ -261,7 +261,7 @@ export function ShareStage() {
 type ToastOptions = Parameters<ReturnType<typeof createToastManager>['add']>[0];
 
 const pinnedToasts: ToastOptions[] = [
-  { type: 'info', title: 'Ama Mensah joined Parallax Staging', description: 'She can see every shared view.' },
+  { type: 'info', title: 'Ama Mensah joined Acme Staging', description: 'She can see every shared view.' },
   { type: 'success', title: 'Invoice INV-2041 sent', description: 'Fernhill Books will get it by email.' },
   { type: 'error', title: 'Export failed', description: 'events-q3.csv is larger than 25 MB.', actionProps: { children: 'Retry' } },
 ];
@@ -308,7 +308,7 @@ export function DialogStage() {
             <DialogContent container={container} initialFocus={false}>
               <DialogHeader>
                 <DialogTitle>Remove Ama Mensah?</DialogTitle>
-                <DialogDescription>She loses access to Parallax right away.</DialogDescription>
+                <DialogDescription>She loses access to Acme right away.</DialogDescription>
               </DialogHeader>
               <DialogBody>
                 <p>Her 4 saved views move to you. You can invite her again later.</p>

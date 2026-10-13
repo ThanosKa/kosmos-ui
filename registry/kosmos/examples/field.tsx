@@ -85,18 +85,18 @@ export default function FieldPreview() {
           </Field>
           <Field invalid>
             <FieldLabel>Email</FieldLabel>
-            <Input type="email" defaultValue="lena@parallax" />
+            <Input type="email" defaultValue="lena@acme" />
             <FieldDescription>We send the invoice here.</FieldDescription>
             <FieldError>Enter an email address with a domain, such as name@company.com.</FieldError>
           </Field>
           <Field disabled>
             <FieldLabel>Email</FieldLabel>
-            <Input type="email" defaultValue="lena@parallax.example" />
+            <Input type="email" defaultValue="lena@acme.example" />
             <FieldDescription>Only workspace admins can change this.</FieldDescription>
           </Field>
           <Field>
             <FieldLabel>Workspace name</FieldLabel>
-            <Input defaultValue="Parallax" />
+            <Input defaultValue="Acme" />
           </Field>
         </div>
       </PreviewSection>
@@ -155,7 +155,7 @@ export default function FieldPreview() {
         <div className="w-56">
           <Field invalid>
             <FieldLabel>Billing contact for invoices and payment reminders</FieldLabel>
-            <Input type="email" defaultValue="lena@parallax" />
+            <Input type="email" defaultValue="lena@acme" />
             <FieldDescription>Every invoice, receipt and failed payment notice goes to this address.</FieldDescription>
             <FieldError>Enter an email address with a domain, such as name@company.com.</FieldError>
           </Field>

@@ -8,8 +8,8 @@ import { Button } from '@/registry/kosmos/ui/button';
 // Sample data: replace it with your product's title, line, links and command.
 const sampleTitle = 'Know what every user does next';
 const sampleDescription =
-  'Parallax collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.';
-const sampleCommand = 'curl -fsSL https://parallax.example/install.sh | sh';
+  'Acme collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.';
+const sampleCommand = 'curl -fsSL https://acme.example/install.sh | sh';
 const sampleActions = (
   <>
     <Button variant="primary" size="lg" href="/signup">

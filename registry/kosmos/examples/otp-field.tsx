@@ -46,7 +46,7 @@ export default function OtpFieldPreview() {
           <Field>
             <FieldLabel>Verification code</FieldLabel>
             <OtpField />
-            <FieldDescription>We sent it to lena@parallax.example.</FieldDescription>
+            <FieldDescription>We sent it to lena@acme.example.</FieldDescription>
           </Field>
           <Field invalid>
             <FieldLabel>Verification code</FieldLabel>

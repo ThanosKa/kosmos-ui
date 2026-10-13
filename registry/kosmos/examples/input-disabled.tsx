@@ -11,7 +11,7 @@ export default function InputDisabled() {
       </Field>
       <Field>
         <FieldLabel>Invite link</FieldLabel>
-        <Input defaultValue="https://parallax.example/join/8f2k1" readOnly />
+        <Input defaultValue="https://acme.example/join/8f2k1" readOnly />
         <FieldDescription>Read-only, so you can still select and copy it.</FieldDescription>
       </Field>
     </div>

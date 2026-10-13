@@ -38,7 +38,7 @@ const commands = [
 function CommandVisual() {
   return (
     <Command items={commands} className="max-w-md">
-      <CommandInput placeholder="Search Parallax…" aria-label="Search Parallax" />
+      <CommandInput placeholder="Search Acme…" aria-label="Search Acme" />
       <CommandEmpty>No commands found.</CommandEmpty>
       <CommandList className="max-h-48">
         {(command: (typeof commands)[number]) => (
@@ -79,7 +79,7 @@ function OtpVisual() {
       <Field>
         <FieldLabel>Verification code</FieldLabel>
         <OtpField name="landing-code" />
-        <FieldDescription>We sent a code to lena@parallax.example.</FieldDescription>
+        <FieldDescription>We sent a code to lena@acme.example.</FieldDescription>
       </Field>
     </div>
   );

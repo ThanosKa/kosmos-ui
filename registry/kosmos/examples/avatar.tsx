@@ -50,7 +50,7 @@ export default function AvatarPreview() {
             </Avatar>
             <div className="flex min-w-0 flex-col">
               <span className="truncate text-body font-medium">Tomás Ortega</span>
-              <span className="truncate text-small text-muted-foreground">tomas@parallax.example</span>
+              <span className="truncate text-small text-muted-foreground">tomas@acme.example</span>
             </div>
           </div>
           <Button variant="ghost" size="icon" aria-label="Open user menu" className="rounded-full">

@@ -17,10 +17,10 @@ import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry
 /*
  * The live dashboard of the landing page, composed from the eight free blocks. It renders as a whole app in its own
  * document (`/dashboard`), which the landing shows in an iframe, so the tokens a visitor picks there stay inside it.
- * The Overview page is the stats overview's Parallax sample data, and the board is the Parallax roadmap, where the new
+ * The Overview page is the stats overview's Acme sample data, and the board is the Acme roadmap, where the new
  * item dialog adds its cards. The table, the drawer and the command menu share the data table's sample projects, so a
  * change in one shows in the others. Only Overview, Projects, its saved views and the roadmap are wired up; the other
- * pages say so and link back. The Parallax team doesn't add its customers' projects, so the Projects page has no
+ * pages say so and link back. The Acme team doesn't add its customers' projects, so the Projects page has no
  * primary action: every new item is a roadmap item.
  */
 

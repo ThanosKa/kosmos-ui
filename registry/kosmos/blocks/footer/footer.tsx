@@ -9,7 +9,7 @@ type FooterColumn = { title: string; links: FooterLink[] };
 type FooterSocialLink = FooterLink & { icon: React.ReactNode };
 
 // Sample data: replace it with your product's name, pages and profiles.
-const sampleName = 'Parallax';
+const sampleName = 'Acme';
 const sampleDescription = 'Product analytics for the teams that run sites and apps.';
 const sampleColumns: FooterColumn[] = [
   {
@@ -27,7 +27,7 @@ const sampleColumns: FooterColumn[] = [
       { label: 'Docs', href: '/docs' },
       { label: 'SDKs', href: '/docs/sdks' },
       { label: 'API reference', href: '/docs/api' },
-      { label: 'Status', href: 'https://status.parallax.example' },
+      { label: 'Status', href: 'https://status.acme.example' },
     ],
   },
   {
@@ -49,10 +49,10 @@ const sampleColumns: FooterColumn[] = [
   },
 ];
 const sampleSocial: FooterSocialLink[] = [
-  { label: 'Parallax blog feed', href: '/blog/rss.xml', icon: <Rss aria-hidden /> },
-  { label: 'Email Parallax', href: 'mailto:hello@parallax.example', icon: <Mail aria-hidden /> },
+  { label: 'Acme blog feed', href: '/blog/rss.xml', icon: <Rss aria-hidden /> },
+  { label: 'Email Acme', href: 'mailto:hello@acme.example', icon: <Mail aria-hidden /> },
 ];
-const sampleLegal = '© 2026 Parallax';
+const sampleLegal = '© 2026 Acme';
 
 const linkClass =
   'rounded-sm text-small text-muted-foreground transition-[color] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';

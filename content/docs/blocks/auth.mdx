@@ -25,7 +25,7 @@ export default function LogInPage() {
   return (
     <main className="flex min-h-svh items-center justify-center p-4">
       <LogInForm
-        productName="Parallax"
+        productName="Acme"
         links={{ 'sign-up': '/sign-up', 'forgot-password': '/forgot-password', continue: '/projects' }}
         onLogIn={async ({ email, password }) => {
           const response = await fetch('/api/log-in', { method: 'POST', body: JSON.stringify({ email, password }) });
@@ -81,7 +81,7 @@ Takes the shared props below, plus every handler of the four forms (`onLogIn`, `
     email: { description: 'The email address, shared by every view so it stays filled in. Use with `onEmailChange`.', type: 'string' },
     defaultEmail: { description: 'The email address at first, when the forms keep their own state.', type: 'string', default: "''" },
     onEmailChange: { description: 'Called as the email address changes.', type: '(email: string) => void' },
-    emailPlaceholder: { description: 'An example address in the empty email field.', type: 'string', default: "'name@parallax.example'" },
+    emailPlaceholder: { description: 'An example address in the empty email field.', type: 'string', default: "'name@acme.example'" },
   }}
 />
 
@@ -91,7 +91,7 @@ Every form takes these.
 
 <TypeTable
   type={{
-    productName: { description: 'Names the product in the titles and in the mark above them.', type: 'string', default: "'Parallax'" },
+    productName: { description: 'Names the product in the titles and in the mark above them.', type: 'string', default: "'Acme'" },
     logo: { description: 'Replaces the mark above the title, usually with your logo.', type: 'ReactNode' },
     links: { description: 'Where the links point. Links to another view switch it instead when `onViewChange` is passed.', type: "Partial<{ 'log-in', 'sign-up', 'forgot-password', terms, privacy, continue: string }>" },
     onViewChange: { description: 'Called with the view a link leads to. With it, those links switch the view instead of navigating.', type: '(view: AuthView) => void' },

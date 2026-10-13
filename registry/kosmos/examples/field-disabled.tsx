@@ -5,7 +5,7 @@ export default function FieldDisabled() {
   return (
     <Field disabled className="w-full max-w-xs">
       <FieldLabel>Workspace URL</FieldLabel>
-      <Input defaultValue="parallax.example/staging" />
+      <Input defaultValue="acme.example/staging" />
       <FieldDescription>Only workspace admins can change this.</FieldDescription>
     </Field>
   );

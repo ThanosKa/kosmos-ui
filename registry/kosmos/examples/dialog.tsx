@@ -42,10 +42,10 @@ export default function DialogPreview() {
                 <DialogContent container={container} initialFocus={false}>
                   <DialogHeader>
                     <DialogTitle>Invite to workspace</DialogTitle>
-                    <DialogDescription>New members can see every project in Parallax.</DialogDescription>
+                    <DialogDescription>New members can see every project in Acme.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
-                    <p>We will email an invite to kai@parallax.example. It expires in 7 days.</p>
+                    <p>We will email an invite to kai@acme.example. It expires in 7 days.</p>
                   </DialogBody>
                   <DialogFooter>
                     <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
@@ -81,7 +81,7 @@ export default function DialogPreview() {
                 <DialogContent container={container} initialFocus={false}>
                   <DialogHeader>
                     <DialogTitle>Projects</DialogTitle>
-                    <DialogDescription>12 projects send events to Parallax.</DialogDescription>
+                    <DialogDescription>12 projects send events to Acme.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
                     <ul className="flex flex-col divide-y divide-border">
@@ -106,7 +106,7 @@ export default function DialogPreview() {
                 <DialogContent container={container} initialFocus={false}>
                   <DialogHeader>
                     <DialogTitle>Projects</DialogTitle>
-                    <DialogDescription>12 projects send events to Parallax.</DialogDescription>
+                    <DialogDescription>12 projects send events to Acme.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
                     <ScrollToMiddle />
@@ -155,10 +155,10 @@ export default function DialogPreview() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Invite to workspace</DialogTitle>
-                <DialogDescription>New members can see every project in Parallax.</DialogDescription>
+                <DialogDescription>New members can see every project in Acme.</DialogDescription>
               </DialogHeader>
               <DialogBody>
-                <p>We will email an invite to kai@parallax.example. It expires in 7 days.</p>
+                <p>We will email an invite to kai@acme.example. It expires in 7 days.</p>
               </DialogBody>
               <DialogFooter>
                 <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>

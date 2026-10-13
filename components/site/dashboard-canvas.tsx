@@ -32,7 +32,7 @@ function ControlLabel({ id, children }: { id: string; children: React.ReactNode 
 }
 
 /**
- * The landing page's dashboard: the Parallax app in an iframe, with tabs for its main screens and the accent, radius
+ * The landing page's dashboard: the Acme app in an iframe, with tabs for its main screens and the accent, radius
  * and theme a visitor can try on it. The tokens apply inside the iframe's document, so the page around it never changes;
  * Reset brings back the Kosmos defaults and the page's theme.
  */
@@ -137,7 +137,7 @@ export function DashboardCanvas() {
         <iframe
           ref={frame}
           src="/dashboard"
-          title="Parallax, a demo dashboard built from Kosmos blocks"
+          title="Acme, a demo dashboard built from Kosmos blocks"
           className="block h-[40rem] w-full rounded-2xl border border-transparent bg-background shadow-card md:h-[50rem]"
         />
       </TabsContent>

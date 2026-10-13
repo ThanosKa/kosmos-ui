@@ -48,7 +48,7 @@ const groups: Group[] = [
     value: 'Actions',
     items: [
       { value: 'new-project', label: 'New project', icon: FilePlus, shortcut: ['C'] },
-      { value: 'invite', label: 'Invite teammates to the Parallax Staging workspace', icon: UserPlus },
+      { value: 'invite', label: 'Invite teammates to the Acme Staging workspace', icon: UserPlus },
       { value: 'theme', label: 'Switch theme', icon: Moon },
       { value: 'settings', label: 'Open settings', icon: Settings, shortcut: ['⌘', ','] },
     ],

@@ -24,8 +24,8 @@ export default function HeroPreview() {
           <Hero
             headingLevel={2}
             title="Know what every user of every web, iOS, Android and server app does next, as it happens"
-            description="Parallax collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
-            command="curl -fsSL https://parallax.example/install.sh | sh -s -- --project cirrus --batch-size 500"
+            description="Acme collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
+            command="curl -fsSL https://acme.example/install.sh | sh -s -- --project cirrus --batch-size 500"
           />
         </div>
       </PreviewSection>

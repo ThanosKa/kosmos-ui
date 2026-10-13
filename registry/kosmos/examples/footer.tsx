@@ -45,7 +45,7 @@ export default function FooterPreview() {
                 ],
               },
             ]}
-            legal="© 2026 Parallax. Your events stay in the EU data region when your project asks for it."
+            legal="© 2026 Acme. Your events stay in the EU data region when your project asks for it."
           />
         </div>
       </PreviewSection>

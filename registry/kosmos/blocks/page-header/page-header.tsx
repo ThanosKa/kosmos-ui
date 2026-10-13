@@ -116,7 +116,7 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
  */
 function PageHeader({
   title = 'Projects',
-  description = 'Every site and app that sends events to Parallax.',
+  description = 'Every site and app that sends events to Acme.',
   headingLevel = 1,
   leading,
   tabs = sampleTabs,

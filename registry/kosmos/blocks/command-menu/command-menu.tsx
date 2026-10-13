@@ -144,8 +144,8 @@ const samplePages: Record<string, CommandMenuPage> = {
       {
         value: 'Workspaces',
         items: [
-          { value: 'workspace:parallax', label: 'Parallax', hint: 'Scale plan', icon: Building },
-          { value: 'workspace:parallax-staging', label: 'Parallax Staging', hint: 'Free plan', icon: Building },
+          { value: 'workspace:acme', label: 'Acme', hint: 'Scale plan', icon: Building },
+          { value: 'workspace:acme-staging', label: 'Acme Staging', hint: 'Free plan', icon: Building },
         ],
       },
     ],

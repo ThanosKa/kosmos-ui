@@ -10,9 +10,9 @@ function Visual({ children }: { children: ReactNode }) {
 }
 
 const threeTiles: BentoItem[] = [
-  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>parallax.track()</Visual> },
-  { id: 'ios', title: 'iOS', description: 'A Swift package.', visual: <Visual>Parallax.track()</Visual> },
-  { id: 'server', title: 'Server', description: 'Node, Go and Python.', visual: <Visual>parallax.track()</Visual> },
+  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>acme.track()</Visual> },
+  { id: 'ios', title: 'iOS', description: 'A Swift package.', visual: <Visual>Acme.track()</Visual> },
+  { id: 'server', title: 'Server', description: 'Node, Go and Python.', visual: <Visual>acme.track()</Visual> },
 ];
 
 const longTiles: BentoItem[] = [
@@ -65,7 +65,7 @@ export default function BentoPreview() {
         <div className={frame}>
           <Bento
             title="Everything your team asks about, collected, joined to your users and ready to read before anyone thinks to ask"
-            description="Parallax collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
+            description="Acme collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
             items={longTiles}
           />
         </div>

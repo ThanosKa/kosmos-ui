@@ -47,9 +47,9 @@ export default function SidebarDemo() {
         <SidebarHeader>
           <div className="flex h-8 items-center gap-2 px-1.5">
             <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
-              P
+              A
             </span>
-            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)">Parallax</span>
+            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)">Acme</span>
           </div>
         </SidebarHeader>
         <SidebarContent render={<nav aria-label="Main" />}>

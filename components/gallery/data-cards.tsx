@@ -108,7 +108,7 @@ export function MembersCard() {
   return (
     <GalleryCard
       title="Members"
-      description="4 people in Parallax"
+      description="4 people in Acme"
       action={
         <div className="flex items-center gap-3">
           <AvatarGroup>

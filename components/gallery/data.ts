@@ -1,15 +1,15 @@
 /*
- * Sample data for the gallery: the Parallax workspace with its team, revenue and activity. Every name and
+ * Sample data for the gallery: the Acme workspace with its team, revenue and activity. Every name and
  * domain is invented; domains use the reserved `.example` suffix.
  */
 
 export type Person = { id: string; name: string; email: string; initials: string; avatar?: string };
 
 export const people = {
-  lena: { id: 'lena', name: 'Lena Park', email: 'lena@parallax.example', initials: 'LP', avatar: '/avatars/avatar-1.png' },
-  tomas: { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@parallax.example', initials: 'TO', avatar: '/avatars/avatar-2.png' },
-  ama: { id: 'ama', name: 'Ama Mensah', email: 'ama@parallax.example', initials: 'AM', avatar: '/avatars/avatar-3.png' },
-  kai: { id: 'kai', name: 'Kai Nakamura', email: 'kai@parallax.example', initials: 'KN' },
+  lena: { id: 'lena', name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/avatar-1.png' },
+  tomas: { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@acme.example', initials: 'TO', avatar: '/avatars/avatar-2.png' },
+  ama: { id: 'ama', name: 'Ama Mensah', email: 'ama@acme.example', initials: 'AM', avatar: '/avatars/avatar-3.png' },
+  kai: { id: 'kai', name: 'Kai Nakamura', email: 'kai@acme.example', initials: 'KN' },
 } satisfies Record<string, Person>;
 
 export type MemberStatus = 'active' | 'invited' | 'suspended';
@@ -64,7 +64,7 @@ export const activity = [
   { id: 'a2', person: people.ama, text: 'mentioned you on Funnel comparisons', time: '18m', kind: 'mention' },
   { id: 'a3', person: people.tomas, text: 'moved Server-side batching to In progress', time: '1h', kind: 'update' },
   { id: 'a4', person: people.ama, text: 'commented on Shareable dashboard links: “Can viewers pick their own date range?”', time: '2h', kind: 'comment' },
-  { id: 'a5', person: people.tomas, text: 'resent the invite to kai@parallax.example', time: '3h', kind: 'update' },
+  { id: 'a5', person: people.tomas, text: 'resent the invite to kai@acme.example', time: '3h', kind: 'update' },
   { id: 'a6', person: people.ama, text: 'mentioned you in Mobile SDK 3.0', time: 'Yesterday', kind: 'mention' },
   { id: 'a7', person: people.tomas, text: 'exported 12 projects to CSV', time: 'Yesterday', kind: 'update' },
   { id: 'a8', person: people.ama, text: 'commented on Funnel comparisons: “Shipping behind a flag on Monday.”', time: 'Oct 8', kind: 'comment' },

@@ -35,16 +35,16 @@ export default function AuthFormsPreview() {
             <LogInForm headingLevel={2} />
           </Frame>
           <Frame label="submitted empty">
-            <LogInForm headingLevel={2} defaultSubmitted defaultEmail="lena@parallax" />
+            <LogInForm headingLevel={2} defaultSubmitted defaultEmail="lena@acme" />
           </Frame>
           <Frame label="wrong password (server error)">
-            <LogInForm headingLevel={2} defaultEmail="lena@parallax.example" defaultError="That email and password don’t match. Try again, or reset your password." />
+            <LogInForm headingLevel={2} defaultEmail="lena@acme.example" defaultError="That email and password don’t match. Try again, or reset your password." />
           </Frame>
           <Frame label="loading">
-            <LogInForm headingLevel={2} pending defaultEmail="lena@parallax.example" />
+            <LogInForm headingLevel={2} pending defaultEmail="lena@acme.example" />
           </Frame>
           <Frame label="success">
-            <LogInForm headingLevel={2} defaultSuccess defaultEmail="lena@parallax.example" />
+            <LogInForm headingLevel={2} defaultSuccess defaultEmail="lena@acme.example" />
           </Frame>
           <Frame label="with alternatives">
             <LogInForm headingLevel={2} alternatives={sso} />
@@ -58,17 +58,17 @@ export default function AuthFormsPreview() {
             <SignUpForm headingLevel={2} />
           </Frame>
           <Frame label="submitted with errors">
-            <SignUpForm headingLevel={2} defaultSubmitted defaultEmail="tomas@parallax.example" />
+            <SignUpForm headingLevel={2} defaultSubmitted defaultEmail="tomas@acme.example" />
           </Frame>
           <Frame label="email in use (server error)">
             <SignUpForm
               headingLevel={2}
-              defaultEmail="ama@parallax.example"
+              defaultEmail="ama@acme.example"
               defaultError="An account already uses this email. Log in instead, or reset your password."
             />
           </Frame>
           <Frame label="loading">
-            <SignUpForm headingLevel={2} pending defaultEmail="kai@parallax.example" />
+            <SignUpForm headingLevel={2} pending defaultEmail="kai@acme.example" />
           </Frame>
         </div>
       </PreviewSection>
@@ -106,13 +106,13 @@ export default function AuthFormsPreview() {
             <ForgotPasswordForm headingLevel={2} />
           </Frame>
           <Frame label="submitted invalid">
-            <ForgotPasswordForm headingLevel={2} defaultSubmitted defaultEmail="lena.parallax.example" />
+            <ForgotPasswordForm headingLevel={2} defaultSubmitted defaultEmail="lena.acme.example" />
           </Frame>
           <Frame label="loading">
-            <ForgotPasswordForm headingLevel={2} pending defaultEmail="lena@parallax.example" />
+            <ForgotPasswordForm headingLevel={2} pending defaultEmail="lena@acme.example" />
           </Frame>
           <Frame label="sent">
-            <ForgotPasswordForm headingLevel={2} defaultSent defaultEmail="lena@parallax.example" />
+            <ForgotPasswordForm headingLevel={2} defaultSent defaultEmail="lena@acme.example" />
           </Frame>
         </div>
       </PreviewSection>
@@ -122,12 +122,12 @@ export default function AuthFormsPreview() {
           <Frame label="long product name and email">
             <EmailCodeForm
               headingLevel={2}
-              productName="Parallax Staging Environment for Scale Customers"
-              email="tomas.ortega-villanueva.de-la-fuente@engineering.parallax.example"
+              productName="Acme Staging Environment for Scale Customers"
+              email="tomas.ortega-villanueva.de-la-fuente@engineering.acme.example"
             />
           </Frame>
           <Frame label="280px container" className="[&>*]:max-w-[280px]">
-            <LogInForm headingLevel={2} productName="Parallax Staging Environment" defaultSubmitted />
+            <LogInForm headingLevel={2} productName="Acme Staging Environment" defaultSubmitted />
           </Frame>
         </div>
       </PreviewSection>

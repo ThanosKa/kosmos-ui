@@ -6,7 +6,7 @@ export default function OtpFieldDemo() {
     <Field>
       <FieldLabel>Verification code</FieldLabel>
       <OtpField name="code" />
-      <FieldDescription>We sent a 6-digit code to lena@parallax.example.</FieldDescription>
+      <FieldDescription>We sent a 6-digit code to lena@acme.example.</FieldDescription>
     </Field>
   );
 }

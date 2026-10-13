@@ -33,7 +33,7 @@ export default function DialogScroll() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Projects</DialogTitle>
-          <DialogDescription>{projects.length} projects send events to Parallax.</DialogDescription>
+          <DialogDescription>{projects.length} projects send events to Acme.</DialogDescription>
         </DialogHeader>
         <DialogBody>
           <ul className="flex flex-col divide-y divide-border">

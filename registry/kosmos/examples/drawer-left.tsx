@@ -21,7 +21,7 @@ export default function DrawerLeft() {
       </DrawerTrigger>
       <DrawerContent className="sm:data-[swipe-direction=left]:max-w-72">
         <DrawerHeader>
-          <DrawerTitle>Parallax</DrawerTitle>
+          <DrawerTitle>Acme</DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
           <nav aria-label="Main" className="flex flex-col gap-0.5">

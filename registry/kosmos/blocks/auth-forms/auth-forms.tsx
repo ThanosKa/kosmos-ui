@@ -26,10 +26,10 @@ type LogInValues = { email: string; password: string };
 type SignUpValues = { name: string; email: string; password: string };
 
 // Sample data: replace it with your product's name, your routes and calls to your auth server.
-const sampleProductName = 'Parallax';
-const sampleEmailPlaceholder = 'name@parallax.example';
+const sampleProductName = 'Acme';
+const sampleEmailPlaceholder = 'name@acme.example';
 /** The address the email code went to, when none is passed. */
-const sampleEmail = 'lena@parallax.example';
+const sampleEmail = 'lena@acme.example';
 const sampleLinks: AuthLinks = {
   'log-in': '/log-in',
   'sign-up': '/sign-up',

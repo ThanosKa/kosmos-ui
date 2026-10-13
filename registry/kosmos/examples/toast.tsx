@@ -46,7 +46,7 @@ const cases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
     toasts: [
       {
         type: 'warning',
-        title: 'Parallax workspace billing for the Scale plan could not be charged automatically',
+        title: 'Acme workspace billing for the Scale plan could not be charged automatically',
         description:
           'The card ending in 4242 was declined. Update the payment method before October 24 to keep the Scale plan and its raised event quota.',
         actionProps: { children: 'Update card' },
@@ -72,7 +72,7 @@ export default function ToastPreview() {
                 toasts={[
                   { title: 'Invite sent', description: 'Kai Nakamura will get an email in a minute.' },
                   { type: 'success', title: 'Changes saved' },
-                  { type: 'info', title: 'Ama Mensah joined Parallax Staging', description: 'She can see all 12 projects.' },
+                  { type: 'info', title: 'Ama Mensah joined Acme Staging', description: 'She can see all 12 projects.' },
                 ]}
               />
             )}
