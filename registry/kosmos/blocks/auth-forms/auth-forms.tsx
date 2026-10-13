@@ -247,7 +247,7 @@ function Alternatives({ children }: { children: React.ReactNode }) {
 
 function SubmitButton({ pending, pendingLabel, children }: { pending: boolean; pendingLabel: string; children: React.ReactNode }) {
   return (
-    <Button type="submit" variant="primary" size="lg" className="w-full" aria-disabled={pending || undefined}>
+    <Button type="submit" variant="primary" size="lg" className="w-full" disabled={pending} focusableWhenDisabled>
       {pending ? (
         <>
           <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin motion-reduce:animate-pulse" />
