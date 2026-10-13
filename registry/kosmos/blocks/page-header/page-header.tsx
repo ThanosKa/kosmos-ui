@@ -296,12 +296,10 @@ function PageHeader({
                     </DropdownMenuGroup>
                   </React.Fragment>
                 ))}
-                {filters.length ? (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={clearFilters}>Clear filters</DropdownMenuItem>
-                  </>
-                ) : null}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem disabled={!filters.length} onClick={clearFilters}>
+                  Clear filters
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
