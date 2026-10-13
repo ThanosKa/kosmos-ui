@@ -114,7 +114,6 @@ const oldBlockUrls = [
   'stats-overview',
 ].map((name) => `/docs/blocks/${name}`);
 
-/** The block viewer of the variant `name` on a block category page. */
 const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
 type Check = { name: string; run: (browser: Browser) => Promise<void> };
@@ -277,14 +276,11 @@ const checks: Check[] = [
         ['Desktop', stageWidth, 4],
       ] as const) {
         await widths.getByRole('radio', { name: label }).click();
-        await page.waitForFunction(
-          ([selector, expected]) => document.querySelector(selector)?.getBoundingClientRect().width === expected,
-          ['#stats-overview iframe', width] as const,
-        );
+        await page.waitForFunction(([iframe, expected]) => iframe.getBoundingClientRect().width === expected, [await frame.elementHandle(), width] as const);
         await frame.contentFrame().locator('[data-preview-content]').waitFor();
-        await page.waitForFunction(() => document.fonts.ready);
+        assert.equal(await frame.contentFrame().locator('html').evaluate(() => innerWidth), width, `${label}: the block's viewport width`);
         assert.equal(await metricColumns(), columns, `${label}: metric columns in the block`);
-        await viewer.screenshot({ path: `.screenshots/block-viewer-${label.toLowerCase()}.png` });
+        await page.screenshot({ path: `.screenshots/block-viewer-${label.toLowerCase()}.png`, fullPage: true });
       }
       assert.ok(stageWidth > 900, `Desktop: the viewer spans the content width (${stageWidth}px)`);
       await close();
