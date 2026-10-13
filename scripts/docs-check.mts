@@ -246,7 +246,7 @@ const checks: Check[] = [
       assert.deepEqual(application.map((item) => item.url).sort(), categoryUrls('application'), 'Application lists every application block category');
       assert.deepEqual(marketing.map((item) => item.url).sort(), categoryUrls('marketing'), 'Marketing lists every marketing block category');
       for (const url of oldBlockUrls) assert.ok(categoryUrls('application').includes(url), `Application keeps ${url}`);
-      for (const url of ['/docs/blocks/hero', '/docs/blocks/bento']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
+      for (const url of ['/docs/blocks/hero', '/docs/blocks/bento', '/docs/blocks/footer']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
       for (const item of [...application, ...marketing]) {
         const count = variantCount(item.url);
         assert.equal(item.count, String(count), `${item.url}: variant count`);
@@ -394,7 +394,7 @@ const checks: Check[] = [
     name: 'the landing is an ordered list of sections, each labelled with the blocks it is built from',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const sections = await page.locator('main [data-landing-section]').evaluateAll((elements) =>
+      const sections = await page.locator('[data-landing-section]').evaluateAll((elements) =>
         elements.map((section) => ({
           id: section.getAttribute('data-landing-section'),
           links: [...section.querySelectorAll('[data-block-label] a[href]')].map((link) => new URL((link as HTMLAnchorElement).href).pathname),
@@ -405,10 +405,14 @@ const checks: Check[] = [
         ['hero', 'dashboard', 'bento', 'inventory'],
         'the landing opens with the hero, the dashboard, the bento and the inventory',
       );
+      assert.deepEqual(sections.slice(-3).map((section) => section.id), ['install', 'proof', 'footer'], 'the landing ends with install, proof and the footer');
       for (const section of sections) {
         assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
-        for (const url of section.links) assert.match(url, /^\/docs\/blocks\/[a-z-]+$/, `${section.id}: label links to a block category page`);
+        for (const url of section.links) {
+          assert.match(url, /^\/docs\/(blocks|components)\/[a-z-]+$/, `${section.id}: label links to a block category or component page`);
+        }
       }
+      assert.deepEqual(sections.at(-1)?.links, ['/docs/blocks/footer'], 'footer: labelled with the Footer block');
       assert.deepEqual(sections[0].links, ['/docs/blocks/hero'], 'hero: labelled with the Hero block');
       assert.equal(sections[1].links.length, 8, 'dashboard: labelled with the 8 application blocks');
       for (const url of new Set(sections.flatMap((section) => section.links))) await fetchText(url);
@@ -432,6 +436,67 @@ const checks: Check[] = [
       assert.equal(await variant.count(), 1, 'the Hero category page shows one variant');
       assert.equal(await variant.getAttribute('id'), 'hero', 'the free Hero variant');
       assert.equal(await variant.getAttribute('data-tier'), 'free', 'Hero is free');
+      await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the install section shows the shadcn command, the files it adds, and links to llms.txt and Markdown pages',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="install"]');
+      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
+      const copy = section.getByRole('button', { name: /^Copy install command: npx shadcn@latest add @kosmos\// });
+      assert.equal(await copy.count(), 1, 'the npm command with a copy button');
+      const command = (await copy.getAttribute('aria-label'))!.replace('Copy install command: ', '');
+      const name = command.split('@kosmos/')[1];
+      const files = await section.locator('[data-terminal-file]').allTextContents();
+      const item = JSON.parse(await fetchText(`/r/${name}.json`)) as { files: { path: string }[] };
+      assert.ok(files.length > item.files.length, `the transcript lists the block's files and its components (${files.length})`);
+      assert.ok(files.includes(`components/${name}.tsx`), `the transcript lists components/${name}.tsx`);
+      await section.getByRole('tab', { name: 'pnpm' }).click();
+      assert.equal(await section.getByRole('button', { name: /^Copy install command: pnpm dlx shadcn@latest add/ }).count(), 1, 'pnpm switches the command');
+      const paths = await section.locator('a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
+      for (const path of ['/llms.txt', '/llms-full.txt']) assert.ok(paths.includes(path), `links to ${path}`);
+      const markdown = paths.find((path) => path.endsWith('.md'));
+      assert.ok(markdown, 'links to a docs page as Markdown');
+      for (const path of ['/llms.txt', '/llms-full.txt', markdown]) await fetchText(path);
+      await close();
+    },
+  },
+  {
+    name: 'the proof shows the GitHub stars or no number at all, and a real date of the last update',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const section = page.locator('[data-landing-section="proof"]');
+      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
+      const stars = section.locator('[data-stars]');
+      if ((await stars.count()) > 0) assert.match((await stars.textContent()) ?? '', /^\d+(\.\d)?[KM]?$/, 'stars as a number');
+      assert.match((await section.getByRole('link', { name: /GitHub/ }).first().getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'links to GitHub');
+      const date = await section.locator('time[datetime]').first().getAttribute('datetime');
+      assert.match(date ?? '', /^\d{4}-\d{2}-\d{2}/, 'last update as a <time>');
+      assert.ok(new Date(date!).getTime() <= Date.now(), 'the last update is not in the future');
+      await close();
+    },
+  },
+  {
+    name: 'the footer is the page footer, built from the Footer block, with real links',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const footer = page.getByRole('contentinfo');
+      assert.equal(await footer.count(), 1, 'one contentinfo landmark');
+      assert.equal(await footer.getAttribute('data-slot'), 'footer', 'the Footer block');
+      const hrefs = await footer.locator('a[href]').evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
+      for (const href of hrefs) assert.doesNotMatch(href, /#$|\.example/, `${href}: a real link`);
+      for (const host of ['github.com', 'x.com', 'linkedin.com']) {
+        assert.ok(hrefs.some((href) => new URL(href).hostname.endsWith(host)), `links to ${host}`);
+      }
+      for (const href of hrefs.filter((href) => new URL(href).origin === new URL(base).origin)) await fetchText(new URL(href).pathname);
+      const variants = await openPage(browser, '/docs/blocks/footer');
+      const variant = variants.page.locator('[data-block-variant]');
+      assert.equal(await variant.count(), 1, 'the Footer category page shows one variant');
+      assert.equal(await variant.getAttribute('id'), 'footer', 'the free Footer variant');
+      assert.equal(await variant.getAttribute('data-tier'), 'free', 'Footer is free');
       await variants.close();
       await close();
     },

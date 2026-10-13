@@ -1,46 +1,66 @@
-import { author, githubUrl, licenseUrl } from '@/lib/shared';
-import { Button } from '@/registry/kosmos/ui/button';
+import Link from 'next/link';
+import { appName, author, docsRoute, githubUrl, licenseUrl } from '@/lib/shared';
+import { Footer, type FooterColumn } from '@/registry/kosmos/blocks/footer/footer';
 import { GitHubIcon, LinkedInIcon, XIcon } from './brand-icons';
+import { KosmosMark } from './kosmos-mark';
 
-const link =
-  'rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+const columns: FooterColumn[] = [
+  {
+    title: 'Docs',
+    links: [
+      { label: 'Introduction', href: docsRoute },
+      { label: 'Installation', href: `${docsRoute}/installation` },
+      { label: 'Changelog', href: `${docsRoute}/changelog` },
+    ],
+  },
+  {
+    title: 'Library',
+    links: [
+      { label: 'Components', href: `${docsRoute}/components` },
+      { label: 'Blocks', href: `${docsRoute}/blocks` },
+      { label: 'Foundations', href: `${docsRoute}/foundations/color` },
+    ],
+  },
+  {
+    title: 'For agents',
+    links: [
+      { label: 'llms.txt', href: '/llms.txt' },
+      { label: 'llms-full.txt', href: '/llms-full.txt' },
+    ],
+  },
+  {
+    title: 'Project',
+    links: [
+      { label: 'GitHub', href: githubUrl },
+      { label: 'MIT License', href: licenseUrl },
+    ],
+  },
+];
 
-/** Who built Kosmos UI, where the code lives and its license. */
+const byline = 'rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+
+/** The site's footer, built from the Footer block: where the docs, the code and its author live. */
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-6 text-small text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex items-center gap-2">
-          <p>
-            Built by{' '}
-            <a href={author.xUrl} className={link}>
-              {author.name}
-            </a>
-          </p>
-          <div className="flex items-center">
-            <Button variant="ghost" size="icon-sm" href={author.xUrl} aria-label={`${author.name} on X`}>
-              <XIcon className="size-3" />
-            </Button>
-            <Button variant="ghost" size="icon-sm" href={author.linkedinUrl} aria-label={`${author.name} on LinkedIn`}>
-              <LinkedInIcon className="size-3" />
-            </Button>
-            <Button variant="ghost" size="icon-sm" href={author.githubUrl} aria-label={`${author.name} on GitHub`}>
-              <GitHubIcon className="size-3.5" />
-            </Button>
-          </div>
-        </div>
+    <Footer
+      name={appName}
+      logo={<KosmosMark className="size-5" />}
+      description="Components and blocks for dashboard apps. Free and open source under MIT."
+      columns={columns}
+      social={[
+        { label: `${author.name} on X`, href: author.xUrl, icon: <XIcon /> },
+        { label: `${author.name} on LinkedIn`, href: author.linkedinUrl, icon: <LinkedInIcon /> },
+        { label: `${author.name} on GitHub`, href: author.githubUrl, icon: <GitHubIcon /> },
+      ]}
+      legal={
         <p>
-          <a href={githubUrl} className={link}>
-            Source code on GitHub
-          </a>
-          <span aria-hidden className="mx-2">
-            ·
-          </span>
-          <a href={licenseUrl} className={link}>
-            MIT License
+          Built by{' '}
+          <a href={author.xUrl} className={byline}>
+            {author.name}
           </a>
         </p>
-      </div>
-    </footer>
+      }
+      linkComponent={Link}
+    />
   );
 }
