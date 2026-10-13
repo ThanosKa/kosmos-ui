@@ -65,7 +65,7 @@ In their own labelled blocks after the chart colors. They exist for the Badge hu
 
 | Token | Surface | Structure |
 | --- | --- | --- |
-| `shadow-control` | Secondary button, segmented group, active sidebar item | Light: 1px ring + 1px drop. Dark: dark ring + top rim + inner rim |
+| `shadow-control` | Secondary button, segmented group | Light: 1px ring + 1px drop. Dark: dark ring + top rim + inner rim |
 | `shadow-field` | Input, textarea, select trigger | One 1px ring in `input`, no drop, in both modes |
 | `shadow-primary` | Primary button | Light: flat, one ring in the `primary` fill. Dark: dark ring + drop + top highlight + inner rim + bottom inner shade |
 | `shadow-card` | Cards, tiles | Light: 3px soft halo + two drops, no hard ring. Dark: dark ring + drop + rim |

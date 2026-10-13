@@ -25,7 +25,8 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 
 | Surface | Shadow | Fill |
 | --- | --- | --- |
-| Secondary button, segmented group, active sidebar item | `shadow-control` | `bg-secondary` |
+| Secondary button, segmented group | `shadow-control` | `bg-secondary` |
+| Active sidebar item, current header tab | none (flat) | `bg-accent`, the hover fill |
 | Input, textarea, select trigger | `shadow-field` | `bg-secondary` |
 | Primary button | `shadow-primary` (flat in light: one ring in the fill color) | `bg-primary` |
 | Card, stat tile, board card | `shadow-card` | `bg-card` |
@@ -70,7 +71,7 @@ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too.
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
 - The palette is warm neutrals with one orange accent (ADR 0007). The orange is `ring`: focus outlines, `chart-1` and `shadow-lift`. The Meter's `primary` tone takes `meter-primary`, the same orange a step deeper in light, so it never shares a lightness with `warning`. It never fills a button or a large surface and never colors text, because it is below 4.5:1 on the light page.
-- One exception: the current page in navigation colors its label and icon `text-active-foreground`, a darker orange in light that passes 4.5:1 on every nav surface. That covers the active sidebar item and the current header tab, which both stand on `bg-secondary shadow-control` because the orange and the idle `muted-foreground` have the same lightness (about 1.05:1), and the current item in a nav menu, which keeps its check mark. Buttons, links and every other text stay ink or muted.
+- One exception: the current page in navigation colors its label and icon `text-active-foreground`, a darker orange in light that passes 4.5:1 on every nav surface. That covers the active sidebar item and the current header tab, which both stand on the flat `bg-accent` hover fill with no shadow, because the orange and the idle `muted-foreground` have the same lightness (about 1.05:1), and the current item in a nav menu, which keeps its check mark. Buttons, links and every other text stay ink or muted.
 - Ghost buttons, nav items, menu items and hoverable rows highlight with `bg-accent`, a translucent overlay that works on every surface.
 - Orange means focus, so hover never turns anything orange: a hover line or halo is neutral (the sidebar resize handle shows `sidebar-foreground/20`, a slider thumb a `foreground/10` halo).
 - Two tones of one hue that can stand side by side differ in lightness, not only in hue, so they still read in grayscale and for color-blind readers: the Meter's `primary` and `warning`, both orange, are about 1.7:1 apart in both themes. The status colors differ by hue and always come with a label, a value or an icon, so their meaning never rides on color alone.
@@ -186,7 +187,7 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
-| A sidebar item in full ink while idle, or an active item without the raised surface | `text-muted-foreground` idle; `bg-secondary shadow-control` and `text-active-foreground` (label and icon) when active |
+| A sidebar item in full ink while idle, or an active item with a raised surface | `text-muted-foreground` idle; flat `bg-accent` (`bg-sidebar-accent` in the sidebar), no shadow, and `text-active-foreground` (label and icon) when active |
 | `text-ring`, or orange text other than the current page in navigation | `text-foreground` or `text-muted-foreground`; the current nav item takes `text-active-foreground` |
 | A category label as a neutral or status Badge | A hue variant |
 | `text-heading` in an app page header | `text-title font-medium` |

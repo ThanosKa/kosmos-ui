@@ -691,7 +691,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> & {
-  /** Marks the current page: `aria-current="page"` on a link, a raised highlight and an orange label and icon. */
+  /** Marks the current page: `aria-current="page"` on a link, a flat highlight and an orange label and icon. */
   isActive?: boolean;
   /** The item's name, shown in a tooltip beside the icon while the sidebar is collapsed to icons. */
   tooltip?: React.ReactNode;
@@ -716,8 +716,8 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
       className={cn(
         // `relative` keeps an `sr-only` count label inside the clip, so it never widens the sidebar.
         'relative h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden px-2 text-muted-foreground',
-        'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
-        'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
+        'transition-[background-color,color] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
+        'data-active:bg-sidebar-accent data-active:text-active-foreground hover:data-active:not-data-disabled:bg-sidebar-accent hover:data-active:not-data-disabled:text-active-foreground',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
         // In icon mode the first child (an icon, a mark or an avatar) stays and the label and count after it fade.
         // On expand they wait for the column to widen, so they never show as cut-off stubs.
