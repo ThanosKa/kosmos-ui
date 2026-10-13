@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { GalleryCard, GalleryStage, StageBackdropRows } from '@/components/gallery/gallery-card';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { CommandMenu } from '@/registry/kosmos/blocks/command-menu/command-menu';
-import { DataTable, sampleAccounts } from '@/registry/kosmos/blocks/data-table/data-table';
+import { DataTable, sampleProjects, type ProjectStatus } from '@/registry/kosmos/blocks/data-table/data-table';
 import { DetailDrawer } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { KanbanBoard } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
@@ -18,9 +18,12 @@ const workspaces = [
 const user = { name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC' };
 
 const tabs = [
-  { value: 'all', label: 'All accounts', count: sampleAccounts.length },
-  { value: 'active', label: 'Active', count: sampleAccounts.filter((row) => row.status === 'active').length },
-  { value: 'at-risk', label: 'At risk', count: sampleAccounts.filter((row) => row.status === 'at-risk').length },
+  { value: 'all', label: 'All', count: sampleProjects.length },
+  ...(['live', 'trial', 'paused'] as const).map((status) => ({
+    value: status,
+    label: status.charAt(0).toUpperCase() + status.slice(1),
+    count: sampleProjects.filter((row) => row.status === status).length,
+  })),
 ];
 
 /** AppSidebar, SidebarResizeHandle, PageHeader and DataTable in one app frame. */
@@ -28,6 +31,7 @@ export function AppFrame() {
   const [active, setActive] = useState('accounts');
   const [tab, setTab] = useState('all');
   const [query, setQuery] = useState('');
+  const [filters, setFilters] = useState<string[]>([]);
   return (
     <SidebarProvider
       defaultWidth={232}
@@ -47,7 +51,7 @@ export function AppFrame() {
       <SidebarResizeHandle />
       <div className="flex min-w-0 flex-1 flex-col bg-background md:overflow-y-auto">
         <PageHeader
-          title="Accounts"
+          title="Projects"
           headingLevel={3}
           leading={<SidebarTrigger />}
           tabs={tabs}
@@ -55,12 +59,13 @@ export function AppFrame() {
           onTabChange={setTab}
           query={query}
           onQueryChange={setQuery}
+          filters={filters}
+          onFiltersChange={setFilters}
           description=""
-          filterOptions={[{ value: 'mine', label: 'Owned by me' }]}
         >
           <div className="p-4">
             <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-              <DataTable query={query} status={tab as 'all' | 'active' | 'at-risk'} />
+              <DataTable query={query} status={tab as 'all' | ProjectStatus} filters={filters} />
             </div>
           </div>
         </PageHeader>
@@ -111,7 +116,7 @@ export function DetailDrawerStage() {
       {(container) => (
         <>
           <StageBackdropRows
-            rows={['Northwind Traders · Active', 'Bluebird Labs · At risk', 'Cedar & Pine · Active', 'Lumen Health · Trial', 'Orbit Freight · Active']}
+            rows={['Fernhill Books · Live', 'Brightloop Fitness · Live', 'Copperline Bank · Live', 'Saltmarsh Coffee · Live', 'Hollow Oak Games · Paused']}
           />
           <DetailDrawer open modal={false} container={container} initialFocus={false} trigger={null} />
         </>

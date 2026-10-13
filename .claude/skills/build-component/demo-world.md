@@ -61,6 +61,15 @@ A block that needs fewer rows takes the first ones, in this order:
 
 These twelve are every project Parallax has, so totals computed from them match the overview metrics: 8 live, 2 trial, 2 paused; 5 web, 3 iOS, 2 Android, 2 server; 2 free, 6 pro, 4 scale; 144,600 users, 28,495,200 events, $14,628 a month.
 
+## Project detail: Cirrus Weather
+
+The project a block opens by default (the detail drawer) is Cirrus Weather, with the fields of its row above plus:
+
+- Added on March 3, 2025.
+- Events per day, September 12 to October 11 (they add up to its 2,391,700): 73100, 73400, 65400, 65700, 66100, 66400, 66700, 75300, 75700, 67700, 68000, 68300, 68600, 69000, 77600, 77900, 69900, 70300, 70600, 113500, 149600, 151800, 112300, 72200, 72500, 72900, 73200, 73500, 82100, 82400. Weekends run higher, and a storm on October 2 doubled the traffic for three days.
+- Notes: "Sends events from the iOS app only. Their Android app launches in November, on the same project."
+- Activity, oldest first: Kai Nakamura changed the plan to Pro (Sep 2); Tomás Ortega noted "Events doubled during the storm on October 2. Raised their rate limit so nothing was dropped." (Oct 3); Lena Park noted "Asked them for a case study on the mobile SDK." (Oct 9). A note added in a demo is signed by Lena Park.
+
 ## Events
 
 Event names are snake_case and render in `font-mono`. Every event Parallax received in the last 30 days, across all projects, most frequent first (they add up to the Events metric):

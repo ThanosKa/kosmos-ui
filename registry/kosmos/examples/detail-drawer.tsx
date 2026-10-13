@@ -2,32 +2,38 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { DetailDrawer, type DetailAccount } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
+import { DetailDrawer, type DetailProject } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 
-const longAccount: DetailAccount = {
+const longProject: DetailProject = {
   id: 'long',
-  name: 'International Association of Independent Freight Forwarders and Customs Brokers',
-  domain: 'association-of-independent-freight-forwarders.example',
-  status: 'trial',
-  owner: { name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' },
-  arr: 1250000,
-  health: 100,
-  lastActivity: '2026-10-11',
-  meta: 'Enterprise plan with the compliance add-on · trial since September 2026, extended twice',
-  labels: ['Enterprise', 'Compliance add-on', 'Procurement review', 'EU data residency', 'Renewal in Q1'],
+  name: 'Fernhill Books Marketplace for Independent Booksellers and Publishers',
+  domain: 'marketplace.independent-booksellers.fernhill.example',
+  platform: 'server',
+  plan: 'scale',
+  status: 'live',
+  users: 1284300,
+  events: 912480600,
+  mrr: 124800,
+  lastEventAt: '2026-10-11',
+  meta: 'Added on September 28, 2026 · moved from Pro to Scale on October 9 while their engineers move every storefront to the server SDK',
+  trend: [
+    { date: '2026-10-09', events: 0 },
+    { date: '2026-10-10', events: 412800300 },
+    { date: '2026-10-11', events: 499680300 },
+  ],
   notes:
-    'Their procurement team wants a data processing agreement before the trial ends. Supercalifragilisticexpialidocious-configuration-flag decides which region their data lands in.',
+    'They want every storefront in one project. Supercalifragilisticexpialidocious-storefront-identifier decides which shop an event belongs to.',
   activity: [
     {
       id: 'a1',
-      author: { name: 'Alexandria Montgomery-Fitzgerald', initials: 'AM' },
-      action: 'extended the trial by 30 days and asked legal to review the data processing agreement',
+      author: { name: 'Tomás Ortega', initials: 'TO' },
+      action: 'changed the plan to Scale and raised the event rate limit for the import of three years of order history',
       time: 'Oct 11',
     },
   ],
 };
 
-const emptyAccount: DetailAccount = { id: 'new', name: 'Untitled account', status: 'trial' };
+const emptyProject: DetailProject = { id: 'new', name: 'Untitled project', status: 'trial' };
 
 const stage = 'h-[40rem]';
 const noop = () => {};
@@ -52,12 +58,12 @@ export default function DetailDrawerPreview() {
           </OverlayStage>
           <OverlayStage label="long text" className={stage}>
             {(container) => (
-              <DetailDrawer account={longAccount} open modal={false} container={container} initialFocus={false} trigger={null} onAction={noop} />
+              <DetailDrawer project={longProject} open modal={false} container={container} initialFocus={false} trigger={null} onAction={noop} />
             )}
           </OverlayStage>
           <OverlayStage label="no details yet" className={stage}>
             {(container) => (
-              <DetailDrawer account={emptyAccount} open modal={false} container={container} initialFocus={false} trigger={null} />
+              <DetailDrawer project={emptyProject} open modal={false} container={container} initialFocus={false} trigger={null} />
             )}
           </OverlayStage>
           <OverlayStage label="loading" className={stage}>

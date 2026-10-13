@@ -1,0 +1,10 @@
+---
+title: Changed Data table and Detail drawer for an analytics product
+description: Data table lists projects with plan and platform filters, totals and a Pause action, and Detail drawer shows one project with its usage and an events trend.
+date: 2026-10-13
+---
+
+Both blocks now show the projects of a fictional product analytics app, with new columns, fields and props. Their props and types changed, so check your code after you run `shadcn add` again.
+
+- **[Data table](/docs/blocks/data-table)**: the rows are projects, with platform, plan as a colored tag, users, events, monthly revenue, a status dot and the last event. The new `filters` prop takes the plan and platform values of the page header's filters, and `status` takes `live`, `trial` and `paused`, the values of its tabs. The footer totals users, events and revenue. Pause and Resume join the row menu and the bulk bar. The owner column and the health meter are gone, the table no longer brings Meter with it, and `Account`, `AccountStatus` and `sampleAccounts` are now `Project`, `ProjectStatus` and `sampleProjects`. Ticking a row's checkbox no longer opens the row.
+- **[Detail drawer](/docs/blocks/detail-drawer)**: shows a project's plan, platform and last event, its users, events and revenue over the last 30 days, and a line of events per day from the new `trend` field. `account` and `onAccountChange` are now `project` and `onProjectChange`, `DetailAccount` is `DetailProject`, and the more menu offers Copy project ID in place of Duplicate. The body scrolls in a Scroll area, so its edge fades out while content is hidden past it. The owner, health and labels fields are gone, and the drawer brings Chart and Scroll area with it in place of Meter.
