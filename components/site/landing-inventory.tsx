@@ -45,8 +45,8 @@ export function Inventory() {
   const templates = readTemplates();
 
   const tiles = [
-    countTile('components', 'Components', '/docs/components', components.length, 'Buttons, fields, overlays, tables and charts, each on Base UI.'),
-    countTile('block-categories', 'Block categories', '/docs/blocks', categories.length, `${listOf(sections)} pieces, ready to drop into a page.`),
+    countTile('components', 'Components', '/docs/components', components.length, 'Buttons, fields, overlays and charts on Base UI.'),
+    countTile('block-categories', 'Block categories', '/docs/blocks', categories.length, `Sorted into ${listOf(sections)}.`),
     countTile(
       'variants',
       'Variants',
