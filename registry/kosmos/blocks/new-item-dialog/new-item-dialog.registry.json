@@ -19,8 +19,11 @@
     "@kosmos/switch",
     "@kosmos/textarea"
   ],
+  "categories": ["new-item-dialog"],
   "meta": {
-    "group": "blocks"
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
   },
   "files": [
     {

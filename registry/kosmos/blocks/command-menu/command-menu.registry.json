@@ -15,8 +15,11 @@
     "@kosmos/command",
     "@kosmos/kbd"
   ],
+  "categories": ["command-menu"],
   "meta": {
-    "group": "blocks"
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
   },
   "files": [
     {

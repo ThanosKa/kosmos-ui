@@ -20,8 +20,11 @@
     "@kosmos/scroll-area",
     "@kosmos/skeleton"
   ],
+  "categories": ["kanban-board"],
   "meta": {
-    "group": "blocks"
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
   },
   "files": [
     {
