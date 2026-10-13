@@ -83,7 +83,7 @@ const sampleColumns: KanbanColumn[] = [
 ];
 
 const sampleRoadmapItems: KanbanItem[] = [
-  { id: 'slack-alerts', title: 'Slack alerts for traffic drops', column: 'ideas', area: platform, votes: 64 },
+  { id: 'chat-alerts', title: 'Chat alerts for traffic drops', column: 'ideas', area: platform, votes: 64 },
   { id: 'usage-invoices', title: 'Usage-based invoices', column: 'ideas', area: billing, votes: 27 },
   { id: 'shareable-links', title: 'Shareable dashboard links', column: 'ideas', area: insights, votes: 51 },
   { id: 'retention-cohorts', title: 'Retention cohorts by plan', column: 'planned', area: insights, votes: 88, assignee: kai, target: 'Q1 2027' },
