@@ -205,7 +205,7 @@ export function readTemplates(): Template[] {
  * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections,
  * or when a Pro variant names a category no free variant declares.
  */
-export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), proVariants: ProVariant[] = readProVariants()): BlockCategory[] {
+export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), shownProVariants: ProVariant[] = readProVariants()): BlockCategory[] {
   const categories = new Map<string, BlockCategory>();
   for (const variant of items.filter((item) => item.type === 'registry:block').map(freeVariant)) {
     const category = categories.get(variant.category) ?? { name: variant.category, section: variant.section, variants: [] };
@@ -215,7 +215,7 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems(),
     category.variants.push(variant);
     categories.set(variant.category, category);
   }
-  for (const variant of proVariants) {
+  for (const variant of shownProVariants) {
     const category = categories.get(variant.category);
     if (!category) throw new Error(`Pro variant "${variant.name}": block category "${variant.category}" has no free variant`);
     category.variants.push({ ...variant, section: category.section, tier: 'pro' });
@@ -232,9 +232,9 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems(),
 export function getBlockCategory(
   name: string,
   items: RegistryItem[] = readRegistryItems(),
-  proVariants?: ProVariant[],
+  shownProVariants?: ProVariant[],
 ): BlockCategory | undefined {
-  return readBlockCategories(items, proVariants).find((category) => category.name === name);
+  return readBlockCategories(items, shownProVariants).find((category) => category.name === name);
 }
 
 /** Every registry item, sorted by type then name, validated for unique names and existing files and deps. */

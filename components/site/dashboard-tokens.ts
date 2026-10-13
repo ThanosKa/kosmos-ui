@@ -30,24 +30,24 @@ export type DashboardTokens = { accent: DashboardAccent; radius: DashboardRadius
 
 export const defaultDashboardTokens: DashboardTokens = { accent: 'orange', radius: '10' };
 
-const landing = 'kosmos-landing';
-const dashboard = 'kosmos-dashboard';
+export const landingSource = 'kosmos-landing';
+export const dashboardSource = 'kosmos-dashboard';
 
 export type LandingMessage =
-  | { source: typeof landing; type: 'hello' }
-  | { source: typeof landing; type: 'tokens'; tokens: DashboardTokens }
-  | { source: typeof landing; type: 'page'; page: string };
+  | { source: typeof landingSource; type: 'hello' }
+  | { source: typeof landingSource; type: 'tokens'; tokens: DashboardTokens }
+  | { source: typeof landingSource; type: 'page'; page: string };
 
-export type DashboardMessage = { source: typeof dashboard; type: 'ready' } | { source: typeof dashboard; type: 'page'; page: string };
+export type DashboardMessage = { source: typeof dashboardSource; type: 'ready' } | { source: typeof dashboardSource; type: 'page'; page: string };
 
 type Payload<M> = M extends unknown ? Omit<M, 'source'> : never;
 
 export function toDashboard(frame: HTMLIFrameElement | null, message: Payload<LandingMessage>) {
-  frame?.contentWindow?.postMessage({ source: landing, ...message }, window.location.origin);
+  frame?.contentWindow?.postMessage({ source: landingSource, ...message }, window.location.origin);
 }
 
 export function toLanding(message: Payload<DashboardMessage>) {
-  window.parent.postMessage({ source: dashboard, ...message }, window.location.origin);
+  window.parent.postMessage({ source: dashboardSource, ...message }, window.location.origin);
 }
 
 /** The message, when it comes from the same origin and the expected side. */
@@ -56,6 +56,3 @@ export function readMessage<M extends LandingMessage | DashboardMessage>(event: 
   const data = event.data as { source?: unknown } | null;
   return data && typeof data === 'object' && data.source === from ? (data as M) : null;
 }
-
-export const landingSource = landing;
-export const dashboardSource = dashboard;
