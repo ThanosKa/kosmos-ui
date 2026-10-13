@@ -58,7 +58,7 @@ It needs `pnpm dev` running; `--port` is the dev server's port (3000 by default)
 3. It creates a new app in a temp folder with `npx shadcn@latest init -t next -b base` (preset `nova`, or `--preset <name>`), adds the `@kosmos` registry and `@kosmos/tokens`, then every other item in one `shadcn add`.
 4. It writes `/kosmos-smoke` with every item's docs preview, plus one page per item, then runs the app's `npm run typecheck` and `npm run build`.
 
-It prints install, dependencies, types and build per item, exits 1 if any fail, and keeps the app and logs in the temp folder it prints. It needs network access for npm. To check a single item in a clean app, use `pnpm registry:check <name>`.
+It prints install, dependencies, types and build per item and exits 1 if any fail. On failure, or with `--keep`, it keeps the app and logs in the temp folder it prints; on success it deletes them. It needs network access for npm. To check a single item in a clean app, use `pnpm registry:check <name>`.
 
 ### Claude Code
 

@@ -1,9 +1,9 @@
-// Usage: pnpm registry:smoke [--port 3103] [--preset nova]
+// Usage: pnpm registry:smoke [--port 3103] [--preset nova] [--keep]
 // Seam 3: proves what a user gets who follows content/docs/installation.mdx and installs everything.
 // 1. Runs `pnpm registry:build` and serves public/r on localhost (port 3103 by default, 0 picks a free one).
 // 2. Reads every built item and checks its imports against its own `dependencies` and `registryDependencies`
 //    (installing everything into one app would hide a missing one, since another item brings it in).
-// 3. In a new temp folder outside the repo (kept and printed), runs the documented steps with the documented
+// 3. In a new temp folder outside the repo (deleted on success unless --keep; on failure kept and printed), runs the documented steps with the documented
 //    runner (`npx shadcn@latest`): `init -t next -b base` (`-p nova`, the preset the prompt preselects, or --preset),
 //    `registry add @kosmos=<local url>`, `add @kosmos/tokens`, then `add` for every other item in one batch
 //    (one by one if the batch fails, to name the item that breaks it). Checks the files, packages and tokens landed.
@@ -31,7 +31,11 @@ import {
 
 const repo = process.cwd();
 const { values } = parseArgs({
-  options: { port: { type: 'string', default: '3103' }, preset: { type: 'string', default: 'nova' } },
+  options: {
+    port: { type: 'string', default: '3103' },
+    preset: { type: 'string', default: 'nova' },
+    keep: { type: 'boolean', default: false },
+  },
 });
 const [runner, ...runnerArgs] = packageRunners.npm.split(' '); // the docs' npm tab: `npx shadcn@latest`
 const work = mkdtempSync(join(tmpdir(), 'kosmos-smoke-'));
@@ -485,7 +489,11 @@ if (failures.length) {
   }
 }
 console.log(`\n  ${failures.length ? `✘ ${failures.length} of ${rows.length} failed` : `✔ all ${all.length} items installed, type checked and built`} in ${Math.round((Date.now() - started) / 1000)}s`);
-console.log(`  app kept for inspection: ${app}`);
-console.log(`  logs: ${logs}`);
-console.log(`  open it: cd ${app} && npm run start, then /kosmos-smoke`);
+if (failures.length || values.keep) {
+  console.log(`  app kept for inspection: ${app}`);
+  console.log(`  logs: ${logs}`);
+  console.log(`  open it: cd ${app} && npm run start, then /kosmos-smoke`);
+} else {
+  rmSync(work, { recursive: true, force: true });
+}
 process.exit(failures.length ? 1 : 0);
