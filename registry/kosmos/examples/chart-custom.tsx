@@ -11,30 +11,30 @@ import {
 } from '@/registry/kosmos/ui/chart';
 
 const data = [
-  { quarter: 'Q1', direct: 40, partners: 24, online: 18 },
-  { quarter: 'Q2', direct: 46, partners: 28, online: 27 },
-  { quarter: 'Q3', direct: 52, partners: 31, online: 36 },
-  { quarter: 'Q4', direct: 58, partners: 33, online: 45 },
+  { quarter: 'Q1', web: 40, ios: 24, android: 18 },
+  { quarter: 'Q2', web: 46, ios: 28, android: 27 },
+  { quarter: 'Q3', web: 52, ios: 31, android: 36 },
+  { quarter: 'Q4', web: 58, ios: 33, android: 45 },
 ];
 
 const config = {
-  direct: { label: 'Direct', color: 'var(--chart-1)' },
-  partners: { label: 'Partners', color: 'var(--chart-2)' },
-  online: { label: 'Online', color: 'var(--chart-3)' },
+  web: { label: 'Web', color: 'var(--chart-1)' },
+  ios: { label: 'iOS', color: 'var(--chart-2)' },
+  android: { label: 'Android', color: 'var(--chart-3)' },
 } satisfies ChartConfig;
 
 export default function ChartCustom() {
   return (
     <ChartContainer config={config} className="aspect-auto h-64 max-w-2xl">
-      <BarChart data={data} title="Deals closed per quarter, by channel" barGap={2}>
+      <BarChart data={data} title="Signups per quarter, by platform" barGap={2}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="quarter" tickLine={false} axisLine={false} tickMargin={8} />
         <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" />
         <ChartTooltip cursor content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="direct" fill="var(--color-direct)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-        <Bar dataKey="partners" fill="var(--color-partners)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-        <Bar dataKey="online" fill="var(--color-online)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+        <Bar dataKey="web" fill="var(--color-web)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+        <Bar dataKey="ios" fill="var(--color-ios)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+        <Bar dataKey="android" fill="var(--color-android)" radius={[4, 4, 0, 0]} maxBarSize={24} />
       </BarChart>
     </ChartContainer>
   );

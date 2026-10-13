@@ -28,6 +28,7 @@ export default function PageHeaderPreview() {
             filters={['scale', 'ios']}
             filterMenu={{ open: true, modal: false }}
             onAction={() => {}}
+            onNew={() => {}}
           >
             <Body />
           </PageHeader>
@@ -36,7 +37,7 @@ export default function PageHeaderPreview() {
 
       <PreviewSection title="Default">
         <div className={frame}>
-          <PageHeader leading={toggle} onAction={() => {}}>
+          <PageHeader leading={toggle} onAction={() => {}} onNew={() => {}}>
             <Body />
           </PageHeader>
         </div>
@@ -51,6 +52,7 @@ export default function PageHeaderPreview() {
             query="tide"
             defaultFilters={['pro', 'ios', 'web']}
             onAction={() => {}}
+            onNew={() => {}}
           >
             <Body text="Tidepool Notes" />
           </PageHeader>
@@ -64,6 +66,7 @@ export default function PageHeaderPreview() {
             title="Scale plan projects that are live, on trial or paused"
             description=""
             newLabel="New project"
+            onNew={() => {}}
             defaultFilters={['scale', 'server']}
             tabs={[
               { value: 'all', label: 'All projects', count: 1284 },
@@ -72,6 +75,14 @@ export default function PageHeaderPreview() {
               { value: 'paused', label: 'Paused this month', count: 65 },
             ]}
           >
+            <Body />
+          </PageHeader>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Read-only: no onNew and no onAction, so no primary action and no More actions menu">
+        <div className={frame}>
+          <PageHeader leading={toggle}>
             <Body />
           </PageHeader>
         </div>

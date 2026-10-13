@@ -52,7 +52,7 @@ const trend = (values: number[]) => values.map((value) => ({ value }));
 const tiles = [
   { label: 'Revenue', value: '$45.6K', change: '+10.7%', rising: true, data: trend(revenue), color: 'var(--chart-1)' },
   { label: 'Signups', value: '1,284', change: '+4.2%', rising: true, data: trend([30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81]), color: 'var(--chart-3)' },
-  { label: 'Churn', value: '2.1%', change: '−0.3 pts', rising: false, data: trend([3.1, 3, 2.9, 3.2, 2.8, 2.7, 2.6, 2.6, 2.4, 2.3, 2.2, 2.1]), color: 'var(--chart-2)' },
+  { label: 'Dropped events', value: '0.21%', change: '−0.03 pts', rising: false, data: trend([0.31, 0.3, 0.29, 0.32, 0.28, 0.27, 0.26, 0.26, 0.24, 0.23, 0.22, 0.21]), color: 'var(--chart-2)' },
 ];
 
 export default function ChartPreview() {

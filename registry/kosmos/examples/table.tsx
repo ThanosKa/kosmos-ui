@@ -12,10 +12,10 @@ import {
 } from '@/registry/kosmos/ui/table';
 
 const invoices = [
-  { id: 'INV-1042', customer: 'Northwind Traders', status: 'Paid', tone: 'bg-success', amount: 1250 },
-  { id: 'INV-1043', customer: 'Acme Corporation', status: 'Pending', tone: 'bg-warning', amount: 980.5 },
-  { id: 'INV-1044', customer: 'Globex', status: 'Overdue', tone: 'bg-destructive', amount: 12400 },
-  { id: 'INV-1045', customer: 'Initech', status: 'Paid', tone: 'bg-success', amount: 75 },
+  { id: 'INV-1042', project: 'Fernhill Books', status: 'Paid', tone: 'bg-success', amount: 2400 },
+  { id: 'INV-1043', project: 'Brightloop Fitness', status: 'Pending', tone: 'bg-warning', amount: 3600 },
+  { id: 'INV-1044', project: 'Copperline Bank', status: 'Overdue', tone: 'bg-destructive', amount: 4800 },
+  { id: 'INV-1045', project: 'Saltmarsh Coffee', status: 'Paid', tone: 'bg-success', amount: 149 },
 ];
 
 const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -37,7 +37,7 @@ export default function TablePreview() {
           <TableHeader>
             <TableRow>
               <TableHead>State</TableHead>
-              <TableHead>Customer</TableHead>
+              <TableHead>Project</TableHead>
               <TableHead className="text-end">Amount</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
@@ -47,8 +47,8 @@ export default function TablePreview() {
           <TableBody>
             <TableRow>
               <TableCell className="text-muted-foreground">default</TableCell>
-              <TableCell>Northwind Traders</TableCell>
-              <TableCell className="text-end">{money.format(1250)}</TableCell>
+              <TableCell>Fernhill Books</TableCell>
+              <TableCell className="text-end">{money.format(2400)}</TableCell>
               <TableCell className="w-0 text-end">
                 <Button variant="ghost" size="sm">
                   Open
@@ -57,8 +57,8 @@ export default function TablePreview() {
             </TableRow>
             <TableRow data-preview="hover">
               <TableCell className="text-muted-foreground">hover</TableCell>
-              <TableCell>Acme Corporation</TableCell>
-              <TableCell className="text-end">{money.format(980.5)}</TableCell>
+              <TableCell>Brightloop Fitness</TableCell>
+              <TableCell className="text-end">{money.format(3600)}</TableCell>
               <TableCell className="w-0 text-end">
                 <Button variant="ghost" size="sm">
                   Open
@@ -67,8 +67,8 @@ export default function TablePreview() {
             </TableRow>
             <TableRow data-state="selected">
               <TableCell className="text-muted-foreground">selected</TableCell>
-              <TableCell>Globex</TableCell>
-              <TableCell className="text-end">{money.format(12400)}</TableCell>
+              <TableCell>Copperline Bank</TableCell>
+              <TableCell className="text-end">{money.format(4800)}</TableCell>
               <TableCell className="w-0 text-end">
                 <Button variant="ghost" size="sm">
                   Open
@@ -77,8 +77,8 @@ export default function TablePreview() {
             </TableRow>
             <TableRow>
               <TableCell className="text-muted-foreground">focus</TableCell>
-              <TableCell>Initech</TableCell>
-              <TableCell className="text-end">{money.format(75)}</TableCell>
+              <TableCell>Saltmarsh Coffee</TableCell>
+              <TableCell className="text-end">{money.format(149)}</TableCell>
               <TableCell className="w-0 text-end">
                 <Button variant="ghost" size="sm" data-preview="focus">
                   Open
@@ -95,7 +95,7 @@ export default function TablePreview() {
           <TableHeader>
             <TableRow>
               <TableHead>Invoice</TableHead>
-              <TableHead>Customer</TableHead>
+              <TableHead>Project</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-end">Amount</TableHead>
             </TableRow>
@@ -104,7 +104,7 @@ export default function TablePreview() {
             {invoices.map((invoice) => (
               <TableRow key={invoice.id}>
                 <TableCell className="font-medium">{invoice.id}</TableCell>
-                <TableCell>{invoice.customer}</TableCell>
+                <TableCell>{invoice.project}</TableCell>
                 <TableCell>
                   <Status label={invoice.status} tone={invoice.tone} />
                 </TableCell>
@@ -127,25 +127,25 @@ export default function TablePreview() {
         <Table className="table-fixed">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[45%]">Company</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead className="w-24 text-end">Deals</TableHead>
+              <TableHead className="w-[45%]">Project</TableHead>
+              <TableHead>Domain</TableHead>
+              <TableHead className="w-24 text-end">Users</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell className="truncate" title="International Business Machines Corporation, Europe, Middle East and Africa">
-                International Business Machines Corporation, Europe, Middle East and Africa
+              <TableCell className="truncate" title="Copperline Bank server events for card payments, loans and the business portal">
+                Copperline Bank server events for card payments, loans and the business portal
               </TableCell>
-              <TableCell className="truncate" title="Alexandra Konstantinidou-Papadopoulou">
-                Alexandra Konstantinidou-Papadopoulou
+              <TableCell className="truncate" title="payments-gateway.eu-west.copperline.example">
+                payments-gateway.eu-west.copperline.example
               </TableCell>
-              <TableCell className="text-end">1,204</TableCell>
+              <TableCell className="text-end">12,940</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell className="truncate">Hooli</TableCell>
-              <TableCell className="truncate">Gavin Belson</TableCell>
-              <TableCell className="text-end">8</TableCell>
+              <TableCell className="truncate">Kiln Studio</TableCell>
+              <TableCell className="truncate">kiln.example</TableCell>
+              <TableCell className="text-end">120</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -157,7 +157,7 @@ export default function TablePreview() {
             <TableHeader>
               <TableRow>
                 <TableHead>Invoice</TableHead>
-                <TableHead>Customer</TableHead>
+                <TableHead>Project</TableHead>
                 <TableHead>Issued</TableHead>
                 <TableHead>Due</TableHead>
                 <TableHead>Status</TableHead>
@@ -169,7 +169,7 @@ export default function TablePreview() {
               {invoices.map((invoice) => (
                 <TableRow key={invoice.id}>
                   <TableCell className="font-medium">{invoice.id}</TableCell>
-                  <TableCell>{invoice.customer}</TableCell>
+                  <TableCell>{invoice.project}</TableCell>
                   <TableCell>Oct 2, 2026</TableCell>
                   <TableCell>Nov 1, 2026</TableCell>
                   <TableCell>

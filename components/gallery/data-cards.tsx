@@ -24,8 +24,8 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',
 const rangeLabel: Record<RevenueRange, string> = { '7d': 'last 7 days', '30d': 'last 30 days', '90d': 'last 90 days' };
 
 const revenueConfig = {
-  newBusiness: { label: 'New business', color: 'var(--chart-1)' },
-  expansion: { label: 'Expansion', color: 'var(--chart-2)' },
+  scale: { label: 'Scale', color: 'var(--chart-1)' },
+  pro: { label: 'Pro', color: 'var(--chart-2)' },
 } satisfies ChartConfig;
 
 /** Chart, SegmentedControl, Badge. */
@@ -35,8 +35,8 @@ export function RevenueCard() {
   const up = summary.change >= 0;
   return (
     <GalleryCard
-      title="Revenue"
-      description="New business and expansion"
+      title="Monthly revenue"
+      description="Scale and Pro plans"
       action={
         <SegmentedControl
           size="sm"
@@ -58,7 +58,7 @@ export function RevenueCard() {
         </Badge>
       </div>
       <GrowthChart
-        title={`Revenue, ${rangeLabel[range]}`}
+        title={`Monthly revenue, ${rangeLabel[range]}`}
         data={revenue[range]}
         config={revenueConfig}
         xKey="label"
@@ -70,13 +70,13 @@ export function RevenueCard() {
 }
 
 const signups = [30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81].map((value) => ({ value }));
-const churn = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ value }));
+const droppedEvents = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ value }));
 
 /** Sparkline stat tiles, each its own card. */
 export function KpiCard() {
   const tiles = [
     { label: 'Signups', value: '1,284', change: '+4.2%', rising: true, data: signups, color: 'var(--chart-1)' },
-    { label: 'Churn', value: '1.8%', change: '−0.6 pts', rising: false, data: churn, color: 'var(--chart-3)' },
+    { label: 'Dropped events', value: '0.18%', change: '−0.06 pts', rising: false, data: droppedEvents, color: 'var(--chart-3)' },
   ];
   return (
     <section aria-label="This month" className="grid grid-cols-2 gap-4">
@@ -108,7 +108,7 @@ export function MembersCard() {
   return (
     <GalleryCard
       title="Members"
-      description="5 people in Acme Inc."
+      description="4 people in Parallax"
       action={
         <div className="flex items-center gap-3">
           <AvatarGroup>
@@ -119,7 +119,7 @@ export function MembersCard() {
               </Avatar>
             ))}
             <AvatarGroupCount size="sm">
-              +2<span className="sr-only"> more</span>
+              +1<span className="sr-only"> more</span>
             </AvatarGroupCount>
           </AvatarGroup>
           <Button variant="secondary" size="sm">
@@ -195,23 +195,17 @@ export function UsageCard() {
   return (
     <GalleryCard
       title="Usage"
-      description="Team plan · renews on November 1"
-      action={<Badge variant="secondary">Team</Badge>}
+      description="Pro plan · next invoice on November 1"
+      action={<Badge variant="orange">Pro</Badge>}
     >
       <Meter value={18} max={25}>
         <MeterLabel>Seats</MeterLabel>
         <MeterValue>{(_, value) => `${value} of 25`}</MeterValue>
         <MeterBar />
       </Meter>
-      <Meter
-        value={44}
-        max={50}
-        optimum={0}
-        tone="auto"
-        format={{ style: 'unit', unit: 'gigabyte', maximumFractionDigits: 1 }}
-      >
-        <MeterLabel>Storage</MeterLabel>
-        <MeterValue>{(formatted) => `${formatted} of 50 GB`}</MeterValue>
+      <Meter value={4.4} max={5} optimum={0} tone="auto" format={{ maximumFractionDigits: 1 }}>
+        <MeterLabel>Events this month</MeterLabel>
+        <MeterValue>{(formatted) => `${formatted}M of 5M`}</MeterValue>
         <MeterBar />
       </Meter>
       <Meter value={62} tone="success">
@@ -220,7 +214,7 @@ export function UsageCard() {
         <MeterSegments />
       </Meter>
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <p className="text-small text-muted-foreground">Storage is almost full.</p>
+        <p className="text-small text-muted-foreground">Events are close to this month’s quota.</p>
         <Button variant="primary">Upgrade plan</Button>
       </div>
     </GalleryCard>

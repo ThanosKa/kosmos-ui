@@ -19,7 +19,7 @@ const stageClass = 'h-[22rem]';
 
 const changes = [
   'Four seats added on August 4.',
-  'Storage add-on renewed at the yearly rate.',
+  'Data retention add-on moved to the yearly rate.',
   'Two seats removed on August 19.',
   'Priority support added for the rest of the quarter.',
   'A credit of $120 from the July outage.',
@@ -129,7 +129,7 @@ export default function PopoverPreview() {
                     <PopoverHeader>
                       <PopoverTitle>Why is this invoice higher than the previous quarterly invoice?</PopoverTitle>
                       <PopoverDescription>
-                        Four seats were added in August and the storage add-on renewed at the new yearly rate. Both
+                        Four seats were added in August and the data retention add-on moved to the new yearly rate. Both
                         changes are prorated from the day they started.
                       </PopoverDescription>
                     </PopoverHeader>

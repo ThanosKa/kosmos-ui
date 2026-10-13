@@ -5,7 +5,7 @@
   "title": "Sidebar",
   "description": "A composable app sidebar: provider, header, content, groups, menu items, footer and a resize handle that works by drag and by keyboard. Collapses to a column of icons with tooltips or to the left edge, toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/drawer", "@kosmos/kbd", "@kosmos/separator", "@kosmos/tooltip"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/drawer", "@kosmos/kbd", "@kosmos/scroll-area", "@kosmos/separator", "@kosmos/tooltip"],
   "meta": { "group": "navigation" },
   "files": [
     {

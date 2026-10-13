@@ -18,10 +18,10 @@ export default function DialogDemo() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Invite to workspace</DialogTitle>
-          <DialogDescription>New members can see every project in Acme.</DialogDescription>
+          <DialogDescription>New members can see every project in Parallax.</DialogDescription>
         </DialogHeader>
         <DialogBody>
-          <p>We&apos;ll email an invite to ana@acme.com. It expires in 7 days.</p>
+          <p>We&apos;ll email an invite to kai@parallax.example. It expires in 7 days.</p>
         </DialogBody>
         <DialogFooter>
           <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
