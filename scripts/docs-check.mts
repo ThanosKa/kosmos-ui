@@ -1,10 +1,15 @@
 // Usage: pnpm docs:check [--port 3000 | --base http://localhost:3000] [--only <text>]
 // Checks the docs site from a running dev server in a real browser: each check opens pages and asserts what a
 // visitor sees. Prints one line per check; exits 1 when any check fails. --only runs the checks whose name holds <text>.
+// Pro variants: the checks read NEXT_PUBLIC_KOSMOS_PRO_URL (from the environment or .env.local) as the dev server does,
+// so run both with the same value. Unset, they assert the site shows no Pro variant; set, that it shows each one live
+// from the Pro deployment, which must be running too.
 import assert from 'node:assert/strict';
 import { globSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
+import { readProVariants } from '../lib/registry.ts';
+import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
 
 const { values } = parseArgs({
   options: {
@@ -127,8 +132,12 @@ function categoryUrls(section: string) {
   return [...new Set(authoredBlocks.filter((block) => block.meta?.section === section).map(categoryUrl))].sort();
 }
 
-/** How many variants the block category at `url` holds: its free variants, since Pro ones never enter this repo. */
-const variantCount = (url: string) => authoredBlocks.filter((block) => categoryUrl(block) === url).length;
+/** The Pro variants the dev server shows: none unless the Pro deployment is set. */
+const proVariants = readProVariants();
+
+/** How many variants the block category at `url` holds: its free variants and the Pro ones the site shows. */
+const variantCount = (url: string) =>
+  authoredBlocks.filter((block) => categoryUrl(block) === url).length + proVariants.filter((variant) => `/docs/blocks/${variant.category}` === url).length;
 
 const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
@@ -383,7 +392,8 @@ const checks: Check[] = [
       await viewer.getByRole('tab', { name: 'Code' }).click();
       const panel = viewer.getByRole('tabpanel');
       assert.equal(await panel.locator('[data-slot="code-block"]').count(), 0, 'no code');
-      assert.equal(await panel.getByRole('link', { name: 'Get Pro' }).getAttribute('href'), '/pro', 'link to Pro');
+      if (proUrl) assert.equal(await panel.getByRole('link', { name: 'Get Pro' }).getAttribute('href'), proUrl, 'link to Pro');
+      else assert.equal(await panel.getByRole('link').count(), 0, 'no link to Pro while there is no store');
       const free = page.locator('[data-block-variant][data-tier="free"]');
       assert.equal(await free.count(), 1, 'the free variant stays first');
       assert.ok(
@@ -391,6 +401,38 @@ const checks: Check[] = [
         'free before Pro',
       );
       await close();
+    },
+  },
+  {
+    name: proDeploymentUrl
+      ? 'with the Pro deployment set, each Pro variant shows on its category page, live from the deployment in the docs theme'
+      : 'without the Pro deployment, no page shows a Pro variant',
+    async run(browser) {
+      for (const url of [...new Set(authoredBlocks.map(categoryUrl))]) {
+        const { page, close } = await openPage(browser, url);
+        const expected = proVariants.filter((variant) => `/docs/blocks/${variant.category}` === url);
+        const viewers = page.locator('[data-block-variant][data-tier="pro"]');
+        assert.deepEqual(await viewers.evaluateAll((sections) => sections.map((section) => section.id)), expected.map((variant) => variant.name), `${url}: Pro variants`);
+        for (const variant of expected) {
+          const viewer = blockViewer(page, variant.name);
+          assert.equal((await viewer.locator('[data-slot="badge"]').textContent())?.trim(), 'Pro', `${variant.name}: Pro badge`);
+          assert.equal(await viewer.getByRole('button', { name: /^Copy install command/ }).count(), 0, `${variant.name}: no install command`);
+          const frame = viewer.locator('iframe');
+          await frame.scrollIntoViewIfNeeded();
+          const src = new URL((await frame.getAttribute('src')) ?? '');
+          assert.equal(`${src.origin}${src.pathname}`, variant.previewUrl, `${variant.name}: preview from the Pro deployment`);
+          assert.equal(src.searchParams.get('theme'), 'light', `${variant.name}: preview in the docs theme`);
+          // The preview is live: the Pro page renders, and reports its height so the frame fits it.
+          await frame.contentFrame().locator('[data-preview-content] h1, [data-preview-content] h2').first().waitFor({ timeout: 15_000 });
+          assert.ok((await frame.evaluate((element) => element.getBoundingClientRect().height)) >= 560, `${variant.name}: frame height`);
+          await viewer.getByRole('tab', { name: 'Code' }).click();
+          assert.equal(await viewer.getByRole('tabpanel').locator('[data-slot="code-block"]').count(), 0, `${variant.name}: code locked`);
+        }
+        await close();
+        const markdown = await fetchText(`${url}.md`);
+        for (const variant of expected) assert.ok(markdown.includes(`## ${variant.title} (Pro)\n`) && markdown.includes(variant.previewUrl), `${url}.md lists ${variant.name}`);
+        if (!expected.length) assert.doesNotMatch(markdown, /\(Pro\)/, `${url}.md lists no Pro variant`);
+      }
     },
   },
   {
@@ -552,7 +594,7 @@ const checks: Check[] = [
         {
           Components: String(authoredItems.filter((item) => item.type === 'registry:ui').length),
           'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
-          Variants: String(authoredBlocks.length),
+          Variants: String(authoredBlocks.length + proVariants.length),
         },
         'inventory counts (no Templates while there are none)',
       );
