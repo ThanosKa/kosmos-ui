@@ -21,8 +21,8 @@ const previewWidths = {
 } as const;
 type PreviewWidth = keyof typeof previewWidths;
 
-/** Blocks bring their own dialogs and drawers, so the frame keeps room for them even when the block is short. */
-const previewMinHeight = 560;
+/** A short block is centered in a frame this tall; a taller one sets the height. Overlay demos bring their own frame. */
+const previewMinHeight = 320;
 
 /**
  * A preview on another origin (the Pro deployment) cannot read the docs theme, which next-themes keeps in this
@@ -113,13 +113,13 @@ export function BlockViewerPanels({
       <TabsContent value="preview" keepMounted className="focus-visible:-outline-offset-2">
         <div data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
           <div
-            className={cn('box-content w-full', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
+            className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-none', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
             style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
           >
             {src ? (
               <PreviewFrame src={src} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
             ) : (
-              <div aria-hidden className="h-140 bg-background" />
+              <div aria-hidden className="h-80 bg-background" />
             )}
           </div>
         </div>

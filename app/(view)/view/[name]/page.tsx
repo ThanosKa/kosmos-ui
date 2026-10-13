@@ -25,8 +25,9 @@ export default async function ViewPage(props: PageProps<'/view/[name]'>) {
   return (
     <RootProvider search={{ enabled: false }} theme={{ forcedTheme, hotKey: false }}>
       {/* Not a <main>: blocks and app shells in the preview bring their own. Inside a docs frame (`PreviewFrame` marks
-          it) the content sits at the top, so a block that shrinks never moves what is above it. */}
-      <div data-preview-root={name} className="flex min-h-dvh items-center justify-center p-6 data-in-frame:items-start sm:p-10">
+          it) the content sits at the top, so a block that shrinks never moves what is above it, unless it is short enough
+          to be centered in the frame's minimum height (`data-centered`). */}
+      <div data-preview-root={name} className="flex min-h-dvh items-center justify-center p-6 data-in-frame:not-data-centered:items-start sm:p-10">
         <div data-preview-content className="flex w-full justify-center">
           <Example />
         </div>

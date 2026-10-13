@@ -7,7 +7,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
  * A preview route in an iframe, sized to its content. While its width stays the same it only grows, so a
  * block that shrinks as someone filters it never moves the page or the control under the pointer. A `src` without `?theme=` follows the docs theme
  * toggle (next-themes syncs both documents through localStorage); with it the frame is pinned to that theme
- * (the approval page shows light and dark side by side). A page on another origin can't be measured, so it
+ * (the approval page shows light and dark side by side). Content shorter than `minHeight` is centered in the frame (the page marks itself `data-centered`); taller content sits at the top. A page on another origin can't be measured, so it
  * reports its own height with a `kosmos:preview-height` message (the Pro previews do); until then its frame keeps
  * `minHeight`.
  */
@@ -38,7 +38,9 @@ export function PreviewFrame({
       root.dataset.inFrame = '';
       const style = doc.defaultView.getComputedStyle(root);
       const padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-      const next = Math.max(minHeight, Math.ceil(content.getBoundingClientRect().height + padding));
+      const natural = Math.ceil(content.getBoundingClientRect().height + padding);
+      const next = Math.max(minHeight, natural);
+      root.toggleAttribute('data-centered', natural <= minHeight);
       const resized = iframe.clientWidth !== measuredWidth;
       measuredWidth = iframe.clientWidth;
       setHeight((current) => (resized ? next : Math.max(current, next)));
