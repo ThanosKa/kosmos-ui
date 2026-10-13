@@ -26,7 +26,7 @@ Then, with `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four
 
 ### Site checks
 
-`pnpm docs:check --port 3000` opens the docs and the landing page in a browser, with `pnpm dev` running, and asserts what a visitor sees: header tabs, sidebars, the block viewer, the landing sections, search and the Markdown pages. Run it after you change the docs shell or the landing page.
+`pnpm docs:check --port 3000` opens the docs and the landing page in a browser, with `pnpm dev` running, and asserts what a visitor sees: header tabs, sidebars, the block viewer, the landing sections, search and the Markdown pages. Run it after you change the docs shell or the landing page. It reads `NEXT_PUBLIC_KOSMOS_PRO_URL` like the dev server does: unset, it asserts that no Pro variant shows; set (to a running Pro deployment, which only the maintainer has), it asserts each one shows live on its category page. Give both the same value.
 
 Before a release, crawl the production build for broken links:
 

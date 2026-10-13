@@ -23,7 +23,7 @@ export function BlockViewers({ category }: { category: BlockCategory }) {
 /**
  * One variant of a block category: its name and tier over a live preview, at desktop, tablet or phone width, and its
  * code. Everything comes from the variant's data: a free variant shows every file of its registry item and its install
- * command; a Pro variant, whose code never enters this repo, shows its code locked with a link to Pro.
+ * command; a Pro variant, whose code never enters this repo, shows its code locked (with a link to Pro once it sells).
  */
 function BlockViewer({ variant }: { variant: BlockVariant }) {
   const headingId = `${variant.name}-heading`;
@@ -70,10 +70,14 @@ function LockedCode() {
   return (
     <div className="flex min-h-60 flex-col items-center justify-center gap-3 p-6 text-center">
       <Lock aria-hidden className="size-4 text-muted-foreground" />
-      <p className="max-w-[32em] text-body text-muted-foreground">The code of this variant comes with Pro.</p>
-      <Button variant="secondary" href={proUrl}>
-        Get Pro
-      </Button>
+      <p className="max-w-[32em] text-body text-pretty text-muted-foreground">
+        {proUrl ? 'The code of this variant comes with Pro.' : 'The code of this variant comes with Pro, which is not on sale yet. Try it live in Preview.'}
+      </p>
+      {proUrl && (
+        <Button variant="secondary" href={proUrl}>
+          Get Pro
+        </Button>
+      )}
     </div>
   );
 }
