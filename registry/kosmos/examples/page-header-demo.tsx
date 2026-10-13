@@ -38,7 +38,8 @@ const statuses: Record<Status, { label: string; dot: string }> = {
   paused: { label: 'Paused', dot: 'bg-warning' },
 };
 
-const actionLabels: Record<PageHeaderAction, string> = {
+const actionLabels: Record<PageHeaderAction | 'new', string> = {
+  new: 'New project',
   import: 'Import from CSV',
   export: 'Export to CSV',
   'copy-link': 'Copy link to view',
@@ -59,7 +60,7 @@ export default function PageHeaderDemo() {
   const [tab, setTab] = useState('all');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<string[]>([]);
-  const [action, setAction] = useState<PageHeaderAction | null>(null);
+  const [action, setAction] = useState<PageHeaderAction | 'new' | null>(null);
 
   const matching = projects.filter((project) => matches(project, query, filters));
   const shown = tab === 'all' ? matching : matching.filter((project) => project.status === tab);
@@ -83,6 +84,7 @@ export default function PageHeaderDemo() {
         filters={filters}
         onFiltersChange={setFilters}
         onAction={setAction}
+        onNew={() => setAction('new')}
       >
         {shown.length ? (
           <ul aria-label="Projects" className="@container flex flex-col divide-y divide-border">
