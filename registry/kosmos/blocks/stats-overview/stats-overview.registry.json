@@ -15,7 +15,8 @@
     "@kosmos/skeleton",
     "@kosmos/tabs"
   ],
-  "meta": { "group": "blocks" },
+  "categories": ["stats-overview"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/stats-overview/stats-overview.tsx",

@@ -14,7 +14,8 @@
     "@kosmos/avatar",
     "@kosmos/kbd"
   ],
-  "meta": { "group": "blocks" },
+  "categories": ["app-sidebar"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/app-sidebar/app-sidebar.tsx",

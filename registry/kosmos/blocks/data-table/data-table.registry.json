@@ -17,7 +17,8 @@
     "@kosmos/empty",
     "@kosmos/skeleton"
   ],
-  "meta": { "group": "blocks" },
+  "categories": ["data-table"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/data-table/data-table.tsx",

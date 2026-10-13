@@ -4,9 +4,10 @@ import { renderPlaceholder, type PlaceholderData } from 'fumadocs-core/mdx-plugi
 import type { ApiProp } from '../components/docs/api-table';
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
-import { getDocsIndex, getDocsNav, groupOfPage, type DocsIndexItem } from './docs-nav';
+import { blockCategoryOfPage, getDocsIndex, getDocsNav, groupOfPage, type DocsIndexItem } from './docs-nav';
 import { colorTokens, modeLabels, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
+  blockTiers,
   cssVarsAsCss,
   exampleExtras,
   getRegistryItem,
@@ -19,6 +20,7 @@ import {
   registryNamespace,
   resolveRegistryTree,
   toInstalledImports,
+  type BlockCategory,
 } from './registry';
 import { appName, siteUrl } from './shared';
 import { source, type DocsPage } from './source';
@@ -102,9 +104,9 @@ const placeholders = {
     const folder = String(attributes.folder) as 'components' | 'blocks';
     const list = (items: DocsIndexItem[]) =>
       items.map((item) => `- [${item.title}](${item.url})${item.description ? `: ${item.description}` : ''}`).join('\n');
-    const groups = getDocsIndex(folder);
-    if (folder === 'blocks') return list(groups.flatMap((group) => group.items));
-    return groups.map((group) => `## ${group.label}\n\n${list(group.items)}`).join('\n\n');
+    return getDocsIndex(folder)
+      .map((group) => `## ${group.label}\n\n${list(group.items)}`)
+      .join('\n\n');
   },
   Steps: ({ children }: PlaceholderData) => children.trim(),
   Step: ({ children }: PlaceholderData) => `${children.trim()}\n`,
@@ -164,6 +166,22 @@ function previewMarkdown(data: PlaceholderData, pageItem?: string) {
   return `${fence('tsx', toInstalledImports(source))}${note}`;
 }
 
+/** The variants of a block category, as a block category page shows them over its body: each with its tier, preview and install. */
+function variantsMarkdown(category: BlockCategory) {
+  return category.variants
+    .map((variant) =>
+      [
+        `## ${variant.title} (${blockTiers[variant.tier]})`,
+        variant.description,
+        `Preview: ${absolute(variant.previewUrl)}`,
+        variant.tier === 'free' && fence('bash', `${packageRunners.npm} add ${registryNamespace}/${variant.name}`),
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
+    )
+    .join('\n\n');
+}
+
 /** Root-relative links in a page body, made absolute. */
 const absoluteLinks = (markdown: string) => markdown.replace(/\]\((\/[^)\s]*)\)/g, (_, path: string) => `](${absolute(path)})`);
 
@@ -173,6 +191,7 @@ const markdownPath = (page: DocsPage) => `${page.url}.md`;
 /** A docs page as Markdown: the title, the description as a quote, its address, then the body. */
 export async function pageMarkdown(page: DocsPage): Promise<string> {
   const pageItem = groupOfPage(page) && page.slugs[1];
+  const category = blockCategoryOfPage(page);
   const body = await renderPlaceholder(await page.data.getText('processed'), {
     ...placeholders,
     ComponentPreview: (data: PlaceholderData) => previewMarkdown(data, pageItem),
@@ -181,6 +200,7 @@ export async function pageMarkdown(page: DocsPage): Promise<string> {
     `# ${page.data.title}`,
     page.data.description && `> ${page.data.description}`,
     `Source: ${absolute(page.url)}`,
+    category && variantsMarkdown(category),
     absoluteLinks(body).trim(),
   ]
     .filter(Boolean)
@@ -194,8 +214,9 @@ function pagesInOrder(): { label: string; pages: DocsPage[] }[] {
   const sections = getDocsNav().sections.flatMap((section) => {
     const ownGroups = section.groups.filter((group) => group.label === section.label);
     const subGroups = section.groups.filter((group) => group.label !== section.label);
+    const label = section.tab === 'blocks' && section.id !== 'blocks' ? `Blocks: ${section.label}` : section.label;
     return [
-      { label: section.label, pages: pagesOf([...section.items, ...ownGroups.flatMap((group) => group.items)]) },
+      { label, pages: pagesOf([...section.items, ...ownGroups.flatMap((group) => group.items)]) },
       ...subGroups.map((group) => ({ label: `${section.label}: ${group.label}`, pages: pagesOf(group.items) })),
     ];
   });

@@ -13,7 +13,8 @@
     "@kosmos/input",
     "@kosmos/tabs"
   ],
-  "meta": { "group": "blocks" },
+  "categories": ["page-header"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/page-header/page-header.tsx",

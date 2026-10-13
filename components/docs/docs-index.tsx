@@ -15,39 +15,27 @@ const imageSizes: Record<Folder, string> = {
 };
 
 /**
- * A card for every component or block, so the index never needs a hand-kept list. Components sit in
- * their registry groups; blocks form one grid of larger cards. Thumbnails come from `pnpm thumbnails`.
+ * A card for every component or block category, so the index never needs a hand-kept list. Components sit in their
+ * registry groups, block categories in their block sections as larger cards. Thumbnails come from `pnpm thumbnails`.
  */
 export function DocsIndex({ folder }: { folder: Folder }) {
-  const groups = getDocsIndex(folder);
-  if (folder === 'blocks') {
-    return (
-      <div className="not-prose @container">
-        <IndexGrid folder={folder} items={groups.flatMap((group) => group.items)} eager />
-      </div>
-    );
-  }
   return (
     <div className="not-prose flex flex-col gap-10 @container">
-      {groups.map((group, index) => (
-        <IndexGroup key={group.id} group={group} eager={index === 0} />
+      {getDocsIndex(folder).map((group, index) => (
+        <IndexGroup key={group.id} folder={folder} group={group} eager={index === 0} />
       ))}
     </div>
   );
 }
 
-function IndexGroup({ group, eager }: { group: DocsIndexGroup; eager: boolean }) {
-  const headingId = `group-${group.id}`;
+function IndexGroup({ folder, group, eager }: { folder: Folder; group: DocsIndexGroup; eager: boolean }) {
   return (
-    <section data-docs-group aria-labelledby={headingId} className="flex flex-col gap-3">
-      <h2
-        id={headingId}
-        className={cn('flex items-center gap-2 [&_svg]:size-3.5', eyebrowClass)}
-      >
+    <section data-docs-group aria-labelledby={group.anchor} className="flex flex-col gap-3">
+      <h2 id={group.anchor} className={cn('flex items-center gap-2 [&_svg]:size-3.5', eyebrowClass)}>
         {group.icon}
         {group.label} <span className="tabular-nums">{group.items.length}</span>
       </h2>
-      <IndexGrid folder="components" items={group.items} eager={eager} />
+      <IndexGrid folder={folder} items={group.items} eager={eager} />
     </section>
   );
 }
