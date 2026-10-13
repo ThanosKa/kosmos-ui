@@ -11,12 +11,6 @@ import { NewItemDialog } from '@/registry/kosmos/blocks/new-item-dialog/new-item
 import { PageHeader } from '@/registry/kosmos/blocks/page-header/page-header';
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
-const workspaces = [
-  { id: 'acme', name: 'Acme Inc.', plan: 'Team plan' },
-  { id: 'sandbox', name: 'Acme Sandbox', plan: 'Free plan' },
-];
-const user = { name: 'Maya Chen', email: 'maya@acme.example', initials: 'MC' };
-
 const tabs = [
   { value: 'all', label: 'All', count: sampleProjects.length },
   ...(['live', 'trial', 'paused'] as const).map((status) => ({
@@ -28,7 +22,7 @@ const tabs = [
 
 /** AppSidebar, SidebarResizeHandle, PageHeader and DataTable in one app frame. */
 export function AppFrame() {
-  const [active, setActive] = useState('accounts');
+  const [active, setActive] = useState('projects');
   const [tab, setTab] = useState('all');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<string[]>([]);
@@ -40,8 +34,6 @@ export function AppFrame() {
       className="min-h-0 overflow-hidden rounded-2xl border border-transparent shadow-card md:h-[36rem]"
     >
       <AppSidebar
-        workspaces={workspaces}
-        user={user}
         activeItem={active}
         onNavigate={(id, event) => {
           event.preventDefault();

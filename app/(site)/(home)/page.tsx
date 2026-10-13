@@ -43,7 +43,7 @@ export default function HomePage() {
         </h2>
         <DashboardShowcase />
         <p className="text-center text-small text-pretty text-muted-foreground">
-          A live dashboard built from the free blocks. Open an account, drag cards on the board or{' '}
+          A live dashboard built from the free blocks. Open a project, drag cards on the roadmap or{' '}
           <Link
             href="/docs/blocks"
             className="rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
