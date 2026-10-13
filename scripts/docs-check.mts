@@ -96,6 +96,18 @@ async function assertCurrentTab(page: Page, label: string, where: string) {
   assert.equal(color, await cssColor(page, '--active-foreground'), `${where}: current tab color`);
 }
 
+/** The addresses of the 8 blocks before block categories; each is now the page of its category. */
+const oldBlockUrls = [
+  'app-sidebar',
+  'command-menu',
+  'data-table',
+  'detail-drawer',
+  'kanban-board',
+  'new-item-dialog',
+  'page-header',
+  'stats-overview',
+].map((name) => `/docs/blocks/${name}`);
+
 type Check = { name: string; run: (browser: Browser) => Promise<void> };
 
 const checks: Check[] = [
@@ -185,6 +197,54 @@ const checks: Check[] = [
           await close();
         }
       }
+    },
+  },
+  {
+    name: 'the Blocks sidebar shows only the block sections that have categories, each category with its variant count',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/blocks');
+      const sections = await docsSidebar(page).evaluate((nav) =>
+        [...nav.querySelectorAll('[data-slot="sidebar-group"]')].map((group) => ({
+          label: group.querySelector('h2')?.textContent?.trim(),
+          items: [...group.querySelectorAll('a[href]')].map((link) => ({
+            url: new URL((link as HTMLAnchorElement).href).pathname,
+            count: link.querySelector('[data-slot="sidebar-menu-badge"]')?.textContent?.trim(),
+            text: link.textContent?.replace(/\s+/g, ' ').trim(),
+          })),
+        })),
+      );
+      assert.deepEqual(
+        sections.map((section) => section.label),
+        ['Blocks', 'Application'],
+        'sidebar sections (Marketing and AI have no categories yet)',
+      );
+      const application = sections[1].items;
+      assert.deepEqual(application.map((item) => item.url).sort(), oldBlockUrls.toSorted(), 'Application lists every block category');
+      for (const item of application) {
+        assert.equal(item.count, '1', `${item.url}: variant count`);
+        assert.match(item.text ?? '', /1 variant(?!s)/, `${item.url}: screen reader count`);
+      }
+      await close();
+    },
+  },
+  {
+    name: 'the old block URLs lead to their category page, with the free variant and no On this page rail',
+    async run(browser) {
+      for (const path of oldBlockUrls) {
+        const { page, close } = await openPage(browser, path);
+        const name = path.split('/').pop()!;
+        assert.equal(new URL(page.url()).pathname, path, `${path}: stays on its category page`);
+        const variants = page.locator('[data-block-variant]');
+        assert.equal(await variants.count(), 1, `${path}: one variant`);
+        assert.equal(await variants.first().getAttribute('id'), name, `${path}: variant anchor`);
+        assert.equal(await variants.first().getAttribute('data-tier'), 'free', `${path}: free variant`);
+        assert.equal((await variants.first().locator('[data-slot="badge"]').textContent())?.trim(), 'Free', `${path}: Free badge`);
+        assert.equal(await page.getByText('On this page', { exact: true }).count(), 0, `${path}: no On this page`);
+        await close();
+      }
+      const markdown = await fetchText('/docs/blocks/data-table.md');
+      assert.match(markdown, /## Data table \(Free\)/, 'data-table.md names the free variant');
+      assert.match(markdown, /add @kosmos\/data-table/, 'data-table.md installs the free variant');
     },
   },
   {
