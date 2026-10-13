@@ -8,7 +8,11 @@ import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   return (
     // The header is 3.5rem tall and sticky, so the docked sidebar sticks below it.
-    <SidebarProvider className="flex-col [&_[data-slot=sidebar-inner]]:top-14 [&_[data-slot=sidebar-inner]]:h-[calc(100svh-3.5rem)]">
+    <SidebarProvider
+      storageKey={false}
+      keyboardShortcut={false}
+      className="flex-col [&_[data-slot=sidebar-inner]]:top-14 [&_[data-slot=sidebar-inner]]:h-[calc(100svh-3.5rem)]"
+    >
       <SkipLink />
       <SiteHeader fullWidth menu={<DocsMenuButton className="me-2 md:hidden" />} />
       <div className="flex flex-1">
