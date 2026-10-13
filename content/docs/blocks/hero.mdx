@@ -1,0 +1,65 @@
+---
+title: Hero
+description: The top of a marketing page, with a title, one line, two actions and a command to copy.
+---
+
+## Installation
+
+<ComponentInstall name="hero" />
+
+The block brings [Button](/docs/components/button) with it, and lands in `components/hero.tsx`.
+
+## Usage
+
+```tsx
+import Link from 'next/link';
+import { Hero } from '@/components/hero';
+import { buttonVariants } from '@/components/ui/button';
+
+export default function HomePage() {
+  return (
+    <main>
+      <Hero
+        title="Know what every user does next"
+        description="Parallax collects events from your apps and turns them into answers your whole team can read."
+        actions={
+          <>
+            <Link href="/signup" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+              Start for free
+            </Link>
+            <Link href="/demo" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
+              Book a demo
+            </Link>
+          </>
+        }
+        command="curl -fsSL https://parallax.example/install.sh | sh"
+      />
+    </main>
+  );
+}
+```
+
+A `Button` with `href` renders a plain link, which loads the whole page. For links inside a Next.js app, style `Link` with `buttonVariants`, as above. The title, line, actions and command at the top of the file are sample data.
+
+## What it does
+
+- **Title and line**: the title is the page's `<h1>`, and it balances its lines so the last one is never a single word. The line under it wraps at about 70 characters, so it stays easy to read.
+- **Actions**: one primary action and one secondary at most, side by side, wrapping under each other when they don't fit.
+- **Command**: the install line sits in a well with a copy button. A command too long for the well cuts off at the end and shows in full on hover; the button still copies all of it, and screen readers hear "Install command copied".
+- **Width**: the hero lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 32px to 48px and the hero takes more room above and below.
+
+## API
+
+### Hero
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The heading.', type: 'ReactNode', default: "'Know what every user does next'" },
+    description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode' },
+    actions: { description: 'The links under the line: one `primary` Button at most, the rest `secondary`. `null` leaves them out.', type: 'ReactNode' },
+    command: { description: 'A command to copy, such as the install line. `null` leaves it out.', type: 'string | null' },
+    headingLevel: { description: 'The heading level of the title. Pass 2 when the page already has an `<h1>`.', type: '1 | 2', default: '1' },
+  }}
+/>

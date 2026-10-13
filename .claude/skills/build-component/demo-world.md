@@ -140,6 +140,13 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
 | App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
 | Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
+| Hero | The top of the Parallax website: title, one line, two actions and the install command (Marketing site below). |
+
+## Marketing site
+
+Marketing blocks show the Parallax website, `parallax.example`, which sells the product to the teams that run sites and apps.
+
+- Hero: title "Know what every user does next", one line "Parallax collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.", actions "Start for free" (primary, to `/signup`) and "Book a demo" (secondary, to `/demo`), and the install command `curl -fsSL https://parallax.example/install.sh | sh`.
 
 ## Creating things
 
