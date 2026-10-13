@@ -174,7 +174,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
         'after:hidden',
       )}
     >
-      <span title={metric.label} className="w-full truncate">
+      <span title={metric.label} className="w-full wrap-break-word @md:truncate">
         {metric.label}
       </span>
       {loading ? (
