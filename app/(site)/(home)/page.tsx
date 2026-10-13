@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GitHubIcon } from '@/components/site/brand-icons';
 import { DashboardCanvas } from '@/components/site/dashboard-canvas';
+import { ComponentBento } from '@/components/site/landing-bento';
+import { Inventory } from '@/components/site/landing-inventory';
 import { LandingInstall, landingInstallHeadingId } from '@/components/site/landing-install';
 import { LandingProof, landingProofHeadingId } from '@/components/site/landing-proof';
 import { LandingSection, type LandingSectionProps } from '@/components/site/landing-section';
@@ -67,6 +69,17 @@ export default function HomePage() {
       blocks: dashboardBlocks,
       srHeading: 'Live dashboard',
       children: <DashboardCanvas />,
+    },
+    {
+      id: 'bento',
+      blocks: ['bento'],
+      children: <ComponentBento componentCount={componentCount} />,
+    },
+    {
+      id: 'inventory',
+      blocks: ['bento'],
+      srHeading: 'Inventory',
+      children: <Inventory />,
     },
     {
       id: 'install',
