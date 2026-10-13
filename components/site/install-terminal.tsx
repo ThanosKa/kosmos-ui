@@ -10,25 +10,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/t
 const copiedFor = 2000;
 
 function CopyCommand({ command }: { command: string }) {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const copy = () =>
     navigator.clipboard.writeText(command).then(
       () => {
-        setCopied(true);
+        setStatus('copied');
         clearTimeout(timer.current);
-        timer.current = setTimeout(() => setCopied(false), copiedFor);
+        timer.current = setTimeout(() => setStatus('idle'), copiedFor);
       },
-      () => setCopied(false),
+      () => setStatus('failed'),
     );
   return (
     <>
       <Button variant="ghost" size="icon" aria-label={`Copy install command: ${command}`} onClick={copy}>
-        {copied ? <Check aria-hidden /> : <Copy aria-hidden />}
+        {status === 'copied' ? <Check aria-hidden /> : <Copy aria-hidden />}
       </Button>
       <span role="status" className="sr-only">
-        {copied ? 'Install command copied' : ''}
+        {status === 'copied' ? 'Install command copied' : status === 'failed' ? 'Unable to copy. Select the command to copy it.' : ''}
       </span>
     </>
   );
@@ -75,14 +75,13 @@ export function InstallTerminal<T extends string>({ commands, files }: { command
               {done} Checking registry.{'\n'}
               {done} Installing dependencies.{'\n'}
               {done} Created {files.length} files:
+              {/* A path too long for the line wraps under itself, not under the dash, so it never reads as two files. */}
               {files.map((file) => (
-                <span key={file}>
-                  {'\n'}
-                  {'  - '}
+                <span key={file} className="block ps-[4ch] -indent-[2ch]">
+                  {'- '}
                   <span data-terminal-file>{file}</span>
                 </span>
               ))}
-              {'\n'}
               {done} Updating app/globals.css
             </code>
           </pre>

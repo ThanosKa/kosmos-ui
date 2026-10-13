@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { addCommands, installedPath, readRegistryItems, resolveRegistryTree } from '@/lib/registry';
 import { docsRoute } from '@/lib/shared';
 import { InstallTerminal } from './install-terminal';
@@ -44,7 +44,7 @@ export function LandingInstall() {
                   <span className="font-mono text-body font-medium text-foreground">{doc.name}</span>
                   <span className="text-small text-pretty text-muted-foreground">{doc.description}</span>
                 </span>
-                <ArrowUpRight aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-[color] group-hover/row:text-foreground" />
+                <ArrowRight aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-[color] group-hover/row:text-foreground" />
               </a>
             </li>
           ))}
