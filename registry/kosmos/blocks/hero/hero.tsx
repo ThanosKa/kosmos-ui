@@ -41,21 +41,32 @@ function useCopy(text: string) {
   return [copied, copy] as const;
 }
 
+/** Lets a long command wrap after each `/` and `=` of a URL as well as at its spaces. */
+function withBreaks(command: string) {
+  return command.split(/(?<=[/=])/).map((part, index) => (
+    <React.Fragment key={index}>
+      {index > 0 ? <wbr /> : null}
+      {part}
+    </React.Fragment>
+  ));
+}
+
 /** The install command in a well, with a button that copies it. */
 function HeroCommand({ command }: { command: string }) {
   const [copied, copy] = useCopy(command);
   return (
     <div
       data-slot="hero-command"
-      className="flex h-9 max-w-full min-w-0 items-center gap-2 rounded-lg border border-transparent bg-muted ps-3 pe-1 shadow-inset"
+      className="flex min-h-9 max-w-full min-w-0 items-center gap-2 rounded-lg border border-transparent bg-muted py-0.5 ps-3 pe-0.5 shadow-inset"
     >
-      <code title={command} className="min-w-0 truncate font-mono text-small text-muted-foreground">
+      {/* A command too long for the well wraps instead of cutting off, so all of it stays readable. */}
+      <code className="min-w-0 py-1.5 text-start font-mono text-small wrap-break-word text-muted-foreground">
         <span aria-hidden className="select-none">
           ${' '}
         </span>
-        <span className="text-foreground">{command}</span>
+        <span className="text-foreground">{withBreaks(command)}</span>
       </code>
-      <Button variant="ghost" size="icon" aria-label={`Copy install command: ${command}`} onClick={copy}>
+      <Button variant="ghost" size="icon" aria-label={`Copy install command: ${command}`} onClick={copy} className="rounded-md">
         {copied ? <Check aria-hidden /> : <Copy aria-hidden />}
       </Button>
       <span role="status" className="sr-only">
