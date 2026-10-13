@@ -57,7 +57,7 @@ export async function ComponentPreview({ name, pageItem }: { name: string; pageI
     >
       {/* The same box as the /view page around an example, so it renders as it does there. */}
       <div className="flex min-h-56 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-body text-foreground sm:min-h-72 sm:p-10">
-        <div className="flex w-full min-w-0 justify-center">
+        <div data-preview-content className="flex w-full min-w-0 justify-center">
           <Example />
         </div>
       </div>

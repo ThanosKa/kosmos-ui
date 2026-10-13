@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { StayInPreview } from '@/components/preview/stay-in-preview';
 import { loadExample } from '@/lib/examples';
 
 const themes = ['light', 'dark'] as const;
@@ -29,6 +30,7 @@ export default async function ViewPage(props: PageProps<'/view/[name]'>) {
           <Example />
         </div>
       </div>
+      <StayInPreview />
     </RootProvider>
   );
 }
