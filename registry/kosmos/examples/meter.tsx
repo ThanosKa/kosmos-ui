@@ -44,7 +44,7 @@ export default function MeterPreview() {
           <div className="flex flex-col gap-4">
             {autoValues.map((value) => (
               <Meter key={value} value={value} tone="auto">
-                <MeterLabel>Health score</MeterLabel>
+                <MeterLabel>Data quality score</MeterLabel>
                 <MeterValue>{(_, raw) => `${raw} / 100`}</MeterValue>
                 <MeterSegments />
               </Meter>

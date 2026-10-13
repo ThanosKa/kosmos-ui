@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from '@/registry/kosmos/ui/drawer';
 
-const pages = ['Overview', 'Projects', 'Tasks', 'Reports', 'Settings'];
+const pages = ['Overview', 'Projects', 'Events', 'Users', 'Settings'];
 
 export default function DrawerLeft() {
   return (
@@ -21,7 +21,7 @@ export default function DrawerLeft() {
       </DrawerTrigger>
       <DrawerContent className="sm:data-[swipe-direction=left]:max-w-72">
         <DrawerHeader>
-          <DrawerTitle>Acme</DrawerTitle>
+          <DrawerTitle>Parallax</DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
           <nav aria-label="Main" className="flex flex-col gap-0.5">

@@ -9,10 +9,10 @@ export default function TabsDemo() {
         <TabsTrigger value="settings">Settings</TabsTrigger>
       </TabsList>
       <TabsContent value="overview" className="text-muted-foreground">
-        Revenue is up 12% on last month, led by annual plans.
+        Revenue is up 6.8% on last month, led by Scale plans.
       </TabsContent>
       <TabsContent value="activity" className="text-muted-foreground">
-        Ana Lopez closed 4 deals this week.
+        Kai Nakamura added 3 roadmap items this week.
       </TabsContent>
       <TabsContent value="settings" className="text-muted-foreground">
         Workspace name, members and notifications.

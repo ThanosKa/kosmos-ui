@@ -19,24 +19,24 @@ import {
 
 const details = [
   ['Status', 'In progress'],
-  ['Owner', 'Ana Lopez'],
-  ['Due', 'Oct 24'],
-  ['Estimate', '3 days'],
-  ['Project', 'Q3 Roadmap'],
+  ['Assignee', 'Tomás Ortega'],
+  ['Target', 'Q4 2026'],
+  ['Votes', '45'],
+  ['Area', 'Ingestion'],
 ] as const;
 
 const activity = [
-  'Ana Lopez moved the task to In progress',
-  'Ben Carter added a comment',
-  'Chen Wei attached spec-v2.pdf',
-  'Dara Okafor changed the due date to Oct 24',
-  'Elif Demir assigned the task to Ana Lopez',
-  'Farah Haddad created the task',
-  'Goran Petrovic linked the task to Billing revamp',
-  'Hana Sato added the label Backend',
+  'Tomás Ortega moved the item to In progress',
+  'Ama Mensah added a comment',
+  'Tomás Ortega attached batching-spec.pdf',
+  'Lena Park changed the target to Q4 2026',
+  'Kai Nakamura assigned the item to Tomás Ortega',
+  'Lena Park created the item',
+  'Ama Mensah linked the item to Mobile SDK 3.0',
+  'Kai Nakamura set the area to Ingestion',
 ];
 
-function TaskDetails() {
+function ItemDetails() {
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
       {details.map(([term, value]) => (
@@ -60,14 +60,14 @@ export default function DrawerPreview() {
                 <DrawerBackdrop />
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
-                    <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
-                    <DrawerDescription>Billing revamp · created by Farah Haddad</DrawerDescription>
+                    <DrawerTitle>Server-side batching</DrawerTitle>
+                    <DrawerDescription>Ingestion · added by Lena Park</DrawerDescription>
                   </DrawerHeader>
                   <DrawerBody>
-                    <TaskDetails />
+                    <ItemDetails />
                   </DrawerBody>
                   <DrawerFooter>
-                    <Button variant="primary">Mark as done</Button>
+                    <Button variant="primary">Mark as shipped</Button>
                   </DrawerFooter>
                 </DrawerContent>
               </Drawer>
@@ -80,7 +80,7 @@ export default function DrawerPreview() {
                 <DrawerBackdrop />
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
-                    <DrawerTitle>Share Q3 Roadmap</DrawerTitle>
+                    <DrawerTitle>Share the roadmap</DrawerTitle>
                     <DrawerDescription>Anyone with the link can view.</DrawerDescription>
                   </DrawerHeader>
                   <DrawerFooter>
@@ -99,7 +99,7 @@ export default function DrawerPreview() {
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
                     <DrawerTitle>Activity</DrawerTitle>
-                    <DrawerDescription>Everything that happened on this task.</DrawerDescription>
+                    <DrawerDescription>Everything that happened on this item.</DrawerDescription>
                   </DrawerHeader>
                   <DrawerBody>
                     <ul className="flex flex-col divide-y divide-border">
@@ -122,7 +122,7 @@ export default function DrawerPreview() {
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
                     <DrawerTitle>Activity</DrawerTitle>
-                    <DrawerDescription>Everything that happened on this task.</DrawerDescription>
+                    <DrawerDescription>Everything that happened on this item.</DrawerDescription>
                   </DrawerHeader>
                   <DrawerBody>
                     <ScrollToMiddle />
@@ -144,13 +144,13 @@ export default function DrawerPreview() {
               <Drawer open modal={false}>
                 <DrawerContent container={container} initialFocus={false}>
                   <DrawerHeader>
-                    <DrawerTitle>Reconcile the September payouts with the bank statement export</DrawerTitle>
+                    <DrawerTitle>Backfill the September events Copperline Bank sent before the rate limit was raised</DrawerTitle>
                     <DrawerDescription>
                       The page behind stays usable: scroll it, click it, or keep typing while this panel is open.
                     </DrawerDescription>
                   </DrawerHeader>
                   <DrawerBody>
-                    <TaskDetails />
+                    <ItemDetails />
                   </DrawerBody>
                 </DrawerContent>
               </Drawer>
@@ -162,17 +162,17 @@ export default function DrawerPreview() {
       <PreviewSection title="Live (modal, with trigger)">
         <div className="flex flex-wrap items-center gap-3">
           <Drawer>
-            <DrawerTrigger render={<Button variant="secondary" />}>Open task</DrawerTrigger>
+            <DrawerTrigger render={<Button variant="secondary" />}>Open roadmap item</DrawerTrigger>
             <DrawerContent>
               <DrawerHeader>
-                <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
-                <DrawerDescription>Billing revamp · created by Farah Haddad</DrawerDescription>
+                <DrawerTitle>Server-side batching</DrawerTitle>
+                <DrawerDescription>Ingestion · added by Lena Park</DrawerDescription>
               </DrawerHeader>
               <DrawerBody>
-                <TaskDetails />
+                <ItemDetails />
               </DrawerBody>
               <DrawerFooter>
-                <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
+                <DrawerClose render={<Button variant="primary" />}>Mark as shipped</DrawerClose>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
@@ -180,7 +180,7 @@ export default function DrawerPreview() {
             <DrawerTrigger render={<Button variant="secondary" />}>Share</DrawerTrigger>
             <DrawerContent>
               <DrawerHeader>
-                <DrawerTitle>Share Q3 Roadmap</DrawerTitle>
+                <DrawerTitle>Share the roadmap</DrawerTitle>
                 <DrawerDescription>Anyone with the link can view.</DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>

@@ -1,9 +1,9 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 const rows = [
-  { id: 'INV-1042', customer: 'Northwind Traders', issued: 'Oct 2, 2026', due: 'Nov 1, 2026', tax: 300, amount: 1250 },
-  { id: 'INV-1043', customer: 'Acme Corporation', issued: 'Oct 4, 2026', due: 'Nov 3, 2026', tax: 235.32, amount: 980.5 },
-  { id: 'INV-1044', customer: 'Globex', issued: 'Oct 9, 2026', due: 'Nov 8, 2026', tax: 2976, amount: 12400 },
+  { id: 'INV-1042', project: 'Fernhill Books', issued: 'Oct 2, 2026', due: 'Nov 1, 2026', tax: 576, amount: 2400 },
+  { id: 'INV-1043', project: 'Brightloop Fitness', issued: 'Oct 4, 2026', due: 'Nov 3, 2026', tax: 864, amount: 3600 },
+  { id: 'INV-1044', project: 'Copperline Bank', issued: 'Oct 9, 2026', due: 'Nov 8, 2026', tax: 1152, amount: 4800 },
 ];
 
 const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -15,7 +15,7 @@ export default function TableWide() {
         <TableHeader>
           <TableRow>
             <TableHead>Invoice</TableHead>
-            <TableHead>Customer</TableHead>
+            <TableHead>Project</TableHead>
             <TableHead>Issued</TableHead>
             <TableHead>Due</TableHead>
             <TableHead className="text-end">Tax</TableHead>
@@ -26,7 +26,7 @@ export default function TableWide() {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell className="font-medium">{row.id}</TableCell>
-              <TableCell>{row.customer}</TableCell>
+              <TableCell>{row.project}</TableCell>
               <TableCell>{row.issued}</TableCell>
               <TableCell>{row.due}</TableCell>
               <TableCell className="text-end">{money.format(row.tax)}</TableCell>

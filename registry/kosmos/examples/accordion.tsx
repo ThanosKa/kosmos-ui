@@ -118,9 +118,9 @@ export default function AccordionPreview() {
           <div className="w-full max-w-64">
             <Accordion defaultValue={['long']}>
               <AccordionItem value="long">
-                <AccordionTrigger>What happens to scheduled exports when a workspace changes owner?</AccordionTrigger>
+                <AccordionTrigger>What happens to scheduled exports when the member who set them up leaves?</AccordionTrigger>
                 <AccordionContent>
-                  They keep running under the new owner, who gets an email listing every schedule that moved over.
+                  They keep running under a workspace admin, who gets an email listing every schedule that moved over.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="short">

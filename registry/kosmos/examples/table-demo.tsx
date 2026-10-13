@@ -10,10 +10,10 @@ import {
 } from '@/registry/kosmos/ui/table';
 
 const invoices = [
-  { id: 'INV-1042', customer: 'Northwind Traders', status: 'Paid', amount: 1250 },
-  { id: 'INV-1043', customer: 'Acme Corporation', status: 'Pending', amount: 980.5 },
-  { id: 'INV-1044', customer: 'Globex', status: 'Overdue', amount: 12400 },
-  { id: 'INV-1045', customer: 'Initech', status: 'Paid', amount: 75 },
+  { id: 'INV-1042', project: 'Fernhill Books', status: 'Paid', amount: 2400 },
+  { id: 'INV-1043', project: 'Brightloop Fitness', status: 'Pending', amount: 3600 },
+  { id: 'INV-1044', project: 'Copperline Bank', status: 'Overdue', amount: 4800 },
+  { id: 'INV-1045', project: 'Saltmarsh Coffee', status: 'Paid', amount: 149 },
 ];
 
 const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -25,7 +25,7 @@ export default function TableDemo() {
       <TableHeader>
         <TableRow>
           <TableHead>Invoice</TableHead>
-          <TableHead>Customer</TableHead>
+          <TableHead>Project</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-end">Amount</TableHead>
         </TableRow>
@@ -34,7 +34,7 @@ export default function TableDemo() {
         {invoices.map((invoice) => (
           <TableRow key={invoice.id}>
             <TableCell className="font-medium">{invoice.id}</TableCell>
-            <TableCell>{invoice.customer}</TableCell>
+            <TableCell>{invoice.project}</TableCell>
             <TableCell>{invoice.status}</TableCell>
             <TableCell className="text-end">{money.format(invoice.amount)}</TableCell>
           </TableRow>

@@ -44,14 +44,14 @@ export default function SwitchPreview() {
             <FieldContent>
               <FieldLabel>Require two-factor sign-in</FieldLabel>
               <FieldDescription>Every member must set up an authenticator app.</FieldDescription>
-              <FieldError>Set up two-factor sign-in for your own account first.</FieldError>
+              <FieldError>Set up two-factor sign-in for your own profile first.</FieldError>
             </FieldContent>
             <Switch />
           </Field>
           <Field orientation="horizontal" className="py-4 last:pb-0" disabled>
             <FieldContent>
               <FieldLabel>Single sign-on</FieldLabel>
-              <FieldDescription>Available on the Business plan.</FieldDescription>
+              <FieldDescription>Available on the Scale plan.</FieldDescription>
             </FieldContent>
             <Switch />
           </Field>
