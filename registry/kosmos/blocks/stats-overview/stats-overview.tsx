@@ -367,7 +367,7 @@ function StatsOverview({
                     </Empty>
                   ) : (
                     <GrowthChart
-                      key={`${active.id}-${range}`}
+                      key={range}
                       title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
                       data={active.points}
                       config={chartConfig}
