@@ -12,18 +12,18 @@ const labels: Record<(typeof variants)[number], string> = {
   success: 'Active',
   warning: 'Pending',
   destructive: 'Failed',
-  orange: 'Pilot',
-  blue: 'Enterprise',
-  amber: 'Small business',
-  magenta: 'Upsell',
-  green: 'Expansion',
-  red: 'Blocked',
+  orange: 'Pro',
+  blue: 'Free',
+  amber: 'Insights',
+  magenta: 'Scale',
+  green: 'Ingestion',
+  red: 'Billing',
 };
 
 const rows = [
-  { name: 'Acme Inc.', status: 'success', label: 'Active' },
-  { name: 'Globex Corporation', status: 'warning', label: 'Trial ends soon' },
-  { name: 'Initech', status: 'destructive', label: 'Payment failed' },
+  { name: 'Fernhill Books', status: 'success', label: 'Active' },
+  { name: 'Marigold Recipes', status: 'warning', label: 'Trial ends soon' },
+  { name: 'Hollow Oak Games', status: 'destructive', label: 'Payment failed' },
 ] as const;
 
 export default function BadgePreview() {
@@ -86,7 +86,7 @@ export default function BadgePreview() {
             <span className="min-w-0 truncate">Waiting for approval from the finance team</span>
           </Badge>
           <Badge variant="secondary">
-            <span className="min-w-0 truncate">Enterprise annual plan with priority support</span>
+            <span className="min-w-0 truncate">Scale plan, billed yearly, with priority support</span>
           </Badge>
         </div>
       </PreviewSection>

@@ -142,9 +142,9 @@ export default function DropdownMenuPreview() {
                         Invite
                       </DropdownMenuSubTrigger>
                       <DropdownMenuSubContent container={container}>
-                        <DropdownMenuItem>Ana Lopez</DropdownMenuItem>
-                        <DropdownMenuItem>Ben Carter</DropdownMenuItem>
-                        <DropdownMenuItem>Chen Wei</DropdownMenuItem>
+                        <DropdownMenuItem>Tomás Ortega</DropdownMenuItem>
+                        <DropdownMenuItem>Ama Mensah</DropdownMenuItem>
+                        <DropdownMenuItem>Kai Nakamura</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Invite by email…</DropdownMenuItem>
                       </DropdownMenuSubContent>
@@ -165,14 +165,14 @@ export default function DropdownMenuPreview() {
                 <DropdownMenu open modal={false}>
                   <DropdownMenuTrigger render={<Button variant="secondary" />}>
                     <User data-icon="inline-start" />
-                    Ana Lopez
+                    Lena Park
                   </DropdownMenuTrigger>
                   <DropdownMenuContent container={container} align="end" className="w-56">
                     <DropdownMenuGroup>
-                      <DropdownMenuLabel className="truncate">ana.lopez@northwind-logistics.example.com</DropdownMenuLabel>
+                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.parallax.example</DropdownMenuLabel>
                       <DropdownMenuItem>
                         <Settings />
-                        Workspace settings and billing for Northwind Logistics
+                        Workspace settings and billing for Parallax Staging
                       </DropdownMenuItem>
                       <DropdownMenuItem inset>Keyboard shortcuts</DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -225,9 +225,9 @@ export default function DropdownMenuPreview() {
                   Invite
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem>Ana Lopez</DropdownMenuItem>
-                  <DropdownMenuItem>Ben Carter</DropdownMenuItem>
-                  <DropdownMenuItem>Chen Wei</DropdownMenuItem>
+                  <DropdownMenuItem>Tomás Ortega</DropdownMenuItem>
+                  <DropdownMenuItem>Ama Mensah</DropdownMenuItem>
+                  <DropdownMenuItem>Kai Nakamura</DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />

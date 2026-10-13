@@ -45,6 +45,7 @@ export default function ProjectsPage() {
       onQueryChange={setQuery}
       filters={filters}
       onFiltersChange={setFilters}
+      onNew={() => router.push('/projects/new')}
     >
       {/* the list of shown projects */}
     </PageHeader>
@@ -59,6 +60,7 @@ The header holds the state; your page does the filtering, as above. Pass the pag
 ## What it does
 
 - **Title and description**: the description says in one line what the page lists. Both wrap instead of cutting off.
+- **Actions**: the primary action (`newLabel`, "New project" by default) shows when you pass `onNew`, and the More actions menu when you pass `onAction`. A read-only page passes neither.
 - **Views**: the tabs sit in a track, each with an optional count, and scroll sideways when they don't fit.
 - **Filter menu**: options that share a `group` sit under its name. Within a group, filters usually widen the list (Pro or Scale); across groups they narrow it (Pro and iOS). That logic is yours, in the page.
 - **Chips**: each filter that is on shows as a chip under the toolbar, named with its group. Removing one moves focus to the next chip, or back to Filter.
@@ -88,7 +90,7 @@ Takes every `<div>` prop, plus:
     defaultFilters: { description: 'The filters on at first, when the header keeps its own state.', type: 'string[]', default: '[]' },
     onFiltersChange: { description: 'Called when a filter is turned on or off, or all are cleared.', type: '(filters: string[]) => void' },
     newLabel: { description: 'The label of the primary action.', type: 'string', default: "'New project'" },
-    onNew: { description: 'Runs the primary action, usually opening a dialog.', type: '() => void' },
+    onNew: { description: 'Runs the primary action, usually opening a dialog. The button shows only when this is passed.', type: '() => void' },
     onAction: { description: 'Runs an action from the More actions menu. Without it, the menu is hidden.', type: "(action: 'import' | 'export' | 'copy-link') => void" },
     filterMenu: { description: 'Props for the Filter menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },
     moreMenu: { description: 'Props for the More actions menu, such as `open` and `onOpenChange`.', type: 'DropdownMenu props' },

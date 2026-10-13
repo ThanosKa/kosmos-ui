@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart3, Building2, Handshake, Home, Inbox, Layers, Plus, Settings } from 'lucide-react';
+import { Activity, CircleDollarSign, FolderKanban, Layers, LayoutDashboard, Milestone, Plus, Settings, UserPlus, Users } from 'lucide-react';
 import * as React from 'react';
 import { AppSidebar, type AppSidebarNavItem } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { CommandMenu, type CommandMenuGroup } from '@/registry/kosmos/blocks/command-menu/command-menu';
@@ -18,7 +18,9 @@ import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry
  * The live dashboard on the landing page, composed from the eight free blocks. The stats overview shows its
  * Parallax sample data, and the board is the Parallax roadmap, where the new item dialog adds its cards. The table,
  * the drawer and the command menu share the data table's sample projects, so a change in one shows in the others.
- * Only the list page, its saved views and the board are wired up; the other pages say so and link back.
+ * Only the Projects page, its saved views and the roadmap are wired up; the other pages say so and link back. The
+ * Parallax team doesn't add its customers' projects, so the Projects page has no primary action: every new item is a
+ * roadmap item.
  */
 
 /** What the drawer shows beyond the table's columns, for the projects that have it. */
@@ -55,25 +57,27 @@ const statusDot: Record<ProjectStatus, string> = {
 
 /** What each saved view sets on the Projects page. */
 const viewState: Record<string, { title: string; tab: TabValue; filters: string[] }> = {
-  accounts: { title: 'Projects', tab: 'all', filters: [] },
+  projects: { title: 'Projects', tab: 'all', filters: [] },
   'view-scale': { title: 'Scale plan', tab: 'all', filters: ['scale'] },
   'view-trials': { title: 'Trials', tab: 'trial', filters: [] },
 };
 
 const pageTitles: Record<string, string> = {
-  home: 'Home',
-  inbox: 'Inbox',
-  reports: 'Reports',
+  overview: 'Overview',
+  events: 'Events',
+  users: 'Users',
+  revenue: 'Revenue',
   help: 'Help and feedback',
   settings: 'Settings',
 };
 
 const goTo = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'inbox', label: 'Inbox', icon: Inbox },
-  { id: 'accounts', label: 'Accounts', icon: Building2 },
-  { id: 'deals', label: 'Deals', icon: Handshake },
-  { id: 'reports', label: 'Reports', icon: BarChart3 },
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { id: 'projects', label: 'Projects', icon: FolderKanban },
+  { id: 'events', label: 'Events', icon: Activity },
+  { id: 'users', label: 'Users', icon: Users },
+  { id: 'revenue', label: 'Revenue', icon: CircleDollarSign },
+  { id: 'roadmap', label: 'Roadmap', icon: Milestone },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -85,7 +89,7 @@ const slug = (name: string) =>
 
 export function DashboardShowcase() {
   const [projects, setProjects] = React.useState<Project[]>(sampleProjects);
-  const [page, setPage] = React.useState('accounts');
+  const [page, setPage] = React.useState('projects');
   const [tab, setTab] = React.useState<TabValue>('all');
   const [query, setQuery] = React.useState('');
   const [filters, setFilters] = React.useState<string[]>([]);
@@ -118,7 +122,7 @@ export function DashboardShowcase() {
 
   // Every new item lands on the roadmap, so opening the dialog from another page shows the board behind it.
   const openNew = (stage: string) => {
-    showPage('deals');
+    showPage('roadmap');
     setNewStage(stage);
     setNewOpen(true);
   };
@@ -163,14 +167,21 @@ export function DashboardShowcase() {
         dot: statusDot[row.status],
       })),
     },
-    { value: 'Actions', items: [{ value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus }] },
+    {
+      value: 'Actions',
+      items: [
+        { value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus },
+        { value: 'invite', label: 'Invite teammate', icon: UserPlus },
+      ],
+    },
     { value: 'Go to', items: goTo.map((item) => ({ value: `go:${item.id}`, label: item.label, icon: item.icon })) },
   ];
 
   const runCommand = (value: string) => {
     if (value === 'new-roadmap-item') openNew('ideas');
+    else if (value === 'invite') showPage('settings');
     else if (value.startsWith('open:')) {
-      showPage('accounts');
+      showPage('projects');
       openProject(value.slice('open:'.length));
     } else if (value.startsWith('go:')) showPage(value.slice('go:'.length));
   };
@@ -201,7 +212,6 @@ export function DashboardShowcase() {
             onQueryChange={setQuery}
             filters={filters}
             onFiltersChange={setFilters}
-            onNew={() => openNew('ideas')}
           >
             <div className="flex flex-col gap-4 p-4">
               <StatsOverview />
@@ -221,11 +231,15 @@ export function DashboardShowcase() {
               </div>
             </div>
           </PageHeader>
-        ) : page === 'deals' ? (
+        ) : page === 'roadmap' ? (
           <>
             <div className="flex h-14 items-center gap-2 border-b border-border px-4">
               <SidebarTrigger />
               <h3 className="min-w-0 flex-1 truncate text-title font-medium">Roadmap</h3>
+              <Button variant="primary" onClick={() => openNew('ideas')}>
+                <Plus aria-hidden data-icon="inline-start" />
+                New roadmap item
+              </Button>
             </div>
             <div className="flex h-[34rem] min-w-0 p-4 md:h-[40rem]">
               <KanbanBoard items={roadmap} onItemsChange={setRoadmap} onAdd={openNew} />
@@ -244,11 +258,11 @@ export function DashboardShowcase() {
                 </EmptyMedia>
                 <EmptyTitle render={<h4 />}>{pageTitles[page]} isn’t part of this demo</EmptyTitle>
                 <EmptyDescription>
-                  Projects and its saved views are live. Everything there is built from Kosmos blocks.
+                  Projects, its saved views and the roadmap are live. Everything there is built from Kosmos blocks.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button variant="secondary" onClick={(event) => navigate('accounts', event)}>
+                <Button variant="secondary" onClick={(event) => navigate('projects', event)}>
                   Go to Projects
                 </Button>
               </EmptyContent>

@@ -40,10 +40,10 @@ export default function TabsPreview() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="text-muted-foreground">
-            Revenue is up 12% on last month, led by annual plans.
+            Revenue is up 6.8% on last month, led by Scale plans.
           </TabsContent>
           <TabsContent value="activity" className="text-muted-foreground">
-            Ana Lopez closed 4 deals this week.
+            Kai Nakamura added 3 roadmap items this week.
           </TabsContent>
           <TabsContent value="settings" className="text-muted-foreground">
             Workspace name, members and notifications.
@@ -84,10 +84,10 @@ export default function TabsPreview() {
             Workspace name and URL.
           </TabsContent>
           <TabsContent value="members" className="text-muted-foreground">
-            12 members, 3 pending invites.
+            4 members, 1 pending invite.
           </TabsContent>
           <TabsContent value="billing" className="text-muted-foreground">
-            Pro plan, renews Nov 1.
+            Scale plan, next invoice Nov 1.
           </TabsContent>
           <TabsContent value="security" className="text-muted-foreground">
             Two-factor sign-in is on for every member.

@@ -10,6 +10,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
 import { Button, type ButtonProps } from '@/registry/kosmos/ui/button';
 import { Drawer, DrawerContent, DrawerTitle } from '@/registry/kosmos/ui/drawer';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
+import { ScrollArea, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider } from '@/registry/kosmos/ui/tooltip';
 
@@ -575,7 +576,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-/** The bottom of the sidebar, for the account or help links. Stays put while the content scrolls. */
+/** The bottom of the sidebar, for the user menu or help links. Stays put while the content scrolls. */
 function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -586,17 +587,38 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-/** The scrolling middle of the sidebar, holding the groups. Render it as `<nav>` with `render={<nav aria-label="Main" />}`. */
-function SidebarContent({ className, render, ...props }: useRender.ComponentProps<'div'>) {
-  return useRender({
-    defaultTagName: 'div',
-    render,
-    props: mergeProps<'div'>(
-      { className: cn('flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain', className) },
-      props,
-    ),
-    state: { slot: 'sidebar-content' },
-  });
+/**
+ * The scrolling middle of the sidebar, holding the groups. It scrolls in a `ScrollArea`, so an edge with groups hidden
+ * past it fades out. `render` and the other props go to the element that scrolls: `render={<nav aria-label="Main" />}`.
+ */
+function SidebarContent({
+  className,
+  render = <div />,
+  children,
+  ...props
+}: React.ComponentProps<'div'> & { render?: ScrollAreaProps['viewportRender'] }) {
+  const viewportRender: ScrollAreaProps['viewportRender'] =
+    typeof render === 'function'
+      ? (viewportProps, state) => render(mergeProps<'div'>(viewportProps, props), state)
+      : React.cloneElement(render, props);
+  return (
+    <ScrollArea
+      data-slot="sidebar-content"
+      // Every item takes focus and scrolls itself into view, so the list needs no tab stop of its own.
+      focusable={false}
+      // The 48px icon column has no room for a scrollbar beside the items, so there the edge fade alone marks the overflow.
+      className="min-h-0 flex-1 rounded-none group-data-[collapsible=icon]/sidebar:[&>[data-slot=scroll-area-scrollbar]]:hidden"
+      viewportClassName={cn(
+        'overscroll-contain',
+        // The icon column has no room for the scrollbar's gutter, and its labels must not widen the content.
+        'group-data-[collapsible=icon]/sidebar:data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!',
+        className,
+      )}
+      viewportRender={viewportRender}
+    >
+      {children}
+    </ScrollArea>
+  );
 }
 
 /** A line between the header, groups and footer. */
@@ -677,11 +699,13 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
       className={cn(
-        'h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden px-2 text-muted-foreground',
+        // `relative` keeps an `sr-only` count label inside the clip, so it never widens the sidebar.
+        'relative h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden px-2 text-muted-foreground',
         'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
         'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
-        '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span]:opacity-0',
+        // In icon mode the first child (an icon, a mark or an avatar) stays and the label and count after it fade.
+        '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:not(:first-child)]:opacity-0',
         className,
       )}
       {...props}

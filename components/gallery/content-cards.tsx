@@ -29,7 +29,7 @@ export function ReleaseCard() {
         <p className="text-body font-medium">Saved views and faster search</p>
         <p className="text-small text-pretty text-muted-foreground">
           Save any filter as a view, pin it to the sidebar and share it with your team. Search now answers in under
-          100 ms on workspaces with a million records.
+          100 ms on projects with a million events.
         </p>
       </div>
       <TooltipProvider>
@@ -131,7 +131,7 @@ export function EmptyCard() {
           </EmptyMedia>
           <EmptyTitle render={<h3 />}>No invoices yet</EmptyTitle>
           <EmptyDescription>
-            Invoices you send from Acme Inc. show up here. Import past ones to see them in reports.
+            Invoices you send from Parallax show up here. Import past ones to see them in reports.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

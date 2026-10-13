@@ -79,6 +79,10 @@ Takes every Base UI `ScrollArea.Root` prop, plus:
       description: 'A ref to the element that scrolls, to read or set its scroll position.',
       type: 'React.Ref<HTMLDivElement>',
     },
+    viewportRender: {
+      description: 'Renders the element that scrolls as another element, such as `<nav aria-label="Main" />`.',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
   }}
 />
 

@@ -12,7 +12,7 @@ function stateProps(state: (typeof states)[number]) {
 }
 
 const longText =
-  'The migration moves every workspace to the new billing plan. Owners get an email a week before, and nothing changes for members. If a workspace has unpaid invoices, it stays on the old plan until they are settled, and support reaches out to the owner directly.';
+  'The migration moves every workspace to the new billing plan. Admins get an email a week before, and nothing changes for members. If a workspace has unpaid invoices, it stays on the old plan until they are settled, and support reaches out to its admins directly.';
 
 export default function TextareaPreview() {
   return (

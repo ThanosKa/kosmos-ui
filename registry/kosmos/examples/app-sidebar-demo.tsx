@@ -5,14 +5,14 @@ import { AppSidebar, type AppSidebarAction } from '@/registry/kosmos/blocks/app-
 import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 const titles: Record<string, string> = {
-  home: 'Home',
-  inbox: 'Inbox',
-  accounts: 'Accounts',
-  deals: 'Deals',
-  reports: 'Reports',
-  'view-enterprise': 'Enterprise accounts',
-  'view-renewals': 'Renewals this quarter',
-  'view-at-risk': 'At risk',
+  overview: 'Overview',
+  projects: 'Projects',
+  events: 'Events',
+  users: 'Users',
+  revenue: 'Revenue',
+  roadmap: 'Roadmap',
+  'view-scale': 'Scale plan',
+  'view-trials': 'Trials',
   help: 'Help and feedback',
   settings: 'Settings',
 };
@@ -20,17 +20,20 @@ const titles: Record<string, string> = {
 const actionLabels: Record<AppSidebarAction, string> = {
   'add-workspace': 'add workspace',
   profile: 'profile',
-  'account-settings': 'account settings',
+  preferences: 'preferences',
   'log-out': 'log out',
 };
 
 export default function AppSidebarDemo() {
-  const [page, setPage] = useState('accounts');
+  const [page, setPage] = useState('projects');
   const [action, setAction] = useState<AppSidebarAction | null>(null);
 
   return (
     // In an app, drop the height and frame classes: the provider fills the screen.
-    <SidebarProvider className="h-[36rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card">
+    <SidebarProvider
+      storageKey="app-sidebar"
+      className="h-[36rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card"
+    >
       <AppSidebar
         activeItem={page}
         onAction={setAction}
@@ -46,7 +49,8 @@ export default function AppSidebarDemo() {
           <h1 className="truncate text-body font-medium">{titles[page]}</h1>
         </header>
         <p className="p-4 text-body text-muted-foreground">
-          Pick a page in the sidebar, or drag its edge to resize it.
+          Pick a page in the sidebar or drag its edge to resize it. The button beside the title, or the shortcut in its
+          tooltip, collapses it to icons, and it stays that way when you come back.
           {action ? ` Last menu action: ${actionLabels[action]}.` : ''}
         </p>
       </SidebarInset>

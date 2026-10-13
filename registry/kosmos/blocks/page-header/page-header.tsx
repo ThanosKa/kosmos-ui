@@ -96,7 +96,7 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
   onFiltersChange?: (filters: string[]) => void;
   /** The label of the primary action. */
   newLabel?: string;
-  /** Runs the primary action, usually opening a dialog. */
+  /** Runs the primary action, usually opening a dialog. The button shows only when this is passed. */
   onNew?: () => void;
   /** Runs an action from the More actions menu. The menu shows only when this is passed. */
   onAction?: (action: PageHeaderAction) => void;
@@ -205,10 +205,12 @@ function PageHeader({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}
-          <Button variant="primary" onClick={onNew} aria-label={newLabel} className="@max-md:w-7.5 @max-md:px-0">
-            <Plus aria-hidden data-icon="inline-start" />
-            <span className="@max-md:hidden">{newLabel}</span>
-          </Button>
+          {onNew ? (
+            <Button variant="primary" onClick={onNew} aria-label={newLabel} className="@max-md:w-7.5 @max-md:px-0">
+              <Plus aria-hidden data-icon="inline-start" />
+              <span className="@max-md:hidden">{newLabel}</span>
+            </Button>
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-2 @3xl:flex-row @3xl:items-center @3xl:justify-between @3xl:gap-4">

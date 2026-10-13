@@ -7,11 +7,11 @@ export default function InputDisabled() {
       <Field disabled>
         <FieldLabel>Workspace ID</FieldLabel>
         <Input defaultValue="ws_8f2k1" />
-        <FieldDescription>Only the owner can change this.</FieldDescription>
+        <FieldDescription>Only workspace admins can change this.</FieldDescription>
       </Field>
       <Field>
         <FieldLabel>Invite link</FieldLabel>
-        <Input defaultValue="https://kosmos.dev/join/8f2k1" readOnly />
+        <Input defaultValue="https://parallax.example/join/8f2k1" readOnly />
         <FieldDescription>Read-only, so you can still select and copy it.</FieldDescription>
       </Field>
     </div>

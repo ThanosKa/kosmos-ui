@@ -133,10 +133,14 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Block | Shows |
 | --- | --- |
 | Stats overview | The overview metrics as tabs over one chart that compares the range with the period before it (7, 30 or 90 days), and the top events. |
-| Page header | The Projects page: title "Projects", tabs All, Live, Trial and Paused with counts, search, a filter menu grouped by Plan and Platform, and the primary action "New project". |
+| Page header | The Projects page: title "Projects", tabs All, Live, Trial and Paused with counts, search, a filter menu grouped by Plan and Platform, and the primary action "New project" where the app passes `onNew`. |
 | Data table | The projects: name with domain, platform, plan, users, events, revenue, status and last event. |
 | Detail drawer | One project: plan, platform, status, its events trend, notes and the team's activity on it. |
 | Kanban board | The roadmap above. |
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
-| App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue, Roadmap and Settings; saved views "Scale plan" and "Trials"; Lena Park in the user menu. |
-| Command menu | Projects (each with its domain and status dot), actions "New project" and "Invite teammate", and Go to the sidebar's pages. |
+| App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
+| Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
+
+## Creating things
+
+The Parallax team runs the product; its customers add their own projects. So the one thing a block creates is a roadmap item: the command menu and the landing dashboard offer "New roadmap item", which opens the new item dialog. The page header's "New project" is the primary action of a Projects page in an app that does let people add projects; it shows only when the app passes `onNew`, so the landing dashboard's Projects page has no primary action.

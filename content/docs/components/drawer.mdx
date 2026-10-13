@@ -29,15 +29,15 @@ import {
 
 ```tsx
 <Drawer>
-  <DrawerTrigger render={<Button variant="secondary" />}>Open task</DrawerTrigger>
+  <DrawerTrigger render={<Button variant="secondary" />}>Open roadmap item</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
-      <DrawerDescription>Billing revamp</DrawerDescription>
+      <DrawerTitle>Server-side batching</DrawerTitle>
+      <DrawerDescription>Ingestion</DrawerDescription>
     </DrawerHeader>
     <DrawerBody>…</DrawerBody>
     <DrawerFooter>
-      <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
+      <DrawerClose render={<Button variant="primary" />}>Mark as shipped</DrawerClose>
     </DrawerFooter>
   </DrawerContent>
 </Drawer>

@@ -23,6 +23,8 @@ type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
   viewportClassName?: string;
   /** A ref to the element that scrolls, to read or set its scroll position. */
   viewportRef?: React.Ref<HTMLDivElement>;
+  /** Renders the element that scrolls as another element, such as `<nav aria-label="Main" />`. */
+  viewportRender?: ScrollAreaPrimitive.Viewport.Props['render'];
 };
 
 /**
@@ -38,6 +40,7 @@ function ScrollArea({
   focusable = true,
   viewportClassName,
   viewportRef,
+  viewportRender,
   ...props
 }: ScrollAreaProps) {
   return (
@@ -53,6 +56,7 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef}
+        render={viewportRender}
         data-slot="scroll-area-viewport"
         {...(focusable ? null : { tabIndex: -1 })}
         className={cn(
