@@ -38,7 +38,6 @@ export default function HomePage() {
   const componentCount = items.filter((item) => item.type === 'registry:ui').length;
   const blockCount = itemsInGroup('blocks', items).length;
 
-  // The landing, top to bottom. Each section is built from Kosmos blocks and its label links them.
   const sections: LandingSectionProps[] = [
     {
       id: 'hero',

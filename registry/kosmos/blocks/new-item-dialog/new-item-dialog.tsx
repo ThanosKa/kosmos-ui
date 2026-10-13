@@ -220,7 +220,6 @@ function NewItemDialog({
   const titleRef = React.useRef<HTMLInputElement>(null);
 
   // A fresh form each time the dialog opens, however it was closed, with the current `defaultValues`.
-  // A controlled form stays as the parent set it.
   const [wasOpen, setWasOpen] = React.useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);

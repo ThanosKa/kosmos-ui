@@ -175,7 +175,6 @@ export function DashboardShowcase({
       assignee: values.assignee ? roadmapTeam[values.assignee] : undefined,
       target: values.target ?? undefined,
     };
-    // A new card goes to the top of its column.
     const first = roadmap.findIndex((card) => card.column === item.column);
     setRoadmap(first < 0 ? [...roadmap, item] : [...roadmap.slice(0, first), item, ...roadmap.slice(first)]);
   };

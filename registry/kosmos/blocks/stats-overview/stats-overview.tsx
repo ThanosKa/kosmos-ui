@@ -78,7 +78,6 @@ const sampleMetrics: Record<Range, Metric[]> = {
       value: 8,
       format: 'number',
       change: -11.1,
-      // Hollow Oak Games paused on September 18.
       points: steps(sampleLabels['30d'], Array.from({ length: 30 }, (_, i) => (i < 6 ? 9 : 8)), Array.from({ length: 30 }, (_, i) => (i < 17 ? 8 : 9))),
     },
   ],
