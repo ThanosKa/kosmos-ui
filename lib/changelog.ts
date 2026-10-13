@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { newItemUrls } from './new-items';
 import { source } from './source';
 
 /**
@@ -40,4 +43,14 @@ export function getChangelogEntries(): ChangelogEntry[] {
       return { page, isoDate, displayDate: formatChangelogDate(date) };
     })
     .sort((a, b) => b.isoDate.localeCompare(a.isoDate) || b.page.slugs[1].localeCompare(a.page.slugs[1]));
+}
+
+/** The docs URLs of the components and block categories whose "Added" entry is recent, read from the entries on the server. */
+export function getNewItemUrls(today = new Date()): Set<string> {
+  const entries = getChangelogEntries().map(({ page, isoDate }) => ({
+    title: page.data.title,
+    isoDate,
+    body: readFileSync(path.join(process.cwd(), 'content/docs', changelogFolder, `${page.slugs[1]}.mdx`), 'utf8'),
+  }));
+  return newItemUrls(entries, today);
 }

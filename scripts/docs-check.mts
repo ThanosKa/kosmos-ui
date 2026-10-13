@@ -220,7 +220,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the Blocks sidebar shows only the block sections that have categories, each category with its variant count',
+    name: 'the Blocks sidebar shows only the block sections that have categories, each category with its variant count from two up',
     async run(browser) {
       const { page, close } = await openPage(browser, '/docs/blocks');
       const sections = await docsSidebar(page).evaluate((nav) =>
@@ -245,8 +245,11 @@ const checks: Check[] = [
       for (const url of ['/docs/blocks/hero', '/docs/blocks/bento', '/docs/blocks/footer']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
       for (const item of [...application, ...marketing]) {
         const count = variantCount(item.url);
-        assert.equal(item.count, String(count), `${item.url}: variant count`);
-        assert.match(item.text ?? '', new RegExp(`${count} variants?(?!s)`), `${item.url}: screen reader count`);
+        if (item.text?.endsWith(' New')) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
+        else if (count > 1) {
+          assert.equal(item.count, String(count), `${item.url}: variant count`);
+          assert.match(item.text ?? '', new RegExp(`${count} variants`), `${item.url}: screen reader count`);
+        } else assert.equal(item.count, undefined, `${item.url}: no count for one variant`);
       }
       await close();
     },

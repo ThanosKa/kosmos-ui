@@ -8,6 +8,7 @@ import { SiteNav } from '@/components/site/site-nav';
 import type { DocsNav, DocsNavGroup, DocsNavItem, DocsNavSectionId } from '@/lib/docs-nav';
 import { docsTabOf } from '@/lib/docs-tabs';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { Badge } from '@/registry/kosmos/ui/badge';
 import {
   Sidebar,
   SidebarContent,
@@ -101,7 +102,7 @@ const countNoun: Partial<Record<DocsNavSectionId, [string, string]>> = {
  * The docs navigation of the current header tab: a docked Kosmos Sidebar from `md` up and a drawer below, opened from the
  * header, with the header tabs on top. The Docs tab lists Get started and Foundations; Components lists an Overview, then
  * one group per registry group that opens and closes; Blocks lists an Overview, then its block sections, each block
- * category with its variant count.
+ * category with its variant count when it has more than one, or a New badge while its "Added" changelog entry is recent.
  */
 export function DocsSidebar({ nav }: { nav: DocsNav }) {
   const pathname = usePathname();
@@ -160,13 +161,18 @@ function DocsSidebarLink({ item, pathname, className }: { item: DocsNavItem; pat
     >
       {item.icon}
       <span>{item.title}</span>
-      {item.variants !== undefined && (
-        <>
-          <span className="sr-only">
-            {item.variants} {item.variants === 1 ? 'variant' : 'variants'}
-          </span>
-          <SidebarMenuBadge aria-hidden>{item.variants}</SidebarMenuBadge>
-        </>
+      {item.isNew ? (
+        <Badge variant="orange" className="ms-auto">
+          New
+        </Badge>
+      ) : (
+        item.variants !== undefined &&
+        item.variants > 1 && (
+          <>
+            <span className="sr-only">{item.variants} variants</span>
+            <SidebarMenuBadge aria-hidden>{item.variants}</SidebarMenuBadge>
+          </>
+        )
       )}
     </SidebarMenuButton>
   );

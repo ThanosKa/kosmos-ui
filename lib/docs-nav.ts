@@ -13,7 +13,7 @@ import {
   TextCursorInput,
   type LucideIcon,
 } from 'lucide-react';
-import { changelogFolder, getChangelogEntries } from './changelog';
+import { changelogFolder, getChangelogEntries, getNewItemUrls } from './changelog';
 import { docsTabOf, type DocsTabId } from './docs-tabs';
 import {
   blockSections,
@@ -38,6 +38,8 @@ export type DocsNavItem = {
   icon?: ReactNode;
   /** On a block category, how many variants it has. */
   variants?: number;
+  /** Added recently (see `newItemUrls`): the sidebar shows a New badge instead of the count. */
+  isNew?: boolean;
 };
 
 export type DocsNavSection = {
@@ -127,6 +129,7 @@ export function getDocsNav(): DocsNav {
   const registryItems = readRegistryItems();
   const categories = readBlockCategories(registryItems);
   const documented = new Set<string>();
+  const newUrls = getNewItemUrls();
   for (const page of source.getPages()) {
     const section = sectionOf(page.slugs);
     if (section !== 'components' && section !== 'blocks') continue;
@@ -135,10 +138,10 @@ export function getDocsNav(): DocsNav {
     } else if (section === 'blocks') {
       const category = blockCategoryOf(page.slugs, categories);
       documented.add(category.name);
-      items[category.section].push({ title: page.data.title, url: page.url, variants: category.variants.length });
+      items[category.section].push({ title: page.data.title, url: page.url, variants: category.variants.length, isNew: newUrls.has(page.url) });
     } else {
       const group = registryGroup(page.slugs, registryItems);
-      grouped.set(group, [...(grouped.get(group) ?? []), { title: page.data.title, url: page.url }]);
+      grouped.set(group, [...(grouped.get(group) ?? []), { title: page.data.title, url: page.url, isNew: newUrls.has(page.url) }]);
     }
   }
   const undocumented = categories.filter((category) => !documented.has(category.name));
