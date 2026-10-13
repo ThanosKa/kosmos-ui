@@ -48,9 +48,9 @@ export function SiteFooter() {
       description="Components and blocks for dashboard apps. Free and open source under MIT."
       columns={columns}
       social={[
-        { label: `${author.name} on X`, href: author.xUrl, icon: <XIcon className="size-3" /> },
-        { label: `${author.name} on LinkedIn`, href: author.linkedinUrl, icon: <LinkedInIcon className="size-3" /> },
-        { label: `${author.name} on GitHub`, href: author.githubUrl, icon: <GitHubIcon className="size-3.5" /> },
+        { label: `${author.name} on X`, href: author.xUrl, icon: <XIcon /> },
+        { label: `${author.name} on LinkedIn`, href: author.linkedinUrl, icon: <LinkedInIcon /> },
+        { label: `${author.name} on GitHub`, href: author.githubUrl, icon: <GitHubIcon /> },
       ]}
       legal={
         <p>
