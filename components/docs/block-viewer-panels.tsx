@@ -67,7 +67,7 @@ export function BlockViewerPanels({
     <Tabs
       value={tab}
       onValueChange={setTab}
-      className="@container/viewer min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
+      className="@container/viewer min-w-0 gap-0 rounded-2xl border border-transparent bg-card p-px shadow-card [--inner-radius:calc(var(--radius-2xl)-2px)]"
     >
       <div className="flex min-w-0 items-center justify-between gap-2 border-b border-border px-2">
         <TabsList aria-label={`${title} view`} className="data-[orientation=horizontal]:border-b-0">

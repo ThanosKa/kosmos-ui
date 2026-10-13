@@ -53,7 +53,7 @@ export async function ComponentPreview({ name, pageItem }: { name: string; pageI
   return (
     <div
       data-slot="component-preview"
-      className="not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
+      className="not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card p-px shadow-card [--inner-radius:calc(var(--radius-2xl)-2px)]"
     >
       {/* The same box as the /view page around an example, so it renders as it does there. */}
       <div className="flex min-h-56 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-body text-foreground sm:min-h-72 sm:p-10">
