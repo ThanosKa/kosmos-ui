@@ -58,7 +58,7 @@ type RunTimelineProps = {
   className?: string;
 };
 
-// Sample data
+// Sample data: replace it with your run. Values are made up but stable, so server and browser match.
 
 const sampleRun: Run = {
   id: 'run_482',
@@ -141,8 +141,6 @@ const sampleRun: Run = {
   ],
 };
 
-// Formatting
-
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
 
@@ -177,8 +175,6 @@ function plural(count: number, word: string) {
   return `${count} ${word}${count === 1 ? '' : 's'}`;
 }
 
-// Status
-
 const runBadge: Record<RunStatus, { status: Status; label: string }> = {
   queued: { status: 'pending', label: 'Queued' },
   running: { status: 'running', label: 'Running' },
@@ -187,8 +183,6 @@ const runBadge: Record<RunStatus, { status: Status; label: string }> = {
   failed: { status: 'error', label: 'Failed' },
   cancelled: { status: 'skipped', label: 'Cancelled' },
 };
-
-// Parts
 
 const stepEnter =
   'transition-[opacity,translate] duration-base ease-power3-out starting:opacity-0 motion-safe:starting:translate-y-1';

@@ -34,17 +34,22 @@ function doneLabel(durationMs?: number) {
   );
 }
 
-const spokenUnit = (unit: 'minute' | 'second') =>
+const spokenUnit = (unit: 'hour' | 'minute' | 'second') =>
   new Intl.NumberFormat('en', { style: 'unit', unit, unitDisplay: 'long', maximumFractionDigits: 1 });
 
-/** The label read aloud, rounded as `formatDuration` rounds it: "4.2 seconds", "48 seconds", "2 minutes 5 seconds". */
+/** The label read aloud, rounded as `formatDuration` rounds it: "4.2 seconds", "48 seconds", "2 minutes 5 seconds", "1 hour 2 minutes". */
 function doneAnnouncement(durationMs?: number) {
   if (durationMs === undefined || durationMs < 1000) return 'Thought for a moment';
   if (durationMs < 10_000) return `Thought for ${spokenUnit('second').format(Math.round(durationMs / 100) / 10)}`;
   if (durationMs < 60_000) return `Thought for ${spokenUnit('second').format(Math.round(durationMs / 1000))}`;
-  const minutes = spokenUnit('minute').format(Math.floor(durationMs / 60_000));
-  const seconds = Math.floor((durationMs % 60_000) / 1000);
-  return seconds ? `Thought for ${minutes} ${spokenUnit('second').format(seconds)}` : `Thought for ${minutes}`;
+  if (durationMs < 3_600_000) {
+    const minutes = spokenUnit('minute').format(Math.floor(durationMs / 60_000));
+    const seconds = Math.floor((durationMs % 60_000) / 1000);
+    return seconds ? `Thought for ${minutes} ${spokenUnit('second').format(seconds)}` : `Thought for ${minutes}`;
+  }
+  const hours = spokenUnit('hour').format(Math.floor(durationMs / 3_600_000));
+  const minutes = Math.floor((durationMs % 3_600_000) / 60_000);
+  return minutes ? `Thought for ${hours} ${spokenUnit('minute').format(minutes)}` : `Thought for ${hours}`;
 }
 
 /**
