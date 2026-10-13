@@ -1,0 +1,82 @@
+---
+title: OTP field
+description: A one-time code input built on Base UI, one character per box, that fills from a paste or the phone's code autofill.
+baseUi: https://base-ui.com/react/components/otp-field
+---
+
+<ComponentPreview name="otp-field-demo" />
+
+## Installation
+
+<ComponentInstall name="otp-field" />
+
+## Usage
+
+```tsx
+import { Field, FieldLabel } from '@/components/ui/field';
+import { OtpField } from '@/components/ui/otp-field';
+```
+
+```tsx
+<Field>
+  <FieldLabel>Verification code</FieldLabel>
+  <OtpField name="code" />
+</Field>
+```
+
+OTP field renders one box per character, six by default. Typing moves to the next box and Backspace to the one before. Pasting a code fills every box at once, and so does the code autofill on phones, since the first box has `autocomplete="one-time-code"`. Only digits get in, unless you set `validationType`.
+
+Put it in a [Field](/docs/components/field), which gives it a visible label and connects the help text and error to it. Screen readers hear the label on the first box and "Character 2 of 6" and so on for the others.
+
+Inside a form, `autoSubmit` submits it as soon as the last box is filled, and `name` sends the whole code as one value.
+
+## Examples
+
+### Groups
+
+`groupSize` splits the boxes into groups with a dash between them, which makes a long code easier to read and copy. Set `validationType="alphanumeric"` for codes with letters.
+
+<ComponentPreview name="otp-field-groups" />
+
+### Invalid
+
+Set `invalid` on the Field and add a FieldError. Every box gets a red ring, and screen readers read the error with the field.
+
+<ComponentPreview name="otp-field-invalid" />
+
+### Your own boxes
+
+Pass `OtpFieldInput` and `OtpFieldSeparator` as children to place the boxes yourself. Give every box after the first an `aria-label`. `mask` hides what was typed, like a password.
+
+<ComponentPreview name="otp-field-custom" />
+
+## API
+
+OTP field wraps the [Base UI OTP Field](https://base-ui.com/react/components/otp-field) and accepts all of its props.
+
+### OtpField
+
+<TypeTable
+  type={{
+    length: { description: 'The number of characters in the code.', type: 'number', default: '6' },
+    groupSize: { description: 'Splits the boxes into groups of this many, with a dash between groups. Ignored when you pass children.', type: 'number' },
+    value: { description: 'The code, when you control it.', type: 'string' },
+    defaultValue: { description: 'The starting code, when the field manages it.', type: 'string' },
+    onValueChange: { description: 'Called with the new code on every change.', type: '(value: string, eventDetails) => void' },
+    onValueComplete: { description: 'Called once every box is filled.', type: '(value: string, eventDetails) => void' },
+    validationType: { description: 'Which characters get in.', type: "'numeric' | 'alpha' | 'alphanumeric' | 'none'", default: "'numeric'" },
+    autoSubmit: { description: 'Submits the form when the last box is filled.', type: 'boolean', default: 'false' },
+    mask: { description: 'Hides what was typed, like a password.', type: 'boolean', default: 'false' },
+    name: { description: 'Sends the whole code under this name with the form.', type: 'string' },
+    disabled: { description: 'Blocks input and leaves the code out of the form.', type: 'boolean', default: 'false' },
+    readOnly: { description: 'Keeps the code from changing, for example while it is being checked.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### OtpFieldInput
+
+One box. Accepts every `<input>` prop. The first box is named by the field's label; give every other box an `aria-label`.
+
+### OtpFieldSeparator
+
+The dash between two groups of boxes.

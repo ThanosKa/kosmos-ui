@@ -139,6 +139,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Kanban board | The roadmap above. |
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
 | App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
+| Auth forms | The way into Parallax itself, not a customer's app: "Log in to Parallax", "Create your Parallax account" (on the Free plan), a 6-digit email code sent to lena@parallax.example, and a password reset. Email placeholders read `name@parallax.example`; the review preview's filled forms use the team's addresses. |
 | Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
 
 ## Creating things
