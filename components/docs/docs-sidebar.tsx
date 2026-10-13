@@ -95,13 +95,13 @@ function useOpenGroups(nav: DocsNav, pathname: string) {
 
 const countNoun: Partial<Record<DocsNavSectionId, [string, string]>> = {
   components: ['component', 'components'],
-  blocks: ['block', 'blocks'],
 };
 
 /**
  * The docs navigation of the current header tab: a docked Kosmos Sidebar from `md` up and a drawer below, opened from the
- * header, with the header tabs on top. The Docs tab lists Get started and Foundations; Components and Blocks list an
- * Overview, then one group per registry group that opens and closes.
+ * header, with the header tabs on top. The Docs tab lists Get started and Foundations; Components lists an Overview, then
+ * one group per registry group that opens and closes; Blocks lists an Overview, then its block sections, each block
+ * category with its variant count.
  */
 export function DocsSidebar({ nav }: { nav: DocsNav }) {
   const pathname = usePathname();
@@ -160,6 +160,14 @@ function DocsSidebarLink({ item, pathname, className }: { item: DocsNavItem; pat
     >
       {item.icon}
       <span>{item.title}</span>
+      {item.variants !== undefined && (
+        <>
+          <span className="sr-only">
+            {item.variants} {item.variants === 1 ? 'variant' : 'variants'}
+          </span>
+          <SidebarMenuBadge aria-hidden>{item.variants}</SidebarMenuBadge>
+        </>
+      )}
     </SidebarMenuButton>
   );
 }

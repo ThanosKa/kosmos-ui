@@ -63,17 +63,21 @@ async function openPage(browser: Browser, path: string, theme: Theme, viewport: 
   return { page, errors, close: () => context.close() };
 }
 
-/** The example a docs page opens with (its first `<ComponentPreview>`), usually `<name>-demo`. */
-function heroExample(folder: string, name: string) {
-  const file = `content/docs/${folder}/${name}.mdx`;
+/** The example a component page opens with (its first `<ComponentPreview>`), usually `<name>-demo`. */
+function heroExample(name: string) {
+  const file = `content/docs/components/${name}.mdx`;
   const hero = existsSync(file) ? /<ComponentPreview\s+name="([^"]+)"/.exec(readFileSync(file, 'utf8'))?.[1] : undefined;
   if (!hero) throw new Error(`${file}: expected a docs page that opens with <ComponentPreview name="…" />`);
   return hero;
 }
 
-/** The example a thumbnail shows: `<name>-thumb` when it exists, else the docs page's hero. */
-function thumbnailExample(folder: string, name: string) {
-  return existsSync(`registry/kosmos/examples/${name}-thumb.tsx`) ? `${name}-thumb` : heroExample(folder, name);
+/**
+ * The example a thumbnail shows: `<name>-thumb` when it exists, else a component page's hero or a block variant's
+ * demo, which its block category page shows.
+ */
+function thumbnailExample(isBlock: boolean, name: string) {
+  if (existsSync(`registry/kosmos/examples/${name}-thumb.tsx`)) return `${name}-thumb`;
+  return isBlock ? `${name}-demo` : heroExample(name);
 }
 
 /**
@@ -90,7 +94,7 @@ function thumbnailTargets() {
       const isBlock = item.type === 'registry:block';
       return {
         name: item.name,
-        example: thumbnailExample(isBlock ? 'blocks' : 'components', item.name),
+        example: thumbnailExample(isBlock, item.name),
         viewport: isBlock ? { width: 960, height: 600 } : { width: 560, height: 350 },
         minWidth: isBlock ? 480 : 320,
         deviceScaleFactor: isBlock ? 1.5 : 2,
