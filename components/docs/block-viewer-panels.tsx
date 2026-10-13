@@ -1,7 +1,8 @@
 'use client';
 
 import { ArrowUpRight, Lock, Monitor, Smartphone, Tablet } from 'lucide-react';
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useTheme } from 'next-themes';
+import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
@@ -18,6 +19,23 @@ type PreviewWidth = keyof typeof previewWidths;
 
 /** Blocks bring their own dialogs and drawers, so the frame keeps room for them even when the block is short. */
 const previewMinHeight = 560;
+
+/**
+ * A preview on another origin (the Pro deployment) cannot read the docs theme, which next-themes keeps in this
+ * origin's storage, so it gets the theme in its address. Undefined until the page has hydrated and the theme is
+ * known (the server cannot know it), so the frame loads once, in the right theme.
+ */
+const subscribeToNothing = () => () => {};
+
+function useThemedPreviewUrl(previewUrl: string) {
+  const { resolvedTheme } = useTheme();
+  const hydrated = useSyncExternalStore(subscribeToNothing, () => true, () => false);
+  if (!/^https?:\/\//.test(previewUrl)) return previewUrl;
+  if (!hydrated || !resolvedTheme) return undefined;
+  const url = new URL(previewUrl);
+  url.searchParams.set('theme', resolvedTheme);
+  return url.href;
+}
 
 /**
  * The Preview and Code tabs of a block viewer, with the preview width and a link that opens the preview alone. The
@@ -39,6 +57,7 @@ export function BlockViewerPanels({
   const [tab, setTab] = useState('preview');
   const [width, setWidth] = useState<PreviewWidth>('desktop');
   const framed = previewWidths[width].width;
+  const src = useThemedPreviewUrl(previewUrl);
 
   return (
     <Tabs
@@ -77,7 +96,7 @@ export function BlockViewerPanels({
           <Button
             variant="secondary"
             size="icon"
-            href={previewUrl}
+            href={src ?? previewUrl}
             target="_blank"
             rel="noreferrer"
             aria-label={`Open ${title} in a new tab`}
@@ -93,7 +112,11 @@ export function BlockViewerPanels({
             className={cn('box-content max-w-full', framed ? 'w-(--preview-width) border-x border-border' : 'w-full')}
             style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
           >
-            <PreviewFrame src={previewUrl} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
+            {src ? (
+              <PreviewFrame src={src} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
+            ) : (
+              <div aria-hidden className="h-140 bg-background" />
+            )}
           </div>
         </div>
       </TabsContent>

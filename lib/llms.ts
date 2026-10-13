@@ -173,7 +173,7 @@ function variantsMarkdown(category: BlockCategory) {
       [
         `## ${variant.title} (${blockTiers[variant.tier]})`,
         variant.description,
-        `Preview: ${absolute(variant.previewUrl)}`,
+        `Preview: ${new URL(variant.previewUrl, siteUrl).href}`,
         variant.tier === 'free' && fence('bash', `${packageRunners.npm} add ${registryNamespace}/${variant.name}`),
       ]
         .filter(Boolean)

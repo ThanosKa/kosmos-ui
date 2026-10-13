@@ -6,8 +6,9 @@ import { cn } from '@/registry/kosmos/lib/cn';
 /**
  * A preview route in an iframe, sized to its content. A `src` without `?theme=` follows the docs theme
  * toggle (next-themes syncs both documents through localStorage); with it the frame is pinned to that theme
- * (the approval page shows light and dark side by side). A page on another origin can't be measured, so its
- * frame keeps `minHeight`.
+ * (the approval page shows light and dark side by side). A page on another origin can't be measured, so it
+ * reports its own height with a `kosmos:preview-height` message (the Pro previews do); until then its frame keeps
+ * `minHeight`.
  */
 export function PreviewFrame({
   src,
@@ -45,10 +46,17 @@ export function PreviewFrame({
       observer = undefined;
       measure();
     };
+    const onMessage = (event: MessageEvent) => {
+      const { type, height: reported } = (event.data ?? {}) as { type?: unknown; height?: unknown };
+      if (event.source !== iframe.contentWindow || type !== 'kosmos:preview-height' || typeof reported !== 'number') return;
+      setHeight(Math.max(minHeight, Math.ceil(reported)));
+    };
     iframe.addEventListener('load', onLoad);
+    window.addEventListener('message', onMessage);
     if (iframe.contentDocument?.readyState === 'complete') measure();
     return () => {
       iframe.removeEventListener('load', onLoad);
+      window.removeEventListener('message', onMessage);
       observer?.disconnect();
     };
   }, [minHeight]);

@@ -1,6 +1,6 @@
 import { globSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { siteUrl } from './shared.ts';
+import { proDeploymentUrl, siteUrl } from './shared.ts';
 import { kosmosTokensAsCssVars } from './tokens.ts';
 
 /**
@@ -170,9 +170,26 @@ function freeVariant(item: RegistryItem): BlockVariant {
  */
 export type ProVariant = Pick<BlockVariant, 'name' | 'title' | 'description' | 'category' | 'previewUrl'>;
 
-/** The Pro variants the site shows. None yet: they arrive with the Pro deployment. */
-export function readProVariants(): ProVariant[] {
-  return [];
+/**
+ * Every Pro variant, as metadata only: its code lives in the private Pro repo and never here (ADR 0003). `previewPath`
+ * is the page of the Pro deployment that renders it alone; it takes `?theme=light|dark`, since a frame on another
+ * origin cannot read the docs theme.
+ */
+export const proVariants: (Omit<ProVariant, 'previewUrl'> & { previewPath: string })[] = [
+  {
+    name: 'auth-split-screen',
+    title: 'Auth split screen',
+    description:
+      'Log in and sign up on one side of the page and a panel that shows your product on the other, with labels, inline errors, loading and success states. Below 896px wide the form stands alone.',
+    category: 'auth',
+    previewPath: '/view/auth-split-screen-demo',
+  },
+];
+
+/** The Pro variants the site shows, on the Pro deployment. None without `NEXT_PUBLIC_KOSMOS_PRO_URL`. */
+export function readProVariants(deploymentUrl: string | undefined = proDeploymentUrl): ProVariant[] {
+  if (!deploymentUrl) return [];
+  return proVariants.map(({ previewPath, ...variant }) => ({ ...variant, previewUrl: `${deploymentUrl}${previewPath}` }));
 }
 
 /** A whole app or site built from blocks. Templates are Pro, so the public repo knows only where each one runs. */
