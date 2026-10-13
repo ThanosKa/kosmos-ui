@@ -10,7 +10,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
 import { Button, type ButtonProps } from '@/registry/kosmos/ui/button';
 import { Drawer, DrawerContent, DrawerTitle } from '@/registry/kosmos/ui/drawer';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
-import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+import { ScrollArea, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider } from '@/registry/kosmos/ui/tooltip';
 
@@ -591,8 +591,16 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
  * The scrolling middle of the sidebar, holding the groups. It scrolls in a `ScrollArea`, so an edge with groups hidden
  * past it fades out. `render` and the other props go to the element that scrolls: `render={<nav aria-label="Main" />}`.
  */
-function SidebarContent({ className, render, children, ...props }: React.ComponentProps<'div'> & { render?: React.ReactElement }) {
-  const viewport = render ?? <div />;
+function SidebarContent({
+  className,
+  render = <div />,
+  children,
+  ...props
+}: React.ComponentProps<'div'> & { render?: ScrollAreaProps['viewportRender'] }) {
+  const viewportRender: ScrollAreaProps['viewportRender'] =
+    typeof render === 'function'
+      ? (viewportProps, state) => render(mergeProps<'div'>(viewportProps, props), state)
+      : React.cloneElement(render, props);
   return (
     <ScrollArea
       data-slot="sidebar-content"
@@ -606,7 +614,7 @@ function SidebarContent({ className, render, children, ...props }: React.Compone
         'group-data-[collapsible=icon]/sidebar:data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!',
         className,
       )}
-      viewportRender={Object.keys(props).length > 0 ? React.cloneElement(viewport, props) : viewport}
+      viewportRender={viewportRender}
     >
       {children}
     </ScrollArea>
