@@ -24,7 +24,7 @@ Without props it shows sample metrics. Pass the metrics and top events for each 
 - **Metrics as tabs**: each metric shows its label, its value and its change against the period before, in a green or red tag; set `goodWhen: 'down'` for a metric like errors, where falling is good. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
 - **Chart**: the selected metric over the range against the same span before it, with a tooltip and a hidden data table for screen readers.
 - **Top events**: the most frequent events, each with a bar to scale against the first.
-- **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container, two on a narrower one, and one per row, value beside the label, under 320px. The top events move beside the chart from 1152px.
+- **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container, two on a narrower one, and one per row, value beside the label, under 448px, so a value never cuts off on a phone. The top events move beside the chart from 1152px.
 - **Loading and empty**: `loading` swaps every value for a skeleton of the same shape. A range with no points, no metrics or no events shows an empty state.
 
 ## API

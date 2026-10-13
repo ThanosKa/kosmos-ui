@@ -156,7 +156,9 @@ const typeDocs: Record<string, string> = {
   body: 'The default UI text: buttons, menu items, table cells, checkbox and switch labels.',
   title: 'Dialog, drawer and card titles. Page titles in app chrome take it at medium weight.',
   heading: 'Section headings on pages outside the app, such as these docs.',
-  display: 'Stat values, always with tabular-nums.',
+  display: 'Stat values, always with tabular-nums. Also the title of a marketing hero in a narrow container.',
+  hero: 'The title of a marketing hero, once its container is 672px wide.',
+  lead: 'The one line under a marketing hero title.',
 };
 
 export function typeRoles() {

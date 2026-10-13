@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hero",
+  "type": "registry:block",
+  "title": "Hero",
+  "description": "The top of a marketing page: a title, one line, two actions and a command to copy, centered. Lays itself out by its own width.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "categories": ["hero"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/hero/hero.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
