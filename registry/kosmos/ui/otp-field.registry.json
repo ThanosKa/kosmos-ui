@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-field",
+  "type": "registry:ui",
+  "title": "OTP field",
+  "description": "A one-time code input on Base UI, one character per box, with paste and autofill across every box, the text field surface, a focus outline and an invalid ring. Inside a Field it takes its label, description and error from the field.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/otp-field.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
