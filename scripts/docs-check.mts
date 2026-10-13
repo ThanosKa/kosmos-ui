@@ -22,7 +22,13 @@ type Viewport = { width: number; height: number };
 /** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
 async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
   const context = await browser.newContext({ viewport, colorScheme: 'light', reducedMotion: 'reduce' });
-  await context.addInitScript(() => localStorage.setItem('theme', 'light'));
+  await context.addInitScript(() => {
+    localStorage.setItem('theme', 'light');
+    // The dev server's indicator would sit in every screenshot, block viewer iframes included.
+    document.addEventListener('DOMContentLoaded', () => {
+      document.head.append(Object.assign(document.createElement('style'), { textContent: 'nextjs-portal { display: none !important; }' }));
+    });
+  });
   const page = await context.newPage();
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -107,6 +113,8 @@ const oldBlockUrls = [
   'page-header',
   'stats-overview',
 ].map((name) => `/docs/blocks/${name}`);
+
+const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
 type Check = { name: string; run: (browser: Browser) => Promise<void> };
 
@@ -245,6 +253,120 @@ const checks: Check[] = [
       const markdown = await fetchText('/docs/blocks/data-table.md');
       assert.match(markdown, /## Data table \(Free\)/, 'data-table.md names the free variant');
       assert.match(markdown, /add @kosmos\/data-table/, 'data-table.md installs the free variant');
+    },
+  },
+  {
+    name: 'the block viewer sets the preview to desktop, tablet and phone width, and the block lays itself out for each',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/blocks/stats-overview');
+      const viewer = blockViewer(page, 'stats-overview');
+      const frame = viewer.locator('iframe');
+      await frame.scrollIntoViewIfNeeded();
+      const stageWidth = await viewer.locator('[data-block-viewer-stage]').evaluate((stage) => stage.clientWidth);
+      const metricColumns = () =>
+        frame
+          .contentFrame()
+          .locator('[data-preview-content] [role="tablist"]')
+          .first()
+          .evaluate((list) => getComputedStyle(list).gridTemplateColumns.split(' ').length);
+      const widths = viewer.getByRole('radiogroup', { name: 'Preview width' });
+      for (const [label, width, columns] of [
+        ['Tablet', 768, 2],
+        ['Phone', 375, 2],
+        ['Desktop', stageWidth, 4],
+      ] as const) {
+        await widths.getByRole('radio', { name: label }).click();
+        await page.waitForFunction(([iframe, expected]) => iframe.getBoundingClientRect().width === expected, [await frame.elementHandle(), width] as const);
+        await frame.contentFrame().locator('[data-preview-content]').waitFor();
+        assert.equal(await frame.contentFrame().locator('html').evaluate(() => innerWidth), width, `${label}: the block's viewport width`);
+        assert.equal(await metricColumns(), columns, `${label}: metric columns in the block`);
+        await page.screenshot({ path: `.screenshots/block-viewer-${label.toLowerCase()}.png`, fullPage: true });
+      }
+      assert.ok(stageWidth > 900, `Desktop: the viewer spans the content width (${stageWidth}px)`);
+      await close();
+    },
+  },
+  {
+    name: 'the block viewer works from the keyboard and names every control',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/blocks/data-table');
+      const viewer = blockViewer(page, 'data-table');
+      const unnamed = await viewer.evaluate((root) =>
+        [...root.querySelectorAll('button, a[href], [role="tab"], [role="radio"], iframe')]
+          .filter((element) => !(element.getAttribute('aria-label') || element.getAttribute('title') || element.textContent?.trim()))
+          .map((element) => element.outerHTML.slice(0, 80)),
+      );
+      assert.deepEqual(unnamed, [], 'controls without an accessible name');
+      const preview = viewer.getByRole('tab', { name: 'Preview' });
+      await preview.focus();
+      await page.keyboard.press('Shift+Tab');
+      assert.match(
+        (await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))) ?? '',
+        /^Copy install command: .*add @kosmos\/data-table$/,
+        'the install command comes before the tabs',
+      );
+      await page.keyboard.press('Tab');
+      assert.ok(await preview.evaluate((tab) => tab === document.activeElement), 'Tab returns to Preview');
+      await page.keyboard.press('ArrowRight');
+      assert.equal(await viewer.getByRole('tab', { name: 'Code' }).getAttribute('aria-selected'), 'true', 'ArrowRight selects Code');
+      await viewer.locator('[data-slot="code-block"]').first().waitFor();
+      await page.keyboard.press('ArrowLeft');
+      await viewer.getByRole('radiogroup', { name: 'Preview width' }).waitFor();
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Desktop', 'Tab reaches the selected width');
+      await page.keyboard.press('ArrowRight');
+      assert.equal(await viewer.getByRole('radio', { name: 'Tablet' }).getAttribute('aria-checked'), 'true', 'ArrowRight picks Tablet');
+      await page.keyboard.press('Tab');
+      const open = viewer.getByRole('link', { name: 'Open Data table in a new tab' });
+      assert.ok(await open.evaluate((link) => link === document.activeElement), 'Tab reaches Open in a new tab');
+      assert.equal(await open.getAttribute('target'), '_blank', 'opens a new tab');
+      const [tab] = await Promise.all([page.context().waitForEvent('page'), open.click()]);
+      await tab.waitForLoadState('load');
+      assert.equal(new URL(tab.url()).pathname, '/view/data-table-demo', 'new tab address');
+      assert.equal(await tab.locator('[data-preview-root]').count(), 1, 'new tab shows the block alone');
+      assert.equal(await tab.locator('nav[aria-label="Docs"]').count(), 0, 'new tab has no docs chrome');
+      await close();
+    },
+  },
+  {
+    name: 'the Code tab of the block viewer shows every file of the block at its install path',
+    async run(browser) {
+      for (const [category, files] of [
+        ['data-table', ['components/data-table.tsx']],
+        ['app-sidebar', ['components/app-sidebar.tsx']],
+      ] as const) {
+        const { page, close } = await openPage(browser, `/docs/blocks/${category}`);
+        const viewer = blockViewer(page, category);
+        await viewer.getByRole('tab', { name: 'Code' }).click();
+        const panel = viewer.getByRole('tabpanel');
+        await panel.locator('[data-slot="code-block"]').first().waitFor();
+        const titles = await panel.locator('[data-slot="code-block"] figcaption').allTextContents();
+        assert.deepEqual(titles, files, `${category}: file paths`);
+        assert.match((await panel.locator('pre').first().textContent()) ?? '', /from '@\/components\/ui\//, `${category}: installed imports`);
+        await close();
+      }
+    },
+  },
+  {
+    name: 'the block viewer shows a Pro variant with a Pro badge, its live preview and its code locked',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/fixtures/pro-variant');
+      const viewer = page.locator('[data-block-variant][data-tier="pro"]');
+      assert.equal(await viewer.count(), 1, 'one Pro variant');
+      assert.equal((await viewer.locator('[data-slot="badge"]').textContent())?.trim(), 'Pro', 'Pro badge');
+      assert.equal(await viewer.getByRole('button', { name: /^Copy install command/ }).count(), 0, 'no install command');
+      assert.ok(((await viewer.locator('iframe').getAttribute('src')) ?? '').length > 0, 'live preview');
+      await viewer.getByRole('tab', { name: 'Code' }).click();
+      const panel = viewer.getByRole('tabpanel');
+      assert.equal(await panel.locator('[data-slot="code-block"]').count(), 0, 'no code');
+      assert.equal(await panel.getByRole('link', { name: 'Get Pro' }).getAttribute('href'), '/pro', 'link to Pro');
+      const free = page.locator('[data-block-variant][data-tier="free"]');
+      assert.equal(await free.count(), 1, 'the free variant stays first');
+      assert.ok(
+        await free.evaluate((section, pro) => !!(section.compareDocumentPosition(pro!) & Node.DOCUMENT_POSITION_FOLLOWING), await viewer.elementHandle()),
+        'free before Pro',
+      );
+      await close();
     },
   },
   {

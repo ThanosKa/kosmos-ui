@@ -33,6 +33,8 @@ export function docsSourceUrl(path: string, view: 'blob' | 'edit') {
   const ref = view === 'edit' ? gitConfig.editBranch : 'HEAD';
   return `${githubUrl}/${view}/${ref}/content/docs/${path}`;
 }
+/** Where the block viewer of a Pro variant sends visitors for its locked code. */
+export const proUrl = '/pro';
 export const licenseUrl = `${githubUrl}/blob/HEAD/LICENSE`;
 export const author = {
   name: 'Thanos Kazakis',

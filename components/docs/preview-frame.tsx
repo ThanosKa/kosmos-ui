@@ -4,19 +4,20 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
- * The preview route in an iframe, sized to its content. Without `theme` the frame follows
- * the docs theme toggle (next-themes syncs both documents through localStorage); with it the
- * frame is pinned to that theme (the approval page shows light and dark side by side).
+ * A preview route in an iframe, sized to its content. A `src` without `?theme=` follows the docs theme
+ * toggle (next-themes syncs both documents through localStorage); with it the frame is pinned to that theme
+ * (the approval page shows light and dark side by side). A page on another origin can't be measured, so its
+ * frame keeps `minHeight`.
  */
 export function PreviewFrame({
-  name,
+  src,
+  title,
   minHeight = 240,
-  theme,
   className,
 }: {
-  name: string;
+  src: string;
+  title: string;
   minHeight?: number;
-  theme?: 'light' | 'dark';
   className?: string;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
@@ -55,8 +56,8 @@ export function PreviewFrame({
   return (
     <iframe
       ref={ref}
-      src={theme ? `/view/${name}?theme=${theme}` : `/view/${name}`}
-      title={theme ? `${name} preview, ${theme}` : `${name} preview`}
+      src={src}
+      title={title}
       loading="lazy"
       style={{ height }}
       className={cn('block w-full rounded-lg bg-background', className)}

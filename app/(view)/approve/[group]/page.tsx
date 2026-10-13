@@ -70,8 +70,8 @@ export default async function ApproveGroupPage(props: PageProps<'/approve/[group
                 <figure key={theme} className="flex flex-col gap-2">
                   <figcaption className="text-caption text-muted-foreground capitalize">{theme}</figcaption>
                   <PreviewFrame
-                    name={item.name}
-                    theme={theme}
+                    src={`/view/${item.name}?theme=${theme}`}
+                    title={`${item.name} preview, ${theme}`}
                     minHeight={120}
                     className="rounded-xl border border-transparent shadow-card"
                   />

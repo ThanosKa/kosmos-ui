@@ -142,7 +142,10 @@ export type BlockVariant = {
   category: string;
   section: BlockSection;
   tier: BlockTier;
-  /** The page that renders the variant alone, for the block viewer's iframe and "open in a new tab". */
+  /**
+   * The page that renders the variant alone, for the block viewer's iframe and "open in a new tab": a preview route
+   * of this site for a free variant, a page of the Pro deployment for a Pro one.
+   */
   previewUrl: string;
 };
 
@@ -162,10 +165,22 @@ function freeVariant(item: RegistryItem): BlockVariant {
 }
 
 /**
- * Every block category, A–Z by name, with its variants: free first, then by name. The one reader of block categories,
- * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections.
+ * What the public repo knows of a Pro variant: no code, only its name, its block category and the page on the Pro
+ * deployment that renders it. It takes the section of its category, which a free variant declares.
  */
-export function readBlockCategories(items: RegistryItem[] = readRegistryItems()): BlockCategory[] {
+export type ProVariant = Pick<BlockVariant, 'name' | 'title' | 'description' | 'category' | 'previewUrl'>;
+
+/** The Pro variants the site shows. None yet: they arrive with the Pro deployment. */
+export function readProVariants(): ProVariant[] {
+  return [];
+}
+
+/**
+ * Every block category, A–Z by name, with its variants: free first, then by name. The one reader of block categories,
+ * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections,
+ * or when a Pro variant names a category no free variant declares.
+ */
+export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), proVariants: ProVariant[] = readProVariants()): BlockCategory[] {
   const categories = new Map<string, BlockCategory>();
   for (const variant of items.filter((item) => item.type === 'registry:block').map(freeVariant)) {
     const category = categories.get(variant.category) ?? { name: variant.category, section: variant.section, variants: [] };
@@ -174,6 +189,11 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems())
     }
     category.variants.push(variant);
     categories.set(variant.category, category);
+  }
+  for (const variant of proVariants) {
+    const category = categories.get(variant.category);
+    if (!category) throw new Error(`Pro variant "${variant.name}": block category "${variant.category}" has no free variant`);
+    category.variants.push({ ...variant, section: category.section, tier: 'pro' });
   }
   const tierRank = (tier: BlockTier) => Object.keys(blockTiers).indexOf(tier);
   return [...categories.values()]
@@ -184,8 +204,12 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems())
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function getBlockCategory(name: string, items: RegistryItem[] = readRegistryItems()): BlockCategory | undefined {
-  return readBlockCategories(items).find((category) => category.name === name);
+export function getBlockCategory(
+  name: string,
+  items: RegistryItem[] = readRegistryItems(),
+  proVariants?: ProVariant[],
+): BlockCategory | undefined {
+  return readBlockCategories(items, proVariants).find((category) => category.name === name);
 }
 
 /** Every registry item, sorted by type then name, validated for unique names and existing files and deps. */
@@ -313,6 +337,13 @@ export const packageInstallers = {
   yarn: 'yarn add',
   bun: 'bun add',
 } as const satisfies Record<keyof typeof packageRunners, string>;
+
+/** The one-line `shadcn add` of an item for each package manager, keyed like `packageRunners`. */
+export function addCommands(name: string): Record<keyof typeof packageRunners, string> {
+  return Object.fromEntries(
+    Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} add ${registryNamespace}/${name}`]),
+  ) as Record<keyof typeof packageRunners, string>;
+}
 
 /** The `shadcn add` lines for an item, in the documented order. */
 export function installCommands(name: string, runner: string = packageRunners.npm): string {

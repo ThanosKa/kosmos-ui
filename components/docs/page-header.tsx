@@ -3,7 +3,7 @@ import { formatChangelogDate } from '@/lib/changelog';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import type { DocsEyebrowPart, DocsNeighbours } from '@/lib/docs-nav';
-import { packageRunners, registryNamespace } from '@/lib/registry';
+import { addCommands } from '@/lib/registry';
 import { Button } from '@/registry/kosmos/ui/button';
 import { eyebrowClass } from './classes';
 import { InstallChip } from './install-chip';
@@ -80,11 +80,7 @@ export function DocsPageHeader({ title, description, date, markdownUrl, githubUr
               <span className="sr-only">(opens in a new tab)</span>
             </Button>
           )}
-          <InstallChip
-            commands={Object.fromEntries(
-              Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} add ${registryNamespace}/${item.name}`]),
-            )}
-          />
+          <InstallChip commands={addCommands(item.name)} />
         </div>
       )}
     </header>
