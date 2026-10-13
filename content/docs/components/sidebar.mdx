@@ -212,7 +212,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
 | `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `collapsible` sets where it collapses to; `label` names the drawer for screen readers. |
 | `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
-| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. Its tooltip shows the keyboard shortcut. |
+| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. Beside the page, its tooltip shows the keyboard shortcut. |
 | `SidebarInset` | The page beside the sidebar. Renders `<main>`; pass `render={<div />}` when your layout already has one. |
 | `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
 | `SidebarContent` | The scrolling middle, a Scroll area whose edges fade while items hide past them. `render` and the other props go to the element that scrolls: `render={<nav aria-label="Main" />}`. |
@@ -229,7 +229,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 
 | Key | Action |
 | --- | --- |
-| `⌘B` or `Ctrl+B` | Anywhere on the page: collapses or reopens the sidebar, or opens and closes the drawer on phones. Set by `keyboardShortcut`. |
+| `⌘B` or `Ctrl+B` | Anywhere on the page: collapses or reopens the sidebar beside the page. It does nothing on phones, where the trigger opens the drawer. Set by `keyboardShortcut`. |
 | `ArrowRight` or `ArrowLeft` | On the resize handle: widens or narrows the sidebar by 16px. A collapsed sidebar reopens on the key that widens it. In a right-to-left layout, the keys swap. |
 | `Shift` + `ArrowRight` or `Shift` + `ArrowLeft` | Resizes by 64px. |
 | `Home` or `End` | On the resize handle: sets the width to `minWidth` or `maxWidth`, and reopens a collapsed sidebar. |
