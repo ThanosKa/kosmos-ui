@@ -114,6 +114,9 @@ const oldBlockUrls = [
   'stats-overview',
 ].map((name) => `/docs/blocks/${name}`);
 
+/** Every block category in the Application group. */
+const applicationCategoryUrls = [...oldBlockUrls, '/docs/blocks/auth'];
+
 const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
 type Check = { name: string; run: (browser: Browser) => Promise<void> };
@@ -227,7 +230,7 @@ const checks: Check[] = [
         'sidebar sections (Marketing and AI have no categories yet)',
       );
       const application = sections[1].items;
-      assert.deepEqual(application.map((item) => item.url).sort(), oldBlockUrls.toSorted(), 'Application lists every block category');
+      assert.deepEqual(application.map((item) => item.url).sort(), applicationCategoryUrls.toSorted(), 'Application lists every block category');
       for (const item of application) {
         assert.equal(item.count, '1', `${item.url}: variant count`);
         assert.match(item.text ?? '', /1 variant(?!s)/, `${item.url}: screen reader count`);
