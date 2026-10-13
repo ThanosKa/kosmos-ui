@@ -48,7 +48,7 @@ function OtpFieldInput({ className, ...props }: OtpFieldInputProps) {
     <OTPFieldPrimitive.Input
       data-slot="otp-field-input"
       className={cn(
-        // The Input surface, square, with one centered character. Boxes shrink, still square, when the row runs out of room.
+        // Boxes shrink, still square, when the row runs out of room.
         'aspect-square w-10 min-w-0 shrink rounded-lg border border-transparent bg-secondary text-center text-title font-medium text-foreground tabular-nums shadow-field',
         'transition-[box-shadow]',
         // The transparent outline paints only in forced-colors mode, which drops the box-shadow focus line and halo.

@@ -128,6 +128,8 @@ type AuthEmailProps = {
   /** The email address at first, when the form keeps its own state. */
   defaultEmail?: string;
   onEmailChange?: (email: string) => void;
+  /** An example address in the empty email field. */
+  emailPlaceholder?: string;
 };
 
 type ShellProps = Pick<AuthFormProps, 'productName' | 'logo' | 'headingLevel' | 'className'> & {
@@ -308,6 +310,7 @@ function LogInForm({
   email: emailProp,
   defaultEmail = '',
   onEmailChange,
+  emailPlaceholder = sampleEmailPlaceholder,
   onLogIn = sampleRequest,
   alternatives,
   defaultSuccess = false,
@@ -380,7 +383,7 @@ function LogInForm({
             type="email"
             name="email"
             autoComplete="email"
-            placeholder={sampleEmailPlaceholder}
+            placeholder={emailPlaceholder}
             autoFocus={autoFocus}
             readOnly={pending}
             value={email}
@@ -444,6 +447,7 @@ function SignUpForm({
   email: emailProp,
   defaultEmail = '',
   onEmailChange,
+  emailPlaceholder = sampleEmailPlaceholder,
   onSignUp = sampleRequest,
   alternatives,
   legal,
@@ -475,10 +479,7 @@ function SignUpForm({
 
   return (
     <AuthShell
-      productName={productName}
-      logo={logo}
-      headingLevel={headingLevel}
-      className={className}
+      {...{ productName, logo, headingLevel, className }}
       title={`Create your ${productName} account`}
       description="Start with the Free plan. No card needed."
       footer={
@@ -513,7 +514,7 @@ function SignUpForm({
             type="email"
             name="email"
             autoComplete="email"
-            placeholder={sampleEmailPlaceholder}
+            placeholder={emailPlaceholder}
             readOnly={pending}
             value={email}
             onValueChange={setEmail}
@@ -560,7 +561,7 @@ function SignUpForm({
   );
 }
 
-type EmailCodeFormProps = Omit<AuthFormProps, 'autoFocus'> & {
+type EmailCodeFormProps = AuthFormProps & {
   /** The address the code went to. */
   email?: string;
   /** The number of characters in the code. */
@@ -573,10 +574,11 @@ type EmailCodeFormProps = Omit<AuthFormProps, 'autoFocus'> & {
   resendAfter?: number;
   /** Where "Use a different email" leads. */
   backView?: AuthView;
-  /** Moves focus to the first box when the form appears. */
-  autoFocus?: boolean;
-  /** The code at first. For previews. */
+  /** The code typed so far. Use with `onCodeChange`. */
+  code?: string;
+  /** The code at first, when the form keeps its own state. */
   defaultCode?: string;
+  onCodeChange?: (code: string) => void;
   /** Shows the verified state from the start. For previews. */
   defaultSuccess?: boolean;
 };
@@ -602,13 +604,15 @@ function EmailCodeForm({
   onResendCode = sampleRequest,
   resendAfter = 30,
   backView = 'sign-up',
+  code: codeProp,
   defaultCode = '',
+  onCodeChange,
   defaultSuccess = false,
 }: EmailCodeFormProps) {
   const links = { ...sampleLinks, ...linksProp };
   const codeRef = React.useRef<HTMLDivElement>(null);
   const focusCode = () => codeRef.current?.querySelector('input')?.focus();
-  const [code, setCode] = React.useState(defaultCode);
+  const [code, setCode] = useControllable(codeProp, defaultCode, onCodeChange);
   const [submitted, setSubmitted] = React.useState(defaultSubmitted);
   const [success, setSuccess] = React.useState(defaultSuccess);
   const [wait, setWait] = React.useState(resendAfter);
@@ -636,6 +640,7 @@ function EmailCodeForm({
     setSubmitted(true);
     if (incomplete) return focusCode();
     if (await run(() => onVerify(code, email))) setSuccess(true);
+    else focusCode();
   }
 
   async function resend() {
@@ -761,6 +766,7 @@ function ForgotPasswordForm({
   email: emailProp,
   defaultEmail = '',
   onEmailChange,
+  emailPlaceholder = sampleEmailPlaceholder,
   onResetPassword = sampleRequest,
   defaultSent = false,
 }: ForgotPasswordFormProps) {
@@ -834,7 +840,7 @@ function ForgotPasswordForm({
             type="email"
             name="email"
             autoComplete="email"
-            placeholder={sampleEmailPlaceholder}
+            placeholder={emailPlaceholder}
             autoFocus={autoFocus}
             readOnly={pending}
             value={email}
@@ -874,6 +880,7 @@ function AuthForms({
   email: emailProp,
   defaultEmail = '',
   onEmailChange,
+  emailPlaceholder,
   onLogIn,
   alternatives,
   onSignUp,
@@ -896,7 +903,7 @@ function AuthForms({
       setView(next);
     },
   };
-  const emailProps = { email, onEmailChange: setEmail };
+  const emailProps = { email, onEmailChange: setEmail, emailPlaceholder };
 
   if (view === 'sign-up') return <SignUpForm key={view} {...props} {...emailProps} onSignUp={onSignUp} alternatives={alternatives} legal={legal} />;
   if (view === 'email-code')
