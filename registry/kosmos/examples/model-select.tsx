@@ -15,11 +15,11 @@ const mixedModels: ModelOption[] = [
   models[0],
   models[1],
   { id: 'claude-haiku-5-5', name: 'Claude Haiku 5.5', hint: 'One speed', efforts: [] },
-  { id: 'claude-opus-5-5-1m', name: 'Claude Opus 5.5 (1M context)', hint: 'Ask an admin', disabled: true },
+  { id: 'claude-opus-5-5-1m', name: 'Claude Opus 5.5 (1M context)', hint: 'Not on your plan', disabled: true },
 ];
 
 const longModels: ModelOption[] = [
-  { id: 'long', name: 'Claude Sonnet 5.5 for long financial reports and audits', hint: 'Tuned for Acme Inc.' },
+  { id: 'long', name: 'Claude Sonnet 5.5 for the weekly summary and quota reports', hint: 'Tuned for Acme' },
   ...models,
 ];
 

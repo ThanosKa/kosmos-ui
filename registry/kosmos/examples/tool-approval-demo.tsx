@@ -22,18 +22,18 @@ export default function ToolApprovalDemo() {
   return (
     <div className="flex w-full max-w-xl flex-col items-start gap-2">
       <ToolApproval
-        tool="projects.update_owner"
-        title="Reassign 3 projects to the Growth team?"
-        description="The agent wants to change the owner of three projects. Owners receive alerts and can edit dashboards."
+        tool="projects.update_plan"
+        title="Raise Cirrus Weather to the Scale plan?"
+        description="The agent wants to move Cirrus Weather from Pro to Scale. Its events use 80% of the Pro allowance, and Scale starts at $1,200 a month."
         details={[
-          { label: 'Projects', value: 'Checkout, Mobile, Partner API' },
-          { label: 'Current owner', value: 'Admin' },
-          { label: 'New owner', value: 'Growth team' },
+          { label: 'Project', value: 'Cirrus Weather' },
+          { label: 'Current plan', value: 'Pro' },
+          { label: 'New plan', value: 'Scale' },
           { label: 'Requested by', value: 'Acme agent · Run #482' },
         ]}
         status={status}
         decision={decision}
-        decidedBy="you"
+        decidedBy="Lena Park"
         decidedAt={decidedAt}
         onDecide={decide}
       />

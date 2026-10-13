@@ -5,19 +5,19 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { Reasoning } from '@/registry/kosmos/ui/reasoning';
 
 const sample =
-  'Acme Inc. has 14 projects. Three are above 90% of their event quota: Checkout, Mobile and Partner API. The plan renews in November, so the Admin should see this before the renewal call.';
+  'Three projects are close to or over their event quota: Copperline Bank (109%), Cirrus Weather (80%) and Ironbark Logistics (79%). Copperline Bank passed its 8,000,000 allowance on the Scale plan, so Lena should see this first.';
 
 const longText = Array.from(
   { length: 6 },
   (_, i) =>
-    `${i + 1}. ${sample} The Analyst asked for revenue by region, so I compared Q3 against Q2 for every project before picking the three with the steepest growth.`,
+    `${i + 1}. ${sample} Lena asked for the biggest changes, so I compared the last 7 days with the 7 before for every project before picking the three with the steepest growth.`,
 ).join('\n\n');
 
 const steps = [
-  { label: 'Read the Q3 event totals', done: true },
+  { label: 'Read the last 30 days of events', done: true },
   { label: 'Compare quota use across projects', done: true },
-  { label: 'Draft the summary for the Admin', done: false },
-  { label: 'Suggest a new quota for each project', done: false },
+  { label: 'Draft the summary for Lena', done: false },
+  { label: 'Suggest an allowance for each project', done: false },
 ];
 
 const cells = [

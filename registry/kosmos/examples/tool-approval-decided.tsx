@@ -4,19 +4,19 @@ export default function ToolApprovalDecided() {
   return (
     <div className="flex w-full max-w-xl flex-col gap-4">
       <ToolApproval
-        tool="projects.update_owner"
-        title="Reassign 3 projects to the Growth team?"
+        tool="projects.update_plan"
+        title="Raise Cirrus Weather to the Scale plan?"
         status="decided"
         decision="allow-once"
-        decidedBy="you"
+        decidedBy="Lena Park"
         decidedAt="14:02"
       />
       <ToolApproval
-        tool="dashboards.share"
-        title="Share Revenue by plan with finance@partner.example?"
+        tool="email.send"
+        title="Email the weekly summary to kai@acme.example?"
         status="decided"
         decision="deny"
-        decidedBy="Admin"
+        decidedBy="Tomás Ortega"
         decidedAt="14:05"
       />
     </div>

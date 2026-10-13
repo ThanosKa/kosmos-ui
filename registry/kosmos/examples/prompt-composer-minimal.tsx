@@ -17,7 +17,7 @@ export default function PromptComposerMinimal() {
           ))}
         </ul>
       ) : null}
-      <PromptComposer placeholder="Write a note for the Growth team…" onSubmit={({ text }) => setSent([...sent, text])} />
+      <PromptComposer placeholder="Write a note for the Acme team…" onSubmit={({ text }) => setSent([...sent, text])} />
     </div>
   );
 }

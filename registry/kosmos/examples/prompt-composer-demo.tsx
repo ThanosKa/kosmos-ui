@@ -30,7 +30,7 @@ export default function PromptComposerDemo() {
   return (
     <div className="w-full max-w-xl">
       <PromptComposer
-        placeholder="Ask about your Acme Inc. workspace…"
+        placeholder="Ask about your Acme projects…"
         models={models}
         defaultModel="claude-sonnet-5-5"
         efforts={efforts}

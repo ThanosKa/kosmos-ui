@@ -13,7 +13,7 @@ export default function ReasoningControlled() {
         Show reasoning
       </label>
       <Reasoning status="done" durationMs={4200} open={open} onOpenChange={setOpen}>
-        Acme Inc. has 14 projects. Three are above 90% of their event quota: Checkout, Mobile and Partner API.
+        Acme has 12 projects. Three are close to or over their event quota: Copperline Bank, Cirrus Weather and Ironbark Logistics.
       </Reasoning>
     </div>
   );

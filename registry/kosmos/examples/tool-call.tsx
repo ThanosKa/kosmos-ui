@@ -1,18 +1,25 @@
 'use client';
 
-import { Database, FileText, Mail, Receipt, UserCog } from 'lucide-react';
+import { Database, Download, FileText, Gauge, Mail, Receipt } from 'lucide-react';
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ToolCall } from '@/registry/kosmos/ui/tool-call';
 
 const card = 'min-w-0 rounded-2xl border border-transparent bg-card p-2 shadow-card';
 
-const queryInput = { workspace: 'acme', project: 'Checkout', range: '2026-07-01..2026-09-30', metric: 'events' };
+const queryInput = { project: 'cirrus', range: '2026-09-12..2026-10-11', metric: 'events' };
+
+const dailyEvents = [
+  73100, 73400, 65400, 65700, 66100, 66400, 66700, 75300, 75700, 67700, 68000, 68300, 68600, 69000, 77600, 77900, 69900,
+  70300, 70600, 113500, 149600, 151800, 112300, 72200, 72500, 72900, 73200, 73500, 82100, 82400,
+];
+
+const dayLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 
 const longOutput = Array.from(
-  { length: 24 },
+  { length: dailyEvents.length },
   (_, i) =>
-    `2026-09-${String(i + 1).padStart(2, '0')}  checkout.completed  ${(1800 + i * 37).toLocaleString('en-US')} events`,
+    `${dayLabel.format(Date.UTC(2026, 8, 12 + i))}  ${dailyEvents[i].toLocaleString('en-US')} events`,
 ).join('\n');
 
 const states = ['default', 'hover', 'focus', 'active'] as const;
@@ -43,13 +50,13 @@ export default function ToolCallPreview() {
         <div className={card}>
           <div className="divide-y divide-border">
             <ToolCall
-              name="warehouse.query"
-              title="Query Q3 events for Checkout"
+              name="events.query"
+              title="Query the last 30 days of Cirrus Weather events"
               icon={Database}
               status="done"
               durationMs={1400}
               input={queryInput}
-              output="48,210 rows · 4 columns"
+              output="30 rows · 2 columns"
             />
             <ToolCall
               name="events.scan"
@@ -57,7 +64,7 @@ export default function ToolCallPreview() {
               icon={Database}
               status="running"
               durationMs={2300}
-              input={{ workspace: 'acme', stream: 'web', window: '24h' }}
+              input={{ project: 'cirrus', platform: 'ios', window: '24h' }}
             />
             <ToolCall
               name="dashboards.export"
@@ -67,28 +74,28 @@ export default function ToolCallPreview() {
               input={{ dashboard: 'Revenue by plan', format: 'pdf' }}
             />
             <ToolCall
-              name="projects.update_owner"
-              title="Move Mobile to the Growth team"
-              icon={UserCog}
+              name="projects.update_plan"
+              title="Raise Cirrus Weather to the Scale plan"
+              icon={Gauge}
               status="awaiting-approval"
-              input={{ project: 'Mobile', owner: 'growth@acme.example' }}
+              input={{ project: 'cirrus', plan: 'scale' }}
             />
             <ToolCall
               name="email.send"
-              title="Email the weekly summary to reports@acme.example"
+              title="Email the weekly summary to kai@acme.example"
               icon={Mail}
               status="denied"
-              input={{ to: 'reports@acme.example', subject: 'Weekly summary' }}
-              output="Denied by Admin · 14:02"
+              input={{ to: 'kai@acme.example', subject: 'Weekly summary' }}
+              output="Denied by Tomás Ortega · 14:02"
             />
             <ToolCall
-              name="billing.fetch_invoices"
-              title="Fetch invoices"
-              icon={Receipt}
+              name="events.export"
+              title="Export Copperline Bank events"
+              icon={Download}
               status="error"
               durationMs={30000}
-              input={{ workspace: 'acme', customer: 'admin@acme.example', limit: 50 }}
-              error="Timed out after 30s. Try again with a limit under 50."
+              input={{ project: 'copperline', range: '2026-09-12..2026-10-11', limit: 500000 }}
+              error="Timed out after 30s. Try again with a shorter range."
             />
           </div>
         </div>
@@ -100,13 +107,13 @@ export default function ToolCallPreview() {
             <Cell key={state} label={state}>
               <PinState state={state}>
                 <ToolCall
-                  name="warehouse.query"
-                  title="Query Q3 events for Checkout"
+                  name="events.query"
+                  title="Query the last 30 days of Cirrus Weather events"
                   icon={Database}
                   status="done"
                   durationMs={1400}
                   input={queryInput}
-                  output="48,210 rows · 4 columns"
+                  output="30 rows · 2 columns"
                 />
               </PinState>
             </Cell>
@@ -118,32 +125,32 @@ export default function ToolCallPreview() {
         <div className="grid gap-6 lg:grid-cols-2">
           <Cell label="Done, with input and output">
             <ToolCall
-              name="warehouse.query"
-              title="Query Q3 events for Checkout"
+              name="events.query"
+              title="Query the last 30 days of Cirrus Weather events"
               icon={Database}
               status="done"
               durationMs={1400}
               defaultOpen
               input={queryInput}
-              output="48,210 rows · 4 columns"
+              output="30 rows · 2 columns"
             />
           </Cell>
           <Cell label="Error">
             <ToolCall
-              name="billing.fetch_invoices"
-              title="Fetch invoices"
-              icon={Receipt}
+              name="events.export"
+              title="Export Copperline Bank events"
+              icon={Download}
               status="error"
               durationMs={30000}
               defaultOpen
-              input={{ workspace: 'acme', customer: 'admin@acme.example', limit: 50 }}
-              error="Timed out after 30s. Try again with a limit under 50."
+              input={{ project: 'copperline', range: '2026-09-12..2026-10-11', limit: 500000 }}
+              error="Timed out after 30s. Try again with a shorter range."
             />
           </Cell>
           <Cell label="Long output, scrolls">
             <ToolCall
-              name="warehouse.query"
-              title="Daily completions in September"
+              name="events.query"
+              title="Daily events, September 12 to October 11"
               icon={Database}
               status="done"
               durationMs={125000}
@@ -153,19 +160,19 @@ export default function ToolCallPreview() {
           </Cell>
           <Cell label="Custom output in children">
             <ToolCall
-              name="billing.list_plans"
-              title="List plans by revenue"
+              name="billing.revenue_by_plan"
+              title="Revenue by plan"
               icon={Receipt}
               status="done"
               durationMs={820}
               defaultOpen
-              input={{ workspace: 'acme', sort: 'revenue' }}
+              input={{ sort: 'revenue' }}
             >
               <ul className="divide-y divide-border rounded-lg bg-muted px-3 text-small">
                 {[
-                  ['Enterprise', '$412,800'],
-                  ['Team', '$186,250'],
-                  ['Starter', '$42,900'],
+                  ['Scale', '$13,700'],
+                  ['Pro', '$928'],
+                  ['Free', '$0'],
                 ].map(([plan, revenue]) => (
                   <li key={plan} className="flex justify-between gap-4 py-2">
                     <span>{plan}</span>
@@ -184,15 +191,15 @@ export default function ToolCallPreview() {
             <div className="divide-y divide-border">
               <ToolCall
                 name="dashboards.rebuild_all_widgets"
-                title="Rebuild every widget on the Revenue by plan and region dashboard"
+                title="Rebuild every widget on the Revenue by plan and platform dashboard"
                 icon={Database}
                 status="running"
                 durationMs={61000}
-                input={{ dashboard: 'Revenue by plan and region', widgets: 'all' }}
+                input={{ dashboard: 'Revenue by plan and platform', widgets: 'all' }}
               />
               <ToolCall
                 name="dashboards.rebuild_all_widgets"
-                title="Rebuild every widget on the Revenue by plan and region dashboard"
+                title="Rebuild every widget on the Revenue by plan and platform dashboard"
                 icon={Database}
                 status="queued"
               />

@@ -2,11 +2,11 @@ import { formatDuration } from '@/registry/kosmos/lib/format';
 import { StatusBadge, type Status } from '@/registry/kosmos/ui/status';
 
 const runs: { name: string; status: Status; label: string; durationMs?: number }[] = [
-  { name: 'Nightly CRM sync', status: 'done', label: 'Done', durationMs: 125_000 },
-  { name: 'Invoice reminders', status: 'error', label: 'Failed', durationMs: 8_400 },
+  { name: 'Nightly event rollup', status: 'done', label: 'Done', durationMs: 125_000 },
+  { name: 'Quota warnings', status: 'error', label: 'Failed', durationMs: 8_400 },
   { name: 'Weekly summary', status: 'running', label: 'Running' },
-  { name: 'Refund review', status: 'waiting', label: 'Needs approval' },
-  { name: 'Churn report', status: 'pending', label: 'Queued' },
+  { name: 'Plan change review', status: 'waiting', label: 'Needs approval' },
+  { name: 'Trial report', status: 'pending', label: 'Queued' },
 ];
 
 export default function StatusDemo() {

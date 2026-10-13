@@ -4,7 +4,7 @@ import * as React from 'react';
 import { AssistantMessage } from '@/registry/kosmos/ui/assistant-message';
 
 const reply =
-  'Three projects are above 90% of their event quota: Checkout, Mobile and Partner API. The Growth team owns the first two, and the Platform team owns Partner API.';
+  'Three projects are close to or over their event quota: Copperline Bank, Cirrus Weather and Ironbark Logistics. Copperline Bank and Ironbark Logistics send from servers, and Cirrus Weather from its iOS app.';
 
 const words = reply.split(' ');
 

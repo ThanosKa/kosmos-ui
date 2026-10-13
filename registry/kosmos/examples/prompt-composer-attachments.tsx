@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { PromptComposer, type PromptComposerAttachment } from '@/registry/kosmos/ui/prompt-composer';
 
 const files: PromptComposerAttachment[] = [
-  { id: 'events', name: 'checkout-q3-events.csv', size: 2_400_000, kind: 'table' },
-  { id: 'chart', name: 'retention-dashboard.png', size: 640_000, kind: 'image' },
-  { id: 'brief', name: 'quarterly-review-brief.pdf', size: 1_100_000, kind: 'file' },
+  { id: 'events', name: 'cirrus-events-30d.csv', size: 2_400_000, kind: 'table' },
+  { id: 'chart', name: 'events-dashboard.png', size: 640_000, kind: 'image' },
+  { id: 'brief', name: 'weekly-summary-brief.pdf', size: 1_100_000, kind: 'file' },
 ];
 
 export default function PromptComposerAttachments() {
@@ -16,7 +16,7 @@ export default function PromptComposerAttachments() {
   return (
     <div className="w-full max-w-xl">
       <PromptComposer
-        defaultValue="Compare these with last quarter."
+        defaultValue="Compare these with last month."
         attachments={attachments}
         onAttachmentsChange={setAttachments}
         onAttach={() => {

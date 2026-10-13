@@ -11,13 +11,13 @@ export default function AssistantMessageError() {
       {failed ? (
         <AssistantMessage
           status="error"
-          error="The usage export timed out."
+          error="The events export timed out."
           author={{ name: 'Acme agent' }}
           time="14:04"
           model="Claude Sonnet 5.5"
           onRetry={() => setFailed(false)}
         >
-          Pulling the revenue dashboard for the last 30 days
+          Pulling events for the last 30 days
         </AssistantMessage>
       ) : (
         <AssistantMessage
@@ -26,7 +26,7 @@ export default function AssistantMessageError() {
           model="Claude Sonnet 5.5"
           onRetry={() => setFailed(true)}
         >
-          Revenue for the last 30 days is $184,200, up 6% on the 30 days before.
+          Revenue for the last 30 days is $14,628 a month, up 6.8% on the 30 days before.
         </AssistantMessage>
       )}
     </div>

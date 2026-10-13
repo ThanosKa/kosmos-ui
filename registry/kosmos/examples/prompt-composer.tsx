@@ -35,30 +35,30 @@ const nearLimit = {
   breakdown: [...context.breakdown.slice(0, 4), { label: 'Conversation', value: 152_000 }],
 };
 
-const typed = 'Summarize Q3 usage for the Checkout project and flag dashboards over quota.';
+const typed = 'Summarize the last 7 days of events for Cirrus Weather and flag projects near their quota.';
 
-const csv: PromptComposerAttachment = { id: 'a1', name: 'checkout-q3-events.csv', size: 2_400_000, kind: 'table' };
-const chart: PromptComposerAttachment = { id: 'a2', name: 'retention-dashboard.png', size: 640_000, kind: 'image' };
+const csv: PromptComposerAttachment = { id: 'a1', name: 'cirrus-events-30d.csv', size: 2_400_000, kind: 'table' };
+const chart: PromptComposerAttachment = { id: 'a2', name: 'events-dashboard.png', size: 640_000, kind: 'image' };
 const brief: PromptComposerAttachment = {
   id: 'a3',
-  name: 'acme-quarterly-business-review-draft-for-the-growth-team-v4-final.pdf',
+  name: 'acme-weekly-summary-draft-for-the-growth-and-platform-teams-v4-final.pdf',
   size: 18_200_000,
   kind: 'file',
 };
 const notes: PromptComposerAttachment = { id: 'a4', name: 'notes.txt', size: 300, kind: 'file' };
 
 const longText = [
-  'Compare weekly active users across the Checkout, Mobile and Partner API projects.',
-  'Break the numbers down by plan and by signup month.',
-  'Flag any dashboard where events dropped more than 15% week over week.',
-  'Ask the Growth team which of the flagged projects they own.',
-  'Check with the Data team whether the export job ran on Monday.',
-  'Draft a short note for the Admin with the three biggest changes.',
+  'Compare active users across Copperline Bank, Cirrus Weather and Ironbark Logistics.',
+  'Break the numbers down by plan and by platform.',
+  'Flag any project where events dropped more than 15% week over week.',
+  'Ask Tomás Ortega whether the server projects changed their batching.',
+  'Check whether the nightly event rollup ran on Monday.',
+  'Draft a short note for Lena Park with the three biggest changes.',
   'Keep the table sorted by event volume, highest first.',
   'List the five events with the largest week-over-week change.',
   'Group the events by project and mark any that are no longer sent.',
-  'Add the median session length for each dashboard.',
-  'End with one recommendation for the next quarter.',
+  'Add the median session length for each project.',
+  'End with one recommendation for the next month.',
 ].join('\n');
 
 const noop = () => {};
@@ -126,7 +126,7 @@ export default function PromptComposerPreview() {
             {...full}
             onSubmit={noop}
             defaultValue={typed}
-            error="checkout-raw-events.zip is over the 25 MB limit. Split it into smaller files and attach them again."
+            error="copperline-raw-events.zip is over the 25 MB limit. Split it into smaller files and attach them again."
           />
         </Frame>
         <Frame label="disabled, with a reason">
@@ -135,7 +135,7 @@ export default function PromptComposerPreview() {
             onSubmit={noop}
             defaultAttachments={[csv]}
             disabled
-            disabledReason="Acme Inc. has used this month's agent budget. An admin can raise it in Settings."
+            disabledReason="Acme has used this month's agent budget. Lena Park can raise it in Settings."
           />
         </Frame>
         <Frame label="context near the limit">
@@ -145,7 +145,7 @@ export default function PromptComposerPreview() {
 
       <PreviewSection title="Parts">
         <Frame label="text and Send only">
-          <PromptComposer onSubmit={noop} placeholder="Ask about your Acme Inc. workspace…" />
+          <PromptComposer onSubmit={noop} placeholder="Ask about your Acme projects…" />
         </Frame>
         <Frame label="on a card">
           <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">

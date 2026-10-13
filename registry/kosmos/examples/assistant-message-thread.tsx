@@ -7,11 +7,11 @@ export default function AssistantMessageThread() {
     <div className="flex w-full max-w-xl flex-col gap-4">
       <AssistantMessage role="user">Which projects are close to their event quota?</AssistantMessage>
       <AssistantMessage author={{ name: 'Acme agent' }} time="14:02" model="Claude Sonnet 5.5" actionsVisibility="hover">
-        Checkout, Mobile and Partner API are above 90% of their monthly event quota.
+        Copperline Bank is over its monthly event quota at 109%. Cirrus Weather (80%) and Ironbark Logistics (79%) are close.
       </AssistantMessage>
-      <AssistantMessage role="user">Who owns them?</AssistantMessage>
+      <AssistantMessage role="user">Which of them send from servers?</AssistantMessage>
       <AssistantMessage author={{ name: 'Acme agent' }} time="14:03" model="Claude Sonnet 5.5">
-        The Growth team owns Checkout and Mobile. Partner API belongs to the Platform team.
+        Copperline Bank and Ironbark Logistics. Cirrus Weather sends from its iOS app.
       </AssistantMessage>
     </div>
   );

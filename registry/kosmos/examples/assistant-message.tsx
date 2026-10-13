@@ -4,14 +4,14 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { AssistantMessage, Citation, type Source } from '@/registry/kosmos/ui/assistant-message';
 
 const sources: Source[] = [
-  { id: 'usage', title: 'Acme Inc. · Q3 usage export', url: '#usage', domain: 'acme.example' },
-  { id: 'quota', title: 'Quota policy for event ingestion', url: '#quota', domain: 'docs.acme.example' },
+  { id: 'usage', title: 'Acme · Events by project, last 30 days', url: '#usage', domain: 'acme.example' },
+  { id: 'quota', title: 'Event allowance by plan', url: '#quota', domain: 'docs.acme.example' },
 ];
 
 const answer = (
   <>
-    The Acme Inc. workspace tracked 48,210 events in Q3, 18% more than Q2<Citation n={1} source={sources[0]} />.
-    Three projects are above 90% of quota<Citation n={2} source={sources[1]} />.
+    Acme collected 28,495,200 events in the last 30 days, 14.2% more than the 30 days before<Citation n={1} source={sources[0]} />.
+    Three projects are close to or over their event quota<Citation n={2} source={sources[1]} />.
   </>
 );
 
@@ -24,7 +24,7 @@ export default function AssistantMessagePreview() {
     <PreviewStack>
       <PreviewSection title="Prompt and reply, actions always shown">
         <div className={`${card} flex flex-col gap-4`}>
-          <AssistantMessage role="user">How many events did Acme Inc. ingest in Q3?</AssistantMessage>
+          <AssistantMessage role="user">How many events did Acme collect in the last 30 days?</AssistantMessage>
           <AssistantMessage author={{ name: 'Acme agent' }} time="14:02" model="Claude Sonnet 5.5" onRetry={retry}>
             {answer}
           </AssistantMessage>
@@ -40,7 +40,7 @@ export default function AssistantMessagePreview() {
               model="Claude Sonnet 5.5"
               sources={sources}
               defaultSourcesOpen
-              followUps={['Show the three projects', 'Draft a note to the Data team']}
+              followUps={['Show the three projects', 'Draft a note for Tomás Ortega']}
               defaultFeedback="up"
               onRetry={retry}
             >
@@ -75,8 +75,8 @@ export default function AssistantMessagePreview() {
               model="Claude Sonnet 5.5"
               sources={sources}
             >
-              Three projects are above 90% of their event quota: Checkout, Mobile and Partner API. The Growth team owns
-              the first two
+              Three projects are close to or over their event quota: Copperline Bank, Cirrus Weather and Ironbark
+              Logistics. Two of them send from servers
             </AssistantMessage>
           </div>
         </PreviewSection>
@@ -85,13 +85,13 @@ export default function AssistantMessagePreview() {
           <div className={card}>
             <AssistantMessage
               status="error"
-              error="The usage export timed out."
+              error="The events export timed out."
               author={{ name: 'Acme agent' }}
               time="14:04"
               model="Claude Haiku 5.5"
               onRetry={retry}
             >
-              Pulling the revenue dashboard for the last 30 days
+              Pulling events for the last 30 days
             </AssistantMessage>
           </div>
         </PreviewSection>
@@ -101,18 +101,18 @@ export default function AssistantMessagePreview() {
         <div className={card}>
           <AssistantMessage author={{ name: 'Acme agent' }} time="14:06" model="Claude Opus 5.5" sources={sources}>
             <p>
-              Revenue grew in every plan this quarter, but event volume grew faster than seats, so usage-based overage
-              now drives most of the change<Citation n={1} source={sources[0]} />. The Analyst asked for a short list
-              of the dashboards worth checking before the review, and these are the ones that moved the most:
+              Events grew 14.2% in the last 30 days, faster than the 6.8% growth in revenue, so more projects are close to
+              their allowance<Citation n={1} source={sources[0]} />. Lena asked for a short list of the projects worth
+              checking this week, and these are the ones that moved the most:
             </p>
             <ul className="my-2 list-disc ps-5">
-              <li>Checkout funnel: conversion up 4.2 points after the new onboarding flow.</li>
-              <li>Mobile retention: week-four active users down 6% among accounts created in August.</li>
-              <li>Partner API: 31 of 40 integrations are within 10% of their monthly event quota.</li>
+              <li>Copperline Bank: events at 109% of the Scale allowance, up 12% on the 30 days before.</li>
+              <li>Cirrus Weather: traffic doubled for three days after the storm on October 2.</li>
+              <li>Hollow Oak Games: no events since the project was paused on 18 September.</li>
             </ul>
             <p>
-              Quota changes need approval from an admin<Citation n={2} source={sources[1]} />, so raise the request
-              early.
+              A higher plan raises the event allowance<Citation n={2} source={sources[1]} />, so ask Lena Park to
+              approve it early.
             </p>
           </AssistantMessage>
         </div>
@@ -121,25 +121,25 @@ export default function AssistantMessagePreview() {
       <PreviewSection title="Long text in a narrow panel">
         <div className={`${card} flex w-full max-w-80 flex-col gap-4`}>
           <AssistantMessage role="user">
-            {'Compare https://acme.example/reports/usage/2026/q3/events-by-project-and-region with last quarter\nand list the biggest changes.'}
+            {'Compare https://acme.example/reports/events/2026/10/events-by-project-and-platform with last month\nand list the biggest changes.'}
           </AssistantMessage>
           <AssistantMessage
-            author={{ name: 'Workspace analytics agent for the Growth team' }}
+            author={{ name: 'Event analytics agent for the Acme growth and platform teams' }}
             time="14:08"
             model="Claude Sonnet 5.5"
             sources={[
               {
                 id: 'long',
-                title: 'Events by project and region, Q3 2026, exported from the usage dashboard',
+                title: 'Events by project and platform, October 2026, exported from the usage dashboard',
                 url: '#long',
                 domain: 'reports.analytics.acme.example',
               },
             ]}
             defaultSourcesOpen
-            followUps={['Break the change down by region and by plan for the three largest projects']}
+            followUps={['Break the change down by platform and by plan for the three largest projects']}
             onRetry={retry}
           >
-            Partner API grew the most, by 9,400 events, almost all of it from two integrations in the EU region.
+            Brightloop Fitness grew the most, by 9,400 events a day, almost all of it from its iOS app.
           </AssistantMessage>
         </div>
       </PreviewSection>

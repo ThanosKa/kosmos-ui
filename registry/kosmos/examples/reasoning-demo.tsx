@@ -6,7 +6,7 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { Reasoning } from '@/registry/kosmos/ui/reasoning';
 
 const thought =
-  'The Admin asked which projects need attention before the renewal. Acme Inc. has 14 projects. Three are above 90% of their event quota: Checkout, Mobile and Partner API. Checkout grew fastest in Q3, so I will lead with it and suggest raising its quota before November.';
+  'Lena asked which projects need attention this week. Acme has 12 projects. Three are close to or over their event quota: Copperline Bank (109%), Cirrus Weather (80%) and Ironbark Logistics (79%). Copperline Bank is over its allowance, so I will lead with it and suggest a higher plan before the month ends.';
 
 export default function ReasoningDemo() {
   const [run, setRun] = React.useState(0);

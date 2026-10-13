@@ -10,10 +10,10 @@ const statusLabels: Record<Status, string> = {
 };
 
 const steps: { status: Status; label: string; detail?: string }[] = [
-  { status: 'done', label: 'Fetch accounts from the CRM', detail: '1,204 rows' },
-  { status: 'done', label: 'Match accounts to invoices' },
+  { status: 'done', label: 'Fetch events from the last 7 days', detail: '6.8M events' },
+  { status: 'done', label: 'Group the events by project' },
   { status: 'running', label: 'Write the weekly summary' },
-  { status: 'pending', label: 'Post it to the Growth team channel' },
+  { status: 'pending', label: 'Post it to the Acme team channel' },
 ];
 
 export default function StatusSteps() {

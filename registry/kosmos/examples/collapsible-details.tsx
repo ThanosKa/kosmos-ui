@@ -7,7 +7,7 @@ export default function CollapsibleDetails() {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="flex w-full max-w-md flex-col items-start gap-1">
-      <p className="text-body text-foreground">The nightly sync failed after 3 retries.</p>
+      <p className="text-body text-foreground">The nightly event rollup failed after 3 retries.</p>
       <Collapsible open={open} onOpenChange={setOpen} className="w-full">
         <CollapsibleTrigger variant="ghost" size="sm" className="-ms-2">
           {open ? 'Hide details' : 'Show details'}

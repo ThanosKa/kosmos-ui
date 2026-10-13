@@ -5,11 +5,11 @@ export default function ToolApprovalDanger() {
     <ToolApproval
       className="max-w-xl"
       tool="events.delete"
-      title="Delete 12,480 test events from Checkout?"
+      title="Delete 12,480 test events from Tidepool Notes?"
       description="These events are removed from every dashboard that reads them."
       details={[
-        { label: 'Project', value: 'Checkout' },
-        { label: 'Filter', value: 'environment = "test"', mono: true },
+        { label: 'Project', value: 'Tidepool Notes' },
+        { label: 'Filter', value: 'event = "debug_ping"', mono: true },
         { label: 'Requested by', value: 'Acme agent · Run #482' },
       ]}
       danger

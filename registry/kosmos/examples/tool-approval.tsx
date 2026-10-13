@@ -6,26 +6,26 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { ToolApproval, type ApprovalDecision, type ToolApprovalDetail } from '@/registry/kosmos/ui/tool-approval';
 
 const reassignDetails: ToolApprovalDetail[] = [
-  { label: 'Projects', value: 'Checkout, Mobile, Partner API' },
-  { label: 'Current owner', value: 'Admin' },
-  { label: 'New owner', value: 'Growth team' },
+  { label: 'Project', value: 'Cirrus Weather' },
+  { label: 'Current plan', value: 'Pro' },
+  { label: 'New plan', value: 'Scale' },
   { label: 'Requested by', value: 'Acme agent · Run #482' },
 ];
 
 const reassign = {
-  tool: 'projects.update_owner',
-  title: 'Reassign 3 projects to the Growth team?',
-  description: 'The agent wants to change the owner of three projects. Owners receive alerts and can edit dashboards.',
+  tool: 'projects.update_plan',
+  title: 'Raise Cirrus Weather to the Scale plan?',
+  description: 'The agent wants to move Cirrus Weather from Pro to Scale. Its events use 80% of the Pro allowance, and Scale starts at $1,200 a month.',
   details: reassignDetails,
 };
 
 const deleteEvents = {
   tool: 'events.delete',
-  title: 'Delete 12,480 test events from Checkout?',
+  title: 'Delete 12,480 test events from Tidepool Notes?',
   description: 'These events are removed from every dashboard that reads them.',
   details: [
-    { label: 'Project', value: 'Checkout' },
-    { label: 'Filter', value: 'environment = "test"', mono: true },
+    { label: 'Project', value: 'Tidepool Notes' },
+    { label: 'Filter', value: 'event = "debug_ping"', mono: true },
     { label: 'Requested by', value: 'Acme agent · Run #482' },
   ],
   danger: true,
@@ -35,12 +35,12 @@ const deleteEvents = {
 const longText = {
   tool: 'dashboards.share_with_external_domain_and_grant_edit_access',
   title:
-    'Share the “Quarterly revenue by region, plan and acquisition channel” dashboard with finance@partner.example and every member of the Partner API workspace?',
+    'Share the “Weekly events by project, plan and platform” dashboard with team@brightloop.example and everyone who joins Brightloop Fitness later?',
   description:
-    'The agent wants to publish a dashboard outside this workspace. Anyone with the link, including people who join the partner workspace later, will be able to open it and see revenue figures for the last four quarters.',
+    'The agent wants to publish a dashboard outside Acme. Anyone with the link, including people who join Brightloop Fitness later, will be able to open it and see event counts for the last 90 days.',
   details: [
-    { label: 'Dashboard', value: 'Quarterly revenue by region, plan and acquisition channel (copy 3)' },
-    { label: 'Recipient', value: 'finance@partner.example', mono: true },
+    { label: 'Dashboard', value: 'Weekly events by project, plan and platform (copy 3)' },
+    { label: 'Recipient', value: 'team@brightloop.example', mono: true },
   ],
 };
 
@@ -59,7 +59,7 @@ function Interactive() {
 
   return (
     <div className="flex flex-col items-start gap-2">
-      <ToolApproval {...reassign} status={status} decision={decision} decidedBy="you" decidedAt="14:02" onDecide={decide} />
+      <ToolApproval {...reassign} status={status} decision={decision} decidedBy="Lena Park" decidedAt="14:02" onDecide={decide} />
       <Button
         variant="ghost"
         size="sm"
@@ -98,16 +98,16 @@ export default function ToolApprovalPreview() {
           <ToolApproval {...reassign} allowAlways={false} status="submitting" decision="deny" />
         </PreviewSection>
         <PreviewSection title="Decided: allow-once">
-          <ToolApproval {...reassign} status="decided" decision="allow-once" decidedBy="you" decidedAt="14:02" />
+          <ToolApproval {...reassign} status="decided" decision="allow-once" decidedBy="Lena Park" decidedAt="14:02" />
         </PreviewSection>
         <PreviewSection title="Decided: always-allow">
-          <ToolApproval {...reassign} status="decided" decision="always-allow" decidedBy="you" decidedAt="14:02" />
+          <ToolApproval {...reassign} status="decided" decision="always-allow" decidedBy="Lena Park" decidedAt="14:02" />
         </PreviewSection>
         <PreviewSection title="Decided: deny">
-          <ToolApproval {...reassign} status="decided" decision="deny" decidedBy="Admin" decidedAt="14:05" />
+          <ToolApproval {...reassign} status="decided" decision="deny" decidedBy="Tomás Ortega" decidedAt="14:05" />
         </PreviewSection>
         <PreviewSection title="No description or details">
-          <ToolApproval tool="alerts.mute" title="Mute checkout alerts for 1 hour?" />
+          <ToolApproval tool="alerts.mute" title="Mute traffic alerts for Cirrus Weather for 1 hour?" />
         </PreviewSection>
         <PreviewSection title="Long text">
           <ToolApproval {...longText} defaultDetailsOpen />
@@ -124,7 +124,7 @@ export default function ToolApprovalPreview() {
         </PreviewSection>
         <PreviewSection title='surface="none", decided'>
           <div className={host}>
-            <ToolApproval {...reassign} surface="none" status="decided" decision="deny" decidedBy="Admin" decidedAt="14:05" />
+            <ToolApproval {...reassign} surface="none" status="decided" decision="deny" decidedBy="Tomás Ortega" decidedAt="14:05" />
           </div>
         </PreviewSection>
       </div>

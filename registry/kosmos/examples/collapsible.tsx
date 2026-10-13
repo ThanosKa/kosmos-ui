@@ -6,11 +6,11 @@ const rows = ['row, closed', 'row, open', 'small, closed', 'small, open'] as con
 
 const card = 'rounded-2xl border border-transparent bg-card p-1 shadow-card';
 
-const orderDetails = [
-  { label: 'Order', value: '#10428' },
-  { label: 'Placed', value: 'Oct 12, 2026' },
-  { label: 'Ship to', value: 'Acme Inc., Warehouse 3' },
-  { label: 'Total', value: '$1,284.00' },
+const projectDetails = [
+  { label: 'Project', value: 'Cirrus Weather' },
+  { label: 'Added', value: 'Mar 3, 2025' },
+  { label: 'Platform', value: 'iOS' },
+  { label: 'Events', value: '2,391,700' },
 ];
 
 /** Reads "Show details" while closed and "Hide details" while open, so the label follows the panel. */
@@ -37,7 +37,7 @@ export default function CollapsiblePreview() {
                   Details
                   <CollapsibleChevron />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="px-2 pt-1 text-small text-muted-foreground">Ships in 2 days.</CollapsibleContent>
+                <CollapsibleContent className="px-2 pt-1 text-small text-muted-foreground">Sends events from the iOS app only.</CollapsibleContent>
               </Collapsible>
             ) : (
               <Collapsible defaultOpen={open} disabled={state === 'disabled'}>
@@ -45,7 +45,7 @@ export default function CollapsiblePreview() {
                   <DetailsLabel />
                   <CollapsibleChevron size="sm" />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pt-1 text-small text-muted-foreground">Ships in 2 days.</CollapsibleContent>
+                <CollapsibleContent className="pt-1 text-small text-muted-foreground">Sends events from the iOS app only.</CollapsibleContent>
               </Collapsible>
             );
           }}
@@ -56,12 +56,12 @@ export default function CollapsiblePreview() {
         <PreviewSection title="Row trigger in a card, open">
           <Collapsible defaultOpen className={card}>
             <CollapsibleTrigger variant="item" className="h-9 w-full justify-between px-2">
-              Order details
+              Project details
               <CollapsibleChevron />
             </CollapsibleTrigger>
             <CollapsibleContent>
               <dl className="flex flex-col gap-2 px-2 pt-1 pb-2 text-body">
-                {orderDetails.map((item) => (
+                {projectDetails.map((item) => (
                   <div key={item.label} className="flex justify-between gap-4">
                     <dt className="text-muted-foreground">{item.label}</dt>
                     <dd className="text-end tabular-nums">{item.value}</dd>
@@ -74,7 +74,7 @@ export default function CollapsiblePreview() {
 
         <PreviewSection title="Small trigger under content, open">
           <div className="flex flex-col items-start gap-1">
-            <p className="text-body text-foreground">The nightly sync failed after 3 retries.</p>
+            <p className="text-body text-foreground">The nightly event rollup failed after 3 retries.</p>
             <Collapsible defaultOpen className="w-full">
               <CollapsibleTrigger variant="ghost" size="sm" className="-ms-2">
                 <DetailsLabel />
@@ -98,11 +98,11 @@ export default function CollapsiblePreview() {
                 variant="item"
                 className="h-auto min-h-9 w-full items-start justify-between gap-2 px-2 py-2 text-start whitespace-normal"
               >
-                Shipping and return policy for orders placed outside the European Union
+                Event retention and deletion policy for projects that send from outside the European Union
                 <CollapsibleChevron />
               </CollapsibleTrigger>
               <CollapsibleContent className="px-2 pb-2 text-small text-muted-foreground">
-                Returns are free within 30 days. Customs fees are paid by the buyer.
+                Events are kept for 13 months, then deleted.
               </CollapsibleContent>
             </Collapsible>
           </div>

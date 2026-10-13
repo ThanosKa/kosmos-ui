@@ -6,11 +6,11 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { PlanChecklist, type PlanStep } from '@/registry/kosmos/ui/plan-checklist';
 
 const proposed: PlanStep[] = [
-  { id: 'events', label: 'Pull Q3 usage events', status: 'pending' },
-  { id: 'seats', label: 'Compare seats with the contract', status: 'pending' },
-  { id: 'quota', label: 'Flag projects over quota', status: 'pending' },
-  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
-  { id: 'review', label: 'Book a review with the Growth team', status: 'pending' },
+  { id: 'events', label: 'Pull the last 7 days of events', status: 'pending' },
+  { id: 'seats', label: 'Compare each project with its plan', status: 'pending' },
+  { id: 'quota', label: 'Flag projects near their quota', status: 'pending' },
+  { id: 'summary', label: 'Draft the summary for Lena Park', status: 'pending' },
+  { id: 'review', label: 'Share it with the Acme team', status: 'pending' },
 ];
 
 function advance(steps: PlanStep[]): PlanStep[] {
@@ -37,7 +37,7 @@ export default function PlanChecklistDemo() {
     <div className="flex w-full max-w-md flex-col items-start gap-3">
       <PlanChecklist
         key={attempt}
-        title="Prepare the Q3 usage review for Acme Inc."
+        title="Prepare the weekly summary for Acme"
         steps={steps}
         actions={
           started ? null : (

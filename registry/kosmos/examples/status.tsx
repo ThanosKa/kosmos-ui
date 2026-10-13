@@ -15,11 +15,11 @@ const labels: Record<Status, string> = {
 };
 
 const steps: { status: Status; label: string; detail?: string }[] = [
-  { status: 'done', label: 'Fetch accounts from the CRM', detail: '1,204 rows' },
-  { status: 'done', label: 'Match accounts to invoices', detail: '1.4s' },
-  { status: 'error', label: 'Send the overdue reminder to billing@acme.example', detail: 'Mailbox full' },
+  { status: 'done', label: 'Fetch events from the last 7 days', detail: '6.8M events' },
+  { status: 'done', label: 'Group the events by project', detail: '1.4s' },
+  { status: 'error', label: 'Send the quota warning to kai@acme.example', detail: 'Mailbox full' },
   { status: 'running', label: 'Write the weekly summary' },
-  { status: 'waiting', label: 'Post the summary to the Growth team channel' },
+  { status: 'waiting', label: 'Post the summary to the Acme team channel' },
   { status: 'skipped', label: 'Archive last week’s drafts' },
   { status: 'pending', label: 'Close the run' },
 ];
@@ -68,8 +68,8 @@ export default function StatusPreview() {
 
         <PreviewSection title="Badges in a narrow slot">
           <div className="flex w-full max-w-40 flex-col items-start gap-2">
-            <StatusBadge status="waiting" title="Waiting on an admin to approve">
-              Waiting on an admin to approve
+            <StatusBadge status="waiting" title="Waiting on Lena Park to approve">
+              Waiting on Lena Park to approve
             </StatusBadge>
             <StatusBadge status="running">Running for 2m 05s</StatusBadge>
             <StatusBadge status="error">Failed</StatusBadge>

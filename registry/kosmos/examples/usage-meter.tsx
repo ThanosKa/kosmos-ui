@@ -27,7 +27,7 @@ const over = rows(52_000, 175_600);
 const single: UsageBreakdownRow[] = [{ label: 'Conversation', value: 38_400 }];
 const longLabel: UsageBreakdownRow[] = [
   { label: 'System prompt', value: 2400 },
-  { label: 'Revenue dashboards nightly summary instructions for the EMEA workspace', value: 9400 },
+  { label: 'Weekly summary instructions for the Acme Staging workspace and its twelve projects', value: 9400 },
   { label: 'Conversation', value: 12_300 },
 ];
 
@@ -49,7 +49,7 @@ const stages: { label: string; breakdown: UsageBreakdownRow[]; title?: string }[
   {
     label: 'long title, almost full',
     breakdown: critical,
-    title: 'Context usage, Claude Opus 5.5 in the Growth team workspace',
+    title: 'Context usage, Claude Opus 5.5 in the Acme Staging workspace',
   },
   { label: 'nothing used yet', breakdown: empty },
   { label: '121%, over the limit', breakdown: over },

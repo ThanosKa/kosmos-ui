@@ -7,29 +7,29 @@ export default function ToolCallDemo() {
   return (
     <div className="w-full max-w-xl divide-y divide-border rounded-2xl border border-transparent bg-card p-2 shadow-card">
       <ToolCall
-        name="warehouse.query"
-        title="Query Q3 events for Checkout"
+        name="events.query"
+        title="Query the last 30 days of Cirrus Weather events"
         icon={Database}
         status="done"
         durationMs={1400}
         defaultOpen
-        input={{ workspace: 'acme', project: 'Checkout', range: '2026-07-01..2026-09-30' }}
-        output="48,210 rows · 4 columns"
+        input={{ project: 'cirrus', range: '2026-09-12..2026-10-11' }}
+        output="30 rows · 2 columns"
       />
       <ToolCall
         name="charts.build"
-        title="Chart weekly completions"
+        title="Chart daily events"
         icon={ChartLine}
         status="running"
         durationMs={2300}
-        input={{ source: 'warehouse.query', interval: 'week' }}
+        input={{ source: 'events.query', interval: 'day' }}
       />
       <ToolCall
         name="email.send"
-        title="Email the chart to growth@acme.example"
+        title="Email the chart to kai@acme.example"
         icon={Mail}
         status="awaiting-approval"
-        input={{ to: 'growth@acme.example', subject: 'Checkout completions, Q3' }}
+        input={{ to: 'kai@acme.example', subject: 'Cirrus Weather events, last 30 days' }}
       />
     </div>
   );

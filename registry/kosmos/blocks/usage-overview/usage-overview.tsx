@@ -27,7 +27,7 @@ type UsageRange = '7d' | '30d' | '90d';
 type UsageRow = { id: string; name: string; avatarUrl?: string; runs: number; tokens: number; costUsd: number };
 
 type UsageDataset = {
-  /** The period shown under the title, such as "Sep 14 – Oct 13". */
+  /** The period shown under the title, such as "Sep 12 – Oct 11". */
   periodLabel: string;
   totals: {
     tokens: number;
@@ -46,7 +46,7 @@ type UsageDataset = {
 type UsageBudget = { usedUsd: number; limitUsd: number };
 
 // Sample data: replace it with your usage. Values are made up but stable, so server and browser match.
-const sampleWorkspace = 'Acme Inc.';
+const sampleWorkspace = 'Acme';
 
 const sampleModels = [
   { id: 'sonnet', name: 'Claude Sonnet 5.5', share: 0.55, tokensPerRun: 14200, usdPerMillion: 18 },
@@ -55,9 +55,10 @@ const sampleModels = [
 ];
 
 const sampleMembers = [
-  { id: 'admin', name: 'Admin', share: 0.46 },
-  { id: 'analyst', name: 'Analyst', share: 0.33 },
-  { id: 'growth', name: 'Growth team', share: 0.21 },
+  { id: 'lena', name: 'Lena Park', share: 0.38 },
+  { id: 'tomas', name: 'Tomás Ortega', share: 0.29 },
+  { id: 'kai', name: 'Kai Nakamura', share: 0.19 },
+  { id: 'ama', name: 'Ama Mensah', share: 0.14 },
 ];
 
 const sampleChanges: Record<UsageRange, { tokens: number; runs: number; costUsd: number }> = {
@@ -67,7 +68,7 @@ const sampleChanges: Record<UsageRange, { tokens: number; runs: number; costUsd:
 };
 
 const dayLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-const dayAt = (daysAgo: number) => dayLabel.format(Date.UTC(2026, 9, 13) - daysAgo * 86_400_000);
+const dayAt = (daysAgo: number) => dayLabel.format(Date.UTC(2026, 9, 11) - daysAgo * 86_400_000);
 
 function buildDataset(days: number, tokensPerDay: number, changePct: UsageDataset['totals']['changePct']): UsageDataset {
   const daily = Array.from({ length: days }, (_, i) => {

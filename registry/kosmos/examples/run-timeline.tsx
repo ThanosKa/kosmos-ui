@@ -7,7 +7,7 @@ import type { PlanStep } from '@/registry/kosmos/ui/plan-checklist';
 
 const frame = 'w-full rounded-xl border border-transparent bg-background p-4 shadow-card';
 
-const planDetails: Record<string, string> = { '1': '212,840 sessions', '2': '8 cohorts' };
+const planDetails: Record<string, string> = { '1': '96,200 events', '2': '30 days' };
 
 function withPlan(steps: RunStep[], statuses: PlanStep['status'][], details: Record<string, string> = {}): RunStep[] {
   return steps.map((step) =>
@@ -28,13 +28,13 @@ const publishStep: RunStep = {
   offsetMs: 92_000,
   kind: 'tool',
   call: {
-    name: 'reports.publish',
-    title: 'Publish Mobile weekly retention',
+    name: 'email.send',
+    title: 'Email the findings to the Acme team',
     icon: Send,
     status: 'done',
     durationMs: 1_400,
-    input: { report: 'mobile-weekly-retention', audience: 'team:mobile', schedule: 'MON 09:00' },
-    output: 'Published to Mobile › Reports · 14 people notified',
+    input: { to: 'tomas@acme.example, ama@acme.example, kai@acme.example', subject: 'Hollow Oak Games: events stopped on 18 September' },
+    output: 'Sent to 3 people',
   },
 };
 
@@ -42,7 +42,7 @@ const finalMessage: RunStep = {
   id: 'answer',
   offsetMs: 97_000,
   kind: 'message',
-  text: 'Week 1 retention is 41.2%, down 2.8 points on last week. The drop comes from Android users who installed during the September campaign. The report is in Mobile › Reports and refreshes every Monday.',
+  text: 'Hollow Oak Games sent 96,200 events up to 18 September and none since. The project was paused that day, so nothing is wrong with its SDK. The findings are with Tomás, Ama and Kai.',
 };
 
 const completedRun: Run = {
@@ -59,7 +59,7 @@ const completedRun: Run = {
       step.kind === 'approval'
         ? {
             ...step,
-            approval: { ...step.approval, status: 'decided' as const, decision: 'allow-once' as const, decidedBy: 'you', decidedAt: '09:15' },
+            approval: { ...step.approval, status: 'decided' as const, decision: 'allow-once' as const, decidedBy: 'Lena Park', decidedAt: '09:15' },
           }
         : step,
     ),
@@ -94,7 +94,7 @@ const failedRun: Run = {
   costUsd: 0.07,
   error: {
     stepId: 'query',
-    message: 'warehouse.query timed out after 30s while the warehouse was under heavy load. Nothing was written.',
+    message: 'events.query timed out after 30s while the event store was under heavy load. Nothing was written.',
   },
   steps: [
     ...withPlan(sampleRun.steps, ['error', 'pending', 'pending', 'pending', 'pending'], { '1': 'Timed out' }).slice(0, 2),
@@ -103,12 +103,12 @@ const failedRun: Run = {
       offsetMs: 14_000,
       kind: 'tool',
       call: {
-        name: 'warehouse.query',
-        title: 'Query Mobile sessions, last 8 weeks',
+        name: 'events.query',
+        title: 'Query Hollow Oak Games events, last 30 days',
         icon: Database,
         status: 'error',
         durationMs: 30_000,
-        input: { project: 'mobile', event: 'session_start', range: '2026-08-17..2026-10-11' },
+        input: { project: 'hollowoak', group_by: 'day', range: '2026-09-12..2026-10-11' },
         error: 'Timed out after 30s',
       },
     },
@@ -120,7 +120,7 @@ const cancelledRun: Run = {
   id: 'run_481',
   number: 481,
   status: 'cancelled',
-  startedBy: { name: 'Admin' },
+  startedBy: { name: 'Tomás Ortega' },
   startedAt: '13:20:41',
   elapsedMs: 21_000,
   tokens: 3_240,
@@ -132,9 +132,9 @@ const queuedRun: Run = {
   ...sampleRun,
   id: 'run_483',
   number: 483,
-  title: 'Find the top churn signals for the Checkout project',
+  title: 'Draft the weekly summary for Acme',
   status: 'queued',
-  startedBy: { name: 'Admin' },
+  startedBy: { name: 'Kai Nakamura' },
   startedAt: '14:06:40',
   elapsedMs: 0,
   tokens: 0,
@@ -148,9 +148,9 @@ const longRun: Run = {
   id: 'run_1048576',
   number: 1_048_576,
   title:
-    'Reconcile every Acme Inc. invoice from the last four quarters against the warehouse ledger and flag mismatches over one cent for the finance team',
+    'Check the event quota of every Acme project for the last four quarters against its plan allowance and flag any that went over by more than one percent for the growth and platform teams',
   status: 'running',
-  startedBy: { name: 'Growth team, Europe and Middle East' },
+  startedBy: { name: 'Kai Nakamura for the Growth and Platform teams, Europe and Middle East' },
   model: 'Claude Opus 5.5',
   elapsedMs: 7_384_000,
   tokens: 18_204_554_100,
@@ -162,9 +162,9 @@ const longRun: Run = {
       kind: 'reasoning',
       status: 'thinking',
       steps: [
-        { label: 'Match invoices to ledger entries by invoice number and amount', done: true },
-        { label: 'Look for entries split across two or more ledger lines', done: false },
-        { label: 'Summarize mismatches by customer', done: false },
+        { label: 'Match each project’s events to its plan allowance by month', done: true },
+        { label: 'Look for projects that changed plan in the middle of a month', done: false },
+        { label: 'Summarize overages by project', done: false },
       ],
     },
     {
@@ -172,11 +172,11 @@ const longRun: Run = {
       offsetMs: 7_300_000,
       kind: 'tool',
       call: {
-        name: 'warehouse.export_reconciliation_mismatches_to_shared_finance_folder',
-        title: 'Export the mismatches over one cent to the shared finance folder for review',
+        name: 'events.export_quota_overages_to_shared_quota_report_folder',
+        title: 'Export the projects over their quota to the shared quota report folder for review',
         status: 'running',
         durationMs: 84_000,
-        input: { folder: 'finance/reconciliation/2026-q3', threshold: 0.01 },
+        input: { folder: 'reports/quota/2026-q3', threshold: 0.01 },
       },
     },
   ],
@@ -215,7 +215,7 @@ export default function RunTimelinePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Cancelled by Admin">
+      <PreviewSection title="Cancelled by Tomás Ortega">
         <div className={frame}>
           <RunTimeline run={cancelledRun} />
         </div>

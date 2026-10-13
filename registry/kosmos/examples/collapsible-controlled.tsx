@@ -13,7 +13,7 @@ export default function CollapsibleControlled() {
       <Field name="custom-domain" orientation="horizontal">
         <FieldContent>
           <FieldLabel>Custom domain</FieldLabel>
-          <FieldDescription>Serve the help center from your own domain.</FieldDescription>
+          <FieldDescription>Serve shared dashboard links from your own domain.</FieldDescription>
         </FieldContent>
         <Switch checked={customDomain} onCheckedChange={setCustomDomain} />
       </Field>
@@ -21,7 +21,7 @@ export default function CollapsibleControlled() {
         <CollapsibleContent className="-mx-1 px-1">
           <Field name="domain" className="pt-4 pb-1">
             <FieldLabel>Domain</FieldLabel>
-            <Input defaultValue="help.acme.example" autoComplete="off" />
+            <Input defaultValue="dash.acme.example" autoComplete="off" />
           </Field>
         </CollapsibleContent>
       </Collapsible>

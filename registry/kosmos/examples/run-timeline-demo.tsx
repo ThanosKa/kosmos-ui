@@ -8,7 +8,7 @@ import type { PlanStep } from '@/registry/kosmos/ui/plan-checklist';
 import type { ApprovalDecision, ToolApprovalProps } from '@/registry/kosmos/ui/tool-approval';
 
 const answer =
-  'Week 1 retention is 41.2%, down 2.8 points on last week. The drop comes from Android users who installed during the September campaign. The report is in Mobile › Reports and refreshes every Monday.';
+  'Hollow Oak Games sent 96,200 events up to 18 September and none since. The project was paused that day, so nothing is wrong with its SDK. The findings are with Tomás, Ama and Kai.';
 
 function publishStep(offsetMs: number, done: boolean): RunStep {
   return {
@@ -16,13 +16,13 @@ function publishStep(offsetMs: number, done: boolean): RunStep {
     offsetMs,
     kind: 'tool',
     call: {
-      name: 'reports.publish',
-      title: 'Publish Mobile weekly retention',
+      name: 'email.send',
+      title: 'Email the findings to the Acme team',
       icon: Send,
       status: done ? 'done' : 'running',
       durationMs: done ? 1_400 : undefined,
-      input: { report: 'mobile-weekly-retention', audience: 'team:mobile', schedule: 'MON 09:00' },
-      output: done ? 'Published to Mobile › Reports · 14 people notified' : undefined,
+      input: { to: 'tomas@acme.example, ama@acme.example, kai@acme.example', subject: 'Hollow Oak Games: events stopped on 18 September' },
+      output: done ? 'Sent to 3 people' : undefined,
     },
   };
 }
@@ -104,7 +104,7 @@ export default function RunTimelineDemo() {
     const decided = await later(900, (current) => ({
       ...current,
       status: 'running',
-      steps: patchApproval(current.steps, { status: 'decided', decidedBy: 'you', decidedAt: clockAt(current) }),
+      steps: patchApproval(current.steps, { status: 'decided', decidedBy: 'Lena Park', decidedAt: clockAt(current) }),
     }));
     if (!decided) return;
 
@@ -119,7 +119,7 @@ export default function RunTimelineDemo() {
             id: 'answer',
             offsetMs: current.elapsedMs,
             kind: 'message',
-            text: 'The report stays a draft in your workspace. Week 1 retention is 41.2%, down 2.8 points on last week.',
+            text: 'The findings stay a draft. Hollow Oak Games sent no events after the project was paused on 18 September.',
           },
         ],
       }));

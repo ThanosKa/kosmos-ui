@@ -3,29 +3,29 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { Button } from '@/registry/kosmos/ui/button';
 import { PlanChecklist, type PlanStep } from '@/registry/kosmos/ui/plan-checklist';
 
-const title = 'Prepare the Q3 usage review for Acme Inc.';
+const title = 'Prepare the weekly summary for Acme';
 
 const proposed: PlanStep[] = [
-  { id: 'events', label: 'Pull Q3 usage events', status: 'pending' },
-  { id: 'seats', label: 'Compare seats with the contract', status: 'pending' },
-  { id: 'quota', label: 'Flag projects over quota', status: 'pending' },
-  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
-  { id: 'review', label: 'Book a review with the Growth team', status: 'pending' },
+  { id: 'events', label: 'Pull the last 7 days of events', status: 'pending' },
+  { id: 'seats', label: 'Compare each project with its plan', status: 'pending' },
+  { id: 'quota', label: 'Flag projects near their quota', status: 'pending' },
+  { id: 'summary', label: 'Draft the summary for Lena Park', status: 'pending' },
+  { id: 'review', label: 'Share it with the Acme team', status: 'pending' },
 ];
 
 const midRun: PlanStep[] = [
-  { id: 'events', label: 'Pull Q3 usage events', status: 'done', detail: '48,210 events' },
-  { id: 'seats', label: 'Compare seats with the contract', status: 'done' },
-  { id: 'quota', label: 'Flag projects over quota', status: 'running', detail: '40%' },
-  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
-  { id: 'review', label: 'Book a review with the Growth team', status: 'pending' },
+  { id: 'events', label: 'Pull the last 7 days of events', status: 'done', detail: '6,838,800 events' },
+  { id: 'seats', label: 'Compare each project with its plan', status: 'done' },
+  { id: 'quota', label: 'Flag projects near their quota', status: 'running', detail: '40%' },
+  { id: 'summary', label: 'Draft the summary for Lena Park', status: 'pending' },
+  { id: 'review', label: 'Share it with the Acme team', status: 'pending' },
 ];
 
 const failed: PlanStep[] = [
-  { id: 'events', label: 'Pull Q3 usage events', status: 'done', detail: '48,210 events' },
-  { id: 'seats', label: 'Compare seats with the contract', status: 'error', detail: 'Contract not found' },
-  { id: 'quota', label: 'Flag projects over quota', status: 'skipped' },
-  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
+  { id: 'events', label: 'Pull the last 7 days of events', status: 'done', detail: '6,838,800 events' },
+  { id: 'seats', label: 'Compare each project with its plan', status: 'error', detail: 'Plan not found' },
+  { id: 'quota', label: 'Flag projects near their quota', status: 'skipped' },
+  { id: 'summary', label: 'Draft the summary for Lena Park', status: 'pending' },
 ];
 
 const allDone: PlanStep[] = midRun.map((step) => ({ ...step, status: 'done', detail: step.id === 'quota' ? '3 projects' : step.detail }));
@@ -41,19 +41,19 @@ const everyStatus: PlanStep[] = [
 const wrapping: PlanStep[] = [
   {
     id: 'events',
-    label: 'Pull every checkout, mobile and partner API event recorded between July and September',
+    label: 'Pull every page_viewed, screen_viewed and button_clicked event recorded for the twelve Acme projects in the last 7 days',
     status: 'done',
-    detail: '48,210 events',
+    detail: '6,838,800 events',
   },
   {
     id: 'seats',
-    label: 'Compare the seat counts of each workspace with the limits written in its contract',
+    label: 'Compare the events of each project with the allowance written into its plan',
     status: 'error',
-    detail: 'Contract for the EU workspace not found',
+    detail: 'Plan for Kiln Studio not found',
   },
   {
     id: 'summary',
-    label: 'Draft a summary for reports@acme.example with the three largest overages',
+    label: 'Draft a summary for kai@acme.example with the three largest overages',
     status: 'pending',
   },
 ];
@@ -116,7 +116,7 @@ export default function PlanChecklistPreview() {
       <Grid>
         <PreviewSection title="surface none, flat in a host card">
           <div className="flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-3 shadow-card">
-            <p className="px-2 text-body">I will check Q3 usage against the contract, then book a review.</p>
+            <p className="px-2 text-body">I will check the last 7 days of events against each plan, then share a summary.</p>
             <PlanChecklist title={title} steps={midRun} surface="none" />
           </div>
         </PreviewSection>
@@ -124,7 +124,7 @@ export default function PlanChecklistPreview() {
         <PreviewSection title="Long labels and details at 320px">
           <div className="w-full max-w-80">
             <PlanChecklist
-              title="Prepare the Q3 usage review for every Acme Inc. workspace in Europe and North America"
+              title="Prepare the weekly summary for every Acme project on the Scale and Pro plans, with the quota of each"
               steps={wrapping}
             />
           </div>

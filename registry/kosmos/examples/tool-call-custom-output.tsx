@@ -4,22 +4,22 @@ import { Receipt } from 'lucide-react';
 import { ToolCall } from '@/registry/kosmos/ui/tool-call';
 
 const plans = [
-  { plan: 'Enterprise', revenue: '$412,800' },
-  { plan: 'Team', revenue: '$186,250' },
-  { plan: 'Starter', revenue: '$42,900' },
+  { plan: 'Scale', revenue: '$13,700' },
+  { plan: 'Pro', revenue: '$928' },
+  { plan: 'Free', revenue: '$0' },
 ];
 
 export default function ToolCallCustomOutput() {
   return (
     <div className="w-full max-w-xl rounded-2xl border border-transparent bg-card p-2 shadow-card">
       <ToolCall
-        name="billing.list_plans"
-        title="List plans by revenue"
+        name="billing.revenue_by_plan"
+        title="Revenue by plan"
         icon={Receipt}
         status="done"
         durationMs={820}
         defaultOpen
-        input={{ workspace: 'acme', sort: 'revenue' }}
+        input={{ sort: 'revenue' }}
       >
         <ul className="divide-y divide-border rounded-lg bg-muted px-3 text-small">
           {plans.map(({ plan, revenue }) => (
