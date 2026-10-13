@@ -133,8 +133,8 @@ type AppSidebarContentProps = {
 /** The workspace and user menu triggers: two lines of text beside a 24px mark, which stays centered in the icon column. */
 const menuTrigger =
   'h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]/sidebar:px-1';
-const fadeInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0';
-const menuChevron = cn('ms-auto', fadeInIconMode);
+const hiddenInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0';
+const menuChevron = cn('ms-auto', hiddenInIconMode);
 
 function WorkspaceMark({ name, className }: { name: string; className?: string }) {
   return (
@@ -279,7 +279,7 @@ function AppSidebarContent({
           <Search aria-hidden />
           <span className="flex-1 text-start">Search…</span>
           {searchShortcut ? (
-            <KbdGroup aria-hidden className={fadeInIconMode}>
+            <KbdGroup aria-hidden className={hiddenInIconMode}>
               <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
               <Kbd>K</Kbd>
             </KbdGroup>
