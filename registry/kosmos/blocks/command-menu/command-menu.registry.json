@@ -3,7 +3,7 @@
   "name": "command-menu",
   "type": "registry:block",
   "title": "Command menu",
-  "description": "A ⌘K menu with a search trigger: sample accounts, actions and pages, filtered as you type, with second lists for changing status and assigning an owner.",
+  "description": "A ⌘K menu with a search trigger that opens without animation: sample projects with their status, actions and pages, filtered as you type, with second lists for picking a teammate and switching workspace.",
   "dependencies": [
     "lucide-react@^1.50.0"
   ],

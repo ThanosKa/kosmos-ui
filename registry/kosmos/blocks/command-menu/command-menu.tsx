@@ -1,19 +1,21 @@
 'use client';
 
 import {
+  Activity,
   ArrowLeft,
-  BarChart3,
-  Building2,
+  ArrowLeftRight,
+  Building,
   CircleDashed,
-  Handshake,
-  Home,
-  Inbox,
-  Link,
+  CircleDollarSign,
+  FolderKanban,
+  LayoutDashboard,
+  Milestone,
   Plus,
   Search,
   Settings,
   UserPlus,
-  UserRoundPen,
+  UserRoundSearch,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 import * as React from 'react';
@@ -61,65 +63,89 @@ type CommandMenuGroup = { value: string; items: CommandMenuItem[] };
 type CommandMenuPage = { title: string; placeholder: string; groups: CommandMenuGroup[] };
 
 // Sample data: replace it with your records, actions and pages.
+type ProjectStatus = 'live' | 'trial' | 'paused';
+
+const statusDot: Record<ProjectStatus, string> = {
+  live: 'bg-success',
+  trial: 'bg-muted-foreground',
+  paused: 'bg-warning',
+};
+
+const sampleProjects: { id: string; name: string; domain: string; status: ProjectStatus }[] = [
+  { id: 'fernhill', name: 'Fernhill Books', domain: 'fernhill.example', status: 'live' },
+  { id: 'brightloop', name: 'Brightloop Fitness', domain: 'brightloop.example', status: 'live' },
+  { id: 'copperline', name: 'Copperline Bank', domain: 'copperline.example', status: 'live' },
+  { id: 'saltmarsh', name: 'Saltmarsh Coffee', domain: 'saltmarsh.example', status: 'live' },
+  { id: 'driftwood', name: 'Driftwood Travel', domain: 'driftwood.example', status: 'live' },
+  { id: 'hollowoak', name: 'Hollow Oak Games', domain: 'hollowoak.example', status: 'paused' },
+  { id: 'cirrus', name: 'Cirrus Weather', domain: 'cirrus.example', status: 'live' },
+  { id: 'pebblepine', name: 'Pebble & Pine', domain: 'pebblepine.example', status: 'live' },
+  { id: 'marigold', name: 'Marigold Recipes', domain: 'marigold.example', status: 'trial' },
+  { id: 'kiln', name: 'Kiln Studio', domain: 'kiln.example', status: 'paused' },
+  { id: 'tidepool', name: 'Tidepool Notes', domain: 'tidepool.example', status: 'trial' },
+  { id: 'ironbark', name: 'Ironbark Logistics', domain: 'ironbark.example', status: 'live' },
+];
+
 const sampleGroups: CommandMenuGroup[] = [
   {
-    value: 'Accounts',
-    items: [
-      { value: 'open:northwind', label: 'Northwind Traders northwind.example', title: 'Northwind Traders', hint: 'northwind.example', dot: 'bg-success' },
-      { value: 'open:bluebird', label: 'Bluebird Labs bluebird.example', title: 'Bluebird Labs', hint: 'bluebird.example', dot: 'bg-warning' },
-      { value: 'open:lumen', label: 'Lumen Health lumenhealth.example', title: 'Lumen Health', hint: 'lumenhealth.example', dot: 'bg-muted-foreground' },
-    ],
+    value: 'Projects',
+    items: sampleProjects.map((project) => ({
+      value: `open:${project.id}`,
+      label: `${project.name} ${project.domain}`,
+      title: project.name,
+      hint: project.domain,
+      dot: statusDot[project.status],
+    })),
   },
   {
     value: 'Actions',
     items: [
-      { value: 'new-account', label: 'New account', icon: Plus },
-      { value: 'change-status', label: 'Change status…', icon: CircleDashed, page: 'status' },
-      { value: 'assign-owner', label: 'Assign owner…', icon: UserRoundPen, page: 'owner' },
-      { value: 'copy-link', label: 'Copy link to account', icon: Link },
-      { value: 'invite', label: 'Invite people to Acme Inc.', icon: UserPlus },
+      { value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus },
+      { value: 'invite', label: 'Invite teammate', icon: UserPlus },
+      { value: 'assigned', label: 'Show roadmap items assigned to…', icon: UserRoundSearch, page: 'assignee' },
+      { value: 'switch-workspace', label: 'Switch workspace…', icon: ArrowLeftRight, page: 'workspace' },
     ],
   },
   {
     value: 'Go to',
     items: [
-      { value: 'go:home', label: 'Home', icon: Home },
-      { value: 'go:inbox', label: 'Inbox', icon: Inbox },
-      { value: 'go:accounts', label: 'Accounts', icon: Building2 },
-      { value: 'go:deals', label: 'Deals', icon: Handshake },
-      { value: 'go:reports', label: 'Reports', icon: BarChart3 },
+      { value: 'go:overview', label: 'Overview', icon: LayoutDashboard },
+      { value: 'go:projects', label: 'Projects', icon: FolderKanban },
+      { value: 'go:events', label: 'Events', icon: Activity },
+      { value: 'go:users', label: 'Users', icon: Users },
+      { value: 'go:revenue', label: 'Revenue', icon: CircleDollarSign },
+      { value: 'go:roadmap', label: 'Roadmap', icon: Milestone },
       { value: 'go:settings', label: 'Settings', icon: Settings },
     ],
   },
 ];
 
 const samplePages: Record<string, CommandMenuPage> = {
-  status: {
-    title: 'Change status',
-    placeholder: 'Change status to…',
+  assignee: {
+    title: 'Show roadmap items assigned to',
+    placeholder: 'Assigned to…',
     groups: [
       {
-        value: 'Status',
+        value: 'Team',
         items: [
-          { value: 'status:trial', label: 'Trial', dot: 'bg-muted-foreground' },
-          { value: 'status:active', label: 'Active', dot: 'bg-success' },
-          { value: 'status:at-risk', label: 'At risk', dot: 'bg-warning' },
-          { value: 'status:churned', label: 'Churned', dot: 'bg-destructive' },
+          { value: 'assignee:lena', label: 'Lena Park', initials: 'LP' },
+          { value: 'assignee:tomas', label: 'Tomás Ortega', initials: 'TO' },
+          { value: 'assignee:ama', label: 'Ama Mensah', initials: 'AM' },
+          { value: 'assignee:kai', label: 'Kai Nakamura', initials: 'KN' },
+          { value: 'assignee:none', label: 'No one', icon: CircleDashed },
         ],
       },
     ],
   },
-  owner: {
-    title: 'Assign owner',
-    placeholder: 'Assign to…',
+  workspace: {
+    title: 'Switch workspace',
+    placeholder: 'Switch to…',
     groups: [
       {
-        value: 'People',
+        value: 'Workspaces',
         items: [
-          { value: 'owner:maya', label: 'Maya Chen', initials: 'MC' },
-          { value: 'owner:jonas', label: 'Jonas Weber', initials: 'JW' },
-          { value: 'owner:priya', label: 'Priya Raman', initials: 'PR' },
-          { value: 'owner:none', label: 'No owner', icon: CircleDashed },
+          { value: 'workspace:parallax', label: 'Parallax', hint: 'Scale plan', icon: Building },
+          { value: 'workspace:parallax-staging', label: 'Parallax Staging', hint: 'Free plan', icon: Building },
         ],
       },
     ],
@@ -167,14 +193,14 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
 }
 
 type CommandMenuProps = {
-  /** The main list. Defaults to sample accounts, actions and pages. */
+  /** The main list. Defaults to sample projects, actions and pages. */
   groups?: CommandMenuGroup[];
   /** Second lists, by the key an item names in `page`. */
   pages?: Record<string, CommandMenuPage>;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** Called with the `value` of the command that ran, such as `new-account` or `owner:maya`. */
+  /** Called with the `value` of the command that ran, such as `new-roadmap-item` or `assignee:lena`. */
   onRun?: (value: string) => void;
   /** Toggles the menu with ⌘K (Ctrl+K on Windows and Linux) from anywhere on the page. Defaults to `true`. */
   hotkey?: boolean;
@@ -203,7 +229,7 @@ type CommandMenuProps = {
 
 /**
  * A ⌘K menu for the whole app: records, actions and places to go, filtered as you type. An item
- * with a `page` opens a second list (Change status…, Assign owner…); Backspace in an empty field
+ * with a `page` opens a second list (Switch workspace…); Backspace in an empty field
  * or Escape goes back to the main list. The menu opens on the main list every time.
  */
 function CommandMenu({
@@ -319,7 +345,7 @@ function CommandMenu({
       )}
       <CommandDialog
         title="Command menu"
-        description="Search accounts, actions and pages."
+        description="Search projects, actions and pages."
         open={open}
         modal={modal}
         container={container}
@@ -345,8 +371,8 @@ function CommandMenu({
           ) : null}
           <CommandInput
             ref={inputRef}
-            placeholder={current ? current.placeholder : 'Search accounts, actions and pages…'}
-            aria-label={current ? current.title : 'Search accounts, actions and pages'}
+            placeholder={current ? current.placeholder : 'Search projects, actions and pages…'}
+            aria-label={current ? current.title : 'Search projects, actions and pages'}
             onKeyDown={(event) => {
               if (event.key === 'Backspace' && query === '' && current) {
                 event.preventDefault();
