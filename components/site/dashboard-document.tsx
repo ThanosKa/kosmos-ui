@@ -28,11 +28,12 @@ export function DashboardDocument() {
   }, []);
 
   React.useEffect(() => {
-    const root = document.documentElement;
-    if (tokens) {
+    if (!tokens) return;
+    withoutTransitions(() => {
+      const root = document.documentElement;
       root.dataset.accent = tokens.accent;
       root.dataset.radius = tokens.radius;
-    }
+    });
   }, [tokens]);
 
   return (
@@ -47,4 +48,15 @@ export function DashboardDocument() {
       <span data-dashboard-ready={tokens ? '' : undefined} hidden />
     </ThemeProvider>
   );
+}
+
+/** Applies a token change in one frame, as `disableTransitionOnChange` does for the theme. */
+function withoutTransitions(change: () => void) {
+  const style = document.createElement('style');
+  style.textContent = '*,*::before,*::after{transition:none!important}';
+  document.head.appendChild(style);
+  change();
+  // Reading a computed style flushes the change before the override is removed.
+  window.getComputedStyle(document.body).transition;
+  requestAnimationFrame(() => style.remove());
 }
