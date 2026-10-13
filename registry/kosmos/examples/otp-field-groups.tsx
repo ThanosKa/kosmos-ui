@@ -3,7 +3,7 @@ import { OtpField } from '@/registry/kosmos/ui/otp-field';
 
 export default function OtpFieldGroups() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex max-w-full min-w-0 flex-col gap-6">
       <Field>
         <FieldLabel>Verification code</FieldLabel>
         <OtpField groupSize={3} />
