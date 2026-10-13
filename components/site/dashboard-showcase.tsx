@@ -16,7 +16,7 @@ import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry
 
 /*
  * The live dashboard of the landing page, composed from the eight free blocks. It renders as a whole app in its own
- * document (`/dashboard`), which the landing shows in an iframe, so the look a visitor picks there stays inside it.
+ * document (`/dashboard`), which the landing shows in an iframe, so the tokens a visitor picks there stay inside it.
  * The Overview page is the stats overview's Parallax sample data, and the board is the Parallax roadmap, where the new
  * item dialog adds its cards. The table, the drawer and the command menu share the data table's sample projects, so a
  * change in one shows in the others. Only Overview, Projects, its saved views and the roadmap are wired up; the other
@@ -175,7 +175,6 @@ export function DashboardShowcase({
       assignee: values.assignee ? roadmapTeam[values.assignee] : undefined,
       target: values.target ?? undefined,
     };
-    // A new card goes to the top of its column.
     const first = roadmap.findIndex((card) => card.column === item.column);
     setRoadmap(first < 0 ? [...roadmap, item] : [...roadmap.slice(0, first), item, ...roadmap.slice(first)]);
   };

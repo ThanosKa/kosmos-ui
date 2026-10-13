@@ -10,16 +10,16 @@ import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
 import { readProVariants } from '../lib/registry.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
+import { openSitePage, serverBase, serverOptions } from './site.mts';
 
 const { values } = parseArgs({
   options: {
-    port: { type: 'string' },
-    base: { type: 'string' },
+    ...serverOptions,
     only: { type: 'string' },
   },
 });
 
-const base = values.base ?? `http://localhost:${values.port ?? process.env.PORT ?? 3000}`;
+const base = serverBase(values);
 const phone = { width: 375, height: 800 };
 const desktop = { width: 1280, height: 800 };
 
@@ -27,23 +27,7 @@ type Viewport = { width: number; height: number };
 
 /** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
 async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
-  const context = await browser.newContext({ viewport, colorScheme: 'light', reducedMotion: 'reduce' });
-  await context.addInitScript(() => {
-    localStorage.setItem('theme', 'light');
-    // The dev server's indicator would sit in every screenshot, block viewer iframes included.
-    document.addEventListener('DOMContentLoaded', () => {
-      document.head.append(Object.assign(document.createElement('style'), { textContent: 'nextjs-portal { display: none !important; }' }));
-    });
-  });
-  const page = await context.newPage();
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
-  const url = new URL(path, base).href;
-  const response = await page.goto(url, { waitUntil: 'load' });
-  if (!response?.ok()) throw new Error(`${url} returned ${response?.status()} (is the dev server running on ${base}?)`);
+  const { page, context, errors } = await openSitePage(browser, base, path, { viewport });
   await page.evaluate(() => document.fonts.ready);
   return {
     page,
@@ -317,6 +301,16 @@ const checks: Check[] = [
       }
       assert.ok(stageWidth > 900, `Desktop: the viewer spans the content width (${stageWidth}px)`);
       await close();
+
+      // Beside the sidebar on a small laptop the viewer is narrower than the tablet frame, so it offers no widths.
+      const narrow = await openPage(browser, '/docs/blocks/stats-overview', { width: 1040, height: 800 });
+      const narrowViewer = blockViewer(narrow.page, 'stats-overview');
+      await narrowViewer.locator('iframe').scrollIntoViewIfNeeded();
+      const narrowStage = await narrowViewer.locator('[data-block-viewer-stage]').evaluate((stage) => stage.clientWidth);
+      assert.ok(narrowStage < 770, `1040px window: the viewer is narrower than the tablet frame (${narrowStage}px)`);
+      assert.equal(await narrowViewer.getByRole('radiogroup', { name: 'Preview width' }).isVisible(), false, '1040px window: no width control');
+      assert.equal(await narrowViewer.locator('iframe').evaluate((iframe) => iframe.getBoundingClientRect().width), narrowStage, '1040px window: the preview fills the viewer');
+      await narrow.close();
     },
   },
   {
@@ -580,7 +574,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the inventory counts components, block categories and variants from the registry, and templates only once they exist',
+    name: 'the inventory counts components, block categories and variants from the registry',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="inventory"]');
@@ -596,7 +590,7 @@ const checks: Check[] = [
           'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
           Variants: String(authoredBlocks.length + proVariants.length),
         },
-        'inventory counts (no Templates while there are none)',
+        'inventory counts',
       );
       const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
       assert.deepEqual(labels, ['/docs/blocks/bento'], 'inventory: labelled with the Bento block');

@@ -83,7 +83,7 @@ The tooltip exception: shadcn's and Base UI's tooltips use a control radius too.
 
 ## Typography
 
-Text in components sits between 12 and 14px; only marketing blocks go larger, with `text-hero` and `text-lead` for a page's headline. Each size is a type role, which sets size, line-height, weight and tracking together:
+Text in components sits between 12 and 14px; only marketing blocks and the site's marketing sections go larger, for their titles, the line under them and a headline count. Each size is a type role, which sets size, line-height, weight and tracking together:
 
 | Role | Size / line-height / weight / tracking | Use |
 | --- | --- | --- |
@@ -91,13 +91,13 @@ Text in components sits between 12 and 14px; only marketing blocks go larger, wi
 | `text-small` | 13 / 1.4 / 400 / -0.005em | Descriptions, hints, errors, field labels above a control |
 | `text-body` | 14 / 20 / 400 / -0.01em | Default UI text: buttons, menu items, table cells, checkbox and switch labels |
 | `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium` |
-| `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens), never in app chrome |
-| `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`); a hero title in a container under 672px, at `font-semibold` |
-| `text-hero` | 48 / 1.1 / 600 / -0.03em | The title of a marketing hero, from a 672px container (`@2xl:`) |
-| `text-lead` | 18 / 1.6 / 400 / -0.01em | The one line under a hero title |
+| `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens); a marketing section title in a container under 672px. Never in app chrome |
+| `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`); at `font-semibold`, a marketing section title (a block from a 672px container, `@2xl:`) and a hero title in a container under 672px |
+| `text-hero` | 48 / 1.1 / 600 / -0.03em | The title of a marketing hero, from a 672px container (`@2xl:`); a count that is the visual of a marketing tile (`tabular-nums`) |
+| `text-lead` | 18 / 1.6 / 400 / -0.01em | The one line under a hero title or a marketing section title (in a block from `@2xl:`, `text-body` below) |
 
 - The site has one more role, outside this table because no component uses it: `text-page-title`, the title of every docs page (28 / 1.25 / 600 / -0.02em on phones, 32px from `md`). It lives in `app/global.css` and never ships in `@kosmos/tokens` (tokens.md, Site-only roles).
-- `text-hero` and `text-lead` are fixed sizes, not fluid ones: a hero steps from `text-display` to `text-hero` with a container variant, so it sizes by its own width like every block. _Decided without the user (2026-10-13), pending confirmation:_ the first marketing block needs a headline above 14px, and a role keeps it in the tokens instead of an arbitrary size in the block.
+- `text-hero` and `text-lead` are for marketing only. They ship in `tokens.css` with every other role, and application blocks never use them. They are fixed sizes, not fluid ones: a marketing block steps up a role with a container variant (`text-display @2xl:text-hero`), so it sizes by its own width like every block.
 - Chrome is 500, content is 400. Buttons, nav items, tabs, menu, select and command items, segmented items, field labels, badges and the titles of board cards and list rows take `font-medium`; table cells, descriptions, input values and prose stay 400. Table headers are 400, muted.
 - Hierarchy comes from weight and color (`text-muted-foreground`), not from more sizes.
 - Icons are 14px (`size-3.5`) in 30px controls (buttons, nav items, menu items, inputs) and 16px in 36px rows and `lg` buttons; 12px in `sm` buttons and badges.
@@ -190,5 +190,6 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | `text-ring`, or orange text other than the current page in navigation | `text-foreground` or `text-muted-foreground`; the current nav item takes `text-active-foreground` |
 | A category label as a neutral or status Badge | A hue variant |
 | `text-heading` in an app page header | `text-title font-medium` |
+| `text-hero` or `text-lead` in an application block | The app role: `text-display` for a value, `text-title` for a title, `text-body` for text |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
 | `overflow-auto`, `overflow-y-auto` or `overflow-x-auto` on content inside a frame | `ScrollArea`, as in Overflow above |

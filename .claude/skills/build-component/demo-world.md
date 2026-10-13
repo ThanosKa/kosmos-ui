@@ -117,7 +117,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 
 | Title | Area | Column | Assignee | Votes | Target |
 | --- | --- | --- | --- | --- | --- |
-| Slack alerts for traffic drops | Platform | Ideas | none | 64 | none |
+| Chat alerts for traffic drops | Platform | Ideas | none | 64 | none |
 | Usage-based invoices | Billing | Ideas | none | 27 | none |
 | Shareable dashboard links | Insights | Ideas | none | 51 | none |
 | Retention cohorts by plan | Insights | Planned | Kai Nakamura | 88 | Q1 2027 |

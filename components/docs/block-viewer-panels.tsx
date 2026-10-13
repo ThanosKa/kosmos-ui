@@ -9,7 +9,11 @@ import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/seg
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import { PreviewFrame } from './preview-frame';
 
-/** The preview widths, in CSS pixels; desktop takes the whole width of the viewer. */
+/**
+ * The preview widths, in CSS pixels; desktop takes the whole width of the viewer. The width control shows only once
+ * the viewer fits the tablet frame (768px plus its two borders), so every width it offers is exact; a narrower viewer
+ * previews at its own width.
+ */
 const previewWidths = {
   desktop: { label: 'Desktop', icon: Monitor, width: undefined },
   tablet: { label: 'Tablet', icon: Tablet, width: 768 },
@@ -63,7 +67,7 @@ export function BlockViewerPanels({
     <Tabs
       value={tab}
       onValueChange={setTab}
-      className="min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
+      className="@container/viewer min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
     >
       <div className="flex min-w-0 items-center justify-between gap-2 border-b border-border px-2">
         <TabsList aria-label={`${title} view`} className="data-[orientation=horizontal]:border-b-0">
@@ -81,7 +85,7 @@ export function BlockViewerPanels({
               aria-label="Preview width"
               value={width}
               onValueChange={(value) => setWidth(value as PreviewWidth)}
-              className="max-lg:hidden"
+              className="hidden @min-[770px]/viewer:inline-flex"
             >
               {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
                 const { label, icon: Icon } = previewWidths[key];
@@ -109,7 +113,7 @@ export function BlockViewerPanels({
       <TabsContent value="preview" keepMounted className="focus-visible:-outline-offset-2">
         <div data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
           <div
-            className={cn('box-content max-w-full', framed ? 'w-(--preview-width) border-x border-border' : 'w-full')}
+            className={cn('box-content w-full', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
             style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
           >
             {src ? (

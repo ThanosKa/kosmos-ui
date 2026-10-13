@@ -106,7 +106,7 @@ export type BlockSection = keyof typeof blockSections;
 export const blockTiers = { free: 'Free', pro: 'Pro' } as const;
 export type BlockTier = keyof typeof blockTiers;
 
-const isBlockSection = (value: unknown): value is BlockSection => typeof value === 'string' && Object.hasOwn(blockSections, value);
+export const isBlockSection = (value: unknown): value is BlockSection => typeof value === 'string' && Object.hasOwn(blockSections, value);
 const blockCategoryPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
@@ -192,20 +192,12 @@ export function readProVariants(deploymentUrl: string | undefined = proDeploymen
   return proVariants.map(({ previewPath, ...variant }) => ({ ...variant, previewUrl: `${deploymentUrl}${previewPath}` }));
 }
 
-/** A whole app or site built from blocks. Templates are Pro, so the public repo knows only where each one runs. */
-export type Template = { name: string; title: string; previewUrl: string };
-
-/** The templates the site shows. None yet: they arrive with the Pro deployment. */
-export function readTemplates(): Template[] {
-  return [];
-}
-
 /**
  * Every block category, A–Z by name, with its variants: free first, then by name. The one reader of block categories,
  * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections,
  * or when a Pro variant names a category no free variant declares.
  */
-export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), proVariants: ProVariant[] = readProVariants()): BlockCategory[] {
+export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), shownProVariants: ProVariant[] = readProVariants()): BlockCategory[] {
   const categories = new Map<string, BlockCategory>();
   for (const variant of items.filter((item) => item.type === 'registry:block').map(freeVariant)) {
     const category = categories.get(variant.category) ?? { name: variant.category, section: variant.section, variants: [] };
@@ -215,7 +207,7 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems(),
     category.variants.push(variant);
     categories.set(variant.category, category);
   }
-  for (const variant of proVariants) {
+  for (const variant of shownProVariants) {
     const category = categories.get(variant.category);
     if (!category) throw new Error(`Pro variant "${variant.name}": block category "${variant.category}" has no free variant`);
     category.variants.push({ ...variant, section: category.section, tier: 'pro' });
@@ -232,9 +224,9 @@ export function readBlockCategories(items: RegistryItem[] = readRegistryItems(),
 export function getBlockCategory(
   name: string,
   items: RegistryItem[] = readRegistryItems(),
-  proVariants?: ProVariant[],
+  shownProVariants?: ProVariant[],
 ): BlockCategory | undefined {
-  return readBlockCategories(items, proVariants).find((category) => category.name === name);
+  return readBlockCategories(items, shownProVariants).find((category) => category.name === name);
 }
 
 /** Every registry item, sorted by type then name, validated for unique names and existing files and deps. */

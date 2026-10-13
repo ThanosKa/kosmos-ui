@@ -29,4 +29,4 @@ A Pro variant renders live on the docs from the Pro deployment, inside the same 
 
 ## No store yet
 
-Until a store exists, the locked Code tab says the variant comes with Pro, which is not on sale yet, and offers no link: a "Get Pro" link to a page that does not exist, or to the private repo, would lead nowhere. `proUrl` in `lib/shared.ts` stays unset until the store launches, and setting it brings the link back.
+Until a store exists, the locked Code tab says the variant comes with Kosmos Pro and points to Preview, with no promise of timing and no link: a "Get Pro" link to a page that does not exist, or to the private repo, would lead nowhere. `proUrl` in `lib/shared.ts` stays unset until the store launches, and setting it brings the link back.

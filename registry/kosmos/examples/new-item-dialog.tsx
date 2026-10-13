@@ -42,7 +42,7 @@ export default function NewItemDialogPreview() {
                 initialFocus={false}
                 trigger={null}
                 defaultSubmitted
-                defaultValues={{ description: 'Alert the project team in Slack when page views drop by a third in an hour.' }}
+                defaultValues={{ description: 'Alert the project team in chat when page views drop by a third in an hour.' }}
               />
             )}
           </OverlayStage>

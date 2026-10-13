@@ -149,6 +149,13 @@ function useStoredOpen(key: string | null) {
 const restoreScript = (key: string, collapsible: SidebarCollapsible) =>
   `(function(e,k,m){try{var v=localStorage.getItem(k);if(v!=='expanded'&&v!=='collapsed')return;e.setAttribute('data-state',v);e.setAttribute('data-collapsible',v==='collapsed'?m:'')}catch(_){}})(document.currentScript.parentElement,${JSON.stringify(key)},${JSON.stringify(collapsible)})`;
 
+/**
+ * Runs after the sidebar's panel is parsed, ahead of hydration: makes the panel of a sidebar collapsed off canvas
+ * inert, reading the state the restore script set, so its hidden links take no focus.
+ */
+const inertScript =
+  "(function(e){e.previousElementSibling.firstElementChild.inert=e.parentElement.getAttribute('data-collapsible')==='offcanvas'})(document.currentScript)";
+
 function useControllable<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
   const current = value === undefined ? uncontrolled : value;
@@ -182,7 +189,10 @@ type SidebarProviderProps = React.ComponentProps<'div'> & {
    * controlled. Give each sidebar on a page its own key.
    */
   storageKey?: string | false;
-  /** The key that collapses and reopens the sidebar together with ⌘ (Ctrl on Windows and Linux); `false` turns it off. */
+  /**
+   * The key that collapses and reopens the sidebar beside the page together with ⌘ (Ctrl on Windows and Linux); it
+   * does nothing to the phone drawer. `false` turns it off.
+   */
   keyboardShortcut?: string | false;
 };
 
@@ -238,7 +248,7 @@ function SidebarProvider({
   }, [isMobile, open, setOpen]);
 
   React.useEffect(() => {
-    if (!keyboardShortcut) return;
+    if (!keyboardShortcut || isMobile) return;
     function onKeyDown(event: KeyboardEvent) {
       // Ctrl+B on a Mac moves the caret back in a text field, so there only ⌘ counts.
       const modifier = /Mac|iPhone|iPad/.test(navigator.userAgent) ? event.metaKey : event.ctrlKey;
@@ -250,7 +260,7 @@ function SidebarProvider({
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [keyboardShortcut, toggleSidebar]);
+  }, [keyboardShortcut, isMobile, toggleSidebar]);
 
   const context = React.useMemo<SidebarContextValue>(
     () => ({
@@ -379,6 +389,8 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
       >
         <div
           inert={!open && collapsible === 'offcanvas'}
+          // The inert script below may already have set `inert` on this element.
+          suppressHydrationWarning
           className={cn('flex h-full flex-col', collapsible === 'icon' ? 'w-full' : 'w-(--sidebar-width)', className)}
           {...props}
           id={sidebarId}
@@ -386,6 +398,7 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
           <TooltipProvider>{children}</TooltipProvider>
         </div>
       </div>
+      {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: inertScript }} /> : null}
     </div>
   );
 }
@@ -518,7 +531,7 @@ type SidebarTriggerProps = Omit<Extract<ButtonProps, { href?: undefined }>, 'var
 function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
   const { toggleSidebar, isMobile, open, openMobile, keyboardShortcut, sidebarId } = useSidebar();
   const isMac = useIsMac();
-  const key = keyboardShortcut?.toUpperCase();
+  const key = isMobile ? undefined : keyboardShortcut?.toUpperCase();
   return (
     <Tooltip>
       <TooltipPrimitive.Trigger

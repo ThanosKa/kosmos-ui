@@ -179,7 +179,7 @@ function AuthShell({
           {logo ?? <ProductMark name={productName} />}
           <div className="flex flex-col gap-1">
             {/* Focused by script only, when it replaces the form, so it needs no focus outline. */}
-            <Heading ref={headingRef} tabIndex={-1} className="text-heading text-balance text-foreground outline-none">
+            <Heading ref={headingRef} tabIndex={-1} className="text-title text-balance text-foreground outline-none">
               {title}
             </Heading>
             <p className="text-body text-pretty text-muted-foreground">{description}</p>
