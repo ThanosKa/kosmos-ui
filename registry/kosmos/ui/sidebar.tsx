@@ -30,6 +30,7 @@ type SidebarContextValue = {
   /** Whether the sidebar shows next to the page (from `mobileBreakpoint` up). */
   open: boolean;
   setOpen: (open: boolean) => void;
+  setOpenInstantly: (open: boolean) => void;
   /** Whether the drawer is open (below `mobileBreakpoint`). */
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
@@ -227,6 +228,7 @@ function SidebarProvider({
   const [width, setWidthState] = useControllable(widthProp, defaultWidth, onWidthChange);
   const [openMobile, setOpenMobile] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
+  const [snapping, setSnapping] = React.useState(false);
   const [collapsible, setCollapsible] = React.useState<SidebarCollapsible>('offcanvas');
   const sidebarId = React.useId();
 
@@ -236,6 +238,15 @@ function SidebarProvider({
       if (storageKey) writeStorage(storageKey, next ? 'expanded' : 'collapsed');
     },
     [setOpenState, storageKey],
+  );
+
+  const setOpenInstantly = React.useCallback(
+    (next: boolean) => {
+      setSnapping(true);
+      setOpen(next);
+      requestAnimationFrame(() => requestAnimationFrame(() => setSnapping(false)));
+    },
+    [setOpen],
   );
 
   const setWidth = React.useCallback(
@@ -256,16 +267,17 @@ function SidebarProvider({
       // ⌘B is bold in a rich text editor.
       if (event.defaultPrevented || (event.target instanceof HTMLElement && event.target.isContentEditable)) return;
       event.preventDefault();
-      toggleSidebar();
+      setOpenInstantly(!open);
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [keyboardShortcut, isMobile, toggleSidebar]);
+  }, [keyboardShortcut, isMobile, open, setOpenInstantly]);
 
   const context = React.useMemo<SidebarContextValue>(
     () => ({
       open,
       setOpen,
+      setOpenInstantly,
       openMobile,
       setOpenMobile,
       toggleSidebar,
@@ -287,6 +299,7 @@ function SidebarProvider({
     [
       open,
       setOpen,
+      setOpenInstantly,
       openMobile,
       toggleSidebar,
       collapsible,
@@ -309,6 +322,7 @@ function SidebarProvider({
       <div
         data-slot="sidebar-wrapper"
         data-resizing={resizing ? '' : undefined}
+        data-snapping={snapping ? '' : undefined}
         style={{ '--sidebar-width': `${width}px`, '--sidebar-width-icon': `${ICON_WIDTH}px`, ...style } as React.CSSProperties}
         className={cn(
           'group/sidebar-wrapper flex min-h-svh w-full bg-background text-foreground data-resizing:cursor-col-resize data-resizing:select-none',
@@ -379,7 +393,7 @@ function Sidebar({ className, children, label = 'Sidebar', collapsible = 'offcan
         'motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
         'motion-reduce:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s] motion-reduce:data-[collapsible=offcanvas]:opacity-0',
         'motion-reduce:data-[state=collapsed]:[transition:opacity_var(--transition-duration-fast)_var(--ease-power3-out),width_0s_var(--transition-duration-fast)]',
-        'group-data-resizing/sidebar-wrapper:transition-none',
+        'group-data-resizing/sidebar-wrapper:transition-none group-data-snapping/sidebar-wrapper:transition-none',
       )}
     >
       {storageKey && !hydrated ? <script dangerouslySetInnerHTML={{ __html: restoreScript(storageKey, collapsible) }} /> : null}
@@ -415,6 +429,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
     usesDefaultBreakpoint,
     open,
     setOpen,
+    setOpenInstantly,
     width,
     setWidth,
     defaultWidth,
@@ -471,7 +486,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
     else if (event.key === 'End') next = maxWidth;
     else if (event.key === 'Enter') {
       event.preventDefault();
-      setOpen(!open);
+      setOpenInstantly(!open);
       return;
     } else return;
     event.preventDefault();
@@ -667,8 +682,8 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
           'flex h-6 shrink-0 items-center truncate px-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase',
           // In icon mode the label fades but keeps its row, so the icons below it never move. On expand it waits
           // for the column to widen, so it never shows as a cut-off stub.
-          'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0',
-          'motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)',
+          'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 group-data-snapping/sidebar-wrapper:transition-none',
+          'motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast) group-data-snapping/sidebar-wrapper:delay-0',
           className,
         ),
       },
@@ -722,7 +737,7 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
         // In icon mode the first child (an icon, a mark or an avatar) stays and the label and count after it fade.
         // On expand they wait for the column to widen, so they never show as cut-off stubs.
         '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:not(:first-child)]:opacity-0',
-        'motion-safe:group-data-[state=expanded]/sidebar:[&>span]:delay-(--transition-duration-fast)',
+        'motion-safe:group-data-[state=expanded]/sidebar:[&>span]:delay-(--transition-duration-fast) group-data-snapping/sidebar-wrapper:[&>span]:transition-none group-data-snapping/sidebar-wrapper:[&>span]:delay-0',
         className,
       )}
       {...props}
