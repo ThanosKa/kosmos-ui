@@ -8,41 +8,39 @@ const frame = 'flex w-full min-w-0 overflow-hidden rounded-xl border border-tran
 const longItems: KanbanItem[] = [
   {
     id: 'long',
-    name: 'International Association of Independent Freight Forwarders and Customs Brokers',
-    domain: 'association-of-independent-freight-forwarders.example',
-    status: 'trial',
-    owner: { name: 'Priya Raman', initials: 'PR' },
-    arr: 1250000,
-    health: 100,
-    lastActivity: '2026-10-11',
+    title: 'Retention cohorts by plan, platform and signup month, with a comparison against the cohort a year before and an export to CSV',
+    column: 'ideas',
+    area: { label: 'Insights', hue: 'amber' },
+    votes: 12480,
+    assignee: { name: 'Tomás Ortega', initials: 'TO' },
+    target: 'Q1 2027',
   },
-  { id: 'bare', name: 'Supercalifragilisticexpialidocious-holdings', status: 'trial' },
-  { id: 'short', name: 'Ox', domain: 'ox.example', status: 'active', owner: { name: 'Jonas Weber', initials: 'JW' }, arr: 1200, health: 3 },
+  { id: 'bare', title: 'Server-side-batching-for-every-ingestion-endpoint-and-region', column: 'ideas' },
+  { id: 'short', title: 'SSO', column: 'planned', area: { label: 'Platform', hue: 'blue' }, votes: 1 },
 ];
 
 const sample: KanbanItem = {
-  id: 'northwind',
-  name: 'Northwind Traders',
-  domain: 'northwind.example',
-  status: 'active',
-  owner: { name: 'Maya Chen', initials: 'MC' },
-  arr: 184000,
-  health: 86,
-  lastActivity: '2026-10-10',
+  id: 'funnel-comparisons',
+  title: 'Funnel comparisons',
+  column: 'in-progress',
+  area: { label: 'Insights', hue: 'amber' },
+  votes: 112,
+  assignee: { name: 'Ama Mensah', initials: 'AM' },
+  target: 'Q4 2026',
 };
 
 export default function KanbanBoardPreview() {
   return (
     <PreviewStack>
       <PreviewSection title="Full (drag a card, or Tab to it and press Space)">
-        <div className={`${frame} h-[30rem]`}>
+        <div className={`${frame} h-[34rem]`}>
           <KanbanBoard onAdd={() => {}} />
         </div>
       </PreviewSection>
 
       <PreviewSection title="Filtered by a search">
-        <div className={`${frame} h-72`}>
-          <KanbanBoard query="maya" />
+        <div className={`${frame} h-80`}>
+          <KanbanBoard query="insights" />
         </div>
       </PreviewSection>
 
@@ -59,7 +57,7 @@ export default function KanbanBoardPreview() {
       </PreviewSection>
 
       <PreviewSection title="Long text">
-        <div className={`${frame} h-96`}>
+        <div className={`${frame} h-[28rem]`}>
           <KanbanBoard defaultItems={longItems} />
         </div>
       </PreviewSection>

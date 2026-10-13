@@ -1,9 +1,10 @@
 'use client';
 
-import { CircleCheck, CircleDashed, Plus } from 'lucide-react';
+import { CalendarDays, Circle, CircleCheck, CircleDashed, CircleDot, Plus, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Dialog,
@@ -16,57 +17,101 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/registry/kosmos/ui/dialog';
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
+import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Switch } from '@/registry/kosmos/ui/switch';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
 
-type NewItemStatus = 'trial' | 'active' | 'at-risk' | 'churned';
 type NewItemPerson = { id: string; name: string; initials: string };
 
-/** What `onCreate` receives. Shaped like an account in the data table block. */
-type NewItemValues = {
-  name: string;
-  /** Lowercase, or an empty string. */
-  domain: string;
-  status: NewItemStatus;
-  /** The `id` of a person in `people`, or `null` for no owner. */
-  owner: string | null;
-  /** Annual recurring revenue in dollars, or `null` when left blank. */
-  arr: number | null;
-  notes: string;
+/** A stage of the roadmap: a column of the board the item lands in. */
+type NewItemStage = {
+  value: string;
+  label: string;
+  /** The stage glyph. Without one, a dot. */
+  icon?: LucideIcon;
+  /** Colors the glyph or the dot. */
+  tone?: 'muted' | 'success' | 'warning' | 'destructive';
 };
 
-/** The form as it stands, for `values` and `onValuesChange`: the text fields as typed, ARR as text. */
-type FormValues = Omit<NewItemValues, 'arr'> & { arr: string };
+/** A part of the product, shown as a tag in one of the Badge hues. */
+type NewItemArea = { value: string; label: string; hue: 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' };
 
-// Sample data: replace it with your workspace's people.
-const samplePeople: NewItemPerson[] = [
-  { id: 'maya', name: 'Maya Chen', initials: 'MC' },
-  { id: 'jonas', name: 'Jonas Weber', initials: 'JW' },
-  { id: 'priya', name: 'Priya Raman', initials: 'PR' },
+/** The form, and what `onCreate` receives. */
+type NewItemValues = {
+  title: string;
+  description: string;
+  /** The `value` of a stage in `stages`. */
+  stage: string;
+  /** The `value` of an area in `areas`, or `null` for none. */
+  area: string | null;
+  /** The `id` of a person in `people`, or `null` for nobody yet. */
+  assignee: string | null;
+  /** One of `targets`, or `null` for no target. */
+  target: string | null;
+};
+
+// Sample data: replace it with your roadmap's stages, areas, quarters and team.
+const sampleStages: NewItemStage[] = [
+  { value: 'ideas', label: 'Ideas', icon: CircleDashed, tone: 'muted' },
+  { value: 'planned', label: 'Planned', icon: Circle, tone: 'muted' },
+  { value: 'in-progress', label: 'In progress', icon: CircleDot, tone: 'warning' },
+  { value: 'shipped', label: 'Shipped', icon: CircleCheck, tone: 'success' },
 ];
 
-const statuses: Record<NewItemStatus, { label: string; dot: string }> = {
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  active: { label: 'Active', dot: 'bg-success' },
-  'at-risk': { label: 'At risk', dot: 'bg-warning' },
-  churned: { label: 'Churned', dot: 'bg-destructive' },
-};
-const statusItems = Object.fromEntries(Object.entries(statuses).map(([key, value]) => [key, value.label]));
+const sampleAreas: NewItemArea[] = [
+  { value: 'insights', label: 'Insights', hue: 'amber' },
+  { value: 'ingestion', label: 'Ingestion', hue: 'green' },
+  { value: 'billing', label: 'Billing', hue: 'red' },
+  { value: 'platform', label: 'Platform', hue: 'blue' },
+];
 
-const emptyValues: FormValues = { name: '', domain: '', status: 'trial', owner: null, arr: '', notes: '' };
+const sampleTargets = ['Q4 2026', 'Q1 2027', 'Q2 2027', 'Q3 2027'];
 
-/** A hostname with at least one dot and no spaces or scheme, such as `northwind.example`. */
-const domainPattern = /^(?!-)[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
+const samplePeople: NewItemPerson[] = [
+  { id: 'lena', name: 'Lena Park', initials: 'LP' },
+  { id: 'tomas', name: 'Tomás Ortega', initials: 'TO' },
+  { id: 'ama', name: 'Ama Mensah', initials: 'AM' },
+  { id: 'kai', name: 'Kai Nakamura', initials: 'KN' },
+];
 
-function StatusLabel({ status }: { status: NewItemStatus }) {
+const toneText = {
+  muted: 'text-muted-foreground',
+  success: 'text-success',
+  warning: 'text-warning',
+  destructive: 'text-destructive',
+} satisfies Record<NonNullable<NewItemStage['tone']>, string>;
+
+const toneDot = {
+  muted: 'bg-muted-foreground',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  destructive: 'bg-destructive',
+} satisfies Record<NonNullable<NewItemStage['tone']>, string>;
+
+function StageLabel({ stage }: { stage: NewItemStage | undefined }) {
+  if (!stage) return null;
+  const tone = stage.tone ?? 'muted';
+  const Icon = stage.icon;
   return (
     <span className="flex min-w-0 items-center gap-2">
-      <span aria-hidden className={cn('size-2 shrink-0 rounded-full', statuses[status].dot)} />
-      <span className="truncate">{statuses[status].label}</span>
+      {Icon ? (
+        <Icon aria-hidden className={cn('size-3.5 shrink-0', toneText[tone])} />
+      ) : (
+        <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[tone])} />
+      )}
+      <span className="truncate">{stage.label}</span>
     </span>
+  );
+}
+
+function AreaLabel({ area }: { area: NewItemArea | undefined }) {
+  if (!area) return <span className="truncate text-muted-foreground">No area</span>;
+  return (
+    <Badge variant={area.hue} className="max-w-full">
+      <span className="truncate">{area.label}</span>
+    </Badge>
   );
 }
 
@@ -75,7 +120,7 @@ function PersonLabel({ person }: { person: NewItemPerson | undefined }) {
     return (
       <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
         <CircleDashed aria-hidden className="size-4 shrink-0" />
-        <span className="truncate">No owner</span>
+        <span className="truncate">Unassigned</span>
       </span>
     );
   }
@@ -89,24 +134,39 @@ function PersonLabel({ person }: { person: NewItemPerson | undefined }) {
   );
 }
 
+function TargetLabel({ target }: { target: string | null }) {
+  return (
+    <span className={cn('flex min-w-0 items-center gap-2 tabular-nums', !target && 'text-muted-foreground')}>
+      <CalendarDays aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+      <span className="truncate">{target ?? 'No target'}</span>
+    </span>
+  );
+}
+
 type NewItemDialogProps = {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** Called with the form values when the record is created. */
+  /** Called with the form values when the item is created. */
   onCreate?: (values: NewItemValues) => void;
-  /** The people who can own the record. */
+  /** The stages, in board order. The first is the default. */
+  stages?: NewItemStage[];
+  /** The areas an item can belong to. */
+  areas?: NewItemArea[];
+  /** The quarters an item can target. */
+  targets?: string[];
+  /** The people who can be assigned. */
   people?: NewItemPerson[];
-  /** Values to start the form with each time it opens, such as the status of the board column it was opened from. */
+  /** Values to start the form with each time it opens, such as the stage of the board column it was opened from. */
   defaultValues?: Partial<NewItemValues>;
   /**
    * The form as it stands, controlled. Use with `onValuesChange`. A controlled form is not cleared
    * when the dialog opens; reset it yourself, for example in `onOpenChange`.
    */
-  values?: FormValues;
+  values?: NewItemValues;
   /** Called with the whole form each time a field changes, and when "Create more" clears it. */
-  onValuesChange?: (values: FormValues) => void;
-  /** The element that opens the dialog. Defaults to a "New account" button; pass `null` to open it only through `open`. */
+  onValuesChange?: (values: NewItemValues) => void;
+  /** The element that opens the dialog. Defaults to a "New item" button; pass `null` to open it only through `open`. */
   trigger?: React.ReactElement | null;
   /** Shows the validation errors from the start, as after a failed submit. For previews. */
   defaultSubmitted?: boolean;
@@ -114,25 +174,27 @@ type NewItemDialogProps = {
   modal?: boolean;
   /** The element the dialog renders into. Defaults to `document.body`. */
   container?: React.ComponentProps<typeof DialogContent>['container'];
-  /** Where focus goes when the dialog opens. Defaults to the name field. */
+  /** Where focus goes when the dialog opens. Defaults to the title field. */
   initialFocus?: React.ComponentProps<typeof DialogContent>['initialFocus'];
 };
 
-function toForm(values: Partial<NewItemValues> | undefined): FormValues {
-  const { arr, ...rest } = values ?? {};
-  return { ...emptyValues, ...rest, arr: arr == null ? '' : String(arr) };
+function toForm(values: Partial<NewItemValues> | undefined, stages: NewItemStage[]): NewItemValues {
+  return { title: '', description: '', stage: stages[0]?.value ?? '', area: null, assignee: null, target: null, ...values };
 }
 
 /**
- * A dialog with the form for a new record (a sample account): name, domain, status, owner, ARR and
- * notes. The name is required and the domain is checked; submitting with an error shows it and
- * moves focus to the field. With "Create more" on, the form clears and stays open for the next one.
+ * A dialog with the form for a new roadmap item: its title and description, then its stage, area,
+ * assignee and target quarter. The title is required; submitting without one shows the error and
+ * moves focus to it. With "Create more" on, the form clears and stays open for the next one.
  */
 function NewItemDialog({
   open: openProp,
   defaultOpen = false,
   onOpenChange,
   onCreate,
+  stages = sampleStages,
+  areas = sampleAreas,
+  targets = sampleTargets,
   people = samplePeople,
   defaultValues,
   values: valuesProp,
@@ -145,64 +207,61 @@ function NewItemDialog({
 }: NewItemDialogProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
-  const [uncontrolledValues, setUncontrolledValues] = React.useState(() => toForm(defaultValues));
+  const [uncontrolledValues, setUncontrolledValues] = React.useState(() => toForm(defaultValues, stages));
   const values = valuesProp ?? uncontrolledValues;
-  const setValues = (next: FormValues) => {
+  const setValues = (next: NewItemValues) => {
     if (valuesProp === undefined) setUncontrolledValues(next);
     onValuesChange?.(next);
   };
   const [submitted, setSubmitted] = React.useState(defaultSubmitted);
   const [createMore, setCreateMore] = React.useState(false);
-  // The last record made while "Create more" kept the dialog open, confirmed in a live region.
+  // The last item made while "Create more" kept the dialog open, confirmed in a live region.
   const [lastCreated, setLastCreated] = React.useState<string | null>(null);
-  const nameRef = React.useRef<HTMLInputElement>(null);
-  const domainRef = React.useRef<HTMLInputElement>(null);
+  const titleRef = React.useRef<HTMLInputElement>(null);
 
   // A fresh form each time the dialog opens, however it was closed, with the current `defaultValues`.
-  // A controlled form stays as its owner set it.
+  // A controlled form stays as the parent set it.
   const [wasOpen, setWasOpen] = React.useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
-      if (valuesProp === undefined) setUncontrolledValues(toForm(defaultValues));
+      if (valuesProp === undefined) setUncontrolledValues(toForm(defaultValues, stages));
       setSubmitted(false);
       setLastCreated(null);
     }
   }
 
-  const nameMissing = values.name.trim() === '';
-  const domain = values.domain.trim().toLowerCase();
-  const domainInvalid = domain !== '' && !domainPattern.test(domain);
+  const titleMissing = values.title.trim() === '';
 
   function setOpen(next: boolean) {
     if (openProp === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);
   }
 
-  function setField<Key extends keyof FormValues>(key: Key, value: FormValues[Key]) {
+  function setField<Key extends keyof NewItemValues>(key: Key, value: NewItemValues[Key]) {
     setValues({ ...values, [key]: value });
   }
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
     setSubmitted(true);
-    if (nameMissing) return nameRef.current?.focus();
-    if (domainInvalid) return domainRef.current?.focus();
-    const name = values.name.trim();
-    const arr = values.arr.trim() === '' ? null : Math.max(0, Math.round(Number(values.arr)));
-    onCreate?.({ ...values, name, domain, arr: Number.isFinite(arr) ? arr : null, notes: values.notes.trim() });
+    if (titleMissing) return titleRef.current?.focus();
+    const title = values.title.trim();
+    onCreate?.({ ...values, title, description: values.description.trim() });
     if (createMore) {
-      // Keep status and owner for the next record in the same batch.
-      setValues({ ...values, name: '', domain: '', arr: '', notes: '' });
+      // Keep the stage, area, assignee and target for the next item in the same batch.
+      setValues({ ...values, title: '', description: '' });
       setSubmitted(false);
-      setLastCreated(name);
-      nameRef.current?.focus();
+      setLastCreated(title);
+      titleRef.current?.focus();
     } else {
       setOpen(false);
     }
   }
 
-  const owner = people.find((person) => person.id === values.owner);
+  const stage = stages.find((option) => option.value === values.stage);
+  const area = areas.find((option) => option.value === values.area);
+  const assignee = people.find((person) => person.id === values.assignee);
 
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={modal}>
@@ -211,14 +270,14 @@ function NewItemDialog({
       ) : (
         <DialogTrigger render={<Button variant="primary" />}>
           <Plus aria-hidden data-icon="inline-start" />
-          New account
+          New item
         </DialogTrigger>
       )}
-      <DialogContent container={container} initialFocus={initialFocus ?? nameRef} className="max-w-[34rem]">
+      <DialogContent container={container} initialFocus={initialFocus ?? titleRef} className="max-w-[34rem]">
         <form noValidate onSubmit={submit} className="@container/form flex min-h-0 flex-1 flex-col">
           <DialogHeader>
-            <DialogTitle>New account</DialogTitle>
-            <DialogDescription>Add a customer to the workspace. Only the name is required.</DialogDescription>
+            <DialogTitle>New roadmap item</DialogTitle>
+            <DialogDescription>Add a feature to the roadmap. Only the title is required.</DialogDescription>
             {/* Stays in the accessibility tree while empty, so the first confirmation is announced. */}
             <p role="status" className="flex min-w-0 items-center gap-1.5 text-small text-foreground empty:sr-only">
               {lastCreated ? (
@@ -230,46 +289,46 @@ function NewItemDialog({
             </p>
           </DialogHeader>
           <DialogBody className="flex flex-col gap-4 pb-1">
-            <div className="grid grid-cols-1 gap-x-4 gap-y-4 @md/form:grid-cols-2">
-              <Field invalid={submitted && nameMissing}>
-                <FieldLabel>Name</FieldLabel>
-                <Input
-                  ref={nameRef}
-                  name="name"
-                  required
-                  autoComplete="organization"
-                  placeholder="Northwind Traders"
-                  value={values.name}
-                  onValueChange={(value) => setField('name', value)}
-                />
-                <FieldError>Enter the account’s name.</FieldError>
-              </Field>
-              <Field invalid={submitted && domainInvalid}>
-                <FieldLabel>Domain</FieldLabel>
-                <Input
-                  ref={domainRef}
-                  name="domain"
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  spellCheck={false}
-                  placeholder="northwind.example"
-                  value={values.domain}
-                  onValueChange={(value) => setField('domain', value)}
-                />
-                <FieldError>Enter a domain without https://, such as northwind.example.</FieldError>
-              </Field>
+            <Field invalid={submitted && titleMissing}>
+              <FieldLabel>Title</FieldLabel>
+              <Input
+                ref={titleRef}
+                name="title"
+                required
+                autoComplete="off"
+                placeholder="Shareable dashboard links"
+                value={values.title}
+                onValueChange={(value) => setField('title', value)}
+              />
+              <FieldError>Enter a title for the item.</FieldError>
+            </Field>
+            <Field>
+              <FieldLabel>Description</FieldLabel>
+              <Textarea
+                name="description"
+                placeholder="What customers asked for, and why it matters"
+                className="max-h-40"
+                value={values.description}
+                onValueChange={(value) => setField('description', String(value))}
+              />
+            </Field>
+            <div className="grid grid-cols-1 gap-x-3 gap-y-4 border-t border-border pt-4 @xs/form:grid-cols-2">
               <Field>
                 <FieldLabel nativeLabel={false} render={<div />}>
-                  Status
+                  Stage
                 </FieldLabel>
-                <Select value={values.status} onValueChange={(value) => setField('status', value as NewItemStatus)} items={statusItems}>
+                <Select
+                  value={values.stage}
+                  onValueChange={(value) => setField('stage', value as string)}
+                  items={stages.map((option) => ({ value: option.value, label: option.label }))}
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue>{() => <StatusLabel status={values.status} />}</SelectValue>
+                    <SelectValue>{() => <StageLabel stage={stage} />}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.keys(statuses) as NewItemStatus[]).map((value) => (
-                      <SelectItem key={value} value={value}>
-                        <StatusLabel status={value} />
+                    {stages.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <StageLabel stage={option} />
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -277,15 +336,39 @@ function NewItemDialog({
               </Field>
               <Field>
                 <FieldLabel nativeLabel={false} render={<div />}>
-                  Owner
+                  Area
                 </FieldLabel>
                 <Select
-                  value={values.owner}
-                  onValueChange={(value) => setField('owner', value as string | null)}
-                  items={[{ value: null, label: 'No owner' }, ...people.map((person) => ({ value: person.id, label: person.name }))]}
+                  value={values.area}
+                  onValueChange={(value) => setField('area', value as string | null)}
+                  items={[{ value: null, label: 'No area' }, ...areas.map((option) => ({ value: option.value, label: option.label }))]}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue>{() => <PersonLabel person={owner} />}</SelectValue>
+                    <SelectValue>{() => <AreaLabel area={area} />}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={null}>
+                      <AreaLabel area={undefined} />
+                    </SelectItem>
+                    {areas.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <AreaLabel area={option} />
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel nativeLabel={false} render={<div />}>
+                  Assignee
+                </FieldLabel>
+                <Select
+                  value={values.assignee}
+                  onValueChange={(value) => setField('assignee', value as string | null)}
+                  items={[{ value: null, label: 'Unassigned' }, ...people.map((person) => ({ value: person.id, label: person.name }))]}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{() => <PersonLabel person={assignee} />}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={null}>
@@ -300,31 +383,30 @@ function NewItemDialog({
                 </Select>
               </Field>
               <Field>
-                <FieldLabel>ARR</FieldLabel>
-                <Input
-                  type="number"
-                  name="arr"
-                  inputMode="numeric"
-                  min={0}
-                  step={1}
-                  placeholder="0"
-                  className="tabular-nums"
-                  value={values.arr}
-                  onValueChange={(value) => setField('arr', value)}
-                />
-                <FieldDescription>Annual recurring revenue, in dollars.</FieldDescription>
+                <FieldLabel nativeLabel={false} render={<div />}>
+                  Target
+                </FieldLabel>
+                <Select
+                  value={values.target}
+                  onValueChange={(value) => setField('target', value as string | null)}
+                  items={[{ value: null, label: 'No target' }, ...targets.map((target) => ({ value: target, label: target }))]}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{() => <TargetLabel target={values.target} />}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={null}>
+                      <TargetLabel target={null} />
+                    </SelectItem>
+                    {targets.map((target) => (
+                      <SelectItem key={target} value={target}>
+                        <TargetLabel target={target} />
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </Field>
             </div>
-            <Field>
-              <FieldLabel>Notes</FieldLabel>
-              <Textarea
-                name="notes"
-                placeholder="Who you talked to, what they need, next steps"
-                className="max-h-40"
-                value={values.notes}
-                onValueChange={(value) => setField('notes', String(value))}
-              />
-            </Field>
           </DialogBody>
           <DialogFooter className="mt-4 flex-row flex-wrap items-center justify-end">
             <label className="flex w-full items-center gap-2 py-1 text-body text-muted-foreground @sm/form:me-auto @sm/form:w-auto">
@@ -333,7 +415,7 @@ function NewItemDialog({
             </label>
             <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
             <Button type="submit" variant="primary">
-              Create account
+              Create item
             </Button>
           </DialogFooter>
         </form>
@@ -342,4 +424,11 @@ function NewItemDialog({
   );
 }
 
-export { NewItemDialog, type FormValues as NewItemFormValues, type NewItemDialogProps, type NewItemPerson, type NewItemStatus, type NewItemValues };
+export {
+  NewItemDialog,
+  type NewItemArea,
+  type NewItemDialogProps,
+  type NewItemPerson,
+  type NewItemStage,
+  type NewItemValues,
+};

@@ -75,9 +75,9 @@ export function AppFrame() {
 }
 
 /** KanbanBoard with its sample columns and cards. */
-export function PipelineCard() {
+export function RoadmapCard() {
   return (
-    <GalleryCard title="Pipeline" description="Drag a card, or pick it up with Space." bodyClassName="h-[30rem] p-2 pt-4">
+    <GalleryCard title="Roadmap" description="Drag a card, or pick it up with Space." bodyClassName="h-[30rem] p-2 pt-4">
       <KanbanBoard />
     </GalleryCard>
   );
@@ -93,7 +93,7 @@ export function NewItemStage() {
           container={container}
           initialFocus={false}
           trigger={null}
-          defaultValues={{ name: 'Quarry Supply', domain: 'quarry.example', status: 'trial', owner: 'maya' }}
+          defaultValues={{ title: 'Shareable dashboard links', stage: 'ideas', area: 'insights' }}
         />
       )}
     </GalleryStage>

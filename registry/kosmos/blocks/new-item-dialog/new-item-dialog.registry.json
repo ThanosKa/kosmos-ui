@@ -3,7 +3,7 @@
   "name": "new-item-dialog",
   "type": "registry:block",
   "title": "New item dialog",
-  "description": "A dialog with the form for a new record (a sample account): name, domain, status, owner, ARR and notes, with validation and a Create more switch.",
+  "description": "A dialog with the form for a new roadmap item: title, description, stage, area, assignee and target quarter, with validation and a Create more switch.",
   "dependencies": [
     "lucide-react@^1.50.0"
   ],
@@ -11,6 +11,7 @@
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/avatar",
+    "@kosmos/badge",
     "@kosmos/button",
     "@kosmos/dialog",
     "@kosmos/field",

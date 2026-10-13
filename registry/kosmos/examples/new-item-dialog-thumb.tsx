@@ -14,7 +14,7 @@ export default function NewItemDialogThumb() {
           container={container}
           initialFocus={false}
           trigger={null}
-          defaultValues={{ name: 'Northwind Traders', domain: 'northwind.example', status: 'active', owner: 'maya', arr: 184000 }}
+          defaultValues={{ title: 'Retention cohorts by plan', stage: 'planned', area: 'insights', assignee: 'kai', target: 'Q1 2027' }}
         />
       )}
     </ThumbStage>
