@@ -157,9 +157,9 @@ function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: stri
   );
 }
 
-/** Where the value sits: beside the label and the change in a container under 320px, under the label from there up. */
+/** Where the value sits: beside the label and the change in a container under 448px, under the label from there up. */
 const valueSlot =
-  'col-start-2 row-span-2 row-start-1 justify-self-end @xs:col-start-1 @xs:row-span-1 @xs:row-start-auto @xs:justify-self-start';
+  'col-start-2 row-span-2 row-start-1 justify-self-end @md:col-start-1 @md:row-span-1 @md:row-start-auto @md:justify-self-start';
 
 /** One metric as a tab: its label, its value and its change. The selected one lifts onto a raised surface. */
 function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: boolean; rangeLabel: string }) {
@@ -167,7 +167,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
     <TabsTrigger
       value={metric.id}
       className={cn(
-        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-lg px-3 py-2.5 text-start whitespace-normal @xs:grid-cols-1',
+        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-lg px-3 py-2.5 text-start whitespace-normal @md:grid-cols-1',
         'transition-[color,background-color,box-shadow] hover:not-data-active:bg-accent',
         'data-active:bg-secondary data-active:shadow-control',
         // The raised surface marks the selected metric, so the tab list's underline and its reduced-motion twin stay hidden.
@@ -180,7 +180,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
       {loading ? (
         <>
           {/* The track is the skeleton's own fill, so these take a darker one. */}
-          <Skeleton className={cn('h-6 w-24 bg-foreground/10 @xs:my-1.5', valueSlot)} />
+          <Skeleton className={cn('h-6 w-24 bg-foreground/10 @md:my-1.5', valueSlot)} />
           <Skeleton className="h-4 w-14 bg-foreground/10" />
         </>
       ) : (
@@ -342,7 +342,7 @@ function StatsOverview({
               <TabsList
                 aria-label="Metric"
                 className={cn(
-                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @xs:grid-cols-2 @3xl:grid-cols-4',
+                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @md:grid-cols-2 @3xl:grid-cols-4',
                   'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-transparent',
                   '*:data-[slot=tabs-indicator]:hidden',
                 )}
