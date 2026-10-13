@@ -598,7 +598,8 @@ function SidebarContent({ className, render, children, ...props }: React.Compone
       data-slot="sidebar-content"
       // Every item takes focus and scrolls itself into view, so the list needs no tab stop of its own.
       focusable={false}
-      className="min-h-0 flex-1 rounded-none"
+      // The 48px icon column has no room for a scrollbar beside the items, so there the edge fade alone marks the overflow.
+      className="min-h-0 flex-1 rounded-none group-data-[collapsible=icon]/sidebar:[&>[data-slot=scroll-area-scrollbar]]:hidden"
       viewportClassName={cn(
         'overscroll-contain',
         // The icon column has no room for the scrollbar's gutter, and its labels must not widen the content.
