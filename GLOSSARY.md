@@ -108,6 +108,10 @@ _Avoid_: section, pattern
 Μια οικογένεια από blocks για την ίδια δουλειά (π.χ. Sign-up, Settings, Pricing). Κάθε κατηγορία έχει πολλές εκδοχές, και ο χρήστης διαλέγει αυτή που ταιριάζει στο app του. Είναι το ίδιο με το `categories` των blocks στο shadcn.
 _Avoid_: subcategory, group (το group είναι για την έγκριση)
 
+**Block section**:
+Η ενότητα της sidebar των Blocks που μαζεύει **block categories** με βάση το τι χτίζει ο χρήστης: Application, Marketing ή AI. Κάθε κατηγορία ανήκει σε μία, που τη δηλώνει η free variant στο `meta.section`. Η λέξη «section» σκέτη δεν σημαίνει ποτέ ένα block.
+_Avoid_: block group, «section» για ένα block ή μια κατηγορία
+
 **Block viewer**:
 Το πλαίσιο που δείχνει μία εκδοχή ενός block στα docs, σε όλο το πλάτος: preview, κώδικας, πλάτος desktop, tablet ή κινητό, και badge Free ή Pro.
 _Avoid_: playground, demo frame
