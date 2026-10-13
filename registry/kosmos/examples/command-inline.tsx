@@ -3,11 +3,10 @@
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/registry/kosmos/ui/command';
 
 const members = [
-  { value: 'ana', label: 'Ana Lopez' },
-  { value: 'ben', label: 'Ben Carter' },
-  { value: 'chen', label: 'Chen Wei' },
-  { value: 'dara', label: 'Dara Okafor' },
-  { value: 'elif', label: 'Elif Demir' },
+  { value: 'lena', label: 'Lena Park' },
+  { value: 'tomas', label: 'Tomás Ortega' },
+  { value: 'ama', label: 'Ama Mensah' },
+  { value: 'kai', label: 'Kai Nakamura' },
 ];
 
 export default function CommandInline() {

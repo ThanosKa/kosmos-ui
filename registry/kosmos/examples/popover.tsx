@@ -89,7 +89,7 @@ export default function PopoverPreview() {
                   <PopoverContent container={container} initialFocus={false} side="top" align="end">
                     <PopoverHeader>
                       <PopoverTitle>Due date</PopoverTitle>
-                      <PopoverDescription>3 days left. Ana Lopez gets a reminder the day before.</PopoverDescription>
+                      <PopoverDescription>3 days left. Tomás Ortega gets a reminder the day before.</PopoverDescription>
                     </PopoverHeader>
                   </PopoverContent>
                 </Popover>

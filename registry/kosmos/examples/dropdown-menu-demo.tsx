@@ -41,9 +41,9 @@ export default function DropdownMenuDemo() {
             Invite
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem>Ana Lopez</DropdownMenuItem>
-            <DropdownMenuItem>Ben Carter</DropdownMenuItem>
-            <DropdownMenuItem>Chen Wei</DropdownMenuItem>
+            <DropdownMenuItem>Tomás Ortega</DropdownMenuItem>
+            <DropdownMenuItem>Ama Mensah</DropdownMenuItem>
+            <DropdownMenuItem>Kai Nakamura</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
