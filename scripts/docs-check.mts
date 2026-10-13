@@ -235,15 +235,16 @@ const checks: Check[] = [
       );
       assert.deepEqual(
         sections.map((section) => section.label),
-        ['Blocks', 'Application', 'Marketing'],
-        'sidebar sections (AI has no categories yet)',
+        ['Blocks', 'Application', 'Marketing', 'AI'],
+        'sidebar sections',
       );
-      const [, application, marketing] = sections.map((section) => section.items);
+      const [, application, marketing, ai] = sections.map((section) => section.items);
+      assert.deepEqual(ai.map((item) => item.url).sort(), categoryUrls('ai'), 'AI lists every AI block category');
       assert.deepEqual(application.map((item) => item.url).sort(), categoryUrls('application'), 'Application lists every application block category');
       assert.deepEqual(marketing.map((item) => item.url).sort(), categoryUrls('marketing'), 'Marketing lists every marketing block category');
       for (const url of oldBlockUrls) assert.ok(categoryUrls('application').includes(url), `Application keeps ${url}`);
       for (const url of ['/docs/blocks/hero', '/docs/blocks/bento', '/docs/blocks/footer']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
-      for (const item of [...application, ...marketing]) {
+      for (const item of [...application, ...marketing, ...ai]) {
         const count = variantCount(item.url);
         if (item.text?.endsWith(' New')) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
         else if (count > 1) {
