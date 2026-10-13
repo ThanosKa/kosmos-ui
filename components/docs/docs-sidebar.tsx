@@ -162,7 +162,7 @@ function DocsSidebarLink({ item, pathname, className }: { item: DocsNavItem; pat
       {item.icon}
       <span>{item.title}</span>
       {item.isNew ? (
-        <Badge variant="orange" className="ms-auto">
+        <Badge variant="blue" className="ms-auto">
           New
         </Badge>
       ) : (
