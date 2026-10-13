@@ -38,7 +38,7 @@ function ControlLabel({ id, children }: { id: string; children: React.ReactNode 
  */
 export function DashboardCanvas() {
   const frame = React.useRef<HTMLIFrameElement>(null);
-  // Counts the dashboard's loads: each fresh document starts on Overview in the Kosmos look and needs the look sent again.
+  // Counts the dashboard's loads: each fresh document starts on Overview in the Kosmos look and needs the screen and look sent again.
   const [loads, setLoads] = React.useState(0);
   const [screen, setScreen] = React.useState<string>(dashboardScreens[0].id);
   const [accent, setAccent] = React.useState<DashboardAccent>(defaultDashboardLook.accent);
@@ -55,10 +55,7 @@ export function DashboardCanvas() {
     const onMessage = (event: MessageEvent) => {
       if (event.source !== frame.current?.contentWindow) return;
       const message = readMessage<DashboardMessage>(event, dashboardSource);
-      if (message?.type === 'ready') {
-        setLoads((count) => count + 1);
-        setScreen(dashboardScreens[0].id);
-      }
+      if (message?.type === 'ready') setLoads((count) => count + 1);
       else if (message?.type === 'page') setScreen(message.page);
     };
     window.addEventListener('message', onMessage);
@@ -71,10 +68,10 @@ export function DashboardCanvas() {
     if (loads > 0 && theme) toDashboard(frame.current, { type: 'look', look: { accent, radius, theme } });
   }, [loads, accent, radius, theme]);
 
-  const showScreen = (value: string) => {
-    setScreen(value);
-    toDashboard(frame.current, { type: 'page', page: value });
-  };
+  // The tabs lead: a "ready" can arrive after a tab was chosen (the reply to "hello"), so each load is sent the screen.
+  React.useEffect(() => {
+    if (loads > 0) toDashboard(frame.current, { type: 'page', page: screen });
+  }, [loads, screen]);
 
   const reset = () => {
     setAccent(defaultDashboardLook.accent);
@@ -83,7 +80,7 @@ export function DashboardCanvas() {
   };
 
   return (
-    <Tabs value={screen} onValueChange={(value) => showScreen(String(value))} className="gap-3">
+    <Tabs value={screen} onValueChange={(value) => setScreen(String(value))} className="gap-3">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <TabsList aria-label="Dashboard screens">
           {dashboardScreens.map((item) => (

@@ -24,6 +24,20 @@ agent-browser install                   # downloads the browser agent-browser dr
 
 Then, with `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs to `.screenshots/`.
 
+### Site checks
+
+`pnpm docs:check --port 3000` opens the docs and the landing page in a browser, with `pnpm dev` running, and asserts what a visitor sees: header tabs, sidebars, the block viewer, the landing sections, search and the Markdown pages. Run it after you change the docs shell or the landing page.
+
+Before a release, crawl the production build for broken links:
+
+```bash
+pnpm build && pnpm start --port 3000
+pnpm links:check --port 3000              # every internal link, image and #anchor, from / and the sitemap
+pnpm links:check --port 3000 --external   # also requests every outside link once
+```
+
+It also fails on a page error, an indexable page without a title, description and social image, and a missing page that does not answer 404.
+
 ### Index thumbnails
 
 The cards on `/docs/components` and `/docs/blocks` show a light and a dark thumbnail of each item, committed in `public/thumbs/`. Shoot them again when you add a component or block, or when its demo changes how it looks:
