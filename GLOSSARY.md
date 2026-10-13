@@ -42,6 +42,10 @@ _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 Η σελίδα `/approve/<group>` που δείχνει το review preview κάθε component μιας ομάδας σε light και dark, ώστε ο χρήστης να εγκρίνει όλη την ομάδα μία φορά. Ένα component είναι έτοιμο μόνο μετά από αυτή την έγκριση.
 _Avoid_: sign-off page, QA page
 
+**Lab**:
+Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια περνάνε τον κύκλο `build-component`. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.
+_Avoid_: playground, sandbox, drafts
+
 **Gallery**:
 Μία σελίδα (`/gallery`) που δείχνει όλα τα components μαζί σε ρεαλιστικές κάρτες, ώστε μια αλλαγή στο στυλ να φαίνεται αμέσως παντού.
 _Avoid_: kitchen sink, showcase (showcase είναι το dashboard της landing page)

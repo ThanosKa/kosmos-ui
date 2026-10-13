@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tool-call",
+  "type": "registry:ui",
+  "title": "Tool call",
+  "description": "One tool call by an agent: the tool, its status and its timing in a row that opens to show the input and output, with an error panel and a slot for a custom output.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/format",
+    "@kosmos/collapsible",
+    "@kosmos/scroll-area",
+    "@kosmos/status"
+  ],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/tool-call.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

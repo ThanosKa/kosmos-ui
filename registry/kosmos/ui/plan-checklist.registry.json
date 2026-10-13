@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "plan-checklist",
+  "type": "registry:ui",
+  "title": "Plan checklist",
+  "description": "An agent's plan as a live checklist that opens and closes: a status mark per step, a done count, optional actions for approving the plan, and a live region that announces progress.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/collapsible", "@kosmos/status"],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/plan-checklist.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

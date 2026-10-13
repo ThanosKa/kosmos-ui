@@ -1,0 +1,161 @@
+---
+title: Assistant message
+description: One message in an agent thread or copilot panel, with the reply's sources, actions and follow-ups, or the user's prompt as a bubble.
+---
+
+<ComponentPreview name="assistant-message-demo" />
+
+## Installation
+
+<ComponentInstall name="assistant-message" />
+
+## Usage
+
+```tsx
+import { AssistantMessage, Citation } from '@/components/ui/assistant-message';
+```
+
+```tsx
+<AssistantMessage role="user">How many events did we ingest in Q3?</AssistantMessage>
+<AssistantMessage author={{ name: 'Acme agent' }} time="14:02" model="Claude Sonnet 5.5" sources={sources}>
+  We tracked 48,210 events in Q3<Citation n={1} source={sources[0]} />.
+</AssistantMessage>
+```
+
+The body is `children`, so render the reply with any Markdown renderer or your own components. Put a `Citation` right after the word it supports, with no space before it, so it never wraps onto a line of its own. It links to its source, opens it in a new tab and shows the source's title in a tooltip.
+
+Below the body come a button that opens the list of `sources`, the actions and the `followUps`. Copy puts the rendered text of the reply on the clipboard, without the citation numbers. Pass `copyText` to copy something else, such as the Markdown source. Retry shows only when you pass `onRetry`. Good answer and Bad answer are toggle buttons; pressing the pressed one clears it.
+
+While `status` is `streaming`, a caret blinks at the end of the body, the message is marked busy for screen readers, and the sources and actions wait until the reply is done. With `status="error"`, the message shows the error under the body, with a Retry button when you pass `onRetry`.
+
+## Examples
+
+### Thread
+
+Messages stack in a column with a `gap-4`. In a long thread, pass `actionsVisibility="hover"` to every reply except the latest, so only the reply people are most likely to act on shows its actions all the time.
+
+<ComponentPreview name="assistant-message-thread" />
+
+With `hover`, the actions appear when the pointer is over the message or when one of them has keyboard focus, and stay visible while an answer is rated. On touch screens they always show. Their row keeps its space while hidden, so nothing moves when they appear.
+
+### Streaming
+
+Update `children` as the reply arrives and set `status` to `done` when it ends.
+
+<ComponentPreview name="assistant-message-streaming" />
+
+### Error
+
+Pass the reason as `error` and a way to try again as `onRetry`.
+
+<ComponentPreview name="assistant-message-error" />
+
+## API
+
+### AssistantMessage
+
+<TypeTable
+  type={{
+    children: {
+      description: 'The prompt, or the body of the reply.',
+      type: 'React.ReactNode',
+    },
+    role: {
+      description: 'user renders the prompt as a bubble at the end of the row; assistant renders the full reply.',
+      type: "'assistant' | 'user'",
+      default: "'assistant'",
+    },
+    author: {
+      description: 'Who replied. The avatar falls back to the first letter of the name.',
+      type: '{ name: string; avatarUrl?: string }',
+      default: "{ name: 'Assistant' }",
+    },
+    time: {
+      description: 'When the reply was sent, shown after the name.',
+      type: 'string',
+    },
+    model: {
+      description: 'The model that wrote the reply, shown after the time.',
+      type: 'string',
+    },
+    status: {
+      description: 'Whether the reply is still arriving, finished or failed.',
+      type: "'streaming' | 'done' | 'error'",
+      default: "'done'",
+    },
+    error: {
+      description: 'Why the reply failed, shown when status is error.',
+      type: 'string',
+      default: "'This reply didn’t finish.'",
+    },
+    sources: {
+      description: 'The sources behind the reply, listed under a button that shows their count.',
+      type: '{ id: string; title: string; url: string; domain?: string }[]',
+    },
+    defaultSourcesOpen: {
+      description: 'Opens the list of sources at first.',
+      type: 'boolean',
+      default: 'false',
+    },
+    followUps: {
+      description: 'Suggested next prompts, listed under the actions.',
+      type: 'string[]',
+    },
+    onFollowUp: {
+      description: 'Called with the text of the follow-up that was picked.',
+      type: '(text: string) => void',
+    },
+    copyText: {
+      description: 'What Copy puts on the clipboard. Defaults to the rendered text of the reply.',
+      type: 'string',
+    },
+    onCopy: {
+      description: 'Called after the reply is copied.',
+      type: '() => void',
+    },
+    onRetry: {
+      description: 'Shows Retry in the actions and next to an error, and is called when it is pressed.',
+      type: '() => void',
+    },
+    feedback: {
+      description: 'The rating of the reply, to control it.',
+      type: "'up' | 'down' | null",
+    },
+    defaultFeedback: {
+      description: 'The rating at first.',
+      type: "'up' | 'down' | null",
+      default: 'null',
+    },
+    onFeedbackChange: {
+      description: 'Called with the new rating, or null when it is cleared.',
+      type: "(feedback: 'up' | 'down' | null) => void",
+    },
+    actionsVisibility: {
+      description: 'hover hides the actions until the message is hovered or one of them is focused.',
+      type: "'always' | 'hover'",
+      default: "'always'",
+    },
+  }}
+/>
+
+### Citation
+
+<TypeTable
+  type={{
+    n: {
+      description: 'The number shown in the marker, matching the source’s place in the list.',
+      type: 'number',
+    },
+    source: {
+      description: 'The source it links to. Its title is the tooltip.',
+      type: '{ title: string; url: string }',
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves through the citations, the sources button and the open list, the actions and the follow-ups. With `actionsVisibility="hover"`, focusing an action shows the row. |
+| `Enter` or `Space` | Opens or closes the sources, presses the focused action or picks the focused follow-up. |

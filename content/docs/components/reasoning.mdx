@@ -1,0 +1,122 @@
+---
+title: Reasoning
+description: Shows that an agent is thinking, and folds what it thought under one quiet row so the answer stays in front.
+baseUi: https://base-ui.com/react/components/collapsible
+---
+
+<ComponentPreview name="reasoning-demo" />
+
+## Installation
+
+<ComponentInstall name="reasoning" />
+
+## Usage
+
+```tsx
+import { Reasoning } from '@/components/ui/reasoning';
+```
+
+```tsx
+<Reasoning status={done ? 'done' : 'thinking'} durationMs={durationMs}>
+  {streamedText}
+</Reasoning>
+```
+
+Reasoning has no surface of its own: it is one row with a status mark, a label and a chevron, and a panel under it. While `status` is `thinking`, the row reads "Thinking…" next to a spinner. Once it is `done`, it reads "Thought for 12s", or "Thought for a moment" when `durationMs` is under a second or missing.
+
+By default the panel opens while the agent thinks and closes once it is done. If the reader opens or closes it in the meantime, it stays as they left it. Set `autoCollapse={false}` to keep it closed until the reader opens it.
+
+Streamed text scrolls inside the panel once it passes 256px, and follows the newest line while the agent thinks. When thinking ends, screen readers announce "Thought for 12 seconds" once.
+
+The panel grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades instead, and the spinner pulses instead of turning.
+
+## Examples
+
+### Open when done
+
+Pass `defaultOpen` to show the reasoning from the start, for example when a reader comes back to an earlier answer.
+
+<ComponentPreview name="reasoning-open" />
+
+### Steps
+
+Pass `steps` instead of text when the agent works through a list. The first step that is not done shows the spinner while the agent thinks, and the steps after it wait.
+
+<ComponentPreview name="reasoning-steps" />
+
+### Controlled
+
+Pass `open` and `onOpenChange` to open the panel from your own state, such as a setting that shows every reasoning. A controlled panel never opens or closes on its own.
+
+<ComponentPreview name="reasoning-controlled" />
+
+## API
+
+### Reasoning
+
+<TypeTable
+  type={{
+    status: {
+      description: 'Whether the agent is still thinking.',
+      type: "'thinking' | 'done'",
+      required: true,
+    },
+    durationMs: {
+      description: 'How long the agent thought, in milliseconds. Shown once `status` is `done`.',
+      type: 'number',
+    },
+    children: {
+      description: 'The reasoning text. It keeps its line breaks.',
+      type: 'React.ReactNode',
+    },
+    steps: {
+      description: 'Shown instead of `children`: one row per step, with a check when it is done.',
+      type: 'ReasoningStep[]',
+    },
+    open: {
+      description: 'Whether the panel is open, to control it.',
+      type: 'boolean',
+    },
+    defaultOpen: {
+      description: 'Whether the panel is open at first. Without it, the panel starts open only while thinking.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called with the new value when the reader opens or closes the panel.',
+      type: '(open: boolean) => void',
+    },
+    autoCollapse: {
+      description: 'Opens the panel while thinking and closes it when done, unless the reader toggled it.',
+      type: 'boolean',
+      default: 'true',
+    },
+    className: {
+      description: 'Classes for the root element.',
+      type: 'string',
+    },
+  }}
+/>
+
+### ReasoningStep
+
+<TypeTable
+  type={{
+    label: {
+      description: 'What the agent does in this step.',
+      type: 'string',
+      required: true,
+    },
+    done: {
+      description: 'Whether the step is finished.',
+      type: 'boolean',
+      required: true,
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the row, then into the panel when its text scrolls. |
+| `Enter` or `Space` | Opens or closes the panel. |

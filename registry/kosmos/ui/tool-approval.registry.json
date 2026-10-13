@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tool-approval",
+  "type": "registry:ui",
+  "title": "Tool approval",
+  "description": "Asks before an agent runs a tool: what will happen, Allow once, Always allow or Deny, then a one-line record of who decided and when.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/collapsible", "@kosmos/status"],
+  "meta": { "group": "ai" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/tool-approval.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+---
+title: Plan checklist
+description: An agent's plan as a live checklist, showing what it will do, what it is doing and what is done. Built on Base UI Collapsible.
+baseUi: https://base-ui.com/react/components/collapsible
+---
+
+<ComponentPreview name="plan-checklist-demo" />
+
+## Installation
+
+<ComponentInstall name="plan-checklist" />
+
+## Usage
+
+```tsx
+import { PlanChecklist, type PlanStep } from '@/components/ui/plan-checklist';
+```
+
+```tsx
+const steps: PlanStep[] = [
+  { id: 'events', label: 'Pull Q3 usage events', status: 'done', detail: '48,210 events' },
+  { id: 'quota', label: 'Flag projects over quota', status: 'running', detail: '40%' },
+  { id: 'summary', label: 'Draft a summary for the Admin', status: 'pending' },
+];
+
+<PlanChecklist title="Prepare the Q3 usage review" steps={steps} />;
+```
+
+The header shows the title and how many steps are done, such as "1 of 3". Click it to open or close the list. Each step leads with a status mark:
+
+| Status | Mark | Label |
+| --- | --- | --- |
+| `pending` | Dashed circle | Muted |
+| `running` | Spinner | Full ink, medium weight |
+| `done` | Green check | Muted |
+| `error` | Red cross | Full ink. Put the reason in `detail`. |
+| `skipped` | Slashed circle | Muted and struck through |
+
+Update `steps` as the agent works. When the last step is done, the list closes and the header icon turns into a green check. Set `collapseWhenDone={false}` to keep it open.
+
+Screen readers hear each step's status after its label. A hidden live region announces progress, such as "Step 3 of 5 done", and names a step when it fails.
+
+When the reduced motion setting is on, the list fades in and out instead of growing, and the running spinner pulses instead of turning.
+
+## Examples
+
+### Approve before running
+
+Pass buttons to `actions` to show them under the list, for example to run or edit a proposed plan. Swap them as the run goes on, as in the demo above, which turns "Run plan" into "Reset".
+
+### A failed step
+
+An `error` step keeps its label in full ink and its reason in `detail`. Mark the steps that will not run as `skipped`, and offer a way on in `actions`.
+
+<ComponentPreview name="plan-checklist-failed" />
+
+### Inside another surface
+
+Set `surface="none"` to drop the card, so the checklist sits flat inside a message, a panel or a run timeline.
+
+<ComponentPreview name="plan-checklist-flat" />
+
+### Controlled
+
+Pass `open` and `onOpenChange` to open and close the list from your own state. When every step is done, `onOpenChange` is called with `false`, unless `collapseWhenDone` is `false`.
+
+<ComponentPreview name="plan-checklist-controlled" />
+
+## API
+
+### PlanChecklist
+
+<TypeTable
+  type={{
+    steps: {
+      description: 'The steps of the plan, in order.',
+      type: 'PlanStep[]',
+      required: true,
+    },
+    title: {
+      description: 'The header text. It wraps when it is long.',
+      type: 'string',
+      default: "'Plan'",
+    },
+    defaultOpen: {
+      description: 'Whether the list is open at first.',
+      type: 'boolean',
+      default: 'true',
+    },
+    open: {
+      description: 'Whether the list is open, to control it.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called when the list opens or closes, also when it closes by itself after the last step.',
+      type: '(open: boolean) => void',
+    },
+    collapseWhenDone: {
+      description: 'Closes the list when every step is done.',
+      type: 'boolean',
+      default: 'true',
+    },
+    actions: {
+      description: 'Buttons under the list, such as "Run plan" and "Edit".',
+      type: 'ReactNode',
+    },
+    surface: {
+      description: '`card` draws its own card; `none` sits flat inside a host surface.',
+      type: "'card' | 'none'",
+      default: "'card'",
+    },
+    className: {
+      description: 'Classes for the root element.',
+      type: 'string',
+    },
+  }}
+/>
+
+### PlanStep
+
+<TypeTable
+  type={{
+    id: {
+      description: 'A stable key for the step.',
+      type: 'string',
+      required: true,
+    },
+    label: {
+      description: 'What the step does.',
+      type: 'string',
+      required: true,
+    },
+    status: {
+      description: 'Where the step stands.',
+      type: "'pending' | 'running' | 'done' | 'error' | 'skipped'",
+      required: true,
+    },
+    detail: {
+      description: 'A short note at the end of the row: a count, a percentage, or why the step failed.',
+      type: 'string',
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the header, then to the actions when the list is open. |
+| `Enter` or `Space` | Opens or closes the list. |

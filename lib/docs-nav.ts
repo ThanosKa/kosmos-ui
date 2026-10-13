@@ -1,6 +1,7 @@
 import { createElement, type ReactNode } from 'react';
 import { flattenTree } from 'fumadocs-core/page-tree';
 import {
+  Bot,
   ChartColumn,
   Compass,
   Layers2,
@@ -83,6 +84,7 @@ const groupIcons: Record<ComponentGroup, LucideIcon> = {
   navigation: Compass,
   data: ChartColumn,
   misc: Puzzle,
+  ai: Bot,
 };
 
 const blockSectionIcons: Record<BlockSection, LucideIcon> = {

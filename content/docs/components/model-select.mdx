@@ -1,0 +1,142 @@
+---
+title: Model select
+description: Picks the model an agent runs on and how much reasoning effort it spends, from a quiet trigger that fits a composer toolbar.
+baseUi: https://base-ui.com/react/components/menu
+---
+
+<ComponentPreview name="model-select-demo" />
+
+## Installation
+
+<ComponentInstall name="model-select" />
+
+## Usage
+
+```tsx
+import { ModelSelect, type ModelOption } from '@/components/ui/model-select';
+```
+
+```tsx
+const models: ModelOption[] = [
+  { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
+  { id: 'claude-sonnet-5-5', name: 'Claude Sonnet 5.5', hint: 'Balanced' },
+  { id: 'claude-haiku-5-5', name: 'Claude Haiku 5.5', hint: 'Fastest' },
+];
+
+<ModelSelect models={models} defaultValue="claude-sonnet-5-5" efforts={['low', 'medium', 'high']} />;
+```
+
+The trigger shows the model name and the effort in muted text, and lights up on hover and while the menu is open. The menu lists one model per row, with its hint after the name and a check mark on the chosen one. A long name truncates in the trigger and wraps in the menu, so it can always be read in full. Picking a model closes the menu.
+
+Pass `efforts` to add a segmented control for the reasoning effort at the foot of the menu. Changing the effort keeps the menu open, so people can pick a model and then tune it. Without `efforts`, the menu picks the model only.
+
+Use it in a composer toolbar or a settings row. For a long list of models, build a [searchable version](#searchable) from its parts.
+
+## Examples
+
+### Efforts per model
+
+Give a model its own `efforts` when it offers fewer than the menu. The efforts it lacks are disabled, and a model with an empty list disables the whole control and drops the effort from the trigger. A disabled model stays in the list, with its `hint` saying why: the hint of a disabled model never truncates.
+
+<ComponentPreview name="model-select-efforts" />
+
+### Controlled
+
+Pass `value` and `onValueChange` for the model, and `effort` and `onEffortChange` for the effort, to keep them in your own state.
+
+<ComponentPreview name="model-select-controlled" />
+
+### Searchable
+
+For a long list, put a [Command](/docs/components/command) in a [Popover](/docs/components/popover): a search field, the models in groups with a tag on each row, and `ModelSelectEffort` in the footer. `ModelSelectButton` is the same quiet trigger, passed as the popover trigger's `render`. Typing filters the models by name, and Enter picks the first match.
+
+<ComponentPreview name="model-select-search" />
+
+## Motion
+
+The menu grows out of the trigger from `scale-[0.97]` with a fade over 200ms, and shrinks back over 150ms, both with `power3-out`. Under reduced motion it only fades. The chosen effort's raised surface cross-fades between items, so nothing slides.
+
+## API
+
+### ModelSelect
+
+<TypeTable
+  type={{
+    models: {
+      description: 'The models to list, in order.',
+      type: 'ModelOption[]',
+      required: true,
+    },
+    value: { description: 'The chosen model id, to control it.', type: 'string' },
+    defaultValue: {
+      description: 'The model chosen at first, when the menu keeps its own state.',
+      type: 'string',
+      default: 'the first enabled model',
+    },
+    onValueChange: { description: 'Called with the id of the newly chosen model.', type: '(id: string) => void' },
+    efforts: {
+      description: 'The reasoning efforts to offer, in order. Without it the menu picks the model only.',
+      type: "('low' | 'medium' | 'high')[]",
+    },
+    effort: { description: 'The chosen effort, to control it.', type: "'low' | 'medium' | 'high'" },
+    defaultEffort: {
+      description: 'The effort chosen at first, when the menu keeps its own state.',
+      type: "'low' | 'medium' | 'high'",
+      default: 'the middle one of efforts',
+    },
+    onEffortChange: { description: 'Called with the newly chosen effort.', type: '(effort: ModelEffort) => void' },
+    open: { description: 'Whether the menu is open, to control it.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the menu is open at first.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the menu opens or closes.', type: '(open: boolean) => void' },
+    modal: {
+      description: 'Whether the open menu locks page scroll and blocks clicks outside it.',
+      type: 'boolean',
+      default: 'true',
+    },
+    disabled: { description: 'Disables the trigger.', type: 'boolean', default: 'false' },
+    container: {
+      description: 'The element the menu renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+    className: { description: 'Classes for the trigger.', type: 'string' },
+  }}
+/>
+
+### ModelOption
+
+<TypeTable
+  type={{
+    id: { description: 'Identifies the model in `value` and `onValueChange`.', type: 'string', required: true },
+    name: { description: 'The name on the row and the trigger.', type: 'string', required: true },
+    hint: {
+      description: 'A few words after the name, such as "Balanced". On a disabled model, say why it is unavailable.',
+      type: 'string',
+    },
+    efforts: {
+      description: "The efforts this model offers, when they differ from the menu's. An empty list means none.",
+      type: 'ModelEffort[]',
+    },
+    disabled: { description: 'Shows the model but keeps it from being picked.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `ModelSelect` | The trigger and the menu, with the model and effort state. Built on the Kosmos [Dropdown menu](/docs/components/dropdown-menu). |
+| `ModelSelectButton` | The quiet trigger: a ghost [Button](/docs/components/button) with the name, the effort and a chevron. Takes `model`, `effort` and every Button prop. Pass it as the `render` of a menu or popover trigger. |
+| `ModelSelectEffort` | The "Effort" label and a small [Segmented control](/docs/components/segmented-control). Takes `efforts`, `available` (the efforts the chosen model offers; the rest are disabled), `value` and `onValueChange`. |
+| `modelEffortLabels` | The label of each effort: Low, Medium and High. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter`, `Space` or `ArrowDown` | On the trigger: opens the menu with the first model highlighted. |
+| `ArrowDown` or `ArrowUp` | Highlights the next or previous model. |
+| `Enter` or `Space` | Picks the highlighted model and closes the menu. |
+| `Tab` | From a model: moves to the effort control. From the effort control: closes the menu and moves on. |
+| `ArrowLeft` or `ArrowRight` | In the effort control: chooses the previous or next effort. The menu stays open. |
+| `Escape` | Closes the menu and puts focus back on the trigger. |

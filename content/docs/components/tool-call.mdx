@@ -1,0 +1,134 @@
+---
+title: Tool call
+description: One tool call by an agent, with its status and timing, opening to show what went in and what came back.
+baseUi: https://base-ui.com/react/components/collapsible
+---
+
+<ComponentPreview name="tool-call-demo" />
+
+## Installation
+
+<ComponentInstall name="tool-call" />
+
+## Usage
+
+```tsx
+import { ToolCall } from '@/components/ui/tool-call';
+```
+
+```tsx
+<ToolCall
+  name="warehouse.query"
+  title="Query Q3 events for Checkout"
+  icon={Database}
+  status="done"
+  durationMs={1400}
+  input={{ workspace: 'acme', project: 'Checkout' }}
+  output="48,210 rows · 4 columns"
+/>
+```
+
+The row shows the tool's icon, the title, the tool id, the duration and a status badge. Pass an icon per tool, so a list of calls reads at a glance; without one the row shows a wrench. `icon` takes the component itself, such as `Database` from `lucide-react`, so render ToolCall from a client component.
+
+A tool call has no surface of its own. Put it in the card, message or timeline that hosts it, and stack several with `divide-y divide-border` on their parent.
+
+The row fits the width of its container. The tool id shows from 576px, and the duration from 384px. Below that, both move to the top of the open panel. A long title wraps to two lines and shows in full once the call is open.
+
+A string `input` or `output` shows as is, and an object is printed as indented JSON. A panel scrolls past 256px. When a call has no input, output or error yet, its row does not open and shows no chevron.
+
+The panel grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades in and out instead.
+
+## Examples
+
+### Statuses
+
+`status` takes one of six values, each with its own badge: `queued`, `awaiting-approval`, `running`, `done`, `error` and `denied`. When the status changes, the new badge fades in.
+
+<ComponentPreview name="tool-call-statuses" />
+
+### Error
+
+Pass `error` when the call fails. It takes the place of the output, with a red icon beside the message. Say what went wrong and what to try next.
+
+<ComponentPreview name="tool-call-error" />
+
+### Custom output
+
+Pass `children` to show the result your own way, such as a table or a chart, in place of the output panel. An `error` still takes precedence.
+
+<ComponentPreview name="tool-call-custom-output" />
+
+### Controlled
+
+Pass `open` and `onOpenChange` to open calls from your own state, for example to open the one that is running.
+
+## API
+
+<TypeTable
+  type={{
+    name: {
+      description: "The tool's machine id, shown in mono.",
+      type: 'string',
+      required: true,
+    },
+    title: {
+      description: 'The human label of the call. Falls back to `name`.',
+      type: 'string',
+    },
+    icon: {
+      description: "The tool's icon.",
+      type: 'LucideIcon',
+      default: 'Wrench',
+    },
+    status: {
+      description: 'Where the call stands.',
+      type: "'queued' | 'awaiting-approval' | 'running' | 'done' | 'error' | 'denied'",
+      required: true,
+    },
+    durationMs: {
+      description: 'How long the call took, or has run so far, in milliseconds. Shown as 1.4s, 30s or 2m 05s.',
+      type: 'number',
+    },
+    input: {
+      description: 'What the tool was called with. An object is printed as JSON.',
+      type: 'string | Record<string, unknown>',
+    },
+    output: {
+      description: 'What the tool returned. An object is printed as JSON.',
+      type: 'string | Record<string, unknown>',
+    },
+    error: {
+      description: 'An error message, shown in place of the output.',
+      type: 'string',
+    },
+    children: {
+      description: 'A custom renderer in place of the output panel.',
+      type: 'ReactNode',
+    },
+    open: {
+      description: 'Whether the call is open, to control it.',
+      type: 'boolean',
+    },
+    defaultOpen: {
+      description: 'Whether the call is open at first.',
+      type: 'boolean',
+      default: 'false',
+    },
+    onOpenChange: {
+      description: 'Called with the new state when the call opens or closes.',
+      type: '(open: boolean) => void',
+    },
+    className: {
+      description: 'Classes for the root.',
+      type: 'string',
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves to the row, then into an open panel when its content scrolls. |
+| `Enter` or `Space` | Opens or closes the focused call. |
+| Arrow keys | Scroll a focused panel. |

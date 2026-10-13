@@ -1,0 +1,155 @@
+---
+title: Prompt composer
+description: Where people write to an agent. The text box grows with the message and holds attachments, the model choice and the context meter, and Send turns into Stop while the agent answers.
+---
+
+<ComponentPreview name="prompt-composer-demo" />
+
+## Installation
+
+<ComponentInstall name="prompt-composer" />
+
+## Usage
+
+```tsx
+import { PromptComposer } from '@/components/ui/prompt-composer';
+```
+
+```tsx
+<PromptComposer
+  models={[
+    { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
+    { id: 'claude-sonnet-5-5', name: 'Claude Sonnet 5.5', hint: 'Balanced' },
+  ]}
+  efforts={['low', 'medium', 'high']}
+  context={{ limit: 200_000, breakdown: [{ label: 'Conversation', value: 24_260 }] }}
+  status={status}
+  onSubmit={({ text, attachments, model, effort }) => send({ text, attachments, model, effort })}
+  onStop={stop}
+/>
+```
+
+Enter sends the message and Shift+Enter starts a new line. Enter never sends while an input method is still composing a word. After a send, the composer clears its text and attachments. The text box grows with the text up to 240px, then scrolls.
+
+Each toolbar part appears only when you give it what it needs: `onAttach` adds the Attach button, `models` adds the [Model select](/docs/components/model-select) and `context` adds the [Usage meter](/docs/components/usage-meter). Without them, the composer is a text box and Send.
+
+`status` follows the request. Set it to `submitting` while the message is on its way, and Send spins. Set it to `streaming` while the agent answers, and Send turns into Stop. Stop and Escape call `onStop`. People can type their next message while the agent answers, but it waits until `status` is back to `idle`. Send keeps focus as it changes, so a keyboard user can stop the answer from where they sent it.
+
+## Examples
+
+### Attachments
+
+The composer shows attachments as chips and does not pick files itself. Call your own file picker or upload from `onAttach`, then pass the files in `attachments`. Each chip has a Remove button, and `onAttachmentsChange` gets the list without the removed file. A long file name truncates in its chip and shows in full in the tooltip of its Remove button.
+
+<ComponentPreview name="prompt-composer-attachments" />
+
+### Text only
+
+Leave out `onAttach`, `models` and `context` for a plain message box, such as a note to a team or a reply in a thread. `onSubmit` gets the trimmed text.
+
+<ComponentPreview name="prompt-composer-minimal" />
+
+### Error and disabled
+
+Pass `error` when a message cannot be sent: the composer takes a red ring and shows the text under it. Say what failed and how to fix it. Pass `disabled` with a `disabledReason` when people cannot write at all, and say what would let them write again.
+
+<ComponentPreview name="prompt-composer-states" />
+
+## Motion
+
+Send, its spinner and Stop cross-fade into each other in 150ms with `power3-out`, the incoming icon growing from `scale-80`. The spinner turns while `status` is `submitting`. A new attachment chip fades in. Under reduced motion the icons only cross-fade and the spinner pulses instead of turning. The text box grows without animation.
+
+## API
+
+### PromptComposer
+
+<TypeTable
+  type={{
+    onSubmit: {
+      description:
+        'Called by Send and by Enter with the trimmed text, the attachments, the model id and the effort. The composer then clears its text and attachments.',
+      type: '(message: PromptComposerMessage) => void',
+      required: true,
+    },
+    onStop: { description: 'Called by Stop and by Escape while `status` is `streaming`.', type: '() => void' },
+    status: {
+      description: '`submitting` spins Send and keeps it from sending again; `streaming` turns Send into Stop.',
+      type: "'idle' | 'submitting' | 'streaming'",
+      default: "'idle'",
+    },
+    value: { description: 'The text, to control it.', type: 'string' },
+    defaultValue: { description: 'The text at first, when the composer keeps its own state.', type: 'string', default: "''" },
+    onValueChange: { description: 'Called with the new text on every change.', type: '(value: string) => void' },
+    placeholder: { description: 'Shown while the text box is empty.', type: 'string', default: "'Write a message…'" },
+    attachments: { description: 'The attached files, to control them.', type: 'PromptComposerAttachment[]' },
+    defaultAttachments: {
+      description: 'The attached files at first, when the composer keeps its own state.',
+      type: 'PromptComposerAttachment[]',
+      default: '[]',
+    },
+    onAttachmentsChange: {
+      description: 'Called with the new list when a file is removed, and with an empty list after a send.',
+      type: '(attachments: PromptComposerAttachment[]) => void',
+    },
+    onAttach: { description: 'Called by the Attach button. Without it the button is hidden.', type: '() => void' },
+    models: { description: 'The models to pick from. Without it the model select is hidden.', type: 'ModelOption[]' },
+    model: { description: 'The chosen model id, to control it.', type: 'string' },
+    defaultModel: { description: 'The model chosen at first.', type: 'string', default: 'the first enabled model' },
+    onModelChange: { description: 'Called with the id of the newly chosen model.', type: '(id: string) => void' },
+    efforts: {
+      description: 'The reasoning efforts to offer in the model menu. Without it the menu picks the model only.',
+      type: "('low' | 'medium' | 'high')[]",
+    },
+    effort: { description: 'The chosen effort, to control it.', type: "'low' | 'medium' | 'high'" },
+    defaultEffort: {
+      description: 'The effort chosen at first.',
+      type: "'low' | 'medium' | 'high'",
+      default: 'the middle one of efforts',
+    },
+    onEffortChange: { description: 'Called with the newly chosen effort.', type: '(effort: ModelEffort) => void' },
+    context: {
+      description: "What fills the model's context window, in tokens. Without it the usage meter is hidden.",
+      type: '{ limit: number; breakdown: UsageBreakdownRow[] }',
+    },
+    disabled: { description: 'Dims the composer and disables every control in it.', type: 'boolean', default: 'false' },
+    disabledReason: { description: 'Shown under the composer while it is disabled.', type: 'string' },
+    error: { description: 'Shown under the composer, and gives it a red ring.', type: 'string' },
+    className: { description: 'Classes for the root, which holds the composer and the text under it.', type: 'string' },
+  }}
+/>
+
+`ModelOption` is the [Model select](/docs/components/model-select#modeloption)'s, and `UsageBreakdownRow` the [Usage meter](/docs/components/usage-meter)'s.
+
+### PromptComposerAttachment
+
+<TypeTable
+  type={{
+    id: { description: 'Identifies the file in the list.', type: 'string', required: true },
+    name: { description: 'The file name on the chip.', type: 'string', required: true },
+    size: { description: 'The size in bytes, shown as KB or MB.', type: 'number', required: true },
+    kind: { description: 'Picks the icon on the chip.', type: "'file' | 'image' | 'table'", required: true },
+  }}
+/>
+
+### PromptComposerMessage
+
+<TypeTable
+  type={{
+    text: { description: 'The text, trimmed.', type: 'string', required: true },
+    attachments: { description: 'The attached files.', type: 'PromptComposerAttachment[]', required: true },
+    model: { description: 'The chosen model id, when `models` is set.', type: 'string' },
+    effort: {
+      description: 'The chosen effort, when `efforts` is set and the chosen model offers it.',
+      type: "'low' | 'medium' | 'high'",
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` | In the text box: sends the message. |
+| `Shift` + `Enter` | In the text box: starts a new line. |
+| `Escape` | While the agent answers: stops it. Inside the model menu or the usage panel, closes that instead. |
+| `Tab` | Moves through the Remove buttons, the text box, Attach, the model select, the usage meter and Send. |
