@@ -142,12 +142,14 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Auth forms | The way into Parallax itself, not a customer's app: "Log in to Parallax", "Create your Parallax account" (on the Free plan), a 6-digit email code sent to lena@parallax.example, and a password reset. Email placeholders read `name@parallax.example`; the review preview's filled forms use the team's addresses. |
 | Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
 | Hero | The top of the Parallax website: title, one line, two actions and the install command (Marketing site below). |
+| Footer | The bottom of the Parallax website: the product with its line, four columns of links and the copyright with icon links (Marketing site below). |
 
 ## Marketing site
 
 Marketing blocks show the Parallax website, `parallax.example`, which sells the product to the teams that run sites and apps.
 
 - Hero: title "Know what every user does next", one line "Parallax collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.", actions "Start for free" (primary, to `/signup`) and "Book a demo" (secondary, to `/demo`), and the install command `curl -fsSL https://parallax.example/install.sh | sh`.
+- Footer: "Parallax" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.parallax.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@parallax.example`, the site's one shared address; "© 2026 Parallax".
 
 ## Creating things
 
