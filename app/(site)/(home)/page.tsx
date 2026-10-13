@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GitHubIcon } from '@/components/site/brand-icons';
 import { DashboardCanvas } from '@/components/site/dashboard-canvas';
+import { LandingInstall, landingInstallHeadingId } from '@/components/site/landing-install';
+import { LandingProof, landingProofHeadingId } from '@/components/site/landing-proof';
 import { LandingSection, type LandingSectionProps } from '@/components/site/landing-section';
+import { SiteFooter } from '@/components/site/site-footer';
 import { itemsInGroup, packageRunners, readRegistryItems, registryAddArgs } from '@/lib/registry';
 import { appDescription, appName, githubUrl, siteOpenGraph } from '@/lib/shared';
 import { Hero } from '@/registry/kosmos/blocks/hero/hero';
@@ -65,13 +68,37 @@ export default function HomePage() {
       srHeading: 'Live dashboard',
       children: <DashboardCanvas />,
     },
+    {
+      id: 'install',
+      components: ['tabs', 'button'],
+      labelledBy: landingInstallHeadingId,
+      children: <LandingInstall />,
+    },
+    {
+      id: 'proof',
+      components: ['button'],
+      labelledBy: landingProofHeadingId,
+      children: <LandingProof />,
+    },
   ];
 
+  // The page footer closes the landing outside <main>, in a <div>, so it stays the page's footer landmark.
+  const footer: LandingSectionProps = {
+    id: 'footer',
+    blocks: ['footer'],
+    as: 'div',
+    className: 'pb-8',
+    children: <SiteFooter />,
+  };
+
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 pb-16 sm:gap-20 sm:px-6 sm:pb-24">
-      {sections.map((section) => (
-        <LandingSection key={section.id} {...section} />
-      ))}
-    </main>
+    <>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 pb-16 sm:gap-20 sm:px-6 sm:pb-24">
+        {sections.map((section) => (
+          <LandingSection key={section.id} {...section} />
+        ))}
+      </main>
+      <LandingSection {...footer} />
+    </>
   );
 }
