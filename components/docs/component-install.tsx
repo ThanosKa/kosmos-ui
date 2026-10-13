@@ -14,15 +14,17 @@ import { HighlightedCode } from './highlighted-code';
 import { PackageInstall, PackageManagerCode } from './shadcn-command';
 import { Step, Steps } from './steps';
 
-/** The source files of an item, as they land in the user's project. */
+/** The source files of an item, as they land in the user's project. `embedded` draws them inside another surface. */
 export function ComponentSource({
   name,
   item,
   lineNumbers,
+  embedded,
 }: {
   name: string;
   item?: RegistryItem;
   lineNumbers?: boolean;
+  embedded?: boolean;
 }) {
   const target = item ?? resolveRegistryTree(name)[0];
   return (
@@ -34,6 +36,7 @@ export function ComponentSource({
           lang={file.path.split('.').pop() ?? 'tsx'}
           title={installedPath(file)}
           lineNumbers={lineNumbers}
+          embedded={embedded}
         />
       ))}
     </>

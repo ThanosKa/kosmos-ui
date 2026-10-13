@@ -9,7 +9,7 @@ import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
 import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
-import { BlockVariants } from '@/components/docs/block-variants';
+import { BlockVariants } from '@/components/docs/block-viewer';
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { HashAnchor } from '@/components/docs/hash-anchor';
 import { changelogFolder, getChangelogEntries } from '@/lib/changelog';
@@ -37,7 +37,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   return (
     <div className="flex w-full gap-10 xl:pe-6">
-      <article className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-4 px-4 py-8 sm:px-6 md:py-10">
+      <article className={cn('mx-auto flex w-full min-w-0 flex-col gap-4 px-4 py-8 sm:px-6 md:py-10', category ? 'max-w-7xl' : 'max-w-3xl')}>
         <DocsPageHeader
           title={page.data.title}
           description={page.data.description}
@@ -50,7 +50,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         />
         <DocsTocDisclosure toc={toc} className="xl:hidden" />
         {category && <BlockVariants category={category} />}
-        <DocsBody className="[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title">
+        <DocsBody className={cn('[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title', category && 'max-w-3xl')}>
           <MDX
             components={getMDXComponents({
               // this allows you to link to other pages with relative file paths
