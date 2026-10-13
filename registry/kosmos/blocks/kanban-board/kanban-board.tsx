@@ -2,6 +2,7 @@
 
 import {
   closestCorners,
+  defaultDropAnimationSideEffects,
   DndContext,
   DragOverlay,
   KeyboardSensor,
@@ -113,14 +114,22 @@ const toneDot: Record<KanbanTone, string> = {
 const count = new Intl.NumberFormat('en-US');
 const votesLabel = (votes: number) => `${count.format(votes)} ${votes === 1 ? 'vote' : 'votes'}`;
 
-/** Sibling cards slide aside with the Kosmos base duration and curve. */
-const sortTransition = { duration: duration.base * 1000, easing: `cubic-bezier(${ease.power3Out.join(', ')})` };
-const dropAnimation: DropAnimation = { duration: duration.base * 1000, easing: sortTransition.easing };
+const power3Out = `cubic-bezier(${ease.power3Out.join(', ')})`;
+/** Sibling cards make room with the Kosmos position curve; a card moved from the keyboard travels with them. */
+const sortTransition = { duration: duration.base * 1000, easing: `cubic-bezier(${ease.smoothInOut.join(', ')})` };
+const keyboardOverlayTransition = `transform ${sortTransition.duration}ms ${sortTransition.easing}`;
+/** While the lifted copy lands, the card under it stays hidden and the copy settles flat (see `KanbanCard`). */
+const dropSideEffects = defaultDropAnimationSideEffects({
+  styles: { active: { opacity: '0' } },
+  className: { dragOverlay: 'kanban-card-dropping' },
+});
+const dropAnimation: DropAnimation = { duration: duration.base * 1000, easing: power3Out, sideEffects: dropSideEffects };
 /** Under reduced motion the lifted copy fades out where it was dropped, instead of flying into place. */
 const fadeDropAnimation: DropAnimation = {
   duration: duration.fast * 1000,
-  easing: sortTransition.easing,
+  easing: power3Out,
   keyframes: () => [{ opacity: 1 }, { opacity: 0 }],
+  sideEffects: dropSideEffects,
 };
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
@@ -181,7 +190,10 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
       className={cn(
         'flex w-full cursor-grab touch-manipulation flex-col divide-y divide-border rounded-2xl border border-transparent bg-card text-start text-card-foreground shadow-card select-none',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-        'data-lifted:cursor-grabbing data-lifted:shadow-lift motion-safe:data-lifted:-rotate-2',
+        // The lift eases in from the resting card and settles back while the copy lands.
+        'data-lifted:cursor-grabbing data-lifted:transition-[rotate,box-shadow]',
+        'data-lifted:not-in-[.kanban-card-dropping]:shadow-lift motion-safe:data-lifted:not-in-[.kanban-card-dropping]:-rotate-2',
+        'data-lifted:starting:shadow-card motion-safe:data-lifted:starting:rotate-0',
         // The slot keeps its size but shows nothing; while it holds focus, the lifted card's ring marks the card.
         'data-placeholder:bg-accent data-placeholder:shadow-none data-placeholder:outline-none data-placeholder:*:invisible',
         className,
@@ -221,6 +233,24 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
   );
 }
 
+/** Under reduced motion a card that jumps to a new place fades in there, instead of sliding. */
+function useFadeInWhenMoved(translate: string, index: number, reducedMotion: boolean) {
+  const nodeRef = React.useRef<HTMLDivElement | null>(null);
+  const lastPlace = React.useRef<{ top: number; left: number } | null>(null);
+  const fade = React.useRef<Animation | null>(null);
+  React.useLayoutEffect(() => {
+    const node = nodeRef.current;
+    if (!node) return;
+    const { top, left } = node.getBoundingClientRect();
+    const last = lastPlace.current;
+    lastPlace.current = { top, left };
+    if (!reducedMotion || !last || (last.top === top && last.left === left)) return;
+    if (fade.current?.playState === 'running') return;
+    fade.current = node.animate({ opacity: [0, 1] }, { duration: duration.fast * 1000, easing: power3Out });
+  }, [translate, index, reducedMotion]);
+  return nodeRef;
+}
+
 function SortableCard({
   item,
   reducedMotion,
@@ -232,19 +262,28 @@ function SortableCard({
   dragging: boolean;
   onOpen?: (item: KanbanItem) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging, index } = useSortable({
     id: item.id,
     data: { type: 'item' },
     transition: reducedMotion ? null : sortTransition,
   });
+  const translate = CSS.Translate.toString(transform) ?? 'none';
+  const fadeRef = useFadeInWhenMoved(translate, index, reducedMotion);
+  const ref = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      setNodeRef(node);
+      fadeRef.current = node;
+    },
+    [setNodeRef, fadeRef],
+  );
   return (
     <KanbanCard
-      ref={setNodeRef}
+      ref={ref}
       item={item}
       placeholder={isDragging}
       style={
         {
-          '--kanban-card-transform': CSS.Translate.toString(transform) ?? 'none',
+          '--kanban-card-transform': translate,
           '--kanban-card-transition': transition ?? 'none',
         } as React.CSSProperties
       }
@@ -555,7 +594,12 @@ function KanbanBoard({
         </ScrollArea>
         {mounted
           ? createPortal(
-              <DragOverlay dropAnimation={reducedMotion ? fadeDropAnimation : dropAnimation}>
+              <DragOverlay
+                dropAnimation={reducedMotion ? fadeDropAnimation : dropAnimation}
+                transition={(event) =>
+                  !reducedMotion && event instanceof KeyboardEvent ? keyboardOverlayTransition : undefined
+                }
+              >
                 {activeItem ? <KanbanCard item={activeItem} lifted /> : null}
               </DragOverlay>,
               document.body,
