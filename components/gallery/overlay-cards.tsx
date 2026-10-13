@@ -9,12 +9,12 @@ import {
   FolderInput,
   FolderKanban,
   Link2,
+  Milestone,
   Pencil,
   Settings,
   Share2,
   Trash2,
   UserPlus,
-  Users,
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -94,7 +94,7 @@ const commandGroups: CommandSection[] = [
   {
     value: 'Suggestions',
     items: [
-      { value: 'new-project', label: 'New project', icon: FilePlus, shortcut: ['C'] },
+      { value: 'new-roadmap-item', label: 'New roadmap item', icon: FilePlus, shortcut: ['C'] },
       { value: 'invite', label: 'Invite teammate', icon: UserPlus, shortcut: ['I'] },
     ],
   },
@@ -102,7 +102,7 @@ const commandGroups: CommandSection[] = [
     value: 'Go to',
     items: [
       { value: 'projects', label: 'Projects', icon: FolderKanban, shortcut: ['G', 'P'] },
-      { value: 'members', label: 'Members', icon: Users, shortcut: ['G', 'M'] },
+      { value: 'roadmap', label: 'Roadmap', icon: Milestone, shortcut: ['G', 'R'] },
       { value: 'settings', label: 'Settings', icon: Settings, shortcut: ['⌘', ','] },
     ],
   },
