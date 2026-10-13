@@ -56,6 +56,8 @@ Then explore what a screenshot cannot show with `agent-browser` on `/view/<name>
 
 `eval` may be blocked in an isolated worktree; `get styles`, `get box` and `snapshot` answer the same questions.
 
+When the component has motion (anything that moves, scales or animates in or out: press scale, enter and exit, height, sliding indicators, keyframes, `motion` code), call the Skill tool with `review-animations` on its source files and its review preview. Its findings join the round with the others.
+
 A finding that contradicts a value in kosmos-style keeps the Kosmos value and is listed under `Kosmos style` (as its conflicts.md says); it is not a fix. A finding only the user can settle, because fixing it breaks a kosmos-style rule or it is a product choice, is marked `Needs decision`.
 
 ## 5. Fix, in rounds
@@ -104,16 +106,14 @@ Open:
 - <finding>: <Kosmos style | Needs decision | out of rounds | tooling>, <why>
 
 Needs user:
-- Run `/review-animations` on <files>
 - Approve the <Group> group at /approve/<group>
 
 Checks:
 - registry:check: <pass | fail: reason>
 - types:check, lint, build: <pass | fail: reason>, <new warnings>
+- review-animations: <findings, none, or no motion>
 - code-review: <findings, or none>
 ```
-
-The `/review-animations` line appears only when the component has motion: anything that moves, scales or animates in or out (press scale, enter and exit, height, sliding indicators, keyframes, `motion` code). That skill runs only when the user calls it, so the report asks for it.
 
 ## 9. Approval
 

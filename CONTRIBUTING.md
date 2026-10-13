@@ -64,7 +64,7 @@ It prints install, dependencies, types and build per item, exits 1 if any fail, 
 
 The repo ships its Claude Code setup, so a fresh clone works on any machine:
 
-- **Project skills** (`better-*`, `review-animations`) are committed in `.claude/skills/` and load automatically. `skills-lock.json` records where each one came from. Update them with `npx skills update -p`, or restore them from the lockfile with `npx skills experimental_install`.
+- **Project skills** (`better-*`, `review-animations`) are committed in `.claude/skills/` and load automatically. `skills-lock.json` records where each one came from. Update them with `npx skills update -p`, or restore them from the lockfile with `npx skills experimental_install`. An update brings back `disable-model-invocation: true` in `review-animations`; delete that line again, because `build-component` calls the skill itself.
 - **`code-review`** comes from the `mattpocock-skills` plugin. `.claude/settings.json` registers its marketplace and enables it, so Claude Code offers to install it the first time you trust the folder. To install it by hand: `/plugin marketplace add mattpocock/skills`, then `/plugin install mattpocock-skills@mattpocock`.
 
 ## Commits and branches
