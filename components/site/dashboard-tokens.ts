@@ -1,6 +1,6 @@
 /*
  * What the landing page and the dashboard document (`/dashboard`, in an iframe on the landing) say to each other
- * through `postMessage`: the landing sets the look and the screen, the dashboard reports the page it shows. The
+ * through `postMessage`: the landing sets the tokens and the screen, the dashboard reports the page it shows. The
  * values of each accent and radius are CSS in `app/global.css`, keyed by `data-accent` and `data-radius`.
  */
 
@@ -11,7 +11,7 @@ export const dashboardScreens = [
   { id: 'roadmap', label: 'Roadmap' },
 ] as const;
 
-/** The accents a visitor can try. The first is the Kosmos orange, the look the dashboard starts in. */
+/** The accents a visitor can try. The first is the Kosmos orange, the accent the dashboard starts in. */
 export const dashboardAccents = [
   { id: 'orange', label: 'Orange' },
   { id: 'violet', label: 'Violet' },
@@ -26,16 +26,16 @@ export type DashboardAccent = (typeof dashboardAccents)[number]['id'];
 export type DashboardRadius = (typeof dashboardRadii)[number];
 export type DashboardTheme = 'light' | 'dark';
 
-export type DashboardLook = { accent: DashboardAccent; radius: DashboardRadius; theme?: DashboardTheme };
+export type DashboardTokens = { accent: DashboardAccent; radius: DashboardRadius; theme?: DashboardTheme };
 
-export const defaultDashboardLook: DashboardLook = { accent: 'orange', radius: '10' };
+export const defaultDashboardTokens: DashboardTokens = { accent: 'orange', radius: '10' };
 
 const landing = 'kosmos-landing';
 const dashboard = 'kosmos-dashboard';
 
 export type LandingMessage =
   | { source: typeof landing; type: 'hello' }
-  | { source: typeof landing; type: 'look'; look: DashboardLook }
+  | { source: typeof landing; type: 'tokens'; tokens: DashboardTokens }
   | { source: typeof landing; type: 'page'; page: string };
 
 export type DashboardMessage = { source: typeof dashboard; type: 'ready' } | { source: typeof dashboard; type: 'page'; page: string };

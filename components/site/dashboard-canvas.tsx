@@ -11,14 +11,14 @@ import {
   dashboardScreens,
   dashboardRadii,
   dashboardSource,
-  defaultDashboardLook,
+  defaultDashboardTokens,
   readMessage,
   toDashboard,
   type DashboardAccent,
   type DashboardMessage,
   type DashboardRadius,
   type DashboardTheme,
-} from './dashboard-look';
+} from './dashboard-tokens';
 
 const noSubscription = () => () => {};
 
@@ -33,16 +33,16 @@ function ControlLabel({ id, children }: { id: string; children: React.ReactNode 
 
 /**
  * The landing page's dashboard: the Parallax app in an iframe, with tabs for its main screens and the accent, radius
- * and theme a visitor can try on it. The look lives in the iframe's document, so the page around it never changes;
- * Reset brings back the Kosmos look and the page's theme.
+ * and theme a visitor can try on it. The tokens apply inside the iframe's document, so the page around it never changes;
+ * Reset brings back the Kosmos defaults and the page's theme.
  */
 export function DashboardCanvas() {
   const frame = React.useRef<HTMLIFrameElement>(null);
-  // Counts the dashboard's loads: each fresh document starts on Overview in the Kosmos look and needs the screen and look sent again.
+  // Counts the dashboard's loads: each fresh document starts on Overview with the Kosmos defaults and needs the screen and tokens sent again.
   const [loads, setLoads] = React.useState(0);
   const [screen, setScreen] = React.useState<string>(dashboardScreens[0].id);
-  const [accent, setAccent] = React.useState<DashboardAccent>(defaultDashboardLook.accent);
-  const [radius, setRadius] = React.useState<DashboardRadius>(defaultDashboardLook.radius);
+  const [accent, setAccent] = React.useState<DashboardAccent>(defaultDashboardTokens.accent);
+  const [radius, setRadius] = React.useState<DashboardRadius>(defaultDashboardTokens.radius);
   const [themeChoice, setThemeChoice] = React.useState<DashboardTheme | null>(null);
   const { resolvedTheme } = useTheme();
   // The server can't know the stored theme, so the page theme counts only once hydrated.
@@ -65,7 +65,7 @@ export function DashboardCanvas() {
   }, []);
 
   React.useEffect(() => {
-    if (loads > 0 && theme) toDashboard(frame.current, { type: 'look', look: { accent, radius, theme } });
+    if (loads > 0 && theme) toDashboard(frame.current, { type: 'tokens', tokens: { accent, radius, theme } });
   }, [loads, accent, radius, theme]);
 
   // The tabs lead: a "ready" can arrive after a tab was chosen (the reply to "hello"), so each load is sent the screen.
@@ -74,8 +74,8 @@ export function DashboardCanvas() {
   }, [loads, screen]);
 
   const reset = () => {
-    setAccent(defaultDashboardLook.accent);
-    setRadius(defaultDashboardLook.radius);
+    setAccent(defaultDashboardTokens.accent);
+    setRadius(defaultDashboardTokens.radius);
     setThemeChoice(null);
   };
 
@@ -89,7 +89,7 @@ export function DashboardCanvas() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div role="group" aria-label="Try a look" className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-0.5">
+        <div role="group" aria-label="Try other tokens" className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-0.5">
           <div className="flex items-center gap-2">
             <ControlLabel id={`${id}-accent`}>Accent</ControlLabel>
             <SegmentedControl aria-labelledby={`${id}-accent`} value={accent} onValueChange={(value) => setAccent(value as DashboardAccent)}>

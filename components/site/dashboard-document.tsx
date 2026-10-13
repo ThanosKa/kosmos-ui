@@ -3,15 +3,15 @@
 import { ThemeProvider } from 'next-themes';
 import * as React from 'react';
 import { DashboardShowcase } from './dashboard-showcase';
-import { readMessage, toLanding, landingSource, type DashboardLook, type LandingMessage } from './dashboard-look';
+import { readMessage, toLanding, landingSource, type DashboardTokens, type LandingMessage } from './dashboard-tokens';
 
 /**
- * The dashboard as a whole document, for the landing page's iframe. Until the landing sends a look it follows the
+ * The dashboard as a whole document, for the landing page's iframe. Until the landing sends its tokens it follows the
  * stored site theme, like any preview route; after that it takes the theme, accent and radius it is sent, on its own
  * `<html>`, so the landing page itself never changes.
  */
 export function DashboardDocument() {
-  const [look, setLook] = React.useState<DashboardLook | null>(null);
+  const [tokens, setTokens] = React.useState<DashboardTokens | null>(null);
   const [page, setPage] = React.useState('overview');
 
   React.useEffect(() => {
@@ -19,7 +19,7 @@ export function DashboardDocument() {
       const message = readMessage<LandingMessage>(event, landingSource);
       if (!message) return;
       if (message.type === 'hello') toLanding({ type: 'ready' });
-      else if (message.type === 'look') setLook(message.look);
+      else if (message.type === 'tokens') setTokens(message.tokens);
       else setPage(message.page);
     };
     window.addEventListener('message', onMessage);
@@ -29,14 +29,14 @@ export function DashboardDocument() {
 
   React.useEffect(() => {
     const root = document.documentElement;
-    if (look) {
-      root.dataset.accent = look.accent;
-      root.dataset.radius = look.radius;
+    if (tokens) {
+      root.dataset.accent = tokens.accent;
+      root.dataset.radius = tokens.radius;
     }
-  }, [look]);
+  }, [tokens]);
 
   return (
-    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange forcedTheme={look?.theme}>
+    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange forcedTheme={tokens?.theme}>
       <DashboardShowcase
         page={page}
         onPageChange={(next) => {
@@ -44,7 +44,7 @@ export function DashboardDocument() {
           toLanding({ type: 'page', page: next });
         }}
       />
-      <span data-dashboard-ready={look ? '' : undefined} hidden />
+      <span data-dashboard-ready={tokens ? '' : undefined} hidden />
     </ThemeProvider>
   );
 }
