@@ -6,7 +6,7 @@ Every block's sample data, review preview, demo and docs page uses this world an
 
 A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
 
-Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Acme, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status.
+Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status.
 
 ## Workspace, domains, dates
 
