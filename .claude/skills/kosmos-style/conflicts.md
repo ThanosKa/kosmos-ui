@@ -2,7 +2,7 @@
 
 The review skills check Kosmos UI; they do not set its values. Where one of them asks for something else, the Kosmos value below wins. Report such a finding as `Kosmos style` with the row it matches, and do not change the code.
 
-Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `review-animations` (Emil Kowalski, whose `emil-design-eng` values it repeats).
+Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `review-animations`, `break-ui` and `mobile-native` (Emil Kowalski, whose `emil-design-eng` values they repeat).
 
 ## Motion
 
