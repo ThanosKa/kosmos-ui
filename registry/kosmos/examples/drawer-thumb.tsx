@@ -16,9 +16,9 @@ import {
 
 const details = [
   ['Status', 'In progress'],
-  ['Owner', 'Ana Lopez'],
-  ['Due', 'Oct 24'],
-  ['Estimate', '3 days'],
+  ['Assignee', 'Tomás Ortega'],
+  ['Target', 'Q4 2026'],
+  ['Votes', '45'],
 ] as const;
 
 /** The components index thumbnail: the docs demo with its drawer open beside the trigger. */
@@ -27,11 +27,11 @@ export default function DrawerThumb() {
     <ThumbStage className="h-72 max-w-xl">
       {(container) => (
         <Drawer open modal={false}>
-          <DrawerTrigger render={<Button variant="secondary" />}>Open task</DrawerTrigger>
+          <DrawerTrigger render={<Button variant="secondary" />}>Open roadmap item</DrawerTrigger>
           <DrawerContent container={container} initialFocus={false} className="data-[swipe-direction=right]:max-w-72">
             <DrawerHeader>
-              <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
-              <DrawerDescription>Billing revamp · created by Farah Haddad</DrawerDescription>
+              <DrawerTitle>Server-side batching</DrawerTitle>
+              <DrawerDescription>Ingestion · added by Lena Park</DrawerDescription>
             </DrawerHeader>
             <DrawerBody>
               <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
@@ -44,7 +44,7 @@ export default function DrawerThumb() {
               </dl>
             </DrawerBody>
             <DrawerFooter>
-              <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
+              <DrawerClose render={<Button variant="primary" />}>Mark as shipped</DrawerClose>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>

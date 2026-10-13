@@ -9,10 +9,12 @@ import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
 import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
+import { BlockViewers } from '@/components/docs/block-viewer';
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { HashAnchor } from '@/components/docs/hash-anchor';
 import { changelogFolder, getChangelogEntries } from '@/lib/changelog';
-import { eyebrowOf, groupOfPage, neighboursOf } from '@/lib/docs-nav';
+import { blockCategoryOfPage, eyebrowOf, groupOfPage, neighboursOf } from '@/lib/docs-nav';
+import { cn } from '@/registry/kosmos/lib/cn';
 import { docsSourceUrl, getPageImageUrl, getPageMarkdownUrl, siteOpenGraph } from '@/lib/shared';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
@@ -23,17 +25,19 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const MDX = page.data.body;
   const pageRef = { path: page.path, title: page.data.title };
   const group = groupOfPage(page);
+  const category = blockCategoryOfPage(page);
   const neighbours = neighboursOf(page.url);
   const isChangelog = page.slugs.length === 1 && page.slugs[0] === changelogFolder;
-  const toc = page.data.full
-    ? []
-    : isChangelog
-      ? getChangelogEntries().map((entry) => ({ title: entry.page.data.title, url: `#${entry.page.slugs[1]}`, depth: 2 }))
-      : page.data.toc;
+  const toc =
+    page.data.full || category
+      ? []
+      : isChangelog
+        ? getChangelogEntries().map((entry) => ({ title: entry.page.data.title, url: `#${entry.page.slugs[1]}`, depth: 2 }))
+        : page.data.toc;
 
   return (
     <div className="flex w-full gap-10 xl:pe-6">
-      <article className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-4 px-4 py-8 sm:px-6 md:py-10">
+      <article className={cn('mx-auto flex w-full min-w-0 flex-col gap-4 px-4 py-8 sm:px-6 md:py-10', category ? 'max-w-7xl' : 'max-w-3xl')}>
         <DocsPageHeader
           title={page.data.title}
           description={page.data.description}
@@ -45,7 +49,8 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           item={group && { name: page.slugs[1], baseUi: page.data.baseUi, baseUiName: page.data.baseUiName }}
         />
         <DocsTocDisclosure toc={toc} className="xl:hidden" />
-        <DocsBody className="[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title">
+        {category && <BlockViewers category={category} />}
+        <DocsBody className={cn('[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title', category && 'max-w-3xl')}>
           <MDX
             components={getMDXComponents({
               // this allows you to link to other pages with relative file paths
@@ -57,9 +62,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           />
         </DocsBody>
         {neighbours && <PageNavCards {...neighbours} className="mt-6" />}
-        <DocsPageLinks page={pageRef} className="mt-6 border-t border-border pt-6 xl:hidden" />
+        <DocsPageLinks page={pageRef} className={cn('mt-6 border-t border-border pt-6', !category && 'xl:hidden')} />
       </article>
-      <DocsRail page={pageRef} toc={toc} />
+      {!category && <DocsRail page={pageRef} toc={toc} />}
       <HashAnchor />
     </div>
   );

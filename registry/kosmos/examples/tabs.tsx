@@ -2,6 +2,7 @@
 
 import { Activity, FileText, Settings } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
@@ -39,10 +40,10 @@ export default function TabsPreview() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="text-muted-foreground">
-            Revenue is up 12% on last month, led by annual plans.
+            Revenue is up 6.8% on last month, led by Scale plans.
           </TabsContent>
           <TabsContent value="activity" className="text-muted-foreground">
-            Ana Lopez closed 4 deals this week.
+            Kai Nakamura added 3 roadmap items this week.
           </TabsContent>
           <TabsContent value="settings" className="text-muted-foreground">
             Workspace name, members and notifications.
@@ -83,10 +84,10 @@ export default function TabsPreview() {
             Workspace name and URL.
           </TabsContent>
           <TabsContent value="members" className="text-muted-foreground">
-            12 members, 3 pending invites.
+            4 members, 1 pending invite.
           </TabsContent>
           <TabsContent value="billing" className="text-muted-foreground">
-            Pro plan, renews Nov 1.
+            Scale plan, next invoice Nov 1.
           </TabsContent>
           <TabsContent value="security" className="text-muted-foreground">
             Two-factor sign-in is on for every member.
@@ -94,16 +95,21 @@ export default function TabsPreview() {
         </Tabs>
       </PreviewSection>
 
-      <PreviewSection title="More tabs than fit (scrolls sideways)">
-        <Tabs defaultValue="q3" className="max-w-sm">
-          <TabsList>
-            <TabsTrigger value="q1">First quarter</TabsTrigger>
-            <TabsTrigger value="q2">Second quarter</TabsTrigger>
-            <TabsTrigger value="q3">Third quarter</TabsTrigger>
-            <TabsTrigger value="q4">Fourth quarter</TabsTrigger>
-            <TabsTrigger value="fy">Full fiscal year</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <PreviewSection title="More tabs than fit (scrolls sideways): at the start, scrolled halfway">
+        <div className="flex flex-col gap-6">
+          {[false, true].map((scrolled) => (
+            <Tabs key={String(scrolled)} defaultValue="q1" className="max-w-sm">
+              <TabsList>
+                {scrolled ? <ScrollToMiddle axis="x" /> : null}
+                <TabsTrigger value="q1">First quarter</TabsTrigger>
+                <TabsTrigger value="q2">Second quarter</TabsTrigger>
+                <TabsTrigger value="q3">Third quarter</TabsTrigger>
+                <TabsTrigger value="q4">Fourth quarter</TabsTrigger>
+                <TabsTrigger value="fy">Full fiscal year</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          ))}
+        </div>
       </PreviewSection>
     </PreviewStack>
   );

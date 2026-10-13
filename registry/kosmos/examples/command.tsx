@@ -47,8 +47,8 @@ const groups: Group[] = [
   {
     value: 'Actions',
     items: [
-      { value: 'new-task', label: 'Create task', icon: FilePlus, shortcut: ['C'] },
-      { value: 'invite', label: 'Invite people to the Northwind Logistics workspace', icon: UserPlus },
+      { value: 'new-project', label: 'New project', icon: FilePlus, shortcut: ['C'] },
+      { value: 'invite', label: 'Invite teammates to the Acme Staging workspace', icon: UserPlus },
       { value: 'theme', label: 'Switch theme', icon: Moon },
       { value: 'settings', label: 'Open settings', icon: Settings, shortcut: ['⌘', ','] },
     ],

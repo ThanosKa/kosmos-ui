@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from '@/registry/kosmos/ui/drawer';
 
-const pages = ['Overview', 'Projects', 'Tasks', 'Reports', 'Settings'];
+const pages = ['Overview', 'Projects', 'Events', 'Users', 'Settings'];
 
 export default function DrawerLeft() {
   return (

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { StayInPreview } from '@/components/preview/stay-in-preview';
 import { loadExample } from '@/lib/examples';
 
 const themes = ['light', 'dark'] as const;
@@ -23,12 +24,14 @@ export default async function ViewPage(props: PageProps<'/view/[name]'>) {
 
   return (
     <RootProvider search={{ enabled: false }} theme={{ forcedTheme, hotKey: false }}>
-      {/* Not a <main>: blocks and app shells in the preview bring their own. */}
-      <div data-preview-root={name} className="flex min-h-dvh items-center justify-center p-6 sm:p-10">
+      {/* Not a <main>: blocks and app shells in the preview bring their own. Inside a docs frame (`PreviewFrame` marks
+          it) the content sits at the top, so a block that shrinks never moves what is above it. */}
+      <div data-preview-root={name} className="flex min-h-dvh items-center justify-center p-6 data-in-frame:items-start sm:p-10">
         <div data-preview-content className="flex w-full justify-center">
           <Example />
         </div>
       </div>
+      <StayInPreview />
     </RootProvider>
   );
 }

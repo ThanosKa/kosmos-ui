@@ -5,6 +5,7 @@ import { XIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 /**
  * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
@@ -120,14 +121,24 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-/** The content between header and footer. Scrolls when the dialog reaches the screen height. */
+/**
+ * The content between header and footer. Scrolls when the dialog reaches the screen height, in a
+ * `ScrollArea`: the edge with content hidden past it fades out. `className` styles the padded box inside.
+ */
 function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="dialog-body"
-      className={cn('min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-4', className)}
-      {...props}
-    />
+    <ScrollArea
+      data-slot="dialog-body-scroll-area"
+      className={cn(
+        'min-h-0 flex-1',
+        // The scrolling body spans the dialog's full width, so it draws its focus outline inside.
+        'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
+      )}
+      // The 20px padding already clears the scrollbar.
+      viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
+    >
+      <div data-slot="dialog-body" className={cn('px-5 pt-4', className)} {...props} />
+    </ScrollArea>
   );
 }
 

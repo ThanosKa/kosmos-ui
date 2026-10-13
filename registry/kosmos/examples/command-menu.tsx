@@ -20,7 +20,7 @@ export default function CommandMenuPreview() {
               <CommandMenu open modal={false} container={container} initialFocus={false} trigger={null} hotkey={false} />
             )}
           </OverlayStage>
-          <OverlayStage label="second list: assign owner" className={stage}>
+          <OverlayStage label="second list: assigned to" className={stage}>
             {(container) => (
               <CommandMenu
                 open
@@ -29,7 +29,7 @@ export default function CommandMenuPreview() {
                 initialFocus={false}
                 trigger={null}
                 hotkey={false}
-                defaultPage="owner"
+                defaultPage="assignee"
               />
             )}
           </OverlayStage>
@@ -42,7 +42,7 @@ export default function CommandMenuPreview() {
                 initialFocus={false}
                 trigger={null}
                 hotkey={false}
-                defaultQuery="account"
+                defaultQuery="roadmap"
               />
             )}
           </OverlayStage>
@@ -55,7 +55,7 @@ export default function CommandMenuPreview() {
                 initialFocus={false}
                 trigger={null}
                 hotkey={false}
-                defaultQuery="Quarterly revenue forecast for the board meeting"
+                defaultQuery="Weekly retention cohorts for every Scale plan project"
               />
             )}
           </OverlayStage>

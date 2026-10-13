@@ -1,32 +1,31 @@
 ---
 title: Stats overview
-description: The overview of a dashboard, with stat tiles, a revenue chart with a range switch, and each plan's share of revenue.
+description: The overview of an analytics dashboard, with the headline metrics as tabs over one chart that compares each range with the period before it, and the top events.
 ---
-
-<ComponentPreview name="stats-overview-demo" />
 
 ## Installation
 
 <ComponentInstall name="stats-overview" />
 
-The block brings [Chart](/docs/components/chart), [Meter](/docs/components/meter), [Segmented control](/docs/components/segmented-control), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
+The block brings [Tabs](/docs/components/tabs), [Chart](/docs/components/chart), [Segmented control](/docs/components/segmented-control), [Badge](/docs/components/badge), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
 
 ## Usage
 
 ```tsx
 import { StatsOverview } from '@/components/stats-overview';
 
-<StatsOverview stats={stats} revenue={revenue} plans={plans} />;
+<StatsOverview metrics={metrics} topEvents={topEvents} />;
 ```
 
-Without props it shows sample metrics. The overview lays itself out by its own width: four tiles in a row on a wide container, two or one on a narrower one, and the plan breakdown moves under the chart.
+Without props it shows sample metrics. Pass the metrics and top events for each range (`7d`, `30d` and `90d`); the overview switches between them. To load a range only when it is picked, control `range` and fill in its data in `onRangeChange`.
 
 ## What it does
 
-- **Stat tiles**: separate cards, each with a label, the value, a sparkline and the change against last month. The change sits in a tinted pill, green when it is good news and red when it is bad: set `goodWhen: 'down'` for a stat like churn, where falling is good. Values of a million and up go compact ($128.5M).
-- **Revenue chart**: two series over 30 days, 90 days or 12 months, with a tooltip and a hidden data table for screen readers. An empty range shows an empty state.
-- **Revenue by plan**: each plan's share as a meter, with its amount for the selected range.
-- **Loading**: `loading` swaps every value for a skeleton of the same shape.
+- **Metrics as tabs**: each metric shows its label, its value and its change against the period before, in a green or red tag; set `goodWhen: 'down'` for a metric like errors, where falling is good. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
+- **Chart**: the selected metric over the range against the same span before it, with a tooltip and a hidden data table for screen readers.
+- **Top events**: the most frequent events, each with a bar to scale against the first.
+- **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container, two on a narrower one, and one per row, value beside the label, under 448px, so a value never cuts off on a phone. The top events move beside the chart from 1152px.
+- **Loading and empty**: `loading` swaps every value for a skeleton of the same shape. A range with no points, no metrics or no events shows an empty state.
 
 ## API
 
@@ -36,18 +35,20 @@ Takes every `<section>` prop, plus:
 
 <TypeTable
   type={{
-    stats: {
-      description: 'The stat tiles. Leave `change` out when there is no earlier period.',
-      type: "{ id: string; label: string; value: number; format: 'currency' | 'number' | 'percent'; change?: number; goodWhen?: 'up' | 'down'; trend: number[] }[]",
+    metrics: {
+      description: 'The metrics for each range. Leave `change` out when there is no earlier period.',
+      type: "Record<'7d' | '30d' | '90d', { id: string; label: string; value: number; format: 'currency' | 'number' | 'percent'; change?: number; goodWhen?: 'up' | 'down'; points: { label: string; current: number; previous: number }[] }[]>",
     },
-    revenue: {
-      description: 'The chart points for each range.',
-      type: "Record<'30d' | '90d' | '12m', { label: string; newBusiness: number; expansion: number }[]>",
+    topEvents: {
+      description: 'The most frequent events for each range, most frequent first. An empty list shows the empty state.',
+      type: "Record<'7d' | '30d' | '90d', { name: string; count: number }[]>",
     },
-    plans: { description: "Each plan's share of revenue, in percent. An empty list, or a range with no revenue, shows the empty state.", type: '{ plan: string; share: number }[]' },
-    range: { description: 'The chart range. Use with `onRangeChange`.', type: "'30d' | '90d' | '12m'" },
-    defaultRange: { description: 'The range shown at first, when the overview keeps its own state.', type: "'30d' | '90d' | '12m'", default: "'12m'" },
-    onRangeChange: { description: 'Called with the newly selected range.', type: "(range: '30d' | '90d' | '12m') => void" },
+    range: { description: 'The range. Use with `onRangeChange`.', type: "'7d' | '30d' | '90d'" },
+    defaultRange: { description: 'The range shown at first, when the overview keeps its own state.', type: "'7d' | '30d' | '90d'", default: "'30d'" },
+    onRangeChange: { description: 'Called with the newly selected range.', type: "(range: '7d' | '30d' | '90d') => void" },
+    metric: { description: 'The `id` of the metric the chart shows. Use with `onMetricChange`.', type: 'string' },
+    defaultMetric: { description: 'The metric shown at first, when the overview keeps its own state.', type: 'string', default: 'the first metric' },
+    onMetricChange: { description: 'Called with the `id` of the newly selected metric.', type: '(metric: string) => void' },
     loading: { description: 'Shows skeletons while the data loads.', type: 'boolean', default: 'false' },
   }}
 />

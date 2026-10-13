@@ -1,44 +1,54 @@
 'use client';
 
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { DataTable, type Account } from '@/registry/kosmos/blocks/data-table/data-table';
+import { DataTable, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
 
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
 
-const longRows: Account[] = [
+const longRows: Project[] = [
   {
     id: 'long-1',
-    name: 'International Consolidated Shipping and Logistics Partners',
-    domain: 'consolidated-shipping-and-logistics-partners.example',
-    status: 'at-risk',
-    owner: { name: 'Alexandra Konstantinidou-Papadopoulou', initials: 'AK' },
-    arr: 12480000,
-    health: 47,
-    lastActivity: '2026-10-01',
+    name: 'Fernhill Books Marketplace for Independent Booksellers and Publishers',
+    domain: 'marketplace.independent-booksellers.fernhill.example',
+    platform: 'server',
+    plan: 'scale',
+    status: 'live',
+    users: 128430,
+    events: 9124800,
+    mrr: 4800,
+    lastEventAt: '2026-10-11',
   },
   {
     id: 'long-2',
-    name: 'Ål & Ørsted Fjordbyen',
-    domain: 'fjordbyen.example',
-    status: 'active',
-    owner: { name: 'Jonas Weber', initials: 'JW' },
-    arr: 900,
-    health: 100,
-    lastActivity: '2026-10-11',
+    name: 'Kiln',
+    domain: 'kiln.example',
+    platform: 'web',
+    plan: 'free',
+    status: 'paused',
+    users: 1,
+    events: 3,
+    mrr: 0,
+    lastEventAt: '2026-08-30',
   },
 ];
 
 export default function DataTablePreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="Rows selected, sorted by ARR">
+      <PreviewSection title="Rows selected, sorted by revenue">
         <div className={frame}>
           <DataTable
-            selection={['northwind', 'orbit', 'vela']}
-            defaultSort={{ key: 'arr', direction: 'descending' }}
+            selection={['fernhill', 'copperline', 'cirrus']}
+            defaultSort={{ key: 'mrr', direction: 'descending' }}
             onOpen={() => {}}
             onAction={() => {}}
           />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Filtered: Pro plan on iOS and Android">
+        <div className={frame}>
+          <DataTable filters={['pro', 'ios', 'android']} onOpen={() => {}} onAction={() => {}} />
         </div>
       </PreviewSection>
 
@@ -65,9 +75,10 @@ export default function DataTablePreview() {
           <DataTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
         </div>
       </PreviewSection>
+
       <PreviewSection title="In a narrow container (scrolls sideways)">
         <div className={`${frame} max-w-sm`}>
-          <DataTable defaultSelection={['bluebird']} onAction={() => {}} />
+          <DataTable defaultSelection={['brightloop']} onAction={() => {}} />
         </div>
       </PreviewSection>
     </PreviewStack>

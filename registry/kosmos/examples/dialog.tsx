@@ -2,6 +2,7 @@
 
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Dialog,
@@ -15,19 +16,19 @@ import {
   DialogTrigger,
 } from '@/registry/kosmos/ui/dialog';
 
-const members = [
-  'Ana Lopez',
-  'Ben Carter',
-  'Chen Wei',
-  'Dara Okafor',
-  'Elif Demir',
-  'Farah Haddad',
-  'Goran Petrovic',
-  'Hana Sato',
-  'Ivan Novak',
-  'Jonas Berg',
-  'Kira Ivanova',
-  'Liam Walsh',
+const projects = [
+  'Fernhill Books',
+  'Brightloop Fitness',
+  'Copperline Bank',
+  'Saltmarsh Coffee',
+  'Driftwood Travel',
+  'Hollow Oak Games',
+  'Cirrus Weather',
+  'Pebble & Pine',
+  'Marigold Recipes',
+  'Kiln Studio',
+  'Tidepool Notes',
+  'Ironbark Logistics',
 ];
 
 export default function DialogPreview() {
@@ -44,7 +45,7 @@ export default function DialogPreview() {
                     <DialogDescription>New members can see every project in Acme.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
-                    <p>We will email an invite to ana@acme.com. It expires in 7 days.</p>
+                    <p>We will email an invite to kai@acme.example. It expires in 7 days.</p>
                   </DialogBody>
                   <DialogFooter>
                     <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
@@ -62,7 +63,7 @@ export default function DialogPreview() {
                   <DialogHeader>
                     <DialogTitle>Delete project?</DialogTitle>
                     <DialogDescription>
-                      Q3 Roadmap and its 24 tasks will be deleted. You can&apos;t undo this.
+                      Kiln Studio and its 2,400 events will be deleted. You can&apos;t undo this.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
@@ -79,12 +80,38 @@ export default function DialogPreview() {
               <Dialog open modal={false}>
                 <DialogContent container={container} initialFocus={false}>
                   <DialogHeader>
-                    <DialogTitle>Members</DialogTitle>
-                    <DialogDescription>12 people have access to Q3 Roadmap.</DialogDescription>
+                    <DialogTitle>Projects</DialogTitle>
+                    <DialogDescription>12 projects send events to Acme.</DialogDescription>
                   </DialogHeader>
                   <DialogBody>
                     <ul className="flex flex-col divide-y divide-border">
-                      {members.map((name) => (
+                      {projects.map((name) => (
+                        <li key={name} className="py-2">
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
+                  </DialogBody>
+                  <DialogFooter>
+                    <DialogClose render={<Button variant="primary" />}>Done</DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="body scrolled halfway">
+            {(container) => (
+              <Dialog open modal={false}>
+                <DialogContent container={container} initialFocus={false}>
+                  <DialogHeader>
+                    <DialogTitle>Projects</DialogTitle>
+                    <DialogDescription>12 projects send events to Acme.</DialogDescription>
+                  </DialogHeader>
+                  <DialogBody>
+                    <ScrollToMiddle />
+                    <ul className="flex flex-col divide-y divide-border">
+                      {projects.map((name) => (
                         <li key={name} className="py-2">
                           {name}
                         </li>
@@ -107,7 +134,7 @@ export default function DialogPreview() {
                     <DialogTitle>Move the quarterly planning documents to the shared archive folder?</DialogTitle>
                     <DialogDescription>
                       Everyone with access to the archive will see the 18 documents, including their comments and
-                      version history. Owners keep edit rights.
+                      version history. Admins keep edit rights.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
@@ -131,7 +158,7 @@ export default function DialogPreview() {
                 <DialogDescription>New members can see every project in Acme.</DialogDescription>
               </DialogHeader>
               <DialogBody>
-                <p>We will email an invite to ana@acme.com. It expires in 7 days.</p>
+                <p>We will email an invite to kai@acme.example. It expires in 7 days.</p>
               </DialogBody>
               <DialogFooter>
                 <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>

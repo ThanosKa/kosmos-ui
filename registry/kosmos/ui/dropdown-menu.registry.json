@@ -5,7 +5,7 @@
   "title": "Dropdown menu",
   "description": "A menu of actions built on Base UI Menu, opened from a button. Arrow keys, typeahead, Escape and focus return built in, with check and radio items, groups, shortcuts and submenus.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/kbd"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/kbd", "@kosmos/scroll-area"],
   "meta": { "group": "overlays" },
   "files": [
     {

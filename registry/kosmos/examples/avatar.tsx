@@ -16,8 +16,8 @@ export default function AvatarPreview() {
           states={states}
           render={(size, state) => (
             <Avatar size={size}>
-              {state === 'image' ? <AvatarImage src="/avatars/avatar-1.png" alt="Maria Lopez" /> : null}
-              <AvatarFallback>{state === 'icon' ? <User aria-label="Unknown user" /> : 'ML'}</AvatarFallback>
+              {state === 'image' ? <AvatarImage src="/avatars/avatar-1.png" alt="Lena Park" /> : null}
+              <AvatarFallback>{state === 'icon' ? <User aria-label="Unknown user" /> : 'LP'}</AvatarFallback>
             </Avatar>
           )}
         />
@@ -46,17 +46,17 @@ export default function AvatarPreview() {
           <div className="flex min-w-0 items-center gap-2.5">
             <Avatar size="lg">
               <AvatarImage src="/avatars/avatar-2.png" alt="" />
-              <AvatarFallback>JK</AvatarFallback>
+              <AvatarFallback>TO</AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col">
-              <span className="truncate text-body font-medium">Jonas Keller</span>
-              <span className="truncate text-small text-muted-foreground">jonas@acme.com</span>
+              <span className="truncate text-body font-medium">Tomás Ortega</span>
+              <span className="truncate text-small text-muted-foreground">tomas@acme.example</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon" aria-label="Open account menu" className="rounded-full">
+          <Button variant="ghost" size="icon" aria-label="Open user menu" className="rounded-full">
             <Avatar size="sm">
               <AvatarImage src="/avatars/avatar-3.png" alt="" />
-              <AvatarFallback>AN</AvatarFallback>
+              <AvatarFallback>AM</AvatarFallback>
             </Avatar>
           </Button>
         </div>

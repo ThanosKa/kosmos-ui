@@ -20,7 +20,7 @@ type SiteHeaderProps = {
 /** The site header on the landing page and the docs: logo, section links, search, GitHub, X and the theme toggle. */
 export function SiteHeader({ menu = <SiteNavMenu className="me-2 md:hidden" />, fullWidth = false }: SiteHeaderProps) {
   return (
-    <header id="site-header" className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-lg">
+    <header id="site-header" className="sticky top-0 z-40 border-b border-border bg-background">
       <div className={cn('mx-auto flex h-14 w-full items-center gap-1 px-4', !fullWidth && 'max-w-7xl sm:px-6')}>
         {menu}
         <Link

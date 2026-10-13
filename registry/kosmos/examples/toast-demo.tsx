@@ -8,7 +8,7 @@ export default function ToastDemo() {
     <>
       <Button
         variant="secondary"
-        onClick={() => toast.add({ title: 'Invite sent', description: 'Ana Lopez will get an email in a minute.' })}
+        onClick={() => toast.add({ title: 'Invite sent', description: 'Ama Mensah will get an email in a minute.' })}
       >
         Send invite
       </Button>

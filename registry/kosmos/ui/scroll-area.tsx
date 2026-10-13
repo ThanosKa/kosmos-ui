@@ -14,10 +14,17 @@ const InsideViewport = React.createContext(false);
 type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
   /** Fade out each edge that has hidden content past it. On by default. */
   fade?: boolean;
+  /**
+   * Lets the element that scrolls take keyboard focus while it overflows, so arrow keys scroll it. On by default.
+   * Turn it off when every item inside takes focus and scrolls itself into view (a menu, a tab list).
+   */
+  focusable?: boolean;
   /** Classes for the element that scrolls. */
   viewportClassName?: string;
   /** A ref to the element that scrolls, to read or set its scroll position. */
   viewportRef?: React.Ref<HTMLDivElement>;
+  /** Renders the element that scrolls as another element, such as `<nav aria-label="Main" />`. */
+  viewportRender?: ScrollAreaPrimitive.Viewport.Props['render'];
 };
 
 /**
@@ -26,7 +33,16 @@ type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
  * and the scrollbar shows, so the overflow never goes unnoticed. Both scrollbars are built in and
  * show only on the axis that overflows.
  */
-function ScrollArea({ className, children, fade = true, viewportClassName, viewportRef, ...props }: ScrollAreaProps) {
+function ScrollArea({
+  className,
+  children,
+  fade = true,
+  focusable = true,
+  viewportClassName,
+  viewportRef,
+  viewportRender,
+  ...props
+}: ScrollAreaProps) {
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
@@ -40,7 +56,9 @@ function ScrollArea({ className, children, fade = true, viewportClassName, viewp
     >
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef}
+        render={viewportRender}
         data-slot="scroll-area-viewport"
+        {...(focusable ? null : { tabIndex: -1 })}
         className={cn(
           // `relative` keeps absolutely positioned content (an `sr-only` label) inside the clip, so it never widens the page.
           'relative min-h-0 flex-auto overscroll-x-contain rounded-[inherit] outline-none',
@@ -90,7 +108,7 @@ function ScrollBar({ className, orientation = 'vertical', ...props }: ScrollArea
         data-slot="scroll-area-thumb"
         className={cn(
           // Solid, so the thumb keeps 3:1 against the track in both themes.
-          'rounded-full bg-muted-foreground',
+          'rounded-full bg-scrollbar-thumb',
           orientation === 'vertical' ? 'h-(--scroll-area-thumb-height) w-full' : 'h-full w-(--scroll-area-thumb-width)',
         )}
       />

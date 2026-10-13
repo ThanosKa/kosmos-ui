@@ -33,6 +33,16 @@ export function docsSourceUrl(path: string, view: 'blob' | 'edit') {
   const ref = view === 'edit' ? gitConfig.editBranch : 'HEAD';
   return `${githubUrl}/${view}/${ref}/content/docs/${path}`;
 }
+/**
+ * The origin of the Pro deployment, the private app that renders the Pro variants (ADR 0003), with no trailing slash.
+ * Set `NEXT_PUBLIC_KOSMOS_PRO_URL` to show them; unset, the site shows no Pro variant at all.
+ */
+export const proDeploymentUrl = process.env.NEXT_PUBLIC_KOSMOS_PRO_URL?.replace(/\/+$/, '') || undefined;
+/**
+ * Where the block viewer of a Pro variant sends visitors for its locked code: the store, once there is one. Until
+ * then the locked code has no link (ADR 0003).
+ */
+export const proUrl: string | undefined = undefined;
 export const licenseUrl = `${githubUrl}/blob/HEAD/LICENSE`;
 export const author = {
   name: 'Thanos Kazakis',

@@ -2,15 +2,16 @@
 
 The review skills check Kosmos UI; they do not set its values. Where one of them asks for something else, the Kosmos value below wins. Report such a finding as `Kosmos style` with the row it matches, and do not change the code.
 
-Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `review-animations` (Emil Kowalski, whose `emil-design-eng` values it repeats).
+Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `review-animations`, `break-ui` and `mobile-native` (Emil Kowalski, whose `emil-design-eng` values they repeat).
 
 ## Motion
 
 | Point | Reviewer says | Kosmos value (wins) | Why |
 | --- | --- | --- | --- |
-| Press scale | Emil `0.97` (range 0.95–0.98); `better-ui` exactly `0.96` | `0.96`, 150ms, `power3-out`, every enabled standalone Button, its link form included | Inside both reviewers' accepted values. Decided without the user, pending confirmation |
+| Press scale | Emil `0.97` (range 0.95–0.98); `better-ui` exactly `0.96` | `0.96`, 150ms, `power3-out`, every enabled standalone Button, its link form included | Inside both reviewers' accepted values |
 | Easing curves | Emil: his own `--ease-out` `(0.23, 1, 0.32, 1)`; `ease` for hover. `better-ui`: `ease-out`, `(0.2, 0, 0, 1)` for icon swaps | `power3-out` `(0.25, 1, 0.5, 1)` for enter, exit, hover and icon swaps; `smooth-in-out` for size and position | One curve family shared by Tailwind and Motion |
 | Exit curve | Emil: never ease-in | `power3-out`, same as enter | Agrees with the reviewers; the studied overlay exits used `power3-in`, which Kosmos drops |
+| Accordion close | Emil: exits shorter than enters, as the Kosmos exit row says | Accordion height closes in 300ms on `smooth-in-out`, as it opens | A swap moves two heights at once; a faster close makes the total dip and the page bounce |
 | Exit shape | `better-ui`: opacity + 4px blur + `-12px` translate | The enter reversed (scale and opacity), 150ms | Exits mirror their enter, so a popover shrinks back toward its trigger |
 | Overlay start scale | Emil: from 0.9–0.97 | Popover/menu `0.97`, dialog `0.95` | Inside Emil's range; matches the studied overlays |
 | Spring bounce | Emil: 0.1–0.3 when used | `bounce: 0`, `duration: 0.3` | Calm motion; same as `better-ui` |
@@ -24,7 +25,7 @@ Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `
 | --- | --- | --- | --- |
 | Dark-mode shadows | `better-ui`: depth shadows vanish in dark, keep one white ring | Dark outer ring + drop + 1px inner rim of light | The Kosmos signature look |
 | Input boundary | `better-ui`/`better-accessibility`: inputs keep a border with 3:1 contrast | `shadow-control` ring at the `secondary` fill, below 3:1; labels identify fields; the focus outline passes 3:1 | Same choice as shadcn and most design systems; report as `LOW` at most |
-| Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a flush 1px `outline-ring` plus a 4px `ring/20` halo | Survives forced colors and leaves shadow stacks intact. On a field the 1px outline in `ring` passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most |
+| Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a 1px `ring` line (a ring offset) plus a 3px `ring/20` halo, with a transparent outline for forced colors | Survives forced colors and leaves shadow stacks intact. On a field the 1px `ring` line passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most |
 | Token tiers | `better-colors`: primitive ramps plus semantic tokens; names like `--color-text-secondary` | One semantic tier with shadcn names (`muted-foreground`, `accent`) | `shadcn add` components must find the names they expect |
 | `accent` meaning | `better-colors`: accent is the brand hue | `accent` is the translucent hover overlay, brand is `primary` | shadcn's meaning, which installed components rely on |
 

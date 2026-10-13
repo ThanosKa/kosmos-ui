@@ -1,36 +1,50 @@
 'use client';
 
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { StatsOverview, type Stat } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
+import { StatsOverview, type Metric, type StatsRange } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 
 const frame = 'w-full rounded-xl border border-transparent bg-background p-4 shadow-card';
 
-const emptyStats: Stat[] = [
-  { id: 'mrr', label: 'Monthly revenue', value: 0, format: 'currency', trend: [] },
-  { id: 'accounts', label: 'New accounts', value: 0, format: 'number', trend: [] },
-  { id: 'churn', label: 'Churn rate', value: 0, format: 'percent', goodWhen: 'down', trend: [] },
-  { id: 'nrr', label: 'Net retention', value: 0, format: 'percent', trend: [] },
+const everyRange = <T,>(value: T): Record<StatsRange, T> => ({ '7d': value, '30d': value, '90d': value });
+
+const emptyMetrics: Metric[] = [
+  { id: 'users', label: 'Active users', value: 0, format: 'number', points: [] },
+  { id: 'events', label: 'Events', value: 0, format: 'number', points: [] },
+  { id: 'revenue', label: 'Monthly revenue', value: 0, format: 'currency', points: [] },
+  { id: 'projects', label: 'Live projects', value: 0, format: 'number', points: [] },
 ];
 
-const longStats: Stat[] = [
-  { id: 'arr', label: 'Annual recurring revenue across every region and currency', value: 128_450_920, format: 'currency', change: 1240.5, trend: [1, 3, 2, 8, 12, 30, 44, 61, 90, 128] },
-  { id: 'seats', label: 'Seats', value: 3, format: 'number', change: -66.7, trend: [9, 9, 3] },
-  { id: 'churn', label: 'Churn rate', value: 0.1, format: 'percent', change: 0.1, goodWhen: 'down', trend: [0, 0, 0.1] },
-  { id: 'nrr', label: 'Net retention', value: 100, format: 'percent', change: 0, trend: [100, 100, 100] },
+const longPoints = ['Oct 5', 'Oct 6', 'Oct 7', 'Oct 8', 'Oct 9', 'Oct 10', 'Oct 11'].map((label, i) => ({
+  label,
+  current: 0.4 + i * 0.05,
+  previous: 0.6 - i * 0.02,
+}));
+
+const longMetrics: Metric[] = [
+  { id: 'events', label: 'Events received across every project and region', value: 1_284_502_920, format: 'number', change: 1240.5, points: longPoints },
+  { id: 'revenue', label: 'Monthly revenue', value: 3, format: 'currency', change: -66.7, points: longPoints },
+  { id: 'errors', label: 'Error rate', value: 0.7, format: 'percent', change: 0.3, goodWhen: 'down', points: longPoints },
+  { id: 'projects', label: 'Live projects', value: 8, format: 'number', points: longPoints },
+];
+
+const longEvents = [
+  { name: 'subscription_trial_converted_to_annual_plan', count: 1_920_000 },
+  { name: 'page_viewed', count: 1_200 },
+  { name: 'signed_up', count: 1 },
 ];
 
 export default function StatsOverviewPreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="Full, 12 months">
+      <PreviewSection title="Full, 30 days">
         <div className={frame}>
           <StatsOverview />
         </div>
       </PreviewSection>
 
-      <PreviewSection title="30 days">
+      <PreviewSection title="Events selected, 90 days">
         <div className={frame}>
-          <StatsOverview defaultRange="30d" />
+          <StatsOverview defaultRange="90d" defaultMetric="events" />
         </div>
       </PreviewSection>
 
@@ -42,13 +56,19 @@ export default function StatsOverviewPreview() {
 
       <PreviewSection title="No data yet">
         <div className={frame}>
-          <StatsOverview stats={emptyStats} revenue={{ '30d': [], '90d': [], '12m': [] }} plans={[]} />
+          <StatsOverview metrics={everyRange(emptyMetrics)} topEvents={everyRange([])} />
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long labels and extreme values">
+      <PreviewSection title="No metrics">
         <div className={frame}>
-          <StatsOverview stats={longStats} />
+          <StatsOverview metrics={everyRange([])} topEvents={everyRange([])} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Long labels and extreme values, 7 days">
+        <div className={frame}>
+          <StatsOverview defaultRange="7d" metrics={everyRange(longMetrics)} topEvents={everyRange(longEvents)} />
         </div>
       </PreviewSection>
 

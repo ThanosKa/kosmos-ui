@@ -33,17 +33,22 @@
 @custom-variant active (&:active, &[data-preview~='active']);
 
 /*
- * Site-only type roles for the landing page hero. Components stay between 12 and 14px (kosmos-style), so
- * these never ship in @kosmos/tokens (kosmos-style tokens.md, "Site-only roles"). Use them as plain classes,
- * not through `cn`, which doesn't know them.
+ * Site-only type role: the title of a docs page. Components stay between 12 and 14px (kosmos-style), so it never
+ * ships in @kosmos/tokens (kosmos-style tokens.md, "Site-only roles"). Use it as a plain class, not through `cn`,
+ * which doesn't know it.
  */
 @theme {
-  --text-hero: clamp(2rem, 1.25rem + 3vw, 3.25rem);
-  --text-hero--line-height: 1.1;
-  --text-hero--font-weight: 600;
-  --text-hero--letter-spacing: -0.03em;
-  --text-lead: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
-  --text-lead--line-height: 1.6;
+  --text-page-title: 1.75rem;
+  --text-page-title--line-height: 1.25;
+  --text-page-title--font-weight: 600;
+  --text-page-title--letter-spacing: -0.02em;
+}
+
+/* The page title is 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks. */
+@media (width >= 48rem) {
+  :root {
+    --text-page-title: 2rem;
+  }
 }
 
 html {
@@ -53,4 +58,55 @@ html {
 /* The landing page's sticky header (3.5rem): focused and anchored elements stop below it. */
 html:has(#site-header) {
   scroll-padding-top: 4.5rem;
+}
+
+/*
+ * The accents and radii a visitor tries on the landing page's dashboard (components/site/dashboard-tokens.ts), set on
+ * the dashboard document's <html> and on the accent swatches. Each accent takes over the orange's roles at the
+ * orange's contrast: `ring` at least 3:1 on the page, `active-foreground` and the light `meter-primary` at least 4.5:1
+ * on every nav surface; in dark all three are one value, as for the orange. `chart-1`, the orange tag and the sidebar
+ * ring follow `ring`. Site-only: no installed component reads these attributes.
+ */
+[data-accent='violet'] {
+  --ring: oklch(0.58 0.22 295);
+  --active-foreground: oklch(0.52 0.22 295);
+}
+[data-accent='magenta'] {
+  --ring: oklch(0.6 0.22 350);
+  --active-foreground: oklch(0.52 0.2 350);
+}
+[data-accent='teal'] {
+  --ring: oklch(0.6 0.1 195);
+  --active-foreground: oklch(0.5 0.085 195);
+}
+.dark[data-accent='violet'],
+.dark [data-accent='violet'] {
+  --ring: oklch(0.7 0.16 295);
+}
+.dark[data-accent='magenta'],
+.dark [data-accent='magenta'] {
+  --ring: oklch(0.7 0.18 350);
+}
+.dark[data-accent='teal'],
+.dark [data-accent='teal'] {
+  --ring: oklch(0.72 0.12 195);
+}
+.dark:is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']),
+.dark :is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']) {
+  --active-foreground: var(--ring);
+}
+:is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']) {
+  --meter-primary: var(--active-foreground);
+  --sidebar-ring: var(--ring);
+  --chart-1: var(--ring);
+}
+
+[data-radius='0'] {
+  --radius: 0rem;
+}
+[data-radius='6'] {
+  --radius: 0.375rem;
+}
+[data-radius='14'] {
+  --radius: 0.875rem;
 }

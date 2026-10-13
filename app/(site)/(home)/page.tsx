@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { DashboardShowcase } from '@/components/site/dashboard-showcase';
-import { itemsInGroup, readRegistryItems } from '@/lib/registry';
-import { appDescription, appName, siteOpenGraph } from '@/lib/shared';
-import { buttonVariants } from '@/registry/kosmos/ui/button';
+import { GitHubIcon } from '@/components/site/brand-icons';
+import { DashboardCanvas } from '@/components/site/dashboard-canvas';
+import { ComponentBento } from '@/components/site/landing-bento';
+import { Inventory } from '@/components/site/landing-inventory';
+import { LandingInstall, landingInstallHeadingId } from '@/components/site/landing-install';
+import { LandingProof, landingProofHeadingId } from '@/components/site/landing-proof';
+import { LandingSection, type LandingSectionProps } from '@/components/site/landing-section';
+import { SiteFooter } from '@/components/site/site-footer';
+import { itemsInGroup, packageRunners, readRegistryItems, registryAddArgs } from '@/lib/registry';
+import { appDescription, appName, githubUrl, siteOpenGraph } from '@/lib/shared';
+import { Hero } from '@/registry/kosmos/blocks/hero/hero';
+import { Button, buttonVariants } from '@/registry/kosmos/ui/button';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
 
@@ -13,46 +21,96 @@ export const metadata: Metadata = {
   openGraph: { ...siteOpenGraph, title, description: appDescription, url: '/' },
 };
 
+/** The eight application blocks the dashboard is composed from, in the order a visitor meets them. */
+const dashboardBlocks = [
+  'app-sidebar',
+  'stats-overview',
+  'page-header',
+  'data-table',
+  'detail-drawer',
+  'kanban-board',
+  'new-item-dialog',
+  'command-menu',
+];
+
 export default function HomePage() {
   const items = readRegistryItems();
   const componentCount = items.filter((item) => item.type === 'registry:ui').length;
   const blockCount = itemsInGroup('blocks', items).length;
 
-  return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 sm:px-6">
-      <section className="flex flex-col items-center pt-14 pb-12 text-center sm:pt-24 sm:pb-16">
-        <h1 className="max-w-[14em] text-hero text-balance">Dashboard UI with the details already done</h1>
-        <p className="mt-5 max-w-[34em] text-lead text-pretty text-muted-foreground">
-          {componentCount} components and {blockCount} blocks for dashboard apps, installed from the shadcn
-          registry. Free and open source under MIT.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {/* Router links styled as buttons: `Button href` renders a plain <a>, which reloads the page. */}
-          <Link href="/docs/installation" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
-            Get started
-          </Link>
-          <Link href="/docs/components" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
-            Browse components
-          </Link>
-        </div>
-      </section>
+  const sections: LandingSectionProps[] = [
+    {
+      id: 'hero',
+      blocks: ['hero'],
+      children: (
+        <Hero
+          title="Dashboard UI with the details already done"
+          description={`${componentCount} components and ${blockCount} blocks, installed from the shadcn registry. Free and open source under MIT.`}
+          actions={
+            <>
+              {/* A router link styled as a button: `Button href` renders a plain <a>, which reloads the page. */}
+              <Link href="/docs/components" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+                Browse components
+              </Link>
+              <Button variant="secondary" size="lg" href={githubUrl}>
+                <GitHubIcon data-icon="inline-start" />
+                GitHub
+              </Button>
+            </>
+          }
+          command={`${packageRunners.npm} ${registryAddArgs}`}
+          className="px-0 pb-0 @2xl:px-0 @2xl:pb-0"
+        />
+      ),
+    },
+    {
+      id: 'dashboard',
+      blocks: dashboardBlocks,
+      srHeading: 'Live dashboard',
+      children: <DashboardCanvas />,
+    },
+    {
+      id: 'bento',
+      blocks: ['bento'],
+      children: <ComponentBento componentCount={componentCount} />,
+    },
+    {
+      id: 'inventory',
+      blocks: ['bento'],
+      srHeading: 'Inventory',
+      children: <Inventory />,
+    },
+    {
+      id: 'install',
+      components: ['tabs', 'button'],
+      labelledBy: landingInstallHeadingId,
+      children: <LandingInstall />,
+    },
+    {
+      id: 'proof',
+      components: ['button'],
+      labelledBy: landingProofHeadingId,
+      children: <LandingProof />,
+    },
+  ];
 
-      <section aria-labelledby="demo-heading" className="flex flex-col gap-4 pb-16 sm:pb-24">
-        <h2 id="demo-heading" className="sr-only">
-          Live dashboard
-        </h2>
-        <DashboardShowcase />
-        <p className="text-center text-small text-pretty text-muted-foreground">
-          A live dashboard built from the free blocks. Open an account, drag cards on the board or{' '}
-          <Link
-            href="/docs/blocks"
-            className="rounded-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            browse the blocks
-          </Link>
-          .
-        </p>
-      </section>
-    </main>
+  // The page footer closes the landing outside <main>, in a <div>, so it stays the page's footer landmark.
+  const footer: LandingSectionProps = {
+    id: 'footer',
+    blocks: ['footer'],
+    as: 'div',
+    className: 'pb-8',
+    children: <SiteFooter />,
+  };
+
+  return (
+    <>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 pb-16 sm:gap-20 sm:px-6 sm:pb-24">
+        {sections.map((section) => (
+          <LandingSection key={section.id} {...section} />
+        ))}
+      </main>
+      <LandingSection {...footer} />
+    </>
   );
 }

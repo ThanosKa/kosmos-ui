@@ -5,6 +5,7 @@ import { Check, ChevronRight } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { KbdGroup } from '@/registry/kosmos/ui/kbd';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 /**
  * Keeps this part's `data-slot` when `render` is an element that brings its own, such as a Button
@@ -44,13 +45,16 @@ function DropdownMenuPositioner({
   );
 }
 
-/** The menu surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion. */
-function DropdownMenuPopup({ className, ...props }: MenuPrimitive.Popup.Props) {
+/**
+ * The menu surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion.
+ * Items scroll in a `ScrollArea` when the menu is taller than the room it has: the edge with items hidden past it fades out.
+ */
+function DropdownMenuPopup({ className, children, ...props }: MenuPrimitive.Popup.Props) {
   return (
     <MenuPrimitive.Popup
       data-slot="dropdown-menu-popup"
       className={cn(
-        'max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto overscroll-contain rounded-xl border border-transparent bg-popover p-1 text-body text-popover-foreground shadow-popover sm:min-w-44 dark:scheme-dark',
+        'flex max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover sm:min-w-44 dark:scheme-dark',
         // The popup holds focus only as the container of its items; the highlighted item is the focus indicator.
         'outline-none',
         'transition-[opacity,scale] duration-base',
@@ -59,7 +63,17 @@ function DropdownMenuPopup({ className, ...props }: MenuPrimitive.Popup.Props) {
         className,
       )}
       {...props}
-    />
+    >
+      <ScrollArea
+        data-slot="dropdown-menu-scroll-area"
+        focusable={false}
+        className="rounded-none"
+        // `min-w-0!` beats the content's inline `min-width: fit-content`, so a menu with a set width wraps long labels.
+        viewportClassName="overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
+      >
+        <div className="p-1">{children}</div>
+      </ScrollArea>
+    </MenuPrimitive.Popup>
   );
 }
 

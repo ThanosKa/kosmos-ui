@@ -1,15 +1,13 @@
 ---
 title: App sidebar
-description: A dashboard sidebar with a workspace switcher, search, pages with unread counts, saved views and an account menu. Resizable, collapsible, and a drawer on phones.
+description: A dashboard sidebar with a workspace switcher, search, pages, saved views and a user menu. Collapses to a column of icons, resizes, and opens as a drawer on phones.
 ---
-
-<ComponentPreview name="app-sidebar-demo" />
 
 ## Installation
 
 <ComponentInstall name="app-sidebar" />
 
-The block brings [Sidebar](/docs/components/sidebar), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar), [Kbd](/docs/components/kbd) and [Button](/docs/components/button) with it, and lands in `components/app-sidebar.tsx`.
+The block brings [Sidebar](/docs/components/sidebar), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar) and [Kbd](/docs/components/kbd) with it, and lands in `components/app-sidebar.tsx`.
 
 ## Usage
 
@@ -22,7 +20,7 @@ import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } fr
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <AppSidebar activeItem="accounts" />
+      <AppSidebar activeItem="projects" />
       <SidebarResizeHandle />
       <SidebarInset>
         <header className="flex h-12 items-center gap-2 border-b border-border px-3">
@@ -35,22 +33,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/blocks/command-menu). The block doesn't bind any keys: when your app binds ⌘K (Ctrl+K on Windows and Linux) to the same search, as the command menu does, pass `searchShortcut` and the button shows and announces it. The workspace and account menus run their actions (add workspace, profile, account settings, log out) through `onAction`; without it, those items are hidden and the user shows as plain text.
+The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`; `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/blocks/command-menu). The block doesn't bind any keys: when your app binds ⌘K (Ctrl+K on Windows and Linux) to the same search, as the command menu does, pass `searchShortcut` and the button shows and announces it. The workspace and user menus run their actions (add workspace, profile, preferences, log out) through `onAction`; without it, those items are hidden and the user shows as plain text.
+
+The sidebar collapses to a 48px column of icons, from its trigger, from ⌘B (Ctrl+B on Windows and Linux) or by dragging its edge. Each page then names itself in a tooltip, and the workspace mark and the user's avatar stay. `SidebarProvider` saves the state in local storage under `sidebar-state`, so the sidebar comes back as it was left; pass `storageKey` to use your own key, or `false` to keep nothing. Pass `collapsible="offcanvas"` to hide it at the edge instead.
 
 To put the same content in another surface, such as your own drawer, render `AppSidebarContent` instead of `AppSidebar`.
 
 ## What it does
 
 - **Workspace switcher**: a menu that lists the workspaces and marks the current one. It keeps its own state, starting on `defaultWorkspace`, unless you pass `workspace` and `onWorkspaceChange`. With no workspaces, it is hidden.
-- **Pages and saved views**: links with an icon and an optional count. `badgeLabel` tells screen readers what the count means ("unread").
-- **Account menu**: the signed-in user, with profile, settings and log out, once you pass `onAction`. It opens upward from the bottom of the sidebar.
-- **Resize, collapse and phones**: everything the [Sidebar](/docs/components/sidebar) does. From 768px up it sits beside the page; below that it opens as a drawer.
+- **Pages and saved views**: links with an icon and an optional count. `badgeLabel` tells screen readers what the count means ("projects"). When the list is taller than the sidebar it scrolls between the header and the footer, and an edge with pages hidden past it fades out.
+- **User menu**: the signed-in user, with profile, preferences and log out, once you pass `onAction`. It opens upward from the bottom of the sidebar.
+- **Icon mode, resize and phones**: everything the [Sidebar](/docs/components/sidebar) does. From 768px up it sits beside the page and collapses to icons; below that it opens as a drawer with the full sidebar.
 
 ## API
 
 ### AppSidebar
 
-Takes every [Sidebar](/docs/components/sidebar#sidebar) prop, plus the props of `AppSidebarContent`.
+Takes every [Sidebar](/docs/components/sidebar#sidebar) prop, plus the props of `AppSidebarContent`. `collapsible` defaults to `'icon'`.
 
 ### AppSidebarContent
 
@@ -60,11 +60,11 @@ Each item is `{ id: string; label: string; href: string; icon: LucideIcon; badge
   type={{
     navMain: { description: 'The main pages, at the top.', type: 'AppSidebarNavItem[]', default: 'sample pages' },
     navViews: { description: 'The saved views, under their own heading.', type: 'AppSidebarNavItem[]', default: 'sample views' },
-    navFooter: { description: 'The links above the account menu.', type: 'AppSidebarNavItem[]', default: 'Help and feedback, Settings' },
+    navFooter: { description: 'The links above the user menu.', type: 'AppSidebarNavItem[]', default: 'Help and feedback, Settings' },
     activeItem: {
       description: 'The `id` of the current page. Its item is highlighted and marked `aria-current="page"`.',
       type: 'string',
-      default: "'accounts'",
+      default: "'projects'",
     },
     onNavigate: {
       description: 'Called when an item is clicked, with its `id`. Call `event.preventDefault()` to route in place.',
@@ -97,19 +97,19 @@ Each item is `{ id: string; label: string; href: string; icon: LucideIcon; badge
       type: '(id: string) => void',
     },
     user: {
-      description: 'The signed-in user shown in the account menu.',
+      description: 'The signed-in user shown in the user menu.',
       type: '{ name: string; email: string; initials: string }',
     },
     onAction: {
-      description: 'Runs an action from the workspace or account menu. Without it, those items and the account menu are hidden.',
-      type: "(action: 'add-workspace' | 'profile' | 'account-settings' | 'log-out') => void",
+      description: 'Runs an action from the workspace or user menu. Without it, those items and the user menu are hidden.',
+      type: "(action: 'add-workspace' | 'profile' | 'preferences' | 'log-out') => void",
     },
     workspaceMenu: {
       description: 'Props for the workspace menu, such as `open` and `onOpenChange`.',
       type: 'DropdownMenu props',
     },
     userMenu: {
-      description: 'Props for the account menu, such as `open` and `onOpenChange`.',
+      description: 'Props for the user menu, such as `open` and `onOpenChange`.',
       type: 'DropdownMenu props',
     },
   }}

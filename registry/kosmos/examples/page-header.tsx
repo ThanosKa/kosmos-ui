@@ -21,13 +21,14 @@ export default function PageHeaderPreview() {
   return (
     <PreviewStack>
       <PreviewSection title="Filter menu open, two filters on">
-        <div className={`${frame} pb-56`}>
+        <div className={`${frame} pb-80`}>
           <PageHeader
             leading={toggle}
-            defaultTab="at-risk"
-            filters={['maya', 'enterprise']}
+            defaultTab="live"
+            filters={['scale', 'ios']}
             filterMenu={{ open: true, modal: false }}
             onAction={() => {}}
+            onNew={() => {}}
           >
             <Body />
           </PageHeader>
@@ -36,33 +37,52 @@ export default function PageHeaderPreview() {
 
       <PreviewSection title="Default">
         <div className={frame}>
-          <PageHeader leading={toggle} onAction={() => {}}>
+          <PageHeader leading={toggle} onAction={() => {}} onNew={() => {}}>
             <Body />
           </PageHeader>
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Search text, board layout, h2 title">
+      <PreviewSection title="Search text, three filters on, h2 title">
         <div className={frame}>
-          <PageHeader leading={toggle} headingLevel={2} defaultTab="active" query="north" view="board" onAction={() => {}}>
-            <Body text="Board" />
+          <PageHeader
+            leading={toggle}
+            headingLevel={2}
+            defaultTab="trial"
+            query="tide"
+            defaultFilters={['pro', 'ios', 'web']}
+            onAction={() => {}}
+            onNew={() => {}}
+          >
+            <Body text="Tidepool Notes" />
           </PageHeader>
         </div>
       </PreviewSection>
 
-      <PreviewSection title="In a narrow container, long title, no More actions menu">
+      <PreviewSection title="In a narrow container, long title, no description, no More actions menu">
         <div className={`${frame} max-w-sm`}>
           <PageHeader
             leading={toggle}
-            title="Enterprise renewals for the next two quarters"
-            newLabel="New renewal"
+            title="Scale plan projects that are live, on trial or paused"
+            description=""
+            newLabel="New project"
+            onNew={() => {}}
+            defaultFilters={['scale', 'server']}
             tabs={[
-              { value: 'all', label: 'All renewals', count: 1284 },
-              { value: 'mine', label: 'Assigned to me', count: 32 },
-              { value: 'overdue', label: 'Overdue', count: 7 },
-              { value: 'closed', label: 'Closed this month', count: 54 },
+              { value: 'all', label: 'All projects', count: 1284 },
+              { value: 'live', label: 'Live', count: 1032 },
+              { value: 'trial', label: 'Trial', count: 187 },
+              { value: 'paused', label: 'Paused this month', count: 65 },
             ]}
           >
+            <Body />
+          </PageHeader>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Read-only: no onNew and no onAction, so no primary action and no More actions menu">
+        <div className={frame}>
+          <PageHeader leading={toggle}>
             <Body />
           </PageHeader>
         </div>

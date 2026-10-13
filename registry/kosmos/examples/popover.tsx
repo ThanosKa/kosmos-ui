@@ -3,6 +3,7 @@
 import { Bell, Calendar, Info } from 'lucide-react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Popover,
@@ -15,6 +16,37 @@ import {
 } from '@/registry/kosmos/ui/popover';
 
 const stageClass = 'h-[22rem]';
+
+const changes = [
+  'Four seats added on August 4.',
+  'Data retention add-on moved to the yearly rate.',
+  'Two seats removed on August 19.',
+  'Priority support added for the rest of the quarter.',
+  'A credit of $120 from the July outage.',
+  'Sales tax updated for the new billing address.',
+];
+
+function ChangesPopover({ container, scrolled }: { container: HTMLElement; scrolled?: boolean }) {
+  return (
+    <Popover open>
+      <PopoverTrigger render={<Button variant="secondary" />}>What changed</PopoverTrigger>
+      <PopoverContent container={container} initialFocus={false} align="start" className="max-h-56 w-56">
+        {scrolled ? <ScrollToMiddle /> : null}
+        <PopoverHeader>
+          <PopoverTitle>Changes this quarter</PopoverTitle>
+          <PopoverDescription>Everything that moved the total since the last invoice.</PopoverDescription>
+        </PopoverHeader>
+        <ul className="flex flex-col divide-y divide-border">
+          {changes.map((change) => (
+            <li key={change} className="py-2">
+              {change}
+            </li>
+          ))}
+        </ul>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 export default function PopoverPreview() {
   return (
@@ -57,7 +89,7 @@ export default function PopoverPreview() {
                   <PopoverContent container={container} initialFocus={false} side="top" align="end">
                     <PopoverHeader>
                       <PopoverTitle>Due date</PopoverTitle>
-                      <PopoverDescription>3 days left. Ana Lopez gets a reminder the day before.</PopoverDescription>
+                      <PopoverDescription>3 days left. Tomás Ortega gets a reminder the day before.</PopoverDescription>
                     </PopoverHeader>
                   </PopoverContent>
                 </Popover>
@@ -97,12 +129,28 @@ export default function PopoverPreview() {
                     <PopoverHeader>
                       <PopoverTitle>Why is this invoice higher than the previous quarterly invoice?</PopoverTitle>
                       <PopoverDescription>
-                        Four seats were added in August and the storage add-on renewed at the new yearly rate. Both
+                        Four seats were added in August and the data retention add-on moved to the new yearly rate. Both
                         changes are prorated from the day they started.
                       </PopoverDescription>
                     </PopoverHeader>
                   </PopoverContent>
                 </Popover>
+              </div>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="more content than fits, at the top" className={stageClass}>
+            {(container) => (
+              <div className="pt-4">
+                <ChangesPopover container={container} />
+              </div>
+            )}
+          </OverlayStage>
+
+          <OverlayStage label="more content than fits, scrolled halfway" className={stageClass}>
+            {(container) => (
+              <div className="pt-4">
+                <ChangesPopover container={container} scrolled />
               </div>
             )}
           </OverlayStage>

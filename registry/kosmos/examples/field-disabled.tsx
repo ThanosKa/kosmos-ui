@@ -5,8 +5,8 @@ export default function FieldDisabled() {
   return (
     <Field disabled className="w-full max-w-xs">
       <FieldLabel>Workspace URL</FieldLabel>
-      <Input defaultValue="kosmos.dev/acme" />
-      <FieldDescription>Only the owner can change this.</FieldDescription>
+      <Input defaultValue="acme.example/staging" />
+      <FieldDescription>Only workspace admins can change this.</FieldDescription>
     </Field>
   );
 }

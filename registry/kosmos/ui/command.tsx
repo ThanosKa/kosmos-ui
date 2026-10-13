@@ -159,7 +159,7 @@ function CommandEmpty({ className, ...props }: AutocompletePrimitive.Empty.Props
   return (
     <AutocompletePrimitive.Empty
       data-slot="command-empty"
-      className={cn('px-4 text-center text-body text-muted-foreground not-empty:py-10', className)}
+      className={cn('px-4 text-center text-body wrap-anywhere text-muted-foreground not-empty:py-10', className)}
       {...props}
     />
   );

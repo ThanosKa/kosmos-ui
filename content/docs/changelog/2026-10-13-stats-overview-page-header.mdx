@@ -1,0 +1,10 @@
+---
+title: Changed Stats overview and Page header for an analytics product
+description: Stats overview turns its metrics into tabs over one comparison chart with top events, and Page header gains a description and filter chips in place of the table or board switch.
+date: 2026-10-13
+---
+
+Both blocks now show a fictional product analytics app, with new layouts and props. Their props changed, so check your code after you run `shadcn add` again.
+
+- **[Stats overview](/docs/blocks/stats-overview)**: the metrics are tabs over one chart, which compares the selected metric with the period before it, over 7, 30 or 90 days. The plan breakdown is replaced by the top events. `stats`, `revenue` and `plans` are replaced by `metrics` and `topEvents`, both keyed by range; the ranges are `7d`, `30d` and `90d` (`12m` is gone); and the new `metric`, `defaultMetric` and `onMetricChange` pick the metric the chart shows.
+- **[Page header](/docs/blocks/page-header)**: a `description` line under the title, the saved views in a track, and a chip for each filter that is on, which removes it. Filter options take a `group` and sit under its name in the menu. The table or board switch is gone, with `view`, `defaultView`, `onViewChange` and the `PageView` type. The title wraps instead of cutting off. "Clear filters" stays in the filter menu, disabled while no filter is on, so the menu keeps its height as you tick filters.

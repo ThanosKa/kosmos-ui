@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "footer",
+  "type": "registry:block",
+  "title": "Footer",
+  "description": "The bottom of a marketing page: the product with one line, columns of links, and a row with the copyright and icon links. Lays itself out by its own width.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "categories": ["footer"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/footer/footer.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

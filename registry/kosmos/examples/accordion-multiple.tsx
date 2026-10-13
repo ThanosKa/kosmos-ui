@@ -11,8 +11,8 @@ export default function AccordionMultiple() {
         <AccordionTrigger>Push</AccordionTrigger>
         <AccordionContent>Mentions and assignments, as they happen.</AccordionContent>
       </AccordionItem>
-      <AccordionItem value="slack">
-        <AccordionTrigger>Slack</AccordionTrigger>
+      <AccordionItem value="chat">
+        <AccordionTrigger>Chat</AccordionTrigger>
         <AccordionContent>Failed deploys, posted to the channel you pick.</AccordionContent>
       </AccordionItem>
     </Accordion>

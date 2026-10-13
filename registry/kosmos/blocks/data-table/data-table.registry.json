@@ -3,7 +3,7 @@
   "name": "data-table",
   "type": "registry:block",
   "title": "Data table",
-  "description": "A table of records with sortable columns, row selection and a bulk action bar, status badges, owners, a health meter, a row actions menu, a totals footer, and loading and empty states.",
+  "description": "A table of projects with sortable columns, plan and platform filters, row selection and a bulk action bar, plan tags, status dots, a row actions menu, totals in the footer, and loading and empty states.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
@@ -14,11 +14,12 @@
     "@kosmos/avatar",
     "@kosmos/button",
     "@kosmos/dropdown-menu",
-    "@kosmos/meter",
     "@kosmos/empty",
+    "@kosmos/meter",
     "@kosmos/skeleton"
   ],
-  "meta": { "group": "blocks" },
+  "categories": ["data-table"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/data-table/data-table.tsx",

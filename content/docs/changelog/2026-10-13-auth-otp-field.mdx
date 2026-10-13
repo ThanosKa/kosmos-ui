@@ -1,0 +1,12 @@
+---
+title: Added the Auth forms block and OTP field
+description: Log in, sign up, an email code and password reset as one block, and a one-time code input to go with them.
+date: 2026-10-13
+---
+
+A new block category, Auth, and the component its code screen needs. Each installs with `shadcn add`:
+
+- [Auth forms](/docs/blocks/auth): four forms in one card layout. Log in has a show-password button and a link to reset the password. Sign up asks for a password of at least 8 characters and links your terms. The email code screen lets people send a new code after a wait. Forgot password ends on "Check your email" without saying whether an account uses the address. Every form has labels, errors under each field, a loading state while your handler runs and a success state. `AuthForms` switches between them in place and keeps the email filled in, or you can give each form its own route.
+- [OTP field](/docs/components/otp-field): a one-time code input with one box per character. Typing moves to the next box, and pasting or the code autofill on phones fills every box at once. It can split the boxes into groups, hide what was typed and submit the form when the last box is filled.
+
+A handler can return a promise, and throwing an `Error` shows its message, such as a wrong password or an expired code.

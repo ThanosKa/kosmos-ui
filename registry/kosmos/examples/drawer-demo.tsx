@@ -13,19 +13,19 @@ import {
 
 const details = [
   ['Status', 'In progress'],
-  ['Owner', 'Ana Lopez'],
-  ['Due', 'Oct 24'],
-  ['Estimate', '3 days'],
+  ['Assignee', 'Tomás Ortega'],
+  ['Target', 'Q4 2026'],
+  ['Votes', '45'],
 ] as const;
 
 export default function DrawerDemo() {
   return (
     <Drawer>
-      <DrawerTrigger render={<Button variant="secondary" />}>Open task</DrawerTrigger>
+      <DrawerTrigger render={<Button variant="secondary" />}>Open roadmap item</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Sync invoices with the ledger</DrawerTitle>
-          <DrawerDescription>Billing revamp · created by Farah Haddad</DrawerDescription>
+          <DrawerTitle>Server-side batching</DrawerTitle>
+          <DrawerDescription>Ingestion · added by Lena Park</DrawerDescription>
         </DrawerHeader>
         <DrawerBody>
           <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
@@ -38,7 +38,7 @@ export default function DrawerDemo() {
           </dl>
         </DrawerBody>
         <DrawerFooter>
-          <DrawerClose render={<Button variant="primary" />}>Mark as done</DrawerClose>
+          <DrawerClose render={<Button variant="primary" />}>Mark as shipped</DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

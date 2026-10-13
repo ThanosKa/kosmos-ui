@@ -12,7 +12,7 @@ export function GroupNav({ current }: { current?: Group }) {
           size="sm"
           href={`/approve/${key}`}
           aria-current={key === current ? 'page' : undefined}
-          className="text-muted-foreground aria-[current=page]:bg-secondary aria-[current=page]:text-foreground aria-[current=page]:shadow-control"
+          className="text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground"
         >
           {groups[key]}
         </Button>

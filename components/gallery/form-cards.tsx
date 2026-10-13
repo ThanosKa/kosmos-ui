@@ -19,20 +19,20 @@ import { Textarea } from '@/registry/kosmos/ui/textarea';
 /** Field, Input (valid and invalid), Select, Textarea, Checkbox, Separator, Button. */
 export function ProfileCard() {
   return (
-    <GalleryCard title="Profile" description="How other members of Acme Inc. see you.">
+    <GalleryCard title="Profile" description="How other members of Acme see you.">
       <form className="flex flex-col gap-4" onSubmit={(event) => event.preventDefault()}>
         <Field name="name">
           <FieldLabel>Full name</FieldLabel>
-          <Input defaultValue="Maya Chen" autoComplete="name" />
+          <Input defaultValue="Lena Park" autoComplete="name" />
         </Field>
         <Field name="email">
           <FieldLabel>Email</FieldLabel>
-          <Input type="email" defaultValue="maya@acme.example" autoComplete="email" />
+          <Input type="email" defaultValue="lena@acme.example" autoComplete="email" />
           <FieldDescription>Used for sign-in and notifications.</FieldDescription>
         </Field>
         <Field name="handle" invalid>
           <FieldLabel>Username</FieldLabel>
-          <Input defaultValue="maya chen" autoComplete="username" />
+          <Input defaultValue="lena park" autoComplete="username" />
           <FieldError>Use lowercase letters, numbers and hyphens only.</FieldError>
         </Field>
         <Field name="timezone">
@@ -56,7 +56,7 @@ export function ProfileCard() {
           <FieldLabel>Bio</FieldLabel>
           <Textarea
             maxLength={160}
-            defaultValue="Product designer working on billing and onboarding."
+            defaultValue="Product lead working on insights and billing."
             placeholder="A line or two about your work."
           />
         </Field>
@@ -83,9 +83,9 @@ export function ProfileCard() {
 
 const notificationRows = [
   { name: 'mentions', label: 'Mentions', description: 'When someone mentions you in a comment.', checked: true },
-  { name: 'assigned', label: 'Assigned to me', description: 'When an account or task is assigned to you.', checked: true },
+  { name: 'assigned', label: 'Assigned to me', description: 'When a roadmap item is assigned to you.', checked: true },
   { name: 'digest', label: 'Weekly digest', description: 'A summary of changes, every Monday at 9:00.', checked: false },
-  { name: 'sms', label: 'Text messages', description: 'Available on the Business plan.', checked: false, disabled: true },
+  { name: 'sms', label: 'Text messages', description: 'Available on the Scale plan.', checked: false, disabled: true },
 ];
 
 /** Switch rows, Slider, Separator. */
@@ -129,7 +129,7 @@ export function PlansCard() {
   return (
     <GalleryCard
       title="Plan"
-      description="Prices per member."
+      description="Prices per workspace."
       action={
         <SegmentedControl
           size="sm"
@@ -171,7 +171,7 @@ export function PlansCard() {
         </AccordionItem>
         <AccordionItem value="change">
           <AccordionTrigger>Can I change plans later?</AccordionTrigger>
-          <AccordionContent>Upgrades apply right away and are prorated. Downgrades apply at renewal.</AccordionContent>
+          <AccordionContent>Upgrades apply right away and are prorated. Downgrades apply at the end of the billing period.</AccordionContent>
         </AccordionItem>
       </Accordion>
     </GalleryCard>

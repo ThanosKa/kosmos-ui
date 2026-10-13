@@ -1,0 +1,78 @@
+---
+title: Footer
+description: The bottom of a marketing page, with the product, columns of links, a copyright and icon links.
+---
+
+## Installation
+
+<ComponentInstall name="footer" />
+
+The block brings [Button](/docs/components/button) with it, and lands in `components/footer.tsx`.
+
+## Usage
+
+```tsx
+import { Mail } from 'lucide-react';
+import Link from 'next/link';
+import { Footer } from '@/components/footer';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      {children}
+      <Footer
+        name="Acme"
+        description="Product analytics for the teams that run sites and apps."
+        columns={[
+          {
+            title: 'Product',
+            links: [
+              { label: 'Features', href: '/features' },
+              { label: 'Pricing', href: '/pricing' },
+            ],
+          },
+          {
+            title: 'Company',
+            links: [
+              { label: 'About', href: '/about' },
+              { label: 'Contact', href: '/contact' },
+            ],
+          },
+        ]}
+        social={[{ label: 'Email Acme', href: 'mailto:hello@acme.example', icon: <Mail aria-hidden /> }]}
+        legal="© 2026 Acme"
+        linkComponent={Link}
+      />
+    </>
+  );
+}
+```
+
+Pass your router's `Link` as `linkComponent`, so the name and the column links move between pages without loading the whole page. The name, line, columns, icon links and copyright at the top of the file are sample data.
+
+## What it does
+
+- **Landmark**: the footer is a `<footer>`. Placed outside `<main>`, `<article>` and `<section>`, it becomes the page's footer landmark, and its columns sit in a navigation named "Footer".
+- **Columns**: each column has a title and its links. Two columns share a row on a phone, and all four fit on one row once the footer is 576px wide.
+- **Product**: the name links home, beside a tile with its first letter until you pass a `logo`. From 896px wide the columns move beside it.
+- **Bottom row**: the copyright or byline on one side, icon links on the other. Each icon link takes its `label` as its accessible name, so screen readers hear "Email Acme" rather than "link".
+- **Width**: the footer lays itself out by its own width, with container queries, not by the screen's.
+
+## API
+
+### Footer
+
+Takes every `<footer>` prop, plus:
+
+<TypeTable
+  type={{
+    name: { description: 'The product name beside the logo, linking to `homeHref`.', type: 'ReactNode', default: "'Acme'" },
+    logo: { description: 'Replaces the letter tile beside the name, usually with your logo. Decorative: the name names the link.', type: 'ReactNode' },
+    description: { description: 'One line under the name. `null` leaves it out.', type: 'ReactNode', default: 'sample line' },
+    homeHref: { description: 'Where the name links.', type: 'string', default: "'/'" },
+    columns: { description: 'Columns of links, each under its title. An empty array leaves them out.', type: '{ title: string; links: { label: string; href: string }[] }[]', default: 'sample columns' },
+    social: { description: 'Icon links at the end of the bottom row, such as your profiles. `label` is the accessible name of each; an empty array leaves them out.', type: '{ label: string; href: string; icon: ReactNode }[]', default: 'sample links' },
+    legal: { description: 'The start of the bottom row, such as a copyright. `null` leaves it out.', type: 'ReactNode', default: "'© 2026 Acme'" },
+    linkComponent: { description: "Renders the name and the column links, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
+  }}
+/>

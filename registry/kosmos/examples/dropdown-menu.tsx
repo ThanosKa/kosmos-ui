@@ -17,6 +17,7 @@ import {
 import { useState } from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   DropdownMenu,
@@ -38,6 +39,41 @@ import {
 import { Kbd } from '@/registry/kosmos/ui/kbd';
 
 const stageClass = 'h-[24rem]';
+
+const projects = [
+  'Q3 Roadmap',
+  'Website refresh',
+  'Mobile app',
+  'Billing migration',
+  'Onboarding emails',
+  'Design system',
+  'Help center',
+  'Data warehouse',
+  'Security review',
+  'Hiring plan',
+  'Partner portal',
+  'Year-end report',
+];
+
+function MoveToMenu({ container, scrolled }: { container: HTMLElement; scrolled?: boolean }) {
+  return (
+    <DropdownMenu open modal={false}>
+      <DropdownMenuTrigger render={<Button variant="secondary" />}>
+        Move to
+        <ChevronDown data-icon="inline-end" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent container={container} className="max-h-60">
+        {scrolled ? <ScrollToMiddle /> : null}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Projects</DropdownMenuLabel>
+          {projects.map((project) => (
+            <DropdownMenuItem key={project}>{project}</DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export default function DropdownMenuPreview() {
   return (
@@ -106,14 +142,14 @@ export default function DropdownMenuPreview() {
                         Invite
                       </DropdownMenuSubTrigger>
                       <DropdownMenuSubContent container={container}>
-                        <DropdownMenuItem>Ana Lopez</DropdownMenuItem>
-                        <DropdownMenuItem>Ben Carter</DropdownMenuItem>
-                        <DropdownMenuItem>Chen Wei</DropdownMenuItem>
+                        <DropdownMenuItem>Tomás Ortega</DropdownMenuItem>
+                        <DropdownMenuItem>Ama Mensah</DropdownMenuItem>
+                        <DropdownMenuItem>Kai Nakamura</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Invite by email…</DropdownMenuItem>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
-                    <DropdownMenuLinkItem href="#docs" onClick={(event) => event.preventDefault()}>
+                    <DropdownMenuLinkItem href="/projects/q3-roadmap" onClick={(event) => event.preventDefault()}>
                       <ExternalLink />
                       Open in new tab
                     </DropdownMenuLinkItem>
@@ -129,14 +165,14 @@ export default function DropdownMenuPreview() {
                 <DropdownMenu open modal={false}>
                   <DropdownMenuTrigger render={<Button variant="secondary" />}>
                     <User data-icon="inline-start" />
-                    Ana Lopez
+                    Lena Park
                   </DropdownMenuTrigger>
                   <DropdownMenuContent container={container} align="end" className="w-56">
                     <DropdownMenuGroup>
-                      <DropdownMenuLabel className="truncate">ana.lopez@northwind-logistics.example.com</DropdownMenuLabel>
+                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.acme.example</DropdownMenuLabel>
                       <DropdownMenuItem>
                         <Settings />
-                        Workspace settings and billing for Northwind Logistics
+                        Workspace settings and billing for Acme Staging
                       </DropdownMenuItem>
                       <DropdownMenuItem inset>Keyboard shortcuts</DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -149,6 +185,14 @@ export default function DropdownMenuPreview() {
                 </DropdownMenu>
               </div>
             )}
+          </OverlayStage>
+
+          <OverlayStage label="more items than fit, at the top" className={stageClass}>
+            {(container) => <MoveToMenu container={container} />}
+          </OverlayStage>
+
+          <OverlayStage label="more items than fit, scrolled halfway" className={stageClass}>
+            {(container) => <MoveToMenu container={container} scrolled />}
           </OverlayStage>
         </OverlayStageGrid>
       </PreviewSection>
@@ -181,9 +225,9 @@ export default function DropdownMenuPreview() {
                   Invite
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem>Ana Lopez</DropdownMenuItem>
-                  <DropdownMenuItem>Ben Carter</DropdownMenuItem>
-                  <DropdownMenuItem>Chen Wei</DropdownMenuItem>
+                  <DropdownMenuItem>Tomás Ortega</DropdownMenuItem>
+                  <DropdownMenuItem>Ama Mensah</DropdownMenuItem>
+                  <DropdownMenuItem>Kai Nakamura</DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />

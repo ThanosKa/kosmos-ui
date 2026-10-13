@@ -61,8 +61,8 @@ export default function EmptyPreview() {
                 <EmptyMedia variant="icon">
                   <SearchX />
                 </EmptyMedia>
-                <EmptyTitle render={<h3 />}>No companies match “northwnd”</EmptyTitle>
-                <EmptyDescription>Check the spelling or clear the filters to see every company.</EmptyDescription>
+                <EmptyTitle render={<h3 />}>No projects match “fernhil”</EmptyTitle>
+                <EmptyDescription>Check the spelling or clear the filters to see every project.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Button variant="ghost">Clear filters</Button>
@@ -93,7 +93,7 @@ export default function EmptyPreview() {
               <EmptyHeader>
                 <EmptyTitle render={<h3 />}>Nothing scheduled</EmptyTitle>
                 <EmptyDescription>
-                  Meetings you accept appear here. <a href="#calendar" onClick={(event) => event.preventDefault()}>
+                  Meetings you accept appear here. <a href="/settings/calendar" onClick={(event) => event.preventDefault()}>
                     Connect a calendar
                   </a>
                 </EmptyDescription>

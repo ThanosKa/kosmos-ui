@@ -19,9 +19,9 @@ function PinnedToasts({ container, toasts }: { container: HTMLElement; toasts: T
 }
 
 const cases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
-  { label: 'title and description', toasts: [{ title: 'Invite sent', description: 'Ana Lopez will get an email in a minute.' }] },
+  { label: 'title and description', toasts: [{ title: 'Invite sent', description: 'Kai Nakamura will get an email in a minute.' }] },
   { label: 'title only', toasts: [{ title: 'Link copied' }] },
-  { label: 'success', toasts: [{ type: 'success', title: 'Changes saved', description: 'Q3 Roadmap is up to date.' }] },
+  { label: 'success', toasts: [{ type: 'success', title: 'Changes saved', description: 'The roadmap is up to date.' }] },
   {
     label: 'error, with action',
     toasts: [
@@ -38,7 +38,7 @@ const cases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
   { label: 'loading', toasts: [{ type: 'loading', title: 'Exporting 1,240 rows…' }] },
   {
     label: 'success, with Undo action',
-    toasts: [{ type: 'success', title: 'Task archived', actionProps: { children: 'Undo' } }],
+    toasts: [{ type: 'success', title: 'Roadmap item archived', actionProps: { children: 'Undo' } }],
   },
   {
     label: 'long text',
@@ -46,9 +46,9 @@ const cases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
     toasts: [
       {
         type: 'warning',
-        title: 'Northwind Logistics workspace billing could not be renewed automatically',
+        title: 'Acme workspace billing for the Scale plan could not be charged automatically',
         description:
-          'The card ending in 4242 was declined. Update the payment method before October 24 to keep all 18 seats and the storage add-on.',
+          'The card ending in 4242 was declined. Update the payment method before October 24 to keep the Scale plan and its raised event quota.',
         actionProps: { children: 'Update card' },
       },
     ],
@@ -70,9 +70,9 @@ export default function ToastPreview() {
               <PinnedToasts
                 container={container}
                 toasts={[
-                  { title: 'Invite sent', description: 'Ana Lopez will get an email in a minute.' },
+                  { title: 'Invite sent', description: 'Kai Nakamura will get an email in a minute.' },
                   { type: 'success', title: 'Changes saved' },
-                  { type: 'info', title: 'Ben Carter joined Q3 Roadmap', description: 'He can see all 24 tasks.' },
+                  { type: 'info', title: 'Ama Mensah joined Acme Staging', description: 'She can see all 12 projects.' },
                 ]}
               />
             )}
@@ -84,7 +84,7 @@ export default function ToastPreview() {
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="secondary"
-            onClick={() => toast.add({ title: 'Invite sent', description: 'Ana Lopez will get an email in a minute.' })}
+            onClick={() => toast.add({ title: 'Invite sent', description: 'Kai Nakamura will get an email in a minute.' })}
           >
             Default
           </Button>

@@ -36,11 +36,11 @@ function SidebarBody() {
   return (
     <>
       <SidebarHeader>
-        <div className="flex h-8 items-center gap-2 px-2">
-          <span aria-hidden className="flex size-5 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
+        <div className="flex h-8 items-center gap-2 px-1.5">
+          <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
             A
           </span>
-          <span className="truncate text-body font-medium">Acme Inc.</span>
+          <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)">Acme</span>
         </div>
       </SidebarHeader>
       <SidebarContent render={<nav aria-label="Main" />}>
@@ -48,7 +48,7 @@ function SidebarBody() {
           <SidebarMenu>
             {pages.map(({ label, icon: Icon, active, count }) => (
               <SidebarMenuItem key={label}>
-                <SidebarMenuButton href="#" isActive={active} onClick={stay}>
+                <SidebarMenuButton href={`/${label.toLowerCase()}`} isActive={active} tooltip={label} onClick={stay}>
                   <Icon aria-hidden />
                   <span>{label}</span>
                   {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
@@ -62,7 +62,7 @@ function SidebarBody() {
           <SidebarMenu>
             {projects.map((project) => (
               <SidebarMenuItem key={project}>
-                <SidebarMenuButton href="#" onClick={stay}>
+                <SidebarMenuButton href="/projects" tooltip={project} onClick={stay}>
                   <Folder aria-hidden />
                   <span>{project}</span>
                 </SidebarMenuButton>
@@ -74,13 +74,13 @@ function SidebarBody() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#" onClick={stay}>
+            <SidebarMenuButton href="/help" tooltip="Help" onClick={stay}>
               <LifeBuoy aria-hidden />
               <span>Help</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton href="#" onClick={stay}>
+            <SidebarMenuButton href="/settings" tooltip="Settings" onClick={stay}>
               <Settings aria-hidden />
               <span>Settings</span>
             </SidebarMenuButton>
@@ -108,24 +108,36 @@ const stay = (event: React.MouseEvent) => event.preventDefault();
 export default function SidebarPreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="App shell (a drawer below 768px)">
-        <SidebarProvider className={`${frame} h-[34rem]`}>
-          <Sidebar>
+      <PreviewSection title="App shell, collapsing to icons (a drawer below 768px)">
+        <SidebarProvider storageKey={false} className={`${frame} h-[34rem]`}>
+          <Sidebar collapsible="icon">
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
           <SidebarInset render={<div />}>
             <PageHeader title="Home" />
             <div className="flex flex-col gap-2 p-4 text-muted-foreground">
-              <p>Drag the sidebar edge, or focus it with Tab and use the arrow keys.</p>
+              <p>Drag the sidebar edge, or focus it with Tab and use the arrow keys. The trigger’s tooltip shows the shortcut that collapses it to icons.</p>
             </div>
           </SidebarInset>
         </SidebarProvider>
       </PreviewSection>
 
-      <PreviewSection title="Collapsed">
-        <SidebarProvider defaultOpen={false} className={`${frame} h-40`}>
-          <Sidebar>
+      <PreviewSection title="Icon mode: collapsed to icons, names in tooltips">
+        <SidebarProvider defaultOpen={false} storageKey={false} keyboardShortcut={false} className={`${frame} h-[34rem]`}>
+          <Sidebar collapsible="icon">
+            <SidebarBody />
+          </Sidebar>
+          <SidebarResizeHandle />
+          <SidebarInset render={<div />}>
+            <PageHeader title="Home" />
+          </SidebarInset>
+        </SidebarProvider>
+      </PreviewSection>
+
+      <PreviewSection title="Offcanvas: collapsed to the edge">
+        <SidebarProvider defaultOpen={false} storageKey={false} keyboardShortcut={false} className={`${frame} h-40`}>
+          <Sidebar collapsible="offcanvas">
             <SidebarBody />
           </Sidebar>
           <SidebarResizeHandle />
@@ -158,7 +170,13 @@ export default function SidebarPreview() {
           states={['default', 'hover', 'focus', 'dragging'] as const}
           render={(_, state) => (
             <>
-              <SidebarProvider defaultWidth={64} minWidth={48} className={`${frame} h-20 max-md:hidden`}>
+              <SidebarProvider
+                defaultWidth={64}
+                minWidth={48}
+                storageKey={false}
+                keyboardShortcut={false}
+                className={`${frame} h-20 max-md:hidden`}
+              >
                 <Sidebar aria-hidden />
                 <SidebarResizeHandle
                   {...(state === 'dragging' ? { 'data-dragging': '' } : previewState(state))}

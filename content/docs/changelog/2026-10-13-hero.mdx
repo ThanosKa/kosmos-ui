@@ -1,0 +1,11 @@
+---
+title: Added Hero, the first Marketing block
+description: Hero opens a marketing page with a title, one line, two actions and a command to copy. The tokens gain two type roles for it, and Stats overview keeps its values whole on phones.
+date: 2026-10-13
+---
+
+Add Hero with `shadcn add @kosmos/hero`. Run `shadcn add` again for the tokens and Stats overview to pick up the rest.
+
+- **[Hero](/docs/blocks/hero)**: new block, the free variant of the Hero category in the new Marketing section. A title, one line, your actions and an install command with a copy button, centered. The title grows from 32px to 48px once the hero is 672px wide.
+- **[Tokens](/docs/installation#install-the-tokens)**: two type roles for marketing blocks, `text-hero` (48px) for a hero title and `text-lead` (18px) for the line under it. Component text stays between 12 and 14px.
+- **[Stats overview](/docs/blocks/stats-overview)**: below 448px wide the metrics stack one per row, value beside the label, so a value such as 144,600 never cuts off on a phone. In that layout a long label wraps instead of cutting off.
