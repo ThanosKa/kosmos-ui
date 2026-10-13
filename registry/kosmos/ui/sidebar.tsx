@@ -665,8 +665,10 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
       {
         className: cn(
           'flex h-6 shrink-0 items-center truncate px-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase',
-          // In icon mode the label fades but keeps its row, so the icons below it never move.
+          // In icon mode the label fades but keeps its row, so the icons below it never move. On expand it waits
+          // for the column to widen, so it never shows as a cut-off stub.
           'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0',
+          'motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)',
           className,
         ),
       },
@@ -718,7 +720,9 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
         'data-active:bg-secondary data-active:text-active-foreground data-active:shadow-control hover:data-active:not-data-disabled:bg-secondary hover:data-active:not-data-disabled:text-active-foreground',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-active-foreground',
         // In icon mode the first child (an icon, a mark or an avatar) stays and the label and count after it fade.
+        // On expand they wait for the column to widen, so they never show as cut-off stubs.
         '[&>span]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:not(:first-child)]:opacity-0',
+        'motion-safe:group-data-[state=expanded]/sidebar:[&>span]:delay-(--transition-duration-fast)',
         className,
       )}
       {...props}

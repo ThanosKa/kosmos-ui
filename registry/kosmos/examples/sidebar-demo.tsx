@@ -49,7 +49,7 @@ export default function SidebarDemo() {
             <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
               P
             </span>
-            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0">Parallax</span>
+            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)">Parallax</span>
           </div>
         </SidebarHeader>
         <SidebarContent render={<nav aria-label="Main" />}>

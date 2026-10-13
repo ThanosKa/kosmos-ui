@@ -133,7 +133,7 @@ type AppSidebarContentProps = {
 /** The workspace and user menu triggers: two lines of text beside a 24px mark, which stays centered in the icon column. */
 const menuTrigger =
   'h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]/sidebar:px-1';
-const hiddenInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0';
+const hiddenInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)';
 const menuChevron = cn('ms-auto', hiddenInIconMode);
 
 function WorkspaceMark({ name, className }: { name: string; className?: string }) {
@@ -333,7 +333,7 @@ function AppSidebarContent({
           </DropdownMenu>
         ) : (
           // Without actions there is no menu to open: the signed-in user shows as plain text.
-          <div className="flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1 [&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0">
+          <div className="flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1 [&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:[&>span:last-child]:delay-(--transition-duration-fast)">
             {userDetails}
           </div>
         )}
