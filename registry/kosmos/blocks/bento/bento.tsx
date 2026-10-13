@@ -61,9 +61,9 @@ const sampleItems: BentoItem[] = [
         {sampleEvents.map((event) => (
           <li key={event.name} className="flex min-w-0 items-center gap-3 px-4 py-2.5 text-small">
             <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-success" />
-            <span className="min-w-0 flex-1 truncate font-mono text-foreground">{event.name}</span>
-            {/* The project steps aside in a narrow tile, so the event name keeps its room. */}
-            <span className="hidden min-w-0 truncate text-muted-foreground @xs:inline">{event.project}</span>
+            <span className="min-w-0 truncate font-mono text-foreground">{event.name}</span>
+            {/* The project gives way first and steps aside in a narrow tile, so the event name keeps its room. */}
+            <span className="ms-auto hidden min-w-0 shrink-4 truncate text-muted-foreground @xs:inline">{event.project}</span>
             <span className="w-12 shrink-0 text-end text-muted-foreground tabular-nums">{event.time}</span>
           </li>
         ))}
@@ -168,7 +168,7 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
           >
             <div
               data-slot="bento-item-visual"
-              className="flex min-h-56 flex-1 items-center justify-center overflow-hidden rounded-md border border-transparent bg-muted p-4 shadow-inset @xl:p-6"
+              className="flex min-h-40 flex-1 items-center justify-center overflow-hidden rounded-md border border-transparent bg-muted p-4 shadow-inset @xl:min-h-56 @xl:p-6"
             >
               {item.visual}
             </div>
