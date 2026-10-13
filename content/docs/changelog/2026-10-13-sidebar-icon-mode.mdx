@@ -1,0 +1,11 @@
+---
+title: Added icon mode to Sidebar
+description: The sidebar can collapse to a column of icons with tooltips, toggles with ⌘B, and remembers its state between visits.
+date: 2026-10-13
+---
+
+To pick it up, run `shadcn add` again for the Sidebar. It now brings Kbd and Tooltip with it.
+
+- **[Sidebar](/docs/components/sidebar)**: `collapsible="icon"` on `Sidebar` collapses it to a 48px column of icons instead of off to the edge. Labels, counts and group labels fade out, the active item keeps its highlight, and each item shows the name you pass in its new `tooltip` prop on hover and keyboard focus. The resize handle collapses to the icon column and reopens from it, by drag and by keyboard. Collapsing to the edge stays the default. On phones the sidebar still opens as a drawer.
+- **[Sidebar](/docs/components/sidebar)**: `⌘B` (`Ctrl+B` on Windows and Linux) collapses and reopens the sidebar, and the trigger's tooltip shows the shortcut. `keyboardShortcut` changes the key or turns it off.
+- **[Sidebar](/docs/components/sidebar)**: the sidebar remembers whether it was collapsed, in local storage under `storageKey`, and restores it before the page paints, so it never flashes open. Pass `storageKey={false}` to keep nothing, or give each sidebar on a page its own key.
