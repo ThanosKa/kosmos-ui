@@ -191,6 +191,9 @@ const checks: Check[] = [
           (badge) => getComputedStyle(badge).opacity === '0',
         ),
       );
+      // The theme provider turns every transition off for a moment as it mounts; read the pills after that.
+      await page.waitForFunction(() => Object.keys(document.querySelector('nav[aria-label="Docs"]') ?? {}).some((key) => key.startsWith('__reactProps$')));
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50))));
       for (const trigger of await triggers.all()) {
         const open = (await trigger.getAttribute('aria-expanded')) === 'true';
         const badge = trigger.locator('[data-slot="sidebar-menu-badge"]');
