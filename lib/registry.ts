@@ -170,12 +170,17 @@ function freeVariant(item: RegistryItem): BlockVariant {
  */
 export type ProVariant = Pick<BlockVariant, 'name' | 'title' | 'description' | 'category' | 'previewUrl'>;
 
+/** The Pro variants the site shows. None yet: they arrive with the Pro deployment. */
+export function readProVariants(): ProVariant[] {
+  return [];
+}
+
 /**
  * Every block category, A–Z by name, with its variants: free first, then by name. The one reader of block categories,
  * so the docs sidebar, the counts and the landing agree. Throws when variants of one category name different sections,
  * or when a Pro variant names a category no free variant declares.
  */
-export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), proVariants: ProVariant[] = []): BlockCategory[] {
+export function readBlockCategories(items: RegistryItem[] = readRegistryItems(), proVariants: ProVariant[] = readProVariants()): BlockCategory[] {
   const categories = new Map<string, BlockCategory>();
   for (const variant of items.filter((item) => item.type === 'registry:block').map(freeVariant)) {
     const category = categories.get(variant.category) ?? { name: variant.category, section: variant.section, variants: [] };
@@ -332,6 +337,13 @@ export const packageInstallers = {
   yarn: 'yarn add',
   bun: 'bun add',
 } as const satisfies Record<keyof typeof packageRunners, string>;
+
+/** The one-line `shadcn add` of an item for each package manager, keyed like `packageRunners`. */
+export function addCommands(name: string): Record<keyof typeof packageRunners, string> {
+  return Object.fromEntries(
+    Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} add ${registryNamespace}/${name}`]),
+  ) as Record<keyof typeof packageRunners, string>;
+}
 
 /** The `shadcn add` lines for an item, in the documented order. */
 export function installCommands(name: string, runner: string = packageRunners.npm): string {

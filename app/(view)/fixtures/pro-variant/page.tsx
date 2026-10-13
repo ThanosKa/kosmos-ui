@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { RootProvider } from 'fumadocs-ui/provider/next';
-import { BlockVariants } from '@/components/docs/block-viewer';
+import { BlockViewers } from '@/components/docs/block-viewer';
 import { getBlockCategory, type ProVariant } from '@/lib/registry';
 
 export const metadata: Metadata = { title: 'Pro variant fixture' };
@@ -23,7 +23,7 @@ export default function ProVariantFixturePage() {
   return (
     <RootProvider search={{ enabled: false }} theme={{ hotKey: false }}>
       <main className="mx-auto w-full max-w-7xl p-6">
-        <BlockVariants category={category} />
+        <BlockViewers category={category} />
       </main>
     </RootProvider>
   );

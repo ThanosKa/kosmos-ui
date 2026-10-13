@@ -9,7 +9,7 @@ import { DocsPageLinks, DocsRail } from '@/components/docs/docs-rail';
 import { DocsTocDisclosure } from '@/components/docs/docs-toc';
 import { DocsPageHeader } from '@/components/docs/page-header';
 import { PageNavCards } from '@/components/docs/page-nav';
-import { BlockVariants } from '@/components/docs/block-viewer';
+import { BlockViewers } from '@/components/docs/block-viewer';
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { HashAnchor } from '@/components/docs/hash-anchor';
 import { changelogFolder, getChangelogEntries } from '@/lib/changelog';
@@ -49,7 +49,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           item={group && { name: page.slugs[1], baseUi: page.data.baseUi, baseUiName: page.data.baseUiName }}
         />
         <DocsTocDisclosure toc={toc} className="xl:hidden" />
-        {category && <BlockVariants category={category} />}
+        {category && <BlockViewers category={category} />}
         <DocsBody className={cn('[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title', category && 'max-w-3xl')}>
           <MDX
             components={getMDXComponents({

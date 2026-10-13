@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
@@ -14,13 +14,11 @@ export function PreviewFrame({
   title,
   minHeight = 240,
   className,
-  style,
 }: {
   src: string;
   title: string;
   minHeight?: number;
   className?: string;
-  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(minHeight);
@@ -61,7 +59,7 @@ export function PreviewFrame({
       src={src}
       title={title}
       loading="lazy"
-      style={{ ...style, height }}
+      style={{ height }}
       className={cn('block w-full rounded-lg bg-background', className)}
     />
   );

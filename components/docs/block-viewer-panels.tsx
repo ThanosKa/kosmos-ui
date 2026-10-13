@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowUpRight, Lock, Monitor, Smartphone, Tablet } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
@@ -46,7 +46,7 @@ export function BlockViewerPanels({
       onValueChange={setTab}
       className="min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card [--inner-radius:calc(var(--radius-2xl)-1px)]"
     >
-      <div className="flex min-w-0 items-center justify-between gap-2 border-b border-border ps-2 pe-2">
+      <div className="flex min-w-0 items-center justify-between gap-2 border-b border-border px-2">
         <TabsList aria-label={`${title} view`} className="data-[orientation=horizontal]:border-b-0">
           <TabsTrigger value="preview" className="h-11">
             Preview
@@ -90,8 +90,8 @@ export function BlockViewerPanels({
       <TabsContent value="preview" keepMounted className="focus-visible:-outline-offset-2">
         <div data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
           <div
-            className={cn('box-content max-w-full', framed ? 'border-x border-border' : 'w-full')}
-            style={framed ? { width: framed } : undefined}
+            className={cn('box-content max-w-full', framed ? 'w-(--preview-width) border-x border-border' : 'w-full')}
+            style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
           >
             <PreviewFrame src={previewUrl} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
           </div>
