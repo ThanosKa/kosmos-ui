@@ -379,6 +379,62 @@ const checks: Check[] = [
     },
   },
   {
+    name: 'switching the block viewer to Code moves nothing: same height, same toolbar, the code scrolls inside',
+    async run(browser) {
+      for (const category of ['data-table', 'hero']) {
+        const { page, close } = await openPage(browser, `/docs/blocks/${category}`);
+        const viewer = blockViewer(page, category);
+        await viewer.locator('iframe').evaluate((frame) => new Promise((resolve) => (frame as HTMLIFrameElement).contentDocument?.readyState === 'complete' ? resolve(null) : frame.addEventListener('load', resolve)));
+        await page.waitForTimeout(500);
+        const newTab = viewer.getByRole('link', { name: /in a new tab$/ });
+        const before = { height: (await viewer.boundingBox())!.height, x: (await newTab.boundingBox())!.x };
+        await viewer.getByRole('tab', { name: 'Code' }).click();
+        const code = viewer.getByRole('tabpanel').locator('[data-slot="code-block"] > [id]').first();
+        await code.waitFor();
+        assert.ok(Math.abs((await viewer.boundingBox())!.height - before.height) <= 1, `${category}: same height in Code`);
+        assert.equal((await newTab.boundingBox())!.x, before.x, `${category}: the new tab button stays put`);
+        const [clientHeight, scrollHeight] = await code.evaluate((element) => [element.clientHeight, element.scrollHeight]);
+        assert.ok(scrollHeight > clientHeight, `${category}: the code scrolls inside`);
+        await close();
+      }
+    },
+  },
+  {
+    name: 'the data table fits the block viewer at desktop width, hiding columns before it scrolls sideways',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/blocks/data-table');
+      const table = blockViewer(page, 'data-table').frameLocator('iframe').locator('table');
+      await table.waitFor();
+      const [width, scroller] = await table.evaluate((element) => [element.scrollWidth, element.parentElement!.clientWidth]);
+      assert.ok(width <= scroller, `table ${width}px fits its ${scroller}px frame`);
+      assert.equal(await table.locator('thead th').filter({ hasText: 'Platform' }).isVisible(), false, 'Platform steps aside');
+      await close();
+    },
+  },
+  {
+    name: 'Show all and Show code open long code up to 75% of the screen, scroll inside, and close back to the top',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/components/sidebar');
+      for (const label of ['Show code', 'Show all']) {
+        if (label === 'Show all') await page.getByRole('tab', { name: 'Manual' }).first().click();
+        const id = await page.getByRole('button', { name: label }).first().getAttribute('aria-controls');
+        const toggle = page.locator(`[aria-controls="${id}"]`);
+        const code = page.locator(`[id="${id}"]`);
+        await toggle.click();
+        await page.waitForTimeout(500);
+        const [clientHeight, scrollHeight] = await code.evaluate((element) => [element.clientHeight, element.scrollHeight]);
+        assert.ok(clientHeight <= desktop.height * 0.75 + 1, `${label}: ${clientHeight}px is at most 75% of the screen`);
+        assert.ok(scrollHeight > clientHeight, `${label}: the rest scrolls inside`);
+        assert.equal(await code.getAttribute('tabindex'), '0', `${label}: the keyboard can scroll it`);
+        await code.evaluate((element) => (element.scrollTop = element.scrollHeight));
+        await toggle.click();
+        await page.waitForTimeout(500);
+        assert.equal(await code.evaluate((element) => element.scrollTop), 0, `${label}: closes back to the top`);
+      }
+      await close();
+    },
+  },
+  {
     name: 'the block viewer shows a Pro variant with a Pro badge, its live preview and its code locked',
     async run(browser) {
       const { page, close } = await openPage(browser, '/fixtures/pro-variant');
