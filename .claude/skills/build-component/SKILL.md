@@ -1,11 +1,11 @@
 ---
 name: build-component
-description: The cycle every Kosmos component and block goes through, from build to screenshots, review rounds, report and group approval. Use when adding or changing a component or block in registry/kosmos.
+description: The cycle every Kosmos component and block goes through, from build to screenshots, review rounds, report and approval. Use when adding or changing a component or block in registry/kosmos.
 ---
 
 # Build a component or block
 
-One cycle for every component and block: build it, shoot it, review it, fix it (at most 3 rounds), report, and wait for the user to approve its group. Button is the worked example for each file below: copy its shape.
+One cycle for every component and block: build it, shoot it, review it, fix it (at most 3 rounds), report, and wait for the user to approve it. Button is the worked example for each file below: copy its shape.
 
 A block follows the same cycle; [Blocks](#blocks) lists what changes.
 
@@ -91,7 +91,7 @@ When a component or block is added, or changes for its users (new prop or varian
 End with this report, one per component or block:
 
 ```markdown
-## <Name>: awaiting approval on /approve/<group>
+## <Name>: awaiting approval on <docs page>
 
 Rounds: <n> of 3
 
@@ -108,7 +108,7 @@ Open:
 - <finding>: <Kosmos style | Needs decision | out of rounds | tooling>, <why>
 
 Needs user:
-- Approve the <Group> group at /approve/<group>
+- Look at <Name> on <docs page> (`/docs/components/<name>`, or `/docs/blocks/<category>` for a block) in light and dark
 
 Checks:
 - registry:check: <pass | fail: reason>
@@ -120,17 +120,6 @@ Checks:
 
 ## 9. Approval
 
-`/approve/<group>` shows every item whose registry item names that group, each as its review preview in light and in dark. The user approves the whole group there, once.
+The user approves by looking at the item's docs page, in light and in dark with the theme toggle. For a whole group they say so once.
 
-A component or block is ready only when the user approves its group in their own words. Until then its status is **awaiting approval**, whatever the checks say. Feedback from the user starts a new round, with its own limit of 3.
-
-## Blocks
-
-- Files: `registry/kosmos/blocks/<name>/` holds the block's files; its item has `"type": "registry:block"`, its block category in shadcn's `"categories": ["<category>"]` (exactly one, kebab-case) and `"meta": { "group": "blocks", "section": "application" | "marketing" | "ai", "tier": "free" }`. Every block in this repo is the free variant of its category; Pro variants never are registry items here (ADR 0003). `readBlockCategories` in `lib/registry.ts` is the one reader: the Blocks sidebar, its variant counts and the landing all count from it.
-- Name: what the block is, as a kebab-case noun phrase that no component uses: `app-sidebar`, `page-header`, `data-table`, `stats-overview`, then `kanban-board`, `detail-drawer`, `command-menu`, `new-item-dialog`. No numbered suffix; add `-02` only when a second variant of the same block arrives. The main export is the name in PascalCase (`DataTable`). shadcn numbers its blocks (`sidebar-07`), but descriptive names read better in an install command, in search and when the landing page composes the blocks.
-- One file, `<name>/<name>.tsx`, with file type `registry:component`, so it lands in `components/<name>.tsx`. Sample data sits at the top of the file under a `// Sample data` comment, typed, and the block takes it as props with the samples as defaults. All blocks share one demo world, Acme, a fictional product analytics SaaS with its projects, users, events, revenue and roadmap, so the landing page can compose them into one dashboard. [demo-world.md](demo-world.md) holds the whole cast (people, projects, domains, numbers) and what each block shows; take names and values from it, never invent new ones.
-- Build only from Kosmos components and tokens. `registryDependencies` names every `@kosmos/*` component the block imports, so `registry:check` proves they arrive with it.
-- Lay the block out by its own width: where its layout changes with width, `@container` on its root and container variants (`@md:`, `@3xl:`), never viewport breakpoints, so it fits beside a sidebar or inside a panel. A block that only scrolls (a table) needs none. Components that decide by viewport keep doing so: Sidebar's drawer, and menu popups, which render outside the block and size by the screen (`sm:min-w-56`).
-- State: every value a user changes works controlled (`value` + `on…Change`) and uncontrolled (`default…`). A block's single menus (switchers, filters, user menu) take their root props through a prop (`filterMenu`, `userMenu`), so a review preview can pin one open with `{ open: true, modal: false }`; a menu repeated per row is checked in `agent-browser` instead. A pinned menu positions against the viewport, so put that frame at the top of the preview, where the screenshot's 800px viewport holds it.
-- The review preview shows the block at real size in its states (empty, loading, full, long text, open overlays, a narrow container) instead of a state matrix, each in a framed box (`rounded-xl border border-transparent bg-background shadow-card`). `<name>-demo.tsx` is the docs hero and the `registry:check` smoke page: interactive, imports only the block and its dependencies.
-- The docs page is the block category page, `content/docs/blocks/<category>.mdx`, one per category. The page draws every variant of the category from the registry over the body, each in its own block viewer (name, Free or Pro badge, install command, the `<name>-demo` preview at desktop, tablet or phone width, and every file of the block in the Code tab), so the body has no hero preview: install, usage, what it does, API (`TypeTable`). A category page has no On this page column.
+A component or block is ready only when the user approves it in their own words. Until then its status is **awaiting approval**, whatever the checks say. Feedback from the user starts a new round, with its own limit of 3.

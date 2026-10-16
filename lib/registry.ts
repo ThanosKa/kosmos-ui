@@ -40,9 +40,9 @@ export type RegistryItem = {
 };
 
 /**
- * Approval groups, in build order. Each component or block names its group in its own
+ * Groups, in build order. Each component or block names its group in its own
  * `<name>.registry.json` as `"meta": { "group": "<key>" }`, so items built in parallel never edit a
- * shared list. `/approve/<key>` shows every item of a group; the label is public, so it stays English.
+ * shared list. The label shows in the docs sidebar, so it stays English.
  */
 export const groups = {
   basics: 'Basics',
