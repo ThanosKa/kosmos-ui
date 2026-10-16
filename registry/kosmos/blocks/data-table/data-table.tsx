@@ -164,6 +164,10 @@ function SortableHead({
   );
 }
 
+/** Columns that step aside as the block narrows, so the table fits its frame before it scrolls sideways. */
+const wideColumn = 'hidden @min-[74rem]:table-cell';
+const midColumn = 'hidden @min-[60rem]:table-cell';
+
 /** Ten segments for the share of the plan's allowance used: green up to 75%, amber to 95%, red above. The bar stops at full; the number does not. */
 function EventQuota({ row }: { row: Project }) {
   const quota = eventQuota(row);
@@ -312,8 +316,12 @@ function DataTable({
   };
 
   return (
-    <div data-slot="data-table" className={cn('flex min-w-0 flex-col', className)} {...props}>
-      <Table aria-label="Projects" aria-busy={loading || undefined} className="min-w-[74rem]">
+    <div data-slot="data-table" className={cn('@container flex min-w-0 flex-col', className)} {...props}>
+      <Table
+        aria-label="Projects"
+        aria-busy={loading || undefined}
+        className="min-w-[55rem] @min-[60rem]:min-w-[60rem] @min-[74rem]:min-w-[74rem]"
+      >
         <TableHeader>
           <TableRow>
             <TableHead className="w-10 ps-4 pe-0">
@@ -332,14 +340,14 @@ function DataTable({
               />
             </TableHead>
             <SortableHead label="Project" sortKey="name" sort={sort} onSort={onSort} />
-            <TableHead>Platform</TableHead>
+            <TableHead className={wideColumn}>Platform</TableHead>
             <TableHead>Plan</TableHead>
             <SortableHead label="Users" sortKey="users" sort={sort} onSort={onSort} align="end" />
-            <SortableHead label="Events" sortKey="events" sort={sort} onSort={onSort} align="end" />
+            <SortableHead label="Events" sortKey="events" sort={sort} onSort={onSort} align="end" className={midColumn} />
             <SortableHead label="Event quota" sortKey="quota" sort={sort} onSort={onSort} />
             <SortableHead label="MRR" sortKey="mrr" sort={sort} onSort={onSort} align="end" />
             <TableHead>Status</TableHead>
-            <SortableHead label="Last event" sortKey="lastEventAt" sort={sort} onSort={onSort} />
+            <SortableHead label="Last event" sortKey="lastEventAt" sort={sort} onSort={onSort} className={wideColumn} />
             <TableHead className="w-12 pe-4">
               <span className="sr-only">Actions</span>
             </TableHead>
@@ -361,7 +369,7 @@ function DataTable({
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className={wideColumn}>
                   <Skeleton className="h-3.5 w-16" />
                 </TableCell>
                 <TableCell>
@@ -370,7 +378,7 @@ function DataTable({
                 <TableCell>
                   <Skeleton className="ms-auto h-3.5 w-12" />
                 </TableCell>
-                <TableCell>
+                <TableCell className={midColumn}>
                   <Skeleton className="ms-auto h-3.5 w-16" />
                 </TableCell>
                 <TableCell>
@@ -382,7 +390,7 @@ function DataTable({
                 <TableCell>
                   <Skeleton className="h-3.5 w-14" />
                 </TableCell>
-                <TableCell>
+                <TableCell className={wideColumn}>
                   <Skeleton className="h-3.5 w-12" />
                 </TableCell>
                 <TableCell className="pe-4" />
@@ -430,14 +438,14 @@ function DataTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={wideColumn}>
                     <PlatformLabel platform={row.platform} />
                   </TableCell>
                   <TableCell>
                     <Badge variant={plan.variant}>{plan.label}</Badge>
                   </TableCell>
                   <TableCell className="text-end">{count.format(row.users)}</TableCell>
-                  <TableCell className="text-end">{count.format(row.events)}</TableCell>
+                  <TableCell className={cn('text-end', midColumn)}>{count.format(row.events)}</TableCell>
                   <TableCell>
                     <EventQuota row={row} />
                   </TableCell>
@@ -454,7 +462,7 @@ function DataTable({
                   <TableCell>
                     <StatusLabel status={row.status} />
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className={cn('text-muted-foreground', wideColumn)}>
                     <time dateTime={row.lastEventAt}>{formatDay(row.lastEventAt)}</time>
                   </TableCell>
                   <TableCell className="pe-4 text-end">
