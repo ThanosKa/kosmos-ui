@@ -15,7 +15,7 @@ import {
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 
-/** How tall a collapsed block is, and what its toggle says. */
+/** How tall a collapsed block is, and what its toggle says. Expanded, a block grows to its file or to 75% of the screen, whichever is shorter, and scrolls inside. */
 const collapseModes = {
   /** A long file, cut at 24rem behind "Show all". */
   file: { height: 'max-h-96', show: 'Show all', hide: 'Show less' },
@@ -55,7 +55,7 @@ export function CodeBlock({
   const [expanded, setExpanded] = useState(false);
   const [overflows, setOverflows] = useState(collapse === 'peek' && !fill);
   const [fullHeight, setFullHeight] = useState(0);
-  const [scrollsSideways, setScrollsSideways] = useState(false);
+  const [scrolls, setScrolls] = useState(false);
   const [firstLine, setFirstLine] = useState('');
 
   useLayoutEffect(() => {
@@ -64,7 +64,8 @@ export function CodeBlock({
     if (!viewport || !content) return;
     setFirstLine(content.textContent?.trim().split('\n')[0].slice(0, 48) ?? '');
     const measure = () => {
-      setScrollsSideways(viewport.scrollWidth > viewport.clientWidth + 1 || (!!fill && viewport.scrollHeight > viewport.clientHeight + 1));
+      const scrollsDown = (expanded || !!fill) && viewport.scrollHeight > viewport.clientHeight + 1;
+      setScrolls(viewport.scrollWidth > viewport.clientWidth + 1 || scrollsDown);
       if (expanded || fill) return;
       setFullHeight(viewport.scrollHeight);
       setOverflows(viewport.scrollHeight > viewport.clientHeight + 1);
@@ -81,6 +82,7 @@ export function CodeBlock({
   // Under reduced motion the new height fades in from transparent, like a Base UI panel's starting style.
   const toggle = () => {
     const viewport = viewportRef.current;
+    if (viewport && expanded) viewport.scrollTop = 0;
     viewport?.setAttribute('data-starting-style', '');
     setExpanded((value) => !value);
     requestAnimationFrame(() => requestAnimationFrame(() => viewport?.removeAttribute('data-starting-style')));
@@ -113,19 +115,19 @@ export function CodeBlock({
       <div
         ref={viewportRef}
         id={viewportId}
-        role={scrollsSideways ? 'region' : undefined}
-        aria-label={scrollsSideways ? `${typeof title === 'string' ? title : 'Code'}: ${firstLine}` : undefined}
-        tabIndex={scrollsSideways ? 0 : undefined}
+        role={scrolls ? 'region' : undefined}
+        aria-label={scrolls ? `${typeof title === 'string' ? title : 'Code'}: ${firstLine}` : undefined}
+        tabIndex={scrolls ? 0 : undefined}
         data-expanded={expanded || undefined}
         className={cn(
-          fill ? 'min-h-0 flex-1 overflow-auto' : 'overflow-x-auto overflow-y-hidden',
+          fill ? 'min-h-0 flex-1 overflow-auto' : expanded ? 'overflow-auto' : 'overflow-x-auto overflow-y-hidden',
           'py-3.5 font-mono focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
           'duration-fast ease-power3-out data-expanded:duration-slow',
           'motion-safe:transition-[max-height] motion-safe:ease-smooth-in-out',
           'motion-reduce:transition-[opacity] motion-reduce:data-starting-style:opacity-0 motion-reduce:data-starting-style:transition-none',
           !title && '[--padding-right:--spacing(10)]',
           lineNumbers && '[counter-set:line_0]',
-          !fill && (expanded ? 'max-h-(--code-height) pb-12' : mode.height),
+          !fill && (expanded ? 'max-h-[min(var(--code-height),75svh)] pb-12' : mode.height),
         )}
         style={{ '--code-height': `${fullHeight + 48}px` } as CSSProperties}
       >
