@@ -6,6 +6,7 @@ import { exampleExtras, registryNamespace, toInstalledImports, type RegistryItem
 import { cn } from '@/registry/kosmos/lib/cn';
 import { inlineProseClass } from './classes';
 import { HighlightedCode } from './highlighted-code';
+import { PreviewShell } from './preview-shell';
 
 function docsUrlOf(item: RegistryItem) {
   if (item.type === 'registry:ui') return `${docsRoute}/components/${item.name}`;
@@ -37,10 +38,10 @@ function AlsoUses({ items }: { items: RegistryItem[] }) {
 }
 
 /**
- * A live component example stacked over the first lines of its code, which "Show code" expands in place. `name`
- * is a file in `registry/kosmos/examples/`; the code shows the imports a user gets after `shadcn add`. The example
- * renders in the page, so its menus, popovers and dialogs portal to `document.body` and float over the docs like
- * they would in an app. Blocks show in the block viewer instead. A line under the preview names any other
+ * A live component example in the shared preview shell: Preview and Code tabs, and a link that opens the example
+ * alone. `name` is a file in `registry/kosmos/examples/`; the code shows the imports a user gets after `shadcn add`.
+ * The example renders in the page, so its menus, popovers and dialogs portal to `document.body` and float over the
+ * docs like they would in an app. Blocks show in the block viewer instead. A line under the code names any other
  * `@kosmos` item the example imports beyond `pageItem`, the item the docs page installs.
  */
 export async function ComponentPreview({ name, pageItem }: { name: string; pageItem?: string }) {
@@ -51,22 +52,27 @@ export async function ComponentPreview({ name, pageItem }: { name: string; pageI
   const extras = exampleExtras(name, source, pageItem);
 
   return (
-    <div
-      data-slot="component-preview"
-      className="not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card p-px shadow-card [--inner-radius:calc(var(--radius-2xl)-2px)]"
-    >
-      {/* The same box as the /view page around an example, so it renders as it does there. */}
-      <div className="flex min-h-56 min-w-0 items-center justify-center rounded-t-(--inner-radius) bg-background p-6 text-body text-foreground sm:min-h-72 sm:p-10">
+    <PreviewShell
+      title={name}
+      href={`/view/${name}`}
+      className="not-prose my-6"
+      // The same box as the /view page around an example, so it renders as it does there.
+      stageClassName="flex min-h-56 items-center justify-center bg-background p-6 text-body text-foreground sm:min-h-72 sm:p-10"
+      stage={
         <div data-preview-content className="flex w-full min-w-0 justify-center">
           <Example />
         </div>
-      </div>
-      {extras.length > 0 && (
-        <div className="flex min-h-10 flex-wrap items-center gap-x-4 gap-y-1 border-t border-border px-4 py-2">
-          <AlsoUses items={extras} />
-        </div>
-      )}
-      <HighlightedCode code={code} lang="tsx" collapse="peek" embedded className="rounded-b-(--inner-radius) border-t border-border" />
-    </div>
+      }
+      code={
+        <>
+          <HighlightedCode code={code} lang="tsx" embedded fill />
+          {extras.length > 0 && (
+            <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-4 gap-y-1 border-t border-border px-4 py-2">
+              <AlsoUses items={extras} />
+            </div>
+          )}
+        </>
+      }
+    />
   );
 }

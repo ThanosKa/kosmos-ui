@@ -282,7 +282,7 @@ const checks: Check[] = [
       const viewer = blockViewer(page, 'stats-overview');
       const frame = viewer.locator('iframe');
       await frame.scrollIntoViewIfNeeded();
-      const stageWidth = await viewer.locator('[data-block-viewer-stage]').evaluate((stage) => stage.clientWidth);
+      const stageWidth = await viewer.locator('[data-preview-stage]').evaluate((stage) => stage.clientWidth);
       const metricColumns = () =>
         frame
           .contentFrame()
@@ -310,7 +310,7 @@ const checks: Check[] = [
       const narrow = await openPage(browser, '/docs/blocks/stats-overview', { width: 1040, height: 800 });
       const narrowViewer = blockViewer(narrow.page, 'stats-overview');
       await narrowViewer.locator('iframe').scrollIntoViewIfNeeded();
-      const narrowStage = await narrowViewer.locator('[data-block-viewer-stage]').evaluate((stage) => stage.clientWidth);
+      const narrowStage = await narrowViewer.locator('[data-preview-stage]').evaluate((stage) => stage.clientWidth);
       assert.ok(narrowStage < 770, `1040px window: the viewer is narrower than the tablet frame (${narrowStage}px)`);
       assert.equal(await narrowViewer.getByRole('radiogroup', { name: 'Preview width' }).isVisible(), false, '1040px window: no width control');
       assert.equal(await narrowViewer.locator('iframe').evaluate((iframe) => iframe.getBoundingClientRect().width), narrowStage, '1040px window: the preview fills the viewer');
@@ -412,25 +412,41 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'Show all and Show code open long code up to 75% of the screen, scroll inside, and close back to the top',
+    name: 'Show all opens long code up to 75% of the screen, scrolls inside, and closes back to the top',
     async run(browser) {
       const { page, close } = await openPage(browser, '/docs/components/sidebar');
-      for (const label of ['Show code', 'Show all']) {
-        if (label === 'Show all') await page.getByRole('tab', { name: 'Manual' }).first().click();
-        const id = await page.getByRole('button', { name: label }).first().getAttribute('aria-controls');
-        const toggle = page.locator(`[aria-controls="${id}"]`);
-        const code = page.locator(`[id="${id}"]`);
-        await toggle.click();
-        await page.waitForTimeout(500);
-        const [clientHeight, scrollHeight] = await code.evaluate((element) => [element.clientHeight, element.scrollHeight]);
-        assert.ok(clientHeight <= desktop.height * 0.75 + 1, `${label}: ${clientHeight}px is at most 75% of the screen`);
-        assert.ok(scrollHeight > clientHeight, `${label}: the rest scrolls inside`);
-        assert.equal(await code.getAttribute('tabindex'), '0', `${label}: the keyboard can scroll it`);
-        await code.evaluate((element) => (element.scrollTop = element.scrollHeight));
-        await toggle.click();
-        await page.waitForTimeout(500);
-        assert.equal(await code.evaluate((element) => element.scrollTop), 0, `${label}: closes back to the top`);
-      }
+      await page.getByRole('tab', { name: 'Manual' }).first().click();
+      const id = await page.getByRole('button', { name: 'Show all' }).first().getAttribute('aria-controls');
+      const toggle = page.locator(`[aria-controls="${id}"]`);
+      const code = page.locator(`[id="${id}"]`);
+      await toggle.click();
+      await page.waitForTimeout(500);
+      const [clientHeight, scrollHeight] = await code.evaluate((element) => [element.clientHeight, element.scrollHeight]);
+      assert.ok(clientHeight <= desktop.height * 0.75 + 1, `${clientHeight}px is at most 75% of the screen`);
+      assert.ok(scrollHeight > clientHeight, 'the rest scrolls inside');
+      assert.equal(await code.getAttribute('tabindex'), '0', 'the keyboard can scroll it');
+      await code.evaluate((element) => (element.scrollTop = element.scrollHeight));
+      await toggle.click();
+      await page.waitForTimeout(500);
+      assert.equal(await code.evaluate((element) => element.scrollTop), 0, 'closes back to the top');
+      await close();
+    },
+  },
+  {
+    name: 'a component example has Preview and Code tabs, no peek, and Code opens at the height of the preview',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/docs/components/sidebar');
+      const frame = page.locator('[data-slot="preview-shell"]').first();
+      assert.equal(await page.getByRole('button', { name: 'Show code' }).count(), 0, 'no Show code peek');
+      assert.equal(await page.locator('[data-docs-page-header] [aria-label^="Copy install command"]').count(), 0, 'no install command under the title');
+      const stageHeight = await frame.locator('[data-preview-stage]').evaluate((stage) => stage.getBoundingClientRect().height);
+      await frame.getByRole('tab', { name: 'Code' }).click();
+      const panel = frame.getByRole('tabpanel', { name: 'Code' });
+      await panel.waitFor();
+      const panelHeight = await panel.evaluate((element) => element.getBoundingClientRect().height);
+      assert.ok(Math.abs(panelHeight - stageHeight) <= 1, `Code opens at ${stageHeight}px, not ${panelHeight}px`);
+      assert.match((await panel.locator('pre').first().textContent()) ?? '', /from '@\/components\/ui\//, 'installed imports');
+      assert.match((await frame.getByRole('link', { name: /^Open .* in a new tab$/ }).getAttribute('href')) ?? '', /^\/view\//, 'opens the example alone');
       await close();
     },
   },

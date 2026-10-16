@@ -3,10 +3,8 @@ import { formatChangelogDate } from '@/lib/changelog';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import type { DocsEyebrowPart, DocsNeighbours } from '@/lib/docs-nav';
-import { addCommands } from '@/lib/registry';
 import { Button } from '@/registry/kosmos/ui/button';
 import { eyebrowClass } from './classes';
-import { InstallChip } from './install-chip';
 import { PageActions } from './page-actions';
 import { PageNavButtons } from './page-nav';
 
@@ -29,17 +27,17 @@ type DocsPageHeaderProps = {
   neighbours?: DocsNeighbours;
   /** Where the page sits in the sidebar, shown over the title. */
   eyebrow: DocsEyebrowPart[];
-  /** The registry item a component or block page documents. Adds the Base UI and install chips. */
-  item?: { name: string; baseUi?: string; baseUiName?: string };
+  /** The registry item a component or block page documents. Adds the Base UI chip. */
+  item?: { baseUi?: string; baseUiName?: string };
 };
 
 /**
  * The top of a docs page: the eyebrow (sidebar section, group, and a changelog entry's date), the title row with the Copy page menu and previous/next,
- * the description, and on component and block pages the Base UI and install chips.
+ * the description, and on component pages the Base UI chip.
  */
 export function DocsPageHeader({ title, description, date, markdownUrl, githubUrl, neighbours, eyebrow, item }: DocsPageHeaderProps) {
   return (
-    <header data-docs-page-header="" className="flex flex-col gap-2 border-b border-border pb-6">
+    <header data-docs-page-header="" className="flex flex-col gap-2 pb-2">
       <p data-docs-eyebrow="" className={eyebrowClass}>
         {eyebrow.map((part, index) => (
           <Fragment key={part.label}>
@@ -71,16 +69,13 @@ export function DocsPageHeader({ title, description, date, markdownUrl, githubUr
         </div>
       </div>
       {description && <p className="max-w-[40em] text-body text-pretty text-muted-foreground">{description}</p>}
-      {item && (
+      {item?.baseUi && (
         <div className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
-          {item.baseUi && (
-            <Button variant="secondary" size="sm" href={item.baseUi} target="_blank" rel="noreferrer">
-              Base UI {item.baseUiName ?? baseUiName(item.baseUi)}
-              <ArrowUpRight aria-hidden />
-              <span className="sr-only">(opens in a new tab)</span>
-            </Button>
-          )}
-          <InstallChip commands={addCommands(item.name)} />
+          <Button variant="secondary" size="sm" href={item.baseUi} target="_blank" rel="noreferrer">
+            Base UI {item.baseUiName ?? baseUiName(item.baseUi)}
+            <ArrowUpRight aria-hidden />
+            <span className="sr-only">(opens in a new tab)</span>
+          </Button>
         </div>
       )}
     </header>

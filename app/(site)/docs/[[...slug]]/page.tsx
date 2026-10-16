@@ -46,7 +46,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           githubUrl={docsSourceUrl(page.path, 'blob')}
           neighbours={neighbours}
           eyebrow={eyebrowOf(page)}
-          item={group && { name: page.slugs[1], baseUi: page.data.baseUi, baseUiName: page.data.baseUiName }}
+          item={group && { baseUi: page.data.baseUi, baseUiName: page.data.baseUiName }}
         />
         <DocsTocDisclosure toc={toc} className="xl:hidden" />
         {category && <BlockViewers category={category} />}
