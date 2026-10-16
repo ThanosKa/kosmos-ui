@@ -1,13 +1,12 @@
 'use client';
 
-import { ArrowUpRight, Lock, Monitor, Smartphone, Tablet } from 'lucide-react';
+import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import { PreviewFrame } from './preview-frame';
+import { PreviewShell } from './preview-shell';
 
 /**
  * The preview widths, in CSS pixels; desktop takes the whole width of the viewer. The width control shows only once
@@ -41,27 +40,9 @@ function useThemedPreviewUrl(previewUrl: string) {
   return url.href;
 }
 
-/** The last height the preview stage had while it showed, so Code can open at the same height. */
-function useStageHeight() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number>();
-  useEffect(() => {
-    const stage = ref.current;
-    if (!stage) return;
-    const observer = new ResizeObserver(() => {
-      if (stage.offsetHeight > 0) setHeight(stage.offsetHeight);
-    });
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, height] as const;
-}
-
 /**
- * The Preview and Code tabs of a block viewer, with the preview width and a link that opens the preview alone. The
- * preview is an iframe, so the block's container queries answer to the width picked here. It stays mounted while
- * Code is open, so switching back does not reload it. Code opens at the preview's height and scrolls inside, and the
- * toolbar keeps its layout, so switching tabs moves nothing on the page.
+ * The preview of a block viewer in the shared preview shell, with the preview width. The preview is an iframe, so
+ * the block's container queries answer to the width picked here.
  */
 export function BlockViewerPanels({
   title,
@@ -75,78 +56,46 @@ export function BlockViewerPanels({
   /** The code is not public (a Pro variant): the Code tab carries a lock. */
   locked?: boolean;
 }) {
-  const [tab, setTab] = useState('preview');
   const [width, setWidth] = useState<PreviewWidth>('desktop');
   const framed = previewWidths[width].width;
   const src = useThemedPreviewUrl(previewUrl);
-  const [stageRef, stageHeight] = useStageHeight();
 
   return (
-    <Tabs
-      value={tab}
-      onValueChange={setTab}
-      className="@container/viewer min-w-0 gap-0 rounded-2xl border border-transparent bg-card p-px shadow-card [--inner-radius:calc(var(--radius-2xl)-2px)]"
-    >
-      <div className="flex min-w-0 items-center justify-between gap-2 border-b border-border px-2">
-        <TabsList aria-label={`${title} view`} className="data-[orientation=horizontal]:border-b-0">
-          <TabsTrigger value="preview" className="h-11">
-            Preview
-          </TabsTrigger>
-          <TabsTrigger value="code" className="h-11">
-            {locked && <Lock data-icon="inline-start" aria-hidden />}
-            Code
-          </TabsTrigger>
-        </TabsList>
-        <div className="flex shrink-0 items-center gap-1.5">
-          <SegmentedControl
-            aria-label="Preview width"
-            value={width}
-            onValueChange={(value) => setWidth(value as PreviewWidth)}
-            className={cn('hidden @min-[770px]/viewer:inline-flex', tab !== 'preview' && 'invisible')}
-          >
-            {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
-              const { label, icon: Icon } = previewWidths[key];
-              return (
-                <SegmentedControlItem key={key} value={key} aria-label={label} title={label}>
-                  <Icon aria-hidden />
-                </SegmentedControlItem>
-              );
-            })}
-          </SegmentedControl>
-          <Button
-            variant="secondary"
-            size="icon"
-            href={src ?? previewUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`Open ${title} in a new tab`}
-            title="Open in a new tab"
-          >
-            <ArrowUpRight aria-hidden />
-          </Button>
+    <PreviewShell
+      title={title}
+      href={src ?? previewUrl}
+      locked={locked}
+      code={code}
+      stageClassName="flex justify-center bg-muted"
+      actions={
+        <SegmentedControl
+          aria-label="Preview width"
+          value={width}
+          onValueChange={(value) => setWidth(value as PreviewWidth)}
+          className="hidden group-data-[tab=code]/shell:invisible @min-[770px]/viewer:inline-flex"
+        >
+          {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
+            const { label, icon: Icon } = previewWidths[key];
+            return (
+              <SegmentedControlItem key={key} value={key} aria-label={label} title={label}>
+                <Icon aria-hidden />
+              </SegmentedControlItem>
+            );
+          })}
+        </SegmentedControl>
+      }
+      stage={
+        <div
+          className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-none', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
+          style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
+        >
+          {src ? (
+            <PreviewFrame src={src} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
+          ) : (
+            <div aria-hidden className="h-80 bg-background" />
+          )}
         </div>
-      </div>
-      <TabsContent value="preview" keepMounted className="focus-visible:-outline-offset-2">
-        <div ref={stageRef} data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
-          <div
-            className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-none', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
-            style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
-          >
-            {src ? (
-              <PreviewFrame src={src} title={`${title} preview`} minHeight={previewMinHeight} className="rounded-none" />
-            ) : (
-              <div aria-hidden className="h-80 bg-background" />
-            )}
-          </div>
-        </div>
-      </TabsContent>
-      <TabsContent
-        value="code"
-        style={stageHeight ? { height: stageHeight } : undefined}
-        className="flex flex-none flex-col overflow-hidden rounded-b-(--inner-radius) focus-visible:-outline-offset-2"
-      >
-        {code}
-      </TabsContent>
-    </Tabs>
+      }
+    />
   );
 }

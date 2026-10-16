@@ -19,8 +19,6 @@ import { Button } from '@/registry/kosmos/ui/button';
 const collapseModes = {
   /** A long file, cut at 24rem behind "Show all". */
   file: { height: 'max-h-96', show: 'Show all', hide: 'Show less' },
-  /** The first lines of an example under its preview, behind "Show code". */
-  peek: { height: 'max-h-36', show: 'Show code', hide: 'Hide code' },
 } as const;
 
 type CodeBlockProps = Omit<ComponentProps<'figure'>, 'title'> & {
@@ -28,9 +26,9 @@ type CodeBlockProps = Omit<ComponentProps<'figure'>, 'title'> & {
   title?: ReactNode;
   lineNumbers?: boolean;
   collapse?: keyof typeof collapseModes;
-  /** Sits inside another surface (a tab, a preview card), so it draws no card of its own. */
+  /** Sits inside another surface (a tab, a preview shell), so it draws no card of its own. */
   embedded?: boolean;
-  /** Fills the height of a flex column and scrolls inside it, with no collapse (the Code tab of a block viewer). */
+  /** Fills the height of a flex column and scrolls inside it, with no collapse (the Code tab of a preview shell). */
   fill?: boolean;
 };
 
@@ -53,7 +51,7 @@ export function CodeBlock({
   const viewportRef = useRef<HTMLDivElement>(null);
   const viewportId = useId();
   const [expanded, setExpanded] = useState(false);
-  const [overflows, setOverflows] = useState(collapse === 'peek' && !fill);
+  const [overflows, setOverflows] = useState(false);
   const [fullHeight, setFullHeight] = useState(0);
   const [scrolls, setScrolls] = useState(false);
   const [firstLine, setFirstLine] = useState('');
