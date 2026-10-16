@@ -7,45 +7,42 @@ import { eyebrowClass } from './classes';
 type Folder = 'components' | 'blocks';
 
 /** Cards in the first row, at the widest grid: their thumbnails load eagerly, since one is the page's largest paint. */
-const firstRow: Record<Folder, number> = { components: 3, blocks: 2 };
+const firstRow = 3;
 
-const imageSizes: Record<Folder, string> = {
-  components: '(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw',
-  blocks: '(min-width: 1024px) 480px, 100vw',
-};
+const imageSizes = '(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw';
 
 /**
  * A card for every component or block category, so the index never needs a hand-kept list. Components sit in their
- * registry groups, block categories in their block sections as larger cards. Thumbnails come from `pnpm thumbnails`.
+ * registry groups, block categories in their block sections, both in the same grid. Thumbnails come from `pnpm thumbnails`.
  */
 export function DocsIndex({ folder }: { folder: Folder }) {
   return (
     <div className="not-prose flex flex-col gap-10 @container">
       {getDocsIndex(folder).map((group, index) => (
-        <IndexGroup key={group.id} folder={folder} group={group} eager={index === 0} />
+        <IndexGroup key={group.id} group={group} eager={index === 0} />
       ))}
     </div>
   );
 }
 
-function IndexGroup({ folder, group, eager }: { folder: Folder; group: DocsIndexGroup; eager: boolean }) {
+function IndexGroup({ group, eager }: { group: DocsIndexGroup; eager: boolean }) {
   return (
     <section data-docs-group aria-labelledby={group.anchor} className="flex flex-col gap-3">
       <h2 id={group.anchor} className={cn('flex items-center gap-2 [&_svg]:size-3.5', eyebrowClass)}>
         {group.icon}
         {group.label} <span className="tabular-nums">{group.items.length}</span>
       </h2>
-      <IndexGrid folder={folder} items={group.items} eager={eager} />
+      <IndexGrid items={group.items} eager={eager} />
     </section>
   );
 }
 
-function IndexGrid({ folder, items, eager = false }: { folder: Folder; items: DocsIndexItem[]; eager?: boolean }) {
+function IndexGrid({ items, eager = false }: { items: DocsIndexItem[]; eager?: boolean }) {
   return (
-    <ul className={cn('grid grid-cols-1 gap-4', folder === 'components' ? '@md:grid-cols-2 @2xl:grid-cols-3' : '@3xl:grid-cols-2')}>
+    <ul className="grid grid-cols-1 gap-4 @md:grid-cols-2 @2xl:grid-cols-3">
       {items.map((item, index) => (
         <li key={item.url} className="flex min-w-0">
-          <IndexCard item={item} sizes={imageSizes[folder]} eager={eager && index < firstRow[folder]} />
+          <IndexCard item={item} sizes={imageSizes} eager={eager && index < firstRow} />
         </li>
       ))}
     </ul>

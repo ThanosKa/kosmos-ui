@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Lock, Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
@@ -41,10 +41,27 @@ function useThemedPreviewUrl(previewUrl: string) {
   return url.href;
 }
 
+/** The last height the preview stage had while it showed, so Code can open at the same height. */
+function useStageHeight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>();
+  useEffect(() => {
+    const stage = ref.current;
+    if (!stage) return;
+    const observer = new ResizeObserver(() => {
+      if (stage.offsetHeight > 0) setHeight(stage.offsetHeight);
+    });
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+  return [ref, height] as const;
+}
+
 /**
  * The Preview and Code tabs of a block viewer, with the preview width and a link that opens the preview alone. The
  * preview is an iframe, so the block's container queries answer to the width picked here. It stays mounted while
- * Code is open, so switching back does not reload it.
+ * Code is open, so switching back does not reload it. Code opens at the preview's height and scrolls inside, and the
+ * toolbar keeps its layout, so switching tabs moves nothing on the page.
  */
 export function BlockViewerPanels({
   title,
@@ -62,6 +79,7 @@ export function BlockViewerPanels({
   const [width, setWidth] = useState<PreviewWidth>('desktop');
   const framed = previewWidths[width].width;
   const src = useThemedPreviewUrl(previewUrl);
+  const [stageRef, stageHeight] = useStageHeight();
 
   return (
     <Tabs
@@ -80,23 +98,21 @@ export function BlockViewerPanels({
           </TabsTrigger>
         </TabsList>
         <div className="flex shrink-0 items-center gap-1.5">
-          {tab === 'preview' && (
-            <SegmentedControl
-              aria-label="Preview width"
-              value={width}
-              onValueChange={(value) => setWidth(value as PreviewWidth)}
-              className="hidden @min-[770px]/viewer:inline-flex"
-            >
-              {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
-                const { label, icon: Icon } = previewWidths[key];
-                return (
-                  <SegmentedControlItem key={key} value={key} aria-label={label} title={label}>
-                    <Icon aria-hidden />
-                  </SegmentedControlItem>
-                );
-              })}
-            </SegmentedControl>
-          )}
+          <SegmentedControl
+            aria-label="Preview width"
+            value={width}
+            onValueChange={(value) => setWidth(value as PreviewWidth)}
+            className={cn('hidden @min-[770px]/viewer:inline-flex', tab !== 'preview' && 'invisible')}
+          >
+            {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
+              const { label, icon: Icon } = previewWidths[key];
+              return (
+                <SegmentedControlItem key={key} value={key} aria-label={label} title={label}>
+                  <Icon aria-hidden />
+                </SegmentedControlItem>
+              );
+            })}
+          </SegmentedControl>
           <Button
             variant="secondary"
             size="icon"
@@ -111,7 +127,7 @@ export function BlockViewerPanels({
         </div>
       </div>
       <TabsContent value="preview" keepMounted className="focus-visible:-outline-offset-2">
-        <div data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
+        <div ref={stageRef} data-block-viewer-stage="" className="flex justify-center overflow-hidden rounded-b-(--inner-radius) bg-muted">
           <div
             className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-none', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
             style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
@@ -124,7 +140,11 @@ export function BlockViewerPanels({
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="code" className="overflow-hidden rounded-b-(--inner-radius) focus-visible:-outline-offset-2">
+      <TabsContent
+        value="code"
+        style={stageHeight ? { height: stageHeight } : undefined}
+        className="flex flex-none flex-col overflow-hidden rounded-b-(--inner-radius) focus-visible:-outline-offset-2"
+      >
         {code}
       </TabsContent>
     </Tabs>

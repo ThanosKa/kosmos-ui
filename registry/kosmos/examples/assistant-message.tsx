@@ -4,8 +4,8 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { AssistantMessage, Citation, type Source } from '@/registry/kosmos/ui/assistant-message';
 
 const sources: Source[] = [
-  { id: 'usage', title: 'Acme · Events by project, last 30 days', url: '#usage', domain: 'acme.example' },
-  { id: 'quota', title: 'Event allowance by plan', url: '#quota', domain: 'docs.acme.example' },
+  { id: 'usage', title: 'Acme · Events by project, last 30 days', url: 'https://acme.example/usage', domain: 'acme.example' },
+  { id: 'quota', title: 'Event allowance by plan', url: 'https://docs.acme.example/plans', domain: 'docs.acme.example' },
 ];
 
 const answer = (
@@ -131,7 +131,7 @@ export default function AssistantMessagePreview() {
               {
                 id: 'long',
                 title: 'Events by project and platform, October 2026, exported from the usage dashboard',
-                url: '#long',
+                url: 'https://reports.analytics.acme.example/events',
                 domain: 'reports.analytics.acme.example',
               },
             ]}

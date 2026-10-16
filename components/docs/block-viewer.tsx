@@ -54,8 +54,8 @@ function BlockViewer({ variant }: { variant: BlockVariant }) {
         locked={!item}
         code={
           item ? (
-            <div className="divide-y divide-border">
-              <ComponentSource name={item.name} item={item} embedded />
+            <div className="flex min-h-0 flex-1 flex-col divide-y divide-border">
+              <ComponentSource name={item.name} item={item} embedded fill />
             </div>
           ) : (
             <LockedCode />
@@ -68,7 +68,7 @@ function BlockViewer({ variant }: { variant: BlockVariant }) {
 
 function LockedCode() {
   return (
-    <div className="flex min-h-60 flex-col items-center justify-center gap-3 p-6 text-center">
+    <div className="flex min-h-60 flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
       <Lock aria-hidden className="size-4 text-muted-foreground" />
       <p className="max-w-[32em] text-body text-pretty text-muted-foreground">
         {proUrl ? 'The code of this variant comes with Kosmos Pro.' : 'The code of this variant comes with Kosmos Pro. Try it live in Preview.'}

@@ -1,14 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 import {
   cssVarsAsCss,
-  installCommands,
+  registryNamespace,
   installedPath,
   resolveRegistryTree,
   toInstalledImports,
   type RegistryItem,
 } from '@/lib/registry';
+import { cn } from '@/registry/kosmos/lib/cn';
+import { inlineProseClass } from './classes';
 import { DocsTabs } from './docs-tabs';
 import { HighlightedCode } from './highlighted-code';
 import { PackageInstall, PackageManagerCode } from './shadcn-command';
@@ -20,11 +23,14 @@ export function ComponentSource({
   item,
   lineNumbers,
   embedded,
+  fill,
 }: {
   name: string;
   item?: RegistryItem;
   lineNumbers?: boolean;
   embedded?: boolean;
+  /** Each file fills its share of a fixed-height flex column and scrolls inside it. */
+  fill?: boolean;
 }) {
   const target = item ?? resolveRegistryTree(name)[0];
   return (
@@ -37,6 +43,7 @@ export function ComponentSource({
           title={installedPath(file)}
           lineNumbers={lineNumbers}
           embedded={embedded}
+          fill={fill}
         />
       ))}
     </>
@@ -52,7 +59,10 @@ function InstallStep({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-/** CLI and manual installation for a registry item, with every `@kosmos/*` dependency it pulls in. */
+/**
+ * CLI and manual installation for a registry item, with every `@kosmos/*` dependency it pulls in. The CLI tab is the
+ * one `add` line; the once-per-project setup (the registry and the tokens) lives on the Installation page.
+ */
 export function ComponentInstall({ name }: { name: string }) {
   const [item, ...deps] = resolveRegistryTree(name);
   const packages = [...new Set([item, ...deps].flatMap((entry) => entry.dependencies ?? []))];
@@ -60,7 +70,17 @@ export function ComponentInstall({ name }: { name: string }) {
   return (
     <DocsTabs
       tabs={[
-        { label: 'CLI', content: <PackageManagerCode code={(runner) => installCommands(name, runner)} /> },
+        {
+          label: 'CLI',
+          content: (
+            <>
+              <PackageManagerCode code={(runner) => `${runner} add ${registryNamespace}/${name}`} />
+              <p className={cn('mt-3 text-small text-muted-foreground', inlineProseClass)}>
+                New to Kosmos? Add the registry and the tokens once per project, as <Link href="/docs/installation">Installation</Link> shows.
+              </p>
+            </>
+          ),
+        },
         {
           label: 'Manual',
           content: (
