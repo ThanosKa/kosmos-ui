@@ -35,12 +35,8 @@ _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<nam
 _Avoid_: iteration, pass
 
 **Group**:
-Μία από τις ομάδες με τις οποίες χτίζονται και εγκρίνονται τα components (Basics, Forms, Overlays, Navigation, Data, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
+Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
 _Avoid_: category (στο shadcn είναι άλλο πεδίο)
-
-**Approval page**:
-Η σελίδα `/approve/<group>` που δείχνει το review preview κάθε component μιας ομάδας σε light και dark, ώστε ο χρήστης να εγκρίνει όλη την ομάδα μία φορά. Ένα component είναι έτοιμο μόνο μετά από αυτή την έγκριση.
-_Avoid_: sign-off page, QA page
 
 **Lab**:
 Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια περνάνε τον κύκλο `build-component`. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.

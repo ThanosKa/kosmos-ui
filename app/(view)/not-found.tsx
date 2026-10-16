@@ -8,7 +8,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 
 const themes = ['light', 'dark'] as const;
 
-/** An unknown `/view/<name>` or `/approve/<group>`, inside the preview layout. Takes `?theme=` like a preview. */
+/** An unknown `/view/<name>`, inside the preview layout. Takes `?theme=` like a preview. */
 export default function ViewNotFound() {
   const theme = useSearchParams().get('theme');
   const forcedTheme = themes.find((value) => value === theme);
