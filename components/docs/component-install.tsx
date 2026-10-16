@@ -20,11 +20,14 @@ export function ComponentSource({
   item,
   lineNumbers,
   embedded,
+  fill,
 }: {
   name: string;
   item?: RegistryItem;
   lineNumbers?: boolean;
   embedded?: boolean;
+  /** Each file fills its share of a fixed-height flex column and scrolls inside it. */
+  fill?: boolean;
 }) {
   const target = item ?? resolveRegistryTree(name)[0];
   return (
@@ -37,6 +40,7 @@ export function ComponentSource({
           title={installedPath(file)}
           lineNumbers={lineNumbers}
           embedded={embedded}
+          fill={fill}
         />
       ))}
     </>

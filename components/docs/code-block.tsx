@@ -30,6 +30,8 @@ type CodeBlockProps = Omit<ComponentProps<'figure'>, 'title'> & {
   collapse?: keyof typeof collapseModes;
   /** Sits inside another surface (a tab, a preview card), so it draws no card of its own. */
   embedded?: boolean;
+  /** Fills the height of a flex column and scrolls inside it, with no collapse (the Code tab of a block viewer). */
+  fill?: boolean;
 };
 
 /**
@@ -41,6 +43,7 @@ export function CodeBlock({
   lineNumbers,
   collapse = 'file',
   embedded,
+  fill,
   className,
   style,
   children,
@@ -50,7 +53,7 @@ export function CodeBlock({
   const viewportRef = useRef<HTMLDivElement>(null);
   const viewportId = useId();
   const [expanded, setExpanded] = useState(false);
-  const [overflows, setOverflows] = useState(collapse === 'peek');
+  const [overflows, setOverflows] = useState(collapse === 'peek' && !fill);
   const [fullHeight, setFullHeight] = useState(0);
   const [scrollsSideways, setScrollsSideways] = useState(false);
   const [firstLine, setFirstLine] = useState('');
@@ -61,8 +64,8 @@ export function CodeBlock({
     if (!viewport || !content) return;
     setFirstLine(content.textContent?.trim().split('\n')[0].slice(0, 48) ?? '');
     const measure = () => {
-      setScrollsSideways(viewport.scrollWidth > viewport.clientWidth + 1);
-      if (expanded) return;
+      setScrollsSideways(viewport.scrollWidth > viewport.clientWidth + 1 || (!!fill && viewport.scrollHeight > viewport.clientHeight + 1));
+      if (expanded || fill) return;
       setFullHeight(viewport.scrollHeight);
       setOverflows(viewport.scrollHeight > viewport.clientHeight + 1);
     };
@@ -71,7 +74,7 @@ export function CodeBlock({
     observer.observe(content);
     observer.observe(viewport);
     return () => observer.disconnect();
-  }, [expanded]);
+  }, [expanded, fill]);
 
   const collapsed = overflows && !expanded;
 
@@ -93,6 +96,7 @@ export function CodeBlock({
       className={cn(
         'shiki not-prose relative min-w-0 overflow-hidden text-small',
         embedded ? 'my-0' : 'my-4 rounded-2xl border border-transparent bg-card shadow-card',
+        fill && 'flex min-h-0 flex-1 flex-col',
         className,
       )}
     >
@@ -114,13 +118,14 @@ export function CodeBlock({
         tabIndex={scrollsSideways ? 0 : undefined}
         data-expanded={expanded || undefined}
         className={cn(
-          'overflow-x-auto overflow-y-hidden py-3.5 font-mono focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+          fill ? 'min-h-0 flex-1 overflow-auto' : 'overflow-x-auto overflow-y-hidden',
+          'py-3.5 font-mono focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
           'duration-fast ease-power3-out data-expanded:duration-slow',
           'motion-safe:transition-[max-height] motion-safe:ease-smooth-in-out',
           'motion-reduce:transition-[opacity] motion-reduce:data-starting-style:opacity-0 motion-reduce:data-starting-style:transition-none',
           !title && '[--padding-right:--spacing(10)]',
           lineNumbers && '[counter-set:line_0]',
-          expanded ? 'max-h-(--code-height) pb-12' : mode.height,
+          !fill && (expanded ? 'max-h-(--code-height) pb-12' : mode.height),
         )}
         style={{ '--code-height': `${fullHeight + 48}px` } as CSSProperties}
       >
