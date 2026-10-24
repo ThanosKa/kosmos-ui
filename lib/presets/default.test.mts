@@ -34,9 +34,9 @@ for (const mode of modes) {
   });
 
   test(`Default ${mode}: primary, the current nav item and the meter are ink`, () => {
+    assert.equal(defaultPreset.accent, undefined);
     assert.equal(palette.primary, palette.foreground);
-    assert.equal(palette['active-foreground'], palette.foreground);
-    assert.equal(palette['meter-primary'], palette.foreground);
+    assert.equal(palette['accent-text'], palette.foreground);
   });
 
   test(`Default ${mode}: focus is ink at reduced alpha, 3:1 on every surface`, () => {

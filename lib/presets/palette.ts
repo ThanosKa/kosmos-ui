@@ -21,11 +21,10 @@ export const paletteSections = {
     'border',
     'input',
     'ring',
-    'active-foreground',
+    'accent-text',
     'scrim',
     'thumb',
     'scrollbar-thumb',
-    'meter-primary',
   ],
   sidebar: [
     'sidebar',
@@ -44,7 +43,16 @@ export type PaletteToken = (typeof paletteSections)[keyof typeof paletteSections
 export type Palette = Record<PaletteToken, string>;
 export type Mode = 'light' | 'dark';
 
-/** A ready set of palette and radius values. It never changes fonts, density or shadows (ADR 0009). */
+/**
+ * The one color a preset brings, per mode: `ring` for focus, the sidebar's focus and the first chart series (3:1 marks),
+ * `text` for the current page in navigation and the Meter's primary tone (4.5:1 on every nav surface).
+ */
+export type Accent = Record<Mode, { ring: string; text: string }>;
+
+/**
+ * A ready set of palette and radius values. It never changes fonts, density or shadows (ADR 0009). The palette holds
+ * the preset without its accent, ink where the accent would go, so the accent can be turned off.
+ */
 export type Preset = {
   id: string;
   name: string;
@@ -52,4 +60,12 @@ export type Preset = {
   description: string;
   /** `--radius`, the base of the radius scale. */
   radius: string;
+  accent?: Accent;
 } & Record<Mode, Palette>;
+
+/** The palette of one mode with the preset's accent in place, as its CSS writes it. */
+export function presetPalette(preset: Preset, mode: Mode): Palette {
+  const accent = preset.accent?.[mode];
+  if (!accent) return preset[mode];
+  return { ...preset[mode], ring: accent.ring, 'sidebar-ring': accent.ring, 'chart-1': accent.ring, 'accent-text': accent.text };
+}

@@ -3,14 +3,20 @@ import type { Preset } from './palette.ts';
 const ink = 'oklch(0.263 0.013 100.5)';
 const paper = 'oklch(0.99 0.002 106.5)';
 const lightInk = 'oklch(0.97 0.004 106.5)';
-const orange = { light: 'oklch(0.652 0.214 38)', lightText: 'oklch(0.53 0.17 38)', dark: 'oklch(0.7 0.18 42)' };
+const inkRing = 'oklch(0.263 0.013 100.5 / 0.55)';
+const lightInkRing = 'oklch(0.97 0.004 106.5 / 0.55)';
 
 /** The warm neutrals and the orange of ADR 0007. */
 export const warm: Preset = {
   id: 'warm',
   name: 'Warm',
-  description: 'A cream page, near-white cards, warm greys and a warm near-black ink, with one saturated orange for focus, the current page in navigation and the first chart series.',
+  description: 'A cream page, near-white cards, warm greys and a warm near-black ink, with one saturated orange for focus, the current page in navigation, meters and the first chart series.',
   radius: '0.625rem',
+  // The orange of ADR 0007. In light the text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
+  accent: {
+    light: { ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
+    dark: { ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
+  },
   light: {
     background: 'oklch(0.975 0.004 106.5)',
     foreground: ink,
@@ -31,12 +37,11 @@ export const warm: Preset = {
     warning: 'oklch(0.65 0.157 58.3)',
     border: 'oklch(0.915 0.006 97)',
     input: 'oklch(0.915 0.006 97)',
-    ring: orange.light,
-    'active-foreground': orange.lightText,
+    ring: inkRing,
+    'accent-text': ink,
     scrim: 'oklch(0.263 0.013 100.5 / 0.4)',
     thumb: paper,
     'scrollbar-thumb': 'oklch(0.6 0.01 97)',
-    'meter-primary': orange.lightText,
     sidebar: 'oklch(0.958 0.005 95)',
     'sidebar-foreground': ink,
     'sidebar-primary': ink,
@@ -44,8 +49,8 @@ export const warm: Preset = {
     'sidebar-accent': 'oklch(0.263 0.013 100.5 / 0.05)',
     'sidebar-accent-foreground': ink,
     'sidebar-border': 'oklch(0.915 0.006 97)',
-    'sidebar-ring': orange.light,
-    'chart-1': orange.light,
+    'sidebar-ring': inkRing,
+    'chart-1': ink,
     'chart-2': 'oklch(0.55 0.15 252)',
     'chart-3': 'oklch(0.64 0.14 82)',
     'chart-4': 'oklch(0.5 0.17 330)',
@@ -71,12 +76,11 @@ export const warm: Preset = {
     warning: 'oklch(0.837 0.164 84.4)',
     border: 'oklch(0.26 0.006 95)',
     input: 'oklch(0.345 0.006 95)',
-    ring: orange.dark,
-    'active-foreground': orange.dark,
+    ring: lightInkRing,
+    'accent-text': lightInk,
     scrim: 'oklch(0 0 0 / 0.6)',
     thumb: lightInk,
     'scrollbar-thumb': 'oklch(0.58 0.008 97)',
-    'meter-primary': orange.dark,
     sidebar: 'oklch(0.205 0.006 95)',
     'sidebar-foreground': lightInk,
     'sidebar-primary': 'oklch(0.94 0.005 100)',
@@ -84,8 +88,8 @@ export const warm: Preset = {
     'sidebar-accent': 'oklch(1 0 0 / 0.06)',
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': 'oklch(0.26 0.006 95)',
-    'sidebar-ring': orange.dark,
-    'chart-1': orange.dark,
+    'sidebar-ring': lightInkRing,
+    'chart-1': lightInk,
     'chart-2': 'oklch(0.65 0.14 250)',
     'chart-3': 'oklch(0.76 0.14 82)',
     'chart-4': 'oklch(0.62 0.17 330)',
