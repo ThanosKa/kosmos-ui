@@ -52,7 +52,7 @@ function StatCardLabel({ className, ...props }: React.ComponentProps<'span'>) {
 /** The number, already formatted. Write a million and up compact (28.5M), so it fits a narrow card. */
 function StatCardValue({ className, ...props }: React.ComponentProps<'span'>) {
   const { loading } = React.useContext(StatCardContext);
-  if (loading) return <Skeleton data-slot="stat-card-value" className="my-1 h-8 w-24 max-w-full" />;
+  if (loading) return <Skeleton data-slot="stat-card-value" className={cn('my-1 h-8 w-24 max-w-full', className)} />;
   return (
     <span
       data-slot="stat-card-value"
@@ -79,8 +79,8 @@ type StatCardDeltaProps = Omit<React.ComponentProps<'span'>, 'children'> &
  */
 function StatCardDelta({ value, goodWhen, unit, fractionDigits, format, className, children, ...props }: StatCardDeltaProps) {
   const { loading } = React.useContext(StatCardContext);
+  if (loading) return <Skeleton data-slot="stat-card-delta" className={cn('h-5.5 w-28 max-w-full rounded-full', className)} />;
   const delta = statDelta(value, { goodWhen, unit, fractionDigits, format });
-  if (loading) return <Skeleton data-slot="stat-card-delta" className="h-5.5 w-28 max-w-full rounded-full" />;
   if (!delta && children === undefined) return null;
   const Arrow = delta ? arrows[delta.direction] : null;
 

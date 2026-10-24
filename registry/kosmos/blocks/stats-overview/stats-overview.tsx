@@ -203,6 +203,7 @@ function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[];
         <ChartCardDescription>Last {rangeLabel}</ChartCardDescription>
       </ChartCardHeader>
       <ChartCardContent
+        loadingLabel="Loading top events"
         emptyTitle="No events yet"
         emptyDescription="Events show up here as soon as a project sends its first one."
         errorTitle="The top events could not load"

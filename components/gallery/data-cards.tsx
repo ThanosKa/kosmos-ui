@@ -74,8 +74,8 @@ const droppedEvents = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ val
 /** StatCard with sparklines, each its own card. */
 export function KpiCard() {
   const tiles = [
-    { label: 'Signups', value: '1,284', change: 4.2, goodWhen: 'up', digits: 1, data: signups, color: 'var(--chart-1)' },
-    { label: 'Dropped events', value: '0.18%', change: -0.06, goodWhen: 'down', digits: 2, data: droppedEvents, color: 'var(--chart-3)' },
+    { label: 'Signups', value: '1,284', change: 4.2, goodWhen: 'up', unit: 'percent', digits: 1, data: signups, color: 'var(--chart-1)' },
+    { label: 'Dropped events', value: '0.18%', change: -0.06, goodWhen: 'down', unit: 'points', digits: 2, data: droppedEvents, color: 'var(--chart-3)' },
   ] as const;
   return (
     <section aria-label="This month" className="grid grid-cols-2 gap-4">
@@ -83,13 +83,13 @@ export function KpiCard() {
         <StatCard key={tile.label}>
           <StatCardLabel>{tile.label}</StatCardLabel>
           <StatCardValue>{tile.value}</StatCardValue>
-          <StatCardDelta value={tile.change} goodWhen={tile.goodWhen} fractionDigits={tile.digits} unit={tile.goodWhen === 'down' ? 'points' : 'percent'}>
+          <StatCardDelta value={tile.change} goodWhen={tile.goodWhen} fractionDigits={tile.digits} unit={tile.unit}>
             vs September
           </StatCardDelta>
           <StatCardSparkline
             data={tile.data}
             color={tile.color}
-            aria-label={`${tile.label}, last 12 months, ${tile.change > 0 ? 'up' : 'down'} ${Math.abs(tile.change)}${tile.goodWhen === 'down' ? ' points' : '%'} vs September`}
+            aria-label={`${tile.label}, last 12 months, ${tile.change > 0 ? 'up' : 'down'} ${Math.abs(tile.change)}${tile.unit === 'points' ? ' points' : '%'} vs September`}
           />
         </StatCard>
       ))}

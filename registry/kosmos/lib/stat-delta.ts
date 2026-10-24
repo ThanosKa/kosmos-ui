@@ -11,7 +11,7 @@ type StatDeltaOptions = {
   unit?: 'percent' | 'points';
   /** The most decimals the change shows. Defaults to 1. */
   fractionDigits?: number;
-  /** Writes the text from the rounded change, for another locale. */
+  /** Writes the text from the rounded change, for another locale. Keep the sign: screen readers hear the text, not the arrow. */
   format?: (value: number) => string;
 };
 

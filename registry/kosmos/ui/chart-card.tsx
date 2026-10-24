@@ -29,7 +29,6 @@ function ChartCard({ className, state = 'ready', render, ...props }: ChartCardPr
       {
         className: cn(
           '@container/chart-card flex min-w-0 flex-col rounded-2xl border border-transparent bg-card text-card-foreground shadow-card',
-          // Content with no header above it takes the header's top padding.
           '*:data-[slot=chart-card-content]:first:pt-4',
           className,
         ),
@@ -42,7 +41,7 @@ function ChartCard({ className, state = 'ready', render, ...props }: ChartCardPr
   return <ChartCardContext.Provider value={context}>{element}</ChartCardContext.Provider>;
 }
 
-/** The title and description, with the action beside them from a 384px card and under them below that. */
+/** The title and description, with the action beside the title from a 384px card and under them below that. */
 function ChartCardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -81,7 +80,7 @@ function ChartCardAction({ className, ...props }: React.ComponentProps<'div'>) {
       data-slot="chart-card-action"
       className={cn(
         'col-start-1 mt-2 flex min-w-0 items-center gap-2 justify-self-start',
-        '@sm/chart-card:col-start-2 @sm/chart-card:row-span-2 @sm/chart-card:row-start-1 @sm/chart-card:mt-0 @sm/chart-card:justify-self-end',
+        '@sm/chart-card:col-start-2 @sm/chart-card:row-start-1 @sm/chart-card:mt-0 @sm/chart-card:justify-self-end',
         className,
       )}
       {...props}
@@ -102,7 +101,9 @@ function ChartCardLegend({ config, className, ...props }: Omit<React.ComponentPr
         return (
           <li key={key} className="flex min-w-0 items-center gap-1.5">
             {Icon ? (
-              <Icon />
+              <span aria-hidden className="flex shrink-0">
+                <Icon />
+              </span>
             ) : (
               <span
                 aria-hidden
@@ -132,7 +133,7 @@ type ChartCardContentProps = React.ComponentProps<'div'> & {
 
 /**
  * The chart, or the state in its place, at the same height so the card never jumps: 240px by default, the height of
- * a growth chart. A taller chart takes a `min-h-*` to match.
+ * a growth chart. A taller chart takes a `min-h-*` to match; the height leaves out the padding.
  */
 function ChartCardContent({
   className,
@@ -152,7 +153,7 @@ function ChartCardContent({
     <div
       data-slot="chart-card-content"
       data-state={state}
-      className={cn('flex min-h-60 min-w-0 flex-1 flex-col px-4 pb-4', className)}
+      className={cn('box-content flex min-h-60 min-w-0 flex-1 flex-col px-4 pb-4', className)}
       {...props}
     >
       <span role="status" className="sr-only">

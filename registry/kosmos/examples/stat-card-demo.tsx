@@ -27,18 +27,20 @@ const stats = [
 
 export default function StatCardDemo() {
   return (
-    <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
-      {stats.map((stat) => (
-        <StatCard key={stat.label}>
-          <StatCardLabel>{stat.label}</StatCardLabel>
-          <StatCardValue>{stat.value}</StatCardValue>
-          <StatCardDelta value={stat.change}>vs September</StatCardDelta>
-          <StatCardSparkline
-            data={stat.data}
-            aria-label={`${stat.label}, last 30 days, ${stat.change > 0 ? 'up' : 'down'} ${Math.abs(stat.change)}%`}
-          />
-        </StatCard>
-      ))}
+    <div className="@container w-full max-w-3xl">
+      <div className="grid grid-cols-1 gap-4 @lg:grid-cols-3">
+        {stats.map((stat) => (
+          <StatCard key={stat.label}>
+            <StatCardLabel>{stat.label}</StatCardLabel>
+            <StatCardValue>{stat.value}</StatCardValue>
+            <StatCardDelta value={stat.change}>vs September</StatCardDelta>
+            <StatCardSparkline
+              data={stat.data}
+              aria-label={`${stat.label}, last 30 days, ${stat.change > 0 ? 'up' : 'down'} ${Math.abs(stat.change)}%`}
+            />
+          </StatCard>
+        ))}
+      </div>
     </div>
   );
 }
