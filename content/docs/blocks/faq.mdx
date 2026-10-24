@@ -64,9 +64,19 @@ Takes every `<section>` prop, plus:
 <TypeTable
   type={{
     title: { description: 'The heading. `null` leaves it out; then give the page a heading above the questions.', type: 'ReactNode', default: "'Questions before you start'" },
-    items: { description: 'The questions, in order. Links in an `answer` take the underlined text style. An empty list renders nothing.', type: '{ id: string; question: ReactNode; answer: ReactNode }[]', default: 'sample questions' },
+    items: { description: 'The questions, in order. Links in an `answer` take the underlined text style. An empty list renders nothing.', type: 'FaqItem[]', default: 'sample questions' },
     defaultValue: { description: 'The `id`s of the questions open at first. `[]` opens none.', type: 'string[]', default: 'the first question' },
     contact: { description: 'A line under the questions with a link to ask more. `null` leaves it out.', type: 'ReactNode', default: 'a sample line' },
     headingLevel: { description: 'The heading level of the title; each question is one level below. Pass 3 for a section nested one level deeper.', type: '2 | 3', default: '2' },
+  }}
+/>
+
+### FaqItem
+
+<TypeTable
+  type={{
+    id: { description: 'A stable key for the question, which `defaultValue` names to open it.', type: 'string', required: true },
+    question: { description: 'The question, a heading one level below the title.', type: 'ReactNode', required: true },
+    answer: { description: 'The answer under the question. Links in it take the underlined text style.', type: 'ReactNode', required: true },
   }}
 />

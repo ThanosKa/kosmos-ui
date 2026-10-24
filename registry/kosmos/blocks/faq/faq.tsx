@@ -54,7 +54,7 @@ const sampleContact = (
   </>
 );
 
-const inlineLink =
+const inlineLinkClasses =
   '[&_a]:rounded-sm [&_a]:font-medium [&_a]:text-foreground [&_a]:underline [&_a]:decoration-foreground/30 [&_a]:underline-offset-4 [&_a]:transition-[text-decoration-color] [&_a]:hover:decoration-foreground [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-ring';
 
 type FaqProps = Omit<React.ComponentProps<'section'>, 'title' | 'defaultValue'> & {
@@ -96,12 +96,12 @@ function Faq({
               <AccordionTrigger>
                 <span className="min-w-0 text-pretty wrap-break-word">{item.question}</span>
               </AccordionTrigger>
-              <AccordionContent className={cn('max-w-[40em] pe-8 wrap-break-word', inlineLink)}>{item.answer}</AccordionContent>
+              <AccordionContent className={cn('max-w-[40em] pe-8 wrap-break-word', inlineLinkClasses)}>{item.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
         {contact ? (
-          <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty wrap-break-word text-muted-foreground', inlineLink)}>
+          <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty wrap-break-word text-muted-foreground', inlineLinkClasses)}>
             {contact}
           </p>
         ) : null}

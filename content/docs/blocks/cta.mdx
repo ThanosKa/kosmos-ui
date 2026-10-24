@@ -1,6 +1,6 @@
 ---
 title: CTA
-description: The closing section of a marketing page, with a two-line title and one action.
+description: The end of a marketing page, with a two-line title and one action.
 ---
 
 ## Installation
@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { Cta } from '@/components/cta';
 import { buttonVariants } from '@/components/ui/button';
 
-export function ClosingSection() {
+export function NextStep() {
   return (
     <Cta
       title={
@@ -42,8 +42,8 @@ Put a `<br />` where the first line of the title ends. A `Button` with `href` re
 
 - **Title**: two short lines, split where you put the `<br />`. A line too long for the width wraps and balances, so the last line is never a single word.
 - **Action**: one primary button under the title, the next step for a visitor who read the whole page. A label too long for the width wraps inside the button. An optional `description` adds one line between them.
-- **Room**: the section leaves wide space above and below, so it closes the page on its own without a band or a background of its own.
-- **Width**: the block lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 20px to 32px and the section takes more room above and below.
+- **Room**: the block leaves wide space above and below, so it closes the page on its own, without a band or a background.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 20px to 32px and the block takes more room above and below.
 
 ## API
 
@@ -55,7 +55,7 @@ Takes every `<section>` prop, plus:
   type={{
     title: { description: 'The heading, two short lines: put a `<br />` where the first ends. `null` leaves it out.', type: 'ReactNode', default: "'Add your first project, see events in a minute'" },
     description: { description: 'One line under the title. Left out by default.', type: 'ReactNode' },
-    action: { description: 'The one link under the title, a `primary` Button. `null` leaves it out.', type: 'ReactNode', default: "a 'Start for free' Button" },
+    action: { description: 'The one link under the title, a `primary` Button at `size="lg"`. A long label wraps inside it. `null` leaves it out.', type: 'ReactNode', default: "a 'Start for free' Button" },
     headingLevel: { description: 'The heading level of the title. Pass 3 for a section nested one level deeper.', type: '2 | 3', default: '2' },
   }}
 />

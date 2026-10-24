@@ -19,16 +19,16 @@ const sampleAction = (
 type CtaProps = Omit<React.ComponentProps<'section'>, 'title'> & {
   /** The heading, two short lines: put a `<br />` where the first ends. `null` leaves it out. */
   title?: React.ReactNode;
-  /** One line under the title. Most closing sections go without. */
+  /** One line under the title. Left out by default. */
   description?: React.ReactNode;
-  /** The one link under the title, a `primary` Button. `null` leaves it out. */
+  /** The one link under the title, a `primary` Button at `size="lg"`. `null` leaves it out. */
   action?: React.ReactNode;
   /** The title is an `<h2>`; pass 3 for a section nested one level deeper. */
   headingLevel?: 2 | 3;
 };
 
 /**
- * The closing section of a marketing page: a two-line title and one action, centered, with room around them. Lays
+ * The end of a marketing page: a two-line title and one action, centered, with room around them. Lays
  * itself out by its own width: the title grows to the section role from a 672px-wide container.
  */
 function Cta({ title = sampleTitle, description, action = sampleAction, headingLevel = 2, className, ...props }: CtaProps) {
