@@ -62,10 +62,10 @@ html:has(#site-header) {
 
 /*
  * The accents and radii a visitor tries on the landing page's dashboard (components/site/dashboard-tokens.ts), set on
- * the dashboard document's <html> and on the accent swatches. Each accent takes over the orange's roles at the
- * orange's contrast: `ring` at least 3:1 on the page, `active-foreground` and the light `meter-primary` at least 4.5:1
- * on every nav surface; in dark all three are one value, as for the orange. `chart-1`, the orange tag and the sidebar
- * ring follow `ring`. Site-only: no installed component reads these attributes.
+ * the dashboard document's <html> and on the accent swatches. Each accent takes over the roles ink plays by default:
+ * `ring` at least 3:1 on the page, `active-foreground` and the light `meter-primary` at least 4.5:1 on every nav
+ * surface; in dark all three are one value. `chart-1` and the sidebar ring follow `ring`. Site-only: no installed
+ * component reads these attributes.
  */
 [data-accent='violet'] {
   --ring: oklch(0.58 0.22 295);

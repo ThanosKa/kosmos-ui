@@ -120,89 +120,89 @@
 :root {
   --radius: 0.625rem;
 
-  --background: oklch(0.975 0.004 106.5);
-  --foreground: oklch(0.263 0.013 100.5);
-  --card: oklch(0.99 0.002 106.5);
-  --card-foreground: oklch(0.263 0.013 100.5);
-  --popover: oklch(0.99 0.002 106.5);
-  --popover-foreground: oklch(0.263 0.013 100.5);
-  --primary: oklch(0.263 0.013 100.5);
-  --primary-foreground: oklch(0.985 0.003 106.5);
-  --secondary: oklch(0.99 0.002 106.5);
-  --secondary-foreground: oklch(0.263 0.013 100.5);
-  --muted: oklch(0.94 0.006 97);
-  --muted-foreground: oklch(0.52 0.01 97);
-  --accent: oklch(0.263 0.013 100.5 / 0.05);
-  --accent-foreground: oklch(0.263 0.013 100.5);
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.205 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(1 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.955 0 0);
+  --muted-foreground: oklch(0.51 0 0);
+  --accent: oklch(0.205 0 0 / 0.05);
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.55 0.225 28.5);
   --success: oklch(0.627 0.17 149.2);
   --warning: oklch(0.65 0.157 58.3);
-  --border: oklch(0.915 0.006 97);
-  --input: oklch(0.915 0.006 97);
-  --ring: oklch(0.652 0.214 38);
-  --active-foreground: oklch(0.53 0.17 38);
-  --scrim: oklch(0.263 0.013 100.5 / 0.4);
-  --thumb: oklch(0.99 0.002 106.5);
-  --scrollbar-thumb: oklch(0.6 0.01 97);
-  --meter-primary: oklch(0.53 0.17 38);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.205 0 0 / 0.55);
+  --active-foreground: oklch(0.205 0 0);
+  --scrim: oklch(0.205 0 0 / 0.4);
+  --thumb: oklch(1 0 0);
+  --scrollbar-thumb: oklch(0.61 0 0);
+  --meter-primary: oklch(0.205 0 0);
 
-  --sidebar: oklch(0.958 0.005 95);
-  --sidebar-foreground: oklch(0.263 0.013 100.5);
-  --sidebar-primary: oklch(0.263 0.013 100.5);
-  --sidebar-primary-foreground: oklch(0.985 0.003 106.5);
-  --sidebar-accent: oklch(0.263 0.013 100.5 / 0.05);
-  --sidebar-accent-foreground: oklch(0.263 0.013 100.5);
-  --sidebar-border: oklch(0.915 0.006 97);
-  --sidebar-ring: oklch(0.652 0.214 38);
+  --sidebar: oklch(0.97 0 0);
+  --sidebar-foreground: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.205 0 0 / 0.05);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.205 0 0 / 0.55);
 
-  --chart-1: oklch(0.652 0.214 38);
-  --chart-2: oklch(0.55 0.15 252);
-  --chart-3: oklch(0.64 0.14 82);
-  --chart-4: oklch(0.5 0.17 330);
-  --chart-5: oklch(0.6 0.13 160);
+  --chart-1: oklch(0.205 0 0);
+  --chart-2: oklch(0.35 0 0);
+  --chart-3: oklch(0.46 0 0);
+  --chart-4: oklch(0.55 0 0);
+  --chart-5: oklch(0.63 0 0);
 }
 
 .dark {
-  --background: oklch(0.2 0.006 95);
-  --foreground: oklch(0.97 0.004 106.5);
-  --card: oklch(0.23 0.006 95);
-  --card-foreground: oklch(0.97 0.004 106.5);
-  --popover: oklch(0.2 0.006 95);
-  --popover-foreground: oklch(0.97 0.004 106.5);
-  --primary: oklch(0.94 0.005 100);
-  --primary-foreground: oklch(0.263 0.013 100.5);
-  --secondary: oklch(0.235 0.006 95);
-  --secondary-foreground: oklch(0.97 0.004 106.5);
-  --muted: oklch(0.285 0.007 95);
-  --muted-foreground: oklch(0.7 0.008 97);
+  --background: oklch(0.19 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.22 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.19 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.225 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.275 0 0);
+  --muted-foreground: oklch(0.7 0 0);
   --accent: oklch(1 0 0 / 0.06);
-  --accent-foreground: oklch(0.97 0.004 106.5);
+  --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.715 0.165 22.1);
   --success: oklch(0.723 0.192 149.6);
   --warning: oklch(0.837 0.164 84.4);
-  --border: oklch(0.26 0.006 95);
-  --input: oklch(0.345 0.006 95);
-  --ring: oklch(0.7 0.18 42);
-  --active-foreground: oklch(0.7 0.18 42);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.335 0 0);
+  --ring: oklch(0.97 0 0 / 0.55);
+  --active-foreground: oklch(0.97 0 0);
   --scrim: oklch(0 0 0 / 0.6);
-  --thumb: oklch(0.97 0.004 106.5);
-  --scrollbar-thumb: oklch(0.58 0.008 97);
-  --meter-primary: oklch(0.7 0.18 42);
+  --thumb: oklch(0.97 0 0);
+  --scrollbar-thumb: oklch(0.58 0 0);
+  --meter-primary: oklch(0.97 0 0);
 
-  --sidebar: oklch(0.205 0.006 95);
-  --sidebar-foreground: oklch(0.97 0.004 106.5);
-  --sidebar-primary: oklch(0.94 0.005 100);
-  --sidebar-primary-foreground: oklch(0.263 0.013 100.5);
+  --sidebar: oklch(0.195 0 0);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.97 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
   --sidebar-accent: oklch(1 0 0 / 0.06);
-  --sidebar-accent-foreground: oklch(0.97 0.004 106.5);
-  --sidebar-border: oklch(0.26 0.006 95);
-  --sidebar-ring: oklch(0.7 0.18 42);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(0.25 0 0);
+  --sidebar-ring: oklch(0.97 0 0 / 0.55);
 
-  --chart-1: oklch(0.7 0.18 42);
-  --chart-2: oklch(0.65 0.14 250);
-  --chart-3: oklch(0.76 0.14 82);
-  --chart-4: oklch(0.62 0.17 330);
-  --chart-5: oklch(0.7 0.14 160);
+  --chart-1: oklch(0.97 0 0);
+  --chart-2: oklch(0.82 0 0);
+  --chart-3: oklch(0.71 0 0);
+  --chart-4: oklch(0.62 0 0);
+  --chart-5: oklch(0.54 0 0);
 }
 
 /* Shadows, the same under every preset: a preset never changes them (ADR 0009). */
@@ -295,7 +295,11 @@
   --color-chart-5: var(--chart-5);
 }
 
-/* Tags: the Badge hue variants. */
+/*
+ * Tags: the Badge hue variants. Each fill is its own hue mixed into
+ * transparent, not a chart series, so a category keeps its color under every
+ * preset, the grey charts of the default included.
+ */
 @theme inline {
   --color-tag-orange: var(--tag-orange);
   --color-tag-orange-foreground: var(--tag-orange-foreground);
@@ -312,30 +316,30 @@
 }
 
 :root {
-  --tag-orange: color-mix(in oklab, var(--chart-1) 12%, transparent);
+  --tag-orange: color-mix(in oklab, oklch(0.652 0.214 38) 12%, transparent);
   --tag-orange-foreground: oklch(0.47 0.14 38);
-  --tag-blue: color-mix(in oklab, var(--chart-2) 12%, transparent);
+  --tag-blue: color-mix(in oklab, oklch(0.55 0.15 252) 12%, transparent);
   --tag-blue-foreground: oklch(0.47 0.14 252);
-  --tag-amber: color-mix(in oklab, var(--chart-3) 12%, transparent);
+  --tag-amber: color-mix(in oklab, oklch(0.64 0.14 82) 12%, transparent);
   --tag-amber-foreground: oklch(0.47 0.12 82);
-  --tag-magenta: color-mix(in oklab, var(--chart-4) 12%, transparent);
+  --tag-magenta: color-mix(in oklab, oklch(0.5 0.17 330) 12%, transparent);
   --tag-magenta-foreground: oklch(0.47 0.14 330);
-  --tag-green: color-mix(in oklab, var(--chart-5) 12%, transparent);
+  --tag-green: color-mix(in oklab, oklch(0.6 0.13 160) 12%, transparent);
   --tag-green-foreground: oklch(0.47 0.12 160);
   --tag-red: color-mix(in oklab, var(--destructive) 12%, transparent);
   --tag-red-foreground: oklch(0.47 0.14 28.5);
 }
 
 .dark {
-  --tag-orange: color-mix(in oklab, var(--chart-1) 16%, transparent);
+  --tag-orange: color-mix(in oklab, oklch(0.7 0.18 42) 16%, transparent);
   --tag-orange-foreground: oklch(0.84 0.08 42);
-  --tag-blue: color-mix(in oklab, var(--chart-2) 16%, transparent);
+  --tag-blue: color-mix(in oklab, oklch(0.65 0.14 250) 16%, transparent);
   --tag-blue-foreground: oklch(0.84 0.08 250);
-  --tag-amber: color-mix(in oklab, var(--chart-3) 16%, transparent);
+  --tag-amber: color-mix(in oklab, oklch(0.76 0.14 82) 16%, transparent);
   --tag-amber-foreground: oklch(0.84 0.08 82);
-  --tag-magenta: color-mix(in oklab, var(--chart-4) 16%, transparent);
+  --tag-magenta: color-mix(in oklab, oklch(0.62 0.17 330) 16%, transparent);
   --tag-magenta-foreground: oklch(0.84 0.08 330);
-  --tag-green: color-mix(in oklab, var(--chart-5) 16%, transparent);
+  --tag-green: color-mix(in oklab, oklch(0.7 0.14 160) 16%, transparent);
   --tag-green-foreground: oklch(0.84 0.08 160);
   --tag-red: color-mix(in oklab, var(--destructive) 16%, transparent);
   --tag-red-foreground: oklch(0.84 0.08 22.1);

@@ -11,9 +11,9 @@ export const dashboardScreens = [
   { id: 'roadmap', label: 'Roadmap' },
 ] as const;
 
-/** The accents a visitor can try. The first is the Kosmos orange, the accent the dashboard starts in. */
+/** The accents a visitor can try. The first is the Kosmos ink, no accent at all, which the dashboard starts in. */
 export const dashboardAccents = [
-  { id: 'orange', label: 'Orange' },
+  { id: 'ink', label: 'Ink' },
   { id: 'violet', label: 'Violet' },
   { id: 'magenta', label: 'Magenta' },
   { id: 'teal', label: 'Teal' },
@@ -28,7 +28,7 @@ export type DashboardTheme = 'light' | 'dark';
 
 export type DashboardTokens = { accent: DashboardAccent; radius: DashboardRadius; theme?: DashboardTheme };
 
-export const defaultDashboardTokens: DashboardTokens = { accent: 'orange', radius: '10' };
+export const defaultDashboardTokens: DashboardTokens = { accent: 'ink', radius: '10' };
 
 export const landingSource = 'kosmos-landing';
 export const dashboardSource = 'kosmos-dashboard';
