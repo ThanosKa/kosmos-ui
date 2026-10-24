@@ -41,7 +41,7 @@ const labels: Record<(typeof variants)[number], string> = {
   'tint-gray': '304',
   'tint-blue': 'POST',
   'tint-green': '200',
-  'tint-teal': 'Beta',
+  'tint-teal': 'EU',
   'tint-orange': '429',
   'tint-red': '500',
 };

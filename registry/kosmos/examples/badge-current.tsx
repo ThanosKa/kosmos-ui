@@ -22,7 +22,7 @@ export default function BadgeCurrent() {
                 aria-current={current ? 'page' : undefined}
                 className="w-full justify-start gap-2 text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground"
               >
-                <Badge variant={endpoint.tint} className="w-14 font-semibold">
+                <Badge variant={endpoint.tint} className="w-14">
                   {endpoint.method}
                 </Badge>
                 <span className="min-w-0 truncate">{endpoint.label}</span>

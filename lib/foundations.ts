@@ -85,6 +85,8 @@ function tintDocs(): Record<string, { group: ColorGroup; use: string }> {
     docs[`tint-${hue}-foreground`] = { group: 'tints', use: `Text on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-link`] = { group: 'tints', use: `A link on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-dot`] = { group: 'tints', use: `The dot beside a ${hue} state.` };
+  }
+  for (const hue of ['blue', 'green', 'orange', 'red']) {
     docs[`tint-${hue}-solid`] = { group: 'tints', use: `The fill of a ${hue} code in the current nav item, under white text.` };
   }
   return docs;

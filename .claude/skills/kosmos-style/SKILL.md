@@ -65,7 +65,7 @@ A horizontal tab list keeps its scrollbar under the divider: with no arrows, it 
 
 ## Radius
 
-`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Alerts take `rounded-xl`: a message inside a page, a step below the card it often sits in. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
 The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
