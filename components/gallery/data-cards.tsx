@@ -1,13 +1,13 @@
 'use client';
 
-import { Ellipsis, Mail, ShieldCheck, Trash2, TrendingDown, TrendingUp, UserPlus } from 'lucide-react';
+import { Ellipsis, Mail, ShieldCheck, Trash2, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { GalleryCard } from '@/components/gallery/gallery-card';
 import { members, memberStatus, revenue, revenueSummary, type RevenueRange } from '@/components/gallery/data';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
-import { GrowthChart, Sparkline, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import {
 import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatCard, StatCardDelta, StatCardLabel, StatCardSparkline, StatCardValue } from '@/registry/kosmos/ui/stat-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -32,7 +33,6 @@ const revenueConfig = {
 export function RevenueCard() {
   const [range, setRange] = useState<RevenueRange>('30d');
   const summary = revenueSummary[range];
-  const up = summary.change >= 0;
   return (
     <GalleryCard
       title="Monthly revenue"
@@ -52,10 +52,9 @@ export function RevenueCard() {
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="text-display tabular-nums">{usd.format(summary.total)}</span>
-        <Badge variant={up ? 'green' : 'red'}>
-          {up ? '+' : '−'}
-          {Math.abs(summary.change)}%<span className="sr-only"> compared with the period before</span>
-        </Badge>
+        <StatCardDelta value={summary.change}>
+          <span className="sr-only">compared with the period before</span>
+        </StatCardDelta>
       </div>
       <GrowthChart
         title={`Monthly revenue, ${rangeLabel[range]}`}
@@ -72,32 +71,27 @@ export function RevenueCard() {
 const signups = [30, 42, 38, 51, 47, 60, 58, 64, 70, 66, 74, 81].map((value) => ({ value }));
 const droppedEvents = [9, 8, 9, 7, 8, 6, 7, 6, 5, 6, 5, 4].map((value) => ({ value }));
 
-/** Sparkline stat tiles, each its own card. */
+/** StatCard with sparklines, each its own card. */
 export function KpiCard() {
   const tiles = [
-    { label: 'Signups', value: '1,284', change: '+4.2%', rising: true, data: signups, color: 'var(--chart-1)' },
-    { label: 'Dropped events', value: '0.18%', change: '−0.06 pts', rising: false, data: droppedEvents, color: 'var(--chart-3)' },
-  ];
+    { label: 'Signups', value: '1,284', change: 4.2, goodWhen: 'up', digits: 1, data: signups, color: 'var(--chart-1)' },
+    { label: 'Dropped events', value: '0.18%', change: -0.06, goodWhen: 'down', digits: 2, data: droppedEvents, color: 'var(--chart-3)' },
+  ] as const;
   return (
     <section aria-label="This month" className="grid grid-cols-2 gap-4">
       {tiles.map((tile) => (
-        <div key={tile.label} className="flex min-w-0 flex-col gap-1 rounded-2xl border border-transparent bg-card p-4 shadow-card">
-          <span className="text-body font-medium text-muted-foreground">{tile.label}</span>
-          <span className="text-display tabular-nums">{tile.value}</span>
-          <span className="flex min-w-0 items-center gap-2 text-small tabular-nums">
-            <Badge variant="green">
-              {tile.rising ? <TrendingUp aria-hidden /> : <TrendingDown aria-hidden />}
-              {tile.change}
-            </Badge>
-            <span className="truncate text-muted-foreground">vs September</span>
-          </span>
-          <Sparkline
+        <StatCard key={tile.label}>
+          <StatCardLabel>{tile.label}</StatCardLabel>
+          <StatCardValue>{tile.value}</StatCardValue>
+          <StatCardDelta value={tile.change} goodWhen={tile.goodWhen} fractionDigits={tile.digits} unit={tile.goodWhen === 'down' ? 'points' : 'percent'}>
+            vs September
+          </StatCardDelta>
+          <StatCardSparkline
             data={tile.data}
             color={tile.color}
-            aria-label={`${tile.label}, last 12 months, ${tile.change} vs September`}
-            className="mt-2 h-10 w-full"
+            aria-label={`${tile.label}, last 12 months, ${tile.change > 0 ? 'up' : 'down'} ${Math.abs(tile.change)}${tile.goodWhen === 'down' ? ' points' : '%'} vs September`}
           />
-        </div>
+        </StatCard>
       ))}
     </section>
   );
