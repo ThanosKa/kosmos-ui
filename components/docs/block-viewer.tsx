@@ -1,13 +1,14 @@
 import { Lock } from 'lucide-react';
 import { addCommands, blockTiers, getRegistryItem, type BlockCategory, type BlockTier, type BlockVariant } from '@/lib/registry';
 import { proUrl } from '@/lib/shared';
-import { Badge } from '@/registry/kosmos/ui/badge';
+import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { BlockViewerPanels } from './block-viewer-panels';
 import { ComponentSource } from './component-install';
 import { InstallChip } from './install-chip';
 
-const tierBadges: Record<BlockTier, 'green' | 'orange'> = { free: 'green', pro: 'orange' };
+/** Free is a green tag; Pro is the brand's Pro mark, a primary Badge filled with the brand (`brand-primary`, app/global.css). */
+const tierBadges: Record<BlockTier, BadgeProps> = { free: { variant: 'green' }, pro: { variant: 'primary', className: 'brand-primary' } };
 
 /** The variants of a block category, each in its own block viewer, free first. Each has an anchor named after it. */
 export function BlockViewers({ category }: { category: BlockCategory }) {
@@ -41,7 +42,7 @@ function BlockViewer({ variant }: { variant: BlockVariant }) {
         <h2 id={headingId} className="text-title text-foreground">
           {variant.title}
         </h2>
-        <Badge variant={tierBadges[variant.tier]}>{blockTiers[variant.tier]}</Badge>
+        <Badge {...tierBadges[variant.tier]}>{blockTiers[variant.tier]}</Badge>
         {item && (
           <div className="ms-auto flex min-w-0">
             <InstallChip commands={addCommands(item.name)} />
@@ -74,7 +75,7 @@ function LockedCode() {
         {proUrl ? 'The code of this variant comes with Kosmos Pro.' : 'The code of this variant comes with Kosmos Pro. Try it live in Preview.'}
       </p>
       {proUrl && (
-        <Button variant="secondary" href={proUrl}>
+        <Button variant="primary" href={proUrl} className="brand-primary hover:not-data-disabled:bg-brand-hover">
           Get Pro
         </Button>
       )}

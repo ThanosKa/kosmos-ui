@@ -72,7 +72,7 @@ export async function socialImage({ eyebrow, title, description }: SocialImageOp
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <KosmosMark width={52} height={52} ringColor={color.ring} gapColor={color.background} style={{ color: color.foreground }} />
+          <KosmosMark width={52} height={52} ringColor={color.brand} gapColor={color.background} style={{ color: color.foreground }} />
           <span style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.02em' }}>{appName}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>

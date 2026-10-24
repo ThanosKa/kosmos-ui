@@ -1,10 +1,12 @@
 // Usage: pnpm registry:build
 // Composes every registry/**/<name>.registry.json into the root registry.json (generated, gitignored),
-// runs `shadcn build` into public/r, then validates every output file against the shadcn schema.
+// runs `shadcn build` into public/r, then validates every output file against the shadcn schema and checks that
+// none holds the site's brand colour (lib/brand.ts).
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { registryItemSchema, registrySchema } from 'shadcn/schema';
+import { findBrand, readBrandColors } from '../lib/brand.ts';
 import { defaultPreset, presetCss } from '../lib/presets/index.ts';
 import { readRegistryItems } from '../lib/registry.ts';
 import { siteUrl } from '../lib/shared.ts';
@@ -42,9 +44,13 @@ execFileSync(join(root, 'node_modules/.bin/shadcn'), ['build', 'registry.json', 
   stdio: ['ignore', 'ignore', 'inherit'],
 });
 
+const brandColors = readBrandColors(root);
 const built = readdirSync(outDir).filter((file) => file.endsWith('.json'));
 for (const file of built) {
-  const json = JSON.parse(readFileSync(join(outDir, file), 'utf8'));
+  const source = readFileSync(join(outDir, file), 'utf8');
+  const brandHits = findBrand(source, brandColors);
+  if (brandHits.length) throw new Error(`public/r/${file} holds the site's brand colour (${brandHits.join(', ')}): it belongs to the site only`);
+  const json = JSON.parse(source);
   if (file === 'registry.json') {
     registrySchema.parse(json);
     continue;
