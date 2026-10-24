@@ -57,32 +57,31 @@ const sampleAction = (
 
 const dateFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const userFormat = new Intl.NumberFormat('en-US');
-const changeFormat = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 0, signDisplay: 'always' });
+const changeFormat = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1, signDisplay: 'always' });
 
-/** Active users, one point every `stepDays` days up to 11 October 2026, rising with small swings. */
-function activeUsers(points: number, stepDays: number) {
+/**
+ * Active users per point, one point every `stepDays` days up to 11 October 2026, ending at `last` and rising by about
+ * `perDay` a day with small swings.
+ */
+function activeUsers(points: number, stepDays: number, last: number, perDay: number) {
   const today = Date.UTC(2026, 9, 11);
   return Array.from({ length: points }, (_, index) => {
     const daysAgo = (points - 1 - index) * stepDays;
-    const users = Math.round(48_210 - daysAgo * 150 + Math.sin(daysAgo * 1.7) * 700);
+    const users = Math.round(last - daysAgo * perDay + Math.sin(daysAgo * 1.7) * last * 0.015);
     return { date: dateFormat.format(today - daysAgo * 86_400_000), users };
   });
 }
 
 const sampleRanges = {
-  '7d': { label: '7 days', data: activeUsers(7, 1) },
-  '30d': { label: '30 days', data: activeUsers(30, 1) },
-  '90d': { label: '90 days', data: activeUsers(13, 7) },
+  '7d': { label: '7 days', total: 61_240, change: 0.031, data: activeUsers(7, 1, 29_400, 90) },
+  '30d': { label: '30 days', total: 144_600, change: 0.096, data: activeUsers(30, 1, 29_400, 90) },
+  '90d': { label: '90 days', total: 312_800, change: 0.214, data: activeUsers(13, 7, 74_800, 155) },
 };
 type SampleRange = keyof typeof sampleRanges;
 
-/** The sample visual: a dashboard panel with a range picker, live. */
 function SampleDashboard() {
   const [range, setRange] = React.useState<SampleRange>('30d');
-  const { data } = sampleRanges[range];
-  const first = data[0].users;
-  const last = data[data.length - 1].users;
-  const change = (last - first) / first;
+  const { label, total, change, data } = sampleRanges[range];
   return (
     <div className="flex w-full min-w-0 flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -96,14 +95,14 @@ function SampleDashboard() {
         </SegmentedControl>
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="text-display text-foreground tabular-nums">{userFormat.format(last)}</span>
+        <span className="text-display text-foreground tabular-nums">{userFormat.format(total)}</span>
         <span className="flex items-center gap-2 text-small text-muted-foreground">
           <Badge variant={change < 0 ? 'red' : 'green'}>{changeFormat.format(change)}</Badge>
-          since {data[0].date}
+          vs. previous {label}
         </span>
       </div>
       <GrowthChart
-        title={`Active users, last ${sampleRanges[range].label}`}
+        title={`Active users, last ${label}`}
         data={data}
         xKey="date"
         xLabel="Date"
@@ -205,7 +204,7 @@ function FeatureSection({
           ))}
         </ul>
       ) : null}
-      {action ? <div className="mt-auto flex flex-wrap gap-3 pt-1">{action}</div> : null}
+      {action ? <div className="mt-auto flex pt-1">{action}</div> : null}
     </div>
   );
   return (

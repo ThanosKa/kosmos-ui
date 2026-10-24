@@ -49,11 +49,11 @@ The visual is whatever shows the feature best: a live piece of your product, whi
 
 ## What it does
 
-- **Header**: the title is an `<h2>` and the card's heading an `<h3>`. Pass `headingLevel={3}` when the section sits inside one that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the section its heading.
+- **Header**: the title is an `<h2>` and the card's heading an `<h3>`. Pass `headingLevel={3}` when the feature section sits inside a part of the page that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the cards their heading.
 - **Tray**: a recessed tray holds two raised cards, the visual in the larger one and the text beside it. The text card holds a heading, a short paragraph, the points and one action, pinned to its bottom so it lines up with the end of the visual.
 - **Points**: each point has a 16px icon, a title and one line under it. A point with `href` turns its title into a link, so a visitor can read more about that point alone. Without an `icon`, a check mark leads the point.
 - **Side**: `visualSide="end"` puts the visual after the text, so features in a row can alternate. The reading order follows the order on screen.
-- **Width**: the section lays itself out by its own width, with container queries, not by the screen's. The cards stack on a phone and sit side by side from 768px.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's. The cards stack on a phone and sit side by side from 768px.
 - **Unlike the bento**: the bento shows several features at once, one caption each. The feature section gives one feature the room to explain itself.
 
 ## API

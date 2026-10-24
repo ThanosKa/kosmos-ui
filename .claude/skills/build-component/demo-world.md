@@ -176,6 +176,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Bento | The Acme website's feature grid: four live tiles (Marketing site below). |
 | Footer | The bottom of the Acme website: the product with its line, four columns of links and the copyright with icon links (Marketing site below). |
 | Logo marquee | The customers on the Acme website: the logos of its live projects on a paid plan (Marketing site below). |
+| Feature section | One feature of the Acme website, dashboards: a live Active users panel beside the points that explain it (Marketing site below). |
 
 ## Marketing site
 
@@ -185,6 +186,7 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 - Bento: title "From the first event to the answer", one line "Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." Tiles, in order: Live events (wide; a feed of `signup_completed`, `checkout_started`, `trial_converted` and `page_viewed` from the first projects), Funnels (meters: Viewed pricing 100%, Started a trial 38%, Paid 12%), Every platform (Web, iOS, Android and Server with their SDKs) and Alerts (wide; switches for "Signups drop below 40 a day", "Error events pass 2%" and "Weekly summary").
 - The stack Kosmos is built on (Base UI, Tailwind CSS, React, Next.js, shadcn CLI) may appear as logo names in a Logo marquee example or docs snippet: it is what the Kosmos landing shows, not a style source.
 - Logo marquee: the line "Used by the teams behind" over the live projects on a paid plan, in table order (Fernhill Books, Brightloop Fitness, Copperline Bank, Saltmarsh Coffee, Driftwood Travel, Cirrus Weather, Ironbark Logistics), each its full name beside a lucide icon that fits it (`BookOpen`, `Activity`, `Landmark`, `Coffee`, `Sailboat`, `Cloud`, `Truck`).
+- Feature section: title "Dashboards your whole team reads", one line "Pin the numbers you check every morning. Acme keeps them current, a minute behind your events." The visual is a panel of Active users with a 7d, 30d and 90d range, showing the overview metrics' Active users and its chart points (30d first). The card beside it: "One view for everyone", "Build a dashboard once and every teammate opens the same numbers, with the same filters, at the same time.", the points "Share it with a link" (`/docs/dashboards/share`), "Send a Monday digest" (`/docs/dashboards/digest`) and "Export any chart" (`/docs/dashboards/export`), and the action "Read the dashboards guide" (secondary, to `/docs/dashboards`).
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
 
 ## AI agents
