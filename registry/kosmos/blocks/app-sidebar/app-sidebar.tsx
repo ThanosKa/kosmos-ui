@@ -2,7 +2,6 @@
 
 import {
   Activity,
-  ChevronsUpDown,
   CircleDollarSign,
   CircleHelp,
   FolderKanban,
@@ -20,18 +19,7 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/registry/kosmos/ui/dropdown-menu';
+import { DropdownMenuItem, DropdownMenuSeparator } from '@/registry/kosmos/ui/dropdown-menu';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import {
   Sidebar,
@@ -44,19 +32,49 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSubmenu,
+  SidebarSubmenuButton,
+  SidebarSubmenuContent,
+  SidebarSubmenuItem,
+  SidebarSubmenuTrigger,
+  SidebarUserMenu,
+  SidebarWorkspaceSwitcher,
   type SidebarProps,
+  type SidebarUser,
+  type SidebarWorkspace,
+  type SidebarWorkspaceSwitcherProps,
 } from '@/registry/kosmos/ui/sidebar';
 
 // Sample data: replace it with your app's pages, workspaces and signed-in user.
-/** `badge` is a count after the label; `badgeLabel` says what it counts, for screen readers ("unread"). */
-type NavItem = { id: string; label: string; href: string; icon: LucideIcon; badge?: number; badgeLabel?: string };
-type Workspace = { id: string; name: string; plan: string };
-type User = { name: string; email: string; initials: string };
+/** A page one level down, in an item's submenu. */
+type NavSubItem = { id: string; label: string; href: string };
+/**
+ * `badge` is a count after the label; `badgeLabel` says what it counts, for screen readers ("unread").
+ * With `items` the item opens a submenu of those pages instead of being a page itself, and has no `href`.
+ */
+type NavItem = {
+  id: string;
+  label: string;
+  href?: string;
+  icon: LucideIcon;
+  badge?: number;
+  badgeLabel?: string;
+  items?: NavSubItem[];
+};
 
 const sampleNavMain: NavItem[] = [
   { id: 'overview', label: 'Overview', href: '#overview', icon: LayoutDashboard },
   { id: 'projects', label: 'Projects', href: '#projects', icon: FolderKanban },
-  { id: 'events', label: 'Events', href: '#events', icon: Activity },
+  {
+    id: 'events-menu',
+    label: 'Events',
+    icon: Activity,
+    items: [
+      { id: 'events', label: 'Live events', href: '#events' },
+      { id: 'funnels', label: 'Funnels', href: '#funnels' },
+      { id: 'alerts', label: 'Alerts', href: '#alerts' },
+    ],
+  },
   { id: 'users', label: 'Users', href: '#users', icon: Users },
   { id: 'revenue', label: 'Revenue', href: '#revenue', icon: CircleDollarSign },
   { id: 'roadmap', label: 'Roadmap', href: '#roadmap', icon: Milestone },
@@ -72,14 +90,17 @@ const sampleNavFooter: NavItem[] = [
   { id: 'settings', label: 'Settings', href: '#settings', icon: Settings },
 ];
 
-const sampleWorkspaces: Workspace[] = [
-  { id: 'acme', name: 'Acme', plan: 'Scale plan' },
-  { id: 'acme-staging', name: 'Acme Staging', plan: 'Free plan' },
+const sampleWorkspaces: SidebarWorkspace[] = [
+  { id: 'acme', name: 'Acme', description: 'Scale plan' },
+  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
 ];
 
-const sampleUser: User = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
+const sampleUser: SidebarUser = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
 
-type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
+type MenuProps = Omit<
+  SidebarWorkspaceSwitcherProps,
+  'workspaces' | 'value' | 'defaultValue' | 'onValueChange' | 'label' | 'children' | 'className'
+>;
 
 /** What the workspace and user menus offer besides switching workspace. */
 type AppSidebarAction = 'add-workspace' | 'profile' | 'preferences' | 'log-out';
@@ -97,7 +118,7 @@ function useIsMac() {
 }
 
 type AppSidebarContentProps = {
-  /** The main pages, at the top. */
+  /** The main pages, at the top. An item with `items` opens a submenu. */
   navMain?: NavItem[];
   /** The saved views, under their own heading. */
   navViews?: NavItem[];
@@ -115,13 +136,13 @@ type AppSidebarContentProps = {
    */
   searchShortcut?: boolean;
   /** The workspaces in the switcher. With none, the switcher is hidden. */
-  workspaces?: Workspace[];
+  workspaces?: SidebarWorkspace[];
   /** The `id` of the workspace shown in the switcher. Use with `onWorkspaceChange`, or leave it out and pass `defaultWorkspace`. */
   workspace?: string;
   /** The workspace shown at first, when the switcher keeps its own state. Defaults to the first one. */
   defaultWorkspace?: string;
   onWorkspaceChange?: (id: string) => void;
-  user?: User;
+  user?: SidebarUser;
   /** Runs an action from the workspace or user menu. Those items, and the user menu, show only when this is passed. */
   onAction?: (action: AppSidebarAction) => void;
   /** Props for the workspace menu, such as `open` and `onOpenChange`. */
@@ -130,23 +151,16 @@ type AppSidebarContentProps = {
   userMenu?: MenuProps;
 };
 
-/** The workspace and user menu triggers: two lines of text beside a 24px mark, which stays centered in the icon column. */
-const menuTrigger =
-  'h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]/sidebar:px-1';
-const hiddenInIconMode = 'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)';
-const menuChevron = cn('ms-auto', hiddenInIconMode);
+const hiddenInIconMode =
+  'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)';
 
-function WorkspaceMark({ name, className }: { name: string; className?: string }) {
+function Count({ badge, badgeLabel }: Pick<NavItem, 'badge' | 'badgeLabel'>) {
+  if (!badge) return null;
   return (
-    <span
-      aria-hidden
-      className={cn(
-        'flex size-6 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-caption font-medium text-sidebar-primary-foreground',
-        className,
-      )}
-    >
-      {name.trim().charAt(0).toUpperCase()}
-    </span>
+    <SidebarMenuBadge>
+      {badge.toLocaleString('en-US')}
+      {badgeLabel ? <span className="sr-only"> {badgeLabel}</span> : null}
+    </SidebarMenuBadge>
   );
 }
 
@@ -161,20 +175,44 @@ function NavGroup({
 }) {
   return (
     <SidebarMenu>
-      {items.map(({ id, label, href, icon: Icon, badge, badgeLabel }) => (
-        <SidebarMenuItem key={id}>
-          <SidebarMenuButton href={href} isActive={id === activeItem} tooltip={label} onClick={(event) => onNavigate?.(id, event)}>
-            <Icon aria-hidden />
-            <span>{label}</span>
-            {badge ? (
-              <SidebarMenuBadge>
-                {badge.toLocaleString('en-US')}
-                {badgeLabel ? <span className="sr-only"> {badgeLabel}</span> : null}
-              </SidebarMenuBadge>
-            ) : null}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
+      {items.map(({ id, label, href, icon: Icon, badge, badgeLabel, items: pages }) => {
+        if (pages?.length) {
+          const holdsActive = pages.some((page) => page.id === activeItem);
+          return (
+            <SidebarMenuItem key={id}>
+              <SidebarSubmenu label={label} defaultOpen={holdsActive}>
+                <SidebarSubmenuTrigger isActive={holdsActive}>
+                  <Icon aria-hidden />
+                  <span>{label}</span>
+                  <Count badge={badge} badgeLabel={badgeLabel} />
+                </SidebarSubmenuTrigger>
+                <SidebarSubmenuContent>
+                  {pages.map((page) => (
+                    <SidebarSubmenuItem key={page.id}>
+                      <SidebarSubmenuButton
+                        href={page.href}
+                        isActive={page.id === activeItem}
+                        onClick={(event) => onNavigate?.(page.id, event)}
+                      >
+                        <span>{page.label}</span>
+                      </SidebarSubmenuButton>
+                    </SidebarSubmenuItem>
+                  ))}
+                </SidebarSubmenuContent>
+              </SidebarSubmenu>
+            </SidebarMenuItem>
+          );
+        }
+        return (
+          <SidebarMenuItem key={id}>
+            <SidebarMenuButton href={href} isActive={id === activeItem} tooltip={label} onClick={(event: React.MouseEvent<HTMLElement>) => onNavigate?.(id, event)}>
+              <Icon aria-hidden />
+              <span>{label}</span>
+              <Count badge={badge} badgeLabel={badgeLabel} />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
     </SidebarMenu>
   );
 }
@@ -202,70 +240,24 @@ function AppSidebarContent({
   userMenu,
 }: AppSidebarContentProps) {
   const isMac = useIsMac();
-  const [workspaceState, setWorkspaceState] = React.useState(defaultWorkspace ?? workspaces[0]?.id);
-  const currentId = workspace ?? workspaceState;
-  const current = workspaces.find((item) => item.id === currentId) ?? workspaces[0];
-  const changeWorkspace = (id: string) => {
-    if (workspace === undefined) setWorkspaceState(id);
-    onWorkspaceChange?.(id);
-  };
-
-  const userDetails = (
-    <>
-      <Avatar size="sm" aria-hidden>
-        <AvatarFallback>{user.initials}</AvatarFallback>
-      </Avatar>
-      <span className="flex min-w-0 flex-1 flex-col text-start">
-        <span title={user.name} className="truncate font-medium">
-          {user.name}
-        </span>
-        <span title={user.email} className="truncate text-caption text-muted-foreground">
-          {user.email}
-        </span>
-      </span>
-    </>
-  );
 
   return (
     <>
       <SidebarHeader>
-        {current ? (
-          <DropdownMenu {...workspaceMenu}>
-            <DropdownMenuTrigger
-              render={<SidebarMenuButton tooltip={current.name} className={menuTrigger} />}
-              aria-label={`${current.name}, switch workspace`}
-            >
-              <WorkspaceMark name={current.name} />
-              <span className="flex min-w-0 flex-1 flex-col text-start">
-                <span title={current.name} className="truncate font-medium">
-                  {current.name}
-                </span>
-                <span className="truncate text-caption text-muted-foreground">{current.plan}</span>
-              </span>
-              <ChevronsUpDown aria-hidden className={menuChevron} />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-(--anchor-width) sm:min-w-56">
-              <DropdownMenuRadioGroup value={current.id} onValueChange={(value: string) => changeWorkspace(value)}>
-                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
-                {workspaces.map((item) => (
-                  <DropdownMenuRadioItem key={item.id} value={item.id}>
-                    <WorkspaceMark name={item.name} className="size-5" />
-                    <span className="min-w-0 truncate">{item.name}</span>
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-              {onAction ? (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onAction('add-workspace')}>
-                    <Plus />
-                    Add workspace
-                  </DropdownMenuItem>
-                </>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : null}
+        <SidebarWorkspaceSwitcher
+          workspaces={workspaces}
+          value={workspace}
+          defaultValue={defaultWorkspace}
+          onValueChange={onWorkspaceChange}
+          {...workspaceMenu}
+        >
+          {onAction ? (
+            <DropdownMenuItem onClick={() => onAction('add-workspace')}>
+              <Plus />
+              Add workspace
+            </DropdownMenuItem>
+          ) : null}
+        </SidebarWorkspaceSwitcher>
         <SidebarMenuButton
           tooltip="Search"
           className={cn(
@@ -299,23 +291,9 @@ function AppSidebarContent({
 
       <SidebarFooter>
         <NavGroup items={navFooter} activeItem={activeItem} onNavigate={onNavigate} />
-        {onAction ? (
-          <DropdownMenu {...userMenu}>
-            <DropdownMenuTrigger
-              render={<SidebarMenuButton tooltip={user.name} className={menuTrigger} />}
-              aria-label={`${user.name}, user menu`}
-            >
-              {userDetails}
-              <ChevronsUpDown aria-hidden className={menuChevron} />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" className="min-w-(--anchor-width) sm:min-w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel className="flex flex-col gap-0.5">
-                  <span className="truncate text-body font-medium text-foreground">{user.name}</span>
-                  <span className="truncate font-normal">{user.email}</span>
-                </DropdownMenuLabel>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
+        <SidebarUserMenu user={user} {...userMenu}>
+          {onAction ? (
+            <>
               <DropdownMenuItem onClick={() => onAction('profile')}>
                 <UserRound />
                 Profile
@@ -329,14 +307,9 @@ function AppSidebarContent({
                 <LogOut />
                 Log out
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          // Without actions there is no menu to open: the signed-in user shows as plain text.
-          <div className="flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1 [&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:[&>span:last-child]:delay-(--transition-duration-fast)">
-            {userDetails}
-          </div>
-        )}
+            </>
+          ) : null}
+        </SidebarUserMenu>
       </SidebarFooter>
     </>
   );
@@ -345,9 +318,10 @@ function AppSidebarContent({
 type AppSidebarProps = SidebarProps & AppSidebarContentProps;
 
 /**
- * The app's sidebar: a workspace switcher, search, the main pages, saved views with counts and a user menu.
- * It collapses to a column of icons that name their page in a tooltip; pass `collapsible="offcanvas"` to hide it
- * at the edge instead. Place it inside a `SidebarProvider`, next to a `SidebarResizeHandle` and `SidebarInset`.
+ * The app's sidebar: a workspace switcher, search, the main pages with a submenu, saved views with counts and a user
+ * menu. It collapses to a column of icons that name their page in a tooltip and open a submenu in a popover; pass
+ * `collapsible="offcanvas"` to hide it at the edge instead. Place it inside a `SidebarProvider`, next to a
+ * `SidebarResizeHandle` and `SidebarInset`.
  */
 function AppSidebar({
   navMain,
@@ -392,4 +366,12 @@ function AppSidebar({
   );
 }
 
-export { AppSidebar, AppSidebarContent, type AppSidebarAction, type AppSidebarProps, type AppSidebarContentProps, type NavItem as AppSidebarNavItem };
+export {
+  AppSidebar,
+  AppSidebarContent,
+  type AppSidebarAction,
+  type AppSidebarProps,
+  type AppSidebarContentProps,
+  type NavItem as AppSidebarNavItem,
+  type NavSubItem as AppSidebarNavSubItem,
+};

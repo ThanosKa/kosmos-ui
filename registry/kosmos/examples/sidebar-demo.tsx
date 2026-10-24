@@ -1,7 +1,8 @@
 'use client';
 
-import { BarChart3, Folder, Home, Inbox, Settings, Users } from 'lucide-react';
+import { BarChart3, Folder, Home, Inbox, LogOut, Plus, Settings, UserRound } from 'lucide-react';
 import { useState, type MouseEvent } from 'react';
+import { DropdownMenuItem, DropdownMenuSeparator } from '@/registry/kosmos/ui/dropdown-menu';
 import {
   Sidebar,
   SidebarContent,
@@ -16,15 +17,27 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarResizeHandle,
+  SidebarSubmenu,
+  SidebarSubmenuButton,
+  SidebarSubmenuContent,
+  SidebarSubmenuItem,
+  SidebarSubmenuTrigger,
   SidebarTrigger,
+  SidebarUserMenu,
+  SidebarWorkspaceSwitcher,
 } from '@/registry/kosmos/ui/sidebar';
+
+const workspaces = [
+  { id: 'acme', name: 'Acme', description: 'Scale plan' },
+  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
+];
 
 const pages = [
   { label: 'Home', icon: Home, href: '/home' },
   { label: 'Inbox', icon: Inbox, href: '/inbox', count: 12 },
-  { label: 'Reports', icon: BarChart3, href: '/reports' },
-  { label: 'Customers', icon: Users, href: '/customers' },
 ];
+
+const reports = ['Revenue', 'Retention', 'Funnels'];
 
 const projects = ['Q3 Roadmap', 'Billing revamp', 'Onboarding'];
 
@@ -41,16 +54,16 @@ export default function SidebarDemo() {
       defaultWidth={224}
       minWidth={176}
       mobileBreakpoint={480}
-      className="h-[28rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card"
+      className="h-[32rem] min-h-0 w-full overflow-hidden rounded-xl border border-transparent shadow-card"
     >
       <Sidebar collapsible="icon">
         <SidebarHeader>
-          <div className="flex h-8 items-center gap-2 px-1.5">
-            <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-caption font-medium text-primary-foreground">
-              A
-            </span>
-            <span className="truncate text-body font-medium transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)">Acme</span>
-          </div>
+          <SidebarWorkspaceSwitcher workspaces={workspaces}>
+            <DropdownMenuItem>
+              <Plus />
+              Add workspace
+            </DropdownMenuItem>
+          </SidebarWorkspaceSwitcher>
         </SidebarHeader>
         <SidebarContent render={<nav aria-label="Main" />}>
           <SidebarGroup>
@@ -64,6 +77,23 @@ export default function SidebarDemo() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarSubmenu label="Reports" defaultOpen>
+                  <SidebarSubmenuTrigger isActive={reports.includes(active)}>
+                    <BarChart3 aria-hidden />
+                    <span>Reports</span>
+                  </SidebarSubmenuTrigger>
+                  <SidebarSubmenuContent>
+                    {reports.map((report) => (
+                      <SidebarSubmenuItem key={report}>
+                        <SidebarSubmenuButton href={`/reports/${report.toLowerCase()}`} isActive={active === report} onClick={open(report)}>
+                          <span>{report}</span>
+                        </SidebarSubmenuButton>
+                      </SidebarSubmenuItem>
+                    ))}
+                  </SidebarSubmenuContent>
+                </SidebarSubmenu>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup>
@@ -89,6 +119,17 @@ export default function SidebarDemo() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
+          <SidebarUserMenu user={{ name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' }}>
+            <DropdownMenuItem>
+              <UserRound />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut />
+              Log out
+            </DropdownMenuItem>
+          </SidebarUserMenu>
         </SidebarFooter>
       </Sidebar>
       <SidebarResizeHandle />
@@ -97,7 +138,10 @@ export default function SidebarDemo() {
           <SidebarTrigger />
           <h1 className="truncate text-body font-medium">{active}</h1>
         </header>
-        <p className="p-4 text-body text-muted-foreground">Collapse the sidebar to icons with the button, and drag its edge to resize it.</p>
+        <p className="p-4 text-body text-muted-foreground">
+          Collapse the sidebar to icons with the button, and drag its edge to resize it. In icon mode, Reports opens its
+          pages in a popover.
+        </p>
       </SidebarInset>
     </SidebarProvider>
   );
