@@ -16,7 +16,7 @@
     "links:check": "node scripts/links-check.mts",
     "screenshots": "node scripts/screenshots.mts",
     "thumbnails": "node scripts/screenshots.mts --thumbnails",
-    "test": "node --test 'lib/**/*.test.mts'"
+    "test": "node --test 'lib/**/*.test.mts' 'registry/**/*.test.mts'"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
