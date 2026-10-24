@@ -26,6 +26,8 @@ Reviewers: `better-interface` and the `better-*` domain skills (Jakub Krehel), `
 | Dark-mode shadows | `better-ui`: depth shadows vanish in dark, keep one white ring | Dark outer ring + drop + 1px inner rim of light | The Kosmos signature look |
 | Input boundary | `better-ui`/`better-accessibility`: inputs keep a border with 3:1 contrast | `shadow-control` ring at the `secondary` fill, below 3:1; labels identify fields; the focus outline passes 3:1 | Same choice as shadcn and most design systems; report as `LOW` at most |
 | Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a 1px `ring` line (a ring offset) plus a 3px `ring/20` halo, with a transparent outline for forced colors | Survives forced colors and leaves shadow stacks intact. On a field the 1px `ring` line passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most |
+| Focus color | `better-accessibility`/`better-colors`: a solid, saturated focus color | `ring`: ink at 55% in the default (3.8:1 or more in light, 5.2:1 or more in dark on every surface), the accent in a preset that has one | Black and white keeps color for status (ADR 0009). The 2px offset leaves a page-color gap, so the outline reads around an ink button too; report as `Kosmos style` |
+| Chart series | `better-colors`/`dataviz`: categorical series need distinct hues | A mono ramp, ink then four greys, each 3:1 or more on `card` and `background`; touching segments split by a 1px line in the surface color; every series named in the legend and tooltip | Color stays for meaning (ADR 0009); lightness steps read in grayscale and for color-blind readers. A preset may bring hues |
 | Token tiers | `better-colors`: primitive ramps plus semantic tokens; names like `--color-text-secondary` | One semantic tier with shadcn names (`muted-foreground`, `accent`) | `shadcn add` components must find the names they expect |
 | `accent` meaning | `better-colors`: accent is the brand hue | `accent` is the translucent hover overlay, brand is `primary` | shadcn's meaning, which installed components rely on |
 
@@ -43,7 +45,7 @@ The studied products go below the contrast floor in places. Kosmos keeps their s
 
 | Point | Studied value | Kosmos value (wins) | Why |
 | --- | --- | --- | --- |
-| A third, fainter grey for meta, counts, placeholders and table headers | Light about 2.6:1 on white; dark about 3:1 | `muted-foreground` (4.6–5.3:1 light, 5.4–6.8:1 dark) | Text floor. Light `muted-foreground` already sits near 4.5:1, so no fainter text role fits between it and the floor |
+| A third, fainter grey for meta, counts, placeholders and table headers | Light about 2.6:1 on white; dark about 3:1 | `muted-foreground` (5.0–5.8:1 light, 5.5–6.9:1 dark) | Text floor. Light `muted-foreground` already sits near 4.5:1, so no fainter text role fits between it and the floor |
 | Sidebar group labels | Dark about 1.9:1 | `muted-foreground`, uppercase caption | Same floor; the uppercase eyebrow keeps the label quieter than the items through size and case, not contrast |
 | Idle nav items | Dark grey near 4.6:1 | `muted-foreground` | Same structure (idle grey, active ink), at our own token |
 | Placeholders | Light about 2.6:1 | `muted-foreground` | Placeholder text is read as an example of the value and must pass 4.5:1 |

@@ -706,7 +706,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> & {
-  /** Marks the current page: `aria-current="page"` on a link, a flat highlight and an orange label and icon. */
+  /** Marks the current page: `aria-current="page"` on a link, a flat highlight and the label and icon in `active-foreground`. */
   isActive?: boolean;
   /** The item's name, shown in a tooltip beside the icon while the sidebar is collapsed to icons. */
   tooltip?: React.ReactNode;
