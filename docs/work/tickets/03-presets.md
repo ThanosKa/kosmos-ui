@@ -9,5 +9,5 @@
 - [ ] Κάθε preset αλλάζει μόνο tokens χρωμάτων και radius
 - [ ] Contrast tests (κείμενο 4.5:1, focus και chart 3:1) τρέχουν για κάθε preset, light και dark
 - [ ] Menus, dialogs και toasts παίρνουν το preset
-- [ ] Δεν μένει κανένα `[data-accent]` στο `app/global.css`
+- [ ] Τα accent swatches της landing δεν υπάρχουν πια ως ξεχωριστός μηχανισμός
 - [ ] `pnpm types:check`, `pnpm lint`, `pnpm build` περνούν
