@@ -154,6 +154,10 @@ const placeholders = {
   EasingCurves: () => '',
   PackageInstall: ({ attributes }: PlaceholderData) => fence('bash', `${packageInstallers.npm} ${String(attributes.packages)}`),
   LinkCards: ({ children }: PlaceholderData) => children.trim(),
+  Callout: ({ attributes, children }: PlaceholderData) => {
+    const text = [attributes.title ? `**${String(attributes.title)}**` : '', children.trim()].filter(Boolean).join(' ');
+    return text.split('\n').map((line) => (line ? `> ${line}` : '>')).join('\n');
+  },
   LinkCard: ({ attributes, children }: PlaceholderData) =>
     `- [${String(attributes.title)}](${String(attributes.href)})${children.trim() ? `: ${children.trim()}` : ''}\n`,
 };

@@ -1,9 +1,9 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
-import { StatusBadge, StatusIcon, type Status } from '@/registry/kosmos/ui/status';
+import { StatusBadge, StatusDot, StatusIcon, type Status } from '@/registry/kosmos/ui/status';
 
 const statuses = ['pending', 'running', 'waiting', 'done', 'error', 'skipped'] as const satisfies readonly Status[];
-const looks = ['icon', 'icon 14px', 'badge', 'row'] as const;
+const looks = ['icon', 'icon 14px', 'dot', 'badge', 'row'] as const;
 
 const labels: Record<Status, string> = {
   pending: 'Queued',
@@ -34,6 +34,7 @@ export default function StatusPreview() {
           render={(status, look) => {
             if (look === 'icon') return <StatusIcon status={status} label={labels[status]} />;
             if (look === 'icon 14px') return <StatusIcon status={status} label={labels[status]} className="size-3.5" />;
+            if (look === 'dot') return <StatusDot status={status} className="text-body">{labels[status]}</StatusDot>;
             if (look === 'badge') return <StatusBadge status={status}>{labels[status]}</StatusBadge>;
             return (
               <span className="flex items-center gap-2 text-body">
@@ -66,8 +67,14 @@ export default function StatusPreview() {
           </ol>
         </PreviewSection>
 
-        <PreviewSection title="Badges in a narrow slot">
+        <PreviewSection title="Dots and badges in a narrow slot">
           <div className="flex w-full max-w-40 flex-col items-start gap-2">
+            <StatusDot status="waiting" className="text-body">
+              Waiting on Lena Park to approve
+            </StatusDot>
+            <StatusDot status="error" className="text-small text-muted-foreground">
+              Failed
+            </StatusDot>
             <StatusBadge status="waiting" title="Waiting on Lena Park to approve">
               Waiting on Lena Park to approve
             </StatusBadge>

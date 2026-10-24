@@ -33,12 +33,11 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the page; dark study. With `destructive`, the only chroma in the default |
 | `border` | Dividers between items | ADR 0009 |
 | `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0009 |
-| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
-| `active-foreground` | The label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes |
+| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent's ring step, which also takes `sidebar-ring` and `chart-1` | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
+| `accent-text` | The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter's `primary` tone | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes. In Warm a step deeper than `ring` in light, so a primary Meter never shares a lightness with `warning` (about 1.7:1 apart). The name keeps clear of shadcn's `accent`, the hover fill |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
 | `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007, kept by ADR 0009 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
 | `scrollbar-thumb` | The ScrollArea thumb: a grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
-| `meter-primary` | The Meter's `primary` tone | ADR 0009: ink. In Warm the orange a step deeper than `ring` in light, so it never shares a lightness with `warning` (about 1.7:1 apart) |
 | `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0009; a step darker than the page in light, focus = `ring` |
 
 Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
@@ -53,13 +52,27 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 ## Tag colors
 
-In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; status keeps the neutral pill with a dot.
+In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; a state is a dot and a code a tinted pill (Status tints below).
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `tag-orange`, `tag-blue`, `tag-amber`, `tag-magenta`, `tag-green` | Tag fill: the tag's own hue mixed into transparent at 12% (light) and 16% (dark), written in the tag block, not read from a chart series, so tags keep their color under every preset | The chart hues of ADR 0007; the tinted-tag structure comes from the dark study |
-| `tag-red` | Tag fill: `destructive` at the same alpha | As above |
-| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The same hue stepped to `L 0.47` in light and `L 0.84` (chroma 0.08) in dark, so every pair passes 4.5:1 on its fill over `card` and `background` (light 5.2–6.2:1, dark 7.9–9.2:1) |
+| `tag-orange`, `tag-blue`, `tag-green`, `tag-red` | Tag fill: the status tint of the same hue (`var(--tint-*)`), so a blue tag is the info blue and never follows a preset | Status tints below |
+| `tag-amber`, `tag-magenta` | Tag fill: Radix amber and plum step 3, the tint construction for the two hues that are no status | Radix Colors (MIT) |
+| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The tint's `-foreground` for the four status hues; amber and plum step 11 (the light amber moved toward step 12 to `#a46003`, 4.55:1). `pnpm test` checks 4.5:1 on the fill in both modes |
+
+## Status tints
+
+In their own labelled blocks after the tags, the same under every preset. The values are Radix Colors steps, MIT, Copyright (c) 2021 Radix; the notice is `registry/kosmos/styles/LICENSE-RADIX-COLORS`, which the tokens item ships to `~/LICENSE-RADIX-COLORS`, and `pnpm test` checks it is there.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `tint-<hue>` (`gray`, `blue`, `green`, `teal`, `orange`, `red`) | The fill of a code pill (Badge `tint-*`) and of a tinted Alert | Radix step 3 |
+| `tint-<hue>-border` | The edge of a tinted Alert; a code pill's hover edge as a link | Radix step 6 |
+| `tint-<hue>-foreground` | Text on the fill | Radix step 11; in light moved toward step 12 only as far as 4.5:1 on the fill needs, in dark step 11 as it is |
+| `tint-<hue>-link` | A link inside a tinted Alert | Radix step 12 |
+| `tint-<hue>-dot` | The dot of `StatusDot` | Radix step 9; gray's is dimmer (`#c7c7c7` / `#4a4a4a`) |
+| `tint-<hue>-solid` (`blue`, `green`, `orange`, `red`) | A code in the current nav item, under `tint-solid-foreground` | Radix light step 11, the same in both modes, 4.5:1 or more with white |
+| `tint-solid-foreground` | White text on a solid tint | `#ffffff` |
 
 ## Shadows
 

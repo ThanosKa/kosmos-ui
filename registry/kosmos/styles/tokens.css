@@ -35,11 +35,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-active-foreground: var(--active-foreground);
+  --color-accent-text: var(--accent-text);
   --color-scrim: var(--scrim);
   --color-thumb: var(--thumb);
   --color-scrollbar-thumb: var(--scrollbar-thumb);
-  --color-meter-primary: var(--meter-primary);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -140,11 +139,10 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.205 0 0 / 0.55);
-  --active-foreground: oklch(0.205 0 0);
+  --accent-text: oklch(0.205 0 0);
   --scrim: oklch(0.205 0 0 / 0.4);
   --thumb: oklch(1 0 0);
   --scrollbar-thumb: oklch(0.61 0 0);
-  --meter-primary: oklch(0.205 0 0);
 
   --sidebar: oklch(0.97 0 0);
   --sidebar-foreground: oklch(0.205 0 0);
@@ -183,11 +181,10 @@
   --border: oklch(0.25 0 0);
   --input: oklch(0.335 0 0);
   --ring: oklch(0.97 0 0 / 0.55);
-  --active-foreground: oklch(0.97 0 0);
+  --accent-text: oklch(0.97 0 0);
   --scrim: oklch(0 0 0 / 0.6);
   --thumb: oklch(0.97 0 0);
   --scrollbar-thumb: oklch(0.58 0 0);
-  --meter-primary: oklch(0.97 0 0);
 
   --sidebar: oklch(0.195 0 0);
   --sidebar-foreground: oklch(0.97 0 0);
@@ -296,9 +293,11 @@
 }
 
 /*
- * Tags: the Badge hue variants. Each fill is its own hue mixed into
- * transparent, not a chart series, so a category keeps its color under every
- * preset, the grey charts of the default included.
+ * Tags: the Badge hue variants. Orange, blue, green and red are the status
+ * tints below, so a blue tag is the info blue. Amber and magenta are built the
+ * same way from Radix amber and plum (steps 3 and 11; the light amber text is
+ * moved toward step 12 until it passes 4.5:1). No tag reads a chart series, so
+ * a category keeps its color under every preset.
  */
 @theme inline {
   --color-tag-orange: var(--tag-orange);
@@ -316,31 +315,138 @@
 }
 
 :root {
-  --tag-orange: color-mix(in oklab, oklch(0.652 0.214 38) 12%, transparent);
-  --tag-orange-foreground: oklch(0.47 0.14 38);
-  --tag-blue: color-mix(in oklab, oklch(0.55 0.15 252) 12%, transparent);
-  --tag-blue-foreground: oklch(0.47 0.14 252);
-  --tag-amber: color-mix(in oklab, oklch(0.64 0.14 82) 12%, transparent);
-  --tag-amber-foreground: oklch(0.47 0.12 82);
-  --tag-magenta: color-mix(in oklab, oklch(0.5 0.17 330) 12%, transparent);
-  --tag-magenta-foreground: oklch(0.47 0.14 330);
-  --tag-green: color-mix(in oklab, oklch(0.6 0.13 160) 12%, transparent);
-  --tag-green-foreground: oklch(0.47 0.12 160);
-  --tag-red: color-mix(in oklab, var(--destructive) 12%, transparent);
-  --tag-red-foreground: oklch(0.47 0.14 28.5);
+  --tag-orange: var(--tint-orange);
+  --tag-orange-foreground: var(--tint-orange-foreground);
+  --tag-blue: var(--tint-blue);
+  --tag-blue-foreground: var(--tint-blue-foreground);
+  --tag-amber: #fff7c2;
+  --tag-amber-foreground: #a46003;
+  --tag-magenta: #fbebfb;
+  --tag-magenta-foreground: #953ea3;
+  --tag-green: var(--tint-green);
+  --tag-green-foreground: var(--tint-green-foreground);
+  --tag-red: var(--tint-red);
+  --tag-red-foreground: var(--tint-red-foreground);
 }
 
 .dark {
-  --tag-orange: color-mix(in oklab, oklch(0.7 0.18 42) 16%, transparent);
-  --tag-orange-foreground: oklch(0.84 0.08 42);
-  --tag-blue: color-mix(in oklab, oklch(0.65 0.14 250) 16%, transparent);
-  --tag-blue-foreground: oklch(0.84 0.08 250);
-  --tag-amber: color-mix(in oklab, oklch(0.76 0.14 82) 16%, transparent);
-  --tag-amber-foreground: oklch(0.84 0.08 82);
-  --tag-magenta: color-mix(in oklab, oklch(0.62 0.17 330) 16%, transparent);
-  --tag-magenta-foreground: oklch(0.84 0.08 330);
-  --tag-green: color-mix(in oklab, oklch(0.7 0.14 160) 16%, transparent);
-  --tag-green-foreground: oklch(0.84 0.08 160);
-  --tag-red: color-mix(in oklab, var(--destructive) 16%, transparent);
-  --tag-red-foreground: oklch(0.84 0.08 22.1);
+  --tag-amber: #302008;
+  --tag-amber-foreground: #ffca16;
+  --tag-magenta: #351a35;
+  --tag-magenta-foreground: #e796f3;
+}
+
+/*
+ * Status tints: six hues for states and codes, the same under every preset.
+ * A state is a -dot beside its word; a code is a pill in the fill and
+ * -foreground, with no edge; an Alert takes the fill, -border, -foreground and
+ * -link. -solid fills a selected code under white -solid-foreground, the same
+ * in both modes. Each value is a Radix Colors step: 3 fill, 6 border, 11 text
+ * (in light moved toward 12 only as far as 4.5:1 on the fill needs), 12 link,
+ * 9 dot (gray's is dimmer) and light 11 solid. Radix Colors is MIT licensed,
+ * Copyright (c) 2021 Radix: its notice is LICENSE-RADIX-COLORS beside this
+ * file, and the tokens registry item ships it.
+ */
+@theme inline {
+  --color-tint-gray: var(--tint-gray);
+  --color-tint-gray-border: var(--tint-gray-border);
+  --color-tint-gray-foreground: var(--tint-gray-foreground);
+  --color-tint-gray-link: var(--tint-gray-link);
+  --color-tint-gray-dot: var(--tint-gray-dot);
+  --color-tint-blue: var(--tint-blue);
+  --color-tint-blue-border: var(--tint-blue-border);
+  --color-tint-blue-foreground: var(--tint-blue-foreground);
+  --color-tint-blue-link: var(--tint-blue-link);
+  --color-tint-blue-dot: var(--tint-blue-dot);
+  --color-tint-blue-solid: var(--tint-blue-solid);
+  --color-tint-green: var(--tint-green);
+  --color-tint-green-border: var(--tint-green-border);
+  --color-tint-green-foreground: var(--tint-green-foreground);
+  --color-tint-green-link: var(--tint-green-link);
+  --color-tint-green-dot: var(--tint-green-dot);
+  --color-tint-green-solid: var(--tint-green-solid);
+  --color-tint-teal: var(--tint-teal);
+  --color-tint-teal-border: var(--tint-teal-border);
+  --color-tint-teal-foreground: var(--tint-teal-foreground);
+  --color-tint-teal-link: var(--tint-teal-link);
+  --color-tint-teal-dot: var(--tint-teal-dot);
+  --color-tint-orange: var(--tint-orange);
+  --color-tint-orange-border: var(--tint-orange-border);
+  --color-tint-orange-foreground: var(--tint-orange-foreground);
+  --color-tint-orange-link: var(--tint-orange-link);
+  --color-tint-orange-dot: var(--tint-orange-dot);
+  --color-tint-orange-solid: var(--tint-orange-solid);
+  --color-tint-red: var(--tint-red);
+  --color-tint-red-border: var(--tint-red-border);
+  --color-tint-red-foreground: var(--tint-red-foreground);
+  --color-tint-red-link: var(--tint-red-link);
+  --color-tint-red-dot: var(--tint-red-dot);
+  --color-tint-red-solid: var(--tint-red-solid);
+  --color-tint-solid-foreground: var(--tint-solid-foreground);
+}
+
+:root {
+  --tint-gray: #f0f0f0;
+  --tint-gray-border: #d9d9d9;
+  --tint-gray-foreground: #595959;
+  --tint-gray-link: #202020;
+  --tint-gray-dot: #c7c7c7;
+  --tint-blue: #e6f4fe;
+  --tint-blue-border: #acd8fc;
+  --tint-blue-foreground: #106abd;
+  --tint-blue-link: #113264;
+  --tint-blue-dot: #0090ff;
+  --tint-blue-solid: #0d74ce;
+  --tint-green: #e6f6eb;
+  --tint-green-border: #adddc0;
+  --tint-green-foreground: #217851;
+  --tint-green-link: #193b2d;
+  --tint-green-dot: #30a46c;
+  --tint-green-solid: #218358;
+  --tint-teal: #e0f8f3;
+  --tint-teal-border: #a1ded2;
+  --tint-teal-foreground: #057a6a;
+  --tint-teal-link: #0d3d38;
+  --tint-teal-dot: #12a594;
+  --tint-orange: #ffefd6;
+  --tint-orange-border: #ffc182;
+  --tint-orange-foreground: #ba490d;
+  --tint-orange-link: #582d1d;
+  --tint-orange-dot: #f76b15;
+  --tint-orange-solid: #cc4e00;
+  --tint-red: #feebec;
+  --tint-red-border: #fdbdbe;
+  --tint-red-foreground: #bd292f;
+  --tint-red-link: #641723;
+  --tint-red-dot: #e5484d;
+  --tint-red-solid: #ce2c31;
+  --tint-solid-foreground: #ffffff;
+}
+
+.dark {
+  --tint-gray: #222222;
+  --tint-gray-border: #3a3a3a;
+  --tint-gray-foreground: #b4b4b4;
+  --tint-gray-link: #eeeeee;
+  --tint-gray-dot: #4a4a4a;
+  --tint-blue: #0d2847;
+  --tint-blue-border: #104d87;
+  --tint-blue-foreground: #70b8ff;
+  --tint-blue-link: #c2e6ff;
+  --tint-green: #132d21;
+  --tint-green-border: #20573e;
+  --tint-green-foreground: #3dd68c;
+  --tint-green-link: #b1f1cb;
+  --tint-teal: #0d2d2a;
+  --tint-teal-border: #145750;
+  --tint-teal-foreground: #0bd8b6;
+  --tint-teal-link: #adf0dd;
+  --tint-orange: #331e0b;
+  --tint-orange-border: #66350c;
+  --tint-orange-foreground: #ffa057;
+  --tint-orange-link: #ffe0c2;
+  --tint-red: #3b1219;
+  --tint-red-border: #72232d;
+  --tint-red-foreground: #ff9592;
+  --tint-red-link: #ffd1d9;
 }

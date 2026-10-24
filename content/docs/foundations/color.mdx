@@ -14,7 +14,7 @@ Each swatch shows the light value on the left and the dark value on the right. C
 
 ## Text
 
-Grey carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab and the current item in a nav menu) takes `text-active-foreground`, ink on the flat hover fill.
+Grey carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab and the current item in a nav menu) takes `text-accent-text`, ink on the flat hover fill, and so does a Meter in its primary tone. A preset with an accent colors these, focus and the first chart series with it.
 
 <ColorTokens group="text" />
 
@@ -46,6 +46,14 @@ Chart series take `chart-1` to `chart-5` in order: a mono ramp from ink through 
 
 ## Tags
 
-A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill.
+A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill. Orange, blue, green and red are the status tints of those hues.
 
 <ColorTokens group="tags" />
+
+## Status tints
+
+Six hues mark states and codes: `gray`, `blue`, `green`, `teal`, `orange` and `red`. None of them changes with a preset. A state is a `tint-*-dot` beside its word, through [StatusDot](/docs/components/status#dots). A code, such as an HTTP status, is a [Badge](/docs/components/badge#codes) in the fill and `-foreground`, with no edge. An [Alert](/docs/components/alert) takes the fill, `-border`, `-foreground` and `-link`. Text and links pass 4.5:1 on their fill, and white `tint-solid-foreground` passes 4.5:1 on each `-solid`, in both themes.
+
+The values are steps of [Radix Colors](https://github.com/radix-ui/colors), under the MIT License: `shadcn add @kosmos/tokens` writes its notice into your project as `LICENSE-RADIX-COLORS`.
+
+<ColorTokens group="tints" />

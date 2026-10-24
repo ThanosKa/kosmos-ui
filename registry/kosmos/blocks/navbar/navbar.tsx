@@ -92,14 +92,14 @@ const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-
 const barItemClass = cn(
   'inline-flex h-7.5 shrink-0 items-center gap-1 rounded-lg border border-transparent px-3 text-body font-medium whitespace-nowrap text-muted-foreground',
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
-  'aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground data-current:bg-accent data-current:text-active-foreground',
+  'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text data-current:bg-accent data-current:text-accent-text',
   focusRing,
 );
 
 const sheetLinkClass = cn(
   'flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-body font-medium text-muted-foreground',
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
-  'aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground',
+  'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text',
   focusRing,
 );
 
@@ -179,7 +179,7 @@ function NavbarBarLinks({
                               'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
                             )}
                           >
-                            <span className="flex items-center gap-2 text-body font-medium text-foreground group-aria-[current=page]/link:text-active-foreground">
+                            <span className="flex items-center gap-2 text-body font-medium text-foreground group-aria-[current=page]/link:text-accent-text">
                               {link.label}
                               {link.href === current ? <Check aria-hidden className="ms-auto size-3.5 shrink-0" /> : null}
                             </span>

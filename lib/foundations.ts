@@ -62,10 +62,38 @@ export const colorGroups = {
   sidebar: 'Sidebar',
   chart: 'Chart',
   tags: 'Tags',
+  tints: 'Status tints',
 } as const;
 export type ColorGroup = keyof typeof colorGroups;
 
+const tintHues = {
+  gray: 'a neutral state or code (queued, skipped, a 3xx)',
+  blue: 'info and running',
+  green: 'success and a 2xx',
+  teal: 'a second positive state',
+  orange: 'warning and a 4xx',
+  red: 'errors and a 5xx',
+};
+
+function tintDocs(): Record<string, { group: ColorGroup; use: string }> {
+  const docs: Record<string, { group: ColorGroup; use: string }> = {
+    'tint-solid-foreground': { group: 'tints', use: 'White text on a solid tint.' },
+  };
+  for (const [hue, meaning] of Object.entries(tintHues)) {
+    docs[`tint-${hue}`] = { group: 'tints', use: `The ${hue} fill of a code pill or an alert, for ${meaning}.` };
+    docs[`tint-${hue}-border`] = { group: 'tints', use: `The edge of a ${hue} alert.` };
+    docs[`tint-${hue}-foreground`] = { group: 'tints', use: `Text on the ${hue} fill, 4.5:1 or more.` };
+    docs[`tint-${hue}-link`] = { group: 'tints', use: `A link on the ${hue} fill, 4.5:1 or more.` };
+    docs[`tint-${hue}-dot`] = { group: 'tints', use: `The dot beside a ${hue} state.` };
+  }
+  for (const hue of ['blue', 'green', 'orange', 'red']) {
+    docs[`tint-${hue}-solid`] = { group: 'tints', use: `The fill of a ${hue} code in the current nav item, under white text.` };
+  }
+  return docs;
+}
+
 const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
+  ...tintDocs(),
   background: { group: 'surfaces', use: 'The page.' },
   card: { group: 'surfaces', use: 'Cards, stat tiles and board cards.' },
   popover: { group: 'surfaces', use: 'Popovers, menus, tooltips, toasts, dialogs and drawers.' },
@@ -73,7 +101,6 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
   scrim: { group: 'surfaces', use: 'The backdrop behind dialogs and drawers.' },
   thumb: { group: 'surfaces', use: 'Switch and slider thumbs, light in both modes.' },
   'scrollbar-thumb': { group: 'surfaces', use: 'The scrollbar thumb of a scroll area, lighter than muted text.' },
-  'meter-primary': { group: 'status', use: 'The Meter in its primary tone: ink, or the accent of a preset that has one.' },
   foreground: { group: 'text', use: 'Text on the page: headings, values, a hovered item.' },
   'card-foreground': { group: 'text', use: 'Text on a card.' },
   'popover-foreground': { group: 'text', use: 'Text in a popover, menu or dialog.' },
@@ -81,9 +108,9 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
     group: 'text',
     use: 'Secondary text and idle chrome: descriptions, labels, table headers, counts. The faintest text that still reads.',
   },
-  'active-foreground': {
+  'accent-text': {
     group: 'text',
-    use: 'The label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu. Ink, or the accent of a preset that has one.',
+    use: 'The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter in its primary tone. Ink, or the accent of a preset that has one.',
   },
   primary: { group: 'actions', use: 'The one filled action per view, a checked checkbox, a switch that is on.' },
   'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill.' },
@@ -126,7 +153,7 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
 
 /** The Tailwind class a token is mostly used through. */
 function colorClass(name: string) {
-  if (name === 'foreground' || name === 'destructive' || name.endsWith('-foreground')) return `text-${name}`;
+  if (name === 'foreground' || name === 'destructive' || /-(foreground|text)$/.test(name)) return `text-${name}`;
   if (name === 'border' || name === 'input' || name.endsWith('-border')) return `border-${name}`;
   if (name === 'ring' || name.endsWith('-ring')) return `outline-${name}`;
   return `bg-${name}`;

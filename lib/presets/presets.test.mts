@@ -4,9 +4,20 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { contrastRatio } from '../contrast.ts';
 import { parseKosmosTokens } from '../tokens.ts';
-import { defaultPreset, presetCss, presetDesignMd, presets, type Mode, type Palette, type PaletteToken } from './index.ts';
+import { defaultPreset, presetCss, presetDesignMd, presets, type Mode, type Palette, type PaletteToken, type Preset } from './index.ts';
 
-const warm = presets.find((preset) => preset.id === 'warm')!;
+const byId = (id: string) => presets.find((preset) => preset.id === id)!;
+const warm = byId('warm');
+
+/** The palette a project gets from the preset's CSS, in one mode. */
+function cssPalette(preset: Preset, mode: Mode): Palette {
+  const { light, dark } = parseKosmosTokens(presetCss(preset));
+  const { radius: _radius, ...palette } = mode === 'light' ? light : { ...light, ...dark };
+  return palette as Palette;
+}
+
+/** The same preset with its accent turned off, as a picker offers it. */
+const withoutAccent = (preset: Preset): Preset => ({ ...preset, accent: undefined });
 
 // The palette of ADR 0007, as tokens.css shipped it before presets existed.
 const adr0007 = {
@@ -93,19 +104,58 @@ const adr0007 = {
   },
 };
 
+/** ADR 0007 colored the current nav item and the meter with two tokens of one value; presets name it `accent-text`. */
+function foldNavAndMeter({ 'active-foreground': nav, 'meter-primary': meter, ...rest }: Record<string, string>) {
+  assert.equal(nav, meter);
+  return { ...rest, 'accent-text': nav };
+}
+
 test('the Warm CSS gives exactly the values of ADR 0007', () => {
   const { light, dark } = parseKosmosTokens(presetCss(warm));
-  assert.deepEqual(light, adr0007.light);
-  assert.deepEqual(dark, adr0007.dark);
+  assert.deepEqual(light, foldNavAndMeter(adr0007.light));
+  assert.deepEqual(dark, foldNavAndMeter(adr0007.dark));
 });
+
+test('Warm has the orange of ADR 0007 as its accent', () => {
+  assert.deepEqual(warm.accent, {
+    light: { ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
+    dark: { ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
+  });
+});
+
+test('Default has no accent, and Soft, Console and Night take the accents of their designs', () => {
+  assert.equal(defaultPreset.accent, undefined);
+  assert.equal(byId('soft').accent?.light.ring, '#1f6bff');
+  assert.equal(byId('soft').accent?.dark.ring, '#6ea1ff');
+  assert.equal(byId('console').accent?.light.ring, 'oklch(0.55 0.22 287)');
+  assert.equal(byId('console').accent?.dark.ring, '#8b68ff');
+  assert.equal(byId('night').accent?.light.ring, 'oklch(0.52 0.11 172)');
+  assert.equal(byId('night').accent?.dark.ring, 'oklch(0.8 0.15 168)');
+});
+
+const accentTokens = { ring: ['ring', 'sidebar-ring', 'chart-1'], text: ['accent-text'] } as const;
+
+for (const preset of presets.filter((candidate) => candidate.accent)) {
+  for (const mode of ['light', 'dark'] as Mode[]) {
+    test(`${preset.name} ${mode}: the accent colors focus, the current nav item, the meter and chart-1, nothing else`, () => {
+      const withAccent = cssPalette(preset, mode);
+      const bare = cssPalette(withoutAccent(preset), mode);
+      const accent = preset.accent![mode];
+      for (const token of accentTokens.ring) assert.equal(withAccent[token], accent.ring, token);
+      for (const token of accentTokens.text) assert.equal(withAccent[token], accent.text, token);
+      const changed = (Object.keys(bare) as PaletteToken[]).filter((token) => bare[token] !== withAccent[token]);
+      assert.ok(changed.every((token) => [...accentTokens.ring, ...accentTokens.text].includes(token as never)), changed.join());
+    });
+  }
+}
 
 test('the shipped tokens.css carries the CSS of the default preset', () => {
   const tokensCss = readFileSync(new URL('../../registry/kosmos/styles/tokens.css', import.meta.url), 'utf8');
   assert.ok(tokensCss.includes(presetCss(defaultPreset)), 'tokens.css is out of date: run pnpm registry:build');
 });
 
-for (const preset of presets) {
-  test(`${preset.name}: its CSS reads back as the same values`, () => {
+for (const preset of presets.map(withoutAccent)) {
+  test(`${preset.name}: its CSS without an accent reads back as its palette`, () => {
     const { light, dark } = parseKosmosTokens(presetCss(preset));
     assert.deepEqual(light, { radius: preset.radius, ...preset.light });
     assert.deepEqual(dark, preset.dark);
@@ -158,10 +208,10 @@ const checks: Check[] = [
     ...pageSurfaces.map((surface) => text(role, surface)),
     ...hoverFills.map(([fill, surface]) => text(role, fill, surface)),
   ]),
-  ...(['background', 'card', 'popover', 'secondary'] as const).map((surface) => text('active-foreground', surface)),
-  ...hoverFills.map(([fill, surface]) => text('active-foreground', fill, surface)),
-  ...(['sidebar-foreground', 'muted-foreground', 'active-foreground'] as const).map((role) => text(role, 'sidebar')),
-  ...(['sidebar-foreground', 'active-foreground'] as const).map((role) => text(role, 'sidebar-accent', 'sidebar')),
+  ...(['background', 'card', 'popover', 'secondary'] as const).map((surface) => text('accent-text', surface)),
+  ...hoverFills.map(([fill, surface]) => text('accent-text', fill, surface)),
+  ...(['sidebar-foreground', 'muted-foreground', 'accent-text'] as const).map((role) => text(role, 'sidebar')),
+  ...(['sidebar-foreground', 'accent-text'] as const).map((role) => text(role, 'sidebar-accent', 'sidebar')),
   text('card-foreground', 'card'),
   text('popover-foreground', 'popover'),
   text('secondary-foreground', 'secondary'),
@@ -185,13 +235,19 @@ const knownShortfalls = new Set(['Warm light: ring focus on muted']);
 const ratio = (palette: Palette, check: Check) =>
   contrastRatio(palette[check.foreground], palette[check.background], check.over && palette[check.over]);
 
-for (const preset of presets) {
+/** Each preset as it ships, and each preset with an accent also with the accent turned off. */
+const variants = presets.flatMap((preset) =>
+  preset.accent ? [{ label: preset.name, preset }, { label: `${preset.name} without its accent`, preset: withoutAccent(preset) }] : [{ label: preset.name, preset }],
+);
+
+for (const { label, preset } of variants) {
   for (const mode of ['light', 'dark'] as Mode[]) {
-    test(`${preset.name} ${mode}: text 4.5:1 on every surface, focus and chart marks 3:1`, () => {
+    test(`${label} ${mode}: text and the current nav item 4.5:1 on every surface, focus and chart marks 3:1`, () => {
+      const palette = cssPalette(preset, mode);
       const misses = checks
-        .filter((check) => !knownShortfalls.has(`${preset.name} ${mode}: ${check.label}`))
-        .filter((check) => ratio(preset[mode], check) < check.min)
-        .map((check) => `${check.label}: ${ratio(preset[mode], check).toFixed(2)}:1, needs ${check.min}:1`);
+        .filter((check) => !knownShortfalls.has(`${label} ${mode}: ${check.label}`))
+        .filter((check) => ratio(palette, check) < check.min)
+        .map((check) => `${check.label}: ${ratio(palette, check).toFixed(2)}:1, needs ${check.min}:1`);
       assert.deepEqual(misses, []);
     });
   }
@@ -203,7 +259,7 @@ test('every known shortfall still falls short', () => {
     const preset = presets.find((candidate) => candidate.name === name);
     const check = checks.find((candidate) => candidate.label === label);
     assert.ok(preset && check, `${shortfall} names no preset or check`);
-    assert.ok(ratio(preset[mode as Mode], check) < check.min, `${shortfall} now passes: remove it from knownShortfalls`);
+    assert.ok(ratio(cssPalette(preset, mode as Mode), check) < check.min, `${shortfall} now passes: remove it from knownShortfalls`);
   }
 });
 
@@ -211,10 +267,22 @@ for (const preset of presets) {
   test(`${preset.name}: its DESIGN.md holds every value, light and dark on the token's own line`, () => {
     const lines = presetDesignMd(preset).split('\n');
     const row = (token: string) => lines.find((line) => line.startsWith(`| \`${token}\` |`));
-    for (const token of Object.keys(preset.light) as PaletteToken[]) {
+    const [light, dark] = [cssPalette(preset, 'light'), cssPalette(preset, 'dark')];
+    for (const token of Object.keys(light) as PaletteToken[]) {
       const line = row(token);
-      assert.ok(line?.includes(preset.light[token]) && line.includes(preset.dark[token]), `${token}: ${line}`);
+      assert.ok(line?.includes(light[token]) && line.includes(dark[token]), `${token}: ${line}`);
     }
     assert.ok(row('radius')?.includes(preset.radius), 'radius');
   });
 }
+
+test('a DESIGN.md says what the accent colors, or that the preset has none', () => {
+  const accentSection = (preset: Preset) => /## Accent\n\n([\s\S]+?)\n## /.exec(presetDesignMd(preset))?.[1] ?? '';
+  assert.match(accentSection(defaultPreset), /no accent/);
+  for (const preset of presets.filter((candidate) => candidate.accent)) {
+    const section = accentSection(preset);
+    for (const value of [preset.accent!.light.ring, preset.accent!.dark.ring, preset.accent!.light.text]) {
+      assert.ok(section.includes(value), `${preset.name}: ${value}`);
+    }
+  }
+});

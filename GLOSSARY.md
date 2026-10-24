@@ -65,8 +65,12 @@ _Avoid_: theme, style
 _Avoid_: theme, skin, variant
 
 **Accent**:
-Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
+Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης, στο meter και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
 _Avoid_: brand, primary, highlight
+
+**Status tint**:
+Ένα από τα έξι status hues (gray, blue, green, teal, orange, red) με τα tokens του: fill, border, κείμενο, link, dot και, για τα τέσσερα, solid. Δίνει dot σε ένα state, tinted pill σε έναν κωδικό και χρώμα σε ένα Alert. Μένει ίδιο σε κάθε **preset** και δεν είναι ποτέ **accent**.
+_Avoid_: status colour (είναι τα `success`, `warning`, `destructive`), tag (είναι κατηγορία)
 
 **Brand colour**:
 Το χρώμα της ταυτότητας του Kosmos UI ως προϊόν: φαίνεται μόνο στο δικό μας site (logo, σημάδια **Pro**, text selection) και δεν μπαίνει ποτέ στα tokens που εγκαθιστά ο χρήστης.
