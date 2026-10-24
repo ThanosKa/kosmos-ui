@@ -14,15 +14,26 @@ export function serverBase(values: { port?: string; base?: string }) {
 }
 
 export type Theme = 'light' | 'dark';
+export type ReducedMotion = 'reduce' | 'no-preference';
 
-type OpenOptions = { theme?: Theme; viewport: { width: number; height: number }; deviceScaleFactor?: number };
+type OpenOptions = {
+  theme?: Theme;
+  viewport: { width: number; height: number };
+  deviceScaleFactor?: number;
+  reducedMotion?: ReducedMotion;
+};
 
 /**
- * Opens `path` on the server at `base`, pinned to `theme`, with reduced motion and the dev indicator hidden. Throws
- * when the page does not answer 200. Page errors and console errors land in `errors`; close `context` when done.
+ * Opens `path` on the server at `base`, pinned to `theme`, with reduced motion (unless `reducedMotion` says otherwise)
+ * and the dev indicator hidden. Throws when the page does not answer 200. Page errors and console errors land in `errors`; close `context` when done.
  */
-export async function openSitePage(browser: Browser, base: string, path: string, { theme = 'light', viewport, deviceScaleFactor = 1 }: OpenOptions) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor, colorScheme: theme, reducedMotion: 'reduce' });
+export async function openSitePage(
+  browser: Browser,
+  base: string,
+  path: string,
+  { theme = 'light', viewport, deviceScaleFactor = 1, reducedMotion = 'reduce' }: OpenOptions,
+) {
+  const context = await browser.newContext({ viewport, deviceScaleFactor, colorScheme: theme, reducedMotion });
   // next-themes reads localStorage first; pinning it makes pages without ?theme deterministic too. The dev server's
   // indicator would sit in every page and every iframe, so it is hidden in each frame.
   await context.addInitScript((value) => {

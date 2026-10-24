@@ -64,7 +64,9 @@ const viewState: Record<string, { title: string; tab: TabValue; filters: string[
 };
 
 const pageTitles: Record<string, string> = {
-  events: 'Events',
+  events: 'Live events',
+  funnels: 'Funnels',
+  alerts: 'Alerts',
   users: 'Users',
   revenue: 'Revenue',
   help: 'Help and feedback',
