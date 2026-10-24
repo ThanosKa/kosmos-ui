@@ -46,6 +46,10 @@ _Avoid_: playground, sandbox, drafts
 Μία σελίδα (`/gallery`) που δείχνει όλα τα components μαζί σε ρεαλιστικές κάρτες, ώστε μια αλλαγή στο στυλ να φαίνεται αμέσως παντού.
 _Avoid_: kitchen sink, showcase (showcase είναι το dashboard της landing page)
 
+**Presets page**:
+Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει τα components και μερικά blocks να αλλάζουν live και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
+_Avoid_: theme builder, customizer, playground
+
 ### Στυλ
 
 **Style**:
@@ -55,6 +59,18 @@ _Avoid_: theme, look, «τα χρώματα του Kosmos»
 **Palette**:
 Τα χρώματα του Kosmos, δηλαδή τα tokens χρωμάτων. Είναι ξεχωριστή επιλογή από το **style**: αλλάζει χωρίς να αλλάξει ο τρόπος που χτίζονται τα κομμάτια, και δεν παίρνεται από τα προϊόντα που μελετήσαμε.
 _Avoid_: theme, style
+
+**Preset**:
+Ένα έτοιμο σετ τιμών για **palette** και radius που διαλέγει ο χρήστης, βλέπει όλα τα components με αυτό και το παίρνει στο project του. Αλλάζει μόνο τιμές tokens, ποτέ το **style**.
+_Avoid_: theme, skin, variant
+
+**Accent**:
+Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
+_Avoid_: brand, primary, highlight
+
+**Brand colour**:
+Το χρώμα της ταυτότητας του Kosmos UI ως προϊόν: φαίνεται μόνο στο δικό μας site (logo, σημάδια **Pro**, text selection) και δεν μπαίνει ποτέ στα tokens που εγκαθιστά ο χρήστης.
+_Avoid_: accent, signature colour, primary
 
 **Token**:
 Μια ονομασμένη τιμή του στυλ (χρώμα, σκιά, radius, easing, duration, μέγεθος κειμένου), γραμμένη ως CSS variable στο `registry/kosmos/styles/tokens.css`. Τα components χρησιμοποιούν μόνο tokens, ποτέ σκέτες τιμές.
