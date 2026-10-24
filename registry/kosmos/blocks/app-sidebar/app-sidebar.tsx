@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { DropdownMenuItem, DropdownMenuSeparator } from '@/registry/kosmos/ui/dropdown-menu';
+import { DropdownMenuItem, DropdownMenuSeparator, type DropdownMenu } from '@/registry/kosmos/ui/dropdown-menu';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import {
   Sidebar,
@@ -42,7 +42,6 @@ import {
   type SidebarProps,
   type SidebarUser,
   type SidebarWorkspace,
-  type SidebarWorkspaceSwitcherProps,
 } from '@/registry/kosmos/ui/sidebar';
 
 // Sample data: replace it with your app's pages, workspaces and signed-in user.
@@ -55,12 +54,10 @@ type NavSubItem = { id: string; label: string; href: string };
 type NavItem = {
   id: string;
   label: string;
-  href?: string;
   icon: LucideIcon;
   badge?: number;
   badgeLabel?: string;
-  items?: NavSubItem[];
-};
+} & ({ href: string; items?: undefined } | { href?: undefined; items: NavSubItem[] });
 
 const sampleNavMain: NavItem[] = [
   { id: 'overview', label: 'Overview', href: '#overview', icon: LayoutDashboard },
@@ -97,10 +94,7 @@ const sampleWorkspaces: SidebarWorkspace[] = [
 
 const sampleUser: SidebarUser = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
 
-type MenuProps = Omit<
-  SidebarWorkspaceSwitcherProps,
-  'workspaces' | 'value' | 'defaultValue' | 'onValueChange' | 'label' | 'children' | 'className'
->;
+type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 
 /** What the workspace and user menus offer besides switching workspace. */
 type AppSidebarAction = 'add-workspace' | 'profile' | 'preferences' | 'log-out';
@@ -152,7 +146,7 @@ type AppSidebarContentProps = {
 };
 
 const hiddenInIconMode =
-  'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)';
+  'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast) group-data-snapping/sidebar-wrapper:transition-none group-data-snapping/sidebar-wrapper:delay-0';
 
 function Count({ badge, badgeLabel }: Pick<NavItem, 'badge' | 'badgeLabel'>) {
   if (!badge) return null;

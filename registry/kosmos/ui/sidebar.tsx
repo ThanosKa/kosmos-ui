@@ -725,17 +725,17 @@ type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> 
   tooltip?: React.ReactNode;
 };
 
-/**
- * The clickable row of an item: a Button with `href` for a page, without it for an action.
- * Put an icon first and the label in a `<span>`, which truncates. On phones a link closes the drawer.
- * In icon mode only the icon shows, and `tooltip` names the item.
- */
 /** Whether the sidebar is collapsed to its column of icons beside the page. */
 function useIconsOnly() {
   const sidebar = React.useContext(SidebarContext);
   return sidebar !== null && !sidebar.isMobile && !sidebar.open && sidebar.collapsible === 'icon';
 }
 
+/**
+ * The clickable row of an item: a Button with `href` for a page, without it for an action.
+ * Put an icon first and the label in a `<span>`, which truncates. On phones a link closes the drawer.
+ * In icon mode only the icon shows, and `tooltip` names the item.
+ */
 function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: SidebarMenuButtonProps) {
   const sidebar = React.useContext(SidebarContext);
   const iconsOnly = useIconsOnly();
@@ -849,6 +849,10 @@ function SidebarSubmenu({
   const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange);
   const [popoverOpenState, setPopoverOpen] = useControllable(popoverOpenProp, false, onPopoverOpenChange);
   const popoverOpen = iconsOnly && popoverOpenState;
+  // Expanding the sidebar closes the popover for good, so the next collapse does not bring it back.
+  React.useEffect(() => {
+    if (!iconsOnly && popoverOpenState) setPopoverOpen(false);
+  }, [iconsOnly, popoverOpenState, setPopoverOpen]);
   const panelId = React.useId();
   const context = React.useMemo<SidebarSubmenuContextValue>(
     () => ({ open, setOpen, popoverOpen, setPopoverOpen, iconsOnly, label, panelId }),
@@ -938,12 +942,13 @@ type SidebarSubmenuContentProps = React.ComponentProps<'ul'> & {
  * The pages of a submenu, `SidebarSubmenuItem`s. Renders `<ul>`: in a panel under the trigger that grows open, or in
  * icon mode in a popover beside the icon, under the submenu's `label`.
  */
-function SidebarSubmenuContent({ className, children, container, ...props }: SidebarSubmenuContentProps) {
+function SidebarSubmenuContent({ className, children, container, id, ...props }: SidebarSubmenuContentProps) {
   const { label, panelId } = useSidebarSubmenu();
   return (
     <>
       <CollapsibleContent id={panelId} hiddenUntilFound>
         <ul
+          id={id}
           data-slot="sidebar-submenu-content"
           // Indented so the pages' labels line up with the trigger's label, past its icon.
           className={cn('flex w-full min-w-0 flex-col gap-0.5 ps-5.5 pt-0.5', className)}
@@ -1203,6 +1208,7 @@ function SidebarUserMenu({ user, children, className, ...props }: SidebarUserMen
         className={cn(
           'flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1',
           '[&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:[&>span:last-child]:delay-(--transition-duration-fast)',
+          'group-data-snapping/sidebar-wrapper:[&>span:last-child]:transition-none group-data-snapping/sidebar-wrapper:[&>span:last-child]:delay-0',
           className,
         )}
       >
