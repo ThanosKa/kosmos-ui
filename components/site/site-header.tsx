@@ -21,8 +21,6 @@ export function SiteHeader({ menu, fullWidth = false }: SiteHeaderProps) {
       id="site-header"
       menu={menu}
       fullWidth={fullWidth}
-      // Beside a docked sidebar the edge always shows, so the sidebar's divider meets it.
-      className={fullWidth ? 'border-border' : undefined}
       actions={
         <>
           <SearchButton />

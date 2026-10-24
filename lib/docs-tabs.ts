@@ -1,3 +1,4 @@
+import { currentLinkHref } from './current-link.ts';
 import { docsRoute } from './shared.ts';
 
 /** The header tabs. Each tab has its own sidebar: the docs pages whose address it owns. */
@@ -11,7 +12,6 @@ export type DocsTabId = (typeof docsTabs)[number]['id'];
 
 /** The tab a path belongs to: the longest tab address that prefixes it. */
 export function docsTabOf(pathname: string): DocsTabId | undefined {
-  return [...docsTabs]
-    .sort((a, b) => b.href.length - a.href.length)
-    .find((tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`))?.id;
+  const href = currentLinkHref(docsTabs, pathname);
+  return docsTabs.find((tab) => tab.href === href)?.id;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { NavigationMenu as NavigationMenuPrimitive } from '@base-ui/react/navigation-menu';
-import { ChevronDown, Menu } from 'lucide-react';
+import { Check, ChevronDown, Menu } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -65,6 +65,15 @@ function useScrolled() {
   return scrolled;
 }
 
+/** The edge the sheet opens from: the start edge, so it opens beside its button in either text direction. */
+function useStartEdge(ref: React.RefObject<HTMLElement | null>) {
+  const [edge, setEdge] = React.useState<'left' | 'right'>('left');
+  React.useEffect(() => {
+    if (ref.current && getComputedStyle(ref.current).direction === 'rtl') setEdge('right');
+  }, [ref]);
+  return edge;
+}
+
 /** The first letter of the product in a filled tile, until there is a logo. */
 function NavbarMark({ name }: { name: React.ReactNode }) {
   return (
@@ -88,14 +97,14 @@ const barItemClass = cn(
 );
 
 const sheetLinkClass = cn(
-  'flex min-h-9 items-center rounded-lg px-2.5 text-body font-medium text-muted-foreground',
+  'flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-body font-medium text-muted-foreground',
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
   'aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground',
   focusRing,
 );
 
 type NavbarLinksProps = {
-  items: NavbarItem[];
+  items: readonly NavbarItem[];
   current?: string;
   label: string;
   Link: NavbarLinkComponent;
@@ -105,13 +114,12 @@ type NavbarContainer = NavigationMenuPrimitive.Portal.Props['container'];
 /** Pins the sheet in a preview: controlled `open`, `modal`, and where focus goes when it opens. */
 type NavbarSheetProps = {
   open?: boolean;
-  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   modal?: boolean;
   initialFocus?: React.ComponentProps<typeof DrawerContent>['initialFocus'];
 };
-/** Opens a dropdown by its group label, such as `{ defaultValue: 'Product' }` in a preview. */
-type NavbarDropdownProps = Pick<NavigationMenuPrimitive.Root.Props<string>, 'value' | 'defaultValue' | 'onValueChange'>;
+/** Opens a dropdown by its group label, such as `{ value: 'Product' }` in a preview. */
+type NavbarDropdownProps = Pick<NavigationMenuPrimitive.Root.Props<string>, 'value' | 'onValueChange'>;
 
 /** The links in the bar, from 768px wide: plain links and groups that open a dropdown on hover or click. */
 function NavbarBarLinks({
@@ -129,7 +137,6 @@ function NavbarBarLinks({
       className="ms-3 flex min-w-0 flex-1 @max-3xl:hidden"
       {...dropdownProps}
     >
-      {/* Links that do not fit scroll sideways, and the edge with links hidden past it fades out. */}
       <ScrollArea
         data-slot="navbar-scroll-area"
         focusable={false}
@@ -150,7 +157,7 @@ function NavbarBarLinks({
                     <NavigationMenuPrimitive.Icon
                       className={cn(
                         'flex size-3.5 items-center justify-center',
-                        'transition-[rotate] duration-base motion-safe:data-popup-open:rotate-180',
+                        'transition-[rotate] duration-fast data-popup-open:duration-base motion-safe:data-popup-open:rotate-180',
                       )}
                     >
                       <ChevronDown aria-hidden className="size-3.5" />
@@ -158,7 +165,7 @@ function NavbarBarLinks({
                   </NavigationMenuPrimitive.Trigger>
                   <NavigationMenuPrimitive.Content
                     keepMounted
-                    className="w-80 max-w-(--available-width) p-1 transition-[opacity] duration-base data-ending-style:opacity-0 data-starting-style:opacity-0"
+                    className="w-80 max-w-(--available-width) p-1 transition-[opacity] duration-base data-ending-style:opacity-0 data-ending-style:duration-fast data-starting-style:opacity-0"
                   >
                     <ul className="flex flex-col gap-0.5">
                       {item.links.map((link) => (
@@ -172,8 +179,9 @@ function NavbarBarLinks({
                               'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
                             )}
                           >
-                            <span className="text-body font-medium text-foreground group-aria-[current=page]/link:text-active-foreground">
+                            <span className="flex items-center gap-2 text-body font-medium text-foreground group-aria-[current=page]/link:text-active-foreground">
                               {link.label}
+                              {link.href === current ? <Check aria-hidden className="ms-auto size-3.5 shrink-0" /> : null}
                             </span>
                             {link.description ? (
                               <span className="text-small text-pretty text-muted-foreground">{link.description}</span>
@@ -204,7 +212,6 @@ function NavbarBarLinks({
           align="start"
           className={cn(
             'isolate z-50 h-(--positioner-height) w-(--positioner-width) max-w-(--available-width)',
-            // Moving between two dropdowns slides the popup to the new trigger.
             'motion-safe:transition-[top,left,right,bottom] motion-safe:duration-slow motion-safe:ease-smooth-in-out data-instant:transition-none',
           )}
         >
@@ -239,6 +246,7 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
         className={sheetLinkClass}
       >
         <span className="truncate">{link.label}</span>
+        {link.href === current ? <Check aria-hidden className="ms-auto size-4 shrink-0" /> : null}
       </Link>
     </li>
   );
@@ -272,7 +280,7 @@ type NavbarProps = React.ComponentProps<'header'> & {
   /** Where the name links. */
   homeHref?: string;
   /** Links, and groups of links that open a dropdown. */
-  items?: NavbarItem[];
+  items?: readonly NavbarItem[];
   /** The `href` of the page being shown: its link, and the group that holds it, take the current-page color. */
   current?: string;
   /** The accessible name of the navigation landmark. */
@@ -283,7 +291,7 @@ type NavbarProps = React.ComponentProps<'header'> & {
   sheetActions?: React.ReactNode;
   /** Replaces the button that opens the sheet below 768px, such as with a button that opens your docs sidebar. */
   menu?: React.ReactNode;
-  /** Spans the whole width instead of a centered 80rem column, so the logo lines up with a docked sidebar. */
+  /** Spans the whole width instead of a centered 80rem column, so the logo lines up with a docked sidebar, and always shows the bottom edge the sidebar's divider meets. */
   fullWidth?: boolean;
   /** Renders the name and every link, such as your router's `Link`. Defaults to `<a>`. */
   linkComponent?: NavbarLinkComponent;
@@ -316,10 +324,13 @@ function Navbar({
   dropdownProps,
   container,
   className,
+  ref,
   ...props
 }: NavbarProps) {
+  const headerRef = React.useRef<HTMLElement>(null);
   const scrolled = useScrolled();
-  const [innerSheetOpen, setInnerSheetOpen] = React.useState(sheetProps?.defaultOpen ?? false);
+  const startEdge = useStartEdge(headerRef);
+  const [innerSheetOpen, setInnerSheetOpen] = React.useState(false);
   const sheetOpen = sheetProps?.open ?? innerSheetOpen;
   const setSheetOpen = (open: boolean) => {
     setInnerSheetOpen(open);
@@ -329,10 +340,16 @@ function Navbar({
 
   return (
     <header
+      ref={(node) => {
+        headerRef.current = node;
+        if (typeof ref === 'function') return ref(node);
+        if (ref) ref.current = node;
+      }}
       data-slot="navbar"
       data-scrolled={scrolled ? '' : undefined}
       className={cn(
         '@container sticky top-0 z-40 border-b border-transparent bg-background transition-[border-color] data-scrolled:border-border',
+        fullWidth && 'border-border',
         className,
       )}
       {...props}
@@ -341,7 +358,7 @@ function Navbar({
         {menu ? (
           <div className="me-2 flex @3xl:hidden">{menu}</div>
         ) : hasSheet ? (
-          <Drawer swipeDirection="left" open={sheetOpen} onOpenChange={setSheetOpen} modal={sheetProps?.modal}>
+          <Drawer swipeDirection={startEdge} open={sheetOpen} onOpenChange={setSheetOpen} modal={sheetProps?.modal}>
             <DrawerTrigger
               render={<Button variant="secondary" size="icon" aria-label="Open menu" className="me-2 @3xl:hidden" />}
             >
@@ -349,7 +366,7 @@ function Navbar({
             </DrawerTrigger>
             <DrawerContent data-slot="navbar-sheet" container={container} initialFocus={sheetProps?.initialFocus}>
               <DrawerHeader>
-                <DrawerTitle className="flex items-center gap-2 text-body font-semibold">
+                <DrawerTitle className="flex items-center gap-2">
                   {logo ?? <NavbarMark name={name} />}
                   {name}
                 </DrawerTitle>

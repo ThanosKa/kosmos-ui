@@ -7,7 +7,7 @@ description: The top of a marketing page, with the product, its links and dropdo
 
 <ComponentInstall name="navbar" />
 
-The block brings [Button](/docs/components/button) and [Drawer](/docs/components/drawer) with it, and lands in `components/navbar.tsx`.
+The block brings [Button](/docs/components/button), [Drawer](/docs/components/drawer) and [Scroll area](/docs/components/scroll-area) with it, and lands in `components/navbar.tsx`.
 
 ## Usage
 
@@ -59,7 +59,7 @@ Pass your router's `Link` as `linkComponent`, so the name and the links move bet
 - **Landmark**: the bar is a `<header>`. Placed outside `<main>`, `<article>` and `<section>`, it becomes the page's banner landmark, and its links sit in a navigation named by `navLabel`.
 - **Sticky**: the bar stays at the top of the window on an opaque fill, so the text in it keeps its contrast over whatever scrolls under it. Its bottom edge shows once the page has scrolled.
 - **Dropdowns**: a group of links opens a panel under its label on hover, on click, and with Enter, Space or the arrow keys. Each link can carry a line that says where it goes. Escape closes the panel and returns focus to its label.
-- **Current page**: the link whose `href` is `current` takes the current-page color and `aria-current="page"`, and so does the label of the group that holds it.
+- **Current page**: the link whose `href` is `current` takes the current-page color and `aria-current="page"`, with a check mark in the dropdown and the sheet. The label of the group that holds it takes the color too.
 - **Actions**: buttons at the end of the bar, at every width. Hide one below the wide layout with `@max-3xl:hidden`, and repeat it in `sheetActions`.
 - **Sheet**: below 768px the links move into a sheet that opens from the start edge. It keeps focus inside while it is open, closes with Escape, a tap outside or a swipe, and closes when a link is followed. Pass `menu` to put your own button there instead, such as one that opens your docs sidebar.
 - **Width**: the bar lays itself out by its own width, with container queries, not by the screen's.
@@ -85,10 +85,10 @@ Takes every `<header>` prop, plus:
     actions: { description: 'Buttons at the end of the bar, at every width. `null` leaves them out.', type: 'ReactNode', default: 'sample buttons' },
     sheetActions: { description: 'Buttons at the bottom of the sheet. `null` leaves them out.', type: 'ReactNode', default: 'sample buttons' },
     menu: { description: 'Replaces the button that opens the sheet below 768px. The sheet is then left out.', type: 'ReactNode' },
-    fullWidth: { description: 'Spans the whole width instead of a centered 80rem column, so the logo lines up with a docked sidebar.', type: 'boolean', default: 'false' },
+    fullWidth: { description: 'Spans the whole width instead of a centered 80rem column, so the logo lines up with a docked sidebar, and always shows the bottom edge.', type: 'boolean', default: 'false' },
     linkComponent: { description: "Renders the name and every link, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
-    sheetProps: { description: 'Controls the sheet, such as `{ open: true, modal: false }` to pin it open in a preview.', type: '{ open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; modal?: boolean; initialFocus?: … }' },
-    dropdownProps: { description: 'Controls which dropdown is open, by its group label.', type: '{ value?: string | null; defaultValue?: string | null; onValueChange?: … }' },
+    sheetProps: { description: 'Controls the sheet, such as `{ open: true, modal: false }` to pin it open in a preview.', type: '{ open?: boolean; onOpenChange?: (open: boolean) => void; modal?: boolean; initialFocus?: … }' },
+    dropdownProps: { description: 'Controls which dropdown is open, by its group label.', type: '{ value?: string | null; onValueChange?: … }' },
     container: { description: 'The element the sheet and the dropdowns render into.', type: 'HTMLElement', default: 'document.body' },
   }}
 />

@@ -8,13 +8,13 @@ import { Navbar, type NavbarProps } from '@/registry/kosmos/blocks/navbar/navbar
 import { KosmosMark } from './kosmos-mark';
 
 /** The Navbar block with the site's name, logo and links, marking the link that holds the page being shown. */
-export function SiteNavbar(props: Pick<NavbarProps, 'id' | 'className' | 'actions' | 'menu' | 'fullWidth'>) {
+export function SiteNavbar(props: Pick<NavbarProps, 'id' | 'actions' | 'menu' | 'fullWidth'>) {
   const pathname = usePathname();
   return (
     <Navbar
       name={appName}
       logo={<KosmosMark className="size-5" />}
-      items={[...siteLinks]}
+      items={siteLinks}
       current={currentLinkHref(siteLinks, pathname)}
       navLabel="Site"
       sheetActions={null}
