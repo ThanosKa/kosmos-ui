@@ -1,18 +1,18 @@
 import type * as React from 'react';
 
 type KosmosMarkProps = React.ComponentProps<'svg'> & {
-  /** The ring's color. Defaults to the text color, like the planet. */
+  /** The ring's color. Defaults to the brand colour; the planet takes the text color. */
   ringColor?: string;
   /** The outline around the planet, which must match what the mark sits on. Defaults to the page background. */
   gapColor?: string;
 };
 
 /**
- * A planet with a ring: the Kosmos UI mark, a placeholder until there is a real logo. Takes the text color;
- * the planet's outline takes the page background, so the ring reads as passing behind it and in front.
+ * A planet with a ring: the Kosmos UI mark, a placeholder until there is a real logo. The planet takes the text color
+ * and the ring the brand colour; the planet's outline takes the page background, so the ring reads as passing behind it and in front.
  * `app/icon.svg` draws the same shapes for the favicon.
  */
-export function KosmosMark({ ringColor = 'currentColor', gapColor = 'var(--color-background)', ...props }: KosmosMarkProps) {
+export function KosmosMark({ ringColor = 'var(--color-brand)', gapColor = 'var(--color-background)', ...props }: KosmosMarkProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
       <g transform="rotate(-24 12 12)" stroke={ringColor} strokeWidth="1.75" strokeLinecap="round">

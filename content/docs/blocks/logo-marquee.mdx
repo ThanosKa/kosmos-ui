@@ -1,0 +1,59 @@
+---
+title: Logo marquee
+description: A row of logos in grey under one line, still or moving, that stops while the pointer is on it and has a pause button.
+---
+
+## Installation
+
+<ComponentInstall name="logo-marquee" />
+
+The block brings [Button](/docs/components/button) with it, for its pause button, and lands in `components/logo-marquee.tsx`.
+
+## Usage
+
+```tsx
+import Image from 'next/image';
+import { LogoMarquee } from '@/components/logo-marquee';
+
+export function BuiltOn() {
+  return (
+    <LogoMarquee
+      title="Built on"
+      logos={[
+        { name: 'Base UI', logo: <Image src="/logos/base-ui.svg" alt="" width={88} height={24} /> },
+        { name: 'Tailwind CSS', logo: <Image src="/logos/tailwind-css.svg" alt="" width={120} height={24} /> },
+        { name: 'React' },
+        { name: 'Next.js' },
+        { name: 'shadcn CLI' },
+      ]}
+    />
+  );
+}
+```
+
+Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an image with an empty `alt`, since the name already names it. A logo without one shows its name as text. The line and the logos at the top of the file are sample data.
+
+## What it does
+
+- **Marquee**: the logos move toward the start in one row, over and over, and fade out at both edges. The row is two copies of the list, so it never shows a gap at any width, and it keeps the same speed when its width changes.
+- **Pause**: the row stops while the mouse is on it and moves on when it leaves. A small button at its end pauses it until it is pressed again, from the keyboard or a phone too, and screen readers hear it as "Pause logos" or "Play logos".
+- **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
+- **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
+- **Grey**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns grey too and no logo outshouts the page.
+- **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the second copy that keeps the row full is hidden from them.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
+
+## API
+
+### LogoMarquee
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The line above the logos, which also names their list. `null` leaves it out.', type: 'ReactNode', default: "'Used by the teams behind'" },
+    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own; an empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
+    variant: { description: '`marquee` moves the logos in one row that fades out at both edges; `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
+    speed: { description: 'How fast the marquee moves, in pixels per second.', type: 'number', default: '40' },
+  }}
+/>
