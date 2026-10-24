@@ -15,4 +15,4 @@ Colour now has two separate owners. A **preset** gives the user's project an acc
 
 - Status hues (gray, blue, green, teal, orange, red) are the only colour in the default, as dots for states and tinted pills for codes. Their values are Radix Colors steps, so the Radix MIT notice ships beside the tokens.
 - The focus ring is ink at reduced alpha with a gap in the page colour, at least 3:1 on every surface, and becomes the accent when a preset has one.
-- `active-foreground`, `meter-primary` and the `[data-accent]` swatches of ADR 0007 fold into the preset mechanism.
+- `active-foreground`, `meter-primary` and the `[data-accent]` swatches of ADR 0007 fold into the preset mechanism. A preset's accent has a ring step (`ring`, `sidebar-ring`, `chart-1`) and a text step, one token `accent-text` for the current nav item and the primary Meter, which held the same value in every ADR 0007 mode. Its name keeps clear of shadcn's `accent`, which stays the hover fill.

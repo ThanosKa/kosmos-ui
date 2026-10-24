@@ -83,13 +83,13 @@ const tabs = [
   },
 ] as const;
 
-/** Asserts the header marks `label` as the current tab, in `active-foreground`. */
+/** Asserts the header marks `label` as the current tab, in `accent-text`. */
 async function assertCurrentTab(page: Page, label: string, where: string) {
   const current = page.locator('nav[aria-label="Site"]:visible a[aria-current="page"]');
   assert.equal(await current.count(), 1, `${where}: one current tab`);
   assert.equal((await current.textContent())?.trim(), label, `${where}: current tab`);
   const color = await current.evaluate((link) => getComputedStyle(link).color);
-  assert.equal(color, await cssColor(page, '--active-foreground'), `${where}: current tab color`);
+  assert.equal(color, await cssColor(page, '--accent-text'), `${where}: current tab color`);
 }
 
 /** The addresses of the 8 blocks before block categories; each is now the page of its category. */
@@ -691,7 +691,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'accent, radius and theme change only the dashboard, and Reset brings them back',
+    name: 'preset, radius and theme change only the dashboard, and Reset brings them back',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="dashboard"]');
@@ -705,12 +705,12 @@ const checks: Check[] = [
       const pageBefore = await look('page');
       const dashboardBefore = await look('dashboard');
       assert.deepEqual(dashboardBefore, pageBefore, 'the dashboard starts in the page look');
-      await section.getByRole('radiogroup', { name: 'Accent' }).getByRole('radio', { name: 'Violet' }).click();
+      await section.getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Soft' }).click();
       await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
       await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
       await page.waitForFunction(() => (document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
       const changed = await look('dashboard');
-      assert.notEqual(changed.ring, dashboardBefore.ring, 'accent changes the dashboard');
+      assert.notEqual(changed.ring, dashboardBefore.ring, 'the preset changes the dashboard');
       assert.match(changed.radius, /^0(px|rem)?$/, 'radius changes the dashboard');
       assert.equal(changed.dark, true, 'theme changes the dashboard');
       assert.deepEqual(await look('page'), pageBefore, 'the page keeps its look');

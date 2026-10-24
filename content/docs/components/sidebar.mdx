@@ -192,7 +192,7 @@ Takes every [Button](/docs/components/button) prop except `variant` and `size`, 
 <TypeTable
   type={{
     isActive: {
-      description: 'Marks the current page: a flat highlight, the label and icon in `active-foreground`, and `aria-current="page"` on a link.',
+      description: 'Marks the current page: a flat highlight, the label and icon in `accent-text`, and `aria-current="page"` on a link.',
       type: 'boolean',
       default: 'false',
     },
@@ -222,7 +222,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `SidebarGroupLabel` | The small uppercase heading of a group. `render={<h2 />}` makes it a heading. |
 | `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
 | `SidebarMenuItem` | One item. Renders `<li>`. |
-| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page: idle items are muted, and the active one sits on the flat hover fill with its label and icon in `active-foreground`, ink by default. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page: idle items are muted, and the active one sits on the flat hover fill with its label and icon in `accent-text`, ink by default. Put the label in a `<span>` so it truncates. |
 | `SidebarMenuBadge` | A count at the end of an item, in a small pill. |
 
 ## Keyboard

@@ -65,7 +65,7 @@ _Avoid_: theme, style
 _Avoid_: theme, skin, variant
 
 **Accent**:
-Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
+Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης, στο meter και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
 _Avoid_: brand, primary, highlight
 
 **Status tint**:

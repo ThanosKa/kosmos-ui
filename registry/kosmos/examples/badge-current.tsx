@@ -20,7 +20,7 @@ export default function BadgeCurrent() {
                 variant="item"
                 href={endpoint.href}
                 aria-current={current ? 'page' : undefined}
-                className="w-full justify-start gap-2 text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-active-foreground"
+                className="w-full justify-start gap-2 text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-accent-text"
               >
                 <Badge variant={endpoint.tint} className="w-14">
                   {endpoint.method}
