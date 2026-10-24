@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "announcement",
+  "type": "registry:ui",
+  "title": "Announcement",
+  "description": "A pill that links to news, such as a new release, above a hero: an optional tag, one line of text and a chevron. Renders a link through Base UI's useRender.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "basics" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/announcement.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

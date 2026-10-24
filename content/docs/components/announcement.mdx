@@ -1,0 +1,63 @@
+---
+title: Announcement
+description: A pill that links to news, such as a new release, with an optional badge and a chevron. Sits above a hero or a page title.
+---
+
+<ComponentPreview name="announcement-demo" />
+
+## Installation
+
+<ComponentInstall name="announcement" />
+
+## Usage
+
+```tsx
+import { Announcement } from '@/components/ui/announcement';
+```
+
+```tsx
+<Announcement href="/changelog" badge="New">
+  Funnels are here
+</Announcement>
+```
+
+Write one short line, a few words that fit on a phone. Text longer than the slot wraps onto a second line inside the pill, so nothing is cut off, but one line reads best.
+
+## Examples
+
+### Above a hero
+
+Put it just above the title, about 20px over it, so it reads before the headline without competing with it. The pill takes the secondary surface and muted text, so the hero's primary action stays the strongest mark on the page.
+
+<ComponentPreview name="announcement-hero" />
+
+### Without a badge
+
+Leave out `badge` when the text says it all, such as a notice with a date.
+
+<ComponentPreview name="announcement-plain" />
+
+### Router links
+
+The pill renders an `<a>`. To use your router's link, pass it through `render`: `render={<Link href="/changelog" />}`.
+
+## API
+
+Announcement renders an `<a>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all of its props.
+
+<TypeTable
+  type={{
+    badge: {
+      description: 'A short word before the text, such as "New", "Beta" or a version, in a small pill of its own. A badge too long for the pill is cut off with an ellipsis.',
+      type: 'ReactNode',
+    },
+    children: {
+      description: 'The announcement, one short line.',
+      type: 'ReactNode',
+    },
+    render: {
+      description: 'Replaces the rendered `<a>`, for example with a router link.',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
+  }}
+/>
