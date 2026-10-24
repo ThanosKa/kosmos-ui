@@ -3,10 +3,24 @@
   "name": "sidebar",
   "type": "registry:ui",
   "title": "Sidebar",
-  "description": "A composable app sidebar: provider, header, content, groups, menu items, footer and a resize handle that works by drag and by keyboard. Collapses to a column of icons with tooltips or to the left edge, toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
+  "description": "A composable app sidebar: provider, header, content, groups, menu items with one level of submenus, a workspace switcher, a user menu, a footer and a resize handle that works by drag and by keyboard. Collapses to a column of icons, where submenus open in a popover and items name themselves in tooltips, or to the left edge; toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/drawer", "@kosmos/kbd", "@kosmos/scroll-area", "@kosmos/separator", "@kosmos/tooltip"],
-  "meta": { "group": "navigation" },
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/collapsible",
+    "@kosmos/drawer",
+    "@kosmos/dropdown-menu",
+    "@kosmos/kbd",
+    "@kosmos/scroll-area",
+    "@kosmos/separator",
+    "@kosmos/tooltip"
+  ],
+  "meta": {
+    "group": "navigation"
+  },
   "files": [
     {
       "path": "registry/kosmos/ui/sidebar.tsx",

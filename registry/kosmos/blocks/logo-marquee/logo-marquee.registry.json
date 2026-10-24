@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo-marquee",
+  "type": "registry:block",
+  "title": "Logo marquee",
+  "description": "A row of logos in grey under one line: still, or as a marquee that fades out at both edges, stops while the pointer is on it, has a pause button and stands still under reduced motion. Lays itself out by its own width.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "categories": ["logo-marquee"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/logo-marquee/logo-marquee.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
