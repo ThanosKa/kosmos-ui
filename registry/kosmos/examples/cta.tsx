@@ -14,14 +14,25 @@ export default function CtaPreview() {
       </PreviewSection>
 
       <PreviewSection title="Narrow container, 320px">
-        <div className={`${frame} max-w-80`}>
-          <Cta />
+        <div className="flex flex-wrap items-start gap-4">
+          <div className={`${frame} max-w-80`}>
+            <Cta />
+          </div>
+          <div className={`${frame} max-w-80`}>
+            <Cta
+              action={
+                <Button variant="primary" size="lg" href="/signup">
+                  Start your 14-day Pro trial, no card needed
+                </Button>
+              }
+            />
+          </div>
         </div>
       </PreviewSection>
 
       <PreviewSection title="With a line">
         <div className={frame}>
-          <Cta description="Free for one project and its last 30 days of events. Pro from $49 a month when you need more." />
+          <Cta description="Free up to 50,000 events a month. Pro from $49 a month when you need more." />
         </div>
       </PreviewSection>
 
@@ -45,9 +56,12 @@ export default function CtaPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Title only">
+      <PreviewSection title="Title only, and action only">
         <div className={frame}>
           <Cta action={null} />
+        </div>
+        <div className={frame}>
+          <Cta title={null} />
         </div>
       </PreviewSection>
 

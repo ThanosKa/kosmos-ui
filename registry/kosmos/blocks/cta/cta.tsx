@@ -17,7 +17,7 @@ const sampleAction = (
 );
 
 type CtaProps = Omit<React.ComponentProps<'section'>, 'title'> & {
-  /** The heading, two short lines: put a `<br />` where the first ends. */
+  /** The heading, two short lines: put a `<br />` where the first ends. `null` leaves it out. */
   title?: React.ReactNode;
   /** One line under the title. Most closing sections go without. */
   description?: React.ReactNode;
@@ -39,13 +39,18 @@ function Cta({ title = sampleTitle, description, action = sampleAction, headingL
       className={cn('@container flex flex-col items-center px-4 py-16 text-center @2xl:px-6 @2xl:py-28', className)}
       {...props}
     >
-      <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading>
+      {title ? (
+        <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading>
+      ) : null}
       {description ? (
-        <p data-slot="cta-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">
+        <p data-slot="cta-description" className="mt-3 first:mt-0 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">
           {description}
         </p>
       ) : null}
-      {action ? <div className="mt-8 flex flex-wrap justify-center gap-3">{action}</div> : null}
+      {action ? (
+        // A label too long for the width wraps inside its button instead of running past the section.
+        <div className="mt-8 flex max-w-full flex-wrap justify-center gap-3 first:mt-0 *:h-auto *:min-h-9 *:max-w-full *:py-1.5 *:whitespace-normal *:text-balance">{action}</div>
+      ) : null}
     </section>
   );
 }

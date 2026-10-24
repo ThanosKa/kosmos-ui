@@ -43,7 +43,7 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'group/accordion-trigger flex min-h-10 flex-1 items-start justify-between gap-3 rounded-lg px-2 py-2.5 text-start text-body font-medium text-foreground',
+          'group/accordion-trigger flex min-h-10 [-webkit-tap-highlight-color:transparent] flex-1 items-start justify-between gap-3 rounded-lg px-2 py-2.5 text-start text-body font-medium text-foreground',
           'transition-[background-color] duration-instant hover:not-data-disabled:bg-accent active:not-data-disabled:bg-accent',
           'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
           'data-disabled:cursor-not-allowed data-disabled:opacity-50',

@@ -4,7 +4,7 @@ import { Faq } from '@/registry/kosmos/blocks/faq/faq';
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
 
 const shortItems = [
-  { id: 'free', question: 'Is there a free plan?', answer: 'Yes. Free keeps one project and its last 30 days of events, for as long as you like.' },
+  { id: 'free', question: 'Is there a free plan?', answer: 'Yes. Free includes 50,000 events a month, for as long as you like.' },
   { id: 'cancel', question: 'Can I cancel at any time?', answer: 'Yes. The plan runs to the end of the month you paid for, then moves to Free.' },
 ];
 
@@ -32,6 +32,12 @@ export default function FaqPreview() {
       <PreviewSection title="No title, a nested section">
         <div className={frame}>
           <Faq title={null} items={shortItems} headingLevel={3} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="No questions: renders nothing">
+        <div className={frame}>
+          <Faq items={[]} />
         </div>
       </PreviewSection>
 

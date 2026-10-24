@@ -33,7 +33,7 @@ const sampleItems: FaqItem[] = [
   },
   {
     id: 'limits',
-    question: 'What happens when a project passes its plan’s events?',
+    question: 'What happens when a project goes over its event allowance?',
     answer:
       'Nothing stops. Acme keeps collecting, and we write to you before the next bill so you can move to a bigger plan or set a limit.',
   },
@@ -60,7 +60,7 @@ const inlineLink =
 type FaqProps = Omit<React.ComponentProps<'section'>, 'title' | 'defaultValue'> & {
   /** The section's heading. `null` leaves it out; then give the page a heading above the questions. */
   title?: React.ReactNode;
-  /** The questions, in order. */
+  /** The questions, in order. An empty list renders nothing. */
   items?: FaqItem[];
   /** The `id`s of the questions open at first. Defaults to the first question; `[]` opens none. */
   defaultValue?: string[];
@@ -83,24 +83,25 @@ function Faq({
   className,
   ...props
 }: FaqProps) {
+  if (items.length === 0) return null;
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
-  const open = defaultValue ?? (items[0] ? [items[0].id] : []);
+  const open = defaultValue ?? [items[0].id];
   return (
     <section data-slot="faq" className={cn('@container flex flex-col items-center gap-8 px-4 py-12 @2xl:gap-10 @2xl:px-6 @2xl:py-20', className)} {...props}>
-      {title ? <Heading className="max-w-[20em] text-center text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+      {title ? <Heading className="max-w-[20em] text-center text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
       <div className="flex w-full max-w-2xl flex-col gap-6">
         <Accordion headingLevel={headingLevel === 2 ? 3 : 4} defaultValue={open}>
           {items.map((item) => (
             <AccordionItem key={item.id} value={item.id}>
               <AccordionTrigger>
-                <span className="min-w-0 wrap-break-word">{item.question}</span>
+                <span className="min-w-0 text-pretty wrap-break-word">{item.question}</span>
               </AccordionTrigger>
-              <AccordionContent className={cn('pe-8 wrap-break-word', inlineLink)}>{item.answer}</AccordionContent>
+              <AccordionContent className={cn('max-w-[40em] pe-8 wrap-break-word', inlineLink)}>{item.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
         {contact ? (
-          <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty text-muted-foreground', inlineLink)}>
+          <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty wrap-break-word text-muted-foreground', inlineLink)}>
             {contact}
           </p>
         ) : null}
