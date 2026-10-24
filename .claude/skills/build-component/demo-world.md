@@ -175,6 +175,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Hero | The top of the Acme website: title, one line, two actions and the install command (Marketing site below). |
 | Bento | The Acme website's feature grid: four live tiles (Marketing site below). |
 | Footer | The bottom of the Acme website: the product with its line, four columns of links and the copyright with icon links (Marketing site below). |
+| Logo marquee | The customers on the Acme website: the logos of its live projects on a paid plan (Marketing site below). |
 
 ## Marketing site
 
@@ -182,6 +183,8 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 
 - Hero: title "Know what every user does next", one line "Acme collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.", actions "Start for free" (primary, to `/signup`) and "Book a demo" (secondary, to `/demo`), and the install command `curl -fsSL https://acme.example/install.sh | sh`.
 - Bento: title "From the first event to the answer", one line "Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." Tiles, in order: Live events (wide; a feed of `signup_completed`, `checkout_started`, `trial_converted` and `page_viewed` from the first projects), Funnels (meters: Viewed pricing 100%, Started a trial 38%, Paid 12%), Every platform (Web, iOS, Android and Server with their SDKs) and Alerts (wide; switches for "Signups drop below 40 a day", "Error events pass 2%" and "Weekly summary").
+- The stack Kosmos is built on (Base UI, Tailwind CSS, React, Next.js, shadcn CLI) may appear as logo names in a Logo marquee example or docs snippet: it is what the Kosmos landing shows, not a style source.
+- Logo marquee: the line "Used by the teams behind" over the live projects on a paid plan, in table order (Fernhill Books, Brightloop Fitness, Copperline Bank, Saltmarsh Coffee, Driftwood Travel, Cirrus Weather, Ironbark Logistics), each its full name beside a lucide icon that fits it (`BookOpen`, `Activity`, `Landmark`, `Coffee`, `Sailboat`, `Cloud`, `Truck`).
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
 
 ## AI agents
