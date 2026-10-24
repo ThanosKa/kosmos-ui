@@ -56,7 +56,7 @@ Write each price as it should read, such as `'$49'`, so the block never guesses 
 ## What it does
 
 - **Billing**: when any plan has a price per billing, a switch above the plans picks monthly or yearly, and every price and period changes with it. Plans with one price keep it. With no price per billing, there is no switch.
-- **Screen readers**: after the billing changes, they hear it read out once, with each plan's new price, such as "Yearly. Free: $0 forever. Pro: $39 per month, billed yearly."
+- **Screen readers**: after the billing changes, from the switch or from your own state through `billing`, they hear it read out once, with each plan's new price, such as "Yearly. Free: $0 forever. Pro: $39 per month, billed yearly."
 - **Featured plan**: one plan stands on a raised card while the others sit recessed beside it, so it stands out by depth rather than by color.
 - **Lined up**: names, prices, feature lists and links line up across the plans, and each link sits at the foot of its plan, however long the text above it runs.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's. Plans stack in a narrow container and stand side by side once they fit: two from 576px, three from 768px, and four in two rows that become one from 1024px.
@@ -76,8 +76,9 @@ Takes every `<section>` prop, plus:
     defaultBilling: { description: 'The billing shown at first, when the block keeps its own state.', type: "'monthly' | 'yearly'", default: "'monthly'" },
     onBillingChange: { description: 'Called with the billing picked on the switch.', type: '(billing: PricingBilling) => void' },
     billingLabels: { description: 'The words on the switch, also read out when the billing changes.', type: '{ monthly: string; yearly: string }', default: "{ monthly: 'Monthly', yearly: 'Yearly' }" },
+    billingLabel: { description: 'The name of the switch for screen readers.', type: 'string', default: "'Billing'" },
     footnote: { description: 'A line under the plans, such as a note on taxes or a link to your license.', type: 'ReactNode' },
-    headingLevel: { description: 'The title is an `<h2>` and plan names `<h3>`. Pass 1 when the block opens a pricing page.', type: '1 | 2', default: '2' },
+    headingLevel: { description: 'The title is an `<h2>` and plan names `<h3>`. Pass 1 when the block opens a pricing page, for an `<h1>` and `<h2>`s.', type: '1 | 2', default: '2' },
   }}
 />
 

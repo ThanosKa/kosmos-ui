@@ -9,17 +9,17 @@ import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/seg
 
 type PricingBilling = 'monthly' | 'yearly';
 
-/** A value that is the same for both billings, or one per billing. */
-type PerBilling<T> = T | Record<PricingBilling, T>;
+/** Text that is the same for both billings, or one per billing. */
+type PerBilling = string | Record<PricingBilling, string>;
 
 type PricingPlan = {
   name: string;
   /** One line under the name: who the plan is for. */
   description?: React.ReactNode;
   /** The price as it reads, such as `'$49'`: one for both billings, or `{ monthly, yearly }`. */
-  price: PerBilling<string>;
+  price: PerBilling;
   /** The muted words after the price, such as `'per month'`. */
-  period?: PerBilling<string>;
+  period?: PerBilling;
   /** A badge beside the name, such as "Most popular". */
   badge?: React.ReactNode;
   features?: React.ReactNode[];
@@ -75,11 +75,11 @@ const samplePlans: PricingPlan[] = [
 
 const defaultBillingLabels: Record<PricingBilling, string> = { monthly: 'Monthly', yearly: 'Yearly' };
 
-function isPerBilling<T>(value: PerBilling<T> | undefined): value is Record<PricingBilling, T> {
-  return typeof value === 'object' && value !== null && 'monthly' in value && 'yearly' in value;
+function isPerBilling(value: PerBilling | undefined): value is Record<PricingBilling, string> {
+  return typeof value === 'object';
 }
 
-function forBilling<T>(value: PerBilling<T> | undefined, billing: PricingBilling) {
+function forBilling(value: PerBilling | undefined, billing: PricingBilling) {
   return isPerBilling(value) ? value[billing] : value;
 }
 
@@ -93,15 +93,19 @@ function billingAnnouncement(plans: PricingPlan[], billing: PricingBilling, labe
 }
 
 /** Columns by plan count, so two or four plans never leave one alone on a row. */
-const columns: Record<number, string> = {
+const columnsByPlanCount: Record<number, string> = {
   1: 'mx-auto w-full max-w-sm',
   2: 'mx-auto w-full max-w-3xl @xl:grid-cols-2',
   3: '@3xl:grid-cols-3',
   4: '@xl:grid-cols-2 @5xl:grid-cols-4',
 };
 
-function PricingPlanCard({ plan, billing }: { plan: PricingPlan; billing: PricingBilling }) {
+function PricingPlanCard({ plan, billing, headingLevel }: { plan: PricingPlan; billing: PricingBilling; headingLevel: 2 | 3 }) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const period = forBilling(plan.period, billing);
+  // A price or period that differs by billing mounts again on a change, so it fades in from `starting:opacity-0`.
+  const priceKey = isPerBilling(plan.price) ? billing : undefined;
+  const periodKey = isPerBilling(plan.period) ? billing : undefined;
   const action = typeof plan.action === 'function' ? plan.action(billing) : plan.action;
   return (
     <li
@@ -115,23 +119,20 @@ function PricingPlanCard({ plan, billing }: { plan: PricingPlan; billing: Pricin
     >
       <div className="flex min-w-0 flex-col gap-1">
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <h3 className="min-w-0 text-title wrap-break-word text-foreground">
-            {plan.name}
-          </h3>
+          <Heading className="min-w-0 text-title wrap-break-word text-foreground">{plan.name}</Heading>
           {plan.badge}
         </div>
         {plan.description ? <p className="text-small text-pretty text-muted-foreground">{plan.description}</p> : null}
       </div>
       <p data-slot="pricing-price" className="mt-5 flex min-w-0 flex-wrap items-baseline gap-x-1.5">
-        {/* A new key mounts the price again, so it fades in from `starting:opacity-0` when the billing changes. */}
         <span
-          key={`price-${billing}`}
-          className="min-w-0 text-display font-semibold wrap-break-word text-foreground tabular-nums transition-[opacity] duration-fast starting:opacity-0"
+          key={priceKey}
+          className="min-w-0 text-display wrap-break-word text-foreground tabular-nums transition-[opacity] duration-fast starting:opacity-0"
         >
           {forBilling(plan.price, billing)}
         </span>
         {period ? (
-          <span key={`period-${billing}`} className="text-small text-muted-foreground transition-[opacity] duration-fast starting:opacity-0">
+          <span key={periodKey} className="text-small text-muted-foreground transition-[opacity] duration-fast starting:opacity-0">
             {period}
           </span>
         ) : null}
@@ -139,10 +140,8 @@ function PricingPlanCard({ plan, billing }: { plan: PricingPlan; billing: Pricin
       {plan.features?.length ? (
         <ul role="list" className="mt-5 flex flex-col gap-2.5 border-t border-border pt-5 pb-6">
           {plan.features.map((feature, index) => (
-            <li key={index} className="flex min-w-0 items-start gap-2.5 text-body text-foreground">
-              <span aria-hidden className="mt-px flex size-4.5 shrink-0 items-center justify-center rounded-full bg-accent">
-                <Check className="size-3" strokeWidth={2.5} />
-              </span>
+            <li key={index} className="flex min-w-0 items-start gap-2 text-body text-foreground">
+              <Check aria-hidden className="mt-0.75 size-3.5 shrink-0" />
               <span className="min-w-0 wrap-break-word">{feature}</span>
             </li>
           ))}
@@ -168,9 +167,11 @@ type PricingProps = Omit<React.ComponentProps<'section'>, 'title'> & {
   onBillingChange?: (billing: PricingBilling) => void;
   /** The words on the switch, also read out when the billing changes. */
   billingLabels?: Record<PricingBilling, string>;
+  /** The name of the switch for screen readers. */
+  billingLabel?: string;
   /** A line under the plans, such as a note on taxes or a link to the license. */
   footnote?: React.ReactNode;
-  /** The title is an `<h2>` and plan names `<h3>`; pass 1 when the block opens a pricing page. */
+  /** The title is an `<h2>` and plan names `<h3>`; pass 1 when the block opens a pricing page, for an `<h1>` and `<h2>`s. */
   headingLevel?: 1 | 2;
 };
 
@@ -186,6 +187,7 @@ function Pricing({
   defaultBilling = 'monthly',
   onBillingChange,
   billingLabels = defaultBillingLabels,
+  billingLabel = 'Billing',
   footnote,
   headingLevel = 2,
   className,
@@ -193,15 +195,20 @@ function Pricing({
 }: PricingProps) {
   const [ownBilling, setOwnBilling] = React.useState(defaultBilling);
   const billing = billingProp ?? ownBilling;
-  const [announcement, setAnnouncement] = React.useState('');
   const id = React.useId();
   const Heading = headingLevel === 1 ? 'h1' : 'h2';
   const hasBillingChoice = plans.some((plan) => isPerBilling(plan.price));
+  const hasIntro = Boolean(title || description || hasBillingChoice);
+
+  // Announce every change of billing, from the switch or from a parent that controls `billing`, but not the first one shown.
+  const [announced, setAnnounced] = React.useState({ billing, text: '' });
+  if (announced.billing !== billing) {
+    setAnnounced({ billing, text: billingAnnouncement(plans, billing, billingLabels[billing]) });
+  }
 
   const changeBilling = (value: string) => {
     const next = value as PricingBilling;
     setOwnBilling(next);
-    setAnnouncement(billingAnnouncement(plans, next, billingLabels[next]));
     onBillingChange?.(next);
   };
 
@@ -226,17 +233,17 @@ function Pricing({
         ) : null}
         {hasBillingChoice ? (
           <SegmentedControl
-            aria-label="Billing"
+            aria-label={billingLabel}
             value={billing}
             onValueChange={changeBilling}
-            className={cn(title || description ? 'mt-8' : null)}
+            className={title || description ? 'mt-8' : undefined}
           >
             <SegmentedControlItem value="monthly">{billingLabels.monthly}</SegmentedControlItem>
             <SegmentedControlItem value="yearly">{billingLabels.yearly}</SegmentedControlItem>
           </SegmentedControl>
         ) : null}
         <span role="status" className="sr-only">
-          {announcement}
+          {announced.text}
         </span>
         <ul
           role="list"
@@ -244,12 +251,12 @@ function Pricing({
           className={cn(
             // Each plan sets its own row gap to 0, so the 8px gap opens between plans, not between the rows a plan spans.
             'grid w-full grid-cols-1 gap-2',
-            columns[plans.length] ?? '@xl:grid-cols-2 @3xl:grid-cols-3',
-            title || description || hasBillingChoice ? 'mt-8 @2xl:mt-10' : null,
+            columnsByPlanCount[plans.length] ?? '@xl:grid-cols-2 @3xl:grid-cols-3',
+            hasIntro ? 'mt-8 @2xl:mt-10' : null,
           )}
         >
           {plans.map((plan, index) => (
-            <PricingPlanCard key={index} plan={plan} billing={billing} />
+            <PricingPlanCard key={index} plan={plan} billing={billing} headingLevel={headingLevel === 1 ? 2 : 3} />
           ))}
         </ul>
         {footnote ? <p className="mt-6 max-w-[40em] text-center text-small text-pretty text-muted-foreground">{footnote}</p> : null}
