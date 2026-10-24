@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cta",
+  "type": "registry:block",
+  "title": "CTA",
+  "description": "The closing section of a marketing page: a two-line title and one action, centered, with room around them. Lays itself out by its own width.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "categories": ["cta"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/cta/cta.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
