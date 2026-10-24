@@ -24,6 +24,7 @@ import {
   toInstalledImports,
   type RegistryItem,
 } from '../lib/registry.ts';
+import { presetChoices, presetRegistryItem } from '../lib/presets/index.ts';
 
 const shadcnVersion = '4.21.4';
 const repo = process.cwd();
@@ -129,17 +130,22 @@ function checkInstall(app: string, tree: RegistryItem[]) {
     for (const file of item.files ?? []) {
       if (!existsSync(join(app, installedPath(file)))) problems.push(`${item.name}: ${installedPath(file)} was not written`);
     }
-    for (const [mode, selector] of [
-      ['light', ':root'],
-      ['dark', '.dark'],
-    ] as const) {
-      const body = block(selector);
-      for (const [key, value] of Object.entries(item.cssVars?.[mode] ?? {})) {
-        const match = new RegExp(`--${key}:\\s*([^;]+);`).exec(body);
-        if (!match) problems.push(`${item.name}: --${key} missing from ${selector}`);
-        else if (norm(match[1]) !== norm(value)) problems.push(`${item.name}: ${selector} --${key} is "${norm(match[1])}", expected "${norm(value)}"`);
-      }
+  }
+  // The dependencies install first, so where two items set one variable (a preset over the tokens) the item wins.
+  const installOrder = [...tree.slice(1), tree[0]];
+  for (const [mode, selector] of [
+    ['light', ':root'],
+    ['dark', '.dark'],
+  ] as const) {
+    const body = block(selector);
+    const expected = new Map(installOrder.flatMap((item) => Object.entries(item.cssVars?.[mode] ?? {}).map(([key, value]) => [key, { item, value }] as const)));
+    for (const [key, { item, value }] of expected) {
+      const match = new RegExp(`--${key}:\\s*([^;]+);`).exec(body);
+      if (!match) problems.push(`${item.name}: --${key} missing from ${selector}`);
+      else if (norm(match[1]) !== norm(value)) problems.push(`${item.name}: ${selector} --${key} is "${norm(match[1])}", expected "${norm(value)}"`);
     }
+  }
+  for (const item of tree) {
     for (const key of Object.keys(item.cssVars?.theme ?? {})) {
       if (!new RegExp(`--${key}:`).test(block('@theme inline'))) problems.push(`${item.name}: --${key} missing from @theme inline`);
     }
@@ -186,7 +192,8 @@ export default function Page() {
 
 step('Building the registry');
 await run(process.execPath, ['scripts/registry-build.mts'], { cwd: repo, env: process.env });
-const items = readRegistryItems(repo);
+// The preset items are written by registry:build from lib/presets, not authored as registry.json files.
+const items = [...readRegistryItems(repo), ...presetChoices().map(presetRegistryItem)];
 await ensureTemplate();
 const registry = await serveRegistry();
 let failed = false;

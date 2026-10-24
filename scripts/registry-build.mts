@@ -1,11 +1,12 @@
 // Usage: pnpm registry:build
 // Composes every registry/**/<name>.registry.json into the root registry.json (generated, gitignored),
-// runs `shadcn build` into public/r, then validates every output file against the shadcn schema.
+// runs `shadcn build` into public/r, then validates every output file against the shadcn schema. It also writes one
+// `preset-*` theme item per choice of the preset picker (lib/presets), which the index does not list.
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { registryItemSchema, registrySchema } from 'shadcn/schema';
-import { defaultPreset, presetCss } from '../lib/presets/index.ts';
+import { defaultPreset, presetChoices, presetCss, presetRegistryItem } from '../lib/presets/index.ts';
 import { readRegistryItems } from '../lib/registry.ts';
 import { siteUrl } from '../lib/shared.ts';
 
@@ -57,4 +58,12 @@ for (const file of built) {
 const missing = items.filter((item) => !built.includes(`${item.name}.json`));
 if (missing.length) throw new Error(`No output for: ${missing.map((item) => item.name).join(', ')}`);
 
-console.log(`registry: ${items.length} items -> public/r (${items.map((item) => item.name).join(', ')})`);
+// One theme item per choice the preset picker offers, written straight from lib/presets and left out of the index.
+const presetItems = presetChoices().map(presetRegistryItem);
+for (const item of presetItems) {
+  const json = { $schema: 'https://ui.shadcn.com/schema/registry-item.json', ...item };
+  registryItemSchema.parse(json);
+  writeFileSync(join(outDir, `${item.name}.json`), `${JSON.stringify(json, null, 2)}\n`);
+}
+
+console.log(`registry: ${items.length} items -> public/r (${items.map((item) => item.name).join(', ')}), and ${presetItems.length} preset items`);
