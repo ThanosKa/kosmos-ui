@@ -101,7 +101,6 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
   scrim: { group: 'surfaces', use: 'The backdrop behind dialogs and drawers.' },
   thumb: { group: 'surfaces', use: 'Switch and slider thumbs, light in both modes.' },
   'scrollbar-thumb': { group: 'surfaces', use: 'The scrollbar thumb of a scroll area, lighter than muted text.' },
-  'meter-primary': { group: 'status', use: 'The Meter in its primary tone: ink, or the accent of a preset that has one.' },
   foreground: { group: 'text', use: 'Text on the page: headings, values, a hovered item.' },
   'card-foreground': { group: 'text', use: 'Text on a card.' },
   'popover-foreground': { group: 'text', use: 'Text in a popover, menu or dialog.' },
@@ -109,9 +108,9 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
     group: 'text',
     use: 'Secondary text and idle chrome: descriptions, labels, table headers, counts. The faintest text that still reads.',
   },
-  'active-foreground': {
+  'accent-text': {
     group: 'text',
-    use: 'The label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu. Ink, or the accent of a preset that has one.',
+    use: 'The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter in its primary tone. Ink, or the accent of a preset that has one.',
   },
   primary: { group: 'actions', use: 'The one filled action per view, a checked checkbox, a switch that is on.' },
   'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill.' },
@@ -154,7 +153,7 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
 
 /** The Tailwind class a token is mostly used through. */
 function colorClass(name: string) {
-  if (name === 'foreground' || name === 'destructive' || name.endsWith('-foreground')) return `text-${name}`;
+  if (name === 'foreground' || name === 'destructive' || /-(foreground|text)$/.test(name)) return `text-${name}`;
   if (name === 'border' || name === 'input' || name.endsWith('-border')) return `border-${name}`;
   if (name === 'ring' || name.endsWith('-ring')) return `outline-${name}`;
   return `bg-${name}`;

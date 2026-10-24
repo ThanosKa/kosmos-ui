@@ -7,7 +7,7 @@ import { cn } from '@/registry/kosmos/lib/cn';
 type MeterTone = 'primary' | 'success' | 'warning' | 'destructive';
 
 const toneFill: Record<MeterTone, string> = {
-  primary: 'bg-meter-primary',
+  primary: 'bg-accent-text',
   success: 'bg-success',
   warning: 'bg-warning',
   destructive: 'bg-destructive',

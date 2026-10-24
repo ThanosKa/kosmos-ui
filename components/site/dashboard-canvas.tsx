@@ -3,18 +3,17 @@
 import { Moon, RotateCcw, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
+import { presetPalette, presets } from '@/lib/presets';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import {
-  dashboardAccents,
   dashboardScreens,
   dashboardRadii,
   dashboardSource,
   defaultDashboardTokens,
   readMessage,
   toDashboard,
-  type DashboardAccent,
   type DashboardMessage,
   type DashboardRadius,
   type DashboardTheme,
@@ -31,8 +30,11 @@ function ControlLabel({ id, children }: { id: string; children: React.ReactNode 
   );
 }
 
+/** A preset's radius in pixels, as the radius control names it. */
+const radiusPixels = (radius: string) => String(Number.parseFloat(radius) * 16);
+
 /**
- * The landing page's dashboard: the Acme app in an iframe, with tabs for its main screens and the accent, radius
+ * The landing page's dashboard: the Acme app in an iframe, with tabs for its main screens and the preset, radius
  * and theme a visitor can try on it. The tokens apply inside the iframe's document, so the page around it never changes;
  * Reset brings back the Kosmos defaults and the page's theme.
  */
@@ -41,8 +43,8 @@ export function DashboardCanvas() {
   // Counts the dashboard's loads: each fresh document starts on Overview with the Kosmos defaults and needs the screen and tokens sent again.
   const [loads, setLoads] = React.useState(0);
   const [screen, setScreen] = React.useState<string>(dashboardScreens[0].id);
-  const [accent, setAccent] = React.useState<DashboardAccent>(defaultDashboardTokens.accent);
-  const [radius, setRadius] = React.useState<DashboardRadius>(defaultDashboardTokens.radius);
+  const [preset, setPreset] = React.useState(defaultDashboardTokens.preset);
+  const [radius, setRadius] = React.useState<DashboardRadius | null>(defaultDashboardTokens.radius);
   const [themeChoice, setThemeChoice] = React.useState<DashboardTheme | null>(null);
   const { resolvedTheme } = useTheme();
   // The server can't know the stored theme, so the page theme counts only once hydrated.
@@ -65,8 +67,8 @@ export function DashboardCanvas() {
   }, []);
 
   React.useEffect(() => {
-    if (loads > 0 && theme) toDashboard(frame.current, { type: 'tokens', tokens: { accent, radius, theme } });
-  }, [loads, accent, radius, theme]);
+    if (loads > 0 && theme) toDashboard(frame.current, { type: 'tokens', tokens: { preset, radius, theme } });
+  }, [loads, preset, radius, theme]);
 
   // The tabs lead: a "ready" can arrive after a tab was chosen (the reply to "hello"), so each load is sent the screen.
   React.useEffect(() => {
@@ -74,7 +76,7 @@ export function DashboardCanvas() {
   }, [loads, screen]);
 
   const reset = () => {
-    setAccent(defaultDashboardTokens.accent);
+    setPreset(defaultDashboardTokens.preset);
     setRadius(defaultDashboardTokens.radius);
     setThemeChoice(null);
   };
@@ -91,18 +93,26 @@ export function DashboardCanvas() {
         </TabsList>
         <div role="group" aria-label="Try other tokens" className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-0.5">
           <div className="flex items-center gap-2">
-            <ControlLabel id={`${id}-accent`}>Accent</ControlLabel>
-            <SegmentedControl aria-labelledby={`${id}-accent`} value={accent} onValueChange={(value) => setAccent(value as DashboardAccent)}>
-              {dashboardAccents.map((item) => (
-                <SegmentedControlItem key={item.id} value={item.id} aria-label={item.label}>
-                  <span aria-hidden data-accent={item.id} className="size-3 rounded-full bg-ring" />
+            <ControlLabel id={`${id}-preset`}>Preset</ControlLabel>
+            <SegmentedControl aria-labelledby={`${id}-preset`} value={preset} onValueChange={(value) => setPreset(String(value))}>
+              {presets.map((item) => (
+                <SegmentedControlItem key={item.id} value={item.id} aria-label={item.name}>
+                  <span
+                    aria-hidden
+                    style={{ '--swatch': presetPalette(item, 'light').ring, '--swatch-dark': presetPalette(item, 'dark').ring } as React.CSSProperties}
+                    className="size-3 rounded-full bg-(--swatch) dark:bg-(--swatch-dark)"
+                  />
                 </SegmentedControlItem>
               ))}
             </SegmentedControl>
           </div>
           <div className="flex items-center gap-2">
             <ControlLabel id={`${id}-radius`}>Radius</ControlLabel>
-            <SegmentedControl aria-labelledby={`${id}-radius`} value={radius} onValueChange={(value) => setRadius(value as DashboardRadius)}>
+            <SegmentedControl
+              aria-labelledby={`${id}-radius`}
+              value={radius ?? radiusPixels(presets.find((item) => item.id === preset)!.radius)}
+              onValueChange={(value) => setRadius(value as DashboardRadius)}
+            >
               {dashboardRadii.map((value) => (
                 <SegmentedControlItem key={value} value={value} aria-label={`${value}px`} className="tabular-nums">
                   {value}

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { contrastRatio } from './contrast.ts';
-import { presets, type Mode } from './presets/index.ts';
+import { presetPalette, presets, type Mode } from './presets/index.ts';
 import { readRegistryItems } from './registry.ts';
 import { readKosmosTokens } from './tokens.ts';
 
@@ -50,9 +50,11 @@ for (const [mode, declarations] of Object.entries(modes)) {
 
   test(`${mode}: every preset's focus outline reads at 3:1 on the tint of a tinted alert`, () => {
     for (const preset of presets) {
-      for (const hue of solidHues) {
-        const ratio = contrastRatio(preset[mode as Mode].ring, value(`tint-${hue}`));
-        assert.ok(ratio >= 3, `${preset.name} ring on tint-${hue}: ${ratio.toFixed(2)}:1`);
+      for (const ring of new Set([presetPalette(preset, mode as Mode).ring, preset[mode as Mode].ring])) {
+        for (const hue of solidHues) {
+          const ratio = contrastRatio(ring, value(`tint-${hue}`));
+          assert.ok(ratio >= 3, `${preset.name} ring ${ring} on tint-${hue}: ${ratio.toFixed(2)}:1`);
+        }
       }
     }
   });

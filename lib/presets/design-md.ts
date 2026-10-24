@@ -1,4 +1,4 @@
-import { paletteSections, type PaletteToken, type Preset } from './palette.ts';
+import { paletteSections, presetPalette, type PaletteToken, type Preset } from './palette.ts';
 
 const uses: Record<PaletteToken, string> = {
   background: 'The page.',
@@ -21,11 +21,10 @@ const uses: Record<PaletteToken, string> = {
   border: 'Dividers between list, menu and table items.',
   input: 'The edge of a text field.',
   ring: 'Focus outlines.',
-  'active-foreground': 'The label and icon of the current page in navigation.',
+  'accent-text': 'The label and icon of the current page in navigation, and a Meter in its primary tone.',
   scrim: 'The backdrop behind dialogs and drawers.',
   thumb: 'Switch and slider thumbs.',
   'scrollbar-thumb': 'The scrollbar thumb, lighter than muted text.',
-  'meter-primary': 'A Meter in its primary tone.',
   sidebar: 'The sidebar surface.',
   'sidebar-foreground': 'Sidebar text and a hovered sidebar item.',
   'sidebar-primary': 'A filled mark in the sidebar, like the workspace initial.',
@@ -41,12 +40,26 @@ const uses: Record<PaletteToken, string> = {
   'chart-5': 'The fifth chart series. More than five fold into "Other".',
 };
 
-const table = (preset: Preset, tokens: readonly PaletteToken[]) =>
-  [
+const table = (preset: Preset, tokens: readonly PaletteToken[]) => {
+  const [light, dark] = [presetPalette(preset, 'light'), presetPalette(preset, 'dark')];
+  return [
     '| Token | Light | Dark | Use |',
     '| --- | --- | --- | --- |',
-    ...tokens.map((token) => `| \`${token}\` | \`${preset.light[token]}\` | \`${preset.dark[token]}\` | ${uses[token]} |`),
+    ...tokens.map((token) => `| \`${token}\` | \`${light[token]}\` | \`${dark[token]}\` | ${uses[token]} |`),
   ].join('\n');
+};
+
+function accentSection({ accent }: Preset) {
+  if (!accent) {
+    return 'This preset has no accent: focus, the current page in navigation, meters and the first chart series are ink, so color is left to status and destructive.';
+  }
+  return `This preset's one accent colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: buttons, links and every other text stay ink or grey.
+
+| Step | Light | Dark | Use |
+| --- | --- | --- | --- |
+| Ring | \`${accent.light.ring}\` | \`${accent.dark.ring}\` | Focus and \`chart-1\`: a mark, 3:1 on every surface. |
+| Text | \`${accent.light.text}\` | \`${accent.dark.text}\` | \`accent-text\`: 4.5:1 on every surface a nav item sits on. |`;
+}
 
 /** The preset as a DESIGN.md for an agent: every value, the radius, the focus rule and what to do and avoid. */
 export function presetDesignMd(preset: Preset): string {
@@ -68,6 +81,10 @@ ${table(preset, paletteSections.sidebar)}
 
 ${table(preset, paletteSections.chart)}
 
+## Accent
+
+${accentSection(preset)}
+
 ## Radius
 
 | Token | Value | Use |
@@ -82,7 +99,7 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 
 - Give each view one filled \`primary\` action; its peers take the secondary or ghost look.
 - Keep text in \`foreground\` or \`muted-foreground\`. Both pass 4.5:1 on every surface.
-- Mark the current page in navigation with \`active-foreground\`, on the flat \`accent\` hover fill.
+- Mark the current page in navigation with \`accent-text\`, on the flat \`accent\` hover fill.
 - Highlight hovered items with \`accent\`, the see-through fill that works on every surface.
 - Pair \`success\`, \`warning\` and \`destructive\` with a label or an icon, so the meaning never rides on color alone.
 - Use \`chart-1\` to \`chart-5\` in order, and fold a sixth series and beyond into "Other".
@@ -91,6 +108,7 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 ## Don't
 
 - Color text with \`ring\` or a chart color: they are made for 3:1 marks, not 4.5:1 text.
+- Use \`accent-text\` for anything but the current nav item and a primary Meter.
 - Fill a button or a large surface with \`ring\`.
 - Let a hover take the \`ring\` color: that color means focus.
 - Add a grey fainter than \`muted-foreground\` for text.
