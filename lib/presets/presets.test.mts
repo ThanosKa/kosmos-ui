@@ -112,6 +112,23 @@ for (const preset of presets) {
   });
 }
 
+test('Soft, Console and Night take the radius of their designs', () => {
+  const radius = (id: string) => presets.find((preset) => preset.id === id)?.radius;
+  assert.equal(radius('soft'), '1rem');
+  assert.equal(radius('console'), '0.375rem');
+  assert.equal(radius('night'), '0.5rem');
+});
+
+for (const preset of presets) {
+  test(`${preset.name}: its CSS never sets a font, density, shadow or motion token`, () => {
+    const { light, dark } = parseKosmosTokens(presetCss(preset));
+    const styleTokens = [...Object.keys(light), ...Object.keys(dark)].filter((name) =>
+      /^(font|text|spacing|shadow|ease|duration|leading|tracking)(-|$)/.test(name),
+    );
+    assert.deepEqual(styleTokens, []);
+  });
+}
+
 type Check = { label: string; foreground: PaletteToken; background: PaletteToken; over?: PaletteToken; min: number };
 
 const pageSurfaces = ['background', 'card', 'popover', 'secondary', 'muted'] as const;
