@@ -82,7 +82,7 @@ function Shell({
 }
 
 const longNames: Pick<AppSidebarProps, 'workspaces' | 'user' | 'navViews'> = {
-  workspaces: [{ id: 'acme-eu', name: 'Acme Europe Data Region Workspace', plan: 'Scale plan, billed yearly in euros' }],
+  workspaces: [{ id: 'acme-eu', name: 'Acme Europe Data Region Workspace', description: 'Scale plan, billed yearly in euros' }],
   user: { name: 'Tomás Ortega Villanueva de la Fuente', email: 'tomas.ortega.villanueva@acme.example', initials: 'TO' },
   navViews: [
     { id: 'view-scale-ios', label: 'Scale plan projects on iOS with more than 10,000 users', href: '#view-scale-ios', icon: Layers },
@@ -124,6 +124,17 @@ export default function AppSidebarPreview() {
           <Shell defaultOpen={false} className="h-40 md:h-[26rem]">
             <AppSidebar searchShortcut onAction={() => {}} />
             <ScrollSidebarToMiddle />
+          </Shell>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="The current page in the Events submenu: open beside the page, on its icon when collapsed">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Shell className="h-40 md:h-[38rem]" title="Funnels">
+            <AppSidebar activeItem="funnels" onAction={() => {}} />
+          </Shell>
+          <Shell defaultOpen={false} className="h-40 md:h-[38rem]" title="Funnels">
+            <AppSidebar activeItem="funnels" onAction={() => {}} />
           </Shell>
         </div>
       </PreviewSection>

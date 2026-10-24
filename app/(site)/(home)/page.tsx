@@ -82,7 +82,7 @@ export default function HomePage() {
     },
     {
       id: 'install',
-      components: ['tabs', 'button'],
+      components: ['code-tabs'],
       labelledBy: landingInstallHeadingId,
       children: <LandingInstall />,
     },

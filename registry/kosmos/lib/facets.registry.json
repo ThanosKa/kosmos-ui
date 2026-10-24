@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "facets",
+  "type": "registry:lib",
+  "title": "Facets",
+  "description": "The counting behind faceted filters: which rows pass the values that are on, where values of one facet widen the match and facets narrow each other, and how many rows each value would show.",
+  "files": [
+    {
+      "path": "registry/kosmos/lib/facets.ts",
+      "type": "registry:lib"
+    }
+  ]
+}
