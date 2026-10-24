@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={htmlFontClassName} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen selection:bg-brand-selection selection:text-foreground">
         <SiteProvider searchLabels={getSearchLabels()}>{children}</SiteProvider>
       </body>
     </html>

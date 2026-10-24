@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "paging",
+  "type": "registry:lib",
+  "title": "Paging",
+  "description": "The counting behind Pagination: how many pages a list takes, the rows a page shows, the page after a new page size or a shorter list, and which page buttons to show.",
+  "files": [
+    {
+      "path": "registry/kosmos/lib/paging.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

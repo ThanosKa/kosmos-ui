@@ -21,7 +21,8 @@ function oklchToRgba(lightness: number, chroma: number, hueDegrees: number, alph
   };
 }
 
-function parseColor(value: string): Rgba {
+/** A CSS color (`oklch()` or hex, with or without alpha) as sRGB channels and alpha, each from 0 to 1. */
+export function parseColor(value: string): Rgba {
   const oklch = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/.exec(value.trim());
   if (oklch) {
     const [, l, lPercent, c, h, alpha, alphaPercent] = oklch;
