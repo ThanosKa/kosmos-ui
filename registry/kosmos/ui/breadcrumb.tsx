@@ -6,7 +6,7 @@ import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
 import { useRender } from '@base-ui/react/use-render';
 import { ChevronRight, Ellipsis } from 'lucide-react';
 import * as React from 'react';
-import { hiddenCrumbCount } from '@/registry/kosmos/lib/breadcrumb-fit';
+import { hiddenCrumbs, type HiddenCrumbs } from '@/registry/kosmos/lib/breadcrumb-fit';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
@@ -34,6 +34,9 @@ function renderWith(link: BreadcrumbLinkRender | undefined, href: string) {
 
 /** A crumb label stops at 192px and truncates, so one long name never pushes the others out. */
 const crumbLabel = 'max-w-48 truncate font-medium';
+const pageLabel = 'font-medium text-foreground';
+
+const crumbKey = (item: BreadcrumbCrumb, index: number) => `${index}-${item.href ?? item.label}`;
 
 /** The `<nav>` landmark of a trail, named "Breadcrumb" for screen readers. Put a `BreadcrumbList` inside. */
 function Breadcrumb({ className, ...props }: React.ComponentProps<'nav'>) {
@@ -83,7 +86,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
     <span
       data-slot="breadcrumb-page"
       aria-current="page"
-      className={cn('min-w-0 truncate font-medium text-foreground', className)}
+      className={cn(pageLabel, 'min-w-0 truncate', className)}
       {...props}
     />
   );
@@ -112,6 +115,7 @@ type BreadcrumbEllipsisProps = Omit<MenuPrimitive.Trigger.Props, 'children' | 'r
     link?: BreadcrumbLinkRender;
     /** The element the menu renders into. Defaults to `document.body`. */
     container?: React.ComponentProps<typeof DropdownMenuContent>['container'];
+    /** Goes to the button. */
     className?: string;
   };
 
@@ -140,16 +144,16 @@ function BreadcrumbEllipsis({
           />
         }
       >
-        <Ellipsis aria-hidden className="size-3.5 text-muted-foreground" />
+        <Ellipsis aria-hidden className="text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent container={container} className="max-w-72">
         {items.map((item, index) =>
           item.href ? (
-            <DropdownMenuLinkItem key={`${index}-${item.href}`} href={item.href} render={renderWith(link, item.href)}>
+            <DropdownMenuLinkItem key={crumbKey(item, index)} href={item.href} render={renderWith(link, item.href)}>
               {item.label}
             </DropdownMenuLinkItem>
           ) : (
-            <DropdownMenuItem key={`${index}-${item.label}`} disabled>
+            <DropdownMenuItem key={crumbKey(item, index)} disabled>
               {item.label}
             </DropdownMenuItem>
           ),
@@ -187,13 +191,14 @@ type BreadcrumbTrailProps = Omit<React.ComponentProps<'nav'>, 'children'> & {
 
 /**
  * A whole trail from a list of pages. It fills the width it is given and, when the crumbs do not fit, hides
- * the ones after the first, nearest the root first, behind an ellipsis that opens them in a menu. The first
- * crumb and the current page always stay, and truncate when even that is too wide.
+ * the ones after the first, nearest the root first, behind an ellipsis that opens them in a menu. When the
+ * first crumb, the ellipsis and the current page still do not fit, the first crumb goes into the menu too.
+ * The current page always stays, and truncates when even it alone is too wide.
  */
 function BreadcrumbTrail({ items, link, separator, className, ...props }: BreadcrumbTrailProps) {
   const navRef = React.useRef<HTMLElement>(null);
   const measureRef = React.useRef<HTMLOListElement>(null);
-  const [hidden, setHidden] = React.useState(0);
+  const [hidden, setHidden] = React.useState<HiddenCrumbs>({ start: 1, count: 0 });
   const itemsKey = items.map((item) => `${item.label}\u0000${item.href ?? ''}`).join('\u0001');
 
   React.useLayoutEffect(() => {
@@ -201,16 +206,16 @@ function BreadcrumbTrail({ items, link, separator, className, ...props }: Breadc
     const measure = measureRef.current;
     if (!nav || !measure) return;
     const width = (selector: string) => measure.querySelector(selector)?.getBoundingClientRect().width ?? 0;
-    const fit = () =>
-      setHidden(
-        hiddenCrumbCount({
+    const fit = () => {
+      const next = hiddenCrumbs({
           widths: Array.from(measure.querySelectorAll('[data-measure=crumb]'), (crumb) => crumb.getBoundingClientRect().width),
           gap: Number.parseFloat(getComputedStyle(measure).columnGap) || 0,
           separatorWidth: width('[data-measure=separator]'),
           ellipsisWidth: width('[data-measure=ellipsis]'),
           available: nav.getBoundingClientRect().width,
-        }),
-      );
+      });
+      setHidden((current) => (current.start === next.start && current.count === next.count ? current : next));
+    };
     fit();
     const observer = new ResizeObserver(fit);
     observer.observe(nav);
@@ -220,9 +225,9 @@ function BreadcrumbTrail({ items, link, separator, className, ...props }: Breadc
 
   const last = items.length - 1;
   const crumb = (item: BreadcrumbCrumb, index: number) => (
-    // Once the trail is down to its first crumb and the current page, the page truncates first: a parent gives up
-    // room only past 40% of the width, so a short root name stays whole.
-    <BreadcrumbItem key={`${index}-${item.href ?? item.label}`} className={index === last ? undefined : 'max-w-[40%] shrink-0'}>
+    // A shown parent never truncates once the trail is measured, since everything shown fits. Before that, as
+    // rendered on the server, the current page gives up room first.
+    <BreadcrumbItem key={crumbKey(item, index)} className={index === last ? undefined : 'max-w-[40%] shrink-0'}>
       <FullNameHint label={item.label}>
         {index === last ? (
           <BreadcrumbPage>{item.label}</BreadcrumbPage>
@@ -236,24 +241,22 @@ function BreadcrumbTrail({ items, link, separator, className, ...props }: Breadc
       </FullNameHint>
     </BreadcrumbItem>
   );
-  const shown = items.slice(hidden + 1);
+  const ellipsis = (
+    <BreadcrumbItem className="shrink-0">
+      <BreadcrumbEllipsis items={items.slice(hidden.start, hidden.start + hidden.count)} link={link} />
+    </BreadcrumbItem>
+  );
+  const shown = items.map((item, index) => ({ item, index })).filter(({ index }) => index < hidden.start || index >= hidden.start + hidden.count);
+  const slots = shown.map(({ item, index }) => crumb(item, index));
+  if (hidden.count > 0) slots.splice(hidden.start, 0, ellipsis);
 
   return (
     <Breadcrumb ref={navRef} data-slot="breadcrumb-trail" className={cn('relative', className)} {...props}>
       <BreadcrumbList>
-        {items.length > 0 ? crumb(items[0], 0) : null}
-        {hidden > 0 ? (
-          <>
-            <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
-            <BreadcrumbItem className="shrink-0">
-              <BreadcrumbEllipsis items={items.slice(1, hidden + 1)} link={link} />
-            </BreadcrumbItem>
-          </>
-        ) : null}
-        {shown.map((item, offset) => (
-          <React.Fragment key={`${hidden + 1 + offset}-${item.href ?? item.label}`}>
-            <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
-            {crumb(item, hidden + 1 + offset)}
+        {slots.map((slot, position) => (
+          <React.Fragment key={slot.key ?? 'ellipsis'}>
+            {position > 0 ? <BreadcrumbSeparator>{separator}</BreadcrumbSeparator> : null}
+            {slot}
           </React.Fragment>
         ))}
       </BreadcrumbList>
@@ -261,12 +264,16 @@ function BreadcrumbTrail({ items, link, separator, className, ...props }: Breadc
       <div aria-hidden inert className="pointer-events-none invisible absolute inset-0 overflow-hidden">
         <ol ref={measureRef} className="flex w-max items-center gap-1.5 text-body">
           {items.map((item, index) => (
-            <li key={`${index}-${item.href ?? item.label}`} data-measure="crumb" className="flex">
-              <span className={index === last ? 'font-medium' : crumbLabel}>{item.label}</span>
+            <li key={crumbKey(item, index)} data-measure="crumb" className="flex">
+              <span className={index === last ? pageLabel : crumbLabel}>{item.label}</span>
             </li>
           ))}
           <BreadcrumbSeparator data-measure="separator">{separator}</BreadcrumbSeparator>
-          <li data-measure="ellipsis" className="size-6" />
+          <li data-measure="ellipsis" className="flex">
+            <Button variant="item" size="icon-sm" tabIndex={-1}>
+              <Ellipsis />
+            </Button>
+          </li>
         </ol>
       </div>
     </Breadcrumb>

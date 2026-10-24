@@ -1,6 +1,6 @@
 ---
 title: Breadcrumb
-description: Shows where a page sits, with parent pages in grey and the current page in ink. When the trail runs out of room, the pages in the middle fold into a menu.
+description: Shows where a page sits, with parent pages in grey and the current page in ink. When the trail runs out of room, the parent pages fold into a menu.
 ---
 
 <ComponentPreview name="breadcrumb-demo" />
@@ -26,17 +26,17 @@ import { BreadcrumbTrail } from '@/components/ui/breadcrumb';
 />
 ```
 
-List the pages from the root down. Every page but the last links to itself; the last is the page the user is on. It shows in ink, is not a link and carries `aria-current="page"`.
+List the pages from the root down. Every page but the last links to itself; a page without an `href` shows as plain text. The last is the page the user is on. It shows in ink, is not a link and carries `aria-current="page"`.
 
 ## Examples
 
 ### Collapsing
 
-`BreadcrumbTrail` fills the width it is given. When the pages do not fit, it hides the ones after the first, nearest the root first, behind an ellipsis button that opens them in a menu, in order. The first page and the current page always stay. When even those two are too wide, they truncate. Drag the corner of the box to see it.
+`BreadcrumbTrail` fills the width it is given. When the pages do not fit, it hides the ones after the first, nearest the root first, behind an ellipsis button that opens them in a menu, in order. When the first page, the ellipsis and the current page still do not fit, the first page goes into the menu too. The current page always stays, and truncates when even it alone is too wide. Drag the corner of the box to see it.
 
 <ComponentPreview name="breadcrumb-collapse" />
 
-A name longer than 192px truncates in the trail. A truncated name shows in full in a tooltip when it is hovered or focused, and wraps in the menu. Screen readers always read the full name.
+A parent name longer than 192px truncates in the trail and wraps in the menu. A truncated name shows in full in a tooltip: on hover, and for a link also on keyboard focus. Screen readers always read the full name.
 
 Give the trail a width it does not set itself, such as `flex-1 min-w-0` in a header row. In a box that grows with its content, the trail has no width to fit.
 
@@ -65,7 +65,7 @@ Renders a `<nav>` and accepts all of its props.
 <TypeTable
   type={{
     items: {
-      description: 'The pages from the root down to the current one, which is last. Every page but the last needs an `href`.',
+      description: 'The pages from the root down to the current one, which is last.',
       type: 'BreadcrumbCrumb[]',
       required: true,
     },
@@ -138,6 +138,16 @@ A button that opens the hidden pages in a menu. Other props go to the button.
     open: {
       description: 'Whether the menu is open. Use with `onOpenChange`.',
       type: 'boolean',
+    },
+    defaultOpen: {
+      description: 'Whether the menu starts open, when it keeps its own state.',
+      type: 'boolean',
+      default: 'false',
+    },
+    modal: {
+      description: 'Whether the menu locks page scroll and blocks the page behind it while open.',
+      type: 'boolean',
+      default: 'true',
     },
     onOpenChange: {
       description: 'Called when the menu opens or closes.',

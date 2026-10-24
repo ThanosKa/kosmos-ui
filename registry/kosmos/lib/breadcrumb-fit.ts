@@ -5,31 +5,28 @@ type BreadcrumbFit = {
   /** The gap on each side of a separator. */
   gap: number;
   separatorWidth: number;
-  /** The button that opens the hidden crumbs. */
   ellipsisWidth: number;
-  /** The width the trail may take. */
   available: number;
 };
 
+/** The crumbs behind the ellipsis: `count` of them from index `start`. */
+type HiddenCrumbs = { start: number; count: number };
+
 /**
- * How many crumbs after the first to hide behind the ellipsis so the trail fits `available`. The first crumb
- * and the current page always stay. When no count fits, it is the count that leaves the trail narrowest,
- * and the visible crumbs truncate.
+ * Which crumbs to hide behind the ellipsis so the trail fits `available`. The crumbs after the first go first,
+ * nearest the root first. When the first crumb, the ellipsis and the current page still do not fit, the first
+ * crumb goes too. The current page always stays, and truncates when even it alone is too wide.
  */
-function hiddenCrumbCount({ widths, gap, separatorWidth, ellipsisWidth, available }: BreadcrumbFit): number {
-  if (widths.length < 3) return 0;
+function hiddenCrumbs({ widths, gap, separatorWidth, ellipsisWidth, available }: BreadcrumbFit): HiddenCrumbs {
   const between = gap + separatorWidth + gap;
-  const widthHiding = (hidden: number) => {
-    const shown = [widths[0], ...(hidden > 0 ? [ellipsisWidth] : []), ...widths.slice(hidden + 1)];
+  const widthWithout = ({ start, count }: HiddenCrumbs) => {
+    const shown = [...widths.slice(0, start), ...(count > 0 ? [ellipsisWidth] : []), ...widths.slice(start + count)];
     return shown.reduce((sum, width) => sum + width, 0) + (shown.length - 1) * between;
   };
-  let narrowest = 0;
-  for (let hidden = 0; hidden <= widths.length - 2; hidden++) {
-    const width = widthHiding(hidden);
-    if (width <= available + 0.5) return hidden;
-    if (width < widthHiding(narrowest)) narrowest = hidden;
+  for (let count = 0; count <= widths.length - 2; count++) {
+    if (widthWithout({ start: 1, count }) <= available + 0.5) return { start: 1, count };
   }
-  return narrowest;
+  return widths.length < 2 ? { start: 1, count: 0 } : { start: 0, count: widths.length - 1 };
 }
 
-export { hiddenCrumbCount, type BreadcrumbFit };
+export { hiddenCrumbs, type BreadcrumbFit, type HiddenCrumbs };

@@ -44,7 +44,8 @@ const widths = [
   { label: '400px: hides 1', className: 'w-full max-w-[400px]' },
   { label: '300px: hides 2', className: 'w-full max-w-[300px]' },
   { label: '220px: hides 3', className: 'w-full max-w-[220px]' },
-  { label: '150px: hides 3, the page truncates', className: 'w-full max-w-[150px]' },
+  { label: '150px: the first folds in too', className: 'w-full max-w-[150px]' },
+  { label: '110px: the page truncates', className: 'w-full max-w-[110px]' },
 ];
 
 const deepTrail: BreadcrumbCrumb[] = [
@@ -63,7 +64,7 @@ function Frame({ label, children, className }: { label: string; children: React.
     <figure className="flex min-w-0 flex-col gap-2">
       <figcaption className="font-mono text-caption text-muted-foreground">{label}</figcaption>
       <div className={className}>
-        <div className="rounded-xl border border-transparent bg-card px-3 py-2 shadow-card">{children}</div>
+        <div className="rounded-2xl border border-transparent bg-card px-3 py-2 shadow-card">{children}</div>
       </div>
     </figure>
   );

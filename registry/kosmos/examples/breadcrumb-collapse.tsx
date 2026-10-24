@@ -2,7 +2,7 @@ import { BreadcrumbTrail } from '@/registry/kosmos/ui/breadcrumb';
 
 export default function BreadcrumbCollapse() {
   return (
-    <div className="w-full max-w-lg min-w-36 resize-x overflow-hidden rounded-xl border border-transparent bg-card p-3 shadow-card">
+    <div className="w-full max-w-lg min-w-36 resize-x overflow-hidden rounded-2xl border border-transparent bg-card p-3 shadow-card">
       <BreadcrumbTrail
         items={[
           { label: 'Acme', href: '/' },
