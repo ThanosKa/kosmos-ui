@@ -1,0 +1,162 @@
+---
+title: Breadcrumb
+description: Shows where a page sits, with parent pages in grey and the current page in ink. When the trail runs out of room, the parent pages fold into a menu.
+---
+
+<ComponentPreview name="breadcrumb-demo" />
+
+## Installation
+
+<ComponentInstall name="breadcrumb" />
+
+## Usage
+
+```tsx
+import { BreadcrumbTrail } from '@/components/ui/breadcrumb';
+```
+
+```tsx
+<BreadcrumbTrail
+  items={[
+    { label: 'Acme', href: '/' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'Fernhill Books', href: '/projects/fernhill' },
+    { label: 'API keys' },
+  ]}
+/>
+```
+
+List the pages from the root down. Every page but the last links to itself; a page without an `href` shows as plain text. The last is the page the user is on. It shows in ink, is not a link and carries `aria-current="page"`.
+
+## Examples
+
+### Collapsing
+
+`BreadcrumbTrail` fills the width it is given. When the pages do not fit, it hides the ones after the first, nearest the root first, behind an ellipsis button that opens them in a menu, in order. When the first page, the ellipsis and the current page still do not fit, the first page goes into the menu too. The current page always stays, and truncates when even it alone is too wide. Drag the corner of the box to see it.
+
+<ComponentPreview name="breadcrumb-collapse" />
+
+A parent name longer than 192px truncates in the trail and wraps in the menu. A truncated name shows in full in a tooltip: on hover, and for a link also on keyboard focus. Screen readers always read the full name.
+
+Give the trail a width it does not set itself, such as `flex-1 min-w-0` in a header row. In a box that grows with its content, the trail has no width to fit.
+
+### Router links
+
+Pass `link` to render each link, in the trail and in the menu, through your router. It gets the props of the anchor, `href` included:
+
+```tsx
+import Link from 'next/link';
+
+<BreadcrumbTrail items={items} link={(props) => <Link {...props} />} />;
+```
+
+### Parts
+
+Build a trail by hand from the parts when you need something `BreadcrumbTrail` does not do, such as an icon in a crumb. A hand-built trail does not collapse by itself: place a `BreadcrumbEllipsis` where you want one. Pass any icon to `BreadcrumbSeparator` to replace the chevron.
+
+<ComponentPreview name="breadcrumb-parts" />
+
+## API
+
+### BreadcrumbTrail
+
+Renders a `<nav>` and accepts all of its props.
+
+<TypeTable
+  type={{
+    items: {
+      description: 'The pages from the root down to the current one, which is last.',
+      type: 'BreadcrumbCrumb[]',
+      required: true,
+    },
+    link: {
+      description: 'What each link renders instead of `<a>`, such as a router link: `(props) => <Link {...props} />`.',
+      type: "(props: ComponentProps<'a'> & { href: string }) => ReactElement",
+    },
+    separator: {
+      description: 'Replaces the chevron between pages.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### BreadcrumbCrumb
+
+<TypeTable
+  type={{
+    label: {
+      description: 'The name of the page.',
+      type: 'string',
+      required: true,
+    },
+    href: {
+      description: 'Where the page is. Leave it off the last page.',
+      type: 'string',
+    },
+  }}
+/>
+
+### Breadcrumb
+
+Renders a `<nav>` named "Breadcrumb" for screen readers. Put a `BreadcrumbList` inside.
+
+### BreadcrumbList
+
+Renders an `<ol>` that keeps its pages on one line.
+
+### BreadcrumbItem
+
+Renders an `<li>` for one page.
+
+### BreadcrumbLink
+
+Renders an `<a>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render). Pass `render` for a router link.
+
+### BreadcrumbPage
+
+Renders a `<span>` with `aria-current="page"` for the page the user is on.
+
+### BreadcrumbSeparator
+
+Renders an `<li>` hidden from screen readers, with a chevron. Pass children to replace it.
+
+### BreadcrumbEllipsis
+
+A button that opens the hidden pages in a menu. Other props go to the button.
+
+<TypeTable
+  type={{
+    items: {
+      description: 'The pages it hides, from the root down.',
+      type: 'BreadcrumbCrumb[]',
+      required: true,
+    },
+    link: {
+      description: 'What each menu item renders instead of `<a>`.',
+      type: "(props: ComponentProps<'a'> & { href: string }) => ReactElement",
+    },
+    open: {
+      description: 'Whether the menu is open. Use with `onOpenChange`.',
+      type: 'boolean',
+    },
+    defaultOpen: {
+      description: 'Whether the menu starts open, when it keeps its own state.',
+      type: 'boolean',
+      default: 'false',
+    },
+    modal: {
+      description: 'Whether the menu locks page scroll and blocks the page behind it while open.',
+      type: 'boolean',
+      default: 'true',
+    },
+    onOpenChange: {
+      description: 'Called when the menu opens or closes.',
+      type: '(open: boolean, eventDetails) => void',
+    },
+    container: {
+      description: 'The element the menu renders into.',
+      type: 'HTMLElement | null',
+      default: 'document.body',
+    },
+  }}
+/>
