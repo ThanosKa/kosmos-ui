@@ -53,13 +53,27 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 ## Tag colors
 
-In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; status keeps the neutral pill with a dot.
+In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; a state is a dot and a code a tinted pill (Status tints below).
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `tag-orange`, `tag-blue`, `tag-amber`, `tag-magenta`, `tag-green` | Tag fill: the tag's own hue mixed into transparent at 12% (light) and 16% (dark), written in the tag block, not read from a chart series, so tags keep their color under every preset | The chart hues of ADR 0007; the tinted-tag structure comes from the dark study |
-| `tag-red` | Tag fill: `destructive` at the same alpha | As above |
-| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The same hue stepped to `L 0.47` in light and `L 0.84` (chroma 0.08) in dark, so every pair passes 4.5:1 on its fill over `card` and `background` (light 5.2–6.2:1, dark 7.9–9.2:1) |
+| `tag-orange`, `tag-blue`, `tag-green`, `tag-red` | Tag fill: the status tint of the same hue (`var(--tint-*)`), so a blue tag is the info blue and never follows a preset | Status tints below |
+| `tag-amber`, `tag-magenta` | Tag fill: Radix amber and plum step 3, the tint construction for the two hues that are no status | Radix Colors (MIT) |
+| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The tint's `-foreground` for the four status hues; amber and plum step 11 (the light amber moved toward step 12 to `#a46003`, 4.55:1). `pnpm test` checks 4.5:1 on the fill in both modes |
+
+## Status tints
+
+In their own labelled blocks after the tags, the same under every preset. The values are Radix Colors steps, MIT, Copyright (c) 2021 Radix; the notice is `registry/kosmos/styles/LICENSE-RADIX-COLORS`, which the tokens item ships to `~/LICENSE-RADIX-COLORS`, and `pnpm test` checks it is there.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `tint-<hue>` (`gray`, `blue`, `green`, `teal`, `orange`, `red`) | The fill of a code pill (Badge `tint-*`) and of a tinted Alert | Radix step 3 |
+| `tint-<hue>-border` | The edge of a tinted Alert; a code pill's hover edge as a link | Radix step 6 |
+| `tint-<hue>-foreground` | Text on the fill | Radix step 11; in light moved toward step 12 only as far as 4.5:1 on the fill needs, in dark step 11 as it is |
+| `tint-<hue>-link` | A link inside a tinted Alert | Radix step 12 |
+| `tint-<hue>-dot` | The dot of `StatusDot` | Radix step 9; gray's is dimmer (`#c7c7c7` / `#4a4a4a`) |
+| `tint-<hue>-solid` (`blue`, `green`, `orange`, `red`) | A code in the current nav item, under `tint-solid-foreground` | Radix light step 11, the same in both modes, 4.5:1 or more with white |
+| `tint-solid-foreground` | White text on a solid tint | `#ffffff` |
 
 ## Shadows
 
