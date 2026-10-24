@@ -1,0 +1,230 @@
+---
+title: Pagination
+description: Moves through a long list a page at a time, with numbered pages, rows per page and the rows in view, or loads more rows under it with a Load more button that says how many are left.
+---
+
+<ComponentPreview name="pagination-demo" />
+
+## Installation
+
+<ComponentInstall name="pagination" />
+
+## Usage
+
+```tsx
+import { Pagination, PaginationNext, PaginationPages, PaginationPrevious } from '@/components/ui/pagination';
+```
+
+```tsx
+<Pagination page={page} onPageChange={setPage} pageCount={12}>
+  <div className="flex items-center gap-1">
+    <PaginationPrevious />
+    <PaginationPages />
+    <PaginationNext />
+  </div>
+</Pagination>
+```
+
+`Pagination` holds the page and renders a `nav` named "Pagination"; the parts inside it read the page from it, so you place them in any order and any wrapper. Pass `aria-label` when a page has two of them.
+
+The numbered pages show the first and last page, the current one with a neighbor either side, and a gap for each run of hidden pages. The row keeps the same length on every page, so the pages never shift under the pointer, and below 640px it drops the neighbors so it fits a phone. At either end, the previous or next button turns off but keeps focus, so pressing Next up to the last page never drops focus to the page.
+
+The counting it does comes from `@kosmos/paging`, which installs with it as `lib/paging.ts`, for your own code too: `pageCount(total, pageSize)`, `pageRows(page, pageSize, total)` for the rows a page shows, `clampPage(page, pageCount)` for after a filter shortens the list, `pageForPageSize(page, pageSize, nextPageSize)` and `paginationItems(page, pageCount)`.
+
+## Examples
+
+### Table footer
+
+Pass `total` instead of `pageCount`, and Pagination counts the pages from the rows. `PaginationStatus` then shows the rows in view, such as "21–30 of 2,450", or the page, "Page 3 of 245", with `show="pages"`; screen readers hear it change. `PaginationPageSize` picks the rows per page, and keeps the first row of the page in view when the size changes.
+
+<ComponentPreview name="pagination-table" />
+
+Slice your rows with `pageRows`:
+
+```tsx
+import { pageRows } from '@/lib/paging';
+
+const { from, to } = pageRows(page, pageSize, rows.length);
+const visible = rows.slice(from - 1, to);
+```
+
+### Links
+
+Pass `getPageHref` when the server renders each page, and every page becomes a link. Give the previous and next buttons children to show a label next to the arrow; below 640px they keep only the arrow, and the label stays their name.
+
+<ComponentPreview name="pagination-links" />
+
+For client-side routing, keep the links and push the route in `onPageChange`, which runs whenever the page changes.
+
+### Load more
+
+`PaginationLoadMore` goes under a list that grows instead of turning pages. The button says how many rows are left, keeps its place and its focus while the next rows load, and gives way to "All 12 shown" when every row is in, which takes the button's focus. Screen readers hear how many rows show after each load.
+
+<ComponentPreview name="pagination-load-more" />
+
+### Another language
+
+Pass `aria-label` to the previous and next buttons, `pageLabel` to `PaginationPages`, `label` to `PaginationPageSize`, and a function as the child of `PaginationStatus`:
+
+```tsx
+<PaginationStatus>{({ from, to, total }) => `${from}–${to} von ${total}`}</PaginationStatus>
+```
+
+## API
+
+### Pagination
+
+Takes every `nav` prop, plus:
+
+<TypeTable
+  type={{
+    page: {
+      description: 'The current page, from 1. Use with `onPageChange`. A page past the last one, as after a filter shortens the list, moves to the last page and calls `onPageChange`.',
+      type: 'number',
+    },
+    defaultPage: {
+      description: 'The page at first, when Pagination keeps its own state.',
+      type: 'number',
+      default: '1',
+    },
+    onPageChange: {
+      description: 'Called with the new page, from a page button, a step or a new page size.',
+      type: '(page: number) => void',
+    },
+    pageCount: {
+      description: 'How many pages there are. Leave it out and pass `total` to count them from the rows.',
+      type: 'number',
+    },
+    total: {
+      description: 'How many rows the whole list holds. Counts the pages and lets `PaginationStatus` show the rows in view.',
+      type: 'number',
+    },
+    pageSize: {
+      description: 'Rows per page, used with `total`. Use with `onPageSizeChange`.',
+      type: 'number',
+    },
+    defaultPageSize: {
+      description: 'Rows per page at first, when Pagination keeps its own state.',
+      type: 'number',
+      default: '10',
+    },
+    onPageSizeChange: {
+      description: 'Called with the new page size from `PaginationPageSize`.',
+      type: '(pageSize: number) => void',
+    },
+    getPageHref: {
+      description: 'Renders every page as a link to this URL. Without it, pages are buttons.',
+      type: '(page: number) => string',
+    },
+  }}
+/>
+
+### PaginationPrevious and PaginationNext
+
+<TypeTable
+  type={{
+    children: {
+      description: 'A label beside the arrow, from 640px. Without it, the button shows only the arrow.',
+      type: 'ReactNode',
+    },
+    'aria-label': {
+      description: 'The name of an arrow-only button.',
+      type: 'string',
+      default: "'Previous page' | 'Next page'",
+    },
+  }}
+/>
+
+### PaginationPages
+
+Takes every `ul` prop, plus:
+
+<TypeTable
+  type={{
+    siblings: {
+      description: 'Pages shown either side of the current one from 640px. Below it, none.',
+      type: 'number',
+      default: '1',
+    },
+    pageLabel: {
+      description: 'The name of each page.',
+      type: '(page: number) => string',
+      default: '(page) => `Page ${page}`',
+    },
+  }}
+/>
+
+`PaginationLink` (one page, `page` and `aria-label`) and `PaginationEllipsis` are the parts it renders, for a row of your own.
+
+### PaginationStatus
+
+Takes every `p` prop, plus:
+
+<TypeTable
+  type={{
+    show: {
+      description: '`rows` shows the rows in view and needs `total` on Pagination; `pages` shows the page and the page count.',
+      type: "'rows' | 'pages'",
+      default: "'rows' with total, else 'pages'",
+    },
+    children: {
+      description: 'Your own text: gets the page, the page count, and with `total` on Pagination, the rows in view.',
+      type: '(status: { page, pageCount, from, to, total? }) => ReactNode',
+    },
+  }}
+/>
+
+### PaginationPageSize
+
+Takes every `div` prop, plus:
+
+<TypeTable
+  type={{
+    options: {
+      description: 'The page sizes to offer.',
+      type: 'number[]',
+      default: '[10, 25, 50, 100]',
+    },
+    label: {
+      description: 'The label before the select.',
+      type: 'string',
+      default: "'Rows per page'",
+    },
+  }}
+/>
+
+### PaginationLoadMore
+
+Takes every `div` prop, plus:
+
+<TypeTable
+  type={{
+    shown: {
+      description: 'Rows already in the list.',
+      type: 'number',
+      required: true,
+    },
+    total: {
+      description: 'Rows the whole list holds.',
+      type: 'number',
+      required: true,
+    },
+    onLoadMore: {
+      description: 'Called when the button is pressed. Fetch the next rows and raise `shown`.',
+      type: '() => void',
+      required: true,
+    },
+    loading: {
+      description: 'While the next rows load: the arrow turns into a spinner and the button ignores presses.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves through the previous button, each page, the next button and the page size select. |
+| `Enter` or `Space` | Goes to the focused page, or one page back or forward. |
