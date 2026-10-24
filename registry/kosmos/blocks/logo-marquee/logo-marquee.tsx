@@ -52,7 +52,7 @@ function LogoItems({ logos }: { logos: LogoMarqueeLogo[] }) {
     <li key={index} className={itemClass}>
       {logo ? (
         <>
-          <span aria-hidden className="contents">
+          <span aria-hidden className="flex items-center">
             {logo}
           </span>
           <span className="sr-only">{name}</span>
@@ -66,11 +66,13 @@ function LogoItems({ logos }: { logos: LogoMarqueeLogo[] }) {
 
 /**
  * Moves `track` by the width of one of its two copies, over and over, at `speed` pixels per second. Keeps its place
- * when the width changes, holds still while `paused`, and stops when the visitor asks for reduced motion.
+ * when the width or the speed changes, holds still while `paused`, and stops when the visitor asks for reduced motion.
  */
 function useMarquee(track: React.RefObject<HTMLDivElement | null>, { speed, paused, enabled }: { speed: number; paused: boolean; enabled: boolean }) {
   const animation = React.useRef<Animation>(undefined);
   const pausedRef = React.useRef(paused);
+  const speedRef = React.useRef(speed);
+  const retime = React.useRef<() => void>(undefined);
 
   React.useEffect(() => {
     pausedRef.current = paused;
@@ -79,11 +81,16 @@ function useMarquee(track: React.RefObject<HTMLDivElement | null>, { speed, paus
   }, [paused]);
 
   React.useEffect(() => {
+    speedRef.current = speed;
+    retime.current?.();
+  }, [speed]);
+
+  React.useEffect(() => {
     const element = track.current;
     const copy = element?.firstElementChild;
     if (!enabled || !element || !(copy instanceof HTMLElement)) return;
     const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
-    const duration = () => (copy.offsetWidth / speed) * 1000;
+    const duration = () => (copy.offsetWidth / Math.max(speedRef.current, 1)) * 1000;
 
     const start = () => {
       animation.current?.cancel();
@@ -97,14 +104,15 @@ function useMarquee(track: React.RefObject<HTMLDivElement | null>, { speed, paus
       if (pausedRef.current) animation.current.pause();
     };
 
-    const resize = new ResizeObserver(() => {
+    retime.current = () => {
       const running = animation.current;
       if (!running?.effect) return;
       const progress = running.effect.getComputedTiming().progress ?? 0;
       const next = duration();
       running.effect.updateTiming({ duration: next });
       running.currentTime = progress * next;
-    });
+    };
+    const resize = new ResizeObserver(() => retime.current?.());
 
     start();
     resize.observe(copy);
@@ -112,10 +120,11 @@ function useMarquee(track: React.RefObject<HTMLDivElement | null>, { speed, paus
     return () => {
       resize.disconnect();
       motion.removeEventListener('change', start);
+      retime.current = undefined;
       animation.current?.cancel();
       animation.current = undefined;
     };
-  }, [track, speed, enabled]);
+  }, [track, enabled]);
 }
 
 type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
@@ -191,7 +200,7 @@ function LogoMarquee({
             variant="secondary"
             size="icon-sm"
             aria-label={stopped ? 'Play logos' : 'Pause logos'}
-            onClick={() => setStopped(!stopped)}
+            onClick={() => setStopped((value) => !value)}
             className="absolute inset-y-0 end-2 my-auto motion-reduce:hidden"
           >
             {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}

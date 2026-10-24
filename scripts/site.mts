@@ -14,12 +14,13 @@ export function serverBase(values: { port?: string; base?: string }) {
 }
 
 export type Theme = 'light' | 'dark';
+export type ReducedMotion = 'reduce' | 'no-preference';
 
 type OpenOptions = {
   theme?: Theme;
   viewport: { width: number; height: number };
   deviceScaleFactor?: number;
-  reducedMotion?: 'reduce' | 'no-preference';
+  reducedMotion?: ReducedMotion;
 };
 
 /**
