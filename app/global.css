@@ -51,6 +51,42 @@
   }
 }
 
+/*
+ * The brand colour of the Kosmos site: the logo's ring, the Pro marks and text selection. The same in light and dark,
+ * and white text passes 4.5:1 on it and on its hover step (lib/brand.test.mts). Site-only: no registry item may hold it, which
+ * `pnpm registry:build` and `pnpm test` check (lib/brand.ts). `apple-icon`, the social image and `app/icon.svg` take it too.
+ */
+:root {
+  --brand: oklch(0.56 0.2 350);
+  --brand-hover: oklch(0.52 0.2 350);
+  --brand-foreground: oklch(1 0 0);
+  --brand-selection-strength: 28%;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-foreground: var(--brand-foreground);
+  /*
+   * Opaque, so the fill doesn't darken where the line boxes of a tight heading overlap, and so selected text can take
+   * `foreground` on it: muted text would fall under 4.5:1 on any fill, and white text on a primary button would vanish.
+   */
+  --color-brand-selection: color-mix(in srgb, var(--brand) var(--brand-selection-strength), var(--background));
+}
+
+/*
+ * A Pro mark: a primary Button or Badge filled with the brand instead of ink, keeping its edge. A Button adds
+ * `hover:not-data-disabled:bg-brand-hover`: the primary hover lightens the fill, and white falls under 4.5:1 on a light card.
+ * The light edge is a ring in the fill color, re-declared here because `--shadow-primary` resolves `--primary` on `:root`.
+ */
+@utility brand-primary {
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  &:not(:is(.dark *)) {
+    --shadow-primary: 0 0 0 1px var(--brand);
+  }
+}
+
 html {
   scrollbar-gutter: stable;
 }
