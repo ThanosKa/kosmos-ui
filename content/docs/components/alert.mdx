@@ -1,0 +1,83 @@
+---
+title: Alert
+description: A message that stays on the page, with an icon, a title, a description and actions. A neutral card, plus info, success, warning and destructive in their status tints.
+---
+
+<ComponentPreview name="alert-demo" />
+
+## Installation
+
+<ComponentInstall name="alert" />
+
+## Usage
+
+```tsx
+import { Alert, AlertAction, AlertDescription, AlertTitle } from '@/components/ui/alert';
+```
+
+```tsx
+<Alert variant="warning">
+  <AlertTitle>Cirrus Weather is at 80% of its quota</AlertTitle>
+  <AlertDescription>It will reach 3,000,000 events around October 18.</AlertDescription>
+</Alert>
+```
+
+An alert stays where it is until the page changes. For a short message that closes on its own after an action, use a [Toast](/docs/components/toast).
+
+## Examples
+
+### Variants
+
+`neutral` is a card, for a note that needs no color. The other four take the status tint of their hue: `info` blue, `success` green, `warning` orange and `destructive` red. The fill, the edge, the text and the links come from the tint, and every text and link color reads at 4.5:1 or more on its fill, in both themes. Each variant has its own icon, and the title says what happened, so the color is never the only signal.
+
+<ComponentPreview name="alert-variants" />
+
+### Links
+
+A link inside an alert is underlined and takes the alert's link color, a darker step of the hue in light and a lighter one in dark. Write the link as the next step, such as "Raise the allowance", not "Click here".
+
+### Actions
+
+Put buttons in `AlertAction`. In an alert narrower than 448px they sit under the text; from 448px they sit beside it. Use `secondary` or `ghost` buttons, so the page keeps its one primary action.
+
+<ComponentPreview name="alert-action" />
+
+### Icon
+
+Pass `icon` to replace the icon of the variant, or `icon={null}` for an alert without one.
+
+### Screen readers
+
+Alert renders a plain `<div>`, which screen readers read in the page order like any other text. When an alert appears because something just went wrong, such as a failed save, give it `role="alert"` so screen readers say it at once. Leave the role off for an alert that is there when the page loads.
+
+## API
+
+### Alert
+
+Renders a `<div>` and accepts all of its props.
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The look. `neutral` is a card; the others take the status tint of their hue.',
+      type: "'neutral' | 'info' | 'success' | 'warning' | 'destructive'",
+      default: "'neutral'",
+    },
+    icon: {
+      description: 'Replaces the icon of the variant. Pass `null` for an alert without one.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### AlertTitle
+
+Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render). Pass `render={<h2 />}`, at the level that fits the page, when the alert heads a section.
+
+### AlertDescription
+
+Renders a `<div>` for the text under the title. Links inside it take the alert's link color.
+
+### AlertAction
+
+Renders a `<div>` for one or two buttons.
