@@ -153,6 +153,8 @@ Status: open
 
 ### Landing
 
+Αντικαθίσταται από το `spec-black-and-white.md`.
+
 Ξαναχτίζεται από Kosmos blocks, με αυτή τη σειρά:
 
 1. Hero με τίτλο, μία γραμμή κειμένου, δύο CTAs (Browse components, GitHub) και την εντολή install.
