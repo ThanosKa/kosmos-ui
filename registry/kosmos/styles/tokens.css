@@ -11,6 +11,7 @@
  *   :root          -> cssVars.light
  *   .dark          -> cssVars.dark
  * Dark mode is the `.dark` class on <html> (next-themes, shadcn convention).
+ * The palette and radius come from the default preset (lib/presets).
  */
 
 @theme inline {
@@ -112,6 +113,10 @@
   --text-lead--letter-spacing: -0.01em;
 }
 
+/*
+ * Palette and radius: the CSS of the default preset (lib/presets), written
+ * here by `pnpm registry:build`. Edit the preset, never these lines.
+ */
 :root {
   --radius: 0.625rem;
 
@@ -150,35 +155,11 @@
   --sidebar-border: oklch(0.915 0.006 97);
   --sidebar-ring: oklch(0.652 0.214 38);
 
-  --shadow-control:
-    0 0 0 1px oklch(0 0 0 / 0.08),
-    0 1px 2px 0 oklch(0 0 0 / 0.06);
-  --shadow-primary: 0 0 0 1px var(--primary);
-  --shadow-card:
-    0 0 0 3px oklch(0.848 0.005 106.5 / 0.12),
-    0 1px 2px 0 oklch(0.256 0.013 100.5 / 0.04),
-    0 2px 4px 0 oklch(0.256 0.013 100.5 / 0.03);
-  --shadow-popover:
-    0 0 0 1px oklch(0 0 0 / 0.08),
-    0 4px 12px 0 oklch(0 0 0 / 0.06),
-    0 12px 32px 0 oklch(0 0 0 / 0.08);
-  --shadow-modal:
-    0 0 0 1px oklch(0 0 0 / 0.08),
-    0 12px 24px 0 oklch(0 0 0 / 0.08),
-    0 32px 64px 0 oklch(0 0 0 / 0.12);
-  --shadow-inset:
-    inset 0 0 0 1px oklch(0 0 0 / 0.04),
-    inset 0 1px 2px 0 oklch(0 0 0 / 0.06);
-  --shadow-lift:
-    0 0 0 1px color-mix(in oklab, var(--ring) 24%, transparent),
-    0 0 0 4px color-mix(in oklab, var(--ring) 16%, transparent),
-    0 2px 12px 0 oklch(0.256 0.013 100.5 / 0.08),
-    0 6px 16px 0 oklch(0.256 0.013 100.5 / 0.12);
-  --shadow-thumb:
-    0 0 0 1px oklch(0 0 0 / 0.1),
-    0 1px 2px 0 oklch(0 0 0 / 0.12),
-    0 2px 6px 0 oklch(0 0 0 / 0.12);
-  --shadow-field: 0 0 0 1px var(--input);
+  --chart-1: oklch(0.652 0.214 38);
+  --chart-2: oklch(0.55 0.15 252);
+  --chart-3: oklch(0.64 0.14 82);
+  --chart-4: oklch(0.5 0.17 330);
+  --chart-5: oklch(0.6 0.13 160);
 }
 
 .dark {
@@ -217,6 +198,47 @@
   --sidebar-border: oklch(0.26 0.006 95);
   --sidebar-ring: oklch(0.7 0.18 42);
 
+  --chart-1: oklch(0.7 0.18 42);
+  --chart-2: oklch(0.65 0.14 250);
+  --chart-3: oklch(0.76 0.14 82);
+  --chart-4: oklch(0.62 0.17 330);
+  --chart-5: oklch(0.7 0.14 160);
+}
+
+/* Shadows, the same under every preset: a preset never changes them (ADR 0009). */
+:root {
+  --shadow-control:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 1px 2px 0 oklch(0 0 0 / 0.06);
+  --shadow-primary: 0 0 0 1px var(--primary);
+  --shadow-card:
+    0 0 0 3px oklch(0.848 0.005 106.5 / 0.12),
+    0 1px 2px 0 oklch(0.256 0.013 100.5 / 0.04),
+    0 2px 4px 0 oklch(0.256 0.013 100.5 / 0.03);
+  --shadow-popover:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 4px 12px 0 oklch(0 0 0 / 0.06),
+    0 12px 32px 0 oklch(0 0 0 / 0.08);
+  --shadow-modal:
+    0 0 0 1px oklch(0 0 0 / 0.08),
+    0 12px 24px 0 oklch(0 0 0 / 0.08),
+    0 32px 64px 0 oklch(0 0 0 / 0.12);
+  --shadow-inset:
+    inset 0 0 0 1px oklch(0 0 0 / 0.04),
+    inset 0 1px 2px 0 oklch(0 0 0 / 0.06);
+  --shadow-lift:
+    0 0 0 1px color-mix(in oklab, var(--ring) 24%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--ring) 16%, transparent),
+    0 2px 12px 0 oklch(0.256 0.013 100.5 / 0.08),
+    0 6px 16px 0 oklch(0.256 0.013 100.5 / 0.12);
+  --shadow-thumb:
+    0 0 0 1px oklch(0 0 0 / 0.1),
+    0 1px 2px 0 oklch(0 0 0 / 0.12),
+    0 2px 6px 0 oklch(0 0 0 / 0.12);
+  --shadow-field: 0 0 0 1px var(--input);
+}
+
+.dark {
   --shadow-control:
     0 0 0 1px oklch(0 0 0 / 0.4),
     inset 0 1px 0 0 oklch(1 0 0 / 0.1),
@@ -261,9 +283,9 @@
 /*
  * Chart: categorical series colors, used in this order and never cycled.
  * shadcn names (--chart-1 ... --chart-5), so charts installed from any
- * registry pick them up. Slot 1 is the brand orange (`ring`); the rest were checked
- * as a set for color-blind separation and 3:1 against card and background
- * in both modes. More than 5 series fold into "Other".
+ * registry pick them up. Their values come with the palette above, and every
+ * preset keeps them 3:1 against card and background in both modes. More than
+ * 5 series fold into "Other".
  */
 @theme inline {
   --color-chart-1: var(--chart-1);
@@ -271,22 +293,6 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-}
-
-:root {
-  --chart-1: oklch(0.652 0.214 38);
-  --chart-2: oklch(0.55 0.15 252);
-  --chart-3: oklch(0.64 0.14 82);
-  --chart-4: oklch(0.5 0.17 330);
-  --chart-5: oklch(0.6 0.13 160);
-}
-
-.dark {
-  --chart-1: oklch(0.7 0.18 42);
-  --chart-2: oklch(0.65 0.14 250);
-  --chart-3: oklch(0.76 0.14 82);
-  --chart-4: oklch(0.62 0.17 330);
-  --chart-5: oklch(0.7 0.14 160);
 }
 
 /* Tags: the Badge hue variants. */

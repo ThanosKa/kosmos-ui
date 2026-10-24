@@ -34,15 +34,20 @@ function parseBlock(css: string, selector: string): Declarations {
   return declarations;
 }
 
-/** Reads the token declarations straight from the CSS source, grouped the way a registry item's `cssVars` expects. */
-export function readKosmosTokens(): KosmosTokens {
-  const css = readFileSync(tokensPath, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+/** The token declarations of a CSS source, grouped the way a registry item's `cssVars` expects. */
+export function parseKosmosTokens(source: string): KosmosTokens {
+  const css = source.replace(/\/\*[\s\S]*?\*\//g, '');
   return {
     themeInline: parseBlock(css, blockSelectors.themeInline),
     theme: parseBlock(css, blockSelectors.theme),
     light: parseBlock(css, blockSelectors.light),
     dark: parseBlock(css, blockSelectors.dark),
   };
+}
+
+/** Reads the token declarations straight from `tokens.css`. */
+export function readKosmosTokens(): KosmosTokens {
+  return parseKosmosTokens(readFileSync(tokensPath, 'utf8'));
 }
 
 /**
