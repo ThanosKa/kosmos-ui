@@ -20,8 +20,7 @@ export function parseBrandColors(css: string): BrandColors {
   const brand = read('brand');
   const strength = /^([\d.]+)%$/.exec(read('brand-selection-strength'));
   if (!strength) throw new Error('--brand-selection-strength must be a percentage');
-  const selection = brand.replace(/\)$/, ` / ${Number(strength[1]) / 100})`);
-  return { brand, hover: read('brand-hover'), foreground: read('brand-foreground'), selection };
+  return { brand, hover: read('brand-hover'), foreground: read('brand-foreground'), selection: withAlpha(brand, Number(strength[1]) / 100) };
 }
 
 /** Reads the brand colours from `app/global.css`, their one source. Server and scripts only. */
@@ -29,14 +28,22 @@ export function readBrandColors(root = process.cwd()): BrandColors {
   return parseBrandColors(readFileSync(join(root, 'app/global.css'), 'utf8'));
 }
 
+/** A color as `#rrggbbaa`. */
+function withAlpha(color: string, alpha: number): string {
+  const { r, g, b } = parseColor(color);
+  return `#${[r, g, b, alpha].map((channel) => Math.round(channel * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
 const colorPattern = /oklch\([^)]*\)|#[\da-f]{6}(?:[\da-f]{2})?\b|rgba?\([^)]*\)/gi;
-const tokenPattern = /-brand(?:-[a-z]+)*\b/g;
+const tokenPattern =
+  /--(?:color-)?brand(?:-[a-z]+)*\b|\b(?:bg|text|border|ring|outline|fill|stroke|shadow|decoration|from|via|to)-brand(?:-[a-z]+)*\b|\bbrand-primary\b/g;
 
 /** A color as its 8-bit sRGB channels, alpha left out, or `undefined` when it can't be read. */
 function srgb8(value: string): string | undefined {
   if (/^rgba?\(/i.test(value)) {
-    const numbers = value.match(/[\d.]+/g);
-    return numbers && numbers.length >= 3 ? numbers.slice(0, 3).map(Number).join(',') : undefined;
+    const channels = [...value.matchAll(/([\d.]+)(%?)/g)].slice(0, 3);
+    if (channels.length < 3) return undefined;
+    return channels.map(([, number, percent]) => Math.round(Number(number) * (percent ? 2.55 : 1))).join(',');
   }
   try {
     const { r, g, b } = parseColor(value);
@@ -47,10 +54,11 @@ function srgb8(value: string): string | undefined {
 }
 
 /**
- * Every place `text` holds the brand colour (in oklch, hex or rgb, at any alpha) or names a brand token
- * (`--brand`, `bg-brand`, `text-brand-foreground`). Registry items must hold none: the brand belongs to the site.
+ * Every place `text` holds the brand colour, at any alpha, as `oklch()` (hue in plain degrees), 6- or 8-digit hex or
+ * `rgb()`, or names a brand token or utility (`--brand`, `bg-brand`, `text-brand-foreground`, `brand-primary`).
+ * Registry items must hold none: the brand belongs to the site.
  */
-export function findBrand(text: string, colors: BrandColors = readBrandColors()): string[] {
+export function findBrand(text: string, colors: BrandColors): string[] {
   const brand = srgb8(colors.brand);
   const colorHits = [...text.matchAll(colorPattern)].map(([match]) => match).filter((match) => srgb8(match) === brand);
   const tokenHits = [...text.matchAll(tokenPattern)].map(([match]) => match);

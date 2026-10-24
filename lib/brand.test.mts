@@ -9,21 +9,22 @@ import { readKosmosTokens } from './tokens.ts';
 
 const peony = { brand: 'oklch(0.56 0.2 350)', hover: 'oklch(0.52 0.2 350)', foreground: 'oklch(1 0 0)', selection: 'oklch(0.56 0.2 350 / 0.28)' };
 
-test('the guard finds the brand colour in any spelling', () => {
+test('the guard finds the brand colour as oklch, hex or rgb, at any alpha', () => {
   assert.equal(findBrand('color: oklch(0.56 0.2 350);', peony).length, 1);
   assert.equal(findBrand('color: oklch(56% 0.20 350 / 0.5);', peony).length, 1);
   assert.equal(findBrand('fill="#C32E85"', peony).length, 1);
   assert.equal(findBrand('rgb(195 46 133)', peony).length, 1);
   assert.equal(findBrand('rgb(195, 46, 133, 0.4)', peony).length, 1);
+  assert.equal(findBrand('rgb(76.5% 18% 52.2%)', peony).length, 1);
 });
 
 test('the guard finds the brand tokens', () => {
-  assert.deepEqual(findBrand('className="bg-brand text-brand-foreground"', peony), ['-brand', '-brand-foreground']);
-  assert.deepEqual(findBrand('background: var(--color-brand);', peony), ['-brand']);
+  assert.deepEqual(findBrand('className="bg-brand text-brand-foreground brand-primary"', peony), ['bg-brand', 'text-brand-foreground', 'brand-primary']);
+  assert.deepEqual(findBrand('background: var(--color-brand); color: var(--brand);', peony), ['--color-brand', '--brand']);
 });
 
 test('the guard passes other colours and words', () => {
-  assert.deepEqual(findBrand('oklch(0.56 0.2 30) #c32e86 rgb(195 46 134) the brand of a product, brandIcons', peony), []);
+  assert.deepEqual(findBrand('oklch(0.56 0.2 30) #c32e86 rgb(195 46 134) the brand of a product, a co-brand, data-brand="x", brandIcons, context-brand', peony), []);
 });
 
 test('no registry item holds the brand colour or a brand token', () => {
@@ -32,6 +33,10 @@ test('no registry item holds the brand colour or a brand token', () => {
     const sources = (item.files ?? []).map((file) => readFileSync(file.path, 'utf8'));
     assert.deepEqual(findBrand([JSON.stringify(item), ...sources].join('\n'), colors), [], item.name);
   }
+});
+
+test('the favicon draws its ring in the brand colour', () => {
+  assert.ok(findBrand(readFileSync('app/icon.svg', 'utf8'), readBrandColors()).length > 0);
 });
 
 test('text on the Pro badge and the Get Pro button passes 4.5:1, at rest and on hover', () => {
