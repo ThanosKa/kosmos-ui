@@ -134,6 +134,10 @@ The other ranges, each against the same span before it:
 
 A chart over a range plots one point per day (7 and 30 days) or per week (90 days), so its points are daily or weekly figures, not the headline: about 29,400 active users and 1,012,000 events a day at the end of the range, and 74,800 users and 7,040,000 events a week. Monthly revenue is $14,628 on the last day of every range, and Live projects steps from 9 to 8 on 18 September.
 
+## API
+
+Acme's public API, for codes and methods (Badge `tint-*`). Paths start with `/v1`: `GET /v1/projects` (List projects), `GET /v1/projects/{id}`, `POST /v1/events` (Send events), `PATCH /v1/projects/{id}` (Change a plan) and `DELETE /v1/events/{name}` (Delete events, such as `debug_ping` on Tidepool Notes). A request log shows `202` for accepted events, `200`, `304`, `429` when a project sends past its rate limit, and `500`.
+
 ## Roadmap
 
 The kanban board is Acme's own roadmap. Columns, in order: **Ideas**, **Planned**, **In progress**, **Shipped**. An item has `id`, `title`, `area`, `votes` (customers who asked for it), `assignee` (a team member, or none in Ideas) and `target` (a quarter, such as `Q4 2026`).

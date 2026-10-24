@@ -1,4 +1,5 @@
 import { CircleCheck, CircleDashed, CirclePause, CircleSlash, CircleX, LoaderCircle, type LucideIcon } from 'lucide-react';
+import type * as React from 'react';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { cn } from '@/registry/kosmos/lib/cn';
 
@@ -44,6 +45,35 @@ function StatusIcon({ status, label, className }: StatusIconProps) {
   );
 }
 
+const statusDot: Record<Status, string> = {
+  pending: 'bg-tint-gray-dot',
+  running: 'bg-tint-blue-dot animate-pulse',
+  waiting: 'bg-tint-orange-dot',
+  done: 'bg-tint-green-dot',
+  error: 'bg-tint-red-dot',
+  skipped: 'bg-tint-gray-dot',
+};
+
+type StatusDotProps = React.ComponentProps<'span'> & { status: Status };
+
+/**
+ * A state in a table cell, a list or a detail page: a 6px dot in the status tint beside its word, in the text
+ * color around it. The word carries the meaning; a label too long for its slot truncates.
+ */
+function StatusDot({ status, children, className, ...props }: StatusDotProps) {
+  return (
+    <span
+      data-slot="status-dot"
+      data-status={status}
+      className={cn('inline-flex max-w-full min-w-0 items-center gap-2', className)}
+      {...props}
+    >
+      <span aria-hidden className={cn('size-1.5 shrink-0 rounded-full', statusDot[status])} />
+      <span className="min-w-0 truncate">{children}</span>
+    </span>
+  );
+}
+
 const statusBadge: Record<Status, BadgeProps['variant']> = {
   pending: 'secondary',
   running: 'secondary',
@@ -71,4 +101,4 @@ function StatusBadge({ status, children, className, ...props }: StatusBadgeProps
   );
 }
 
-export { StatusIcon, StatusBadge, type Status, type StatusIconProps, type StatusBadgeProps };
+export { StatusIcon, StatusDot, StatusBadge, type Status, type StatusIconProps, type StatusDotProps, type StatusBadgeProps };

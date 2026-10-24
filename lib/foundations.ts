@@ -62,10 +62,38 @@ export const colorGroups = {
   sidebar: 'Sidebar',
   chart: 'Chart',
   tags: 'Tags',
+  tints: 'Status tints',
 } as const;
 export type ColorGroup = keyof typeof colorGroups;
 
+const tintHues = {
+  gray: 'a neutral state or code (queued, skipped, a 3xx)',
+  blue: 'info and running',
+  green: 'success and a 2xx',
+  teal: 'a second positive state',
+  orange: 'warning and a 4xx',
+  red: 'errors and a 5xx',
+};
+
+function tintDocs(): Record<string, { group: ColorGroup; use: string }> {
+  const docs: Record<string, { group: ColorGroup; use: string }> = {
+    'tint-solid-foreground': { group: 'tints', use: 'White text on a solid tint.' },
+  };
+  for (const [hue, meaning] of Object.entries(tintHues)) {
+    docs[`tint-${hue}`] = { group: 'tints', use: `The ${hue} fill of a code pill or an alert, for ${meaning}.` };
+    docs[`tint-${hue}-border`] = { group: 'tints', use: `The edge of a ${hue} alert.` };
+    docs[`tint-${hue}-foreground`] = { group: 'tints', use: `Text on the ${hue} fill, 4.5:1 or more.` };
+    docs[`tint-${hue}-link`] = { group: 'tints', use: `A link on the ${hue} fill, 4.5:1 or more.` };
+    docs[`tint-${hue}-dot`] = { group: 'tints', use: `The dot beside a ${hue} state.` };
+  }
+  for (const hue of ['blue', 'green', 'orange', 'red']) {
+    docs[`tint-${hue}-solid`] = { group: 'tints', use: `The fill of a ${hue} code in the current nav item, under white text.` };
+  }
+  return docs;
+}
+
 const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
+  ...tintDocs(),
   background: { group: 'surfaces', use: 'The page.' },
   card: { group: 'surfaces', use: 'Cards, stat tiles and board cards.' },
   popover: { group: 'surfaces', use: 'Popovers, menus, tooltips, toasts, dialogs and drawers.' },

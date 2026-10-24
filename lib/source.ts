@@ -40,6 +40,7 @@ const docs = defineDocs({
           'PackageInstall',
           'LinkCards',
           'LinkCard',
+          'Callout',
         ],
       },
     },
