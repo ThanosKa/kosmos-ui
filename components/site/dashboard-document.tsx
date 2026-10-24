@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from 'next-themes';
 import * as React from 'react';
-import { presetCss, presets } from '@/lib/presets';
+import { defaultPreset, presetCss, presets } from '@/lib/presets';
 import { DashboardShowcase } from './dashboard-showcase';
 import { readMessage, toLanding, landingSource, type DashboardTokens, type LandingMessage } from './dashboard-tokens';
 
@@ -33,7 +33,7 @@ export function DashboardDocument() {
     const preset = presets.find((item) => item.id === tokens.preset);
     if (!preset) return;
     withoutTransitions(() => {
-      presetStyle().textContent = presetCss(preset);
+      presetStyle().textContent = preset === defaultPreset ? '' : presetCss(preset);
       const root = document.documentElement;
       if (tokens.radius) root.dataset.radius = tokens.radius;
       else delete root.dataset.radius;
@@ -54,7 +54,7 @@ export function DashboardDocument() {
   );
 }
 
-/** The style element that holds the preset's CSS, after the tokens so it wins over them. */
+/** The style element that holds the preset's CSS, after the tokens so it wins over them. The tokens already are the default preset. */
 function presetStyle() {
   const existing = document.getElementById('dashboard-preset');
   if (existing) return existing;
