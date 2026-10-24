@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { DataTable, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
 
@@ -33,11 +32,6 @@ const longRows: Project[] = [
   },
 ];
 
-function SecondPage() {
-  const [page, setPage] = React.useState(2);
-  return <DataTable pageSize={5} page={page} onPageChange={setPage} onOpen={() => {}} onAction={() => {}} />;
-}
-
 export default function DataTablePreview() {
   return (
     <PreviewStack>
@@ -66,7 +60,7 @@ export default function DataTablePreview() {
 
       <PreviewSection title="Page 2 of 3, five rows a page">
         <div className={frame}>
-          <SecondPage />
+          <DataTable pageSize={5} defaultPage={2} onOpen={() => {}} onAction={() => {}} />
         </div>
       </PreviewSection>
 

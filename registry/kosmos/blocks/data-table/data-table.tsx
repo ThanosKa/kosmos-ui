@@ -409,8 +409,8 @@ function FacetFilter({
                 </span>
                 <span className="flex min-w-0 flex-1">{facet.option(value)}</span>
                 <span className="text-caption text-muted-foreground tabular-nums">
-                  {count.format(counts[value] ?? 0)}
-                  <span className="sr-only"> {counts[value] === 1 ? 'project' : 'projects'}</span>
+                  <span aria-hidden>{count.format(counts[value] ?? 0)}</span>
+                  <span className="sr-only">{plural(counts[value] ?? 0, 'project')}</span>
                 </span>
               </ComboboxPrimitive.Item>
             )}
@@ -465,13 +465,15 @@ type DataTableProps = Omit<React.ComponentProps<'div'>, 'children'> & {
   sort?: Sort | null;
   /** The sort at first. Without it, rows keep their order until a header's menu sorts them. */
   defaultSort?: Sort;
-  onSortChange?: (sort: Sort) => void;
+  /** Called with the new sort, or `null` when the sorted column is hidden. */
+  onSortChange?: (sort: Sort | null) => void;
   /** The columns hidden from a header's menu. Use with `onHiddenColumnsChange`, or leave it out and pass `defaultHiddenColumns`. */
   hiddenColumns?: DataTableColumn[];
   defaultHiddenColumns?: DataTableColumn[];
   onHiddenColumnsChange?: (columns: DataTableColumn[]) => void;
-  /** The page, from 1. Goes back to 1 when the search, the filters or the sort change. Use with `onPageChange`, or leave it out. */
+  /** The page, from 1. Goes back to 1 when the search, the filters or the sort change. Use with `onPageChange`, or leave it out and pass `defaultPage`. */
   page?: number;
+  defaultPage?: number;
   onPageChange?: (page: number) => void;
   /** Rows per page. */
   pageSize?: number;
@@ -506,6 +508,7 @@ function DataTable({
   defaultHiddenColumns = [],
   onHiddenColumnsChange,
   page: pageProp,
+  defaultPage = 1,
   onPageChange,
   pageSize = 10,
   className,
@@ -514,9 +517,9 @@ function DataTable({
   const [query, setQuery] = useControlled(queryProp, defaultQuery, onQueryChange);
   const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
   const [selection, setSelection] = useControlled<string[]>(selectionProp, defaultSelection, onSelectionChange);
-  const [sort, setSort] = useControlled<Sort | null>(sortProp, defaultSort ?? null, onSortChange as (sort: Sort | null) => void);
+  const [sort, setSort] = useControlled<Sort | null>(sortProp, defaultSort ?? null, onSortChange);
   const [hidden, setHidden] = useControlled<DataTableColumn[]>(hiddenProp, defaultHiddenColumns, onHiddenColumnsChange);
-  const [page, setPage] = useControlled(pageProp, 1, onPageChange);
+  const [page, setPage] = useControlled(pageProp, defaultPage, onPageChange);
   const searchId = React.useId();
   const columnsButton = React.useRef<HTMLButtonElement>(null);
 
@@ -536,14 +539,13 @@ function DataTable({
     return [...filtered].sort((a, b) => compare(a, b, sort.key) * sign);
   }, [searched, filters, sort]);
 
-  // A new search, filter or sort starts again from the first page.
-  const view = JSON.stringify([query.trim(), status, filters, sort]);
-  const lastView = React.useRef(view);
+  const viewKey = JSON.stringify([query.trim(), status, filters, sort]);
+  const lastViewKey = React.useRef(viewKey);
   React.useEffect(() => {
-    if (lastView.current === view) return;
-    lastView.current = view;
+    if (lastViewKey.current === viewKey) return;
+    lastViewKey.current = viewKey;
     if (page !== 1) setPage(1);
-  }, [view, page, setPage]);
+  }, [viewKey, page, setPage]);
 
   const currentPage = clampPage(page, pageCount(visible.length, pageSize));
   const { from, to } = pageRows(currentPage, pageSize, visible.length);
@@ -552,6 +554,8 @@ function DataTable({
   const selected = visible.filter((row) => selection.includes(row.id));
   const pageSelected = pageItems.filter((row) => selection.includes(row.id));
   const allOnPage = pageItems.length > 0 && pageSelected.length === pageItems.length;
+  const [announcedSelection, setAnnouncedSelection] = React.useState(false);
+  if (selected.length && !announcedSelection) setAnnouncedSelection(true);
   const allPaused = selected.length > 0 && selected.every((row) => row.status === 'paused');
   const totals = [
     { label: 'Users', value: countCompact.format(visible.reduce((sum, row) => sum + row.users, 0)) },
@@ -570,12 +574,16 @@ function DataTable({
     const facet = facets.find((item) => item.key === key);
     setFilters([...filters.filter((value) => !facet?.values.includes(value)), ...values]);
   };
+  // A hidden column stops sorting the rows, since no header would show the order.
+  const setColumnHidden = (id: DataTableColumn, hide: boolean) => {
+    setHidden(hide ? [...hidden, id] : hidden.filter((item) => item !== id));
+    if (hide && sort?.key === id) setSort(null);
+  };
   const hideColumn = (id: DataTableColumn) => {
-    setHidden([...hidden, id]);
+    setColumnHidden(id, true);
     // The menu that hid the column leaves with it.
     requestAnimationFrame(() => columnsButton.current?.focus());
   };
-  // Columns that are on but stepped aside because the table is narrow, so the Columns menu can say why they are missing.
   const [crowded, setCrowded] = React.useState<DataTableColumn[]>([]);
   const crowdedColumns = () =>
     [...(columnsButton.current?.closest('table')?.querySelectorAll<HTMLElement>('th[data-column]') ?? [])]
@@ -724,9 +732,7 @@ function DataTable({
                       <DropdownMenuCheckboxItem
                         key={column.id}
                         checked={!hidden.includes(column.id)}
-                        onCheckedChange={(checked) =>
-                          setHidden(checked ? hidden.filter((id) => id !== column.id) : [...hidden, column.id])
-                        }
+                        onCheckedChange={(checked) => setColumnHidden(column.id, !checked)}
                       >
                         {column.label}
                         {crowded.includes(column.id) ? (
@@ -927,7 +933,6 @@ function DataTable({
             ) : null}
             {onAction
               ? bulkActions(allPaused).map(({ action, label, icon: Icon }) => (
-                  // In a narrow table the bar keeps one line: the buttons show their icon and keep their name for screen readers.
                   <Button
                     key={action}
                     variant={action === 'delete' ? 'destructive' : 'secondary'}
@@ -954,21 +959,19 @@ function DataTable({
         {loading ? null : (
           <Pagination
             aria-label="Pages of projects"
-            page={currentPage}
+            page={page}
             onPageChange={setPage}
             total={visible.length}
             pageSize={pageSize}
             className="ms-auto gap-x-3"
           >
             <PaginationStatus>
-              {({ total = 0 }) =>
+              {({ from: first, to: last, total = 0 }) =>
                 total === 0
                   ? 'No projects'
                   : total <= pageSize
-                    ? filtering
-                      ? `${count.format(total)} of ${plural(rows.length, 'project')}`
-                      : plural(total, 'project')
-                    : `${count.format(from)}–${count.format(to)} of ${plural(total, 'project')}`
+                    ? plural(total, 'project')
+                    : `${count.format(first)}–${count.format(last)} of ${plural(total, 'project')}`
               }
             </PaginationStatus>
             <div className="flex items-center gap-1">
@@ -980,7 +983,7 @@ function DataTable({
       </div>
 
       <div aria-live="polite" className="sr-only">
-        {selected.length ? `${plural(selected.length, 'project')} selected` : ''}
+        {selected.length ? `${plural(selected.length, 'project')} selected` : announcedSelection ? 'No projects selected' : ''}
       </div>
     </div>
   );

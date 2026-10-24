@@ -8,4 +8,4 @@ date: 2026-10-25
 - **Column menus**: a header opens a menu to sort its column either way or hide it, in place of sorting on click. The Columns button at the end of the header row brings hidden columns back. Plan, Platform and Status sort too.
 - **Pages**: ten rows to a page (`pageSize`), with previous and next in the footer, back to page 1 after a new search, filter or sort. The header checkbox now selects the rows on the page, and the bulk bar offers Select all for the rest.
 - **Status dots**: the status column uses [Status dot](/docs/components/status) in the status tints.
-- **State you can hold**: `query`, `filters` and `hiddenColumns` take a value with its `on…Change`, or a `default…` to let the table keep them. `page` pairs with `onPageChange`.
+- **State you can hold**: `query`, `filters`, `hiddenColumns` and `page` take a value with its `on…Change`, or a `default…` to let the table keep them. Hiding the sorted column clears the sort, so `onSortChange` can now get `null`.
