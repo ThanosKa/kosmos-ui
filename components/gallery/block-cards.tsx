@@ -57,7 +57,7 @@ export function AppFrame() {
         >
           <div className="p-4">
             <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-              <DataTable query={query} status={tab as 'all' | ProjectStatus} filters={filters} />
+              <DataTable toolbar={false} query={query} status={tab as 'all' | ProjectStatus} filters={filters} />
             </div>
           </div>
         </PageHeader>
