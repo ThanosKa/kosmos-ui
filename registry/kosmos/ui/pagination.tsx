@@ -192,7 +192,7 @@ function PaginationLink({ page: target, className, 'aria-label': ariaLabel, ...d
     className: cn(
       'w-auto min-w-7.5 px-1 text-muted-foreground tabular-nums transition-[background-color,color]',
       'hover:not-data-disabled:text-foreground',
-      'data-active:bg-accent data-active:text-active-foreground hover:data-active:not-data-disabled:text-active-foreground',
+      'data-active:bg-accent data-active:text-accent-text hover:data-active:not-data-disabled:text-accent-text',
       className,
     ),
     children: numberFormat.format(target),
