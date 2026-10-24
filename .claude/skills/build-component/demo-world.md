@@ -40,7 +40,7 @@ A plan is a category, so it is a tag (Badge hue variant) and keeps its hue every
 
 A project is one customer site or app sending events. Fields, in this order: `id`, `name`, `domain`, `platform` (`web` | `ios` | `android` | `server`), `plan` (`free` | `pro` | `scale`), `status` (`live` | `trial` | `paused`), `users` (monthly active users), `events` (last 30 days), `mrr` (USD; 0 on Free and on a trial), `lastEventAt` (ISO date).
 
-Status colors a dot beside its label: `live` is `success`, `trial` is `muted-foreground`, `paused` is `warning`. Platform shows as text with an icon (lucide `Globe`, `Smartphone` for iOS and Android, `Server`), never as a tag.
+Status is a `StatusDot` beside its label: `live` is green (`done`), `trial` gray (`pending`), `paused` orange (`waiting`). Platform shows as text with an icon (lucide `Globe`, `Smartphone` for iOS and Android, `Server`), never as a tag.
 
 A block that needs fewer rows takes the first ones, in this order:
 
@@ -169,7 +169,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Detail drawer | One project: plan, platform, status, its event quota, its events trend, notes and the team's activity on it. |
 | Kanban board | The roadmap above. |
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
-| App sidebar | The workspace switcher; nav Overview, Projects, Events, Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
+| App sidebar | The workspace switcher; nav Overview, Projects, Events (a submenu: Live events, Funnels and Alerts), Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
 | Auth forms | The way into Acme itself, not a customer's app: "Log in to Acme", "Create your Acme account" (on the Free plan), a 6-digit email code sent to lena@acme.example, and a password reset. Email placeholders read `name@acme.example`; the review preview's filled forms use the team's addresses. |
 | Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
 | Hero | The top of the Acme website: title, one line, two actions and the install command (Marketing site below). |

@@ -3,14 +3,13 @@
   "name": "app-sidebar",
   "type": "registry:block",
   "title": "App sidebar",
-  "description": "A dashboard sidebar: workspace switcher, search with a keyboard hint, main pages, saved views with counts, help and settings links, and a user menu. Collapses to a column of icons with tooltips, resizes, and opens as a drawer on phones.",
+  "description": "A dashboard sidebar: workspace switcher, search with a keyboard hint, main pages with a submenu, saved views with counts, help and settings links, and a user menu. Collapses to a column of icons with tooltips and submenu popovers, resizes, and opens as a drawer on phones.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/sidebar",
     "@kosmos/dropdown-menu",
-    "@kosmos/avatar",
     "@kosmos/kbd"
   ],
   "categories": ["app-sidebar"],
