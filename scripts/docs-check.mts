@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { globSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
+import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/index.ts';
 import { readProVariants } from '../lib/registry.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
 import { openSitePage, serverBase, serverOptions } from './site.mts';
@@ -696,7 +697,7 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="dashboard"]');
       const iframe = section.locator('iframe');
-      await iframe.contentFrame().locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      await iframe.contentFrame().locator('[data-preview-ready]').waitFor({ state: 'attached' });
       const look = (target: 'page' | 'dashboard') =>
         (target === 'page' ? page.locator('html') : iframe.contentFrame().locator('html')).evaluate((html) => {
           const style = getComputedStyle(html);
@@ -727,7 +728,7 @@ const checks: Check[] = [
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
       const frame = page.locator('[data-landing-section="dashboard"] iframe').contentFrame();
-      await frame.locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
       const frameOverflow = await frame.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth);
       assert.ok(frameOverflow <= 0, `the dashboard scrolls ${frameOverflow}px sideways`);
       const cut = await frame.locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
@@ -735,6 +736,105 @@ const checks: Check[] = [
       );
       assert.deepEqual(cut, [], 'truncated metric text');
       await page.screenshot({ path: '.screenshots/landing-check-375.png', fullPage: true });
+      await close();
+    },
+  },
+  {
+    name: 'the Presets page shows a preset on its preview only, and its address opens the same preview',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=soft&accent=off&radius=6&theme=dark');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      const look = (html: ReturnType<Page['locator']>) =>
+        html.evaluate((root) => {
+          const style = getComputedStyle(root);
+          return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: root.classList.contains('dark') };
+        });
+      const soft = chosenPreset({ preset: 'soft', accent: false, radius: '6' });
+      assert.deepEqual(await look(frame.locator('html')), { ring: presetPalette(soft, 'dark').ring, radius: '0.375rem', dark: true }, 'the preview opens the address');
+      const pageLook = await look(page.locator('html'));
+      assert.equal(pageLook.dark, false, 'the site keeps its own theme');
+      assert.notEqual(pageLook.radius, '0.375rem', 'the site keeps its own radius');
+      await page.locator('aside').getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Night' }).click();
+      await page.waitForURL((url) => url.search === '?preset=night&theme=dark');
+      await page.waitForFunction(() => {
+        const frame = document.querySelector<HTMLIFrameElement>('iframe[src="/preset-preview"]');
+        return frame?.contentDocument && getComputedStyle(frame.contentDocument.documentElement).getPropertyValue('--radius').trim() === '0.5rem';
+      });
+      assert.deepEqual(await look(page.locator('html')), pageLook, 'the site keeps its own look after a change');
+      await close();
+    },
+  },
+  {
+    name: 'Get code on the Presets page gives the CSS the preview applies, its registry item and its DESIGN.md',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=console&radius=0');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await page.getByRole('button', { name: 'Get code' }).click();
+      const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
+      const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
+      const expected = presetCss(chosenPreset({ preset: 'console', accent: true, radius: '0' })).trim();
+      assert.equal((await code())?.trim(), expected, 'the CSS tab');
+      assert.equal((await frame.locator('#preview-preset').textContent())?.trim(), expected, 'the CSS the preview applies');
+      await dialog.getByRole('tab', { name: 'Registry' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
+      assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
+      const item = await fetchText('/r/preset-console-radius-0.json');
+      assert.equal(JSON.parse(item).cssVars.light.radius, '0rem', 'the registry item');
+      await dialog.getByRole('tab', { name: 'DESIGN.md' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: '## Palette' }).first().waitFor();
+      assert.match((await code()) ?? '', /^# Console preset/, 'the DESIGN.md tab');
+      await close();
+    },
+  },
+  {
+    name: "the Presets page preview's menus, dialogs and toasts take the preset",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=warm');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await frame.getByRole('button', { name: 'Show toast' }).click();
+      const popover = presetPalette(presets.find((preset) => preset.id === 'warm')!, 'light').popover;
+      const fill = (selector: string) =>
+        frame.locator(selector).first().evaluate((element, color) => {
+          const probe = document.body.appendChild(document.createElement('span'));
+          probe.style.color = color;
+          const expected = getComputedStyle(probe).color;
+          probe.remove();
+          return { actual: getComputedStyle(element).backgroundColor, expected };
+        }, popover);
+      const takesPreset = async (selector: string) => {
+        const { actual, expected } = await fill(selector);
+        assert.equal(actual, expected, `${selector} takes the Warm popover`);
+      };
+      await takesPreset('[data-slot="toast"]');
+      await page.getByRole('tablist', { name: 'Preview' }).getByRole('tab', { name: 'Dashboard' }).click();
+      await frame.getByRole('button', { name: /switch workspace/ }).click();
+      await takesPreset('[data-slot="dropdown-menu-content"]');
+      await frame.locator('body').press('Escape');
+      await frame.getByRole('link', { name: 'Roadmap' }).click();
+      await frame.getByRole('button', { name: 'New roadmap item' }).click();
+      await takesPreset('[data-slot="dialog-content"]');
+      await close();
+    },
+  },
+  {
+    name: 'the Presets page fits a 375px phone, its picker opens in a bottom sheet and works with the keyboard',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets', phone);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
+      await page.getByRole('button', { name: 'Customize' }).click();
+      const sheet = page.getByRole('dialog', { name: 'Customize' });
+      const presetGroup = sheet.getByRole('radiogroup', { name: 'Preset' });
+      await presetGroup.getByRole('radio', { name: 'Default' }).focus();
+      await page.keyboard.press('ArrowDown');
+      await page.waitForURL((url) => url.search === '?preset=warm');
+      assert.equal(await presetGroup.getByRole('radio', { name: 'Warm' }).getAttribute('aria-checked'), 'true', 'the arrow keys pick a preset');
+      await page.screenshot({ path: '.screenshots/presets-check-375.png' });
+      await page.keyboard.press('Escape');
+      await sheet.waitFor({ state: 'hidden' });
       await close();
     },
   },

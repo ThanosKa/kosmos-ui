@@ -8,7 +8,7 @@
  */
 import { useTheme } from 'next-themes';
 import * as React from 'react';
-import { chosenPreset, defaultChoice, presetCss, type PresetChoice } from '@/lib/presets';
+import { choiceParams, chosenPreset, presetCss, type PresetChoice } from '@/lib/presets';
 
 export type PreviewTheme = 'light' | 'dark';
 export type PreviewTokens = { choice: PresetChoice; theme: PreviewTheme };
@@ -108,8 +108,8 @@ export function usePreviewFrame(firstPage: string) {
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
-  const choice = tokens?.choice ?? defaultChoice();
-  const css = presetCss(chosenPreset(choice));
+  // The tokens already hold the Default preset as it ships, so it needs no CSS of its own.
+  const css = tokens && choiceParams(tokens.choice).size > 0 ? presetCss(chosenPreset(tokens.choice)) : '';
   React.useEffect(() => {
     if (tokens) withoutTransitions(() => (presetStyle().textContent = css));
   }, [tokens, css]);

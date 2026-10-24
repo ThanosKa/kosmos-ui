@@ -47,9 +47,9 @@ export function PresetsView({ initialChoice, initialTheme, runners, registryAdd 
     if (search !== window.location.search) window.history.replaceState(null, '', `${window.location.pathname}${search}`);
   }, [choice, themeChoice]);
 
-  const picker = (
+  const picker = (layout: 'row' | 'panel') => (
     <PresetPicker
-      layout="panel"
+      layout={layout}
       choice={choice}
       onChoiceChange={setChoice}
       theme={theme}
@@ -81,7 +81,7 @@ export function PresetsView({ initialChoice, initialTheme, runners, registryAdd 
               <DrawerHeader>
                 <DrawerTitle>Customize</DrawerTitle>
               </DrawerHeader>
-              <DrawerBody className="pb-5">{picker}</DrawerBody>
+              <DrawerBody className="pb-5">{picker('row')}</DrawerBody>
             </DrawerContent>
           </Drawer>
           <PresetCodeDialog choice={choice} runners={runners} registryAdd={registryAdd} />
@@ -89,7 +89,7 @@ export function PresetsView({ initialChoice, initialTheme, runners, registryAdd 
       </header>
       <div className="grid min-h-0 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <aside aria-label="Preset" className="max-lg:hidden">
-          <div className="sticky top-20">{picker}</div>
+          <div className="sticky top-20">{picker('panel')}</div>
         </aside>
         <Tabs value={screen} onValueChange={(value) => setScreen(String(value))} className="min-w-0 gap-3">
           <TabsList aria-label="Preview">

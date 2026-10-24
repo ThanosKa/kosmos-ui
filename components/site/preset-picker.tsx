@@ -71,7 +71,14 @@ export function PresetPicker({ choice, onChoiceChange, theme, onThemeChange, onR
             </SegmentedControlItem>
           ))}
         </SegmentedControl>
-        {panel ? <p className="text-small text-pretty text-muted-foreground">{preset.description}</p> : null}
+        {panel ? (
+          <p className="text-small text-pretty text-muted-foreground">{preset.description}</p>
+        ) : (
+          // The swatches alone don't say which preset is on, so a phone names it beside them.
+          <span aria-hidden className="text-small font-medium sm:hidden">
+            {preset.name}
+          </span>
+        )}
       </div>
       <div className={cn('flex items-center gap-2', panel && 'justify-between')}>
         {label('accent', 'Accent')}
