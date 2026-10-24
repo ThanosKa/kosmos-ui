@@ -8,7 +8,7 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 
 // Fixed locale, so the server and the browser render the same text.
-const count = new Intl.NumberFormat('en-US');
+const numberFormat = new Intl.NumberFormat('en-US');
 
 type PaginationContextValue = {
   page: number;
@@ -68,11 +68,13 @@ function Pagination({
   const [pageSizeState, setPageSizeState] = React.useState(defaultPageSize);
   const pageSize = pageSizeProp ?? pageSizeState;
   const pageCount = pageCountProp === undefined ? countPages(total ?? 0, pageSize) : Math.max(1, pageCountProp);
-  const page = clampPage(pageProp ?? pageState, pageCount);
+  const requestedPage = pageProp ?? pageState;
+  const page = clampPage(requestedPage, pageCount);
 
   const context = React.useMemo<PaginationContextValue>(() => {
     const setPage = (next: number) => {
       const clamped = clampPage(next, pageCount);
+      if (clamped === requestedPage) return;
       if (pageProp === undefined) setPageState(clamped);
       onPageChange?.(clamped);
     };
@@ -83,15 +85,20 @@ function Pagination({
       pageSize,
       setPage,
       setPageSize: (next) => {
+        if (next === pageSize) return;
         if (pageSizeProp === undefined) setPageSizeState(next);
         onPageSizeChange?.(next);
-        const nextPage = pageForPageSize(page, pageSize, next);
-        if (pageProp === undefined) setPageState(nextPage);
-        onPageChange?.(nextPage);
+        setPage(pageForPageSize(page, pageSize, next));
       },
       getPageHref,
     };
-  }, [page, pageCount, total, pageSize, pageProp, pageSizeProp, onPageChange, onPageSizeChange, getPageHref]);
+  }, [page, requestedPage, pageCount, total, pageSize, pageProp, pageSizeProp, onPageChange, onPageSizeChange, getPageHref]);
+
+  // A list that shrinks under the page, as after a filter, moves to its last page and says so,
+  // so the rows the parent slices match the page shown.
+  React.useEffect(() => {
+    if (requestedPage !== page) context.setPage(page);
+  }, [requestedPage, page, context]);
 
   return (
     <PaginationContext.Provider value={context}>
@@ -115,43 +122,42 @@ type PaginationStepProps = DataAttributes & {
   'aria-label'?: string;
 };
 
+const steps = {
+  previous: { part: 'PaginationPrevious', offset: -1, label: 'Previous page', rel: 'prev', iconFirst: true, padding: 'sm:ps-2 sm:pe-2.5' },
+  next: { part: 'PaginationNext', offset: 1, label: 'Next page', rel: 'next', iconFirst: false, padding: 'sm:ps-2.5 sm:pe-2' },
+};
+
 function PaginationStep({ direction, children, className, 'aria-label': ariaLabel, ...data }: PaginationStepProps) {
-  const { page, pageCount, setPage, getPageHref } = usePagination(direction === 'previous' ? 'PaginationPrevious' : 'PaginationNext');
-  const target = direction === 'previous' ? page - 1 : page + 1;
+  const step = steps[direction];
+  const { page, pageCount, setPage, getPageHref } = usePagination(step.part);
+  const target = page + step.offset;
   const atEnd = target < 1 || target > pageCount;
-  const content =
-    direction === 'previous' ? (
+  const Icon = direction === 'previous' ? ChevronLeft : ChevronRight;
+  const icon = <Icon aria-hidden className="rtl:rotate-180" />;
+  const label = children ? <span className="max-sm:sr-only">{children}</span> : null;
+  const buttonProps = {
+    size: 'icon' as const,
+    'data-slot': `pagination-${direction}`,
+    'aria-label': ariaLabel ?? (children ? undefined : step.label),
+    // Below 640px a labelled step keeps only its icon, so the row fits a phone; the label stays its name.
+    className: cn(children && ['sm:w-auto', step.padding], className),
+    children: step.iconFirst ? (
       <>
-        <ChevronLeft aria-hidden className="rtl:rotate-180" />
-        {children ? <span className="max-sm:sr-only">{children}</span> : null}
+        {icon}
+        {label}
       </>
     ) : (
       <>
-        {children ? <span className="max-sm:sr-only">{children}</span> : null}
-        <ChevronRight aria-hidden className="rtl:rotate-180" />
+        {label}
+        {icon}
       </>
-    );
-  const shared = {
-    size: 'icon' as const,
-    'data-slot': `pagination-${direction}`,
-    'aria-label': ariaLabel ?? (children ? undefined : direction === 'previous' ? 'Previous page' : 'Next page'),
-    // Below 640px a labelled step keeps only its icon, so the row fits a phone; the label stays its name.
-    className: cn(children && (direction === 'previous' ? 'sm:w-auto sm:ps-2 sm:pe-2.5' : 'sm:w-auto sm:ps-2.5 sm:pe-2'), className),
-    children: content,
+    ),
+    onClick: () => setPage(target),
     ...data,
   };
-  if (getPageHref && !atEnd)
-    return (
-      <Button
-        variant="secondary"
-        {...shared}
-        href={getPageHref(target)}
-        rel={direction === 'previous' ? 'prev' : 'next'}
-        onClick={() => setPage(target)}
-      />
-    );
+  if (getPageHref && !atEnd) return <Button variant="secondary" {...buttonProps} href={getPageHref(target)} rel={step.rel} />;
   // At the ends the step stays in the tab order, so focus never drops to the page when the last click reaches the end.
-  return <Button variant="secondary" {...shared} disabled={atEnd} focusableWhenDisabled onClick={() => setPage(target)} />;
+  return <Button variant="secondary" {...buttonProps} disabled={atEnd} focusableWhenDisabled />;
 }
 
 type PaginationStepPartProps = Omit<PaginationStepProps, 'direction'>;
@@ -177,7 +183,7 @@ type PaginationLinkProps = DataAttributes & {
 function PaginationLink({ page: target, className, 'aria-label': ariaLabel, ...data }: PaginationLinkProps) {
   const { page, setPage, getPageHref } = usePagination('PaginationLink');
   const current = target === page;
-  const shared = {
+  const buttonProps = {
     size: 'icon' as const,
     'data-slot': 'pagination-link',
     'data-active': current ? '' : undefined,
@@ -189,11 +195,12 @@ function PaginationLink({ page: target, className, 'aria-label': ariaLabel, ...d
       'data-active:bg-accent data-active:text-active-foreground hover:data-active:not-data-disabled:text-active-foreground',
       className,
     ),
-    children: count.format(target),
+    children: numberFormat.format(target),
+    onClick: () => setPage(target),
     ...data,
   };
-  if (getPageHref) return <Button variant="item" {...shared} href={getPageHref(target)} onClick={() => setPage(target)} />;
-  return <Button variant="item" {...shared} onClick={() => setPage(target)} />;
+  if (getPageHref) return <Button variant="item" {...buttonProps} href={getPageHref(target)} />;
+  return <Button variant="item" {...buttonProps} />;
 }
 
 /** Stands for the pages hidden between two shown ones. */
@@ -226,13 +233,13 @@ function PaginationPages({ siblings = 1, pageLabel, className, ...props }: Pagin
   return (
     <ul data-slot="pagination-pages" className={cn('flex items-center gap-1', className)} {...props}>
       {paginationItemsByWidth(page, pageCount, siblings).map(({ item, wide, narrow }) => {
-        const shows = cn(!wide && 'sm:hidden', !narrow && 'max-sm:hidden');
+        const widths = cn(!wide && 'sm:hidden', !narrow && 'max-sm:hidden');
         return typeof item === 'number' ? (
-          <li key={item} className={shows}>
+          <li key={item} className={widths}>
             <PaginationLink page={item} aria-label={pageLabel?.(item)} />
           </li>
         ) : (
-          <li key={item} aria-hidden className={shows}>
+          <li key={item} aria-hidden className={widths}>
             <PaginationEllipsis />
           </li>
         );
@@ -242,31 +249,33 @@ function PaginationPages({ siblings = 1, pageLabel, className, ...props }: Pagin
 }
 
 type PaginationStatusProps = Omit<React.ComponentProps<'p'>, 'children'> & {
+  /** `rows` shows the rows in view ("21–30 of 2,450") and needs `total` on Pagination; `pages` shows "Page 3 of 12". */
+  show?: 'rows' | 'pages';
   /** Your own text, for another language: gets the page, the page count and, with `total`, the rows in view. */
   children?: (status: { page: number; pageCount: number; from: number; to: number; total?: number }) => React.ReactNode;
 };
 
 /**
- * Where the list stands: "Page 3 of 12", or "21–30 of 2,450" when Pagination has `total`.
+ * Where the list stands: "21–30 of 2,450" when Pagination has `total`, otherwise "Page 3 of 12".
  * Screen readers hear it change, since focus stays on the button that turned the page.
  */
-function PaginationStatus({ children, className, ...props }: PaginationStatusProps) {
+function PaginationStatus({ show, children, className, ...props }: PaginationStatusProps) {
   const { page, pageCount, total, pageSize } = usePagination('PaginationStatus');
   const { from, to } = pageRows(page, pageSize, total ?? 0);
-  const value = (n: number) => <span className="font-medium text-foreground">{count.format(n)}</span>;
+  const strong = (n: number) => <span className="font-medium text-foreground">{numberFormat.format(n)}</span>;
   let text: React.ReactNode;
   if (children) text = children({ page, pageCount, from, to, total });
-  else if (total === undefined)
+  else if (total === undefined || show === 'pages')
     text = (
       <>
-        Page {value(page)} of {value(pageCount)}
+        Page {strong(page)} of {strong(pageCount)}
       </>
     );
   else if (total === 0) text = 'No rows';
   else
     text = (
       <>
-        {value(from)}–{value(to)} of {value(total)}
+        {strong(from)}–{strong(to)} of {strong(total)}
       </>
     );
   return (
@@ -295,7 +304,7 @@ type PaginationPageSizeProps = Omit<React.ComponentProps<'div'>, 'children'> & {
 function PaginationPageSize({ options = [10, 25, 50, 100], label = 'Rows per page', className, ...props }: PaginationPageSizeProps) {
   const { pageSize, setPageSize } = usePagination('PaginationPageSize');
   const labelId = React.useId();
-  const items = options.map((size) => ({ value: size, label: count.format(size) }));
+  const items = options.map((size) => ({ value: size, label: numberFormat.format(size) }));
   return (
     <div data-slot="pagination-page-size" className={cn('flex items-center gap-2', className)} {...props}>
       <span id={labelId} className="text-small whitespace-nowrap text-muted-foreground">
@@ -362,19 +371,19 @@ function PaginationLoadMore({ shown, total, onLoadMore, loading = false, classNa
             <ArrowDown aria-hidden data-icon="inline-start" />
           )}
           Load more
-          <span className="font-normal text-muted-foreground tabular-nums">{count.format(remaining)} left</span>
+          <span className="font-normal text-muted-foreground tabular-nums">{numberFormat.format(remaining)} left</span>
         </Button>
       ) : empty ? null : (
         <p
           ref={doneRef}
           tabIndex={-1}
-          className="rounded-sm text-small text-muted-foreground tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="rounded-lg text-small text-muted-foreground tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          All {count.format(total)} shown
+          All {numberFormat.format(total)} shown
         </p>
       )}
       <p aria-live="polite" className="sr-only">
-        {loading ? 'Loading more' : empty ? '' : `Showing ${count.format(shown)} of ${count.format(total)}`}
+        {loading ? 'Loading more' : empty ? '' : `Showing ${numberFormat.format(shown)} of ${numberFormat.format(total)}`}
       </p>
     </div>
   );

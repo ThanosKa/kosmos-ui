@@ -1,7 +1,7 @@
-// Usage: node --test registry/kosmos/lib/paging.test.mts
+// Usage: node --test lib/paging.test.mts
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { clampPage, pageCount, pageForPageSize, pageRows, paginationItems, paginationItemsByWidth } from './paging.ts';
+import { clampPage, pageCount, pageForPageSize, pageRows, paginationItems, paginationItemsByWidth } from '../registry/kosmos/lib/paging.ts';
 
 test('a short list shows every page', () => {
   assert.deepEqual(paginationItems(3, 5), [1, 2, 3, 4, 5]);

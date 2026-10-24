@@ -132,8 +132,9 @@ export default function PaginationPreview() {
         <TableFooter total={2450} initialPage={3} />
         <TableFooter total={1_284_906} initialPage={128_491} />
         <TableFooter total={0} initialPage={1} />
-        <Controlled initialPage={3} pageCount={12}>
-          <PaginationStatus />
+        <TableFooter total={36} initialPage={9} />
+        <Controlled initialPage={3} total={2450}>
+          <PaginationStatus show="pages" />
           <div className="flex items-center gap-1">
             <PaginationPrevious />
             <PaginationNext />
