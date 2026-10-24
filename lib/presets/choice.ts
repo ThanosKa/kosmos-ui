@@ -12,7 +12,8 @@ export const presetRadii = ['0', '6', '8', '10', '16'] as const;
 
 const pixels = (radius: string) => String(Number.parseFloat(radius) * 16);
 const rem = (radius: string) => `${Number(radius) / 16}rem`;
-const find = (id: string | null) => presets.find((preset) => preset.id === id);
+/** The preset with this id, or the default when there is none. */
+export const presetById = (id: string | null): Preset => presets.find((preset) => preset.id === id) ?? presets[0];
 
 /** The preset as it ships: its accent on, its own radius. */
 export function defaultChoice(preset: Preset = presets[0]): PresetChoice {
@@ -21,13 +22,13 @@ export function defaultChoice(preset: Preset = presets[0]): PresetChoice {
 
 /** The preset a choice makes, which its preview, CSS, registry item and DESIGN.md are all written from. */
 export function chosenPreset(choice: PresetChoice): Preset {
-  const preset = find(choice.preset) ?? presets[0];
+  const preset = presetById(choice.preset);
   return { ...preset, accent: choice.accent ? preset.accent : undefined, radius: rem(choice.radius) };
 }
 
 /** The search params of a choice, leaving out what the preset already has, so the Default as it ships has none. */
 export function choiceParams(choice: PresetChoice): URLSearchParams {
-  const preset = find(choice.preset) ?? presets[0];
+  const preset = presetById(choice.preset);
   const shipped = defaultChoice(preset);
   const params = new URLSearchParams();
   if (preset !== presets[0]) params.set('preset', preset.id);
@@ -38,7 +39,7 @@ export function choiceParams(choice: PresetChoice): URLSearchParams {
 
 /** The choice a URL names. A value the picker does not offer falls back to the preset as it ships. */
 export function choiceFromParams(params: URLSearchParams): PresetChoice {
-  const preset = find(params.get('preset')) ?? presets[0];
+  const preset = presetById(params.get('preset'));
   const choice = defaultChoice(preset);
   if (preset.accent && params.get('accent') === 'off') choice.accent = false;
   const radius = presetRadii.find((value) => value === params.get('radius'));
@@ -46,7 +47,7 @@ export function choiceFromParams(params: URLSearchParams): PresetChoice {
   return choice;
 }
 
-/** Every choice the picker offers. */
+/** Every choice the picker offers, one registry item each. */
 export function presetChoices(): PresetChoice[] {
   return presets.flatMap((preset) =>
     (preset.accent ? [true, false] : [false]).flatMap((accent) => presetRadii.map((radius) => ({ preset: preset.id, accent, radius }))),

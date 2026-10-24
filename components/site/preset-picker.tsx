@@ -3,15 +3,14 @@
 import { Moon, RotateCcw, Sun } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/lib/cn';
-import { defaultChoice, presetPalette, presetRadii, presets, type Preset, type PresetChoice } from '@/lib/presets';
+import { defaultChoice, presetById, presetPalette, presetRadii, presets, type Mode, type Preset, type PresetChoice } from '@/lib/presets';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Switch } from '@/registry/kosmos/ui/switch';
-import type { PreviewTheme } from './preset-frame';
 
 /** The preset's mark: its accent, or its ink when it has none, in the page's own mode. */
 function PresetSwatch({ preset }: { preset: Preset }) {
-  const color = (mode: 'light' | 'dark') => (preset.accent ? presetPalette(preset, mode).ring : preset[mode].primary);
+  const color = (mode: Mode) => (preset.accent ? presetPalette(preset, mode).ring : preset[mode].primary);
   return (
     <span
       aria-hidden
@@ -24,12 +23,12 @@ function PresetSwatch({ preset }: { preset: Preset }) {
 type PresetPickerProps = {
   choice: PresetChoice;
   onChoiceChange: (choice: PresetChoice) => void;
-  /** The preview's theme; none until the page knows its own. */
-  theme: PreviewTheme | undefined;
-  onThemeChange: (theme: PreviewTheme) => void;
-  /** Back to the Default preset and the page's theme. */
+  /** The preview's mode; none until the page knows its own. */
+  mode: Mode | undefined;
+  onModeChange: (mode: Mode) => void;
+  /** Back to the Default preset and the page's mode. */
   onReset: () => void;
-  /** `row` for a toolbar over the preview, `panel` for a column beside it or a sheet. */
+  /** `row` for a toolbar over the preview or a phone sheet below it, `panel` for a column beside it. */
   layout?: 'row' | 'panel';
   className?: string;
 };
@@ -38,9 +37,9 @@ type PresetPickerProps = {
  * The controls of a preset preview: preset, accent, radius, theme and Reset. Picking a preset starts from it as it
  * ships, its accent on and its own radius; the accent and radius then change it.
  */
-export function PresetPicker({ choice, onChoiceChange, theme, onThemeChange, onReset, layout = 'row', className }: PresetPickerProps) {
+export function PresetPicker({ choice, onChoiceChange, mode, onModeChange, onReset, layout = 'row', className }: PresetPickerProps) {
   const id = React.useId();
-  const preset = presets.find((item) => item.id === choice.preset) ?? presets[0];
+  const preset = presetById(choice.preset);
   const panel = layout === 'panel';
   const control = panel ? 'flex flex-col gap-2' : 'flex items-center gap-2';
   const label = (name: string, text: string) => (
@@ -60,7 +59,7 @@ export function PresetPicker({ choice, onChoiceChange, theme, onThemeChange, onR
         <SegmentedControl
           aria-labelledby={`${id}-preset`}
           value={preset.id}
-          onValueChange={(value) => onChoiceChange(defaultChoice(presets.find((item) => item.id === value)))}
+          onValueChange={(value) => onChoiceChange(defaultChoice(presetById(value)))}
           className={cn(panel && 'w-full flex-col')}
         >
           {presets.map((item) => (
@@ -114,8 +113,8 @@ export function PresetPicker({ choice, onChoiceChange, theme, onThemeChange, onR
         {label('theme', 'Theme')}
         <SegmentedControl
           aria-labelledby={`${id}-theme`}
-          value={theme ?? ''}
-          onValueChange={(value) => onThemeChange(value as PreviewTheme)}
+          value={mode ?? ''}
+          onValueChange={(value) => onModeChange(value === 'dark' ? 'dark' : 'light')}
           className={cn(panel && 'w-full')}
         >
           <SegmentedControlItem value="light" aria-label={panel ? undefined : 'Light'}>

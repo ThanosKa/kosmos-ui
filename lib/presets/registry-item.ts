@@ -1,11 +1,10 @@
-import { chosenPreset, defaultChoice, type PresetChoice } from './choice.ts';
-import { presets } from './list.ts';
+import { chosenPreset, choiceParams, type PresetChoice } from './choice.ts';
 import { presetPalette } from './palette.ts';
 
-/** What a choice changes on its preset as it ships. */
+/** What a choice changes on its preset as it ships: what its address names. */
 function changes(choice: PresetChoice) {
-  const shipped = defaultChoice(presets.find((preset) => preset.id === choice.preset) ?? presets[0]);
-  return { accent: choice.accent !== shipped.accent, radius: choice.radius !== shipped.radius };
+  const params = choiceParams(choice);
+  return { accent: params.has('accent'), radius: params.has('radius') };
 }
 
 /** The name of a choice's registry item: `preset-<id>` as the preset ships, then what the choice changes. */

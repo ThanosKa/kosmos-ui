@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: { ...siteOpenGraph, title: 'Presets', description, url: '/presets' },
 };
 
-const themes = ['light', 'dark'] as const;
+const modes = ['light', 'dark'] as const;
 
 /** `/presets`: the Presets page. `?preset=&accent=&radius=&theme=` open a choice, so a link shares it. */
 export default async function PresetsPage(props: PageProps<'/presets'>) {
@@ -25,7 +25,7 @@ export default async function PresetsPage(props: PageProps<'/presets'>) {
   return (
     <PresetsView
       initialChoice={choiceFromParams(params)}
-      initialTheme={themes.find((theme) => theme === params.get('theme')) ?? null}
+      initialMode={modes.find((mode) => mode === params.get('theme')) ?? null}
       runners={packageRunners}
       registryAdd={registryAddArgs}
     />

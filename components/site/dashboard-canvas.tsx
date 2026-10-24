@@ -1,9 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { defaultChoice, type PresetChoice } from '@/lib/presets';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
-import { usePageTheme, usePreviewHost, type PreviewTheme } from './preset-frame';
+import { usePresetPreview } from './preset-frame';
 import { PresetPicker } from './preset-picker';
 
 /** The dashboard pages the screen tabs switch between, in their order: sidebar item ids. */
@@ -21,12 +20,7 @@ const dashboardScreens = [
 export function DashboardCanvas() {
   const frame = React.useRef<HTMLIFrameElement>(null);
   const [screen, setScreen] = React.useState<string>(dashboardScreens[0].id);
-  const [choice, setChoice] = React.useState<PresetChoice>(defaultChoice);
-  const [themeChoice, setThemeChoice] = React.useState<PreviewTheme | null>(null);
-  const pageTheme = usePageTheme();
-  const theme = themeChoice ?? pageTheme;
-  const tokens = React.useMemo(() => (theme ? { choice, theme } : null), [choice, theme]);
-  usePreviewHost(frame, { tokens, page: screen, onPage: setScreen });
+  const { choice, setChoice, mode, setMode, reset } = usePresetPreview(frame, { page: screen, onPage: setScreen });
 
   return (
     <Tabs value={screen} onValueChange={(value) => setScreen(String(value))} className="gap-3">
@@ -41,12 +35,9 @@ export function DashboardCanvas() {
         <PresetPicker
           choice={choice}
           onChoiceChange={setChoice}
-          theme={theme}
-          onThemeChange={setThemeChoice}
-          onReset={() => {
-            setChoice(defaultChoice());
-            setThemeChoice(null);
-          }}
+          mode={mode}
+          onModeChange={setMode}
+          onReset={reset}
           className="pb-0.5"
         />
       </div>

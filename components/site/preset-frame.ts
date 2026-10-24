@@ -8,17 +8,17 @@
  */
 import { useTheme } from 'next-themes';
 import * as React from 'react';
-import { choiceParams, chosenPreset, presetCss, type PresetChoice } from '@/lib/presets';
+import { choiceParams, chosenPreset, defaultChoice, presetCss, type Mode, type PresetChoice } from '@/lib/presets';
 
-export type PreviewTheme = 'light' | 'dark';
-export type PreviewTokens = { choice: PresetChoice; theme: PreviewTheme };
+/** What the preview shows: the preset choice, in light or dark. */
+export type PreviewState = { choice: PresetChoice; mode: Mode };
 
 const hostSource = 'kosmos-site';
 const frameSource = 'kosmos-preview';
 
 type HostMessage =
   | { source: typeof hostSource; type: 'hello' }
-  | { source: typeof hostSource; type: 'tokens'; tokens: PreviewTokens }
+  | { source: typeof hostSource; type: 'state'; state: PreviewState }
   | { source: typeof hostSource; type: 'page'; page: string };
 
 type FrameMessage = { source: typeof frameSource; type: 'ready' } | { source: typeof frameSource; type: 'page'; page: string };
@@ -42,21 +42,35 @@ function readMessage<M extends HostMessage | FrameMessage>(event: MessageEvent, 
 
 const noSubscription = () => () => {};
 
-/** The site page's own theme, once hydrated: the server can't know the stored theme. */
-export function usePageTheme(): PreviewTheme | undefined {
+/** The site page's own mode, once hydrated: the server can't know the stored theme. */
+function usePageMode(): Mode | undefined {
   const { resolvedTheme } = useTheme();
   const hydrated = React.useSyncExternalStore(noSubscription, () => true, () => false);
   return hydrated && (resolvedTheme === 'dark' || resolvedTheme === 'light') ? resolvedTheme : undefined;
 }
 
+type PresetPreviewOptions = {
+  /** The screen the frame shows; screens a visitor opens inside the frame come back through `onPage`. */
+  page: string;
+  onPage: (page: string) => void;
+  initialChoice?: PresetChoice;
+  /** A mode picked before, such as one in the address; none follows the page. */
+  initialMode?: Mode | null;
+};
+
 /**
- * The page side: sends `tokens` and `page` to the frame each time either changes or the frame loads again, and
- * reports the screens a visitor opens inside the frame through `onPage`. Nothing is sent before `tokens` exists.
+ * The page side of a preset preview: the choice and the mode a visitor picks, sent with the screen to the frame
+ * each time one changes or the frame loads again. Until the visitor picks a mode the preview follows the page's own.
  */
-export function usePreviewHost(
+export function usePresetPreview(
   frame: React.RefObject<HTMLIFrameElement | null>,
-  { tokens, page, onPage }: { tokens: PreviewTokens | null; page: string; onPage: (page: string) => void },
+  { page, onPage, initialChoice = defaultChoice(), initialMode = null }: PresetPreviewOptions,
 ) {
+  const [choice, setChoice] = React.useState(initialChoice);
+  const [pickedMode, setPickedMode] = React.useState(initialMode);
+  const pageMode = usePageMode();
+  const mode = pickedMode ?? pageMode;
+  const state = React.useMemo(() => (mode ? { choice, mode } : null), [choice, mode]);
   // Counts the frame's loads: each fresh document starts on its first screen with the Kosmos defaults and needs both again.
   const [loads, setLoads] = React.useState(0);
   const onPageRef = React.useRef(onPage);
@@ -78,21 +92,28 @@ export function usePreviewHost(
   }, [frame]);
 
   React.useEffect(() => {
-    if (loads > 0 && tokens) toFrame(frame.current, { type: 'tokens', tokens });
-  }, [frame, loads, tokens]);
+    if (loads > 0 && state) toFrame(frame.current, { type: 'state', state });
+  }, [frame, loads, state]);
 
   // The page leads: a "ready" can arrive after a screen was chosen (the reply to "hello"), so each load is sent the screen.
   React.useEffect(() => {
     if (loads > 0) toFrame(frame.current, { type: 'page', page });
   }, [frame, loads, page]);
+
+  const reset = React.useCallback(() => {
+    setChoice(defaultChoice());
+    setPickedMode(null);
+  }, []);
+
+  return { choice, setChoice, mode, pickedMode, setMode: setPickedMode, reset };
 }
 
 /**
- * The frame side: the tokens and the screen the page sends. Until the first tokens arrive the document keeps the
+ * The frame side: the state and the screen the page sends. Until the first state arrives the document keeps the
  * Kosmos defaults and the stored site theme; after that it writes the chosen preset's CSS on its root.
  */
 export function usePreviewFrame(firstPage: string) {
-  const [tokens, setTokens] = React.useState<PreviewTokens | null>(null);
+  const [state, setState] = React.useState<PreviewState | null>(null);
   const [page, setPage] = React.useState(firstPage);
 
   React.useEffect(() => {
@@ -100,7 +121,7 @@ export function usePreviewFrame(firstPage: string) {
       const message = readMessage<HostMessage>(event, hostSource);
       if (!message) return;
       if (message.type === 'hello') toHost({ type: 'ready' });
-      else if (message.type === 'tokens') setTokens(message.tokens);
+      else if (message.type === 'state') setState(message.state);
       else setPage(message.page);
     };
     window.addEventListener('message', onMessage);
@@ -109,17 +130,17 @@ export function usePreviewFrame(firstPage: string) {
   }, []);
 
   // The tokens already hold the Default preset as it ships, so it needs no CSS of its own.
-  const css = tokens && choiceParams(tokens.choice).size > 0 ? presetCss(chosenPreset(tokens.choice)) : '';
+  const css = state && choiceParams(state.choice).size > 0 ? presetCss(chosenPreset(state.choice)) : '';
   React.useEffect(() => {
-    if (tokens) withoutTransitions(() => (presetStyle().textContent = css));
-  }, [tokens, css]);
+    if (state) withoutTransitions(() => (presetStyle().textContent = css));
+  }, [state, css]);
 
   const openPage = React.useCallback((next: string) => {
     setPage(next);
     toHost({ type: 'page', page: next });
   }, []);
 
-  return { tokens, page, openPage };
+  return { state, page, openPage };
 }
 
 /** The style element that holds the preset's CSS, after the tokens so it wins over them. */
@@ -132,7 +153,7 @@ function presetStyle() {
   return style;
 }
 
-/** Applies a token change in one frame, as `disableTransitionOnChange` does for the theme. */
+/** Applies a preset change in one frame, as `disableTransitionOnChange` does for the theme. */
 function withoutTransitions(change: () => void) {
   const style = document.createElement('style');
   style.textContent = '*,*::before,*::after{transition:none!important}';

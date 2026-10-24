@@ -3,7 +3,7 @@ import { paletteSections, presetPalette, type Palette, type Preset } from './pal
 
 export { defaultPreset, presetPalette };
 export { presets } from './list.ts';
-export { chosenPreset, choiceFromParams, choiceParams, defaultChoice, presetChoices, presetRadii, type PresetChoice } from './choice.ts';
+export { chosenPreset, choiceFromParams, choiceParams, defaultChoice, presetById, presetChoices, presetRadii, type PresetChoice } from './choice.ts';
 export { presetDesignMd } from './design-md.ts';
 export { presetItemName, presetRegistryItem } from './registry-item.ts';
 export type { Accent, Mode, Palette, PaletteToken, Preset } from './palette.ts';

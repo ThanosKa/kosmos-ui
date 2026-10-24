@@ -62,10 +62,10 @@ function Forms() {
  * dashboard. The preset the page sends applies to this document's root, so its menus, dialogs and toasts take it too.
  */
 export function PresetPreviewDocument() {
-  const { tokens, page } = usePreviewFrame(presetScreens[0].id);
+  const { state, page } = usePreviewFrame(presetScreens[0].id);
   const [dashboardPage, setDashboardPage] = React.useState('overview');
   return (
-    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange forcedTheme={tokens?.theme}>
+    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange forcedTheme={state?.mode}>
       <TooltipProvider>
         {page === 'dashboard' ? (
           <DashboardShowcase page={dashboardPage} onPageChange={setDashboardPage} />
@@ -74,7 +74,7 @@ export function PresetPreviewDocument() {
         )}
         <Toaster />
       </TooltipProvider>
-      <span data-preview-ready={tokens ? '' : undefined} hidden />
+      <span data-preview-ready={state ? '' : undefined} hidden />
     </ThemeProvider>
   );
 }

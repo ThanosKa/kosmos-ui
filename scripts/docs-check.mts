@@ -825,8 +825,8 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/presets', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      await page.getByRole('button', { name: 'Customize' }).click();
-      const sheet = page.getByRole('dialog', { name: 'Customize' });
+      await page.getByRole('button', { name: 'Preset', exact: true }).click();
+      const sheet = page.getByRole('dialog', { name: 'Preset' });
       const presetGroup = sheet.getByRole('radiogroup', { name: 'Preset' });
       await presetGroup.getByRole('radio', { name: 'Default' }).focus();
       await page.keyboard.press('ArrowDown');
