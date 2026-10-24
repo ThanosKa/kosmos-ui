@@ -17,7 +17,7 @@ import { Announcement } from '@/components/ui/announcement';
 
 ```tsx
 <Announcement href="/changelog" badge="New">
-  Funnels are here
+  EU data region is live
 </Announcement>
 ```
 
@@ -48,7 +48,7 @@ Announcement renders an `<a>` through Base UI's [`useRender`](https://base-ui.co
 <TypeTable
   type={{
     badge: {
-      description: 'A short word before the text, such as "New", "Beta" or a version, in a small pill of its own. A badge too long for the pill is cut off with an ellipsis.',
+      description: 'A short word before the text, such as "New", "Beta" or a version, in a small pill of its own. A badge wider than half the pill is cut off with an ellipsis.',
       type: 'ReactNode',
     },
     children: {

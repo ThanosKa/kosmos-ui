@@ -2,8 +2,8 @@ import { Announcement } from '@/registry/kosmos/ui/announcement';
 
 export default function AnnouncementDemo() {
   return (
-    <Announcement href="#funnels" badge="New">
-      Funnels are here: see where users drop off
+    <Announcement href="#changelog" badge="New">
+      EU data region: keep your events in Europe
     </Announcement>
   );
 }

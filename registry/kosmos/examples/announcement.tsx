@@ -14,8 +14,8 @@ export default function AnnouncementPreview() {
           rows={rows}
           states={states}
           render={(row, state) => (
-            <Announcement href="#funnels" badge={row === 'with badge' ? 'New' : undefined} {...previewState(state)}>
-              Funnels
+            <Announcement href="#changelog" badge={row === 'with badge' ? 'New' : undefined} {...previewState(state)}>
+              EU region
             </Announcement>
           )}
         />
@@ -27,26 +27,23 @@ export default function AnnouncementPreview() {
 
       <PreviewSection title="Badges">
         <div className="flex flex-wrap items-center gap-3">
-          <Announcement href="#funnels" badge="New">
-            Funnels are here
+          <Announcement href="#changelog" badge="New">
+            EU data region
           </Announcement>
-          <Announcement href="#changelog" badge="v2.4.0">
-            Retention charts
+          <Announcement href="#changelog" badge="Beta">
+            Funnel comparisons
           </Announcement>
-          <Announcement href="#beta" badge="Beta">
-            Session replay for iOS
-          </Announcement>
-          <Announcement href="#status">Scheduled maintenance on 14 October</Announcement>
+          <Announcement href="#status">Scheduled maintenance on 14 October, 02:00 UTC</Announcement>
         </div>
       </PreviewSection>
 
       <PreviewSection title="Long text in a narrow slot">
         <div className="flex w-64 flex-col items-start gap-2 bg-background">
-          <Announcement href="#funnels" badge="New">
-            Funnels, retention cohorts and session replay now on every plan, including Free
+          <Announcement href="#changelog" badge="New">
+            EU data region: keep the events of every project in Europe, on every plan, including Free
           </Announcement>
-          <Announcement href="#changelog" badge="Version 2.4.0-beta.12">
-            Retention charts
+          <Announcement href="#changelog" badge="Beta, Insights area, Q4 2026">
+            Funnel comparisons
           </Announcement>
           <Announcement href="#status">ScheduledMaintenanceForTheIngestionPipelineInEurope</Announcement>
         </div>
@@ -55,14 +52,14 @@ export default function AnnouncementPreview() {
       <PreviewSection title="Other scripts and right to left">
         <div className="flex flex-col items-start gap-3">
           <Announcement href="#el" badge="Νέο">
-            Τα funnels είναι εδώ
+            Περιοχή δεδομένων στην ΕΕ
           </Announcement>
           <Announcement href="#ja" badge="新機能">
-            ファネル分析を公開しました
+            EU データリージョンを公開しました
           </Announcement>
           <div dir="rtl">
             <Announcement href="#ar" badge="جديد">
-              مسارات التحويل متاحة الآن
+              منطقة بيانات الاتحاد الأوروبي متاحة الآن
             </Announcement>
           </div>
         </div>

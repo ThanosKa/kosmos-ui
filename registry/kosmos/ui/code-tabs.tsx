@@ -29,6 +29,7 @@ function useCopyCommand(command: string, commandRef: React.RefObject<HTMLElement
   const copy = () => {
     clearTimeout(timer.current);
     setLast(null);
+    // `navigator.clipboard` is undefined on a page served over plain http; inside `then` that throw becomes a refusal.
     Promise.resolve()
       .then(() => navigator.clipboard.writeText(command))
       .then(
@@ -55,7 +56,7 @@ function withBreaks(command: string) {
   ));
 }
 
-type CodeTabsProps<Tab extends string> = Omit<TabsPrimitive.Root.Props, 'value' | 'defaultValue' | 'onValueChange' | 'children'> & {
+type CodeTabsProps<Tab extends string> = Omit<TabsPrimitive.Root.Props, 'value' | 'defaultValue' | 'onValueChange' | 'orientation' | 'children'> & {
   /** One tab per key, in order: the key is the tab's label and the value the command it shows. */
   commands: Record<Tab, string>;
   /** The open tab, for a choice you keep yourself, such as the visitor's package manager. */

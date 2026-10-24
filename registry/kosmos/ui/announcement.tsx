@@ -34,7 +34,7 @@ function Announcement({ badge, className, children, render, ...props }: Announce
             {badge != null ? (
               <span
                 data-slot="announcement-badge"
-                className="block max-w-[60%] shrink-0 truncate rounded-full bg-accent px-2 py-0.75 text-caption font-medium text-foreground"
+                className="block max-w-1/2 shrink-0 truncate rounded-full bg-accent px-2 py-0.75 text-caption font-medium text-foreground"
               >
                 {badge}
               </span>
@@ -44,7 +44,7 @@ function Announcement({ badge, className, children, render, ...props }: Announce
             </span>
             <ChevronRight
               aria-hidden
-              className="size-3 shrink-0 transition-[translate] rtl:-scale-x-100 motion-safe:ltr:group-hover/announcement:translate-x-0.5 motion-safe:rtl:group-hover/announcement:-translate-x-0.5"
+              className="size-3.5 shrink-0 transition-[translate] rtl:-scale-x-100 motion-safe:ltr:group-hover/announcement:translate-x-0.5 motion-safe:rtl:group-hover/announcement:-translate-x-0.5"
             />
           </>
         ),
