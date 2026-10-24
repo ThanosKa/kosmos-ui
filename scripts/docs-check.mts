@@ -25,9 +25,9 @@ const desktop = { width: 1280, height: 800 };
 
 type Viewport = { width: number; height: number };
 
-/** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
-async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
-  const { page, context, errors } = await openSitePage(browser, base, path, { viewport });
+/** Opens `path` in light mode, with reduced motion unless asked. Page errors fail the check that opened it when it closes. */
+async function openPage(browser: Browser, path: string, viewport: Viewport = desktop, reducedMotion: 'reduce' | 'no-preference' = 'reduce') {
+  const { page, context, errors } = await openSitePage(browser, base, path, { viewport, reducedMotion });
   await page.evaluate(() => document.fonts.ready);
   return {
     page,
@@ -614,6 +614,59 @@ const checks: Check[] = [
       assert.equal(await variant.getAttribute('data-tier'), 'free', 'Footer is free');
       await variants.close();
       await close();
+    },
+  },
+  {
+    name: 'the logo marquee moves, stops while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
+    async run(browser) {
+      const path = '/view/logo-marquee-demo';
+      const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      const offsetOf = (page: Page) =>
+        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41);
+      const after = (page: Page, ms: number) => page.waitForTimeout(ms);
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const marquee = moving.page.locator('[data-slot="logo-marquee"]');
+      assert.equal(
+        await marquee.getByRole('list').ariaSnapshot(),
+        ['- list "Used by the teams behind":', ...names.map((name) => `  - listitem: ${name}`)].join('\n'),
+        'one list, named by its line, with one named item per logo; the copies stay hidden',
+      );
+      await moving.page.waitForFunction(() => document.getAnimations().some((animation) => animation.playState === 'running'));
+      const start = await offsetOf(moving.page);
+      await after(moving.page, 500);
+      assert.ok((await offsetOf(moving.page)) < start, 'the logos move toward the start');
+      await marquee.locator('[data-slot="logo-marquee-viewport"]').hover();
+      await after(moving.page, 100);
+      const held = await offsetOf(moving.page);
+      await after(moving.page, 500);
+      assert.equal(await offsetOf(moving.page), held, 'the logos stop while the pointer is on them');
+      await moving.page.mouse.move(0, 0);
+      await after(moving.page, 500);
+      assert.ok((await offsetOf(moving.page)) < held, 'the logos move again once the pointer leaves');
+      await marquee.getByRole('button', { name: 'Pause logos' }).press('Enter');
+      await after(moving.page, 100);
+      const stopped = await offsetOf(moving.page);
+      await after(moving.page, 500);
+      assert.equal(await offsetOf(moving.page), stopped, 'the pause button stops the logos until it is pressed again');
+      await marquee.getByRole('button', { name: 'Play logos' }).press('Enter');
+      await after(moving.page, 500);
+      assert.ok((await offsetOf(moving.page)) < stopped, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillMarquee = still.page.locator('[data-slot="logo-marquee"]');
+      await stillMarquee.waitFor();
+      await after(still.page, 500);
+      assert.equal(await still.page.evaluate(() => document.getAnimations().length), 0, 'reduced motion: nothing animates');
+      assert.equal(await stillMarquee.locator('li:visible').count(), names.length, 'reduced motion: each logo shows once');
+      assert.equal(await stillMarquee.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const box = (await stillMarquee.boundingBox())!;
+      for (const item of await stillMarquee.locator('li:visible').all()) {
+        const itemBox = (await item.boundingBox())!;
+        assert.ok(itemBox.x >= box.x && itemBox.x + itemBox.width <= box.x + box.width, 'reduced motion: every logo fits in the row');
+      }
+      await still.close();
     },
   },
   {
