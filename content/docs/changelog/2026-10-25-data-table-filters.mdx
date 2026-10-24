@@ -1,0 +1,11 @@
+---
+title: Changed Data table filters, column menus and pages
+description: The data table gets a toolbar with faceted filters, a menu on each header to sort and hide its column, a bulk bar with Select all, and pages.
+date: 2026-10-25
+---
+
+- **[Toolbar](/docs/blocks/data-table)**: a search, a filter each for Plan, Platform and Status, and Reset. Each filter lists its values with a checkbox and how many rows each would show, and you can search the list. It shows by default: pass `toolbar={false}` when a [page header](/docs/blocks/page-header) already filters the table.
+- **Column menus**: a header opens a menu to sort its column either way or hide it, in place of sorting on click. The Columns button at the end of the header row brings hidden columns back. Plan, Platform and Status sort too.
+- **Pages**: ten rows to a page (`pageSize`), with previous and next in the footer, back to page 1 after a new search, filter or sort. The header checkbox now selects the rows on the page, and the bulk bar offers Select all for the rest.
+- **Status dots**: the status column uses [Status dot](/docs/components/status) in the status tints.
+- **State you can hold**: `query`, `filters` and `hiddenColumns` take a value with its `on…Change`, or a `default…` to let the table keep them. `page` pairs with `onPageChange`.

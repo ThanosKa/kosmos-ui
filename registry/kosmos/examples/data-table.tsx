@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { DataTable, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
 
@@ -32,6 +33,11 @@ const longRows: Project[] = [
   },
 ];
 
+function SecondPage() {
+  const [page, setPage] = React.useState(2);
+  return <DataTable pageSize={5} page={page} onPageChange={setPage} onOpen={() => {}} onAction={() => {}} />;
+}
+
 export default function DataTablePreview() {
   return (
     <PreviewStack>
@@ -46,9 +52,31 @@ export default function DataTablePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Filtered: Pro plan on iOS and Android">
+      <PreviewSection title="Filtered: Pro plan on iOS and Android, searched">
         <div className={frame}>
-          <DataTable filters={['pro', 'ios', 'android']} onOpen={() => {}} onAction={() => {}} />
+          <DataTable defaultQuery="i" defaultFilters={['pro', 'ios', 'android']} onOpen={() => {}} onAction={() => {}} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Three statuses on, two columns hidden">
+        <div className={frame}>
+          <DataTable defaultFilters={['live', 'trial', 'paused']} defaultHiddenColumns={['events', 'quota']} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Page 2 of 3, five rows a page">
+        <div className={frame}>
+          <SecondPage />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Every row of the page selected">
+        <div className={frame}>
+          <DataTable
+            pageSize={5}
+            defaultSelection={['fernhill', 'brightloop', 'copperline', 'saltmarsh', 'driftwood']}
+            onAction={() => {}}
+          />
         </div>
       </PreviewSection>
 
@@ -60,7 +88,7 @@ export default function DataTablePreview() {
 
       <PreviewSection title="No rows match the search">
         <div className={frame}>
-          <DataTable query="zzz" onClearFilters={() => {}} />
+          <DataTable defaultQuery="zzz" />
         </div>
       </PreviewSection>
 
@@ -73,6 +101,12 @@ export default function DataTablePreview() {
       <PreviewSection title="Long text and extreme values">
         <div className={frame}>
           <DataTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Without the toolbar, under a page header">
+        <div className={frame}>
+          <DataTable toolbar={false} status="live" filters={['scale']} onClearFilters={() => {}} />
         </div>
       </PreviewSection>
 
