@@ -5,11 +5,26 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { registryItemSchema, registrySchema } from 'shadcn/schema';
+import { defaultPreset, presetCss } from '../lib/presets/index.ts';
 import { readRegistryItems } from '../lib/registry.ts';
 import { siteUrl } from '../lib/shared.ts';
 
 const root = process.cwd();
 const outDir = join(root, 'public/r');
+
+const tokensPath = join(root, 'registry/kosmos/styles/tokens.css');
+const tokensCss = readFileSync(tokensPath, 'utf8');
+const paletteComment = 'never these lines.\n */\n';
+const paletteStart = tokensCss.indexOf(paletteComment) + paletteComment.length;
+const paletteEnd = tokensCss.indexOf('/* Shadows,');
+if (paletteStart < paletteComment.length || paletteEnd < paletteStart) {
+  throw new Error('tokens.css has lost the comments around its palette');
+}
+const withPalette = `${tokensCss.slice(0, paletteStart)}${presetCss(defaultPreset)}\n${tokensCss.slice(paletteEnd)}`;
+if (withPalette !== tokensCss) {
+  writeFileSync(tokensPath, withPalette);
+  console.log(`registry: wrote the ${defaultPreset.name} preset into tokens.css`);
+}
 
 const items = readRegistryItems(root);
 const registry = {

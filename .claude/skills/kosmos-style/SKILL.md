@@ -5,7 +5,7 @@ description: The Kosmos UI style, with the exact tokens and rules for every comp
 
 # Kosmos style
 
-The values live in one file, `registry/kosmos/styles/tokens.css`, and `/tokens` renders all of them in light and dark. This skill says which token each job takes. Every token, its role and its source is in [tokens.md](tokens.md).
+The values live in one file, `registry/kosmos/styles/tokens.css`, and `/tokens` renders all of them in light and dark. Its palette and radius are written there by `pnpm registry:build` from the default preset in `lib/presets`, so a palette value changes in the preset, never in `tokens.css`. This skill says which token each job takes. Every token, its role and its source is in [tokens.md](tokens.md).
 
 This skill wins every conflict with a review skill (`better-*`, `review-animations`). The conflicts and the value that wins are in [conflicts.md](conflicts.md). When a reviewer flags a value listed there, keep the Kosmos value and mark the finding `Kosmos style` in the report.
 
@@ -15,7 +15,7 @@ Components reach every color, shadow, radius, easing, duration and text size thr
 
 Merge classes with `cn` from `@/registry/kosmos/lib/cn` (registry item `@kosmos/cn`), never the bare `cn` package: the default merger reads a type role such as `text-body` as a text color and silently drops the `text-*` color before it.
 
-A missing role gets a new token in `tokens.css`, added in the same change as the component that uses it, with a row in [tokens.md](tokens.md). A token earns its place by a component using it; a token nothing uses is deleted.
+A missing role gets a new token in `tokens.css` (a palette token in `lib/presets/palette.ts` and in every preset, whose contrast tests then cover it), added in the same change as the component that uses it, with a row in [tokens.md](tokens.md). A token earns its place by a component using it; a token nothing uses is deleted.
 
 Dark mode is the `.dark` class on `<html>`, set by next-themes. Tokens switch on that class only, so components rarely need a `dark:` variant.
 
