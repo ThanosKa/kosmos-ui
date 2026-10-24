@@ -40,7 +40,7 @@ An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. A text field's edge is a ring with no drop (`shadow-field`), so it reads as a place to type rather than a button. Small pills with a colored edge (tags, the sidebar count) draw it with a real 1px border, since the edge is part of the pill, not depth. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
-Sticky chrome is opaque. The site header (landing page and docs) is `sticky top-0 bg-background` with a `border-b border-border` as its edge, a divider like the docked sidebar's. A translucent fill over a blur cannot hold the text floor: at `bg-background/80`, dark content scrolling under it drops the muted nav labels to 3.2:1 in light and 3.6:1 in dark, and a fill opaque enough to pass hides what the blur would show.
+Sticky chrome is opaque. The Navbar block, and the site header built from it (landing page and docs), is `sticky top-0 bg-background`. Its edge is a `border-b border-border`, a divider like the docked sidebar's, which shows once the page scrolls under the bar (`data-scrolled`) and always beside a docked sidebar. A translucent fill over a blur cannot hold the text floor: at `bg-background/80`, dark content scrolling under it drops the muted nav labels to 3.2:1 in light and 3.6:1 in dark, and a fill opaque enough to pass hides what the blur would show.
 
 ## Dividers between items
 

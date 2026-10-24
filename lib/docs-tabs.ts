@@ -1,4 +1,4 @@
-import { docsRoute } from './shared';
+import { docsRoute } from './shared.ts';
 
 /** The header tabs. Each tab has its own sidebar: the docs pages whose address it owns. */
 export const docsTabs = [
