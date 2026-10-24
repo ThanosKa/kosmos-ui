@@ -1,0 +1,97 @@
+---
+title: Pricing
+description: Plans side by side, with a monthly and yearly switch, the featured plan raised on a card, a list of features and a link at the foot of each plan.
+---
+
+## Installation
+
+<ComponentInstall name="pricing" />
+
+The block brings [Segmented control](/docs/components/segmented-control), for the switch, [Badge](/docs/components/badge) and [Button](/docs/components/button) with it, and lands in `components/pricing.tsx`.
+
+## Usage
+
+```tsx
+import Link from 'next/link';
+import { Pricing } from '@/components/pricing';
+import { buttonVariants } from '@/components/ui/button';
+
+export function PricingSection() {
+  return (
+    <Pricing
+      title="Start free, pay as you grow"
+      description="Pay yearly and save 20%."
+      plans={[
+        {
+          name: 'Free',
+          price: '$0',
+          period: 'forever',
+          features: ['1 project', '50,000 events a month'],
+          action: (
+            <Link href="/signup" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
+              Start for free
+            </Link>
+          ),
+        },
+        {
+          name: 'Pro',
+          price: { monthly: '$49', yearly: '$39' },
+          period: { monthly: 'per month', yearly: 'per month, billed yearly' },
+          features: ['Everything in Free', '10 projects', '3,000,000 events a month'],
+          action: (billing) => (
+            <Link href={`/signup?plan=pro&billing=${billing}`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+              Start a trial
+            </Link>
+          ),
+          featured: true,
+        },
+      ]}
+    />
+  );
+}
+```
+
+Write each price as it should read, such as `'$49'`, so the block never guesses your currency or your rounding. A plan's `action` is yours to style: a `primary` Button on the featured plan and `secondary` on the rest, or a function that gets the billing shown, so the link can carry it. The title, line and plans at the top of the file are sample data.
+
+## What it does
+
+- **Billing**: when any plan has a price per billing, a switch above the plans picks monthly or yearly, and every price and period changes with it. Plans with one price keep it. With no price per billing, there is no switch.
+- **Screen readers**: after the billing changes, they hear it read out once, with each plan's new price, such as "Yearly. Free: $0 forever. Pro: $39 per month, billed yearly."
+- **Featured plan**: one plan stands on a raised card while the others sit recessed beside it, so it stands out by depth rather than by color.
+- **Lined up**: names, prices, feature lists and links line up across the plans, and each link sits at the foot of its plan, however long the text above it runs.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's. Plans stack in a narrow container and stand side by side once they fit: two from 576px, three from 768px, and four in two rows that become one from 1024px.
+
+## API
+
+### Pricing
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The heading. `null` leaves it out.', type: 'ReactNode', default: "'Start free, pay as you grow'" },
+    description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode' },
+    plans: { description: 'One to four plans, in order. An empty array renders nothing.', type: 'PricingPlan[]', default: 'sample plans' },
+    billing: { description: 'The billing shown. Use with `onBillingChange`.', type: "'monthly' | 'yearly'" },
+    defaultBilling: { description: 'The billing shown at first, when the block keeps its own state.', type: "'monthly' | 'yearly'", default: "'monthly'" },
+    onBillingChange: { description: 'Called with the billing picked on the switch.', type: '(billing: PricingBilling) => void' },
+    billingLabels: { description: 'The words on the switch, also read out when the billing changes.', type: '{ monthly: string; yearly: string }', default: "{ monthly: 'Monthly', yearly: 'Yearly' }" },
+    footnote: { description: 'A line under the plans, such as a note on taxes or a link to your license.', type: 'ReactNode' },
+    headingLevel: { description: 'The title is an `<h2>` and plan names `<h3>`. Pass 1 when the block opens a pricing page.', type: '1 | 2', default: '2' },
+  }}
+/>
+
+### PricingPlan
+
+<TypeTable
+  type={{
+    name: { description: 'The plan name, a heading.', type: 'string', required: true },
+    description: { description: 'One line under the name: who the plan is for.', type: 'ReactNode' },
+    price: { description: 'The price as it reads: one for both billings, or one per billing.', type: 'string | { monthly: string; yearly: string }', required: true },
+    period: { description: 'The muted words after the price, such as `per month`.', type: 'string | { monthly: string; yearly: string }' },
+    badge: { description: 'A badge beside the name, such as "Most popular".', type: 'ReactNode' },
+    features: { description: 'What the plan includes, each beside a check mark.', type: 'ReactNode[]' },
+    action: { description: 'The link at the foot of the plan. A function gets the billing shown.', type: 'ReactNode | ((billing: PricingBilling) => ReactNode)' },
+    featured: { description: 'Raises the plan on a card. One plan at most.', type: 'boolean' },
+  }}
+/>

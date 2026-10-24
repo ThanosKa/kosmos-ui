@@ -669,6 +669,30 @@ const checks: Check[] = [
     },
   },
   {
+    name: 'the pricing block switches between monthly and yearly prices and tells screen readers the new prices',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/view/pricing-demo');
+      const pricing = page.locator('[data-slot="pricing"]');
+      const billing = pricing.getByRole('radiogroup', { name: 'Billing' });
+      const announcement = pricing.getByRole('status');
+      const proPrice = pricing.getByRole('listitem').filter({ has: page.getByRole('heading', { name: 'Pro' }) }).locator('[data-slot="pricing-price"]');
+      assert.equal(await billing.getByRole('radio', { name: 'Monthly' }).isChecked(), true, 'monthly is the first choice');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'Pro shows its monthly price');
+      assert.equal(await announcement.textContent(), '', 'nothing is announced before a change');
+      await billing.getByRole('radio', { name: 'Yearly' }).click();
+      assert.equal(await proPrice.innerText(), '$39\nper month, billed yearly', 'Pro shows its yearly price');
+      assert.equal(
+        await announcement.textContent(),
+        'Yearly. Free: $0 forever. Pro: $39 per month, billed yearly. Scale: $960 per month, billed yearly.',
+        'the new prices are announced',
+      );
+      await billing.getByRole('radio', { name: 'Monthly' }).press('Space');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'the keyboard switches back');
+      assert.match((await announcement.textContent()) ?? '', /^Monthly\. .*Pro: \$49 per month\./, 'switching back is announced too');
+      await close();
+    },
+  },
+  {
     name: 'the bento shows real Kosmos components, each with a one-line caption and a link to its docs',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
