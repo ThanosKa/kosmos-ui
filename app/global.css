@@ -61,52 +61,19 @@ html:has(#site-header) {
 }
 
 /*
- * The accents and radii a visitor tries on the landing page's dashboard (components/site/dashboard-tokens.ts), set on
- * the dashboard document's <html> and on the accent swatches. Each accent takes over the roles ink plays by default:
- * `ring` at least 3:1 on the page, `active-foreground` and the light `meter-primary` at least 4.5:1 on every nav
- * surface; in dark all three are one value. `chart-1` and the sidebar ring follow `ring`. Site-only: no installed
- * component reads these attributes.
+ * The radii a visitor tries over a preset on the landing page's dashboard (components/site/dashboard-tokens.ts), set
+ * on the dashboard document's <html>. `html` outranks the `:root` of the preset's CSS. Site-only: no installed component
+ * reads this attribute.
  */
-[data-accent='violet'] {
-  --ring: oklch(0.58 0.22 295);
-  --active-foreground: oklch(0.52 0.22 295);
-}
-[data-accent='magenta'] {
-  --ring: oklch(0.6 0.22 350);
-  --active-foreground: oklch(0.52 0.2 350);
-}
-[data-accent='teal'] {
-  --ring: oklch(0.6 0.1 195);
-  --active-foreground: oklch(0.5 0.085 195);
-}
-.dark[data-accent='violet'],
-.dark [data-accent='violet'] {
-  --ring: oklch(0.7 0.16 295);
-}
-.dark[data-accent='magenta'],
-.dark [data-accent='magenta'] {
-  --ring: oklch(0.7 0.18 350);
-}
-.dark[data-accent='teal'],
-.dark [data-accent='teal'] {
-  --ring: oklch(0.72 0.12 195);
-}
-.dark:is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']),
-.dark :is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']) {
-  --active-foreground: var(--ring);
-}
-:is([data-accent='violet'], [data-accent='magenta'], [data-accent='teal']) {
-  --meter-primary: var(--active-foreground);
-  --sidebar-ring: var(--ring);
-  --chart-1: var(--ring);
-}
-
-[data-radius='0'] {
+html[data-radius='0'] {
   --radius: 0rem;
 }
-[data-radius='6'] {
+html[data-radius='6'] {
   --radius: 0.375rem;
 }
-[data-radius='14'] {
+html[data-radius='10'] {
+  --radius: 0.625rem;
+}
+html[data-radius='14'] {
   --radius: 0.875rem;
 }
