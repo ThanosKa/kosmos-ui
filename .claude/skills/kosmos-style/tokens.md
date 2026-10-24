@@ -121,6 +121,8 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 
 `text-page-title` exists only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). It is declared in `app/global.css`, not in `tokens.css`, so it never ships in `@kosmos/tokens`, and no component or block uses it. Use it as a plain class, not through `cn`, which does not know it.
 
+The brand colour (`--brand`, Peony, the same in light and dark) and its roles live in `app/global.css` too: `brand-hover`, `brand-foreground` (white, 4.5:1 on both) and `brand-selection`, the site's text selection (the brand at `--brand-selection-strength`, mixed opaque into the page background, under `foreground` text). It marks only the logo's ring, the Pro marks and text selection. A Pro mark is a primary Badge or Button with the `brand-primary` utility, which fills it with the brand; the Button adds `hover:not-data-disabled:bg-brand-hover`. The apple icon, the social image and `app/icon.svg` take the brand as hex (`components/site/token-colors.ts`). No registry item may hold it: `pnpm registry:build` and `pnpm test` fail when one does (`lib/brand.ts`).
+
 ## Left out on purpose
 
 - Section padding and max-width tokens, and a marketing heading scale beyond `hero` and `lead`: the studies declared them and never used them in app UI. A marketing block that needs another size adds its role then.

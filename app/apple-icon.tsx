@@ -10,7 +10,7 @@ export default function AppleIcon() {
   return new ImageResponse(
     (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', background: color.background }}>
-        <KosmosMark width={128} height={128} gapColor={color.background} style={{ color: color.foreground }} />
+        <KosmosMark width={128} height={128} ringColor={color.brand} gapColor={color.background} style={{ color: color.foreground }} />
       </div>
     ),
     size,

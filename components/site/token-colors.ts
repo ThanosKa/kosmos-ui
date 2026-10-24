@@ -1,3 +1,4 @@
+import { readBrandColors } from '@/lib/brand';
 import { readKosmosTokens } from '@/lib/tokens';
 
 function oklchToHex(value: string) {
@@ -28,8 +29,8 @@ function oklchToHex(value: string) {
 }
 
 /**
- * Palette tokens as hex, for the places CSS variables never reach: the browser's theme color and the
- * generated icons and social images. Server only (reads `tokens.css`).
+ * Palette tokens and the brand colour as hex, for the places CSS variables never reach: the browser's theme color
+ * and the generated icons and social images. Server only (reads `tokens.css` and `app/global.css`).
  */
 export function tokenColors(mode: 'light' | 'dark') {
   const tokens = readKosmosTokens();
@@ -38,6 +39,6 @@ export function tokenColors(mode: 'light' | 'dark') {
     background: color('background'),
     foreground: color('foreground'),
     mutedForeground: color('muted-foreground'),
-    ring: color('ring'),
+    brand: oklchToHex(readBrandColors().brand),
   };
 }
