@@ -14,6 +14,11 @@ type UseDriftOptions = {
   start?: number;
   /** `false` leaves the content where it is. */
   enabled?: boolean;
+  /**
+   * The track already moves by a CSS animation (so it moves from first paint, before this runs). The drift reads where
+   * that animation has got to, stops it and carries on from there at `speed`. `start` is then ignored.
+   */
+  handoff?: boolean;
 };
 
 /**
@@ -21,7 +26,7 @@ type UseDriftOptions = {
  * the element the visitor points at: a mouse or pen over it, a finger pressing it or keyboard focus inside it holds
  * the drift, together with `held`.
  */
-export function useDrift<View extends HTMLElement = HTMLDivElement>({ axis, speed, held = false, start = 0, enabled = true }: UseDriftOptions) {
+export function useDrift<View extends HTMLElement = HTMLDivElement>({ axis, speed, held = false, start = 0, enabled = true, handoff = false }: UseDriftOptions) {
   const view = React.useRef<View>(null);
   const track = React.useRef<HTMLDivElement>(null);
   const drift = React.useRef<Drift>(undefined);
@@ -45,11 +50,20 @@ export function useDrift<View extends HTMLElement = HTMLDivElement>({ axis, spee
     if (!enabled || !view.current || !element || !(copy instanceof HTMLElement)) return;
     const toward = axis === 'x' && getComputedStyle(element).direction === 'rtl' ? 1 : -1;
     const translate = axis === 'x' ? 'translateX' : 'translateY';
+    let from = latest.current.start;
+    if (handoff) {
+      const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+      const length = axis === 'x' ? copy.offsetWidth : copy.offsetHeight;
+      const offset = (axis === 'x' ? matrix.m41 : matrix.m42) / toward;
+      if (length > 0) from = (((offset % length) + length) % length) / length;
+      element.style.animation = 'none';
+    }
     const instance = startDrift({
       view: view.current,
       copy,
       axis,
       ...latest.current,
+      start: from,
       render: (offset) => {
         element.style.transform = `${translate}(${toward * offset}px)`;
       },
@@ -59,8 +73,9 @@ export function useDrift<View extends HTMLElement = HTMLDivElement>({ axis, spee
       instance.stop();
       drift.current = undefined;
       element.style.transform = '';
+      element.style.animation = '';
     };
-  }, [axis, enabled]);
+  }, [axis, enabled, handoff]);
 
   return { view, track, hold };
 }

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-reveal",
+  "type": "registry:ui",
+  "title": "Text reveal",
+  "description": "Text that comes in word by word as the page first paints, from a blur, with no JavaScript. Still under reduced motion. Ported from Magic UI (MIT).",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    { "path": "registry/kosmos/ui/text-reveal.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }
+  ]
+}

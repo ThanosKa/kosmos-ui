@@ -508,38 +508,21 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the landing is an ordered list of sections, each labelled with the blocks it is built from',
+    name: 'the landing is an ordered list of sections, with the showcase under the hero and no "Built with" labels',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const sections = await page.locator('[data-landing-section]').evaluateAll((elements) =>
-        elements.map((section) => ({
-          id: section.getAttribute('data-landing-section'),
-          links: [...section.querySelectorAll('[data-block-label] a[href]')].map((link) => new URL((link as HTMLAnchorElement).href).pathname),
-        })),
-      );
+      const ids = await page.locator('[data-landing-section]').evaluateAll((elements) => elements.map((section) => section.getAttribute('data-landing-section')));
       assert.deepEqual(
-        sections.map((section) => section.id),
-        ['hero', 'stack', 'dashboard', 'bento', 'inventory', 'pricing', 'faq', 'cta', 'footer'],
-        'the landing runs hero, stack, dashboard, bento, inventory, pricing, FAQ, CTA and footer, in that order',
+        ids,
+        ['hero', 'showcase', 'stack', 'bento', 'inventory', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, showcase, stack, bento, inventory, pricing, FAQ, CTA and footer, in that order',
       );
       assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
-      for (const section of sections) {
-        assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
-        for (const url of section.links) {
-          assert.match(url, /^\/docs\/(blocks|components)\/[a-z-]+$/, `${section.id}: label links to a block category or component page`);
-        }
-      }
-      assert.deepEqual(sections.at(-1)?.links, ['/docs/blocks/footer'], 'footer: labelled with the Footer block');
-      assert.deepEqual(
-        sections[0].links,
-        ['/docs/blocks/hero', '/docs/components/announcement', '/docs/components/code-tabs'],
-        'hero: labelled with the Hero block, Announcement and Code Tabs',
-      );
-      assert.equal(sections[2].links.length, 8, 'dashboard: labelled with the 8 application blocks');
-      for (const [index, block] of [[1, 'logo-marquee'], [5, 'pricing'], [6, 'faq'], [7, 'cta']] as const) {
-        assert.deepEqual(sections[index].links, [`/docs/blocks/${block}`], `${sections[index].id}: labelled with its block`);
-      }
-      for (const url of new Set(sections.flatMap((section) => section.links))) await fetchText(url);
+      assert.equal(await page.locator('[data-block-label]').count(), 0, 'no "Built with" labels');
+      assert.equal(await page.getByText('Built with', { exact: false }).count(), 0, 'no "Built with" text');
+      assert.equal(await page.locator('main [role="radiogroup"], main [data-slot="preset-picker"]').count(), 0, 'no preset controls on the landing');
+      const tabs = page.locator('[data-landing-section="showcase"]').getByRole('tablist', { name: 'Screens' });
+      assert.deepEqual(await tabs.getByRole('tab').allTextContents(), ['Dashboard', 'Auth', 'Marketing', 'Settings'], 'one tab per screen');
       assert.equal(await page.locator('[role="dialog"]:visible, [role="alertdialog"]:visible').count(), 0, 'nothing pops up on load');
       await close();
     },
@@ -621,7 +604,7 @@ const checks: Check[] = [
       await visible('[data-landing-section="hero"]', 'Dashboard UI with the details already done');
       await visible('[data-landing-section="hero"]', /^\$/);
       await visible('[data-landing-section="stack"]', 'Tailwind CSS');
-      await visible('[data-landing-section="dashboard"]', 'in the preset you pick');
+      await visible('[data-landing-section="showcase"]', 'acme.example/overview');
       await visible('[data-landing-section="bento"]', 'Search Acme');
       await visible('[data-landing-section="inventory"]', 'Dropdown menu');
       await visible('[data-landing-section="pricing"]', 'Pay once');
@@ -846,58 +829,21 @@ const checks: Check[] = [
       const phone375 = await openPage(browser, '/', phone);
       assert.equal(await phone375.page.locator('[data-landing-section="inventory"] [data-slot="bento-item"]:visible').count(), 3, 'a phone shows the first three cards');
       await phone375.close();
-      const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      assert.deepEqual(labels, ['/docs/blocks/bento', '/docs/components/tabs'], 'inventory: labelled with the Bento block and Tabs');
       await close();
     },
   },
   {
-    name: 'the dashboard switches whole screens with its tabs',
+    name: 'the showcase switches screens with its tabs, each a live block',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="dashboard"]');
-      const frame = section.locator('iframe').contentFrame();
-      const screens = section.getByRole('tablist', { name: 'Dashboard screens' });
-      for (const name of ['Projects', 'Roadmap', 'Overview']) {
-        await screens.getByRole('tab', { name }).click();
-        await frame.getByRole('heading', { name, exact: true, level: 1 }).waitFor();
-        assert.equal(await screens.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
+      const section = page.locator('[data-landing-section="showcase"]');
+      const tabs = section.getByRole('tablist', { name: 'Screens' });
+      for (const [name, address] of [['Auth', 'acme.example/login'], ['Marketing', 'acme.example'], ['Settings', 'acme.example/settings'], ['Dashboard', 'acme.example/overview']]) {
+        await tabs.getByRole('tab', { name }).click();
+        assert.equal(await tabs.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
+        await section.getByText(address, { exact: true }).waitFor();
+        assert.equal(await section.getByRole('tabpanel').count(), 1, `${name}: one panel`);
       }
-      await frame.getByRole('link', { name: 'Roadmap' }).click();
-      await page.waitForFunction(() => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === 'Roadmap');
-      await close();
-    },
-  },
-  {
-    name: "the landing's preset picker changes the whole site, the dashboard follows, and Reset brings the Default back",
-    async run(browser) {
-      const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="dashboard"]');
-      const iframe = section.locator('iframe');
-      await iframe.contentFrame().locator('[data-preview-ready]').waitFor({ state: 'attached' });
-      const look = (target: 'page' | 'dashboard') =>
-        (target === 'page' ? page.locator('html') : iframe.contentFrame().locator('html')).evaluate((html) => {
-          const style = getComputedStyle(html);
-          return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: html.classList.contains('dark') };
-        });
-      const pageBefore = await look('page');
-      const brandBefore = await cssColor(page, '--brand');
-      assert.deepEqual(await look('dashboard'), pageBefore, 'the dashboard starts in the page look');
-      await section.getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Soft' }).click();
-      await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
-      await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
-      await page.waitForFunction(() => {
-        const frame = document.querySelector<HTMLIFrameElement>('[data-landing-section="dashboard"] iframe')?.contentDocument;
-        return frame?.documentElement.classList.contains('dark') && getComputedStyle(frame.documentElement).getPropertyValue('--radius').trim() === '0rem';
-      });
-      const changed = await look('page');
-      const soft = chosenPreset({ preset: 'soft', accent: true, radius: '0' });
-      assert.deepEqual(changed, { ring: presetPalette(soft, 'dark').ring, radius: '0rem', dark: true }, 'the page takes the preset');
-      assert.deepEqual(await look('dashboard'), changed, 'the dashboard follows the page');
-      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
-      await section.getByRole('button', { name: 'Reset' }).click();
-      await page.waitForFunction((radius) => getComputedStyle(document.documentElement).getPropertyValue('--radius').trim() === radius, pageBefore.radius);
-      assert.equal((await look('page')).radius, pageBefore.radius, 'Reset brings the Default back');
       await close();
     },
   },
@@ -907,11 +853,7 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      const frame = page.locator('[data-landing-section="dashboard"] iframe').contentFrame();
-      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
-      const frameOverflow = await frame.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth);
-      assert.ok(frameOverflow <= 0, `the dashboard scrolls ${frameOverflow}px sideways`);
-      const cut = await frame.locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
+      const cut = await page.locator('[data-landing-section="showcase"]').locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
         spans.filter((span) => span.scrollWidth > span.clientWidth + 1).map((span) => span.textContent),
       );
       assert.deepEqual(cut, [], 'truncated metric text');

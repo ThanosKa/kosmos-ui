@@ -177,7 +177,7 @@ One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag
 A marketing block (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA, Testimonials) sets no padding around itself: the page that stacks them sets one rhythm, so two blocks never add their padding up into a gap of their own. Spacing inside a block (title to content, content to its link) stays the block's.
 
 - Each section sits in a column with `px-4 sm:px-6` gutters and keeps space below it only: `pb-20` (80px) on phones, `md:pb-28` (112px) from 768px. The page sets it with screen breakpoints, because the rhythm belongs to the page, not to any block's width.
-- The hero takes room above it, `pt-16 md:pt-24`, and less below, `pb-16 md:pb-20`, when a strip that belongs to it follows (a Logo marquee of the stack or of customers).
+- The hero takes room above it, `pt-16 md:pt-24`, and less below, `pb-10 md:pb-12`, when a showcase or strip that belongs to it follows (a Showcase right under it, or a Logo marquee of the stack or of customers), so the product shows in the first screen.
 - The last section before the footer keeps `pb-28 md:pb-40`, so the page ends on a pause rather than on the footer's edge.
 - The text column is `max-w-5xl`; a showcase (a live app in a frame, a grid of tiles) widens to `max-w-6xl`. The FAQ keeps its own 672px column inside it.
 - Every section follows one grammar: a centered title, at most two short lines split at a comma (`<br />`), then optional tabs, then the content, then at most one `secondary` link to see more. No eyebrow, and a line under the title only when the title cannot carry the point alone.

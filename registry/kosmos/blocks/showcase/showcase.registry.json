@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "showcase",
+  "type": "registry:block",
+  "title": "Showcase",
+  "description": "A live product in a browser-style frame with a tab for each screen: a dashboard, the sign-in, a marketing page and the settings, each a real block. Lays itself out by its own width.",
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/tabs",
+    "@kosmos/sidebar",
+    "@kosmos/app-sidebar",
+    "@kosmos/stats-overview",
+    "@kosmos/auth-forms",
+    "@kosmos/feature-section",
+    "@kosmos/settings"
+  ],
+  "categories": ["showcase"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/showcase/showcase.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

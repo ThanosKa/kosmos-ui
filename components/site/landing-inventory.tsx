@@ -4,6 +4,7 @@ import { getDocsIndex, type DocsIndexItem } from '@/lib/docs-nav';
 import { docsRoute } from '@/lib/shared';
 import { Bento, type BentoItem } from '@/registry/kosmos/blocks/bento/bento';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
+import { NumberTicker } from '@/registry/kosmos/ui/number-ticker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import { LandingTitle } from './landing-section';
 
@@ -75,7 +76,7 @@ export function Inventory() {
           {shelves.map((shelf) => (
             <TabsTrigger key={shelf.id} value={shelf.id}>
               {shelf.label}
-              <span className="text-muted-foreground tabular-nums">{shelf.items.length}</span>
+              <NumberTicker value={shelf.items.length} className="text-muted-foreground" />
             </TabsTrigger>
           ))}
         </TabsList>

@@ -42,6 +42,13 @@ const sampleLogos: LogoMarqueeLogo[] = [
 const defaultSpeed = 40;
 
 /**
+ * Until the drift takes over (it needs the page live), a CSS animation moves the track by half its width, one copy, so
+ * the logos move from the first paint. The server cannot measure a copy, so its length is guessed: about 200px a logo.
+ */
+const guessedLogoWidth = 200;
+const driftKeyframes = '@keyframes kosmos-marquee-drift{to{transform:translateX(calc(-50% * var(--drift-direction,1)))}}';
+
+/**
  * Each logo carries half the space between logos on each side, so the seam between two copies spaces like the rest.
  * An `<svg>` or `<img>` is 20px tall at its own aspect ratio, unless it sets a height class of its own.
  */
@@ -92,7 +99,7 @@ function LogoMarquee({
   const titleId = React.useId();
   const [stopped, setStopped] = React.useState(false);
   const marquee = variant === 'marquee';
-  const { view, track, hold } = useDrift({ axis: 'x', speed, held: stopped, enabled: marquee && logos.length > 0 });
+  const { view, track, hold } = useDrift({ axis: 'x', speed, held: stopped, enabled: marquee && logos.length > 0, handoff: true });
 
   if (logos.length === 0) return null;
 
@@ -119,7 +126,15 @@ function LogoMarquee({
             {...hold}
             className="@container w-full overflow-hidden mask-x-from-[calc(100%-min(7rem,30%))] mask-x-to-[calc(100%-2.5rem)] motion-reduce:mask-none motion-reduce:px-4"
           >
-            <div ref={track} data-slot="logo-marquee-track" className="flex w-max motion-safe:will-change-transform motion-reduce:w-auto">
+            <style href="kosmos-marquee-drift" precedence="default">
+              {driftKeyframes}
+            </style>
+            <div
+              ref={track}
+              data-slot="logo-marquee-track"
+              style={{ '--drift-duration': `${(logos.length * guessedLogoWidth) / speed}s` } as React.CSSProperties}
+              className="flex w-max motion-safe:animate-[kosmos-marquee-drift_var(--drift-duration)_linear_infinite] motion-safe:will-change-transform rtl:[--drift-direction:-1] motion-reduce:w-auto"
+            >
               <ul
                 aria-labelledby={labelledBy}
                 className="flex min-w-[100cqw] justify-around motion-safe:*:whitespace-nowrap motion-reduce:w-full motion-reduce:min-w-0 motion-reduce:flex-wrap motion-reduce:*:max-w-full motion-reduce:justify-center motion-reduce:gap-y-4 motion-reduce:@2xl:gap-y-6"

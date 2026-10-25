@@ -34,9 +34,17 @@ The squares take the preset's accent. A preset with no accent gives ink. The col
 
 <ComponentPreview name="flickering-grid" />
 
+### Cursor spotlight
+
+Pass `spotlight` and the squares near a mouse or pen pointer over the parent brighten in a soft halo that follows it, while the rest keeps flickering. The halo is not drawn for a finger, and not under reduced motion.
+
+```tsx
+<FlickeringGrid spotlight />
+```
+
 ## Accessibility
 
-The grid is decorative, so it is `aria-hidden` and screen readers skip it. When the visitor asks for reduced motion, it draws one still grid and never animates. Otherwise it stops drawing while it is off screen and while the tab is hidden, so it costs nothing it cannot be seen. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
+The grid is decorative, so it is `aria-hidden` and screen readers skip it. When the visitor asks for reduced motion, it draws one still grid and never animates. Otherwise it stops drawing while it is off screen and while the tab is hidden, so it costs nothing it cannot be seen. A frame redraws only the squares that changed. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
 
 ## API
 
@@ -48,5 +56,8 @@ FlickeringGrid is a `<div>` and accepts all of its props. It wraps no Base UI pa
     gap: { description: 'The space between squares, in pixels.', type: 'number', default: '8' },
     flickerRate: { description: 'How often a square changes, per square per second.', type: 'number', default: '0.3' },
     maxOpacity: { description: 'The strongest a square gets, from 0 to 1.', type: 'number', default: '0.14' },
+    spotlight: { description: 'Squares near the pointer brighten in a soft halo. Mouse and pen only; off under reduced motion.', type: 'boolean', default: 'false' },
+    spotlightRadius: { description: 'How far the halo reaches from the pointer, in pixels.', type: 'number', default: '160' },
+    spotlightOpacity: { description: 'How bright a square is at the center of the halo, from 0 to 1.', type: 'number', default: '0.5' },
   }}
 />
