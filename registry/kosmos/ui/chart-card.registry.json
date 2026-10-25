@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-card",
+  "type": "registry:ui",
+  "title": "Chart card",
+  "description": "A chart on a card: a header with title, description and a place for a range control, a legend, and loading, empty and error states at the chart's height.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/button",
+    "@kosmos/chart",
+    "@kosmos/empty",
+    "@kosmos/skeleton"
+  ],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/chart-card.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

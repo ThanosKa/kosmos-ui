@@ -1,0 +1,136 @@
+---
+title: Chart card
+description: A chart on a card, with a title, a place for a range control, a legend, and loading, empty and error states that keep the chart's height.
+---
+
+<ComponentPreview name="chart-card-demo" />
+
+## Installation
+
+<ComponentInstall name="chart-card" />
+
+This also brings [Chart](/docs/components/chart), [Empty state](/docs/components/empty), [Button](/docs/components/button) and [Skeleton](/docs/components/skeleton).
+
+## Usage
+
+```tsx
+import {
+  ChartCard,
+  ChartCardAction,
+  ChartCardContent,
+  ChartCardDescription,
+  ChartCardHeader,
+  ChartCardTitle,
+} from '@/components/ui/chart-card';
+```
+
+```tsx
+<ChartCard state={state}>
+  <ChartCardHeader>
+    <ChartCardTitle render={<h2 />}>Active users</ChartCardTitle>
+    <ChartCardDescription>Against the 30 days before</ChartCardDescription>
+    <ChartCardAction>
+      <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={setRange}>
+        <SegmentedControlItem value="7d">7 days</SegmentedControlItem>
+        <SegmentedControlItem value="30d">30 days</SegmentedControlItem>
+      </SegmentedControl>
+    </ChartCardAction>
+  </ChartCardHeader>
+  <ChartCardContent onRetry={refetch}>
+    <GrowthChart title="Active users, last 30 days" data={data} config={config} xKey="day" />
+  </ChartCardContent>
+</ChartCard>
+```
+
+`ChartCardAction` holds the control that changes what the chart shows, such as a range switch or a select. It sits beside the title from a 384px card and under it below that.
+
+## Examples
+
+### States
+
+`state` on the card picks what `ChartCardContent` shows: the chart (`ready`), a skeleton (`loading`), an empty state (`empty`) or an error (`error`). Each takes the chart's height, 240px by default, so the card never jumps as the data arrives. Name the empty and error states with `emptyTitle`, `emptyDescription`, `errorTitle` and `errorDescription`; `onRetry` adds a Try again button to the error.
+
+<ComponentPreview name="chart-card-states" />
+
+### Legend
+
+`ChartCardLegend` lists each series in `config`, swatch and name, in its order. Put it in the header for a chart that draws no legend of its own, such as a stacked bar chart. A [GrowthChart](/docs/components/chart) with two or more series draws its own.
+
+<ComponentPreview name="chart-card-legend" />
+
+The series take `--chart-1` to `--chart-5` in order: ink, or the preset's accent, then four steps of grey. In a stacked chart, give each segment a 1px `stroke` in `var(--card)` so adjacent greys stay apart.
+
+## Accessibility
+
+- Pass `render={<h2 />}` to `ChartCardTitle`, at the level that fits the page, so screen readers can jump to the card.
+- While loading, the card sets `aria-busy` and a status region says `loadingLabel`. The error is an alert, so screen readers say it when it appears.
+
+## API
+
+### ChartCard
+
+Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all of its props.
+
+<TypeTable
+  type={{
+    state: {
+      description: 'What the content shows: the chart, a skeleton, an empty state or an error.',
+      type: "'ready' | 'loading' | 'empty' | 'error'",
+      default: "'ready'",
+    },
+  }}
+/>
+
+### ChartCardHeader
+
+Renders a `<div>` that lays out the title, the description, the action and the legend.
+
+### ChartCardTitle
+
+Renders a `<div>` through `useRender`. Pass `render={<h2 />}` for a heading.
+
+### ChartCardDescription
+
+Renders a `<p>` in muted text under the title.
+
+### ChartCardAction
+
+Renders a `<div>` for the control that changes what the chart shows.
+
+### ChartCardLegend
+
+Renders a `<ul>` with a swatch and a name for each series.
+
+<TypeTable
+  type={{
+    config: {
+      description: 'The series, as given to the chart: each key with its `label` and `color`, or an `icon` in place of the swatch.',
+      type: 'ChartConfig',
+      required: true,
+    },
+  }}
+/>
+
+### ChartCardContent
+
+Renders a `<div>` that holds the chart, or the state in its place. It is at least 240px high, not counting its padding; give a taller chart a `min-h-*` to match.
+
+<TypeTable
+  type={{
+    loadingLabel: { description: 'Read to screen readers while the chart loads.', type: 'string', default: "'Loading chart'" },
+    emptyTitle: { description: 'The title of the empty state.', type: 'ReactNode', default: "'No data yet'" },
+    emptyDescription: {
+      description: 'The line under it.',
+      type: 'ReactNode',
+      default: "'The chart fills in as soon as the first data comes in.'",
+    },
+    errorTitle: { description: 'The title of the error.', type: 'ReactNode', default: "'The chart could not load'" },
+    errorDescription: {
+      description: 'The line under it.',
+      type: 'ReactNode',
+      default: "'The data did not arrive. Try again in a moment.'",
+    },
+    onRetry: { description: 'Shows a Try again button in the error state.', type: '() => void' },
+    retryLabel: { description: 'The label of that button.', type: 'ReactNode', default: "'Try again'" },
+  }}
+/>
