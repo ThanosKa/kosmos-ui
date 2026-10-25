@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feature-section",
+  "type": "registry:block",
+  "title": "Feature section",
+  "description": "One feature on a marketing page, shown and explained: a title over a tray of two cards, a live piece of your product or an image in one and the text, points with links and an action in the other. Lays itself out by its own width.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/button", "@kosmos/chart", "@kosmos/segmented-control"],
+  "categories": ["feature-section"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/feature-section/feature-section.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -2,13 +2,26 @@
 
 import { useDirection } from '@base-ui/react/direction-provider';
 import { mergeProps } from '@base-ui/react/merge-props';
+import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
 import { useRender } from '@base-ui/react/use-render';
-import { PanelLeftIcon } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronsUpDown, PanelLeftIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button, type ButtonProps } from '@/registry/kosmos/ui/button';
+import { Collapsible, CollapsibleContent } from '@/registry/kosmos/ui/collapsible';
 import { Drawer, DrawerContent, DrawerTitle } from '@/registry/kosmos/ui/drawer';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/registry/kosmos/ui/dropdown-menu';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { ScrollArea, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
@@ -712,6 +725,12 @@ type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> 
   tooltip?: React.ReactNode;
 };
 
+/** Whether the sidebar is collapsed to its column of icons beside the page. */
+function useIconsOnly() {
+  const sidebar = React.useContext(SidebarContext);
+  return sidebar !== null && !sidebar.isMobile && !sidebar.open && sidebar.collapsible === 'icon';
+}
+
 /**
  * The clickable row of an item: a Button with `href` for a page, without it for an action.
  * Put an icon first and the label in a `<span>`, which truncates. On phones a link closes the drawer.
@@ -719,6 +738,7 @@ type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> 
  */
 function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: SidebarMenuButtonProps) {
   const sidebar = React.useContext(SidebarContext);
+  const iconsOnly = useIconsOnly();
   const isLink = props.href !== undefined;
   const { onClickCapture } = props as { onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void };
   const button = (
@@ -748,7 +768,6 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
     />
   );
   if (tooltip === undefined) return button;
-  const iconsOnly = sidebar !== null && !sidebar.isMobile && !sidebar.open && sidebar.collapsible === 'icon';
   return (
     <Tooltip disabled={!iconsOnly}>
       <TooltipPrimitive.Trigger render={button} />
@@ -773,6 +792,453 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'span'>)
   );
 }
 
+type SidebarSubmenuContextValue = {
+  /** Whether the panel under the trigger is open, beside the page and in the drawer. */
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  /** Whether the popover is open, in icon mode. */
+  popoverOpen: boolean;
+  setPopoverOpen: (open: boolean) => void;
+  iconsOnly: boolean;
+  label: React.ReactNode;
+  panelId: string;
+};
+
+const SidebarSubmenuContext = React.createContext<SidebarSubmenuContextValue | null>(null);
+
+function useSidebarSubmenu() {
+  const context = React.useContext(SidebarSubmenuContext);
+  if (!context) throw new Error('SidebarSubmenu parts must be used inside a SidebarSubmenu.');
+  return context;
+}
+
+/** True inside the popover a submenu opens in icon mode. */
+const SidebarSubmenuPopupContext = React.createContext(false);
+
+type SidebarSubmenuProps = {
+  /** The submenu's name, the heading of its popover in icon mode. Usually the trigger's label. */
+  label: React.ReactNode;
+  /** Whether the panel starts open. */
+  defaultOpen?: boolean;
+  /** Whether the panel is open. Use with `onOpenChange`. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Whether the popover is open in icon mode. Use with `onPopoverOpenChange`. */
+  popoverOpen?: boolean;
+  onPopoverOpenChange?: (open: boolean) => void;
+  className?: string;
+  children?: React.ReactNode;
+};
+
+/**
+ * One item that holds a level of pages under it: a `SidebarSubmenuTrigger` and a `SidebarSubmenuContent`. Place it
+ * inside a `SidebarMenuItem`. Beside the page and in the drawer the pages open in a panel under the trigger; in icon
+ * mode the panel closes and the pages open in a popover beside the icon, on hover or on click.
+ */
+function SidebarSubmenu({
+  label,
+  defaultOpen = false,
+  open: openProp,
+  onOpenChange,
+  popoverOpen: popoverOpenProp,
+  onPopoverOpenChange,
+  className,
+  children,
+}: SidebarSubmenuProps) {
+  const iconsOnly = useIconsOnly();
+  const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange);
+  const [popoverOpenState, setPopoverOpen] = useControllable(popoverOpenProp, false, onPopoverOpenChange);
+  const popoverOpen = iconsOnly && popoverOpenState;
+  // Expanding the sidebar closes the popover for good, so the next collapse does not bring it back.
+  React.useEffect(() => {
+    if (!iconsOnly && popoverOpenState) setPopoverOpen(false);
+  }, [iconsOnly, popoverOpenState, setPopoverOpen]);
+  const panelId = React.useId();
+  const context = React.useMemo<SidebarSubmenuContextValue>(
+    () => ({ open, setOpen, popoverOpen, setPopoverOpen, iconsOnly, label, panelId }),
+    [open, setOpen, popoverOpen, setPopoverOpen, iconsOnly, label, panelId],
+  );
+  return (
+    <SidebarSubmenuContext.Provider value={context}>
+      <PopoverPrimitive.Root
+        open={popoverOpen}
+        onOpenChange={(next) => {
+          if (iconsOnly || !next) setPopoverOpen(next);
+        }}
+      >
+        <Collapsible
+          data-slot="sidebar-submenu"
+          open={open && !iconsOnly}
+          onOpenChange={(next) => {
+            if (!iconsOnly) setOpen(next);
+          }}
+          className={className}
+        >
+          {children}
+        </Collapsible>
+      </PopoverPrimitive.Root>
+    </SidebarSubmenuContext.Provider>
+  );
+}
+
+type SidebarSubmenuTriggerProps = Omit<Extract<ButtonProps, { href?: undefined }>, 'variant' | 'size'> & {
+  /**
+   * Marks the submenu that holds the current page. The trigger takes the current page's highlight while the page is
+   * out of sight: while the panel is closed, and in icon mode.
+   */
+  isActive?: boolean;
+};
+
+/**
+ * The row that opens and closes a submenu. Put an icon first and the label in a `<span>`, as in `SidebarMenuButton`;
+ * the chevron comes last by itself. In icon mode only the icon shows, and it opens the popover.
+ */
+function SidebarSubmenuTrigger({ isActive = false, className, children, onClick, ...props }: SidebarSubmenuTriggerProps) {
+  const { open, setOpen, iconsOnly, panelId } = useSidebarSubmenu();
+  const panelOpen = open && !iconsOnly;
+  // Beside the page the trigger discloses the panel, so it describes the panel instead of the popover.
+  const disclosure = iconsOnly ? {} : { 'aria-haspopup': undefined, 'aria-expanded': panelOpen, 'aria-controls': panelId };
+  return (
+    <PopoverPrimitive.Trigger
+      openOnHover={iconsOnly}
+      {...disclosure}
+      render={
+        <SidebarMenuButton
+          data-slot="sidebar-submenu-trigger"
+          data-active={isActive && !panelOpen ? '' : undefined}
+          aria-current={isActive && !panelOpen ? 'true' : undefined}
+          data-panel-open={panelOpen ? '' : undefined}
+          className={cn('group/submenu-trigger data-popup-open:bg-sidebar-accent', className)}
+          onClick={(event: Parameters<NonNullable<typeof onClick>>[0]) => {
+            onClick?.(event);
+            if (!iconsOnly && !event.defaultPrevented) setOpen(!open);
+          }}
+          {...props}
+        />
+      }
+    >
+      {children}
+      {/* Turns as the panel opens; under reduced motion the right and down chevrons cross-fade instead. */}
+      <span aria-hidden className="relative ms-auto -me-0.5 size-3.5 shrink-0 *:absolute *:inset-0">
+        <ChevronRight
+          className={cn(
+            'transition-[rotate,opacity] duration-fast ease-power3-out rtl:rotate-180 group-data-panel-open/submenu-trigger:duration-slow',
+            'motion-safe:group-data-panel-open/submenu-trigger:rotate-90 motion-safe:group-data-panel-open/submenu-trigger:ease-smooth-in-out',
+            'motion-reduce:group-data-panel-open/submenu-trigger:opacity-0',
+          )}
+        />
+        <ChevronDown className="opacity-0 transition-[opacity] duration-fast motion-reduce:group-data-panel-open/submenu-trigger:opacity-100" />
+      </span>
+    </PopoverPrimitive.Trigger>
+  );
+}
+
+type SidebarSubmenuContentProps = React.ComponentProps<'ul'> & {
+  /** The element the popover renders into in icon mode. Defaults to `document.body`. */
+  container?: PopoverPrimitive.Portal.Props['container'];
+};
+
+/**
+ * The pages of a submenu, `SidebarSubmenuItem`s. Renders `<ul>`: in a panel under the trigger that grows open, or in
+ * icon mode in a popover beside the icon, under the submenu's `label`.
+ */
+function SidebarSubmenuContent({ className, children, container, id, ...props }: SidebarSubmenuContentProps) {
+  const { label, panelId } = useSidebarSubmenu();
+  return (
+    <>
+      <CollapsibleContent id={panelId} hiddenUntilFound>
+        <ul
+          id={id}
+          data-slot="sidebar-submenu-content"
+          // Indented so the pages' labels line up with the trigger's label, past its icon.
+          className={cn('flex w-full min-w-0 flex-col gap-0.5 ps-5.5 pt-0.5', className)}
+          {...props}
+        >
+          {children}
+        </ul>
+      </CollapsibleContent>
+      <PopoverPrimitive.Portal container={container}>
+        <PopoverPrimitive.Positioner
+          side="inline-end"
+          align="start"
+          sideOffset={ICON_TOOLTIP_OFFSET}
+          alignOffset={-4}
+          collisionPadding={16}
+          className="isolate z-50"
+        >
+          <PopoverPrimitive.Popup
+            data-slot="sidebar-submenu-popup"
+            className={cn(
+              'flex max-h-(--available-height) w-max max-w-[min(16rem,var(--available-width))] min-w-44 origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover dark:scheme-dark',
+              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+              'transition-[opacity,scale] duration-base',
+              'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
+              'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
+            )}
+          >
+            <ScrollArea
+              focusable={false}
+              className="rounded-none"
+              viewportClassName="overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
+            >
+              <div className="p-1">
+                <PopoverPrimitive.Title
+                  render={<div />}
+                  className="truncate px-2 pt-2 pb-1 text-caption font-medium text-muted-foreground"
+                >
+                  {label}
+                </PopoverPrimitive.Title>
+                <SidebarSubmenuPopupContext.Provider value>
+                  <ul data-slot="sidebar-submenu-content" className={cn('flex w-full min-w-0 flex-col gap-0.5', className)} {...props}>
+                    {children}
+                  </ul>
+                </SidebarSubmenuPopupContext.Provider>
+              </div>
+            </ScrollArea>
+          </PopoverPrimitive.Popup>
+        </PopoverPrimitive.Positioner>
+      </PopoverPrimitive.Portal>
+    </>
+  );
+}
+
+/** One page of a submenu. Renders `<li>`. */
+function SidebarSubmenuItem({ className, ...props }: React.ComponentProps<'li'>) {
+  return <li data-slot="sidebar-submenu-item" className={cn('relative', className)} {...props} />;
+}
+
+type SidebarSubmenuButtonProps = DistributiveOmit<SidebarMenuButtonProps, 'tooltip'>;
+
+/**
+ * The link of a page in a submenu, a `SidebarMenuButton` without a tooltip: in icon mode the popover names the
+ * pages itself. A click on it closes the popover.
+ */
+function SidebarSubmenuButton({ className, ...props }: SidebarSubmenuButtonProps) {
+  const submenu = React.useContext(SidebarSubmenuContext);
+  const inPopup = React.useContext(SidebarSubmenuPopupContext);
+  const { onClickCapture } = props as { onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void };
+  return (
+    <SidebarMenuButton
+      data-slot="sidebar-submenu-button"
+      className={cn(
+        // The panel and the popover clip anything outside them, so the focus outline is drawn inside.
+        'focus-visible:-outline-offset-2',
+        // The popover has no resize handle, so a long label wraps there instead of truncating.
+        inPopup &&
+          'h-auto min-h-7.5 py-1 text-start [&>span]:whitespace-normal hover:not-data-disabled:bg-accent hover:not-data-disabled:text-popover-foreground data-active:bg-accent hover:data-active:not-data-disabled:bg-accent',
+        className,
+      )}
+      {...props}
+      onClickCapture={(event: React.MouseEvent<HTMLElement>) => {
+        onClickCapture?.(event);
+        if (inPopup) submenu?.setPopoverOpen(false);
+      }}
+    />
+  );
+}
+
+type SidebarMenuRootProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
+
+/** A menu trigger in the header or footer: two lines of text beside a 24px mark, which stays centered in the icon column. */
+const menuTriggerClass =
+  'h-10 gap-2.5 px-1.5 text-sidebar-foreground data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]/sidebar:px-1';
+/** Fades out in icon mode and, on expand, waits for the column to widen. */
+const hiddenInIconMode =
+  'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast) group-data-snapping/sidebar-wrapper:transition-none group-data-snapping/sidebar-wrapper:delay-0';
+
+/** Where a header or footer menu opens: beside the icon in icon mode, otherwise below the header or above the footer. */
+function useMenuPlacement(side: 'bottom' | 'top') {
+  const iconsOnly = useIconsOnly();
+  return iconsOnly
+    ? ({ side: 'inline-end', align: side === 'bottom' ? 'start' : 'end', sideOffset: ICON_TOOLTIP_OFFSET } as const)
+    : ({ side, align: 'start' } as const);
+}
+
+function MenuText({ title, description }: { title: string; description?: string }) {
+  return (
+    <span className="flex min-w-0 flex-1 flex-col text-start">
+      <span title={title} className="truncate font-medium">
+        {title}
+      </span>
+      {description ? (
+        <span title={description} className="truncate text-caption text-muted-foreground">
+          {description}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+type SidebarWorkspace = {
+  id: string;
+  name: string;
+  /** A second line under the name, such as the plan. */
+  description?: string;
+  /** Replaces the name's first letter in the workspace's mark, such as an `<img>` of its logo. */
+  logo?: React.ReactNode;
+};
+
+function WorkspaceMark({ workspace, className }: { workspace: SidebarWorkspace; className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        'flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-sidebar-primary text-caption font-medium text-sidebar-primary-foreground [&>img]:size-full [&>img]:object-cover',
+        className,
+      )}
+    >
+      {workspace.logo ?? workspace.name.trim().charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
+type SidebarWorkspaceSwitcherProps = SidebarMenuRootProps & {
+  /** The workspaces in the menu. With none, the switcher renders nothing. */
+  workspaces: SidebarWorkspace[];
+  /** The `id` of the current workspace. Use with `onValueChange`. */
+  value?: string;
+  /** The workspace shown at first, when the switcher keeps its own state. Defaults to the first one. */
+  defaultValue?: string;
+  onValueChange?: (id: string) => void;
+  /** The heading over the workspaces in the menu. */
+  label?: string;
+  /** More menu items after the workspaces, below a line: `DropdownMenuItem`s such as "Add workspace". */
+  children?: React.ReactNode;
+  /** Classes for the trigger. */
+  className?: string;
+};
+
+/**
+ * The current workspace at the top of the sidebar: its mark, name and description, opening a menu that switches to
+ * another. Place it in `SidebarHeader`. In icon mode only the mark shows, the name is its tooltip, and the menu opens
+ * beside it.
+ */
+function SidebarWorkspaceSwitcher({
+  workspaces,
+  value,
+  defaultValue,
+  onValueChange,
+  label = 'Workspaces',
+  children,
+  className,
+  ...props
+}: SidebarWorkspaceSwitcherProps) {
+  const [selected, setSelected] = useControllable(value, defaultValue ?? workspaces[0]?.id, onValueChange);
+  const placement = useMenuPlacement('bottom');
+  const current = workspaces.find((workspace) => workspace.id === selected) ?? workspaces[0];
+  if (!current) return null;
+  return (
+    <DropdownMenu {...props}>
+      <DropdownMenuTrigger
+        render={
+          <SidebarMenuButton
+            data-slot="sidebar-workspace-switcher"
+            tooltip={current.name}
+            className={cn(menuTriggerClass, className)}
+          />
+        }
+        aria-label={`${current.name}, switch workspace`}
+      >
+        <WorkspaceMark workspace={current} />
+        <MenuText title={current.name} description={current.description} />
+        <ChevronsUpDown aria-hidden className={cn('ms-auto', hiddenInIconMode)} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent {...placement} className="min-w-(--anchor-width) sm:min-w-56">
+        <DropdownMenuRadioGroup value={current.id} onValueChange={(id: string) => setSelected(id)}>
+          <DropdownMenuLabel>{label}</DropdownMenuLabel>
+          {workspaces.map((workspace) => (
+            <DropdownMenuRadioItem key={workspace.id} value={workspace.id}>
+              <WorkspaceMark workspace={workspace} className="size-5" />
+              <span className="min-w-0 truncate">{workspace.name}</span>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        {children ? (
+          <>
+            <DropdownMenuSeparator />
+            {children}
+          </>
+        ) : null}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+type SidebarUser = {
+  name: string;
+  email?: string;
+  /** The address of the user's photo. Without it, or while it loads, the avatar shows `initials`. */
+  avatar?: string;
+  /** Defaults to the first letter of the name. */
+  initials?: string;
+};
+
+function UserDetails({ user }: { user: SidebarUser }) {
+  return (
+    <>
+      <Avatar size="sm" aria-hidden>
+        {user.avatar ? <AvatarImage src={user.avatar} alt="" /> : null}
+        <AvatarFallback>{user.initials ?? user.name.trim().charAt(0)}</AvatarFallback>
+      </Avatar>
+      <MenuText title={user.name} description={user.email} />
+    </>
+  );
+}
+
+type SidebarUserMenuProps = SidebarMenuRootProps & {
+  /** The signed-in user. */
+  user: SidebarUser;
+  /** The menu's items, `DropdownMenuItem`s such as Profile and Log out. Without them the user shows as plain text. */
+  children?: React.ReactNode;
+  /** Classes for the trigger. */
+  className?: string;
+};
+
+/**
+ * The signed-in user at the bottom of the sidebar: avatar, name and email, opening a menu upward with the account
+ * actions you pass. Place it in `SidebarFooter`. In icon mode only the avatar shows, the name is its tooltip, and the
+ * menu opens beside it.
+ */
+function SidebarUserMenu({ user, children, className, ...props }: SidebarUserMenuProps) {
+  const placement = useMenuPlacement('top');
+  if (!children) {
+    return (
+      <div
+        data-slot="sidebar-user"
+        className={cn(
+          'flex h-10 min-w-0 items-center gap-2.5 overflow-hidden px-1.5 text-body text-sidebar-foreground group-data-[collapsible=icon]/sidebar:px-1',
+          '[&>span:last-child]:transition-[opacity] group-data-[collapsible=icon]/sidebar:[&>span:last-child]:opacity-0 motion-safe:group-data-[state=expanded]/sidebar:[&>span:last-child]:delay-(--transition-duration-fast)',
+          'group-data-snapping/sidebar-wrapper:[&>span:last-child]:transition-none group-data-snapping/sidebar-wrapper:[&>span:last-child]:delay-0',
+          className,
+        )}
+      >
+        <UserDetails user={user} />
+      </div>
+    );
+  }
+  return (
+    <DropdownMenu {...props}>
+      <DropdownMenuTrigger
+        render={<SidebarMenuButton data-slot="sidebar-user-menu" tooltip={user.name} className={cn(menuTriggerClass, className)} />}
+        aria-label={`${user.name}, user menu`}
+      >
+        <UserDetails user={user} />
+        <ChevronsUpDown aria-hidden className={cn('ms-auto', hiddenInIconMode)} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent {...placement} className="min-w-(--anchor-width) sm:min-w-56">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="flex flex-col gap-0.5">
+            <span className="truncate text-body font-medium text-foreground">{user.name}</span>
+            {user.email ? <span className="truncate font-normal">{user.email}</span> : null}
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        {children}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export {
   Sidebar,
   SidebarContent,
@@ -788,11 +1254,26 @@ export {
   SidebarProvider,
   SidebarResizeHandle,
   SidebarSeparator,
+  SidebarSubmenu,
+  SidebarSubmenuButton,
+  SidebarSubmenuContent,
+  SidebarSubmenuItem,
+  SidebarSubmenuTrigger,
   SidebarTrigger,
+  SidebarUserMenu,
+  SidebarWorkspaceSwitcher,
   useSidebar,
   type SidebarCollapsible,
   type SidebarMenuButtonProps,
-  type SidebarTriggerProps,
   type SidebarProps,
   type SidebarProviderProps,
+  type SidebarSubmenuButtonProps,
+  type SidebarSubmenuContentProps,
+  type SidebarSubmenuProps,
+  type SidebarSubmenuTriggerProps,
+  type SidebarTriggerProps,
+  type SidebarUser,
+  type SidebarUserMenuProps,
+  type SidebarWorkspace,
+  type SidebarWorkspaceSwitcherProps,
 };

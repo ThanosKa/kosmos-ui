@@ -64,7 +64,9 @@ const viewState: Record<string, { title: string; tab: TabValue; filters: string[
 };
 
 const pageTitles: Record<string, string> = {
-  events: 'Events',
+  events: 'Live events',
+  funnels: 'Funnels',
+  alerts: 'Alerts',
   users: 'Users',
   revenue: 'Revenue',
   help: 'Help and feedback',
@@ -252,6 +254,7 @@ export function DashboardShowcase({
             <div className="p-4">
               <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
                 <DataTable
+                  toolbar={false}
                   rows={projects}
                   query={query}
                   status={tab}

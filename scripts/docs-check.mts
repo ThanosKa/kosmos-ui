@@ -12,7 +12,7 @@ import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/
 import { readProVariants } from '../lib/registry.ts';
 import { sitePresetCss } from '../lib/site-preset.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
-import { openSitePage, serverBase, serverOptions } from './site.mts';
+import { openSitePage, serverBase, serverOptions, type ReducedMotion } from './site.mts';
 
 const { values } = parseArgs({
   options: {
@@ -27,9 +27,9 @@ const desktop = { width: 1280, height: 800 };
 
 type Viewport = { width: number; height: number };
 
-/** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
-async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
-  const { page, context, errors } = await openSitePage(browser, base, path, { viewport });
+/** Opens `path` in light mode, with reduced motion unless asked. Page errors fail the check that opened it when it closes. */
+async function openPage(browser: Browser, path: string, viewport: Viewport = desktop, reducedMotion: ReducedMotion = 'reduce') {
+  const { page, context, errors } = await openSitePage(browser, base, path, { viewport, reducedMotion });
   await page.evaluate(() => document.fonts.ready);
   return {
     page,
@@ -563,16 +563,16 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="install"]');
       assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
-      const copy = section.getByRole('button', { name: /^Copy install command: npx shadcn@latest add @kosmos\// });
+      const copy = section.getByRole('button', { name: /^Copy command: npx shadcn@latest add @kosmos\// });
       assert.equal(await copy.count(), 1, 'the npm command with a copy button');
-      const command = (await copy.getAttribute('aria-label'))!.replace('Copy install command: ', '');
+      const command = (await copy.getAttribute('aria-label'))!.replace('Copy command: ', '');
       const name = command.split('@kosmos/')[1];
       const files = await section.locator('[data-terminal-file]').allTextContents();
       const item = JSON.parse(await fetchText(`/r/${name}.json`)) as { files: { path: string }[] };
       assert.ok(files.length > item.files.length, `the transcript lists the block's files and its components (${files.length})`);
       assert.ok(files.includes(`components/${name}.tsx`), `the transcript lists components/${name}.tsx`);
       await section.getByRole('tab', { name: 'pnpm' }).click();
-      assert.equal(await section.getByRole('button', { name: /^Copy install command: pnpm dlx shadcn@latest add/ }).count(), 1, 'pnpm switches the command');
+      assert.equal(await section.getByRole('button', { name: /^Copy command: pnpm dlx shadcn@latest add/ }).count(), 1, 'pnpm switches the command');
       const paths = await section.locator('a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
       for (const path of ['/llms.txt', '/llms-full.txt']) assert.ok(paths.includes(path), `links to ${path}`);
       const markdown = paths.find((path) => path.endsWith('.md'));
@@ -615,6 +615,82 @@ const checks: Check[] = [
       assert.equal(await variant.getAttribute('id'), 'footer', 'the free Footer variant');
       assert.equal(await variant.getAttribute('data-tier'), 'free', 'Footer is free');
       await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the logo marquee moves, stops while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
+    async run(browser) {
+      const path = '/view/logo-marquee-demo';
+      const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      const offsetOf = (page: Page) =>
+        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41);
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const marquee = moving.page.locator('[data-slot="logo-marquee"]');
+      assert.equal(
+        await marquee.getByRole('list').ariaSnapshot(),
+        ['- list "Used by the teams behind":', ...names.map((name) => `  - listitem: ${name}`)].join('\n'),
+        'one list, named by its line, with one named item per logo; the copies stay hidden',
+      );
+      await moving.page.waitForFunction(() => document.getAnimations().some((animation) => animation.playState === 'running'));
+      const start = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < start, 'the logos move toward the start');
+      await marquee.locator('[data-slot="logo-marquee-viewport"]').hover();
+      await moving.page.waitForTimeout(100);
+      const held = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.equal(await offsetOf(moving.page), held, 'the logos stop while the pointer is on them');
+      await moving.page.mouse.move(0, 0);
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < held, 'the logos move again once the pointer leaves');
+      await marquee.getByRole('button', { name: 'Pause logos' }).press('Enter');
+      await moving.page.waitForTimeout(100);
+      const stopped = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.equal(await offsetOf(moving.page), stopped, 'the pause button stops the logos until it is pressed again');
+      await marquee.getByRole('button', { name: 'Play logos' }).press('Enter');
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < stopped, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillMarquee = still.page.locator('[data-slot="logo-marquee"]');
+      await stillMarquee.waitFor();
+      await still.page.waitForTimeout(500);
+      assert.equal(await still.page.evaluate(() => document.getAnimations().length), 0, 'reduced motion: nothing animates');
+      assert.equal(await stillMarquee.locator('li:visible').count(), names.length, 'reduced motion: each logo shows once');
+      assert.equal(await stillMarquee.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const box = (await stillMarquee.boundingBox())!;
+      for (const item of await stillMarquee.locator('li:visible').all()) {
+        const itemBox = (await item.boundingBox())!;
+        assert.ok(itemBox.x >= box.x && itemBox.x + itemBox.width <= box.x + box.width, 'reduced motion: every logo fits in the row');
+      }
+      await still.close();
+    },
+  },
+  {
+    name: 'the pricing block switches between monthly and yearly prices and tells screen readers the new prices',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/view/pricing-demo');
+      const pricing = page.locator('[data-slot="pricing"]');
+      const billing = pricing.getByRole('radiogroup', { name: 'Billing' });
+      const announcement = pricing.getByRole('status');
+      const proPrice = pricing.getByRole('listitem').filter({ has: page.getByRole('heading', { name: 'Pro' }) }).locator('[data-slot="pricing-price"]');
+      assert.equal(await billing.getByRole('radio', { name: 'Monthly' }).isChecked(), true, 'monthly is the first choice');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'Pro shows its monthly price');
+      assert.equal(await announcement.textContent(), '', 'nothing is announced before a change');
+      await billing.getByRole('radio', { name: 'Yearly' }).click();
+      assert.equal(await proPrice.innerText(), '$39\nper month, billed yearly', 'Pro shows its yearly price');
+      assert.equal(
+        await announcement.textContent(),
+        'Yearly. Free: $0 forever. Pro: $39 per month, billed yearly. Scale: $960 per month, billed yearly.',
+        'the new prices are announced',
+      );
+      await billing.getByRole('radio', { name: 'Monthly' }).press('Space');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'the keyboard switches back');
+      assert.match((await announcement.textContent()) ?? '', /^Monthly\. .*Pro: \$49 per month\./, 'switching back is announced too');
       await close();
     },
   },
