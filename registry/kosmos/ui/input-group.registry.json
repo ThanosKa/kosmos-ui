@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-group",
+  "type": "registry:ui",
+  "title": "Input Group",
+  "description": "A text field with addons before and after its input: icons, units, a URL prefix, keyboard hints and buttons. The field lights its edge while the input has focus, and works inside a Field.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/input-group.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
