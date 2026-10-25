@@ -1,20 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GitHubIcon } from '@/components/site/brand-icons';
-import { DashboardCanvas } from '@/components/site/dashboard-canvas';
 import { ComponentBento } from '@/components/site/landing-bento';
 import { LandingFaq } from '@/components/site/landing-faq';
 import { Inventory, landingInventoryHeadingId } from '@/components/site/landing-inventory';
 import { LandingPricing } from '@/components/site/landing-pricing';
-import { BlockLabel, LandingSection, LandingTitle, type LandingSectionProps } from '@/components/site/landing-section';
+import { LandingSection, type LandingSectionProps } from '@/components/site/landing-section';
 import { LandingStack } from '@/components/site/landing-stack';
 import { SiteFooter } from '@/components/site/site-footer';
 import { itemsInGroup, readRegistryItems } from '@/lib/registry';
 import { appDescription, appName, docsRoute, githubUrl, siteOpenGraph } from '@/lib/shared';
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { Hero } from '@/registry/kosmos/blocks/hero/hero';
+import { Showcase } from '@/registry/kosmos/blocks/showcase/showcase';
 import { Announcement } from '@/registry/kosmos/ui/announcement';
 import { Button, buttonVariants } from '@/registry/kosmos/ui/button';
+import { FlickeringGrid } from '@/registry/kosmos/ui/flickering-grid';
+import { TextReveal } from '@/registry/kosmos/ui/text-reveal';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
 
@@ -24,20 +26,6 @@ export const metadata: Metadata = {
   openGraph: { ...siteOpenGraph, title, description: appDescription, url: '/' },
 };
 
-/** The eight application blocks the dashboard is composed from, in the order a visitor meets them. */
-const dashboardBlocks = [
-  'app-sidebar',
-  'stats-overview',
-  'page-header',
-  'data-table',
-  'detail-drawer',
-  'kanban-board',
-  'new-item-dialog',
-  'command-menu',
-];
-
-const dashboardHeadingId = 'landing-dashboard-heading';
-
 export default function HomePage() {
   const items = readRegistryItems();
   const componentCount = items.filter((item) => item.type === 'registry:ui').length;
@@ -46,9 +34,8 @@ export default function HomePage() {
   const sections: LandingSectionProps[] = [
     {
       id: 'hero',
-      blocks: ['hero'],
-      components: ['announcement'],
       space: 'hero',
+      background: <FlickeringGrid spotlight className="mask-[radial-gradient(ellipse_60%_80%_at_50%_40%,black,transparent)]" />,
       children: (
         <Hero
           announcement={
@@ -56,7 +43,7 @@ export default function HomePage() {
               Presets: pick a look and copy its CSS
             </Announcement>
           }
-          title="Dashboard UI with the details already done"
+          title={<TextReveal>Dashboard UI with the details already done</TextReveal>}
           description={`${componentCount} components and ${blockCount} blocks on Base UI, added with the shadcn CLI as code you own. Free and open source under MIT.`}
           actions={
             <>
@@ -75,53 +62,36 @@ export default function HomePage() {
       ),
     },
     {
+      id: 'showcase',
+      srHeading: 'Kosmos blocks, live',
+      column: 'wide',
+      children: <Showcase />,
+    },
+    {
       id: 'stack',
-      blocks: ['logo-marquee'],
       children: <LandingStack />,
     },
     {
-      id: 'dashboard',
-      blocks: dashboardBlocks,
-      labelledBy: dashboardHeadingId,
-      column: 'wide',
-      children: (
-        <>
-          <LandingTitle id={dashboardHeadingId}>
-            A whole app from the blocks,
-            <br />
-            in the preset you pick
-          </LandingTitle>
-          <DashboardCanvas />
-        </>
-      ),
-    },
-    {
       id: 'bento',
-      blocks: ['bento'],
       column: 'wide',
       children: <ComponentBento />,
     },
     {
       id: 'inventory',
-      blocks: ['bento'],
-      components: ['tabs'],
       labelledBy: landingInventoryHeadingId,
       column: 'wide',
       children: <Inventory />,
     },
     {
       id: 'pricing',
-      blocks: ['pricing'],
       children: <LandingPricing componentCount={componentCount} blockCount={blockCount} />,
     },
     {
       id: 'faq',
-      blocks: ['faq'],
       children: <LandingFaq />,
     },
     {
       id: 'cta',
-      blocks: ['cta'],
       space: 'last',
       children: (
         <Cta
@@ -150,9 +120,8 @@ export default function HomePage() {
         ))}
       </main>
       {/* The page footer closes the landing outside <main>, in a <div>, so it stays the page's footer landmark. */}
-      <div data-landing-section="footer" className="flex flex-col gap-6 pb-8">
+      <div data-landing-section="footer" className="pb-8">
         <SiteFooter />
-        <BlockLabel blocks={['footer']} />
       </div>
     </>
   );

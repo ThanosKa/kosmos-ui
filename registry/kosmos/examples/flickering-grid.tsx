@@ -18,6 +18,12 @@ export default function FlickeringGridPreview() {
           <p className="text-title font-semibold text-foreground">Larger squares</p>
         </div>
       </PreviewSection>
+      <PreviewSection title="Cursor spotlight">
+        <div className={frame}>
+          <FlickeringGrid spotlight />
+          <p className="text-title font-semibold text-foreground">Move the pointer over the grid</p>
+        </div>
+      </PreviewSection>
     </PreviewStack>
   );
 }
