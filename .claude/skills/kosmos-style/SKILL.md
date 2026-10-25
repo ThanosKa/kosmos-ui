@@ -25,9 +25,10 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 
 | Surface | Shadow | Fill |
 | --- | --- | --- |
-| Secondary button, segmented group | `shadow-control` | `bg-secondary` |
+| Secondary button, segmented group, unticked checkbox or radio | `shadow-control` | `bg-secondary`; ticked or selected `bg-primary` with `shadow-primary` |
+| Radio card | `shadow-control`; selected adds a 1px `ring-primary`, the ink edge | `bg-secondary`, hover `bg-muted` while unselected |
 | Active sidebar item, current header tab | none (flat) | `bg-accent`, the hover fill |
-| Input, textarea, select trigger | `shadow-field` | `bg-secondary` |
+| Input, textarea, select trigger, number field | `shadow-field` | `bg-secondary` |
 | Primary button | `shadow-primary` (flat in light: one ring in the fill color) | `bg-primary` |
 | Card, stat tile, board card | `shadow-card` | `bg-card` |
 | Neutral alert | `shadow-card` | `bg-card` |
@@ -39,7 +40,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Card being dragged | `shadow-lift` | `bg-card` |
 | Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 
-An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a switch that is on) the ring is 2px, since 1px vanishes against the ink. Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`); hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo, neutral because the ring color means focus.
+An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a selected radio, a switch that is on) the ring is 2px, since 1px vanishes against the ink. Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`); hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo, neutral because the ring color means focus.
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. A text field's edge is a ring with no drop (`shadow-field`), so it reads as a place to type rather than a button. Small pills with a colored edge (tags, the sidebar count) and tinted alerts draw it with a real 1px border, since the edge is part of the color, not depth. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
@@ -66,7 +67,7 @@ A horizontal tab list keeps its scrollbar under the divider: with no arrows, it 
 
 ## Radius
 
-`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Alerts take `rounded-xl`: a message inside a page, a step below the card it often sits in. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio, and the radio, which is `rounded-full`. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Alerts and radio cards take `rounded-xl`: a message or an option inside a page, a step below the card it often sits in. The stepper buttons of a number field take `rounded-md` inside its `rounded-lg` field with `p-0.5`, like segmented items. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
 The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
