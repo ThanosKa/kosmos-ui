@@ -7,7 +7,7 @@ import CopyFieldRevealed from '@/registry/kosmos/examples/copy-field-revealed';
 const rows = ['plain', 'secret, hidden', 'secret, shown'] as const;
 const states = ['default', 'disabled'] as const;
 
-const key = 'sk_live_51HxQ2eKd9F4aTq7mWv3Zb8R';
+const key = 'acme_sk_7Q2KfM9r3Vx7bT2nLp8sYc4d';
 
 export default function CopyFieldPreview() {
   return (
@@ -43,11 +43,11 @@ export default function CopyFieldPreview() {
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Short secret: no characters shown">
+        <PreviewSection title="Short secret: only the 12 dots">
           <CopyField aria-label="Signing secret" label="signing secret" secret value="hunter2pass" />
         </PreviewSection>
-        <PreviewSection title="Long secret: dots capped, last four in view">
-          <CopyField aria-label="Webhook secret" label="webhook secret" secret value="whsec_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv" />
+        <PreviewSection title="Long secret: the same 12 dots, last four in view">
+          <CopyField aria-label="Webhook secret" label="webhook secret" secret value="acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv" />
         </PreviewSection>
       </div>
 
@@ -67,9 +67,17 @@ export default function CopyFieldPreview() {
         </PreviewSection>
       </div>
 
-      <PreviewSection title="In a toolbar, at the Button's height">
-        <CopyField aria-label="Project ID" label="project ID" value="proj_fernhill" className="h-7.5 max-w-60" />
-      </PreviewSection>
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+        <PreviewSection title="In a toolbar, at the Button's height">
+          <CopyField aria-label="Project ID" label="project ID" value="proj_fernhill" className="h-7.5 max-w-60" />
+        </PreviewSection>
+        <PreviewSection title="In a disabled Field: the buttons are disabled too">
+          <Field disabled>
+            <FieldLabel>Secret key</FieldLabel>
+            <CopyField label="secret key" secret value={key} />
+          </Field>
+        </PreviewSection>
+      </div>
     </PreviewStack>
   );
 }

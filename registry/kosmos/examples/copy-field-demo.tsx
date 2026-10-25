@@ -10,7 +10,7 @@ export default function CopyFieldDemo() {
       </Field>
       <Field>
         <FieldLabel>Secret key</FieldLabel>
-        <CopyField secret label="secret key" value="sk_live_51HxQ2eKd9F4aTq7mWv3Zb8R" />
+        <CopyField secret label="secret key" value="acme_sk_7Q2KfM9r3Vx7bT2nLp8sYc4d" />
         <FieldDescription>Keep it on your server. Anyone with this key can send events to Fernhill Books.</FieldDescription>
       </Field>
     </div>

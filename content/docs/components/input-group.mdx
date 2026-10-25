@@ -25,7 +25,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGr
 </InputGroup>
 ```
 
-InputGroup draws the field: the same surface, height and edge as an [Input](/docs/components/input). Put one InputGroupInput in it and an InputGroupAddon on either side, with `align="inline-start"` before the input or `align="inline-end"` after it. On a right-to-left page the two sides swap.
+InputGroup draws the field: the same surface, height and edge as an [Input](/docs/components/input). Put one InputGroupInput in it and an InputGroupAddon on either side, with `align="inline-start"` before the input or `align="inline-end"` after it. Write each addon on its side of the input in the code too, so the Tab key reaches its buttons in the order they show. On a right-to-left page the two sides swap.
 
 The field lights its edge while the input has focus. A button inside it shows its own focus outline instead. A click on an addon, outside its buttons, puts the caret in the input, so the addon reads as part of the field.
 
@@ -33,7 +33,7 @@ The field lights its edge while the input has focus. A button inside it shows it
 
 ### Text in a Field
 
-InputGroupText holds a unit, a currency or the start of a URL, in the muted color and the size of the input text. Inside a [Field](/docs/components/field), the FieldLabel names the input and the description and error are read with it. A text addon too long for the field truncates before the input gets narrower than 64px.
+InputGroupText holds a unit, a currency or the start of a URL, in the muted color. Inside a [Field](/docs/components/field), the FieldLabel names the input and the description and error are read with it. A text addon too long for the field truncates before the input gets narrower than 64px.
 
 <ComponentPreview name="input-group-text" />
 
@@ -46,6 +46,8 @@ InputGroupButton is a ghost icon [Button](/docs/components/button), 24px, so it 
 ### Beside a button
 
 InputGroup is 34px tall, the height of a form field. In a toolbar or beside a Button, give it the Button's 30px with `className="h-7.5"`.
+
+<ComponentPreview name="input-group-toolbar" />
 
 ### Invalid and disabled
 

@@ -3,20 +3,26 @@
 import { Check, Copy, Eye, EyeOff } from 'lucide-react';
 import * as React from 'react';
 import { flushSync } from 'react-dom';
-import { useCopy } from '@/registry/kosmos/hooks/use-copy';
+import { type CopyResult, useCopy } from '@/registry/kosmos/hooks/use-copy';
 import { maskSecret } from '@/registry/kosmos/lib/secret';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, type InputGroupInputProps } from '@/registry/kosmos/ui/input-group';
 
 type CopyFieldProps = Omit<InputGroupInputProps, 'value' | 'defaultValue' | 'onValueChange' | 'readOnly' | 'type' | 'ref'> & {
   /** The text it shows and copies, such as an API key, a webhook URL or an ID. */
   value: string;
-  /** Hides the value behind dots, all but its last four characters, with a button that shows it. Copy still copies the value. */
+  /** Hides the value behind 12 dots and its last four characters, with a button that shows it. Copy still copies the value. */
   secret?: boolean;
   /** Shows a secret at first, such as a key just created that people should save now. */
   defaultRevealed?: boolean;
   /** What the value is, in the names of its buttons and in what screen readers hear: "Copy API key", "API key copied". */
   label?: string;
 };
+
+function copyMessage(result: CopyResult, label: string) {
+  if (result === 'copied') return `${label.charAt(0).toUpperCase()}${label.slice(1)} copied`;
+  if (result === 'failed') return `Unable to copy. The ${label} is selected, so copy it with your keyboard.`;
+  return '';
+}
 
 /**
  * A read-only field that shows a value with a button that copies it, such as an API key or a webhook URL. As a secret
@@ -26,6 +32,18 @@ type CopyFieldProps = Omit<InputGroupInputProps, 'value' | 'defaultValue' | 'onV
 function CopyField({ value, secret = false, defaultRevealed = false, label = secret ? 'secret' : 'value', disabled, className, ...props }: CopyFieldProps) {
   const [revealed, setRevealed] = React.useState(defaultRevealed);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  // A disabled Field disables the input through Base UI's context, which this component cannot read; the buttons follow the input.
+  const [inputDisabled, setInputDisabled] = React.useState(false);
+  React.useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    const follow = () => setInputDisabled(input.disabled);
+    follow();
+    const observer = new MutationObserver(follow);
+    observer.observe(input, { attributes: true, attributeFilter: ['disabled'] });
+    return () => observer.disconnect();
+  }, []);
+  const buttonsDisabled = disabled || inputDisabled;
   const [result, copy] = useCopy(value, {
     onFailure: () => {
       flushSync(() => setRevealed(true));
@@ -34,7 +52,6 @@ function CopyField({ value, secret = false, defaultRevealed = false, label = sec
     },
   });
   const hidden = secret && !revealed;
-  const name = label.charAt(0).toUpperCase() + label.slice(1);
   return (
     <InputGroup className={className}>
       <InputGroupInput
@@ -55,18 +72,18 @@ function CopyField({ value, secret = false, defaultRevealed = false, label = sec
             size="icon-sm"
             aria-label={`Show ${label}`}
             aria-pressed={revealed}
-            disabled={disabled}
+            disabled={buttonsDisabled}
             onClick={() => setRevealed((shown) => !shown)}
           >
             {revealed ? <EyeOff aria-hidden /> : <Eye aria-hidden />}
           </InputGroupButton>
         ) : null}
-        <InputGroupButton variant="ghost" size="icon-sm" aria-label={`Copy ${label}`} disabled={disabled} onClick={copy}>
+        <InputGroupButton variant="ghost" size="icon-sm" aria-label={`Copy ${label}`} disabled={buttonsDisabled} onClick={copy}>
           {result === 'copied' ? <Check aria-hidden /> : <Copy aria-hidden />}
         </InputGroupButton>
       </InputGroupAddon>
       <span role="status" className="sr-only">
-        {result === 'copied' ? `${name} copied` : result === 'failed' ? `Unable to copy. The ${label} is selected, so copy it with your keyboard.` : ''}
+        {copyMessage(result, label)}
       </span>
     </InputGroup>
   );

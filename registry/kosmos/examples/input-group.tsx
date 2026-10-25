@@ -1,14 +1,14 @@
 'use client';
 
-import { ArrowRight, AtSign, Eye, Search, X } from 'lucide-react';
+import { AtSign, Eye, Search, X } from 'lucide-react';
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
-import { Button } from '@/registry/kosmos/ui/button';
 import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from '@/registry/kosmos/ui/input-group';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
+import InputGroupToolbar from '@/registry/kosmos/examples/input-group-toolbar';
 import InputGroupButtonExample from '@/registry/kosmos/examples/input-group-button';
 import InputGroupTextExample from '@/registry/kosmos/examples/input-group-text';
 
@@ -148,21 +148,7 @@ export default function InputGroupPreview() {
           </Field>
         </PreviewSection>
         <PreviewSection title="In a toolbar, at the Button's height">
-          <div className="flex items-center gap-2">
-            <InputGroup className="h-7.5">
-              <InputGroupAddon>
-                <Search aria-hidden />
-              </InputGroupAddon>
-              <InputGroupInput aria-label="Filter projects" placeholder="Filter projects" />
-              <InputGroupAddon align="inline-end">
-                <Kbd>/</Kbd>
-              </InputGroupAddon>
-            </InputGroup>
-            <Button variant="secondary">
-              Export
-              <ArrowRight data-icon="inline-end" aria-hidden />
-            </Button>
-          </div>
+          <InputGroupToolbar />
         </PreviewSection>
       </div>
 

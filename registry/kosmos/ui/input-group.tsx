@@ -26,7 +26,6 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
         'has-[input[aria-invalid=true]:focus-visible]:ring-offset-destructive has-[input[aria-invalid=true]:focus-visible]:ring-3 has-[input[aria-invalid=true]:focus-visible]:ring-destructive/20',
         // A disabled input dims the whole field once, so a disabled button inside does not dim again.
         'has-[input:disabled]:opacity-50 has-[input:disabled]:**:data-disabled:opacity-100',
-        // The input sits closer to an addon than to the bare edge.
         'has-[>[data-align=inline-start]]:*:data-[slot=input-group-control]:ps-2 has-[>[data-align=inline-end]]:*:data-[slot=input-group-control]:pe-2',
         className,
       )}
@@ -59,8 +58,7 @@ function InputGroupAddon({ className, align = 'inline-start', onMouseDown, ...pr
         input.focus();
       }}
       className={cn(
-        // Text the size of the input's, so the two share a baseline. A long text addon truncates before the input shrinks below 64px.
-        'flex h-full min-w-0 cursor-text items-center gap-2 text-base text-muted-foreground select-none sm:text-body',
+        'flex h-full min-w-0 cursor-text items-center gap-2 text-body text-muted-foreground select-none',
         "[&>svg]:pointer-events-none [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-3.5",
         align === 'inline-start' ? 'order-first ps-3 has-[>button]:ps-1 has-[>kbd]:ps-1.5' : 'order-last pe-3 has-[>button]:pe-1 has-[>kbd]:pe-1.5',
         'has-[>button]:gap-0.5',

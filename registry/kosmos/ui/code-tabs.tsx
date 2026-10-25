@@ -57,7 +57,6 @@ function CodeTabs<Tab extends string>({
   const requested = value ?? uncontrolled;
   const open = requested !== undefined && tabs.includes(requested) ? requested : tabs[0];
   const commandRef = React.useRef<HTMLSpanElement>(null);
-  // Copying resets with the tab, and a refused copy selects the command, so it can be copied by hand.
   const [result, copy] = useCopy(commands[open] ?? '', {
     onFailure: () => {
       if (commandRef.current) window.getSelection()?.selectAllChildren(commandRef.current);

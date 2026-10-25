@@ -44,4 +44,4 @@ function useCopy(text: string, { onFailure }: { onFailure?: () => void } = {}) {
   return [last?.text === text ? last.result : 'idle', copy] as const;
 }
 
-export { copiedFor, copyText, useCopy, type CopyResult };
+export { copyText, useCopy, type CopyResult };
