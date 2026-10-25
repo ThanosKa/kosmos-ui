@@ -6,7 +6,7 @@ import { maskSecret } from '../registry/kosmos/lib/secret.ts';
 const dots = (count: number) => '•'.repeat(count);
 
 test('a key shows its last four characters, so keys can be told apart', () => {
-  assert.equal(maskSecret('acme_sk_7Q2K9F4a'), `${dots(12)}9F4a`);
+  assert.equal(maskSecret('acme_secret_9F4a'), `${dots(12)}9F4a`);
 });
 
 test('a short secret shows none of itself, since four characters would give most of it away', () => {

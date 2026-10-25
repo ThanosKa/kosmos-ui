@@ -138,7 +138,7 @@ A chart over a range plots one point per day (7 and 30 days) or per week (90 day
 
 Acme's public API, for codes and methods (Badge `tint-*`). Paths start with `/v1`: `GET /v1/projects` (List projects), `GET /v1/projects/{id}`, `POST /v1/events` (Send events), `PATCH /v1/projects/{id}` (Change a plan) and `DELETE /v1/events/{name}` (Delete events, such as `debug_ping` on Tidepool Notes). A request log shows `202` for accepted events, `200`, `304`, `429` when a project sends past its rate limit, and `500`.
 
-Keys and endpoints of Fernhill Books, for copy fields and settings: secret key `acme_sk_7Q2KfM9r3Vx7bT2nLp8sYc4d`, webhook signing secret `acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv`, project ID `proj_fernhill`, webhook URL `https://hooks.acme.example/v1/fernhill/events`. Keys start with `acme_`, never with another product's key prefix.
+Keys and endpoints of Fernhill Books, for copy fields and settings: secret key `acme_secret_demo_7Q2Kf9r3Vx`, webhook signing secret `acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv`, project ID `proj_fernhill`, webhook URL `https://hooks.acme.example/v1/fernhill/events`. Keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys.
 
 ## Roadmap
 
