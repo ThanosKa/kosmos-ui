@@ -104,8 +104,8 @@ function PricingPlanCard({ plan, billing, headingLevel }: { plan: PricingPlan; b
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const period = forBilling(plan.period, billing);
   // A price or period that differs by billing mounts again on a change, so it fades in from `starting:opacity-0`.
-  const priceKey = isPerBilling(plan.price) ? billing : undefined;
-  const periodKey = isPerBilling(plan.period) ? billing : undefined;
+  const priceKey = isPerBilling(plan.price) ? `price-${billing}` : 'price';
+  const periodKey = isPerBilling(plan.period) ? `period-${billing}` : 'period';
   const action = typeof plan.action === 'function' ? plan.action(billing) : plan.action;
   return (
     <li
