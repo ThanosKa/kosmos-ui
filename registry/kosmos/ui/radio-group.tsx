@@ -136,7 +136,9 @@ function RadioCard({ className, children, 'aria-labelledby': ariaLabelledBy, 'ar
           // Selected, an ink ring replaces the control ring: the edge that tells the cards apart.
           'data-checked:ring-1 data-checked:ring-primary',
           'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+          // Invalid wins over the ink edge of a selected card, so the error still shows once one is picked.
           'data-invalid:ring-1 data-invalid:ring-destructive aria-invalid:ring-1 aria-invalid:ring-destructive',
+          'data-checked:data-invalid:ring-destructive data-checked:aria-invalid:ring-destructive',
           'data-disabled:cursor-not-allowed data-disabled:opacity-50',
           className,
         )}
@@ -153,7 +155,8 @@ function RadioCard({ className, children, 'aria-labelledby': ariaLabelledBy, 'ar
             circle,
             'mt-0.5',
             'group-data-checked/radio-card:bg-primary group-data-checked/radio-card:shadow-primary',
-            'group-data-invalid/radio-card:ring-1 group-data-invalid/radio-card:ring-destructive',
+            'group-data-invalid/radio-card:ring-1 group-data-invalid/radio-card:ring-destructive group-data-invalid/radio-card:group-data-checked/radio-card:ring-2',
+            'group-aria-invalid/radio-card:ring-1 group-aria-invalid/radio-card:ring-destructive group-aria-invalid/radio-card:group-data-checked/radio-card:ring-2',
           )}
         >
           <RadioDot />

@@ -50,7 +50,7 @@ Set `invalid` on the Field and put the message in a FieldError.
 
 ## API
 
-NumberField wraps the [Base UI Number Field](https://base-ui.com/react/components/number-field) and takes every prop of its Root, such as:
+NumberField wraps the [Base UI Number Field](https://base-ui.com/react/components/number-field) and takes every prop of its Root, such as the ones below. `placeholder`, `aria-label` and `aria-labelledby` go to the input inside it.
 
 <TypeTable
   type={{
@@ -118,6 +118,14 @@ NumberField wraps the [Base UI Number Field](https://base-ui.com/react/component
       description: 'Shows the number but blocks changing it.',
       type: 'boolean',
       default: 'false',
+    },
+    'aria-label': {
+      description: 'Names the field when no Field label is around it.',
+      type: 'string',
+    },
+    'aria-labelledby': {
+      description: 'Names the field by the id of other text on the page.',
+      type: 'string',
     },
     className: {
       description: 'Classes for the field: a width, or `h-7.5` beside a Button.',

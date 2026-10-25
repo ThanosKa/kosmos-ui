@@ -16,6 +16,8 @@ const stepper = [
   'size-auto aspect-square h-full touch-manipulation rounded-md text-muted-foreground transition-[background-color,color]',
   'hover:not-data-disabled:text-foreground active:not-data-disabled:bg-accent active:not-data-disabled:text-foreground',
   'data-readonly:pointer-events-none data-readonly:opacity-50',
+  // In a disabled field the whole group already dims; a stepper dimming again would drop its icon to a quarter.
+  'group-data-disabled/number-field:opacity-100',
 ].join(' ');
 
 /**
@@ -26,7 +28,7 @@ const stepper = [
  */
 function NumberField({ className, placeholder, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy, ...props }: NumberFieldProps) {
   // Only names the app passes reach the input: an `undefined` would replace the label id the Field gives it.
-  const inputNames = {
+  const accessibleNameProps = {
     ...(ariaLabel !== undefined && { 'aria-label': ariaLabel }),
     ...(ariaLabelledBy !== undefined && { 'aria-labelledby': ariaLabelledBy }),
   };
@@ -36,7 +38,7 @@ function NumberField({ className, placeholder, 'aria-label': ariaLabel, 'aria-la
         data-slot="number-field-group"
         className={cn(
           // The surface of Input, with the stepper buttons inset like the items of a segmented control.
-          'flex h-8.5 w-40 min-w-0 items-stretch rounded-lg border border-transparent bg-secondary p-0.5 text-foreground shadow-field',
+          'group/number-field flex h-8.5 w-40 min-w-0 items-stretch rounded-lg border border-transparent bg-secondary p-0.5 text-foreground shadow-field',
           'transition-[box-shadow]',
           // The field lights its edge while the input inside it has focus, as Input does. The transparent outline paints only in forced-colors mode.
           'has-focus-visible:outline-1 has-focus-visible:outline-offset-0 has-focus-visible:outline-transparent has-focus-visible:ring-offset-1 has-focus-visible:ring-offset-ring has-focus-visible:ring-3 has-focus-visible:ring-ring/20',
@@ -55,7 +57,7 @@ function NumberField({ className, placeholder, 'aria-label': ariaLabel, 'aria-la
         <NumberFieldPrimitive.Input
           data-slot="number-field-input"
           placeholder={placeholder}
-          {...inputNames}
+          {...accessibleNameProps}
           className={cn(
             'w-full min-w-0 flex-1 bg-transparent px-1 text-center text-base text-foreground tabular-nums outline-none sm:text-body',
             'placeholder:text-muted-foreground',
