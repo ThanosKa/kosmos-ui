@@ -1,8 +1,8 @@
 # Kosmos tokens
 
-Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. `/tokens` renders them live.
+Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. `/tokens` renders them live. The palette and radius in it are the CSS of the default preset in `lib/presets`, written by `pnpm registry:build`; `pnpm test` checks every preset's text (4.5:1), focus and chart marks (3:1) in both modes.
 
-Colors are the warm neutral palette with an orange accent (ADR 0007). "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles (ADR 0004). "Adjusted" marks a value changed for contrast, with the reason.
+Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles. "Adjusted" marks a value changed for contrast, with the reason.
 
 ## How the file maps to the registry
 
@@ -21,25 +21,24 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `background`, `foreground` | Page surface and its text: cream and warm ink in light, warm near-black and off-white in dark | ADR 0007 |
-| `card`, `card-foreground` | Cards, tiles: a step lighter than the page in light, a step lighter in dark | ADR 0007 |
-| `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0007 |
-| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range. Warm ink with light text in light; light fill with ink text in dark | ADR 0007 (never orange: white on the orange is 3.3:1) |
-| `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0007 |
-| `muted` | Track and quiet fills | ADR 0007 |
+| `background`, `foreground` | Page surface and its text: a near-white page and near-black ink in light, near-black and off-white in dark | ADR 0009 |
+| `card`, `card-foreground` | Cards, tiles: white on the near-white page in light, a step lighter than the page in dark | ADR 0009 |
+| `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0009 |
+| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range. Ink with light text in light; the light ink with dark text in dark | ADR 0009: ink, the same value as `foreground`. Never an accent fill: white on a saturated accent rarely reaches 4.5:1 |
+| `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0009 |
+| `muted` | Track and quiet fills | ADR 0009 |
 | `muted-foreground` | Secondary text | Set in both modes to pass 4.5:1 on `background`, `card`, `muted` and `sidebar` |
 | `accent`, `accent-foreground` | Translucent hover/highlight overlay for ghost, nav, menu items and rows | Hover overlays of both studies (ink 5% light, white 6% dark) |
 | `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
-| `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the cream page; dark study |
-| `border` | Dividers between items | ADR 0007 |
-| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0007 |
-| `ring` | Focus outline, and the brand orange wherever the accent appears (`chart-1`, `shadow-lift`; the Meter's `primary` tone takes the deeper `meter-primary`) | ADR 0007: 3.3:1 on the light page, stepped lighter in dark. Never text: it is below 4.5:1 on the light page |
-| `active-foreground` | The label and icon of the current page in navigation: the active sidebar item, the current header tab and the current item in a nav menu. The one orange text | ADR 0007 exception. Light `oklch(0.53 0.17 38)`, the `ring` hue darkened to pass 4.5:1; dark = `ring`. Measured 4.61:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes |
+| `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the page; dark study. With `destructive`, the only chroma in the default |
+| `border` | Dividers between items | ADR 0009 |
+| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0009 |
+| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent's ring step, which also takes `sidebar-ring` and `chart-1` | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
+| `accent-text` | The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter's `primary` tone | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes. In Warm a step deeper than `ring` in light, so a primary Meter never shares a lightness with `warning` (about 1.7:1 apart). The name keeps clear of shadcn's `accent`, the hover fill |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
-| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
-| `scrollbar-thumb` | The ScrollArea thumb: a warm grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
-| `meter-primary` | The Meter's `primary` tone: the brand orange, a step deeper than `ring` in light | ADR 0007: in light `ring` and `warning` share one lightness and merge in grayscale; the deeper step keeps them apart (about 1.7:1 between the two fills in each mode) and stays clear of `destructive`. Dark keeps `ring`, already lighter apart from `warning` |
-| `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0007; a step darker than the page in light, focus = `ring` |
+| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007, kept by ADR 0009 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
+| `scrollbar-thumb` | The ScrollArea thumb: a grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
+| `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0009; a step darker than the page in light, focus = `ring` |
 
 Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
 
@@ -49,19 +48,35 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | Slot 1 is the brand orange (`ring` in each mode); slots 2–5 are blue, amber, magenta and green, stepped per mode (ADR 0007). Checked as a set: adjacent-pair separation for protan, deutan and tritan vision, and 3:1 against `card` and `background` in both modes |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | A mono ramp (ADR 0009): slot 1 is ink (`foreground`), slots 2–5 step toward the page in grey, about 1.4–1.6:1 apart, each 3:1 or more against `card` and `background` in both modes. Lightness alone carries the series, so it reads in grayscale and for color-blind readers; touching segments are split by a 1px line in the surface color |
 
 ## Tag colors
 
-In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; status keeps the neutral pill with a dot.
+In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; a state is a dot and a code a tinted pill (Status tints below).
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `tag-orange`, `tag-blue`, `tag-amber`, `tag-magenta`, `tag-green` | Tag fill: `chart-1` … `chart-5` mixed into transparent at 12% (light) and 16% (dark) | Our chart hues (ADR 0007); the tinted-tag structure comes from the dark study |
-| `tag-red` | Tag fill: `destructive` at the same alpha | As above |
-| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The same hue stepped to `L 0.47` in light and `L 0.84` (chroma 0.08) in dark, so every pair passes 4.5:1 on its fill over `card` and `background` (light 5.2–6.2:1, dark 7.9–9.2:1) |
+| `tag-orange`, `tag-blue`, `tag-green`, `tag-red` | Tag fill: the status tint of the same hue (`var(--tint-*)`), so a blue tag is the info blue and never follows a preset | Status tints below |
+| `tag-amber`, `tag-magenta` | Tag fill: Radix amber and plum step 3, the tint construction for the two hues that are no status | Radix Colors (MIT) |
+| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The tint's `-foreground` for the four status hues; amber and plum step 11 (the light amber moved toward step 12 to `#a46003`, 4.55:1). `pnpm test` checks 4.5:1 on the fill in both modes |
+
+## Status tints
+
+In their own labelled blocks after the tags, the same under every preset. The values are Radix Colors steps, MIT, Copyright (c) 2021 Radix; the notice is `registry/kosmos/styles/LICENSE-RADIX-COLORS`, which the tokens item ships to `~/LICENSE-RADIX-COLORS`, and `pnpm test` checks it is there.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `tint-<hue>` (`gray`, `blue`, `green`, `teal`, `orange`, `red`) | The fill of a code pill (Badge `tint-*`) and of a tinted Alert | Radix step 3 |
+| `tint-<hue>-border` | The edge of a tinted Alert; a code pill's hover edge as a link | Radix step 6 |
+| `tint-<hue>-foreground` | Text on the fill | Radix step 11; in light moved toward step 12 only as far as 4.5:1 on the fill needs, in dark step 11 as it is |
+| `tint-<hue>-link` | A link inside a tinted Alert | Radix step 12 |
+| `tint-<hue>-dot` | The dot of `StatusDot` | Radix step 9; gray's is dimmer (`#c7c7c7` / `#4a4a4a`) |
+| `tint-<hue>-solid` (`blue`, `green`, `orange`, `red`) | A code in the current nav item, under `tint-solid-foreground` | Radix light step 11, the same in both modes, 4.5:1 or more with white |
+| `tint-solid-foreground` | White text on a solid tint | `#ffffff` |
 
 ## Shadows
+
+Shadows are style, not palette: they are written once in `tokens.css`, and no preset changes them (ADR 0009).
 
 | Token | Surface | Structure |
 | --- | --- | --- |
@@ -72,7 +87,7 @@ In their own labelled blocks after the chart colors. They exist for the Badge hu
 | `shadow-popover` | Popover, menu, tooltip, toast, command palette | Ring + stacked drops; dark adds the rim (inner ring at white 10%, so the edge reads on a dark page) |
 | `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim (as popover) |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
-| `shadow-lift` | Card while dragged | Double `ring` (orange) ring + deep drop |
+| `shadow-lift` | Card while dragged | Double `ring` ring (ink by default, the accent in a preset with one) + deep drop |
 | `shadow-thumb` | Switch thumb, slider thumb | Ring + two short drops, so a near-white knob stands off a white page; dark uses the study's thumb ring and drop |
 
 ## Radius
@@ -105,6 +120,8 @@ Only the curves components use are defined. The rest of the GSAP power family, f
 ### Site-only roles
 
 `text-page-title` exists only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). It is declared in `app/global.css`, not in `tokens.css`, so it never ships in `@kosmos/tokens`, and no component or block uses it. Use it as a plain class, not through `cn`, which does not know it.
+
+The brand colour (`--brand`, Peony, the same in light and dark) and its roles live in `app/global.css` too: `brand-hover`, `brand-foreground` (white, 4.5:1 on both) and `brand-selection`, the site's text selection (the brand at `--brand-selection-strength`, mixed opaque into the page background, under `foreground` text). It marks only the logo's ring, the Pro marks and text selection. A Pro mark is a primary Badge or Button with the `brand-primary` utility, which fills it with the brand; the Button adds `hover:not-data-disabled:bg-brand-hover`. The apple icon and the social image take it as hex through `components/site/token-colors.ts`; the static `app/icon.svg` writes it out, and `pnpm test` checks that it matches. No registry item may hold it: `pnpm registry:build` and `pnpm test` fail when one does (`lib/brand.ts`).
 
 ## Left out on purpose
 

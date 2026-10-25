@@ -3,7 +3,7 @@
   "name": "status",
   "type": "registry:ui",
   "title": "Status",
-  "description": "Six states for a task, a step or a run (pending, running, waiting, done, error, skipped), as a 16px row icon and as a Badge.",
+  "description": "Six states for a task, a step or a run (pending, running, waiting, done, error, skipped), as a 16px row icon, a dot beside its word and a Badge.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge"],
   "meta": { "group": "ai" },

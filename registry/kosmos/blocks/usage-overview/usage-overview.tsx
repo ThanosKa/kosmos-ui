@@ -120,6 +120,9 @@ const sampleBudget: UsageBudget = { usedUsd: sampleUsage['30d'].totals.costUsd, 
 
 const rangeLabels: Record<UsageRange, string> = { '7d': '7 days', '30d': '30 days', '90d': '90 days' };
 
+/** A line in the card color between stacked segments, so adjacent greys of the mono ramp stay apart. */
+const stackSeparator = { stroke: 'var(--card)', strokeWidth: 1 };
+
 /** One chart series per model, in `models` order, colored `chart-1` to `chart-5`. */
 const seriesOf = (models: UsageRow[]) => models.slice(0, 5);
 const chartConfigOf = (models: UsageRow[]): ChartConfig =>
@@ -387,6 +390,7 @@ function UsageOverview({
                         name={model.name}
                         stackId="tokens"
                         fill={`var(--color-${model.id})`}
+                        {...stackSeparator}
                         maxBarSize={24}
                         {...chartAnimation}
                       />

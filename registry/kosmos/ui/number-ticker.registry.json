@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-ticker",
+  "type": "registry:ui",
+  "title": "Number ticker",
+  "description": "A number that counts up to its value the first time it scrolls into view. The final number is in the markup and reserves the width. Still under reduced motion. Ported from Magic UI (MIT).",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    { "path": "registry/kosmos/ui/number-ticker.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }
+  ]
+}

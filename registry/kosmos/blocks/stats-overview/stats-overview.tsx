@@ -1,13 +1,20 @@
 'use client';
 
-import { Activity, ChartNoAxesCombined, TrendingDown, TrendingUp } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Badge } from '@/registry/kosmos/ui/badge';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import {
+  ChartCard,
+  ChartCardAction,
+  ChartCardContent,
+  ChartCardDescription,
+  ChartCardHeader,
+  ChartCardTitle,
+  type ChartCardState,
+} from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatCardDelta, StatCardValue } from '@/registry/kosmos/ui/stat-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
 type StatFormat = 'currency' | 'number' | 'percent';
@@ -24,8 +31,8 @@ type Metric = {
   format: StatFormat;
   /** The change against the period before: a percentage, or percentage points for a `percent` metric. Leave it out when there is no earlier period. */
   change?: number;
-  /** Whether a rise is good news (users) or bad news (errors). Colors the change. */
-  goodWhen?: 'up' | 'down';
+  /** Whether a rise is good news (users), bad news (errors) or neither. Colors the change. */
+  goodWhen?: 'up' | 'down' | 'neither';
   /** The chart's points, oldest first. */
   points: MetricPoint[];
 };
@@ -129,7 +136,6 @@ const formats: Record<StatFormat, Intl.NumberFormat> = {
 };
 const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 const compactNumber = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
-const signed = new Intl.NumberFormat('en-US', { signDisplay: 'exceptZero', maximumFractionDigits: 1 });
 
 /** Values of a million and up go compact (28.5M), so they fit their slot. */
 function formatValue(value: number, format: StatFormat) {
@@ -137,22 +143,12 @@ function formatValue(value: number, format: StatFormat) {
   if (Math.abs(value) < 1_000_000) return formats[format].format(value);
   return format === 'currency' ? usdCompact.format(value) : compactNumber.format(value);
 }
-// A true minus sign (−), not the hyphen Intl writes.
-const formatChange = (change: number, format: StatFormat) =>
-  `${signed.format(change).replace('-', '−')}${format === 'percent' ? ' pts' : '%'}`;
-
 function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
-  const { change } = metric;
-  if (change === undefined) return <span className="truncate text-muted-foreground">No earlier period</span>;
-  const rising = change > 0;
-  const good = change === 0 ? null : rising === ((metric.goodWhen ?? 'up') === 'up');
-  const Icon = rising ? TrendingUp : TrendingDown;
+  if (metric.change === undefined) return <span className="truncate text-small text-muted-foreground">No earlier period</span>;
   return (
-    <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
-      {good === null ? null : <Icon aria-hidden />}
-      {formatChange(change, metric.format)}
+    <StatCardDelta value={metric.change} goodWhen={metric.goodWhen} unit={metric.format === 'percent' ? 'points' : 'percent'}>
       <span className="sr-only">against the previous {rangeLabel}</span>
-    </Badge>
+    </StatCardDelta>
   );
 }
 
@@ -184,10 +180,8 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
         </>
       ) : (
         <>
-          <span className={cn('max-w-full truncate text-display text-foreground tabular-nums', valueSlot)}>
-            {formatValue(metric.value, metric.format)}
-          </span>
-          <span className="flex min-w-0 items-center text-small tabular-nums">
+          <StatCardValue className={cn('max-w-full', valueSlot)}>{formatValue(metric.value, metric.format)}</StatCardValue>
+          <span className="flex min-w-0 items-center">
             <MetricChange metric={metric} rangeLabel={rangeLabel} />
           </span>
         </>
@@ -196,35 +190,25 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
   );
 }
 
-function TopEvents({ events, loading, rangeLabel }: { events: TopEvent[]; loading: boolean; rangeLabel: string }) {
+function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[]; state: ChartCardState; onRetry?: () => void; rangeLabel: string }) {
   const top = events[0]?.count ?? 0;
   const headingId = React.useId();
 
   return (
-    <div className="flex min-w-0 flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 text-card-foreground shadow-card">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 id={headingId} className="text-title">
+    <ChartCard state={state}>
+      <ChartCardHeader>
+        <ChartCardTitle id={headingId} render={<h2 />}>
           Top events
-        </h2>
-        <p className="text-small text-muted-foreground">Last {rangeLabel}</p>
-      </div>
-      {loading ? (
-        <div className="flex flex-col gap-1">
-          {Array.from({ length: 5 }, (_, index) => (
-            <Skeleton key={index} className="h-8 w-full rounded-lg" />
-          ))}
-        </div>
-      ) : events.length === 0 || top === 0 ? (
-        <Empty className="flex-1 p-0 py-6">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Activity />
-            </EmptyMedia>
-            <EmptyTitle render={<h3 />}>No events yet</EmptyTitle>
-            <EmptyDescription>Events show up here as soon as a project sends its first one.</EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
+        </ChartCardTitle>
+        <ChartCardDescription>Last {rangeLabel}</ChartCardDescription>
+      </ChartCardHeader>
+      <ChartCardContent
+        loadingLabel="Loading top events"
+        emptyTitle="No events yet"
+        emptyDescription="Events show up here as soon as a project sends its first one."
+        errorTitle="The top events could not load"
+        onRetry={onRetry}
+      >
         <ol aria-labelledby={headingId} className="flex flex-col gap-1">
           {events.map((event) => (
             <li
@@ -240,8 +224,8 @@ function TopEvents({ events, loading, rangeLabel }: { events: TopEvent[]; loadin
             </li>
           ))}
         </ol>
-      )}
-    </div>
+      </ChartCardContent>
+    </ChartCard>
   );
 }
 
@@ -255,7 +239,7 @@ function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (val
   return [current, setValue] as const;
 }
 
-type StatsOverviewProps =Omit<React.ComponentProps<'section'>, 'children'> & {
+type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
   /** The metrics for each range, as tabs over the chart. Four fit one row on a wide container. */
   metrics?: Record<Range, Metric[]>;
   /** The most frequent events for each range, most frequent first. An empty list shows the empty state. */
@@ -270,6 +254,10 @@ type StatsOverviewProps =Omit<React.ComponentProps<'section'>, 'children'> & {
   onMetricChange?: (metric: string) => void;
   /** Shows skeletons while the data loads. */
   loading?: boolean;
+  /** Shows an error in place of the metrics, the chart and the top events, when the data could not load. */
+  error?: boolean;
+  /** Shows a button that tries again beside the error. */
+  onRetry?: () => void;
 };
 
 /**
@@ -287,6 +275,8 @@ function StatsOverview({
   defaultMetric,
   onMetricChange,
   loading = false,
+  error = false,
+  onRetry,
   className,
   ...props
 }: StatsOverviewProps) {
@@ -295,11 +285,40 @@ function StatsOverview({
   const [metricId, setMetric] = useControlled(metricProp, defaultMetric ?? list[0]?.id ?? '', onMetricChange);
   const active = list.find((item) => item.id === metricId) ?? list[0];
   const rangeLabel = ranges[range].label;
+  const events = topEvents[range];
+
+  const stateOf = (empty: boolean): ChartCardState => (loading ? 'loading' : error ? 'error' : empty ? 'empty' : 'ready');
+  const chartState = stateOf(!active || active.points.length === 0);
+  const showTabs = list.length > 0 && !error;
 
   const chartConfig = {
     current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
     previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-2)' },
   } satisfies ChartConfig;
+
+  const chart = (
+    <ChartCardContent
+      emptyTitle={list.length === 0 ? 'No metrics yet' : 'No data in this range'}
+      emptyDescription={
+        list.length === 0
+          ? 'Your numbers show up here once the first project sends events.'
+          : 'Pick a longer range, or check back once events come in.'
+      }
+      onRetry={onRetry}
+    >
+      {active ? (
+        <GrowthChart
+          key={range}
+          title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
+          data={active.points}
+          config={chartConfig}
+          xKey="label"
+          xLabel={ranges[range].xLabel}
+          valueFormatter={(value) => formatValue(value, active.format)}
+        />
+      ) : null}
+    </ChartCardContent>
+  );
 
   return (
     <section
@@ -310,38 +329,26 @@ function StatsOverview({
       {...props}
     >
       <div className="grid grid-cols-1 gap-4 @6xl:grid-cols-3">
-        <Tabs
-          value={active?.id ?? ''}
-          onValueChange={(value) => setMetric(String(value))}
-          className="min-w-0 gap-0 rounded-2xl border border-transparent bg-card text-card-foreground shadow-card @6xl:col-span-2"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4">
-            <h2 className="text-title">Overview</h2>
-            <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
-              {(Object.keys(ranges) as Range[]).map((key) => (
-                <SegmentedControlItem key={key} value={key}>
-                  {ranges[key].label}
-                </SegmentedControlItem>
-              ))}
-            </SegmentedControl>
-          </div>
+        <ChartCard state={chartState} className="@6xl:col-span-2">
+          <ChartCardHeader>
+            <ChartCardTitle render={<h2 />}>Overview</ChartCardTitle>
+            <ChartCardAction>
+              <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
+                {(Object.keys(ranges) as Range[]).map((key) => (
+                  <SegmentedControlItem key={key} value={key}>
+                    {ranges[key].label}
+                  </SegmentedControlItem>
+                ))}
+              </SegmentedControl>
+            </ChartCardAction>
+          </ChartCardHeader>
 
-          {list.length === 0 ? (
-            <Empty className="h-80 flex-none p-0">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <ChartNoAxesCombined />
-                </EmptyMedia>
-                <EmptyTitle render={<h3 />}>No metrics yet</EmptyTitle>
-                <EmptyDescription>Your numbers show up here once the first project sends events.</EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <>
+          {showTabs && active ? (
+            <Tabs value={active.id} onValueChange={(value) => setMetric(String(value))} className="min-w-0 flex-1 gap-0">
               <TabsList
                 aria-label="Metric"
                 className={cn(
-                  'm-3 mb-0 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @md:grid-cols-2 @3xl:grid-cols-4',
+                  'mx-3 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @md:grid-cols-2 @3xl:grid-cols-4',
                   'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-transparent',
                   '*:data-[slot=tabs-indicator]:hidden',
                 )}
@@ -350,39 +357,21 @@ function StatsOverview({
                   <MetricTab key={item.id} metric={item} loading={loading} rangeLabel={rangeLabel} />
                 ))}
               </TabsList>
-
-              {active ? (
-                <TabsContent value={active.id} className="p-4 pt-3">
-                  {loading ? (
-                    <Skeleton className="h-60 w-full" />
-                  ) : active.points.length === 0 ? (
-                    <Empty className="h-60 flex-none p-0">
-                      <EmptyHeader>
-                        <EmptyMedia variant="icon">
-                          <ChartNoAxesCombined />
-                        </EmptyMedia>
-                        <EmptyTitle render={<h3 />}>No data in this range</EmptyTitle>
-                        <EmptyDescription>Pick a longer range, or check back once events come in.</EmptyDescription>
-                      </EmptyHeader>
-                    </Empty>
-                  ) : (
-                    <GrowthChart
-                      key={range}
-                      title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
-                      data={active.points}
-                      config={chartConfig}
-                      xKey="label"
-                      xLabel={ranges[range].xLabel}
-                      valueFormatter={(value) => formatValue(value, active.format)}
-                    />
-                  )}
-                </TabsContent>
-              ) : null}
-            </>
+              <TabsContent value={active.id} className="flex flex-1 flex-col pt-3">
+                {chart}
+              </TabsContent>
+            </Tabs>
+          ) : (
+            chart
           )}
-        </Tabs>
+        </ChartCard>
 
-        <TopEvents events={topEvents[range]} loading={loading} rangeLabel={rangeLabel} />
+        <TopEvents
+          events={events}
+          state={stateOf(events.length === 0 || (events[0]?.count ?? 0) === 0)}
+          onRetry={onRetry}
+          rangeLabel={rangeLabel}
+        />
       </div>
     </section>
   );

@@ -1,8 +1,12 @@
+---
+status: superseded by ADR 0009
+---
+
 # Warm neutral palette with an orange accent
 
 Kosmos colors are warm neutrals: a cream page, near-white cards, warm grays and a warm near-black ink. The filled primary action is that ink in light mode and its light counterpart in dark mode. One saturated orange is the brand accent. It marks the focus outline, the first chart series, the Meter's `primary` tone and the ring around a dragged card, and it never fills a button or a large surface. Because it means focus, hover never turns anything orange.
 
-This replaces the first palette, which kept neutral grays and used an indigo for the primary action in both modes. The maintainer chose the change after seeing the indigo across the site. The structure behind the style stays as it was: layered shadows, motion, density, radius and type roles (ADR 0004).
+This replaces the first palette, which kept neutral grays and used an indigo for the primary action in both modes. The maintainer chose the change after seeing the indigo across the site. The structure behind the style stays as it was: layered shadows, motion, density, radius and type roles.
 
 ## Considered options
 

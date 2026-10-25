@@ -43,6 +43,7 @@ Each tile shows a real piece of your product, not a picture of it, so a visitor 
 - **Header**: the title is an `<h2>` and each tile's title an `<h3>`. Pass `headingLevel={3}` when the bento sits inside a section that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the tiles their heading.
 - **Tiles**: each tile holds its visual in a sunken well, centered, with the title and one line of caption under it. Keep the caption to one line, so a visitor takes in the whole grid in seconds.
 - **Width**: the grid lays itself out by its own width, with container queries, not by the screen's. One column on a phone, two from 576px, three from 896px.
+- **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
 - **Wide tiles**: `size: 'wide'` takes two of the three columns. With two columns every tile takes one, and a lone last tile takes the whole row, so the grid never ends on a gap. With three columns, order the tiles so each row adds up to three.
 
 ## API

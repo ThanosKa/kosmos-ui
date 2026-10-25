@@ -1,0 +1,217 @@
+---
+title: Combobox
+description: Picks one or more values from a long list by typing to filter it. A field with the same look as Input opens the list, and chosen values show as chips when there can be several. Built on Base UI.
+baseUi: https://base-ui.com/react/components/combobox
+---
+
+<ComponentPreview name="combobox-demo" />
+
+## Installation
+
+<ComponentInstall name="combobox" />
+
+## Usage
+
+```tsx
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
+```
+
+```tsx
+const projects = [
+  { value: 'fernhill', label: 'Fernhill Books' },
+  { value: 'cirrus', label: 'Cirrus Weather' },
+];
+
+<Combobox items={projects}>
+  <ComboboxInput aria-label="Project" placeholder="Search projects" />
+  <ComboboxContent>
+    <ComboboxEmpty>No projects match.</ComboboxEmpty>
+    <ComboboxList>
+      {(project) => (
+        <ComboboxItem key={project.value} value={project}>
+          {project.label}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>;
+```
+
+Combobox filters `items` by their label as people type, so the list only ever shows matches. Items shaped `{ value, label }` show their label in the field; for any other shape, pass `itemToStringLabel`. Use a [Select](/docs/components/select) when the list is short enough to read at a glance, and Combobox when people would rather type than scroll.
+
+## Examples
+
+### Multiple values
+
+Add `multiple`, and render the chosen values as chips in `ComboboxChips`, with a `ComboboxChipsInput` after them. From the start of the input, Left Arrow moves onto the chips, and Backspace removes the last one.
+
+<ComponentPreview name="combobox-multiple" />
+
+### Groups
+
+Pass `items` as groups (`{ value, items }`) and render each with a `ComboboxGroup`, a `ComboboxGroupLabel` and a `ComboboxCollection`.
+
+<ComponentPreview name="combobox-groups" />
+
+### With a label
+
+In a form, put the Combobox in a [Field](/docs/components/field). The input takes the FieldLabel as its name and turns red while the Field is invalid.
+
+<ComponentPreview name="combobox-with-field" />
+
+To type values that are not in a list, such as email addresses, use the [Tags input](/docs/components/tags-input), which is built on the multiple Combobox.
+
+## API
+
+Combobox wraps the [Base UI Combobox](https://base-ui.com/react/components/combobox). Each part takes the props of the Base UI part it renders.
+
+### Combobox
+
+Takes every Base UI `Combobox.Root` prop, such as:
+
+<TypeTable
+  type={{
+    items: {
+      description: 'The options, flat or in groups (`{ value, items }`). The list filters them by label as people type.',
+      type: 'any[] | { value, items }[]',
+    },
+    value: {
+      description: 'The chosen item, or items with `multiple`, when you control it.',
+      type: 'any',
+    },
+    defaultValue: {
+      description: 'The starting value, when the Combobox manages it.',
+      type: 'any',
+    },
+    onValueChange: {
+      description: 'Called with the new value when an item is chosen or a chip removed.',
+      type: '(value, eventDetails) => void',
+    },
+    multiple: {
+      description: 'Lets people choose several items. The value is then an array, shown as chips.',
+      type: 'boolean',
+      default: 'false',
+    },
+    autoHighlight: {
+      description: 'Highlights the first match while people type, so Enter picks it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    itemToStringLabel: {
+      description: 'The text an item shows in the field and is filtered by, for items not shaped `{ value, label }`.',
+      type: '(item) => string',
+    },
+    name: {
+      description: 'Names the value when the form is submitted.',
+      type: 'string',
+    },
+    disabled: {
+      description: 'Blocks the field and the list.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### ComboboxInput
+
+The field of a single-value Combobox. Takes every Base UI `Combobox.Input` prop, plus:
+
+<TypeTable
+  type={{
+    showTrigger: {
+      description: 'Shows the chevron button that opens the list.',
+      type: 'boolean',
+      default: 'true',
+    },
+    showClear: {
+      description: 'Shows a button that clears the value, while there is one.',
+      type: 'boolean',
+      default: 'false',
+    },
+    className: {
+      description: 'Classes for the field around the input, such as its width.',
+      type: 'string',
+    },
+  }}
+/>
+
+### ComboboxChip
+
+One chosen value inside `ComboboxChips`. Takes every Base UI `Combobox.Chip` prop, plus:
+
+<TypeTable
+  type={{
+    showRemove: {
+      description: 'Shows the × that removes the chip.',
+      type: 'boolean',
+      default: 'true',
+    },
+    removeLabel: {
+      description: 'Names the × for screen readers.',
+      type: 'string',
+      default: '"Remove" and the chip text',
+    },
+    invalid: {
+      description: 'Marks a value that will not be accepted: red, with an alert icon.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### ComboboxContent
+
+The list's popup: Base UI `Combobox.Portal`, `Combobox.Positioner` and `Combobox.Popup` put together. It is as wide as the field and at least 11rem. Takes every `Combobox.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    side: {
+      description: 'Where the list opens. It flips when there is no room.',
+      type: "'top' | 'bottom' | 'left' | 'right'",
+      default: "'bottom'",
+    },
+    align: {
+      description: 'How the list lines up with the field along that side.',
+      type: "'start' | 'center' | 'end'",
+      default: "'start'",
+    },
+    sideOffset: {
+      description: 'The gap between the field and the list, in pixels.',
+      type: 'number',
+      default: '4',
+    },
+    container: {
+      description: 'The element the list renders into.',
+      type: 'HTMLElement',
+      default: 'document.body',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `ComboboxChips` | The field of a multiple Combobox, holding the chips and the input. Base UI `Combobox.InputGroup` and `Combobox.Chips`. |
+| `ComboboxChipsInput` | The input after the chips. Base UI `Combobox.Input`. |
+| `ComboboxValue` | Renders the chosen value through a function child, such as the chips. Base UI `Combobox.Value`. |
+| `ComboboxList` | The matching items, scrolling with an edge fade once the list outgrows the popup. Base UI `Combobox.List` in a [ScrollArea](/docs/components/scroll-area). |
+| `ComboboxItem` | One option, with a check while it is chosen. Base UI `Combobox.Item`. |
+| `ComboboxEmpty` | Its text shows while nothing matches, and is announced. Base UI `Combobox.Empty`. |
+| `ComboboxGroup` | One group of items. Base UI `Combobox.Group`. |
+| `ComboboxGroupLabel` | The heading of a group. Base UI `Combobox.GroupLabel`. |
+| `ComboboxCollection` | Renders the items of the group it sits in. Base UI `Combobox.Collection`. |
+| `ComboboxSeparator` | A line between groups. Base UI `Combobox.Separator`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| Typing | Filters the list and opens it. |
+| `ArrowDown` or `ArrowUp` | Opens the list, or highlights the next or previous match. |
+| `Enter` | Chooses the highlighted item. With `multiple`, it adds the item or removes a chosen one; after a search, the search clears and the list closes. |
+| `Escape` | Closes the list. On a closed list, clears the value. |
+| `ArrowLeft` | With `multiple`, from the start of the input: moves onto the last chip, then along the chips. |
+| `Backspace` | With `multiple`, in an empty input: removes the last chip. On a chip: removes it. |
+| `Tab` | Closes the list and moves to the next control. |

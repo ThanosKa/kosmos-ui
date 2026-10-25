@@ -1,6 +1,6 @@
 ---
 title: Status
-description: Six states for a task, a step or a run, as a row icon and as a Badge, so every agent view shows progress the same way.
+description: Six states for a task, a step or a run, as a row icon, a dot beside its word and a Badge, so every view shows progress the same way.
 ---
 
 <ComponentPreview name="status-demo" />
@@ -12,17 +12,18 @@ description: Six states for a task, a step or a run, as a row icon and as a Badg
 ## Usage
 
 ```tsx
-import { StatusBadge, StatusIcon, type Status } from '@/components/ui/status';
+import { StatusBadge, StatusDot, StatusIcon, type Status } from '@/components/ui/status';
 ```
 
 ```tsx
 <StatusIcon status="done" label="Done" />
+<StatusDot status="error">Failed</StatusDot>
 <StatusBadge status="running">Running</StatusBadge>
 ```
 
 There are six states: `pending`, `running`, `waiting`, `done`, `error` and `skipped`. Map your own words onto them, such as queued to `pending`, needs approval to `waiting` and failed to `error`, and write those words as the label.
 
-The color sits on the icon or the dot, never on the text, and each state has its own icon shape, so the label and the shape carry the meaning without the color.
+The color sits on the icon or the dot, never on the text, and each state has its own icon shape and its own word, so the label and the shape carry the meaning without the color.
 
 The running icon spins. When the reduced motion setting is on, it pulses instead. A new icon fades in as a status changes, with a small scale that the reduced motion setting turns off.
 
@@ -33,6 +34,14 @@ The running icon spins. When the reduced motion setting is on, it pulses instead
 `StatusIcon` is 16px, to lead a row. Pass `className="size-3.5"` for a 14px icon beside 13px text.
 
 <ComponentPreview name="status-icons" />
+
+### Dots
+
+`StatusDot` is a state in a table cell, a list or a detail page: a 6px dot beside the word, in the text color around it, with no pill. The dot takes the status tint of its state: gray for `pending` and `skipped`, blue for `running` (it pulses), orange for `waiting`, green for `done` and red for `error`. A label too long for its slot truncates.
+
+<ComponentPreview name="status-dots" />
+
+For a code, such as an HTTP status or a method, use a tinted [Badge](/docs/components/badge#codes) instead.
 
 ### Badges
 
@@ -64,6 +73,24 @@ A list of steps, each led by its icon. When no text beside the icon names the st
     className: {
       description: 'Classes for the icon, such as `size-3.5`.',
       type: 'string',
+    },
+  }}
+/>
+
+### StatusDot
+
+Renders a `<span>` and accepts all of its props, and:
+
+<TypeTable
+  type={{
+    status: {
+      description: 'The state to show. It picks the color of the dot.',
+      type: "'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped'",
+      required: true,
+    },
+    children: {
+      description: 'The word, in your own words.',
+      type: 'ReactNode',
     },
   }}
 />

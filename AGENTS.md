@@ -26,5 +26,5 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 ## Gotchas
 
 - `style` means code formatting only. A visual change to a component is `feat` or `fix`.
-- The style comes from patterns studied in existing products. Write every component fresh on Base UI and name no product or company as a source in tracked files (ADR 0004).
+- Components and blocks may start from MIT-licensed code (shadcn/ui's Base UI variant first) and are restyled to the Kosmos style; each keeps its source's copyright line in a third-party notice (ADR 0010).
 - Pro blocks and templates never enter this repo (ADR 0003).

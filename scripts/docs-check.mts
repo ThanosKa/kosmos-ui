@@ -8,9 +8,11 @@ import assert from 'node:assert/strict';
 import { globSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
+import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/index.ts';
 import { readProVariants } from '../lib/registry.ts';
+import { sitePresetCss } from '../lib/site-preset.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
-import { openSitePage, serverBase, serverOptions } from './site.mts';
+import { openSitePage, serverBase, serverOptions, type ReducedMotion } from './site.mts';
 
 const { values } = parseArgs({
   options: {
@@ -25,9 +27,9 @@ const desktop = { width: 1280, height: 800 };
 
 type Viewport = { width: number; height: number };
 
-/** Opens `path` in light mode with reduced motion. Page errors fail the check that opened it when it closes. */
-async function openPage(browser: Browser, path: string, viewport: Viewport = desktop) {
-  const { page, context, errors } = await openSitePage(browser, base, path, { viewport });
+/** Opens `path` in light mode, with reduced motion unless asked. Page errors fail the check that opened it when it closes. */
+async function openPage(browser: Browser, path: string, viewport: Viewport = desktop, reducedMotion: ReducedMotion = 'reduce') {
+  const { page, context, errors } = await openSitePage(browser, base, path, { viewport, reducedMotion });
   await page.evaluate(() => document.fonts.ready);
   return {
     page,
@@ -83,13 +85,13 @@ const tabs = [
   },
 ] as const;
 
-/** Asserts the header marks `label` as the current tab, in `active-foreground`. */
+/** Asserts the header marks `label` as the current tab, in `accent-text`. */
 async function assertCurrentTab(page: Page, label: string, where: string) {
   const current = page.locator('nav[aria-label="Site"]:visible a[aria-current="page"]');
   assert.equal(await current.count(), 1, `${where}: one current tab`);
   assert.equal((await current.textContent())?.trim(), label, `${where}: current tab`);
   const color = await current.evaluate((link) => getComputedStyle(link).color);
-  assert.equal(color, await cssColor(page, '--active-foreground'), `${where}: current tab color`);
+  assert.equal(color, await cssColor(page, '--accent-text'), `${where}: current tab color`);
 }
 
 /** The addresses of the 8 blocks before block categories; each is now the page of its category. */
@@ -506,46 +508,40 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the landing is an ordered list of sections, each labelled with the blocks it is built from',
+    name: 'the landing is an ordered list of sections, with the showcase under the hero and no "Built with" labels',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const sections = await page.locator('[data-landing-section]').evaluateAll((elements) =>
-        elements.map((section) => ({
-          id: section.getAttribute('data-landing-section'),
-          links: [...section.querySelectorAll('[data-block-label] a[href]')].map((link) => new URL((link as HTMLAnchorElement).href).pathname),
-        })),
-      );
+      const ids = await page.locator('[data-landing-section]').evaluateAll((elements) => elements.map((section) => section.getAttribute('data-landing-section')));
       assert.deepEqual(
-        sections.slice(0, 4).map((section) => section.id),
-        ['hero', 'dashboard', 'bento', 'inventory'],
-        'the landing opens with the hero, the dashboard, the bento and the inventory',
+        ids,
+        ['hero', 'showcase', 'stack', 'bento', 'inventory', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, showcase, stack, bento, inventory, pricing, FAQ, CTA and footer, in that order',
       );
-      assert.deepEqual(sections.slice(-3).map((section) => section.id), ['install', 'proof', 'footer'], 'the landing ends with install, proof and the footer');
-      for (const section of sections) {
-        assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
-        for (const url of section.links) {
-          assert.match(url, /^\/docs\/(blocks|components)\/[a-z-]+$/, `${section.id}: label links to a block category or component page`);
-        }
-      }
-      assert.deepEqual(sections.at(-1)?.links, ['/docs/blocks/footer'], 'footer: labelled with the Footer block');
-      assert.deepEqual(sections[0].links, ['/docs/blocks/hero'], 'hero: labelled with the Hero block');
-      assert.equal(sections[1].links.length, 8, 'dashboard: labelled with the 8 application blocks');
-      for (const url of new Set(sections.flatMap((section) => section.links))) await fetchText(url);
+      assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
+      assert.equal(await page.locator('[data-block-label]').count(), 0, 'no "Built with" labels');
+      assert.equal(await page.getByText('Built with', { exact: false }).count(), 0, 'no "Built with" text');
+      assert.equal(await page.locator('main [role="radiogroup"], main [data-slot="preset-picker"]').count(), 0, 'no preset controls on the landing');
+      const tabs = page.locator('[data-landing-section="showcase"]').getByRole('tablist', { name: 'Screens' });
+      assert.deepEqual(await tabs.getByRole('tab').allTextContents(), ['Dashboard', 'Auth', 'Marketing', 'Settings'], 'one tab per screen');
       assert.equal(await page.locator('[role="dialog"]:visible, [role="alertdialog"]:visible').count(), 0, 'nothing pops up on load');
       await close();
     },
   },
   {
-    name: 'the hero shows the title, one line, Browse components and GitHub, and the install command',
+    name: 'the hero shows the news, the title, one line, Browse components and GitHub, and the install command per package manager',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const hero = page.locator('[data-landing-section="hero"]');
       assert.equal(await hero.locator('h1').count(), 1, 'one h1');
-      assert.equal(await hero.locator('h1 + p, [data-slot="hero-description"]').count() > 0, true, 'one line under the title');
+      assert.equal(await hero.locator('[data-slot="hero-description"]').count(), 1, 'one line under the title');
+      assert.equal(await hero.locator('[data-slot="hero-announcement"] a').getAttribute('href'), '/presets', 'the news links to the Presets page');
       assert.equal(await hero.getByRole('link', { name: 'Browse components' }).getAttribute('href'), '/docs/components', 'Browse components');
       assert.match((await hero.getByRole('link', { name: 'GitHub' }).getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'GitHub');
-      const copy = hero.getByRole('button', { name: /^Copy install command: .*shadcn@latest/ });
-      assert.equal(await copy.count(), 1, 'install command with a copy button');
+      const managers = hero.getByRole('tablist', { name: 'Package manager' });
+      assert.deepEqual(await managers.getByRole('tab').allTextContents(), ['npm', 'pnpm', 'yarn', 'bun'], 'one tab per package manager');
+      assert.equal(await hero.getByRole('button', { name: /^Copy command: npx shadcn@latest registry add @kosmos=/ }).count(), 1, 'the npm command with a copy button');
+      await managers.getByRole('tab', { name: 'pnpm' }).click();
+      assert.equal(await hero.getByRole('button', { name: /^Copy command: pnpm dlx shadcn@latest registry add @kosmos=/ }).count(), 1, 'pnpm switches the command');
       const variants = await openPage(browser, '/docs/blocks/hero');
       const variant = variants.page.locator('[data-block-variant]');
       assert.equal(await variant.count(), 1, 'the Hero category page shows one variant');
@@ -556,42 +552,66 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the install section shows the shadcn command, the files it adds, and links to llms.txt and Markdown pages',
+    name: 'the stack strip names Base UI, Tailwind CSS, React, Next.js and the shadcn CLI, each with its mark',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="install"]');
-      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
-      const copy = section.getByRole('button', { name: /^Copy install command: npx shadcn@latest add @kosmos\// });
-      assert.equal(await copy.count(), 1, 'the npm command with a copy button');
-      const command = (await copy.getAttribute('aria-label'))!.replace('Copy install command: ', '');
-      const name = command.split('@kosmos/')[1];
-      const files = await section.locator('[data-terminal-file]').allTextContents();
-      const item = JSON.parse(await fetchText(`/r/${name}.json`)) as { files: { path: string }[] };
-      assert.ok(files.length > item.files.length, `the transcript lists the block's files and its components (${files.length})`);
-      assert.ok(files.includes(`components/${name}.tsx`), `the transcript lists components/${name}.tsx`);
-      await section.getByRole('tab', { name: 'pnpm' }).click();
-      assert.equal(await section.getByRole('button', { name: /^Copy install command: pnpm dlx shadcn@latest add/ }).count(), 1, 'pnpm switches the command');
-      const paths = await section.locator('a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      for (const path of ['/llms.txt', '/llms-full.txt']) assert.ok(paths.includes(path), `links to ${path}`);
-      const markdown = paths.find((path) => path.endsWith('.md'));
-      assert.ok(markdown, 'links to a docs page as Markdown');
-      for (const path of ['/llms.txt', '/llms-full.txt', markdown]) await fetchText(path);
+      const list = page.locator('[data-landing-section="stack"] [data-slot="logo-marquee"]').getByRole('list');
+      assert.equal(
+        await list.ariaSnapshot(),
+        ['- list "Built on the stack you already use":', ...['Base UI', 'Tailwind CSS', 'React', 'Next.js', 'shadcn CLI'].map((name) => `  - listitem: ${name}`)].join('\n'),
+        'one list of the stack, each item named once',
+      );
+      assert.equal(await list.locator('li svg').count(), 5, 'each item shows a mark');
       await close();
     },
   },
   {
-    name: 'the proof shows the GitHub stars or no number at all, and a real date of the last update',
+    name: 'the pricing shows Free and Pro, Pro raised, and the brand colour only on the logo and the Pro link',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="proof"]');
-      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
-      const stars = section.locator('[data-stars]');
-      if ((await stars.count()) > 0) assert.match((await stars.textContent()) ?? '', /^\d+(\.\d)?[KM]?$/, 'stars as a number');
-      assert.match((await section.getByRole('link', { name: /GitHub/ }).first().getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'links to GitHub');
-      const date = await section.locator('time[datetime]').first().getAttribute('datetime');
-      assert.match(date ?? '', /^\d{4}-\d{2}-\d{2}/, 'last update as a <time>');
-      assert.ok(new Date(date!).getTime() <= Date.now(), 'the last update is not in the future');
+      const pricing = page.locator('[data-landing-section="pricing"]');
+      const plans = pricing.locator('[data-slot="pricing-plan"]');
+      assert.deepEqual(await plans.locator('h3').allTextContents(), ['Free', 'Pro'], 'Free and Pro');
+      assert.equal(await plans.nth(1).getAttribute('data-featured'), '', 'Pro is the raised plan');
+      const brand = await cssColor(page, '--brand');
+      const branded = await page.evaluate((color) => {
+        const marks: string[] = [];
+        for (const element of document.querySelectorAll('body *')) {
+          const style = getComputedStyle(element);
+          if ([style.color, style.backgroundColor, style.fill, style.stroke].includes(color)) {
+            const section = element.closest('[data-landing-section], header');
+            marks.push(`${section?.getAttribute('data-landing-section') ?? section?.tagName.toLowerCase()}:${element.tagName.toLowerCase()}:${element.textContent?.trim() ?? ''}`);
+          }
+        }
+        return marks;
+      }, brand);
+      const outside = branded.filter((mark) => !/^(header|footer):(svg|circle|path|ellipse)/.test(mark) && !/^pricing:a:(Get Pro|Browse the blocks)$/.test(mark));
+      assert.deepEqual(outside, [], 'the brand colour shows nowhere but the logo and the Pro link');
+      assert.ok(branded.some((mark) => mark.startsWith('pricing:a:')), 'the Pro link takes the brand colour');
       await close();
+    },
+  },
+  {
+    name: 'the landing shows its content without JavaScript',
+    async run(browser) {
+      const context = await browser.newContext({ viewport: desktop, javaScriptEnabled: false, reducedMotion: 'reduce' });
+      const page = await context.newPage();
+      await page.goto(new URL('/', base).href, { waitUntil: 'load' });
+      const visible = async (selector: string, text: string | RegExp) => {
+        const target = page.locator(selector).getByText(text).first();
+        assert.ok(await target.isVisible(), `${selector}: "${text}" shows without JavaScript`);
+      };
+      await visible('[data-landing-section="hero"]', 'Dashboard UI with the details already done');
+      await visible('[data-landing-section="hero"]', /^\$/);
+      await visible('[data-landing-section="stack"]', 'Tailwind CSS');
+      await visible('[data-landing-section="showcase"]', 'acme.example/overview');
+      await visible('[data-landing-section="bento"]', 'Search Acme');
+      await visible('[data-landing-section="inventory"]', 'Dropdown menu');
+      await visible('[data-landing-section="pricing"]', 'Pay once');
+      await visible('[data-landing-section="faq"]', 'Is Kosmos UI free?');
+      await visible('[data-landing-section="cta"]', 'Read the installation guide');
+      await visible('[data-landing-section="footer"]', 'Introduction');
+      await context.close();
     },
   },
   {
@@ -613,6 +633,139 @@ const checks: Check[] = [
       assert.equal(await variant.getAttribute('id'), 'footer', 'the free Footer variant');
       assert.equal(await variant.getAttribute('data-tier'), 'free', 'Footer is free');
       await variants.close();
+      await close();
+    },
+  },
+  {
+    name: 'the logo marquee moves, eases to a stop while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
+    async run(browser) {
+      const settle = 1800;
+      const path = '/view/logo-marquee-demo';
+      const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
+      const offsetOf = (page: Page) =>
+        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41 + 0);
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const marquee = moving.page.locator('[data-slot="logo-marquee"]');
+      assert.equal(
+        await marquee.getByRole('list').ariaSnapshot(),
+        ['- list "Used by the teams behind":', ...names.map((name) => `  - listitem: ${name}`)].join('\n'),
+        'one list, named by its line, with one named item per logo; the copies stay hidden',
+      );
+      const start = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < start, 'the logos move toward the start');
+      await marquee.locator('[data-slot="logo-marquee-viewport"]').hover();
+      const hovered = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(150);
+      assert.ok((await offsetOf(moving.page)) < hovered, 'the logos glide on for a moment instead of halting');
+      await moving.page.waitForTimeout(settle);
+      const held = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.equal(await offsetOf(moving.page), held, 'the logos stop while the pointer is on them');
+      await moving.page.mouse.move(0, 0);
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < held, 'the logos move again once the pointer leaves');
+      await marquee.getByRole('button', { name: 'Pause logos' }).press('Enter');
+      await moving.page.waitForTimeout(settle);
+      const stopped = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.equal(await offsetOf(moving.page), stopped, 'the pause button stops the logos until it is pressed again');
+      await marquee.getByRole('button', { name: 'Play logos' }).press('Enter');
+      await moving.page.waitForTimeout(500);
+      assert.ok((await offsetOf(moving.page)) < stopped, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillMarquee = still.page.locator('[data-slot="logo-marquee"]');
+      await stillMarquee.waitFor();
+      await still.page.waitForTimeout(500);
+      assert.equal(await offsetOf(still.page), 0, 'reduced motion: nothing moves');
+      assert.equal(await stillMarquee.locator('li:visible').count(), names.length, 'reduced motion: each logo shows once');
+      assert.equal(await stillMarquee.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const box = (await stillMarquee.boundingBox())!;
+      for (const item of await stillMarquee.locator('li:visible').all()) {
+        const itemBox = (await item.boundingBox())!;
+        assert.ok(itemBox.x >= box.x && itemBox.x + itemBox.width <= box.x + box.width, 'reduced motion: every logo fits in the row');
+      }
+      await still.close();
+    },
+  },
+  {
+    name: 'the testimonials wall moves its columns both ways, eases a column to a stop under the pointer, pauses with its button, and stands still with every quote once under reduced motion',
+    async run(browser) {
+      const path = '/view/testimonials-demo';
+      const settle = 1800;
+      const quotes = 9;
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
+      const offsets = (page: Page) =>
+        page
+          .locator('[data-slot="testimonials-column"]:visible > div')
+          .evaluateAll((tracks) => tracks.map((track) => new DOMMatrix(getComputedStyle(track).transform).m42 + 0));
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const wall = moving.page.locator('[data-slot="testimonials-wall"]');
+      assert.equal(await moving.page.getByRole('figure').count(), quotes + 1, 'each quote, and the featured one, is one figure screen readers reach');
+      const start = await offsets(moving.page);
+      assert.equal(start.length, 3, 'three columns at 1280px');
+      await moving.page.waitForTimeout(500);
+      const later = await offsets(moving.page);
+      const moved = later.map((offset, index) => Math.sign(offset - start[index]));
+      assert.ok(moved.includes(-1) && moved.includes(1), `the columns move up and down: ${moved}`);
+      const column = wall.locator('[data-slot="testimonials-column"]:visible').first();
+      await column.hover({ position: { x: 40, y: 200 } });
+      await moving.page.waitForTimeout(settle);
+      const [held, ...others] = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      const [stillHeld, ...othersLater] = await offsets(moving.page);
+      assert.equal(stillHeld, held, 'the column under the pointer stops');
+      assert.notDeepEqual(othersLater, others, 'the other columns keep moving');
+      await moving.page.mouse.move(0, 0);
+      await wall.getByRole('button', { name: 'Pause testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(settle);
+      const paused = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(moving.page), paused, 'the pause button stops every column');
+      await wall.getByRole('button', { name: 'Play testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(500);
+      assert.notDeepEqual(await offsets(moving.page), paused, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillWall = still.page.locator('[data-slot="testimonials-wall"]');
+      await stillWall.waitFor();
+      await still.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(still.page), [0, 0, 0], 'reduced motion: nothing moves');
+      assert.equal(await stillWall.locator('[data-slot="testimonial"]:visible').count(), quotes, 'reduced motion: each quote shows once');
+      assert.equal(await stillWall.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const wallBox = (await stillWall.boundingBox())!;
+      const lastCard = (await stillWall.locator('[data-slot="testimonial"]:visible').last().boundingBox())!;
+      assert.ok(lastCard.y + lastCard.height <= wallBox.y + wallBox.height, 'reduced motion: the wall is as tall as its quotes');
+      await still.close();
+    },
+  },
+  {
+    name: 'the pricing block switches between monthly and yearly prices and tells screen readers the new prices',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/view/pricing-demo');
+      const pricing = page.locator('[data-slot="pricing"]');
+      const billing = pricing.getByRole('radiogroup', { name: 'Billing' });
+      const announcement = pricing.getByRole('status');
+      const proPrice = pricing.getByRole('listitem').filter({ has: page.getByRole('heading', { name: 'Pro' }) }).locator('[data-slot="pricing-price"]');
+      assert.equal(await billing.getByRole('radio', { name: 'Monthly' }).isChecked(), true, 'monthly is the first choice');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'Pro shows its monthly price');
+      assert.equal(await announcement.textContent(), '', 'nothing is announced before a change');
+      await billing.getByRole('radio', { name: 'Yearly' }).click();
+      assert.equal(await proPrice.innerText(), '$39\nper month, billed yearly', 'Pro shows its yearly price');
+      assert.equal(
+        await announcement.textContent(),
+        'Yearly. Free: $0 forever. Pro: $39 per month, billed yearly. Scale: $960 per month, billed yearly.',
+        'the new prices are announced',
+      );
+      await billing.getByRole('radio', { name: 'Monthly' }).press('Space');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'the keyboard switches back');
+      assert.match((await announcement.textContent()) ?? '', /^Monthly\. .*Pro: \$49 per month\./, 'switching back is announced too');
       await close();
     },
   },
@@ -650,73 +803,47 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the inventory counts components, block categories and variants from the registry',
+    name: 'the inventory counts components and block categories from the registry, and shows six of each with a link to all',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="inventory"]');
-      const counts = Object.fromEntries(
-        await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
-          items.map((item) => [item.querySelector('h3')?.textContent?.trim(), item.querySelector('[data-slot="bento-item-visual"]')?.textContent?.trim()]),
-        ),
-      );
-      assert.deepEqual(
-        counts,
-        {
-          Components: String(authoredItems.filter((item) => item.type === 'registry:ui').length),
-          'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
-          Variants: String(authoredBlocks.length + proVariants.length),
-        },
-        'inventory counts',
-      );
-      const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      assert.deepEqual(labels, ['/docs/blocks/bento'], 'inventory: labelled with the Bento block');
-      await close();
-    },
-  },
-  {
-    name: 'the dashboard switches whole screens with its tabs',
-    async run(browser) {
-      const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="dashboard"]');
-      const frame = section.locator('iframe').contentFrame();
-      const screens = section.getByRole('tablist', { name: 'Dashboard screens' });
-      for (const name of ['Projects', 'Roadmap', 'Overview']) {
-        await screens.getByRole('tab', { name }).click();
-        await frame.getByRole('heading', { name, exact: true, level: 1 }).waitFor();
-        assert.equal(await screens.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
+      const shelves = section.getByRole('tablist', { name: 'Library' });
+      const counts = {
+        Components: authoredItems.filter((item) => item.type === 'registry:ui').length,
+        Blocks: new Set(authoredBlocks.map(categoryUrl)).size,
+      };
+      for (const [name, count] of Object.entries(counts)) {
+        await shelves.getByRole('tab', { name: `${name} ${count}` }).click();
+        const panel = section.getByRole('tabpanel');
+        const cards = await panel.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+          items.map((item) => ({ href: item.querySelector('h3 a[href]')?.getAttribute('href'), image: item.querySelector('img')?.getAttribute('src') })),
+        );
+        assert.equal(cards.length, 6, `${name}: six cards`);
+        for (const card of cards) {
+          assert.match(card.href ?? '', new RegExp(`^/docs/${name.toLowerCase()}/[a-z-]+$`), `${name}: a card links to its docs page`);
+          assert.ok(card.image, `${name}: a card shows its thumbnail`);
+        }
+        const all = panel.getByRole('link', { name: `See all ${count} ${name.toLowerCase()}` });
+        assert.equal(await all.getAttribute('href'), `/docs/${name.toLowerCase()}`, `${name}: links to all ${count}`);
       }
-      await frame.getByRole('link', { name: 'Roadmap' }).click();
-      await page.waitForFunction(() => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === 'Roadmap');
+      const phone375 = await openPage(browser, '/', phone);
+      assert.equal(await phone375.page.locator('[data-landing-section="inventory"] [data-slot="bento-item"]:visible').count(), 3, 'a phone shows the first three cards');
+      await phone375.close();
       await close();
     },
   },
   {
-    name: 'accent, radius and theme change only the dashboard, and Reset brings them back',
+    name: 'the showcase switches screens with its tabs, each a live block',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="dashboard"]');
-      const iframe = section.locator('iframe');
-      await iframe.contentFrame().locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
-      const look = (target: 'page' | 'dashboard') =>
-        (target === 'page' ? page.locator('html') : iframe.contentFrame().locator('html')).evaluate((html) => {
-          const style = getComputedStyle(html);
-          return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: html.classList.contains('dark') };
-        });
-      const pageBefore = await look('page');
-      const dashboardBefore = await look('dashboard');
-      assert.deepEqual(dashboardBefore, pageBefore, 'the dashboard starts in the page look');
-      await section.getByRole('radiogroup', { name: 'Accent' }).getByRole('radio', { name: 'Violet' }).click();
-      await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
-      await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
-      await page.waitForFunction(() => (document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      const changed = await look('dashboard');
-      assert.notEqual(changed.ring, dashboardBefore.ring, 'accent changes the dashboard');
-      assert.match(changed.radius, /^0(px|rem)?$/, 'radius changes the dashboard');
-      assert.equal(changed.dark, true, 'theme changes the dashboard');
-      assert.deepEqual(await look('page'), pageBefore, 'the page keeps its look');
-      await section.getByRole('button', { name: 'Reset' }).click();
-      await page.waitForFunction(() => !(document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      assert.deepEqual(await look('dashboard'), dashboardBefore, 'Reset restores the dashboard');
+      const section = page.locator('[data-landing-section="showcase"]');
+      const tabs = section.getByRole('tablist', { name: 'Screens' });
+      for (const [name, address] of [['Auth', 'acme.example/login'], ['Marketing', 'acme.example'], ['Settings', 'acme.example/settings'], ['Dashboard', 'acme.example/overview']]) {
+        await tabs.getByRole('tab', { name }).click();
+        assert.equal(await tabs.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
+        await section.getByText(address, { exact: true }).waitFor();
+        assert.equal(await section.getByRole('tabpanel').count(), 1, `${name}: one panel`);
+      }
       await close();
     },
   },
@@ -726,15 +853,128 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      const frame = page.locator('[data-landing-section="dashboard"] iframe').contentFrame();
-      await frame.locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
-      const frameOverflow = await frame.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth);
-      assert.ok(frameOverflow <= 0, `the dashboard scrolls ${frameOverflow}px sideways`);
-      const cut = await frame.locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
+      const cut = await page.locator('[data-landing-section="showcase"]').locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
         spans.filter((span) => span.scrollWidth > span.clientWidth + 1).map((span) => span.textContent),
       );
       assert.deepEqual(cut, [], 'truncated metric text');
       await page.screenshot({ path: '.screenshots/landing-check-375.png', fullPage: true });
+      await close();
+    },
+  },
+  {
+    name: "a shared Presets link makes its preset the whole site's, on every page, preview and reload, and the brand colour stays",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const brandBefore = await cssColor(page, '--brand');
+      const radius = (target: ReturnType<Page['locator']>) => target.evaluate((html) => getComputedStyle(html).getPropertyValue('--radius').trim());
+      await page.goto(new URL('/presets?preset=soft&accent=off&radius=6', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'the Presets page takes the shared preset');
+      const preview = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await preview.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      assert.equal(await radius(preview.locator('html')), '0.375rem', 'its preview too');
+      await page.getByRole('button', { name: 'Preset: Soft' }).waitFor();
+      await page.goto(new URL('/docs/blocks/stats-overview', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a docs page takes it');
+      const exampleFrame = page.locator('iframe[src*="/view/"]').first();
+      await exampleFrame.scrollIntoViewIfNeeded();
+      const example = exampleFrame.contentFrame();
+      await example.locator('[data-preview-root]').waitFor({ state: 'attached' });
+      assert.equal(await radius(example.locator('html')), '0.375rem', 'a block preview takes it');
+      await page.reload();
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a reload keeps it');
+      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
+      await close();
+    },
+  },
+  {
+    name: 'Get code on the Presets page gives the CSS the site applies, its registry item and its DESIGN.md',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=console&radius=0');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await page.getByRole('button', { name: 'Get code' }).click();
+      const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
+      const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
+      const choice = { preset: 'console', accent: true, radius: '0' };
+      assert.equal((await code())?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
+      assert.equal(await frame.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the preview applies');
+      assert.equal(await page.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the page applies');
+      await dialog.getByRole('tab', { name: 'Registry' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
+      assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
+      const item = await fetchText('/r/preset-console-radius-0.json');
+      assert.equal(JSON.parse(item).cssVars.light.radius, '0rem', 'the registry item');
+      await dialog.getByRole('tab', { name: 'DESIGN.md' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: '## Palette' }).first().waitFor();
+      assert.match((await code()) ?? '', /^# Console preset/, 'the DESIGN.md tab');
+      await close();
+    },
+  },
+  {
+    name: "the Presets page preview's menus, dialogs and toasts take the preset",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=warm');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await frame.getByRole('button', { name: 'Show toast' }).click();
+      const popover = presetPalette(presets.find((preset) => preset.id === 'warm')!, 'light').popover;
+      const fill = (selector: string) =>
+        frame.locator(selector).first().evaluate((element, color) => {
+          const probe = document.body.appendChild(document.createElement('span'));
+          probe.style.color = color;
+          const expected = getComputedStyle(probe).color;
+          probe.remove();
+          return { actual: getComputedStyle(element).backgroundColor, expected };
+        }, popover);
+      const takesPreset = async (selector: string) => {
+        const { actual, expected } = await fill(selector);
+        assert.equal(actual, expected, `${selector} takes the Warm popover`);
+      };
+      await takesPreset('[data-slot="toast"]');
+      await page.getByRole('tablist', { name: 'Preview' }).getByRole('tab', { name: 'Dashboard' }).click();
+      await frame.getByRole('button', { name: /switch workspace/ }).click();
+      await takesPreset('[data-slot="dropdown-menu-content"]');
+      await frame.locator('body').press('Escape');
+      await frame.getByRole('link', { name: 'Roadmap' }).click();
+      await frame.getByRole('button', { name: 'New roadmap item' }).click();
+      await takesPreset('[data-slot="dialog-content"]');
+      await close();
+    },
+  },
+  {
+    name: 'the Presets page fits a 375px phone, its picker opens in a bottom sheet and works with the keyboard',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets', phone);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
+      await page.locator('main').getByRole('button', { name: 'Preset', exact: true }).click();
+      const sheet = page.getByRole('dialog', { name: 'Preset' });
+      const presetGroup = sheet.getByRole('radiogroup', { name: 'Preset' });
+      await presetGroup.getByRole('radio', { name: 'Default' }).focus();
+      await page.keyboard.press('ArrowDown');
+      await page.waitForURL((url) => url.search === '?preset=warm');
+      assert.equal(await presetGroup.getByRole('radio', { name: 'Warm' }).getAttribute('aria-checked'), 'true', 'the arrow keys pick a preset');
+      await page.screenshot({ path: '.screenshots/presets-check-375.png' });
+      await page.keyboard.press('Escape');
+      await sheet.waitFor({ state: 'hidden' });
+      await close();
+    },
+  },
+  {
+    name: "the header names the site's preset on every page, and its picker resets it to the Default from the keyboard",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=night');
+      await page.goto(new URL('/docs', base).href);
+      const trigger = page.getByRole('button', { name: 'Preset: Night' });
+      await trigger.focus();
+      await page.keyboard.press('Enter');
+      const reset = page.locator('[data-slot="popover-content"]').getByRole('button', { name: 'Reset' });
+      await reset.waitFor();
+      await reset.focus();
+      await page.keyboard.press('Enter');
+      await page.getByRole('button', { name: 'Preset: Default' }).waitFor();
+      assert.equal((await page.locator('#site-preset').textContent()) ?? '', '', 'the Default needs no preset CSS');
+      await page.keyboard.press('Escape');
       await close();
     },
   },

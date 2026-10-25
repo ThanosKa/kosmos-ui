@@ -1,0 +1,15 @@
+---
+title: Changed the palette to black and white
+description: The default colors are now true greys and ink, with ink focus outlines and grey charts. The warm palette stays as the Warm preset.
+date: 2026-10-24
+---
+
+To pick it up, run `shadcn add` again for `@kosmos/tokens`, and for Usage overview if you use it. Shadows, the rim in dark mode, radius, type and motion are unchanged.
+
+- **[Colors](/docs/foundations/color)**: every grey is a true grey, with no tint, in light and dark. The page is near-white with white cards in light and near-black in dark. Only `destructive`, `success` and `warning` keep a hue.
+- **Focus**: the outline is ink at 55%, with the 2px gap in the page color it already had, so it shows on every surface and around an ink button. It keeps 3:1 on the page, cards, popovers, fields, tracks and the sidebar.
+- **[Sidebar](/docs/components/sidebar)** and the header tabs: the current page is ink instead of orange, on the same flat highlight.
+- **[Meter](/docs/components/meter)**: the `primary` tone is ink.
+- **[Chart](/docs/components/chart)**: the five series are ink and four steps of grey, each at 3:1 on cards and on the page. In **[Usage overview](/docs/blocks/usage-overview)** the stacked bars are split by a thin line in the card color, so neighboring greys stay apart.
+- **[Badge](/docs/components/badge)**: the hue variants keep their colors. Their fills no longer come from the chart series.
+- The previous cream and orange palette stays available as the Warm preset.

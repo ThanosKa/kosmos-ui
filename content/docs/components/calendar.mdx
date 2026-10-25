@@ -1,0 +1,138 @@
+---
+title: Calendar
+description: A month grid to pick one day or a range, with one or more months side by side, days that can't be picked, the week start of the locale and the whole date grid keyboard path.
+---
+
+<ComponentPreview name="calendar-demo" />
+
+## Installation
+
+<ComponentInstall name="calendar" />
+
+This also brings [Button](/docs/components/button) and `@kosmos/dates`, which installs as `lib/dates.ts`.
+
+## Usage
+
+```tsx
+import { Calendar } from '@/components/ui/calendar';
+```
+
+```tsx
+<Calendar value={date} onValueChange={setDate} aria-label="Due date" />
+```
+
+Calendar picks whole days: it hands you a `Date` at midnight in the user's time zone. Every month takes six rows, so the calendar keeps its height from one month to the next, and screen readers hear the new month when it changes.
+
+Tab lands on one day: the picked day, else today, else the first of the month. From there the arrow keys move a day or a week, Home and End go to the start and the end of the week, Page Up and Page Down move a month, and a year with Shift. Enter or Space picks the day. A day that can't be picked keeps its place in that path, so the arrows never jump over it.
+
+Most of the time you want Calendar inside a [Date picker](/docs/components/date-picker), which opens it from a field.
+
+## Examples
+
+### Range
+
+Pass `mode="range"`. The first pick starts the range and the second ends it, in either order; until then the days up to the pointer show the range it would make. `months={2}` puts two months side by side, and they wrap one under the other when the room runs out.
+
+<ComponentPreview name="calendar-range" />
+
+`onValueChange` runs on each pick: with `{ from }` after the first, and with `{ from, to }` after the second.
+
+### Days that can't be picked
+
+`min` and `max` set the first and last day, and the month buttons stop there; the days past them fade. `isDateDisabled` turns off single days, such as weekends, which fade and are struck through.
+
+<ComponentPreview name="calendar-limits" />
+
+### Another language
+
+Pass `locale` for the month and weekday names, the digits and the first day of the week, which follows the locale: Sunday in the United States, Monday in most of Europe, Saturday in Egypt. Set `weekStartsOn` to choose it yourself. Name the month buttons with `previousMonthLabel` and `nextMonthLabel`. Inside a right-to-left page, the grid and the arrow keys turn around with it.
+
+<ComponentPreview name="calendar-locale" />
+
+### Dates in your own code
+
+`lib/dates.ts` holds the day counting Calendar does, for your own code too:
+
+```tsx
+import { addDays, formatRange, lastDays, rangeLength } from '@/lib/dates';
+
+const range = lastDays(30); // the last 30 days, today included
+formatRange(range, 'en-US'); // "Sep 26 – Oct 25, 2026"
+rangeLength(range); // 30
+```
+
+## API
+
+Takes every `div` prop, plus:
+
+<TypeTable
+  type={{
+    mode: {
+      description: '`single` picks one day; `range` picks a first and a last day.',
+      type: "'single' | 'range'",
+      default: "'single'",
+    },
+    value: {
+      description: 'The picked day, or the picked range in `range` mode. Use with `onValueChange`.',
+      type: 'Date | null | { from: Date; to?: Date }',
+    },
+    defaultValue: {
+      description: 'The value at first, when Calendar keeps its own state.',
+      type: 'Date | null | { from: Date; to?: Date }',
+    },
+    onValueChange: {
+      description: 'Called with the day picked, or with the range after each pick.',
+      type: '(value: Date) => void | (range: { from: Date; to?: Date }) => void',
+    },
+    month: {
+      description: 'The first month in view. Use with `onMonthChange`.',
+      type: 'Date',
+    },
+    defaultMonth: {
+      description: 'The first month in view at first.',
+      type: 'Date',
+      default: 'the month of the value, else this month',
+    },
+    onMonthChange: {
+      description: 'Called with the first of the month when the months in view change.',
+      type: '(month: Date) => void',
+    },
+    months: {
+      description: 'How many months show side by side.',
+      type: 'number',
+      default: '1',
+    },
+    min: {
+      description: 'The first day that can be picked.',
+      type: 'Date',
+    },
+    max: {
+      description: 'The last day that can be picked.',
+      type: 'Date',
+    },
+    isDateDisabled: {
+      description: "Turns off single days. They stay in the keyboard path but can't be picked.",
+      type: '(date: Date) => boolean',
+    },
+    locale: {
+      description: 'A BCP 47 language tag for the names, the digits and the first day of the week.',
+      type: 'string',
+      default: "'en-US'",
+    },
+    weekStartsOn: {
+      description: 'The first column, from `0` for Sunday to `6` for Saturday.',
+      type: '0 | 1 | 2 | 3 | 4 | 5 | 6',
+      default: 'the first day of the week in locale',
+    },
+    previousMonthLabel: {
+      description: 'The name of the button that goes back a month.',
+      type: 'string',
+      default: "'Previous month'",
+    },
+    nextMonthLabel: {
+      description: 'The name of the button that goes forward a month.',
+      type: 'string',
+      default: "'Next month'",
+    },
+  }}
+/>

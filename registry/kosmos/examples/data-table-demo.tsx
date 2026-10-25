@@ -25,7 +25,7 @@ export default function DataTableDemo() {
         />
       </div>
       <p aria-live="polite" className="text-small text-muted-foreground">
-        {message ?? 'Select rows, sort a column, or open a project.'}
+        {message ?? 'Search, filter, sort from a header, select rows, or open a project.'}
       </p>
     </div>
   );

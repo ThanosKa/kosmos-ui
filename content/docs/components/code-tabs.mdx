@@ -1,0 +1,81 @@
+---
+title: Code Tabs
+description: Commands in tabs, one per package manager or platform, each in a well with a button that copies it and tells screen readers it did.
+---
+
+<ComponentPreview name="code-tabs-demo" />
+
+## Installation
+
+<ComponentInstall name="code-tabs" />
+
+## Usage
+
+```tsx
+import { CodeTabs } from '@/components/ui/code-tabs';
+```
+
+```tsx
+<CodeTabs
+  commands={{
+    pnpm: 'pnpm add @acme/analytics',
+    npm: 'npm install @acme/analytics',
+    yarn: 'yarn add @acme/analytics',
+    bun: 'bun add @acme/analytics',
+  }}
+/>
+```
+
+Each key of `commands` is a tab, in order, and its value is the command the tab shows. The button in the well copies the command. Once it is on the clipboard the icon turns into a check mark for two seconds and screen readers hear "Command copied". When the browser refuses, as it does on a page served over plain http, the command is selected instead, so it can be copied with the keyboard, and screen readers hear that.
+
+A command too long for the well wraps onto the next line, after a space or a `/` or `=` of a URL, and the new line starts under the command, not under the prompt. All of it stays readable on a phone. The commands stay left to right on a right-to-left page.
+
+## Examples
+
+### With a note
+
+Children show under the well in every tab, such as a note or what the command prints. They are not copied.
+
+<ComponentPreview name="code-tabs-output" />
+
+### Remember the choice
+
+Pass `value` and `onValueChange` to keep the open tab yourself. Several code tabs that share one value switch together, so a visitor picks a package manager once. Save the value, for example in `localStorage`, to keep the choice on the next visit.
+
+<ComponentPreview name="code-tabs-controlled" />
+
+## API
+
+CodeTabs renders Kosmos [Tabs](/docs/components/tabs) above the command well and accepts the props of Base UI's [`Tabs.Root`](https://base-ui.com/react/components/tabs), except the ones below that it replaces.
+
+<TypeTable
+  type={{
+    commands: {
+      description: 'One tab per key, in order: the key is the label of the tab and the value the command it shows.',
+      type: 'Record<string, string>',
+      required: true,
+    },
+    value: {
+      description: 'The open tab, when you keep the choice yourself.',
+      type: 'string',
+    },
+    defaultValue: {
+      description: 'The tab open at first when `value` is not set. A key that is not in `commands` opens the first tab.',
+      type: 'string',
+      default: 'the first key',
+    },
+    onValueChange: {
+      description: 'Called with the key of the tab that opens.',
+      type: '(value: string) => void',
+    },
+    label: {
+      description: 'The name of the tab list for screen readers.',
+      type: 'string',
+      default: "'Package manager'",
+    },
+    children: {
+      description: 'Shown under the well in every tab, such as a note or what the command prints. Not copied.',
+      type: 'ReactNode',
+    },
+  }}
+/>

@@ -1,0 +1,139 @@
+---
+title: Settings
+description: A settings card whose Save turns on only when something changed, and a settings page with section links, profile, notifications, an API key and a danger zone that asks for confirmation.
+---
+
+## Installation
+
+<ComponentInstall name="settings" />
+
+The block brings [Field](/docs/components/field), [Input](/docs/components/input), [Input group](/docs/components/input-group), [Textarea](/docs/components/textarea), [Switch](/docs/components/switch), [Radio group](/docs/components/radio-group), [Number field](/docs/components/number-field), [Copy field](/docs/components/copy-field), [Dialog](/docs/components/dialog) and [Button](/docs/components/button) with it, and lands in `components/settings.tsx`.
+
+## Usage
+
+`SettingsPage` is the whole page with sample sections. Pass a handler for each card:
+
+```tsx
+import { SettingsPage } from '@/components/settings';
+
+<SettingsPage
+  profile={user}
+  onSaveProfile={async (values) => {
+    const response = await fetch('/api/profile', { method: 'PATCH', body: JSON.stringify(values) });
+    if (!response.ok) throw new Error('That username is taken.');
+  }}
+  workspaceName="Acme"
+  onDeleteWorkspace={deleteWorkspace}
+/>;
+```
+
+Without handlers each card waits a moment and succeeds, so you can try the page first. The sections, sample values and that stand-in request are at the top of the file.
+
+To build your own page, use the parts. A card holds its values with `useSettingsForm`:
+
+```tsx
+'use client';
+
+import { SettingsCard, useSettingsForm } from '@/components/settings';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+
+export function WorkspaceCard() {
+  const form = useSettingsForm({ workspace: 'Acme' }, saveWorkspace);
+
+  return (
+    <SettingsCard
+      title="Workspace"
+      description="The name people see when they join."
+      dirty={form.dirty}
+      state={form.state}
+      error={form.error}
+      onSave={form.save}
+      onReset={form.reset}
+    >
+      <Field>
+        <FieldLabel>Name</FieldLabel>
+        <Input value={form.values.workspace} onValueChange={(value) => form.setValue('workspace', value)} />
+      </Field>
+    </SettingsCard>
+  );
+}
+```
+
+## What it does
+
+- **Save**: off until a field differs from what was last saved, and off again after a save or Discard. The footer says "Unsaved changes", "Saving", "Changes saved" or why saving failed, and screen readers hear each change.
+- **Saving**: the fields are held and the button shows a spinner. When your handler throws, its message shows in the footer and the values stay as typed.
+- **Danger zone**: each action has its own button that opens a dialog saying what is lost. When the action has `confirmText`, such as the workspace name, its button stays off until that is typed exactly.
+- **Section links**: the link of the section in view is marked as the current page.
+- **Width**: the page lays itself out by its own width. The links sit in a column from 768px and above the cards below it, and two-column fields stack in a narrow container.
+
+## API
+
+### SettingsCard
+
+Takes the props of a `<form>`, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'Names the card and its form.', type: 'ReactNode' },
+    description: { description: 'One line under the title.', type: 'ReactNode' },
+    dirty: { description: 'Whether a field differs from what was saved. Save is off until it does.', type: 'boolean' },
+    state: { description: 'How the last save went.', type: "'idle' | 'saving' | 'saved' | 'error'", default: "'idle'" },
+    error: { description: 'The message of a failed save, shown while `state` is `error`.', type: 'string | null' },
+    onSave: { description: 'Called when Save is pressed, or Enter in a field.', type: '() => void' },
+    onReset: { description: 'Called by Discard, which shows while `dirty`.', type: '() => void' },
+    saveLabel: { description: 'The label of the Save button.', type: 'string', default: "'Save changes'" },
+    headingLevel: { description: 'The level of the title. Lower it when the page already has other headings.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '2' },
+  }}
+/>
+
+### useSettingsForm
+
+`useSettingsForm(initial, onSave)` returns `values`, `setValue(key, value)`, `dirty`, `state`, `error`, `save` and `reset`. `onSave` gets the values and may return a promise; throw an `Error` to show its message.
+
+### SettingsPanel
+
+A card for settings with nothing to save, such as an API key. Takes `title`, `description` and `headingLevel` like the card.
+
+### SettingsNav
+
+<TypeTable
+  type={{
+    sections: { description: 'The links, each pointing to the `id` of a section.', type: '{ id: string; label: string }[]' },
+    current: { description: 'The `id` of the section in view.', type: 'string' },
+    onNavigate: { description: 'Called with the `id` of the link pressed.', type: '(id: string) => void' },
+  }}
+/>
+
+### DangerZone
+
+<TypeTable
+  type={{
+    actions: { description: 'The rows. `confirmText` is typed before the dialog confirms; `onConfirm` may return a promise and throw an `Error` to show its message.', type: '{ id: string; title: string; description: string; label: string; confirmText?: string; onConfirm?: () => Promise<void> | void }[]' },
+    title: { description: 'The title of the card.', type: 'ReactNode', default: "'Danger zone'" },
+    description: { description: 'The line under the title.', type: 'ReactNode', default: "'These actions cannot be undone.'" },
+    headingLevel: { description: 'The level of the title.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '2' },
+    defaultOpenAction: { description: 'The id of an action whose dialog starts open. For previews.', type: 'string' },
+    modal: { description: 'Blocks the page behind the dialog.', type: 'boolean', default: 'true' },
+    container: { description: 'The element the dialog renders into.', type: 'HTMLElement | null', default: 'document.body' },
+  }}
+/>
+
+### SettingsPage
+
+<TypeTable
+  type={{
+    profile: { description: 'The profile values at first: name, email, username and bio.', type: 'ProfileValues', default: 'sample profile' },
+    onSaveProfile: { description: 'Saves the profile. Throw an `Error` to show its message.', type: '(values: ProfileValues) => Promise<void> | void' },
+    notifications: { description: 'The notification values at first.', type: 'NotificationValues', default: 'sample settings' },
+    onSaveNotifications: { description: 'Saves the notification settings. Throw an `Error` to show its message.', type: '(values: NotificationValues) => Promise<void> | void' },
+    apiKey: { description: 'The key in the API access card, hidden until revealed.', type: 'string', default: 'a sample key' },
+    workspaceName: { description: 'The name people type to confirm deleting the workspace.', type: 'string', default: "'Acme'" },
+    onDeleteWorkspace: { description: 'Called once deleting the workspace is confirmed.', type: '() => Promise<void> | void' },
+    onResetApiKey: { description: 'Called once resetting the key is confirmed.', type: '() => Promise<void> | void' },
+    defaultCurrent: { description: 'The section marked current at first.', type: 'string', default: "'profile'" },
+    dangerZoneProps: { description: 'Props passed on to the danger zone, for previews.', type: 'Partial<DangerZoneProps>' },
+    headingLevel: { description: 'The level of the card titles.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '2' },
+  }}
+/>

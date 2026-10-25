@@ -4,7 +4,7 @@ description: Every Kosmos color token in light and dark, the Tailwind class it g
 icon: Palette
 ---
 
-The colors are warm neutrals with one orange accent. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS.
+The colors are true greys and ink, with no accent: color is left to status and destructive. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS. For other greys, an accent or another radius, pick a preset on the [Presets page](/presets) and take its CSS or registry command.
 
 Each swatch shows the light value on the left and the dark value on the right. Click a swatch to copy its class. Every value below is read from the tokens file, so this page always matches what you install.
 
@@ -14,7 +14,7 @@ Each swatch shows the light value on the left and the dark value on the right. C
 
 ## Text
 
-Grey carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab and the current item in a nav menu) takes `text-active-foreground`: the only orange text, a darker orange than `ring` in light so it passes 4.5:1.
+Grey carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab and the current item in a nav menu) takes `text-accent-text`, ink on the flat hover fill, and so does a Meter in its primary tone. A preset with an accent colors these, focus and the first chart series with it.
 
 <ColorTokens group="text" />
 
@@ -40,12 +40,20 @@ Status colors fill dots, icons and meter segments. The text beside them stays `t
 
 ## Chart
 
-Chart series take `chart-1` to `chart-5` in order. Labels and legends stay in text colors.
+Chart series take `chart-1` to `chart-5` in order: a mono ramp from ink through four steps of grey. Stacked segments are split by a 1px line in the card color, so adjacent greys stay apart. Labels and legends stay in text colors.
 
 <ColorTokens group="chart" />
 
 ## Tags
 
-A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill.
+A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill. Orange, blue, green and red are the status tints of those hues.
 
 <ColorTokens group="tags" />
+
+## Status tints
+
+Six hues mark states and codes: `gray`, `blue`, `green`, `teal`, `orange` and `red`. None of them changes with a preset. A state is a `tint-*-dot` beside its word, through [StatusDot](/docs/components/status#dots). A code, such as an HTTP status, is a [Badge](/docs/components/badge#codes) in the fill and `-foreground`, with no edge. An [Alert](/docs/components/alert) takes the fill, `-border`, `-foreground` and `-link`. Text and links pass 4.5:1 on their fill, and white `tint-solid-foreground` passes 4.5:1 on each `-solid`, in both themes.
+
+The values are steps of [Radix Colors](https://github.com/radix-ui/colors), under the MIT License: `shadcn add @kosmos/tokens` writes its notice into your project as `LICENSE-RADIX-COLORS`.
+
+<ColorTokens group="tints" />

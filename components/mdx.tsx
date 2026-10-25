@@ -2,6 +2,7 @@ import Link from 'fumadocs-core/link';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentProps } from 'react';
 import { ApiTable } from '@/components/docs/api-table';
+import { Callout } from '@/components/docs/callout';
 import { ComponentInstall, ComponentSource } from '@/components/docs/component-install';
 import { ComponentPreview } from '@/components/docs/component-preview';
 import { ChangelogEntries } from '@/components/docs/changelog-entries';
@@ -73,6 +74,7 @@ export function getMDXComponents(components?: MDXComponents) {
     PackageInstall,
     LinkCards,
     LinkCard,
+    Callout,
     ...components,
   } satisfies MDXComponents;
 }

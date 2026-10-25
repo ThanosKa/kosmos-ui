@@ -143,9 +143,9 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const TileHeading = headingLevel === 2 ? 'h3' : 'h4';
   return (
-    <section data-slot="bento" className={cn('@container flex flex-col gap-8 @2xl:gap-10', className)} {...props}>
+    <section data-slot="bento" className={cn('@container flex flex-col', className)} {...props}>
       {title || description ? (
-        <header className="flex flex-col items-center text-center">
+        <header className="mb-8 flex flex-col items-center text-center @2xl:mb-10">
           {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
           {description ? (
             <p data-slot="bento-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">

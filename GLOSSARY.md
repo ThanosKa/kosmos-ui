@@ -46,6 +46,10 @@ _Avoid_: playground, sandbox, drafts
 Μία σελίδα (`/gallery`) που δείχνει όλα τα components μαζί σε ρεαλιστικές κάρτες, ώστε μια αλλαγή στο στυλ να φαίνεται αμέσως παντού.
 _Avoid_: kitchen sink, showcase (showcase είναι το dashboard της landing page)
 
+**Presets page**:
+Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει τα components και μερικά blocks να αλλάζουν live και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
+_Avoid_: theme builder, customizer, playground
+
 ### Στυλ
 
 **Style**:
@@ -55,6 +59,22 @@ _Avoid_: theme, look, «τα χρώματα του Kosmos»
 **Palette**:
 Τα χρώματα του Kosmos, δηλαδή τα tokens χρωμάτων. Είναι ξεχωριστή επιλογή από το **style**: αλλάζει χωρίς να αλλάξει ο τρόπος που χτίζονται τα κομμάτια, και δεν παίρνεται από τα προϊόντα που μελετήσαμε.
 _Avoid_: theme, style
+
+**Preset**:
+Ένα έτοιμο σετ τιμών για **palette** και radius που διαλέγει ο χρήστης, βλέπει όλα τα components με αυτό και το παίρνει στο project του. Αλλάζει μόνο τιμές tokens, ποτέ το **style**.
+_Avoid_: theme, skin, variant
+
+**Accent**:
+Το ένα χρώμα που δίνει ένα **preset** στο focus, στο τρέχον item της πλοήγησης, στο meter και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
+_Avoid_: brand, primary, highlight
+
+**Status tint**:
+Ένα από τα έξι status hues (gray, blue, green, teal, orange, red) με τα tokens του: fill, border, κείμενο, link, dot και, για τα τέσσερα, solid. Δίνει dot σε ένα state, tinted pill σε έναν κωδικό και χρώμα σε ένα Alert. Μένει ίδιο σε κάθε **preset** και δεν είναι ποτέ **accent**.
+_Avoid_: status colour (είναι τα `success`, `warning`, `destructive`), tag (είναι κατηγορία)
+
+**Brand colour**:
+Το χρώμα της ταυτότητας του Kosmos UI ως προϊόν: φαίνεται μόνο στο δικό μας site (logo, σημάδια **Pro**, text selection) και δεν μπαίνει ποτέ στα tokens που εγκαθιστά ο χρήστης.
+_Avoid_: accent, signature colour, primary
 
 **Token**:
 Μια ονομασμένη τιμή του στυλ (χρώμα, σκιά, radius, easing, duration, μέγεθος κειμένου), γραμμένη ως CSS variable στο `registry/kosmos/styles/tokens.css`. Τα components χρησιμοποιούν μόνο tokens, ποτέ σκέτες τιμές.
@@ -116,9 +136,17 @@ _Avoid_: block group, «section» για ένα block ή μια κατηγορί
 Το πλαίσιο που δείχνει μία εκδοχή ενός block στα docs, σε όλο το πλάτος: preview, κώδικας, πλάτος desktop, tablet ή κινητό, και badge Free ή Pro.
 _Avoid_: playground, demo frame
 
+**Drift**:
+Η αργή, συνεχής κίνηση σε κύκλο που μοιράζονται το Logo marquee και ο τοίχος του Testimonials (`@kosmos/drift`). Σταματά ομαλά όταν ο χρήστης κρατά το ποντίκι, το δάχτυλο ή το focus πάνω της, ξεκινά πάλι ομαλά, τρέχει μόνο όσο φαίνεται στην οθόνη, έχει κουμπί παύσης και μένει ακίνητη με reduced motion.
+_Avoid_: autoscroll, ticker, carousel
+
 **Icon mode**:
 Η κατάσταση του Sidebar όταν είναι collapsed και μένει στενή στήλη με τα icons, με το όνομα σε tooltip.
 _Avoid_: mini sidebar, rail
+
+**Quick range**:
+Μια έτοιμη περίοδος με όνομα δίπλα στο calendar του Date range picker, π.χ. «Last 7 days». Ένα κλικ τη διαλέγει, και το πεδίο δείχνει το όνομά της όσο η τιμή ταιριάζει.
+_Avoid_: preset (είναι το σετ τιμών του palette), shortcut (είναι συνδυασμός πλήκτρων)
 
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
