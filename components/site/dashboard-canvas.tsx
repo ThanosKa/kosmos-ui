@@ -13,8 +13,9 @@ const dashboardScreens = [
 ] as const;
 
 /**
- * The landing page's dashboard: the Acme app in an iframe, with tabs for its main screens and the site's preset
- * picker. A preset picked here applies to the whole site, and the app in the frame takes it with the page.
+ * The landing page's dashboard: the Acme app in an iframe framed as a browser window, with tabs for its main screens
+ * and the site's preset picker. A preset picked here applies to the whole site, and the app in the frame takes it
+ * with the page.
  */
 export function DashboardCanvas() {
   const frame = React.useRef<HTMLIFrameElement>(null);
@@ -22,7 +23,7 @@ export function DashboardCanvas() {
   usePreviewHost(frame, { page: screen, onPage: setScreen });
 
   return (
-    <Tabs value={screen} onValueChange={(value) => setScreen(String(value))} className="gap-3">
+    <Tabs value={screen} onValueChange={(value) => setScreen(String(value))} className="gap-4">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <TabsList aria-label="Dashboard screens">
           {dashboardScreens.map((item) => (
@@ -33,15 +34,25 @@ export function DashboardCanvas() {
         </TabsList>
         <PresetPicker className="pb-0.5" />
       </div>
-      {/* One panel for every screen: the screens are pages of the one app in the frame, which keeps its state. */}
-      <TabsContent value={screen} keepMounted>
-        <iframe
-          ref={frame}
-          src="/dashboard"
-          title="Acme, a demo dashboard built from Kosmos blocks"
-          className="block h-[40rem] w-full rounded-2xl border border-transparent bg-background shadow-card md:h-[50rem]"
-        />
-      </TabsContent>
+      <div data-slot="browser-frame" className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
+        <div aria-hidden className="grid h-9 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-border px-3.5">
+          <span className="flex gap-1.5">
+            <span className="size-2.5 rounded-full bg-foreground/15" />
+            <span className="size-2.5 rounded-full bg-foreground/15" />
+            <span className="size-2.5 rounded-full bg-foreground/15" />
+          </span>
+          <span className="truncate text-caption text-muted-foreground">acme.example/{screen}</span>
+        </div>
+        {/* One panel for every screen: the screens are pages of the one app in the frame, which keeps its state. */}
+        <TabsContent value={screen} keepMounted>
+          <iframe
+            ref={frame}
+            src="/dashboard"
+            title="Acme, a demo dashboard built from Kosmos blocks"
+            className="block h-[40rem] w-full bg-background md:h-[48rem]"
+          />
+        </TabsContent>
+      </div>
     </Tabs>
   );
 }
