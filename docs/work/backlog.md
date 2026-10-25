@@ -20,4 +20,7 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 ## Build
 
 - [ ] **Richer showcase.** The landing's Dashboard tab shows more than cards: the data table in full, with faceted filters, the bulk bar and the column menu working, in the dense pro-tool look.
+- [ ] **Empty states.** More empty-state variants (first use, no results, cleared filters, error, no permission) as components or blocks, and use them in the tables, lists and charts that have none yet.
+- [ ] **More navbar options.** Navbar variants: a mega menu with grouped links and descriptions, a centred-links layout, a search slot, and a banner above it.
+- [ ] **Example dashboards.** Full dashboards built only from Kosmos blocks, so visitors and the maintainer can judge the style across a whole app: a CRM (contacts, deals pipeline, activity), an analytics dashboard (traffic, funnels, sources), and one more common kind (e.g. billing and usage, or an admin panel). Each also checks the current app for gaps in components and blocks. Pick which stay free and which become Pro templates (ADR 0003).
 - [ ] **MIT catalogue, wave A.** Port the first wave from the MIT catalogue (mockup and screenshot, device frames, marquee primitive, avatar circles, glow and section wrapper, card, spinner, progress, alert dialog and sheet, login and signup blocks).
