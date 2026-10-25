@@ -178,6 +178,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Logo marquee | The customers on the Acme website: the logos of its live projects on a paid plan (Marketing site below). |
 | FAQ | The Acme website's questions before a team starts, with a link to the contact page (Marketing site below). |
 | CTA | The close of the Acme website: a two-line title and "Start for free" (Marketing site below). |
+| Feature section | One feature of the Acme website, dashboards: a live Active users panel beside the points that explain it (Marketing site below). |
 
 ## Marketing site
 
@@ -191,6 +192,7 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 - Logo marquee: the line "Used by the teams behind" over the live projects on a paid plan, in table order (Fernhill Books, Brightloop Fitness, Copperline Bank, Saltmarsh Coffee, Driftwood Travel, Cirrus Weather, Ironbark Logistics), each its full name beside a lucide icon that fits it (`BookOpen`, `Activity`, `Landmark`, `Coffee`, `Sailboat`, `Cloud`, `Truck`).
 - FAQ: title "Questions before you start"; questions, in order: how long until the first event (about a minute, it shows in Live events), which platforms can send events (web, iOS, Android, servers), trying Pro before paying (every new project starts on a 14-day Pro trial with no card, then moves to Free unless a plan is picked), going over the event allowance (collection never stops; Acme writes before the next bill), and taking the data along (CSV from any table, a nightly export to the team's own storage on Scale, docs at `https://acme.example/docs/export`). First one open. Contact line "Still have a question? Talk to the team", to `/contact`.
 - CTA: title "Add your first project," / "see events in a minute" on two lines, and "Start for free" (primary, to `/signup`). When an example needs a line under it: "Free up to 50,000 events a month. Pro from $49 a month when you need more."
+- Feature section: title "Dashboards your whole team reads", one line "Pin the numbers you check every morning. Acme keeps them current, a minute behind your events." The visual is a panel of Active users with a 7d, 30d and 90d range, showing the overview metrics' Active users and its chart points (30d first). The card beside it: "One view for everyone", "Build a dashboard once and every teammate opens the same numbers, with the same filters, at the same time.", the points "Share it with a link" (`/docs/dashboards/share`), "Send a Monday digest" (`/docs/dashboards/digest`) and "Export any chart" (`/docs/dashboards/export`), and the action "Read the dashboards guide" (secondary, to `/docs/dashboards`).
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
 
 ## AI agents
