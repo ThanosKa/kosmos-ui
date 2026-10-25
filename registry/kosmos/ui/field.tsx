@@ -7,13 +7,13 @@ import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
- * A row with a FieldContent, a checkbox or a switch aligns to the top, so a label that wraps
- * keeps the control on its first line. The checkbox (16px) and switch (18px) move down to sit
- * centered on that first 20px line.
+ * A row with a FieldContent, a checkbox, a radio or a switch aligns to the top, so a label that
+ * wraps keeps the control on its first line. The checkbox and radio (16px) and switch (18px) move
+ * down to sit centered on that first 20px line.
  */
 const topAligned = [
-  'has-[>[data-slot=field-content]]:items-start has-[>[data-slot=checkbox]]:items-start has-[>[data-slot=switch]]:items-start',
-  '*:data-[slot=checkbox]:mt-0.5 *:data-[slot=switch]:mt-px',
+  'has-[>[data-slot=field-content]]:items-start has-[>[data-slot=checkbox]]:items-start has-[>[data-slot=radio-group-item]]:items-start has-[>[data-slot=switch]]:items-start',
+  '*:data-[slot=checkbox]:mt-0.5 *:data-[slot=radio-group-item]:mt-0.5 *:data-[slot=switch]:mt-px',
 ];
 
 const fieldVariants = cva('flex min-w-0', {
@@ -42,7 +42,7 @@ const FieldInvalidContext = React.createContext(false);
 /**
  * Groups a label, one control, a description and an error, and connects them: the label
  * names the control, and the description and error are read with it (`aria-describedby`).
- * Works with any Base UI control: Input, Textarea, Select, Checkbox, Switch, Slider.
+ * Works with any Base UI control: Input, Textarea, Select, Checkbox, RadioGroup, Switch, Slider, NumberField.
  */
 function Field({ className, orientation = 'vertical', invalid, children, ...props }: FieldProps) {
   return (
