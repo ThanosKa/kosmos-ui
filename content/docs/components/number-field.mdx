@@ -1,0 +1,144 @@
+---
+title: Number Field
+description: Changes a number with a minus and a plus button or the arrow keys, within a range and in any format. Built on Base UI.
+baseUi: https://base-ui.com/react/components/number-field
+---
+
+<ComponentPreview name="number-field-demo" />
+
+## Installation
+
+<ComponentInstall name="number-field" />
+
+## Usage
+
+```tsx
+import { Field, FieldLabel } from '@/components/ui/field';
+import { NumberField } from '@/components/ui/number-field';
+```
+
+```tsx
+<Field name="seats">
+  <FieldLabel>Seats</FieldLabel>
+  <NumberField defaultValue={5} min={1} max={100} />
+</Field>
+```
+
+Put the NumberField in a [Field](/docs/components/field) and the FieldLabel names it. Without a Field, give it an `aria-label`. The minus and plus buttons step by `step`, and each one dims once the value reaches its end of the range. People can still type any number; on blur it is kept within `min` and `max`.
+
+The field is 160px wide by default, which holds about nine characters. Pass a width that fits the longest value in `className` (`w-full`, `w-48`), or `h-7.5` to match a Button beside it in a toolbar.
+
+## Examples
+
+### Formats
+
+`format` takes [`Intl.NumberFormat` options](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#options): currency, percent, or a unit like days. The value stays a plain number, so a percent field holds `0.75` for 75%. Set `locale` too when the page renders on the server, so the server and the browser format the number the same way.
+
+<ComponentPreview name="number-field-format" />
+
+### In a settings row
+
+In a horizontal Field, the NumberField sits beside the label and description, at the end of the row.
+
+<ComponentPreview name="number-field-settings" />
+
+### Invalid
+
+Set `invalid` on the Field and put the message in a FieldError.
+
+<ComponentPreview name="number-field-invalid" />
+
+## API
+
+NumberField wraps the [Base UI Number Field](https://base-ui.com/react/components/number-field) and takes every prop of its Root, such as the ones below. `placeholder`, `aria-label` and `aria-labelledby` go to the input inside it.
+
+<TypeTable
+  type={{
+    defaultValue: {
+      description: 'The number at first, when the field keeps its own state.',
+      type: 'number',
+    },
+    value: {
+      description: 'The number, when you control it. `null` when the field is empty.',
+      type: 'number | null',
+    },
+    onValueChange: {
+      description: 'Called on every change, from typing, the buttons or the keys.',
+      type: '(value: number | null, eventDetails) => void',
+    },
+    onValueCommitted: {
+      description: 'Called once a change is done: on blur, and when a button or key is released. Save here.',
+      type: '(value: number | null, eventDetails) => void',
+    },
+    min: {
+      description: 'The lowest number. The minus button dims there.',
+      type: 'number',
+    },
+    max: {
+      description: 'The highest number. The plus button dims there.',
+      type: 'number',
+    },
+    step: {
+      description: 'How much the buttons and the arrow keys change the number.',
+      type: 'number',
+      default: '1',
+    },
+    largeStep: {
+      description: 'How much Shift with an arrow key changes it.',
+      type: 'number',
+      default: '10',
+    },
+    format: {
+      description: 'How the number is written: currency, percent, units, decimals.',
+      type: 'Intl.NumberFormatOptions',
+    },
+    locale: {
+      description: 'The locale the number is written in. Defaults to the browser’s.',
+      type: 'Intl.LocalesArgument',
+    },
+    placeholder: {
+      description: 'Shown while the field is empty.',
+      type: 'string',
+    },
+    name: {
+      description: 'Names the value when the form is submitted. A Field around it sets this too.',
+      type: 'string',
+    },
+    required: {
+      description: 'Fails form validation while the field is empty.',
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Blocks the field and dims it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    readOnly: {
+      description: 'Shows the number but blocks changing it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    'aria-label': {
+      description: 'Names the field when no Field label is around it.',
+      type: 'string',
+    },
+    'aria-labelledby': {
+      description: 'Names the field by the id of other text on the page.',
+      type: 'string',
+    },
+    className: {
+      description: 'Classes for the field: a width, or `h-7.5` beside a Button.',
+      type: 'string',
+    },
+  }}
+/>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `ArrowUp` / `ArrowDown` | Adds or takes away one `step`. |
+| `Shift` + `ArrowUp` / `ArrowDown` | Adds or takes away one `largeStep`. |
+| `Home` / `End` | Jumps to `min` or `max`, when set. |
+| `Tab` | Moves to the next control. The minus and plus buttons are skipped, since the keys above do the same. |

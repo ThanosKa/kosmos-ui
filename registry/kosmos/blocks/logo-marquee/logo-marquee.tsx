@@ -2,6 +2,7 @@
 
 import { Activity, BookOpen, Cloud, Coffee, Landmark, Pause, Play, Sailboat, Truck } from 'lucide-react';
 import * as React from 'react';
+import { useDrift } from '@/registry/kosmos/hooks/use-drift';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 
@@ -64,69 +65,6 @@ function LogoItems({ logos }: { logos: LogoMarqueeLogo[] }) {
   ));
 }
 
-/**
- * Moves `track` by the width of one of its two copies, over and over, at `speed` pixels per second. Keeps its place
- * when the width or the speed changes, holds still while `paused`, and stops when the visitor asks for reduced motion.
- */
-function useMarquee(track: React.RefObject<HTMLDivElement | null>, { speed, paused, enabled }: { speed: number; paused: boolean; enabled: boolean }) {
-  const animation = React.useRef<Animation>(undefined);
-  const pausedRef = React.useRef(paused);
-  const speedRef = React.useRef(speed);
-  const retime = React.useRef<() => void>(undefined);
-
-  React.useEffect(() => {
-    pausedRef.current = paused;
-    if (paused) animation.current?.pause();
-    else animation.current?.play();
-  }, [paused]);
-
-  React.useEffect(() => {
-    speedRef.current = speed;
-    retime.current?.();
-  }, [speed]);
-
-  React.useEffect(() => {
-    const element = track.current;
-    const copy = element?.firstElementChild;
-    if (!enabled || !element || !(copy instanceof HTMLElement)) return;
-    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
-    const duration = () => (copy.offsetWidth / Math.max(speedRef.current, 1)) * 1000;
-
-    const start = () => {
-      animation.current?.cancel();
-      animation.current = undefined;
-      if (!motion.matches) return;
-      const distance = getComputedStyle(element).direction === 'rtl' ? '50%' : '-50%';
-      animation.current = element.animate([{ transform: 'translateX(0)' }, { transform: `translateX(${distance})` }], {
-        duration: duration(),
-        iterations: Infinity,
-      });
-      if (pausedRef.current) animation.current.pause();
-    };
-
-    retime.current = () => {
-      const running = animation.current;
-      if (!running?.effect) return;
-      const progress = running.effect.getComputedTiming().progress ?? 0;
-      const next = duration();
-      running.effect.updateTiming({ duration: next });
-      running.currentTime = progress * next;
-    };
-    const resize = new ResizeObserver(() => retime.current?.());
-
-    start();
-    resize.observe(copy);
-    motion.addEventListener('change', start);
-    return () => {
-      resize.disconnect();
-      motion.removeEventListener('change', start);
-      retime.current = undefined;
-      animation.current?.cancel();
-      animation.current = undefined;
-    };
-  }, [track, enabled]);
-}
-
 type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
   /** The line above the logos, which also names their list. `null` leaves it out. */
   title?: React.ReactNode;
@@ -140,8 +78,8 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 
 /**
  * A row of logos in grey: still in centered rows, or as a marquee that moves toward the start, fades out at both
- * edges, stops while the pointer is on it and has a button that pauses it. Under reduced motion the marquee stands
- * still in centered rows. Lays itself out by its own width, and sets no padding around itself.
+ * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
+ * motion the marquee stands still in centered rows. Lays itself out by its own width, and sets no padding around itself.
  */
 function LogoMarquee({
   title = sampleTitle,
@@ -152,17 +90,12 @@ function LogoMarquee({
   ...props
 }: LogoMarqueeProps) {
   const titleId = React.useId();
-  const track = React.useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = React.useState(false);
   const [stopped, setStopped] = React.useState(false);
   const marquee = variant === 'marquee';
-  useMarquee(track, { speed, paused: hovered || stopped, enabled: marquee && logos.length > 0 });
+  const { view, track, hold } = useDrift({ axis: 'x', speed, held: stopped, enabled: marquee && logos.length > 0 });
 
   if (logos.length === 0) return null;
 
-  const hover = (value: boolean) => (event: React.PointerEvent) => {
-    if (event.pointerType !== 'touch') setHovered(value);
-  };
   const labelledBy = title ? titleId : undefined;
 
   return (
@@ -178,13 +111,15 @@ function LogoMarquee({
         </p>
       ) : null}
       {marquee ? (
-        <div onPointerEnter={hover(true)} onPointerLeave={hover(false)} className="relative w-full">
+        <div className="relative w-full">
           {/* Logos fade out before the last 2.5rem of each edge, so the pause button sits on a clear strip. */}
           <div
+            ref={view}
             data-slot="logo-marquee-viewport"
+            {...hold}
             className="@container w-full overflow-hidden mask-x-from-[calc(100%-min(7rem,30%))] mask-x-to-[calc(100%-2.5rem)] motion-reduce:mask-none motion-reduce:px-4"
           >
-            <div ref={track} data-slot="logo-marquee-track" className="flex w-max motion-reduce:w-auto">
+            <div ref={track} data-slot="logo-marquee-track" className="flex w-max motion-safe:will-change-transform motion-reduce:w-auto">
               <ul
                 aria-labelledby={labelledBy}
                 className="flex min-w-[100cqw] justify-around motion-safe:*:whitespace-nowrap motion-reduce:w-full motion-reduce:min-w-0 motion-reduce:flex-wrap motion-reduce:*:max-w-full motion-reduce:justify-center motion-reduce:gap-y-4 motion-reduce:@2xl:gap-y-6"
@@ -200,7 +135,12 @@ function LogoMarquee({
             variant="secondary"
             size="icon-sm"
             aria-label={stopped ? 'Play logos' : 'Pause logos'}
-            onClick={() => setStopped((value) => !value)}
+            onClick={() => {
+              setStopped((value) => !value);
+              hold.onPointerLeave();
+            }}
+            onPointerEnter={hold.onPointerEnter}
+            onPointerLeave={hold.onPointerLeave}
             className="absolute inset-y-0 end-2 my-auto motion-reduce:hidden"
           >
             {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}
