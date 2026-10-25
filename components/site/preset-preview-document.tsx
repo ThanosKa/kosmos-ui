@@ -59,13 +59,13 @@ function Forms() {
 
 /**
  * The Presets page preview as a whole document, for its iframe: Gallery cards for components and forms, and the Acme
- * dashboard. The preset the page sends applies to this document's root, so its menus, dialogs and toasts take it too.
+ * dashboard. The site's preset applies to this document's root, so its menus, dialogs and toasts take it too.
  */
 export function PresetPreviewDocument() {
-  const { state, page } = usePreviewFrame(presetScreens[0].id);
+  const { ready, page } = usePreviewFrame(presetScreens[0].id);
   const [dashboardPage, setDashboardPage] = React.useState('overview');
   return (
-    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange forcedTheme={state?.mode}>
+    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange>
       <TooltipProvider>
         {page === 'dashboard' ? (
           <DashboardShowcase page={dashboardPage} onPageChange={setDashboardPage} />
@@ -74,7 +74,7 @@ export function PresetPreviewDocument() {
         )}
         <Toaster />
       </TooltipProvider>
-      <span data-preview-ready={state ? '' : undefined} hidden />
+      <span data-preview-ready={ready ? '' : undefined} hidden />
     </ThemeProvider>
   );
 }

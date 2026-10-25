@@ -10,6 +10,7 @@ import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
 import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/index.ts';
 import { readProVariants } from '../lib/registry.ts';
+import { sitePresetCss } from '../lib/site-preset.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
 import { openSitePage, serverBase, serverOptions } from './site.mts';
 
@@ -692,7 +693,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'preset, radius and theme change only the dashboard, and Reset brings them back',
+    name: "the landing's preset picker changes the whole site, the dashboard follows, and Reset brings the Default back",
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="dashboard"]');
@@ -704,20 +705,23 @@ const checks: Check[] = [
           return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: html.classList.contains('dark') };
         });
       const pageBefore = await look('page');
-      const dashboardBefore = await look('dashboard');
-      assert.deepEqual(dashboardBefore, pageBefore, 'the dashboard starts in the page look');
+      const brandBefore = await cssColor(page, '--brand');
+      assert.deepEqual(await look('dashboard'), pageBefore, 'the dashboard starts in the page look');
       await section.getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Soft' }).click();
       await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
       await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
-      await page.waitForFunction(() => (document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      const changed = await look('dashboard');
-      assert.notEqual(changed.ring, dashboardBefore.ring, 'the preset changes the dashboard');
-      assert.match(changed.radius, /^0(px|rem)?$/, 'radius changes the dashboard');
-      assert.equal(changed.dark, true, 'theme changes the dashboard');
-      assert.deepEqual(await look('page'), pageBefore, 'the page keeps its look');
+      await page.waitForFunction(() => {
+        const frame = document.querySelector<HTMLIFrameElement>('[data-landing-section="dashboard"] iframe')?.contentDocument;
+        return frame?.documentElement.classList.contains('dark') && getComputedStyle(frame.documentElement).getPropertyValue('--radius').trim() === '0rem';
+      });
+      const changed = await look('page');
+      const soft = chosenPreset({ preset: 'soft', accent: true, radius: '0' });
+      assert.deepEqual(changed, { ring: presetPalette(soft, 'dark').ring, radius: '0rem', dark: true }, 'the page takes the preset');
+      assert.deepEqual(await look('dashboard'), changed, 'the dashboard follows the page');
+      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
       await section.getByRole('button', { name: 'Reset' }).click();
-      await page.waitForFunction(() => !(document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      assert.deepEqual(await look('dashboard'), dashboardBefore, 'Reset restores the dashboard');
+      await page.waitForFunction((radius) => getComputedStyle(document.documentElement).getPropertyValue('--radius').trim() === radius, pageBefore.radius);
+      assert.equal((await look('page')).radius, pageBefore.radius, 'Reset brings the Default back');
       await close();
     },
   },
@@ -740,33 +744,32 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the Presets page shows a preset on its preview only, and its address opens the same preview',
+    name: "a shared Presets link makes its preset the whole site's, on every page, preview and reload, and the brand colour stays",
     async run(browser) {
-      const { page, close } = await openPage(browser, '/presets?preset=soft&accent=off&radius=6&theme=dark');
-      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
-      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
-      const look = (html: ReturnType<Page['locator']>) =>
-        html.evaluate((root) => {
-          const style = getComputedStyle(root);
-          return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: root.classList.contains('dark') };
-        });
-      const soft = chosenPreset({ preset: 'soft', accent: false, radius: '6' });
-      assert.deepEqual(await look(frame.locator('html')), { ring: presetPalette(soft, 'dark').ring, radius: '0.375rem', dark: true }, 'the preview opens the address');
-      const pageLook = await look(page.locator('html'));
-      assert.equal(pageLook.dark, false, 'the site keeps its own theme');
-      assert.notEqual(pageLook.radius, '0.375rem', 'the site keeps its own radius');
-      await page.locator('aside').getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Night' }).click();
-      await page.waitForURL((url) => url.search === '?preset=night&theme=dark');
-      await page.waitForFunction(() => {
-        const frame = document.querySelector<HTMLIFrameElement>('iframe[src="/preset-preview"]');
-        return frame?.contentDocument && getComputedStyle(frame.contentDocument.documentElement).getPropertyValue('--radius').trim() === '0.5rem';
-      });
-      assert.deepEqual(await look(page.locator('html')), pageLook, 'the site keeps its own look after a change');
+      const { page, close } = await openPage(browser, '/');
+      const brandBefore = await cssColor(page, '--brand');
+      const radius = (target: ReturnType<Page['locator']>) => target.evaluate((html) => getComputedStyle(html).getPropertyValue('--radius').trim());
+      await page.goto(new URL('/presets?preset=soft&accent=off&radius=6', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'the Presets page takes the shared preset');
+      const preview = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await preview.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      assert.equal(await radius(preview.locator('html')), '0.375rem', 'its preview too');
+      await page.getByRole('button', { name: 'Preset: Soft' }).waitFor();
+      await page.goto(new URL('/docs/blocks/stats-overview', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a docs page takes it');
+      const exampleFrame = page.locator('iframe[src*="/view/"]').first();
+      await exampleFrame.scrollIntoViewIfNeeded();
+      const example = exampleFrame.contentFrame();
+      await example.locator('[data-preview-root]').waitFor({ state: 'attached' });
+      assert.equal(await radius(example.locator('html')), '0.375rem', 'a block preview takes it');
+      await page.reload();
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a reload keeps it');
+      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
       await close();
     },
   },
   {
-    name: 'Get code on the Presets page gives the CSS the preview applies, its registry item and its DESIGN.md',
+    name: 'Get code on the Presets page gives the CSS the site applies, its registry item and its DESIGN.md',
     async run(browser) {
       const { page, close } = await openPage(browser, '/presets?preset=console&radius=0');
       const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
@@ -774,9 +777,10 @@ const checks: Check[] = [
       await page.getByRole('button', { name: 'Get code' }).click();
       const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
       const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
-      const expected = presetCss(chosenPreset({ preset: 'console', accent: true, radius: '0' })).trim();
-      assert.equal((await code())?.trim(), expected, 'the CSS tab');
-      assert.equal((await frame.locator('#preview-preset').textContent())?.trim(), expected, 'the CSS the preview applies');
+      const choice = { preset: 'console', accent: true, radius: '0' };
+      assert.equal((await code())?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
+      assert.equal(await frame.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the preview applies');
+      assert.equal(await page.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the page applies');
       await dialog.getByRole('tab', { name: 'Registry' }).click();
       await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
       assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
@@ -825,7 +829,7 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/presets', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      await page.getByRole('button', { name: 'Preset', exact: true }).click();
+      await page.locator('main').getByRole('button', { name: 'Preset', exact: true }).click();
       const sheet = page.getByRole('dialog', { name: 'Preset' });
       const presetGroup = sheet.getByRole('radiogroup', { name: 'Preset' });
       await presetGroup.getByRole('radio', { name: 'Default' }).focus();
@@ -835,6 +839,24 @@ const checks: Check[] = [
       await page.screenshot({ path: '.screenshots/presets-check-375.png' });
       await page.keyboard.press('Escape');
       await sheet.waitFor({ state: 'hidden' });
+      await close();
+    },
+  },
+  {
+    name: "the header names the site's preset on every page, and its picker resets it to the Default from the keyboard",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=night');
+      await page.goto(new URL('/docs', base).href);
+      const trigger = page.getByRole('button', { name: 'Preset: Night' });
+      await trigger.focus();
+      await page.keyboard.press('Enter');
+      const reset = page.locator('[data-slot="popover-content"]').getByRole('button', { name: 'Reset' });
+      await reset.waitFor();
+      await reset.focus();
+      await page.keyboard.press('Enter');
+      await page.getByRole('button', { name: 'Preset: Default' }).waitFor();
+      assert.equal((await page.locator('#site-preset').textContent()) ?? '', '', 'the Default needs no preset CSS');
+      await page.keyboard.press('Escape');
       await close();
     },
   },
