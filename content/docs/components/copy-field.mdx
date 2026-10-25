@@ -1,0 +1,76 @@
+---
+title: Copy Field
+description: A read-only field that shows an API key, a webhook URL or an ID with a button that copies it, and hides a secret until it is shown.
+---
+
+<ComponentPreview name="copy-field-demo" />
+
+## Installation
+
+<ComponentInstall name="copy-field" />
+
+## Usage
+
+```tsx
+import { CopyField } from '@/components/ui/copy-field';
+```
+
+```tsx
+<CopyField label="webhook URL" aria-label="Webhook URL" value="https://hooks.acme.example/v1/fernhill/events" />
+```
+
+```tsx
+<CopyField secret label="secret key" aria-label="Secret key" value={secretKey} />
+```
+
+The button at the end copies `value`. Once it is on the clipboard, the icon turns into a check mark for two seconds and screen readers hear "Webhook URL copied". When the browser refuses, as it does on a page served over plain http, the value is shown and selected instead, so it can be copied with the keyboard, and screen readers hear that.
+
+`label` says what the value is. It names the buttons ("Copy webhook URL", "Show secret key") and the message screen readers hear. The field itself takes its name from a [Field](/docs/components/field) label, or from `aria-label` on its own.
+
+With `secret`, the field shows a dot for each character but the last four, so people can tell two keys apart without seeing them. A secret shorter than 16 characters shows only dots, and a long one at most 12 dots, so its last four stay in view. The eye button shows the value and hides it again, and the copy button copies the value while it is hidden too. Only the dots are in the page while the secret is hidden.
+
+Keys and URLs read left to right on a right-to-left page too. A value too long for the field ends in an ellipsis; the full value is what the button copies.
+
+The hiding and the copying come from `@kosmos/secret` and `@kosmos/use-copy`, which install with it as `lib/secret.ts` and `hooks/use-copy.ts`, for your own code too: `maskSecret(secret)` returns the dots, and `useCopy(text, { onFailure })` returns the result (`'idle' | 'copied' | 'failed'`) and a function that copies.
+
+## Examples
+
+### Shown at first
+
+`defaultRevealed` shows the secret when the field appears, such as a key just created that people should save now.
+
+<ComponentPreview name="copy-field-revealed" />
+
+## API
+
+CopyField renders an [Input Group](/docs/components/input-group) and passes its other props to the read-only input, such as `aria-label`, `id` and `name`. `className` goes to the field.
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The text it shows and copies, such as an API key, a webhook URL or an ID.',
+      type: 'string',
+      required: true,
+    },
+    secret: {
+      description: 'Hides the value behind dots, all but its last four characters, with a button that shows it.',
+      type: 'boolean',
+      default: 'false',
+    },
+    defaultRevealed: {
+      description: 'Shows a secret when the field appears.',
+      type: 'boolean',
+      default: 'false',
+    },
+    label: {
+      description: 'What the value is, in the names of the buttons and in what screen readers hear.',
+      type: 'string',
+      default: "'secret' or 'value'",
+    },
+    disabled: {
+      description: 'Dims the field and disables its buttons.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
