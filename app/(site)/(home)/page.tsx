@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GitHubIcon } from '@/components/site/brand-icons';
 import { DashboardCanvas } from '@/components/site/dashboard-canvas';
-import { InstallTabs } from '@/components/site/install-tabs';
 import { ComponentBento } from '@/components/site/landing-bento';
 import { LandingFaq } from '@/components/site/landing-faq';
 import { Inventory, landingInventoryHeadingId } from '@/components/site/landing-inventory';
@@ -10,7 +9,7 @@ import { LandingPricing } from '@/components/site/landing-pricing';
 import { BlockLabel, LandingSection, LandingTitle, type LandingSectionProps } from '@/components/site/landing-section';
 import { LandingStack } from '@/components/site/landing-stack';
 import { SiteFooter } from '@/components/site/site-footer';
-import { itemsInGroup, packageRunners, readRegistryItems, registryAddArgs } from '@/lib/registry';
+import { itemsInGroup, readRegistryItems } from '@/lib/registry';
 import { appDescription, appName, docsRoute, githubUrl, siteOpenGraph } from '@/lib/shared';
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { Hero } from '@/registry/kosmos/blocks/hero/hero';
@@ -39,9 +38,6 @@ const dashboardBlocks = [
 
 const dashboardHeadingId = 'landing-dashboard-heading';
 
-/** The first command of an install, adding the @kosmos registry, for each package manager. */
-const registryCommands = Object.fromEntries(Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} ${registryAddArgs}`]));
-
 export default function HomePage() {
   const items = readRegistryItems();
   const componentCount = items.filter((item) => item.type === 'registry:ui').length;
@@ -51,7 +47,7 @@ export default function HomePage() {
     {
       id: 'hero',
       blocks: ['hero'],
-      components: ['announcement', 'code-tabs'],
+      components: ['announcement'],
       space: 'hero',
       children: (
         <Hero
@@ -74,7 +70,7 @@ export default function HomePage() {
               </Button>
             </>
           }
-          install={<InstallTabs commands={registryCommands} />}
+          install={null}
         />
       ),
     },
