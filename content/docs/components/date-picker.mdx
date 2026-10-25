@@ -1,0 +1,175 @@
+---
+title: Date picker
+description: A field that opens a calendar, to pick one day, or a range with quick ranges such as "Last 7 days" beside it.
+---
+
+<ComponentPreview name="date-picker-demo" />
+
+## Installation
+
+<ComponentInstall name="date-picker" />
+
+This also brings [Calendar](/docs/components/calendar), [Popover](/docs/components/popover) and [Button](/docs/components/button).
+
+## Usage
+
+```tsx
+import { DatePicker, DateRangePicker } from '@/components/ui/date-picker';
+```
+
+```tsx
+<DatePicker aria-label="Due date" value={date} onValueChange={setDate} />
+```
+
+The field opens a [Calendar](/docs/components/calendar) in a popover, with the focus on the picked day, or today. Picking a day closes it and gives the focus back to the field, and so does Escape. The field has the look of a [Select](/docs/components/select) trigger and hugs its value; give it a width with `className`.
+
+Name the field with `aria-label`, or with a label that points to its `id`, as in the example above. Pass `name` and the day goes with the form as `2026-10-25`.
+
+## Examples
+
+### Range
+
+`DateRangePicker` picks a first and a last day over two months, one on a phone. Beside them sit quick ranges: today, yesterday, the last 7, 30 and 90 days, this month and last month. A quick range picks at once; otherwise the range is set when its second day is picked. The field names the quick range a value matches, such as "Last 30 days", and writes the dates for any other.
+
+<ComponentPreview name="date-picker-range" />
+
+Pass your own quick ranges with `ranges`, or `[]` for none. `lib/dates.ts` has the helpers to make them:
+
+```tsx
+import { lastDays, thisMonth } from '@/lib/dates';
+
+const ranges = [
+  { label: 'Last 14 days', ...lastDays(14) },
+  { label: 'Month to date', ...thisMonth() },
+];
+```
+
+### In a chart card
+
+Put a `DateRangePicker` in the action slot of a [Chart card](/docs/components/chart-card), and pass `max` so no range reaches past today. Beside a Button, give the field the Button's height with `className="h-7.5"`.
+
+<ComponentPreview name="date-picker-chart-card" />
+
+### Another language
+
+Pass `locale`, then `placeholder`, and on `DateRangePicker` the quick ranges, `rangesLabel`, `startHint` and `endHint`. `formatValue` writes the value on the field your own way.
+
+## API
+
+### DatePicker
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The picked day. Use with `onValueChange`.',
+      type: 'Date | null',
+    },
+    defaultValue: {
+      description: 'The day at first, when the picker keeps its own state.',
+      type: 'Date | null',
+    },
+    onValueChange: {
+      description: 'Called with the day picked.',
+      type: '(date: Date) => void',
+    },
+    name: {
+      description: 'Sends the day with a form, as `YYYY-MM-DD`.',
+      type: 'string',
+    },
+    placeholder: {
+      description: 'Shown while nothing is picked.',
+      type: 'string',
+      default: "'Pick a date'",
+    },
+    formatValue: {
+      description: 'How the field writes the day.',
+      type: '(date: Date) => string',
+      default: 'the short date of locale, "Oct 25, 2026"',
+    },
+  }}
+/>
+
+Both pickers also take `min`, `max`, `isDateDisabled`, `locale` and `weekStartsOn`, which go to the [Calendar](/docs/components/calendar#api), and:
+
+<TypeTable
+  type={{
+    disabled: {
+      description: "Turns the field off. It can't open.",
+      type: 'boolean',
+    },
+    open: {
+      description: 'Whether the calendar is open. Use with `onOpenChange`.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called when the calendar opens or closes.',
+      type: '(open: boolean) => void',
+    },
+    align: {
+      description: 'Where the popup lines up with the field.',
+      type: "'start' | 'center' | 'end'",
+      default: "'start'",
+    },
+    className: {
+      description: 'Classes for the field, such as a width, or `h-7.5` beside a Button.',
+      type: 'string',
+    },
+    id: {
+      description: 'For a `label` that points to the field.',
+      type: 'string',
+    },
+    'aria-invalid': {
+      description: 'Draws the field in the error color.',
+      type: 'boolean',
+    },
+  }}
+/>
+
+### DateRangePicker
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The picked range. Use with `onValueChange`.',
+      type: '{ from: Date; to: Date } | null',
+    },
+    defaultValue: {
+      description: 'The range at first, when the picker keeps its own state.',
+      type: '{ from: Date; to: Date } | null',
+    },
+    onValueChange: {
+      description: 'Called once the range is whole: on a quick range, or on the second day.',
+      type: '(range: { from: Date; to: Date }) => void',
+    },
+    ranges: {
+      description: 'The quick ranges beside the calendar. Pass `[]` for none.',
+      type: '{ label: string; from: Date; to: Date }[]',
+      default: 'quickRanges() from lib/dates',
+    },
+    placeholder: {
+      description: 'Shown while nothing is picked.',
+      type: 'string',
+      default: "'Pick a range'",
+    },
+    formatValue: {
+      description: 'How the field writes a range that matches no quick range.',
+      type: '(range: { from: Date; to: Date }) => string',
+      default: 'the short range of locale, "Oct 3 – 9, 2026"',
+    },
+    rangesLabel: {
+      description: 'The name of the quick range list.',
+      type: 'string',
+      default: "'Quick ranges'",
+    },
+    startHint: {
+      description: 'The line under the calendar before the first pick.',
+      type: 'string',
+      default: "'Pick the first or last day'",
+    },
+    endHint: {
+      description: 'The line under the calendar between the two picks.',
+      type: 'string',
+      default: "'Pick the other end'",
+    },
+  }}
+/>
