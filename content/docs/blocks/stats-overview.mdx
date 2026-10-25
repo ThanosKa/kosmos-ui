@@ -7,7 +7,7 @@ description: The overview of an analytics dashboard, with the headline metrics a
 
 <ComponentInstall name="stats-overview" />
 
-The block brings [Tabs](/docs/components/tabs), [Chart](/docs/components/chart), [Segmented control](/docs/components/segmented-control), [Badge](/docs/components/badge), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
+The block brings [Chart card](/docs/components/chart-card), [Stat card](/docs/components/stat-card), [Chart](/docs/components/chart), [Tabs](/docs/components/tabs), [Segmented control](/docs/components/segmented-control) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
 
 ## Usage
 
@@ -21,11 +21,11 @@ Without props it shows sample metrics. Pass the metrics and top events for each 
 
 ## What it does
 
-- **Metrics as tabs**: each metric shows its label, its value and its change against the period before, in a green or red tag; set `goodWhen: 'down'` for a metric like errors, where falling is good. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
-- **Chart**: the selected metric over the range against the same span before it, with a tooltip and a hidden data table for screen readers.
-- **Top events**: the most frequent events, each with a bar to scale against the first.
+- **Metrics as tabs**: each metric shows its label, its value and its change against the period before, with the [Stat card](/docs/components/stat-card) value and delta: an arrow, a sign and a percentage, in a green or red tag. Set `goodWhen: 'down'` for a metric like errors, where falling is good, or `'neither'` to keep it grey. A change in a `percent` metric reads in points. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
+- **Chart**: the selected metric over the range against the same span before it, on a [Chart card](/docs/components/chart-card) with the range switch in its header, a tooltip and a hidden data table for screen readers.
+- **Top events**: the most frequent events on a chart card of their own, each with a bar to scale against the first.
 - **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container, two on a narrower one, and one per row, value beside the label, under 448px, so a value never cuts off on a phone. The top events move beside the chart from 1152px.
-- **Loading and empty**: `loading` swaps every value for a skeleton of the same shape. A range with no points, no metrics or no events shows an empty state.
+- **Loading, empty and error**: `loading` swaps every value for a skeleton of the same shape. A range with no points, no metrics or no events shows an empty state. `error` shows what could not load in place of the metrics, the chart and the top events, with a Try again button when you pass `onRetry`.
 
 ## API
 
@@ -37,7 +37,7 @@ Takes every `<section>` prop, plus:
   type={{
     metrics: {
       description: 'The metrics for each range. Leave `change` out when there is no earlier period.',
-      type: "Record<'7d' | '30d' | '90d', { id: string; label: string; value: number; format: 'currency' | 'number' | 'percent'; change?: number; goodWhen?: 'up' | 'down'; points: { label: string; current: number; previous: number }[] }[]>",
+      type: "Record<'7d' | '30d' | '90d', { id: string; label: string; value: number; format: 'currency' | 'number' | 'percent'; change?: number; goodWhen?: 'up' | 'down' | 'neither'; points: { label: string; current: number; previous: number }[] }[]>",
     },
     topEvents: {
       description: 'The most frequent events for each range, most frequent first. An empty list shows the empty state.',
@@ -50,5 +50,7 @@ Takes every `<section>` prop, plus:
     defaultMetric: { description: 'The metric shown at first, when the overview keeps its own state.', type: 'string', default: 'the first metric' },
     onMetricChange: { description: 'Called with the `id` of the newly selected metric.', type: '(metric: string) => void' },
     loading: { description: 'Shows skeletons while the data loads.', type: 'boolean', default: 'false' },
+    error: { description: 'Shows an error in place of the metrics, the chart and the top events.', type: 'boolean', default: 'false' },
+    onRetry: { description: 'Shows a Try again button beside the error.', type: '() => void' },
   }}
 />

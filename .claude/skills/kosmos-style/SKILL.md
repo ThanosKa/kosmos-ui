@@ -36,6 +36,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Popover, menu, select list, tooltip, toast, command palette | `shadow-popover` | `bg-popover` |
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
 | Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
+| Pricing plan: the featured one / the others | `shadow-card` / `shadow-inset` | `bg-card` / `bg-muted` |
 | Card being dragged | `shadow-lift` | `bg-card` |
 | Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 

@@ -47,7 +47,7 @@ Status: open
 14. Ως developer, θέλω να διαλέγω ανάμεσα σε Default, Warm, Soft, Console και Night, ώστε να ξεκινάω από κάτι έτοιμο.
 15. Ως developer, θέλω να αλλάζω accent, radius και light/dark, ώστε να φτάσω στην εμφάνιση που θέλω.
 16. Ως developer, θέλω να βλέπω components, ένα dashboard και forms να αλλάζουν live, ώστε να κρίνω το preset σε πραγματικό UI.
-17. Ως developer, θέλω η αλλαγή να επηρεάζει μόνο το preview και όχι το chrome του site, ώστε να μη χάνομαι μέσα στη σελίδα.
+17. Ως developer, θέλω το preset που διαλέγω να ισχύει σε όλο το site, chrome και previews μαζί, και να μένει από σελίδα σε σελίδα, ώστε να βλέπω τα docs και τα components όπως θα είναι στο δικό μου app.
 18. Ως developer, θέλω ένα reset, ώστε να γυρνάω στο Default.
 19. Ως developer, θέλω το preset να ζει στο URL, ώστε να το μοιράζομαι στέλνοντας ένα link.
 20. Ως developer, θέλω ένα κουμπί «Get code» που δίνει το CSS για light και dark, ώστε να το βάλω στο project μου.
@@ -146,10 +146,11 @@ Status: open
 
 ### Presets page και preset picker
 
-- Η Presets page είναι δημόσια σελίδα του site, στο nav. Αριστερά τα controls (preset, accent, radius, light/dark, reset), δεξιά ένα preview με tabs Components, Dashboard, Forms, από το περιεχόμενο της Gallery.
-- Το preset ζει στο URL. Ένα κουμπί «Get code» ανοίγει dialog με CSS, εντολή registry και DESIGN.md.
-- Το preset εφαρμόζεται μόνο στο preview, όχι στο chrome του site.
-- Ο preset picker είναι ένα component, και το ίδιο μπαίνει στο dashboard της landing στη θέση των σημερινών controls για accent και radius. Η αλλαγή φτάνει στο iframe όπως σήμερα.
+- Η Presets page είναι δημόσια σελίδα του site, στο nav. Αριστερά τα controls (preset, accent, radius, light/dark, reset), δεξιά ένα preview με tabs Components, Dashboard, Forms, από το περιεχόμενο της Gallery. Το accent είναι διακόπτης για το accent του ίδιου του preset, γιατί ένα accent από άλλο preset δεν περνά παντού τους ελέγχους contrast.
+- Το preset ζει στο URL της Presets page: ένα link ανοίγει το preset και το κρατά. Ένα κουμπί «Get code» ανοίγει dialog με CSS, εντολή registry και DESIGN.md.
+- Το preset εφαρμόζεται σε όλο το site: landing, docs, previews των components και των blocks, Gallery, κάθε iframe. Μένει στο localStorage και γράφεται στο document root πριν το πρώτο paint, οπότε δεν αναβοσβήνει το Default. Το brand colour (logo, σημάδια Pro, text selection) δεν αλλάζει ποτέ με το preset.
+- Το navbar δείχνει σε κάθε σελίδα ποιο preset ισχύει και ανοίγει τον picker, με reset στο Default και link στην Presets page, και με πληκτρολόγιο.
+- Ο preset picker είναι ένα component, και το ίδιο μπαίνει στο dashboard της landing στη θέση των σημερινών controls για accent και radius. Η αλλαγή φτάνει σε όλο το site και στο iframe μαζί.
 
 ### Brand colour
 

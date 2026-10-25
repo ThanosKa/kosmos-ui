@@ -34,3 +34,7 @@ test('the site links start with the docs tabs, in their order', () => {
     ['Docs', 'Components', 'Blocks'],
   );
 });
+
+test('the Presets page has a link of its own after the docs tabs', () => {
+  assert.deepEqual(siteLinks.at(-1), { href: '/presets', label: 'Presets' });
+});

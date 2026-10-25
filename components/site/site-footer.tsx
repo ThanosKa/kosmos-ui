@@ -18,6 +18,7 @@ const columns: FooterColumn[] = [
     links: [
       { label: 'Components', href: `${docsRoute}/components` },
       { label: 'Blocks', href: `${docsRoute}/blocks` },
+      { label: 'Presets', href: '/presets' },
       { label: 'Foundations', href: `${docsRoute}/foundations/color` },
     ],
   },
