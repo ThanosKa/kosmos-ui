@@ -619,12 +619,14 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the logo marquee moves, stops while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
+    name: 'the logo marquee moves, eases to a stop while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
     async run(browser) {
+      const settle = 1800;
       const path = '/view/logo-marquee-demo';
       const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
       const offsetOf = (page: Page) =>
-        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41);
+        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41 + 0);
 
       const moving = await openPage(browser, path, desktop, 'no-preference');
       const marquee = moving.page.locator('[data-slot="logo-marquee"]');
@@ -633,12 +635,14 @@ const checks: Check[] = [
         ['- list "Used by the teams behind":', ...names.map((name) => `  - listitem: ${name}`)].join('\n'),
         'one list, named by its line, with one named item per logo; the copies stay hidden',
       );
-      await moving.page.waitForFunction(() => document.getAnimations().some((animation) => animation.playState === 'running'));
       const start = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.ok((await offsetOf(moving.page)) < start, 'the logos move toward the start');
       await marquee.locator('[data-slot="logo-marquee-viewport"]').hover();
-      await moving.page.waitForTimeout(100);
+      const hovered = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(150);
+      assert.ok((await offsetOf(moving.page)) < hovered, 'the logos glide on for a moment instead of halting');
+      await moving.page.waitForTimeout(settle);
       const held = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.equal(await offsetOf(moving.page), held, 'the logos stop while the pointer is on them');
@@ -646,7 +650,7 @@ const checks: Check[] = [
       await moving.page.waitForTimeout(500);
       assert.ok((await offsetOf(moving.page)) < held, 'the logos move again once the pointer leaves');
       await marquee.getByRole('button', { name: 'Pause logos' }).press('Enter');
-      await moving.page.waitForTimeout(100);
+      await moving.page.waitForTimeout(settle);
       const stopped = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.equal(await offsetOf(moving.page), stopped, 'the pause button stops the logos until it is pressed again');
@@ -659,7 +663,7 @@ const checks: Check[] = [
       const stillMarquee = still.page.locator('[data-slot="logo-marquee"]');
       await stillMarquee.waitFor();
       await still.page.waitForTimeout(500);
-      assert.equal(await still.page.evaluate(() => document.getAnimations().length), 0, 'reduced motion: nothing animates');
+      assert.equal(await offsetOf(still.page), 0, 'reduced motion: nothing moves');
       assert.equal(await stillMarquee.locator('li:visible').count(), names.length, 'reduced motion: each logo shows once');
       assert.equal(await stillMarquee.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
       const box = (await stillMarquee.boundingBox())!;
@@ -667,6 +671,59 @@ const checks: Check[] = [
         const itemBox = (await item.boundingBox())!;
         assert.ok(itemBox.x >= box.x && itemBox.x + itemBox.width <= box.x + box.width, 'reduced motion: every logo fits in the row');
       }
+      await still.close();
+    },
+  },
+  {
+    name: 'the testimonials wall moves its columns both ways, eases a column to a stop under the pointer, pauses with its button, and stands still with every quote once under reduced motion',
+    async run(browser) {
+      const path = '/view/testimonials-demo';
+      const settle = 1800;
+      const quotes = 9;
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
+      const offsets = (page: Page) =>
+        page
+          .locator('[data-slot="testimonials-column"]:visible > div')
+          .evaluateAll((tracks) => tracks.map((track) => new DOMMatrix(getComputedStyle(track).transform).m42 + 0));
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const wall = moving.page.locator('[data-slot="testimonials-wall"]');
+      assert.equal(await moving.page.getByRole('figure').count(), quotes + 1, 'each quote, and the featured one, is one figure screen readers reach');
+      const start = await offsets(moving.page);
+      assert.equal(start.length, 3, 'three columns at 1280px');
+      await moving.page.waitForTimeout(500);
+      const later = await offsets(moving.page);
+      const moved = later.map((offset, index) => Math.sign(offset - start[index]));
+      assert.ok(moved.includes(-1) && moved.includes(1), `the columns move up and down: ${moved}`);
+      const column = wall.locator('[data-slot="testimonials-column"]:visible').first();
+      await column.hover({ position: { x: 40, y: 200 } });
+      await moving.page.waitForTimeout(settle);
+      const [held, ...others] = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      const [stillHeld, ...othersLater] = await offsets(moving.page);
+      assert.equal(stillHeld, held, 'the column under the pointer stops');
+      assert.notDeepEqual(othersLater, others, 'the other columns keep moving');
+      await moving.page.mouse.move(0, 0);
+      await wall.getByRole('button', { name: 'Pause testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(settle);
+      const paused = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(moving.page), paused, 'the pause button stops every column');
+      await wall.getByRole('button', { name: 'Play testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(500);
+      assert.notDeepEqual(await offsets(moving.page), paused, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillWall = still.page.locator('[data-slot="testimonials-wall"]');
+      await stillWall.waitFor();
+      await still.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(still.page), [0, 0, 0], 'reduced motion: nothing moves');
+      assert.equal(await stillWall.locator('[data-slot="testimonial"]:visible').count(), quotes, 'reduced motion: each quote shows once');
+      assert.equal(await stillWall.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const wallBox = (await stillWall.boundingBox())!;
+      const lastCard = (await stillWall.locator('[data-slot="testimonial"]:visible').last().boundingBox())!;
+      assert.ok(lastCard.y + lastCard.height <= wallBox.y + wallBox.height, 'reduced motion: the wall is as tall as its quotes');
       await still.close();
     },
   },

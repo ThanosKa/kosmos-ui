@@ -136,6 +136,10 @@ _Avoid_: block group, «section» για ένα block ή μια κατηγορί
 Το πλαίσιο που δείχνει μία εκδοχή ενός block στα docs, σε όλο το πλάτος: preview, κώδικας, πλάτος desktop, tablet ή κινητό, και badge Free ή Pro.
 _Avoid_: playground, demo frame
 
+**Drift**:
+Η αργή, συνεχής κίνηση σε κύκλο που μοιράζονται το Logo marquee και ο τοίχος του Testimonials (`@kosmos/drift`). Σταματά ομαλά όταν ο χρήστης κρατά το ποντίκι, το δάχτυλο ή το focus πάνω της, ξεκινά πάλι ομαλά, τρέχει μόνο όσο φαίνεται στην οθόνη, έχει κουμπί παύσης και μένει ακίνητη με reduced motion.
+_Avoid_: autoscroll, ticker, carousel
+
 **Icon mode**:
 Η κατάσταση του Sidebar όταν είναι collapsed και μένει στενή στήλη με τα icons, με το όνομα σε tooltip.
 _Avoid_: mini sidebar, rail
