@@ -5,7 +5,7 @@
   "title": "Code Tabs",
   "description": "Commands in tabs, such as an install line for pnpm, npm, yarn and bun, each in a well with a copy button that tells screen readers when the command is copied.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/tabs"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-copy", "@kosmos/button", "@kosmos/tabs"],
   "meta": { "group": "misc" },
   "files": [
     {

@@ -3,48 +3,16 @@
 import type { Tabs as TabsPrimitive } from '@base-ui/react/tabs';
 import { Check, Copy } from 'lucide-react';
 import * as React from 'react';
+import { type CopyResult, useCopy } from '@/registry/kosmos/hooks/use-copy';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
-
-/** How long the copy button shows its check mark. */
-const copiedFor = 2000;
-
-type CopyResult = 'idle' | 'copied' | 'failed';
 
 const copyMessages: Record<CopyResult, string> = {
   idle: '',
   copied: 'Command copied',
   failed: 'Unable to copy. The command is selected, so copy it with your keyboard.',
 };
-
-/**
- * Copies a command and keeps the result for that command only, so switching tabs clears it. When the browser refuses,
- * it selects the command, so it can be copied by hand.
- */
-function useCopyCommand(command: string, commandRef: React.RefObject<HTMLElement | null>) {
-  const [last, setLast] = React.useState<{ command: string; result: CopyResult } | null>(null);
-  const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
-  React.useEffect(() => () => clearTimeout(timer.current), []);
-  const copy = () => {
-    clearTimeout(timer.current);
-    setLast(null);
-    // `navigator.clipboard` is undefined on a page served over plain http; inside `then` that throw becomes a refusal.
-    Promise.resolve()
-      .then(() => navigator.clipboard.writeText(command))
-      .then(
-        () => {
-          setLast({ command, result: 'copied' });
-          timer.current = setTimeout(() => setLast(null), copiedFor);
-        },
-        () => {
-          if (commandRef.current) window.getSelection()?.selectAllChildren(commandRef.current);
-          setLast({ command, result: 'failed' });
-        },
-      );
-  };
-  return [last?.command === command ? last.result : 'idle', copy] as const;
-}
 
 /** Lets a long command wrap after each `/` and `=` of a URL as well as at its spaces. */
 function withBreaks(command: string) {
@@ -89,7 +57,12 @@ function CodeTabs<Tab extends string>({
   const requested = value ?? uncontrolled;
   const open = requested !== undefined && tabs.includes(requested) ? requested : tabs[0];
   const commandRef = React.useRef<HTMLSpanElement>(null);
-  const [result, copy] = useCopyCommand(commands[open] ?? '', commandRef);
+  // Copying resets with the tab, and a refused copy selects the command, so it can be copied by hand.
+  const [result, copy] = useCopy(commands[open] ?? '', {
+    onFailure: () => {
+      if (commandRef.current) window.getSelection()?.selectAllChildren(commandRef.current);
+    },
+  });
   if (tabs.length === 0) return null;
   return (
     <Tabs
