@@ -61,7 +61,16 @@ const sampleScreens: ShowcaseScreen[] = [
       </div>
     ),
   },
-  { id: 'settings', label: 'Settings', address: 'acme.example/settings', content: <SettingsPage headingLevel={3} /> },
+  {
+    id: 'settings',
+    label: 'Settings',
+    address: 'acme.example/settings',
+    content: (
+      <div className="p-4 sm:p-6">
+        <SettingsPage headingLevel={3} />
+      </div>
+    ),
+  },
 ];
 
 type ShowcaseProps = Omit<React.ComponentProps<'div'>, 'children'> & {
