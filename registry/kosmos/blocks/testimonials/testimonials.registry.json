@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "testimonials",
+  "type": "registry:block",
+  "title": "Testimonials",
+  "description": "What customers said: one quote set large, then the rest as cards in columns that move up and down, fade out at the top and bottom, ease to a stop while a pointer or keyboard focus is on them, pause with a button and stand still under reduced motion. Lays itself out by its own width.",
+  "dependencies": [
+    "lucide-react@^1.50.0"
+  ],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/drift",
+    "@kosmos/avatar",
+    "@kosmos/button"
+  ],
+  "categories": [
+    "testimonials"
+  ],
+  "meta": {
+    "group": "blocks",
+    "section": "marketing",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/testimonials/testimonials.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

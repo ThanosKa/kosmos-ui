@@ -1,6 +1,6 @@
 ---
 title: Logo marquee
-description: A row of logos in grey under one line, still or moving, that stops while the pointer is on it and has a pause button.
+description: A row of logos in grey under one line, still or moving, that glides to a stop while the pointer is on it and has a pause button.
 ---
 
 ## Installation
@@ -36,12 +36,13 @@ Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an ima
 ## What it does
 
 - **Marquee**: the logos move toward the start in one row, over and over, and fade out at both edges. The row is two copies of the list, so it never shows a gap at any width, and it keeps the same speed when its width changes.
-- **Pause**: the row stops while the mouse is on it and moves on when it leaves. A small button at its end pauses it until it is pressed again, from the keyboard or a phone too, and screen readers hear it as "Pause logos" or "Play logos".
+- **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it, and picks up speed again when it leaves. A small button at its end pauses it until it is pressed again, from the keyboard or a phone too, and screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
 - **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
 - **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
 - **Grey**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns grey too and no logo outshouts the page.
 - **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the second copy that keeps the row full is hidden from them.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
+- **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
 
 ## API
 

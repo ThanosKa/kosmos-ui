@@ -1,7 +1,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { LogoMarquee } from '@/registry/kosmos/blocks/logo-marquee/logo-marquee';
 
-const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
+const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background py-10 shadow-card';
 
 const stack = ['Base UI', 'Tailwind CSS', 'React', 'Next.js', 'shadcn CLI'].map((name) => ({ name }));
 

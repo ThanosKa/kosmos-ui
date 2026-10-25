@@ -1,7 +1,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Faq } from '@/registry/kosmos/blocks/faq/faq';
 
-const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
+const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background px-4 py-12 shadow-card';
 
 const shortItems = [
   { id: 'free', question: 'Is there a free plan?', answer: 'Yes. Free includes 50,000 events a month, for as long as you like.' },

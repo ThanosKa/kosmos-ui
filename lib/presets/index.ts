@@ -1,16 +1,12 @@
 import { defaultPreset } from './default.ts';
 import { paletteSections, presetPalette, type Palette, type Preset } from './palette.ts';
-import { consolePreset } from './console.ts';
-import { night } from './night.ts';
-import { soft } from './soft.ts';
-import { warm } from './warm.ts';
 
 export { defaultPreset, presetPalette };
+export { presets } from './list.ts';
+export { chosenPreset, choiceFromParams, choiceParams, defaultChoice, presetById, presetChoices, presetRadii, type PresetChoice } from './choice.ts';
 export { presetDesignMd } from './design-md.ts';
+export { presetItemName, presetRegistryItem } from './registry-item.ts';
 export type { Accent, Mode, Palette, PaletteToken, Preset } from './palette.ts';
-
-/** Every preset, the default first. */
-export const presets: readonly Preset[] = [defaultPreset, warm, soft, consolePreset, night];
 
 const declarations = (palette: Palette) =>
   Object.values(paletteSections).map((tokens) => tokens.map((token) => `  --${token}: ${palette[token]};`).join('\n'));
