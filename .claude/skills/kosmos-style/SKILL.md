@@ -52,7 +52,7 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 
 - Siblings rendered together: `divide-y divide-border` (or `divide-x`) on the parent.
 - Rows that are separate components: `border-b border-border last:border-b-0`.
-- Two-dimensional cell grids (calendars, spreadsheets): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full. Stat tiles are not a cell grid: each is its own card, `gap-4` apart.
+- Two-dimensional cell grids (month views that hold events, spreadsheets): `gap-px bg-border` on the grid, `bg-card` on every cell, rows kept full. Stat tiles are not a cell grid: each is its own card, `gap-4` apart. Nor is the day grid of a Calendar: its days are `item` buttons with room around them, the picked day `bg-primary`, and a range a flat `bg-accent` band behind the days, like the current nav item, that a divider would cut.
 - A sidebar docked beside the page: `border-e border-sidebar-border`. It is a divider between two regions, not a raised surface; the same sidebar in its phone drawer takes the drawer's `shadow-modal`.
 - Inside the sidebar, the header, every group after the first and the footer are split by full-width `border-sidebar-border` lines, edge to edge, never inset.
 - Board columns are open lanes: `divide-x divide-border` on the row, no fill and no radius behind the cards. A board card splits who it is from its numbers with `divide-y divide-border`.
