@@ -13,6 +13,7 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 - [ ] **Light reviews to finish.** Items that skipped the full `build-component` review (better-interface, break-ui, mobile-native): landing (15 and its revision), stat and chart cards (18), combobox and tags input (22), settings (25), members and invites (26). Also check the calendar (24) in the browser after its last fixes.
 - [ ] **Hero copy logic.** The Hero block still has its own copy hook; move it onto `use-copy`.
 - [ ] **Motion across the app.** Review every animation on the site and in the components (entrances, blur fades, marquee, flickering grid, menus, dialogs) with `review-animations`, in light and dark and under reduced motion.
+- [ ] **Get code looks like code.** The Presets page's "Get code" dialog shows the CSS, the registry command and the DESIGN.md as plain black and white text. Show them syntax-highlighted, like an editor, with the docs' code-block highlighting in light and dark.
 - [ ] **Presets page flicker.** On the Presets page, the preset tab flickers when you click things. Find the cause (likely the preset being reapplied to the document or the preview iframe on each change) and fix it.
 - [ ] **Open decisions.** Go through the decisions collected during the run (`.scratch/decisions-black-and-white.md`) and settle each one.
 
