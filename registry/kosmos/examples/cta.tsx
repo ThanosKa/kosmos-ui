@@ -2,7 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { Button } from '@/registry/kosmos/ui/button';
 
-const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
+const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background px-4 py-12 shadow-card';
 
 export default function CtaPreview() {
   return (

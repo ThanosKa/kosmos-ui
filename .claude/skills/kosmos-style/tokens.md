@@ -2,7 +2,7 @@
 
 Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. `/tokens` renders them live. The palette and radius in it are the CSS of the default preset in `lib/presets`, written by `pnpm registry:build`; `pnpm test` checks every preset's text (4.5:1), focus and chart marks (3:1) in both modes.
 
-Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles (ADR 0004). "Adjusted" marks a value changed for contrast, with the reason.
+Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles. "Adjusted" marks a value changed for contrast, with the reason.
 
 ## How the file maps to the registry
 

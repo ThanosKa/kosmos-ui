@@ -72,7 +72,8 @@ type FaqProps = Omit<React.ComponentProps<'section'>, 'title' | 'defaultValue'> 
 
 /**
  * Questions that open to their answers, one at a time, under a centered title, with a line to ask more below them.
- * The list keeps to a 672px column; the title grows to the section role from a 672px-wide container.
+ * The list keeps to a 672px column; the title grows to the section role from a 672px-wide container. It sets no
+ * padding around itself, so the page that stacks it sets the space above and below.
  */
 function Faq({
   title = sampleTitle,
@@ -87,24 +88,26 @@ function Faq({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const open = defaultValue ?? [items[0].id];
   return (
-    <section data-slot="faq" className={cn('@container flex flex-col items-center gap-8 px-4 py-12 @2xl:gap-10 @2xl:px-6 @2xl:py-20', className)} {...props}>
-      {title ? <Heading className="max-w-[20em] text-center text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
-      <div className="flex w-full max-w-2xl flex-col gap-6">
-        <Accordion headingLevel={headingLevel === 2 ? 3 : 4} defaultValue={open}>
-          {items.map((item) => (
-            <AccordionItem key={item.id} value={item.id}>
-              <AccordionTrigger>
-                <span className="min-w-0 text-pretty wrap-break-word">{item.question}</span>
-              </AccordionTrigger>
-              <AccordionContent className={cn('max-w-[40em] pe-8 wrap-break-word', inlineLinkClasses)}>{item.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        {contact ? (
-          <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty wrap-break-word text-muted-foreground', inlineLinkClasses)}>
-            {contact}
-          </p>
-        ) : null}
+    <section data-slot="faq" className={cn('@container', className)} {...props}>
+      <div className="flex flex-col items-center gap-8 @2xl:gap-10">
+        {title ? <Heading className="max-w-[20em] text-center text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
+        <div className="flex w-full max-w-2xl flex-col gap-6">
+          <Accordion headingLevel={headingLevel === 2 ? 3 : 4} defaultValue={open}>
+            {items.map((item) => (
+              <AccordionItem key={item.id} value={item.id}>
+                <AccordionTrigger>
+                  <span className="min-w-0 text-pretty wrap-break-word">{item.question}</span>
+                </AccordionTrigger>
+                <AccordionContent className={cn('max-w-[40em] pe-8 wrap-break-word', inlineLinkClasses)}>{item.answer}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+          {contact ? (
+            <p data-slot="faq-contact" className={cn('px-2 text-small text-pretty wrap-break-word text-muted-foreground', inlineLinkClasses)}>
+              {contact}
+            </p>
+          ) : null}
+        </div>
       </div>
     </section>
   );

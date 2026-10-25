@@ -1,0 +1,138 @@
+---
+title: Radio Group
+description: Picks one option from a short list, as radios beside their labels or as radio cards. Built on Base UI.
+baseUi: https://base-ui.com/react/components/radio-group
+---
+
+<ComponentPreview name="radio-group-demo" />
+
+## Installation
+
+<ComponentInstall name="radio-group" />
+
+## Usage
+
+```tsx
+import { Field, FieldItem, FieldLabel } from '@/components/ui/field';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+```
+
+```tsx
+<Field name="summary">
+  <FieldLabel nativeLabel={false} render={<div />}>
+    Send the summary email
+  </FieldLabel>
+  <RadioGroup defaultValue="weekly">
+    <FieldItem>
+      <RadioGroupItem value="daily" />
+      <FieldLabel>Every day</FieldLabel>
+    </FieldItem>
+    <FieldItem>
+      <RadioGroupItem value="weekly" />
+      <FieldLabel>Every Monday</FieldLabel>
+    </FieldItem>
+  </RadioGroup>
+</Field>
+```
+
+Put the RadioGroup in a [Field](/docs/components/field). The FieldLabel above it names the group: render it as a `<div>` with `nativeLabel={false}`, since a group has no single control to click. Each option is a FieldItem with the RadioGroupItem first and its own FieldLabel beside it, which selects the option when clicked. Without a Field, give the RadioGroup an `aria-label` and wrap each RadioGroupItem and its text in a `<label>`.
+
+The form submits the `value` of the selected option under the Field's `name`. Use radios for two to six options that should all stay in view; for more, use a [Select](/docs/components/select), and for a view mode in a toolbar, a [Segmented Control](/docs/components/segmented-control).
+
+## Examples
+
+### With a description
+
+Wrap each label and description in a FieldContent. The radio stays on the label's first line, however far the text wraps.
+
+<ComponentPreview name="radio-group-description" />
+
+### Radio cards
+
+A RadioCard shows an option as a card: a RadioCardTitle, an optional RadioCardDescription and anything else the choice needs, like a price. The whole card is the radio, so it holds no links or buttons. Screen readers read the title as its name and the description after it. The selected card's edge turns ink and the circle in its corner fills. Lay the cards out with classes on the RadioGroup, such as `sm:grid-cols-3`.
+
+<ComponentPreview name="radio-group-cards" />
+
+### Invalid
+
+Set `invalid` on the Field and put the message in a FieldError. A `required` group also fails the browser's checks until an option is picked.
+
+<ComponentPreview name="radio-group-invalid" />
+
+## API
+
+RadioGroup wraps the [Base UI Radio Group](https://base-ui.com/react/components/radio-group), and RadioGroupItem and RadioCard each wrap a Base UI `Radio.Root`.
+
+### RadioGroup
+
+Takes every Base UI `RadioGroup` prop, such as:
+
+<TypeTable
+  type={{
+    defaultValue: {
+      description: 'The option selected first, when the group keeps its own state.',
+      type: 'string',
+    },
+    value: {
+      description: 'The selected option. Use with `onValueChange`.',
+      type: 'string',
+    },
+    onValueChange: {
+      description: 'Called with the value of the newly selected option.',
+      type: '(value: string, eventDetails) => void',
+    },
+    name: {
+      description: 'Names the value when the form is submitted. A Field around it sets this too.',
+      type: 'string',
+    },
+    required: {
+      description: 'Fails form validation until an option is selected.',
+      type: 'boolean',
+      default: 'false',
+    },
+    disabled: {
+      description: 'Blocks every option and dims them.',
+      type: 'boolean',
+      default: 'false',
+    },
+    readOnly: {
+      description: 'Shows the selection but blocks changing it.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### RadioGroupItem and RadioCard
+
+Take every Base UI `Radio.Root` prop, such as:
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The value the group reports when this option is selected.',
+      type: 'string',
+      required: true,
+    },
+    disabled: {
+      description: 'Blocks this option only.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+### RadioCardTitle and RadioCardDescription
+
+Render a `<div>` and take its props. The title names the card's radio and the description is read after it, so give every RadioCard a RadioCardTitle.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Moves focus to the selected option, or the first one when none is selected, then on to the next control. |
+| `ArrowDown` or `ArrowRight` | Selects the next option. From the last, it goes back to the first. |
+| `ArrowUp` or `ArrowLeft` | Selects the previous option. From the first, it goes to the last. |
+| `Space` | Selects the focused option. |
+
+In a right-to-left layout, `ArrowLeft` and `ArrowRight` swap.

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat-card",
+  "type": "registry:ui",
+  "title": "Stat card",
+  "description": "One number on a card: its label, its value, a change that reads without color (arrow, sign and percentage) and an optional sparkline, with a loading state.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/chart", "@kosmos/skeleton"],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/stat-card.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/kosmos/lib/stat-delta.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

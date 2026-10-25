@@ -25,9 +25,10 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 
 | Surface | Shadow | Fill |
 | --- | --- | --- |
-| Secondary button, segmented group | `shadow-control` | `bg-secondary` |
+| Secondary button, segmented group, unticked checkbox or radio | `shadow-control` | `bg-secondary`; ticked or selected `bg-primary` with `shadow-primary` |
+| Radio card | `shadow-control`; selected adds a 1px `ring-primary`, the ink edge | `bg-secondary`, hover `bg-muted` while unselected |
 | Active sidebar item, current header tab | none (flat) | `bg-accent`, the hover fill |
-| Input, textarea, select trigger | `shadow-field` | `bg-secondary` |
+| Input, textarea, select trigger, number field | `shadow-field` | `bg-secondary` |
 | Primary button | `shadow-primary` (flat in light: one ring in the fill color) | `bg-primary` |
 | Card, stat tile, board card | `shadow-card` | `bg-card` |
 | Neutral alert | `shadow-card` | `bg-card` |
@@ -35,10 +36,11 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 | Popover, menu, select list, tooltip, toast, command palette | `shadow-popover` | `bg-popover` |
 | Dialog, drawer | `shadow-modal` | `bg-popover` |
 | Segmented track, switch track, meter track | `shadow-inset` | `bg-muted` |
+| Pricing plan: the featured one / the others | `shadow-card` / `shadow-inset` | `bg-card` / `bg-muted` |
 | Card being dragged | `shadow-lift` | `bg-card` |
 | Switch thumb, slider thumb | `shadow-thumb` | `bg-thumb`; a checked switch thumb `bg-primary-foreground` |
 
-An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a switch that is on) the ring is 2px, since 1px vanishes against the ink. Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`); hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo, neutral because the ring color means focus.
+An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a selected radio, a switch that is on) the ring is 2px, since 1px vanishes against the ink. Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`); hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo, neutral because the ring color means focus.
 
 Every element with a shadow ring also takes `border border-transparent`, so forced-colors mode, which drops `box-shadow`, still draws its edge. A text field's edge is a ring with no drop (`shadow-field`), so it reads as a place to type rather than a button. Small pills with a colored edge (tags, the sidebar count) and tinted alerts draw it with a real 1px border, since the edge is part of the color, not depth. Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
 
@@ -65,7 +67,7 @@ A horizontal tab list keeps its scrollbar under the divider: with no arrows, it 
 
 ## Radius
 
-`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Alerts take `rounded-xl`: a message inside a page, a step below the card it often sits in. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
+`--radius` is 10px. Controls take `rounded-lg` (10px), except the 16px checkbox, which takes `rounded-sm` (4px) so it never reads as a radio, and the radio, which is `rounded-full`. Overlays take `rounded-xl` (14px) except tooltips, which take `rounded-lg` because at one line high 14px reads as a pill. Menu, select and command items take `rounded-lg` inside the `rounded-xl` popup with `p-1`, and segmented items `rounded-md` (8px) inside the `rounded-lg` track with `p-0.5`. Alerts and radio cards take `rounded-xl`: a message or an option inside a page, a step below the card it often sits in. The stepper buttons of a number field take `rounded-md` inside its `rounded-lg` field with `p-0.5`, like segmented items. Cards take `rounded-2xl` (16px), the top of a bottom sheet `rounded-t-3xl` (20px), and tags, badges and pills `rounded-full`. Nested surfaces with an even inset follow outer radius = inner radius + padding.
 
 The tooltip exception: shadcn's and Base UI's tooltips use a control radius too. The checkbox exception: 8px on a 16px box is half its side, which looks like a radio button; 4px is what shadcn, Base UI's demos and most design systems use for a 16px checkbox.
 
@@ -100,7 +102,7 @@ Text in components sits between 12 and 14px; only marketing blocks and the site'
 | `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens); a marketing section title in a container under 672px. Never in app chrome |
 | `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`); at `font-semibold`, a marketing section title (a block from a 672px container, `@2xl:`) and a hero title in a container under 672px |
 | `text-hero` | 48 / 1.1 / 600 / -0.03em | The title of a marketing hero, from a 672px container (`@2xl:`); a count that is the visual of a marketing tile (`tabular-nums`) |
-| `text-lead` | 18 / 1.6 / 400 / -0.01em | The one line under a hero title or a marketing section title (in a block from `@2xl:`, `text-body` below) |
+| `text-lead` | 18 / 1.6 / 400 / -0.01em | The one line under a hero title or a marketing section title (in a block from `@2xl:`, `text-body` below); the featured quote in Testimonials |
 
 - The site has one more role, outside this table because no component uses it: `text-page-title`, the title of every docs page (28 / 1.25 / 600 / -0.02em on phones, 32px from `md`). It lives in `app/global.css` and never ships in `@kosmos/tokens` (tokens.md, Site-only roles).
 - `text-hero` and `text-lead` are for marketing only. They ship in `tokens.css` with every other role, and application blocks never use them. They are fixed sizes, not fluid ones: a marketing block steps up a role with a container variant (`text-display @2xl:text-hero`), so it sizes by its own width like every block.
@@ -132,7 +134,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
 - Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion and needs no `motion-safe:` gate. shadcn's Skeleton uses the same pulse, and a shimmer would need keyframes shipped through `@kosmos/tokens`.
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
-- One motion runs outside the table: the Logo marquee moves at a constant speed (`speed`, pixels per second), so its easing is `linear` and its duration is the width of the row over that speed. It stops while hovered, has a pause button (WCAG 2.2.2) and does not run at all under reduced motion.
+- One motion runs outside the table: the drift (`@/registry/kosmos/lib/drift`) behind the Logo marquee and the Testimonials wall. Content moves at a constant speed (`speed`, pixels per second), one animation frame at a time, as a `transform` on a track with `will-change-transform`. A mouse or pen over it, a finger pressing it or keyboard focus inside it eases it to a stop (time constant 0.32s), and it winds back up when let go (0.7s): ambient motion glides rather than halts. It runs only while on screen, has a pause button (WCAG 2.2.2) and does not run at all under reduced motion, where the content stands still in full.
 - The command palette and anything opened by a keyboard shortcut appear without animation.
 - Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
 
@@ -170,6 +172,18 @@ ESLint enforces all three in this repo (`no-restricted-syntax` in `eslint.config
 
 One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content. shadcn's Badge supports the same link form.
 
+## Marketing pages
+
+A marketing block (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA, Testimonials) sets no padding around itself: the page that stacks them sets one rhythm, so two blocks never add their padding up into a gap of their own. Spacing inside a block (title to content, content to its link) stays the block's.
+
+- Each section sits in a column with `px-4 sm:px-6` gutters and keeps space below it only: `pb-20` (80px) on phones, `md:pb-28` (112px) from 768px. The page sets it with screen breakpoints, because the rhythm belongs to the page, not to any block's width.
+- The hero takes room above it, `pt-16 md:pt-24`, and less below, `pb-16 md:pb-20`, when a strip that belongs to it follows (a Logo marquee of the stack or of customers).
+- The last section before the footer keeps `pb-28 md:pb-40`, so the page ends on a pause rather than on the footer's edge.
+- The text column is `max-w-5xl`; a showcase (a live app in a frame, a grid of tiles) widens to `max-w-6xl`. The FAQ keeps its own 672px column inside it.
+- Every section follows one grammar: a centered title, at most two short lines split at a comma (`<br />`), then optional tabs, then the content, then at most one `secondary` link to see more. No eyebrow, and a line under the title only when the title cannot carry the point alone.
+
+A block's demo and review preview wrap it in the same padding a page would give it (`px-4 py-14 sm:px-6 sm:py-20` in the demo frame).
+
 ## Before you finish
 
 Search the changed files for each detection. Size classes need a pattern that stops at the class name, because a plain `text-sm` also matches the valid `text-small`:
@@ -200,3 +214,5 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | `text-hero` or `text-lead` in an application block | The app role: `text-display` for a value, `text-title` for a title, `text-body` for text |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
 | `overflow-auto`, `overflow-y-auto` or `overflow-x-auto` on content inside a frame | `ScrollArea`, as in Overflow above |
+| Padding (`p-*`, `px-*`, `py-*`, `pt-*`, `pb-*`) on the root of a marketing block | Remove it; the page sets the rhythm (Marketing pages above) |
+| A container variant (`@2xl:…`) on the element that is itself `@container` | Move it to a child: a container query never matches its own container |

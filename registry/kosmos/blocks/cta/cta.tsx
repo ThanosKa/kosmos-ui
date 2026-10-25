@@ -28,15 +28,16 @@ type CtaProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 };
 
 /**
- * The end of a marketing page: a two-line title and one action, centered, with room around them. Lays
- * itself out by its own width: the title grows to the section role from a 672px-wide container.
+ * The end of a marketing page: a two-line title and one action, centered. Lays itself out by its own width: the
+ * title grows to the section role from a 672px-wide container. It sets no padding around itself, so the page that
+ * stacks it sets the room above and below.
  */
 function Cta({ title = sampleTitle, description, action = sampleAction, headingLevel = 2, className, ...props }: CtaProps) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <section
       data-slot="cta"
-      className={cn('@container flex flex-col items-center px-4 py-16 text-center @2xl:px-6 @2xl:py-28', className)}
+      className={cn('@container flex flex-col items-center text-center', className)}
       {...props}
     >
       {title ? (

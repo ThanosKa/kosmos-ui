@@ -220,11 +220,17 @@ const tiles: BentoItem[] = [
 ];
 
 /** The landing's bento: real Kosmos components in the Bento block, each linked to its docs. */
-export function ComponentBento({ componentCount }: { componentCount: number }) {
+export function ComponentBento() {
   return (
     <Bento
-      title="Try the components right here"
-      description={`${componentCount} components on Base UI, with keyboard support, focus states and dark mode. Every tile is the real component, not a picture of it.`}
+      title={
+        <>
+          Every tile is the real component,
+          <br />
+          so try one
+        </>
+      }
+      description={null}
       items={tiles}
     />
   );

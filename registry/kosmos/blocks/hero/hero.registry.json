@@ -3,9 +3,8 @@
   "name": "hero",
   "type": "registry:block",
   "title": "Hero",
-  "description": "The top of a marketing page: a title, one line, two actions and a command to copy, centered. Lays itself out by its own width.",
-  "dependencies": ["lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "description": "The top of a marketing page: a line of news, a title, one line, two actions and the install command in tabs, centered. Lays itself out by its own width.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/announcement", "@kosmos/button", "@kosmos/code-tabs"],
   "categories": ["hero"],
   "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
   "files": [
