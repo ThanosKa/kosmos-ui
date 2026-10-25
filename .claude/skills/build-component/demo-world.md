@@ -176,6 +176,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Bento | The Acme website's feature grid: four live tiles (Marketing site below). |
 | Footer | The bottom of the Acme website: the product with its line, four columns of links and the copyright with icon links (Marketing site below). |
 | Logo marquee | The customers on the Acme website: the logos of its live projects on a paid plan (Marketing site below). |
+| Testimonials | What people at Acme's customer projects say about it on the Acme website (Marketing site below). |
 
 ## Marketing site
 
@@ -185,6 +186,7 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 - Bento: title "From the first event to the answer", one line "Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." Tiles, in order: Live events (wide; a feed of `signup_completed`, `checkout_started`, `trial_converted` and `page_viewed` from the first projects), Funnels (meters: Viewed pricing 100%, Started a trial 38%, Paid 12%), Every platform (Web, iOS, Android and Server with their SDKs) and Alerts (wide; switches for "Signups drop below 40 a day", "Error events pass 2%" and "Weekly summary").
 - The stack Kosmos is built on (Base UI, Tailwind CSS, React, Next.js, shadcn CLI) may appear as logo names in a Logo marquee example or docs snippet: it is what the Kosmos landing shows, not a style source.
 - Logo marquee: the line "Used by the teams behind" over the live projects on a paid plan, in table order (Fernhill Books, Brightloop Fitness, Copperline Bank, Saltmarsh Coffee, Driftwood Travel, Cirrus Weather, Ironbark Logistics), each its full name beside a lucide icon that fits it (`BookOpen`, `Activity`, `Landmark`, `Coffee`, `Sailboat`, `Cloud`, `Truck`).
+- Testimonials: the title "Teams that know what happens next" with the line "Product, engineering and growth teams on what changed once their events landed in Acme." The featured quote is Grace Whitfield, VP of product at Cirrus Weather (the case study Lena Park asked for), on the storm of October 2. The wall, in project table order: Ines Duarte (Head of growth, Fernhill Books), Marcus Bell (iOS lead, Brightloop Fitness), Ruth Adeyemi (Data engineer, Copperline Bank, on passing the event quota), Owen Fitzgerald (Founder, Saltmarsh Coffee), Sofia Lindqvist (Product manager, Driftwood Travel), Daniel Okafor (Mobile engineer, Cirrus Weather), Noor Rahman (Developer, Pebble & Pine), Tessa Morgan (Editor, Marigold Recipes) and Leila Haddad (Operations lead, Ironbark Logistics). They are customers, never the Acme team, and show their initials, not photos.
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
 
 ## AI agents
