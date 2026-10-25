@@ -79,7 +79,7 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 /**
  * A row of logos in grey: still in centered rows, or as a marquee that moves toward the start, fades out at both
  * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
- * motion the marquee stands still in centered rows. Lays itself out by its own width.
+ * motion the marquee stands still in centered rows. Lays itself out by its own width, and sets no padding around itself.
  */
 function LogoMarquee({
   title = sampleTitle,
@@ -102,7 +102,7 @@ function LogoMarquee({
     <section
       data-slot="logo-marquee"
       data-variant={variant}
-      className={cn('@container flex flex-col items-center gap-6 py-10 @2xl:gap-8 @2xl:py-14', className)}
+      className={cn('@container flex flex-col items-center gap-6', className)}
       {...props}
     >
       {title ? (

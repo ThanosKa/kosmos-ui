@@ -5,9 +5,26 @@ import { readRegistryItems } from '@/lib/registry';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
- * One section of the landing page. The landing is an ordered list of these, top to bottom, each built from Kosmos
- * blocks and labelled with them: `blocks` names their registry items, and the label links each one to the variant
- * on its block category page. A section no block covers yet names the components it is built from instead.
+ * The space a landing section keeps below itself, which sets the rhythm of the page (kosmos-style, Marketing pages):
+ * every section 80px on phones and 112px from 768px; the hero room above it and less below, since the strip under it
+ * still belongs to it; the last section before the footer more.
+ */
+const rhythm = {
+  hero: 'pt-16 pb-16 md:pt-24 md:pb-20',
+  section: 'pb-20 md:pb-28',
+  last: 'pb-28 md:pb-40',
+} as const;
+
+/** The column a section's content keeps to: `wide` for a showcase that breaks out of the text column. */
+const columns = {
+  default: 'max-w-5xl',
+  wide: 'max-w-6xl',
+} as const;
+
+/**
+ * One section of the landing page. The landing is an ordered list of these, top to bottom, each a Kosmos block and
+ * labelled with it: `blocks` names their registry items, and the label links each one to the variant on its block
+ * category page. `components` names the components a section is built from beside its blocks.
  */
 export type LandingSectionProps = {
   /** A stable name for the section, its `data-landing-section`. */
@@ -20,8 +37,9 @@ export type LandingSectionProps = {
   srHeading?: string;
   /** The `id` of the section's own visible heading, which names it. */
   labelledBy?: string;
-  /** `div` for a section that holds a landmark of its own, such as the page footer, which a `<section>` would scope. */
-  as?: 'section' | 'div';
+  /** The space around the section: `hero` at the top of the page, `last` before the footer. */
+  space?: keyof typeof rhythm;
+  column?: keyof typeof columns;
   className?: string;
   children: ReactNode;
 };
@@ -30,7 +48,7 @@ const labelLink =
   'rounded-sm font-medium text-foreground underline decoration-muted-foreground/50 underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 /** "Built with" and a link to each block, then each component, in the order given. Throws on a name the registry lacks. */
-function BlockLabel({ blocks, components }: { blocks: string[]; components: string[] }) {
+export function BlockLabel({ blocks = [], components = [] }: { blocks?: string[]; components?: string[] }) {
   const items = readRegistryItems();
   const find = (name: string, type: string) => {
     const item = items.find((candidate) => candidate.name === name && candidate.type === type);
@@ -62,17 +80,43 @@ function BlockLabel({ blocks, components }: { blocks: string[]; components: stri
   );
 }
 
-export function LandingSection({ id, blocks = [], components = [], srHeading, labelledBy, as: Element = 'section', className, children }: LandingSectionProps) {
+export function LandingSection({
+  id,
+  blocks = [],
+  components = [],
+  srHeading,
+  labelledBy,
+  space = 'section',
+  column = 'default',
+  className,
+  children,
+}: LandingSectionProps) {
   const headingId = `landing-${id}`;
   return (
-    <Element data-landing-section={id} aria-labelledby={srHeading ? headingId : labelledBy} className={cn('flex flex-col gap-4', className)}>
-      {srHeading ? (
-        <h2 id={headingId} className="sr-only">
-          {srHeading}
-        </h2>
-      ) : null}
-      {children}
-      <BlockLabel blocks={blocks} components={components} />
-    </Element>
+    <section data-landing-section={id} aria-labelledby={srHeading ? headingId : labelledBy} className={cn('px-4 sm:px-6', rhythm[space], className)}>
+      <div className={cn('mx-auto flex w-full flex-col gap-8', columns[column])}>
+        {srHeading ? (
+          <h2 id={headingId} className="sr-only">
+            {srHeading}
+          </h2>
+        ) : null}
+        {children}
+        <BlockLabel blocks={blocks} components={components} />
+      </div>
+    </section>
+  );
+}
+
+/**
+ * The title of a section built from blocks that bring no title of their own, set like the title of a marketing
+ * block: centered, `text-heading` growing to `text-display` from a 672px-wide container.
+ */
+export function LandingTitle({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <div className="@container flex justify-center">
+      <h2 id={id} className="max-w-[20em] text-center text-heading font-semibold text-balance text-foreground @2xl:text-display">
+        {children}
+      </h2>
+    </div>
   );
 }

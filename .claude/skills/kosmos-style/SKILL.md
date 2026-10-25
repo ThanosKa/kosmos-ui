@@ -172,6 +172,18 @@ ESLint enforces all three in this repo (`no-restricted-syntax` in `eslint.config
 
 One exception: a Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content. shadcn's Badge supports the same link form.
 
+## Marketing pages
+
+A marketing block (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA, Testimonials) sets no padding around itself: the page that stacks them sets one rhythm, so two blocks never add their padding up into a gap of their own. Spacing inside a block (title to content, content to its link) stays the block's.
+
+- Each section sits in a column with `px-4 sm:px-6` gutters and keeps space below it only: `pb-20` (80px) on phones, `md:pb-28` (112px) from 768px. The page sets it with screen breakpoints, because the rhythm belongs to the page, not to any block's width.
+- The hero takes room above it, `pt-16 md:pt-24`, and less below, `pb-16 md:pb-20`, when a strip that belongs to it follows (a Logo marquee of the stack or of customers).
+- The last section before the footer keeps `pb-28 md:pb-40`, so the page ends on a pause rather than on the footer's edge.
+- The text column is `max-w-5xl`; a showcase (a live app in a frame, a grid of tiles) widens to `max-w-6xl`. The FAQ keeps its own 672px column inside it.
+- Every section follows one grammar: a centered title, at most two short lines split at a comma (`<br />`), then optional tabs, then the content, then at most one `secondary` link to see more. No eyebrow, and a line under the title only when the title cannot carry the point alone.
+
+A block's demo and review preview wrap it in the same padding a page would give it (`px-4 py-14 sm:px-6 sm:py-20` in the demo frame).
+
 ## Before you finish
 
 Search the changed files for each detection. Size classes need a pattern that stops at the class name, because a plain `text-sm` also matches the valid `text-small`:
@@ -202,3 +214,5 @@ grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <f
 | `text-hero` or `text-lead` in an application block | The app role: `text-display` for a value, `text-title` for a title, `text-body` for text |
 | `outline-*` or `shadow-*` used to separate adjacent items | The divider rules above |
 | `overflow-auto`, `overflow-y-auto` or `overflow-x-auto` on content inside a frame | `ScrollArea`, as in Overflow above |
+| Padding (`p-*`, `px-*`, `py-*`, `pt-*`, `pb-*`) on the root of a marketing block | Remove it; the page sets the rhythm (Marketing pages above) |
+| A container variant (`@2xl:…`) on the element that is itself `@container` | Move it to a child: a container query never matches its own container |
