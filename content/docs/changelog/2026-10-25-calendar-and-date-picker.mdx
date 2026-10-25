@@ -1,0 +1,9 @@
+---
+title: Added Calendar and Date picker
+description: A month grid to pick a day or a range, and a field that opens it, with quick ranges such as "Last 7 days" for a range.
+date: 2026-10-25
+---
+
+- **[Calendar](/docs/components/calendar)**: one day or a range, one or more months side by side, `min`, `max` and days you turn off, the names, digits and first weekday of the locale, and the whole keyboard path of a date grid: arrows, Home and End, Page Up and Page Down.
+- **[Date picker](/docs/components/date-picker)**: `DatePicker` opens a calendar from a field to pick one day. `DateRangePicker` picks a range over two months, with quick ranges beside them; the field says "Last 30 days" when the range is one. It fits the action slot of a [Chart card](/docs/components/chart-card).
+- `lib/dates.ts` comes with both: the day counting they do, from `lastDays(7)` to `formatRange()`, for your own code too.

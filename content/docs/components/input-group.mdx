@@ -1,0 +1,101 @@
+---
+title: Input Group
+description: A text field with icons, units, a URL prefix, keyboard hints or buttons before and after its input.
+baseUi: https://base-ui.com/react/components/input
+---
+
+<ComponentPreview name="input-group-demo" />
+
+## Installation
+
+<ComponentInstall name="input-group" />
+
+## Usage
+
+```tsx
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from '@/components/ui/input-group';
+```
+
+```tsx
+<InputGroup>
+  <InputGroupAddon align="inline-start">
+    <InputGroupText>acme.example/</InputGroupText>
+  </InputGroupAddon>
+  <InputGroupInput name="slug" aria-label="Project URL" />
+</InputGroup>
+```
+
+InputGroup draws the field: the same surface, height and edge as an [Input](/docs/components/input). Put one InputGroupInput in it and an InputGroupAddon on either side, with `align="inline-start"` before the input or `align="inline-end"` after it. Write each addon on its side of the input in the code too, so the Tab key reaches its buttons in the order they show. On a right-to-left page the two sides swap.
+
+The field lights its edge while the input has focus. A button inside it shows its own focus outline instead. A click on an addon, outside its buttons, puts the caret in the input, so the addon reads as part of the field.
+
+## Examples
+
+### Text in a Field
+
+InputGroupText holds a unit, a currency or the start of a URL, in the muted color. Inside a [Field](/docs/components/field), the FieldLabel names the input and the description and error are read with it. A text addon too long for the field truncates before the input gets narrower than 64px.
+
+<ComponentPreview name="input-group-text" />
+
+### Buttons
+
+InputGroupButton is a ghost icon [Button](/docs/components/button), 24px, so it sits in the field with an even gap around it. Give an icon-only button an `aria-label`. Pass `variant` and `size` for a text button, such as `variant="secondary" size="sm"`.
+
+<ComponentPreview name="input-group-button" />
+
+### Beside a button
+
+InputGroup is 34px tall, the height of a form field. In a toolbar or beside a Button, give it the Button's 30px with `className="h-7.5"`.
+
+<ComponentPreview name="input-group-toolbar" />
+
+### Invalid and disabled
+
+Set `invalid` on the Field, or `aria-invalid` on the InputGroupInput outside a Field, and the whole field gets the red ring. A disabled InputGroupInput dims the whole field once; disable its buttons too.
+
+## API
+
+### InputGroup
+
+Takes every `<div>` prop.
+
+### InputGroupAddon
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    align: {
+      description: 'The side of the input it sits on. `inline-start` is the left on a left-to-right page.',
+      type: "'inline-start' | 'inline-end'",
+      default: "'inline-start'",
+    },
+  }}
+/>
+
+### InputGroupText
+
+Takes every `<span>` prop.
+
+### InputGroupInput
+
+Wraps the [Base UI Input](https://base-ui.com/react/components/input) and takes every prop of [Input](/docs/components/input), such as `type`, `value`, `defaultValue`, `onValueChange` and `disabled`.
+
+### InputGroupButton
+
+Takes every prop of [Button](/docs/components/button), with other defaults:
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The look of the button.',
+      type: "'primary' | 'secondary' | 'ghost' | 'destructive' | 'item'",
+      default: "'ghost'",
+    },
+    size: {
+      description: 'The size of the button. `icon-sm` is a 24px square.',
+      type: "'sm' | 'md' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'",
+      default: "'icon-sm'",
+    },
+  }}
+/>

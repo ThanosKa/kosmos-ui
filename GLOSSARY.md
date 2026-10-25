@@ -144,6 +144,10 @@ _Avoid_: autoscroll, ticker, carousel
 Η κατάσταση του Sidebar όταν είναι collapsed και μένει στενή στήλη με τα icons, με το όνομα σε tooltip.
 _Avoid_: mini sidebar, rail
 
+**Quick range**:
+Μια έτοιμη περίοδος με όνομα δίπλα στο calendar του Date range picker, π.χ. «Last 7 days». Ένα κλικ τη διαλέγει, και το πεδίο δείχνει το όνομά της όσο η τιμή ταιριάζει.
+_Avoid_: preset (είναι το σετ τιμών του palette), shortcut (είναι συνδυασμός πλήκτρων)
+
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
 _Avoid_: theme, starter
