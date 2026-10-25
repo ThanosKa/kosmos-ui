@@ -2,8 +2,8 @@
 
 import { Activity, BookOpen, Cloud, Coffee, Landmark, Pause, Play, Sailboat, Truck } from 'lucide-react';
 import * as React from 'react';
+import { useDrift } from '@/registry/kosmos/hooks/use-drift';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { type Drift, holdHandlers, startDrift } from '@/registry/kosmos/lib/drift';
 import { Button } from '@/registry/kosmos/ui/button';
 
 type LogoMarqueeLogo = {
@@ -65,53 +65,6 @@ function LogoItems({ logos }: { logos: LogoMarqueeLogo[] }) {
   ));
 }
 
-/**
- * Moves `track` by the width of its first copy, over and over, at `speed` pixels per second, toward the start of the
- * line. Eases to a stop while `held` and back up after, keeps its place when the width or the speed changes, runs only
- * on screen and stands still when the visitor asks for reduced motion.
- */
-function useMarquee(
-  viewport: React.RefObject<HTMLDivElement | null>,
-  track: React.RefObject<HTMLDivElement | null>,
-  { speed, held, enabled }: { speed: number; held: boolean; enabled: boolean },
-) {
-  const drift = React.useRef<Drift>(undefined);
-  const latest = React.useRef({ speed, held });
-
-  React.useEffect(() => {
-    latest.current.held = held;
-    drift.current?.hold(held);
-  }, [held]);
-
-  React.useEffect(() => {
-    latest.current.speed = speed;
-    drift.current?.setSpeed(speed);
-  }, [speed]);
-
-  React.useEffect(() => {
-    const view = viewport.current;
-    const element = track.current;
-    const copy = element?.firstElementChild;
-    if (!enabled || !view || !element || !(copy instanceof HTMLElement)) return;
-    const toward = getComputedStyle(element).direction === 'rtl' ? 1 : -1;
-    drift.current = startDrift({
-      view,
-      copy,
-      axis: 'x',
-      speed: latest.current.speed,
-      render: (offset) => {
-        element.style.transform = `translateX(${toward * offset}px)`;
-      },
-    });
-    drift.current.hold(latest.current.held);
-    return () => {
-      drift.current?.stop();
-      drift.current = undefined;
-      element.style.transform = '';
-    };
-  }, [viewport, track, enabled]);
-}
-
 type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
   /** The line above the logos, which also names their list. `null` leaves it out. */
   title?: React.ReactNode;
@@ -125,8 +78,8 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 
 /**
  * A row of logos in grey: still in centered rows, or as a marquee that moves toward the start, fades out at both
- * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced motion the marquee stands
- * still in centered rows. Lays itself out by its own width.
+ * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
+ * motion the marquee stands still in centered rows. Lays itself out by its own width.
  */
 function LogoMarquee({
   title = sampleTitle,
@@ -137,13 +90,9 @@ function LogoMarquee({
   ...props
 }: LogoMarqueeProps) {
   const titleId = React.useId();
-  const viewport = React.useRef<HTMLDivElement>(null);
-  const track = React.useRef<HTMLDivElement>(null);
-  const [holding, setHolding] = React.useState(false);
-  const [hold] = React.useState(() => holdHandlers(setHolding));
   const [stopped, setStopped] = React.useState(false);
   const marquee = variant === 'marquee';
-  useMarquee(viewport, track, { speed, held: holding || stopped, enabled: marquee && logos.length > 0 });
+  const { view, track, hold } = useDrift({ axis: 'x', speed, held: stopped, enabled: marquee && logos.length > 0 });
 
   if (logos.length === 0) return null;
 
@@ -165,7 +114,7 @@ function LogoMarquee({
         <div className="relative w-full">
           {/* Logos fade out before the last 2.5rem of each edge, so the pause button sits on a clear strip. */}
           <div
-            ref={viewport}
+            ref={view}
             data-slot="logo-marquee-viewport"
             {...hold}
             className="@container w-full overflow-hidden mask-x-from-[calc(100%-min(7rem,30%))] mask-x-to-[calc(100%-2.5rem)] motion-reduce:mask-none motion-reduce:px-4"
@@ -186,7 +135,12 @@ function LogoMarquee({
             variant="secondary"
             size="icon-sm"
             aria-label={stopped ? 'Play logos' : 'Pause logos'}
-            onClick={() => setStopped((value) => !value)}
+            onClick={() => {
+              setStopped((value) => !value);
+              hold.onPointerLeave();
+            }}
+            onPointerEnter={hold.onPointerEnter}
+            onPointerLeave={hold.onPointerLeave}
             className="absolute inset-y-0 end-2 my-auto motion-reduce:hidden"
           >
             {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}

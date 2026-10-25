@@ -2,8 +2,9 @@
 
 import { Pause, Play } from 'lucide-react';
 import * as React from 'react';
+import { useDrift } from '@/registry/kosmos/hooks/use-drift';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { type Drift, holdHandlers, startDrift } from '@/registry/kosmos/lib/drift';
+import { holdHandlers } from '@/registry/kosmos/lib/drift';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
 
@@ -77,11 +78,14 @@ const sampleTestimonials: Testimonial[] = [
 
 /** How fast the wall moves, in pixels per second. */
 const defaultSpeed = 28;
-/** Each column's speed against `speed` (the middle one moves the other way) and where it starts in its loop. */
-const columnPaces = [1, -0.85, 1.15];
-const columnStarts = [0, 0.5, 0.25];
-/** Copies after the first, so even a short column fills the wall's height while it moves. */
-const cardsToFill = 6;
+/** Each column's speed against `speed` (the middle one moves the other way) and where it starts, as a share of its loop. */
+const columnMotion = [
+  { pace: 1, start: 0 },
+  { pace: -0.85, start: 0.5 },
+  { pace: 1.15, start: 0.25 },
+];
+/** A moving column repeats its cards until it holds at least this many, so even a short one fills the wall's height. */
+const leastCardsInColumn = 6;
 
 function initials(name: string) {
   return name
@@ -124,47 +128,9 @@ function deal(testimonials: Testimonial[], count: number) {
 }
 
 function WallColumn({ testimonials, index, speed, held, moving }: { testimonials: Testimonial[]; index: number; speed: number; held: boolean; moving: boolean }) {
-  const view = React.useRef<HTMLDivElement>(null);
-  const track = React.useRef<HTMLDivElement>(null);
-  const drift = React.useRef<Drift>(undefined);
-  const [holding, setHolding] = React.useState(false);
-  const [hold] = React.useState(() => holdHandlers(setHolding));
-  const pace = columnPaces[index % columnPaces.length];
-  const latest = React.useRef({ speed: speed * pace, held: held || holding });
-
-  React.useEffect(() => {
-    latest.current.held = held || holding;
-    drift.current?.hold(held || holding);
-  }, [held, holding]);
-
-  React.useEffect(() => {
-    latest.current.speed = speed * pace;
-    drift.current?.setSpeed(speed * pace);
-  }, [speed, pace]);
-
-  React.useEffect(() => {
-    const element = track.current;
-    const copy = element?.firstElementChild;
-    if (!moving || !view.current || !element || !(copy instanceof HTMLElement)) return;
-    drift.current = startDrift({
-      view: view.current,
-      copy,
-      axis: 'y',
-      speed: latest.current.speed,
-      start: columnStarts[index % columnStarts.length],
-      render: (offset) => {
-        element.style.transform = `translateY(${-offset}px)`;
-      },
-    });
-    drift.current.hold(latest.current.held);
-    return () => {
-      drift.current?.stop();
-      drift.current = undefined;
-      element.style.transform = '';
-    };
-  }, [moving, index]);
-
-  const copies = moving ? Math.ceil(cardsToFill / testimonials.length) : 0;
+  const { pace, start } = columnMotion[index % columnMotion.length];
+  const { view, track, hold } = useDrift({ axis: 'y', speed: speed * pace, held, start, enabled: moving });
+  const copies = moving ? Math.ceil(leastCardsInColumn / testimonials.length) : 0;
   const cards = testimonials.map((testimonial, card) => <TestimonialCard key={card} testimonial={testimonial} />);
 
   return (
@@ -223,6 +189,8 @@ function Testimonials({
   ...props
 }: TestimonialsProps) {
   const [stopped, setStopped] = React.useState(false);
+  const [onButton, setOnButton] = React.useState(false);
+  const [buttonHold] = React.useState(() => holdHandlers(setOnButton));
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const moving = variant === 'wall';
   const layouts = [1, 2, 3].filter((count) => count <= testimonials.length);
@@ -259,7 +227,7 @@ function Testimonials({
             {layouts.map((count) => (
               <div key={count} data-columns={count} className={cn('items-start gap-4', columnsShown[count])}>
                 {deal(testimonials, count).map((column, index) => (
-                  <WallColumn key={index} testimonials={column} index={index} speed={speed} held={stopped} moving={moving} />
+                  <WallColumn key={index} testimonials={column} index={index} speed={speed} held={stopped || onButton} moving={moving} />
                 ))}
               </div>
             ))}
@@ -269,7 +237,12 @@ function Testimonials({
               variant="secondary"
               size="icon-sm"
               aria-label={stopped ? 'Play testimonials' : 'Pause testimonials'}
-              onClick={() => setStopped((value) => !value)}
+              onClick={() => {
+                setStopped((value) => !value);
+                buttonHold.onPointerLeave();
+              }}
+              onPointerEnter={buttonHold.onPointerEnter}
+              onPointerLeave={buttonHold.onPointerLeave}
               className="absolute end-2 bottom-2 motion-reduce:hidden"
             >
               {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}

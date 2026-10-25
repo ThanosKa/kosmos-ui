@@ -91,6 +91,8 @@ export type DriftOptions = {
   speed: number;
   /** Where the loop starts, as a share of one copy from 0 to 1. */
   start?: number;
+  /** Starts held, at rest. */
+  held?: boolean;
   /** Moves the content `offset` pixels into its loop: once a frame while it runs, and to 0 under reduced motion. */
   render: (offset: number) => void;
 };
@@ -109,12 +111,13 @@ export type Drift = {
  * up when let go, keeps its place when the copy changes size, sleeps while off screen or at rest, and does not move at
  * all when the visitor asks for reduced motion.
  */
-export function startDrift({ view, copy, axis, speed, start = 0, render }: DriftOptions): Drift {
+export function startDrift({ view, copy, axis, speed, start = 0, held: startHeld = false, render }: DriftOptions): Drift {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const measure = () => (axis === 'x' ? copy.offsetWidth : copy.offsetHeight);
-  let state: DriftState = { offset: start * measure(), velocity: speed, distance: measure() };
+  let state: DriftState = { offset: start * measure(), velocity: startHeld ? 0 : speed, distance: measure() };
   let target = speed;
-  let held = false;
+  let held = startHeld;
+  let stopped = false;
   let onScreen = false;
   let frame = 0;
   let last = 0;
@@ -132,7 +135,7 @@ export function startDrift({ view, copy, axis, speed, start = 0, render }: Drift
     frame = resting() ? 0 : requestAnimationFrame(tick);
   };
   const wake = () => {
-    if (frame || reduced.matches || !onScreen || resting()) return;
+    if (frame || stopped || reduced.matches || !onScreen || resting()) return;
     last = 0;
     frame = requestAnimationFrame(tick);
   };
@@ -142,15 +145,16 @@ export function startDrift({ view, copy, axis, speed, start = 0, render }: Drift
     wake();
   };
 
-  const visibility = new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
+  const visibility = new IntersectionObserver((entries) => {
+    onScreen = entries[entries.length - 1].isIntersecting;
     if (onScreen) wake();
     else sleep();
   });
   const size = new ResizeObserver(([entry]) => {
     const box = entry.borderBoxSize?.[0];
     const distance = box ? (axis === 'x' ? box.inlineSize : box.blockSize) : measure();
-    // A copy first laid out here (it was hidden at start) takes its start offset now.
+    // A hidden copy measures 0: keep the place it had, or, if it was hidden from the start, take the start offset once it shows.
+    if (distance === 0) return;
     state = state.distance > 0 ? stepDrift(state, { dt: 0, speed: target, held, distance }) : { ...state, offset: start * distance, distance };
     show();
   });
@@ -170,6 +174,7 @@ export function startDrift({ view, copy, axis, speed, start = 0, render }: Drift
       wake();
     },
     stop() {
+      stopped = true;
       sleep();
       visibility.disconnect();
       size.disconnect();

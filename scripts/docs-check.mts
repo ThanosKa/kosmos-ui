@@ -622,6 +622,7 @@ const checks: Check[] = [
       const settle = 1800;
       const path = '/view/logo-marquee-demo';
       const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
       const offsetOf = (page: Page) =>
         page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41 + 0);
 
@@ -677,6 +678,7 @@ const checks: Check[] = [
       const path = '/view/testimonials-demo';
       const settle = 1800;
       const quotes = 9;
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
       const offsets = (page: Page) =>
         page
           .locator('[data-slot="testimonials-column"]:visible > div')

@@ -3,11 +3,15 @@
   "name": "drift",
   "type": "registry:lib",
   "title": "Drift",
-  "description": "The loop behind the Logo marquee and the Testimonials wall: content moves at a steady speed, eases to a stop when held and back up when let go, runs only on screen and stands still under reduced motion.",
+  "description": "The loop behind the Logo marquee and the Testimonials wall, with its React hook: content moves at a steady speed, eases to a stop when held and back up when let go, runs only on screen and stands still under reduced motion.",
   "files": [
     {
       "path": "registry/kosmos/lib/drift.ts",
       "type": "registry:lib"
+    },
+    {
+      "path": "registry/kosmos/hooks/use-drift.ts",
+      "type": "registry:hook"
     }
   ]
 }
