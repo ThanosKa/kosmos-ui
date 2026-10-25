@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tags-input",
+  "type": "registry:ui",
+  "title": "Tags input",
+  "description": "Free text that turns into chips: Enter, a comma or a pasted list adds tags, typos such as a malformed email show in red, and known values can be offered as you type.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/combobox"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/tags-input.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/kosmos/lib/tags.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

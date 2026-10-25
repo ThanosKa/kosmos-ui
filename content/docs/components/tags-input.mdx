@@ -1,0 +1,135 @@
+---
+title: Tags input
+description: Turns free text into chips, such as the addresses of an invite. Enter, a comma or a pasted list adds them, and a mistyped one shows in red. Built on the Base UI Combobox.
+baseUi: https://base-ui.com/react/components/combobox
+---
+
+<ComponentPreview name="tags-input-demo" />
+
+## Installation
+
+<ComponentInstall name="tags-input" />
+
+## Usage
+
+```tsx
+import { isEmail } from '@/lib/tags';
+import { TagsInput } from '@/components/ui/tags-input';
+```
+
+```tsx
+<TagsInput aria-label="Invite by email" name="emails" delimiters={[',', ';', ' ']} validate={isEmail} placeholder="name@acme.example" />
+```
+
+Typing a delimiter or pressing Enter turns the text before it into a tag, and so does leaving the field, so a form never drops the last one. A pasted list becomes one tag per line or delimiter, and a tag already in the list is skipped, whatever its case. Each add is announced to screen readers, with how many were skipped.
+
+`validate` marks the tags it rejects in red with an alert icon, and keeps them, so people can see the typo and remove it. `isEmail`, installed with the component, checks for a name, one @ and a domain with a dot. Pair it with a FieldError that names the bad address.
+
+## Examples
+
+### Invite by email
+
+In a [Field](/docs/components/field), with an error while any address is mistyped and a button that counts the invites.
+
+<ComponentPreview name="tags-input-invite" />
+
+### Suggestions
+
+Pass `suggestions` to offer known values as people type. ArrowDown and Enter add a suggestion; Enter with none highlighted adds the text as typed.
+
+<ComponentPreview name="tags-input-suggestions" />
+
+### A limit
+
+`max` caps the list. Once it is full, the input takes no more text until a tag is removed.
+
+<ComponentPreview name="tags-input-max" />
+
+To choose only from a list, use the [Combobox](/docs/components/combobox) with `multiple`.
+
+## API
+
+TagsInput is built on the [Base UI Combobox](https://base-ui.com/react/components/combobox) with `multiple`, using the [Combobox](/docs/components/combobox) chips. Other props go to the text input, such as `placeholder`, `aria-label` and `aria-invalid`.
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The tags, when you control them.',
+      type: 'string[]',
+    },
+    defaultValue: {
+      description: 'The starting tags, when the input keeps them.',
+      type: 'string[]',
+      default: '[]',
+    },
+    onValueChange: {
+      description: 'Called with the whole list each time a tag is added or removed.',
+      type: '(tags: string[]) => void',
+    },
+    delimiters: {
+      description: 'Characters that turn the typed text into a tag, besides Enter. A pasted list also splits on line breaks.',
+      type: 'string[]',
+      default: "[',']",
+    },
+    validate: {
+      description: 'Marks each tag it returns `false` for in red. The tag stays in the list.',
+      type: '(tag: string) => boolean',
+    },
+    max: {
+      description: 'The most tags the input takes.',
+      type: 'number',
+    },
+    allowDuplicates: {
+      description: 'Keeps a tag that is already in the list.',
+      type: 'boolean',
+      default: 'false',
+    },
+    suggestions: {
+      description: 'Values offered in a list while typing.',
+      type: 'string[]',
+    },
+    addOnBlur: {
+      description: 'Turns the typed text into a tag when the input loses focus.',
+      type: 'boolean',
+      default: 'true',
+    },
+    name: {
+      description: 'Names the tags when the form is submitted, one value per tag.',
+      type: 'string',
+    },
+    disabled: {
+      description: 'Blocks the field and its tags.',
+      type: 'boolean',
+      default: 'false',
+    },
+    readOnly: {
+      description: 'Shows the tags without the × or a way to add more.',
+      type: 'boolean',
+      default: 'false',
+    },
+    className: {
+      description: 'Classes for the field, such as its width.',
+      type: 'string',
+    },
+  }}
+/>
+
+### Helpers
+
+`lib/tags.ts` installs with the component, for code that handles tags outside the input, such as a server action that checks an invite list.
+
+| Function | What it does |
+| --- | --- |
+| `isEmail(value)` | Whether the text reads as an email address. |
+| `splitTags(text, delimiters)` | The tags in a text, split on each delimiter and line break, trimmed. |
+| `addTags(tags, incoming, { max, allowDuplicates })` | The list after adding, with the tags that were added and those left out as duplicates or past the limit. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or a delimiter | Adds the typed text as a tag. With a suggestion highlighted, Enter adds the suggestion. |
+| `ArrowLeft` | From the start of the input: moves onto the last tag, then along the tags. |
+| `Backspace` | In an empty input: removes the last tag. On a tag: removes it. |
+| `Escape` | Clears the text being typed, or closes the suggestions. The tags stay. |
+| `ArrowDown` | With `suggestions`: highlights the next suggestion. |
