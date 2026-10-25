@@ -1,0 +1,10 @@
+---
+title: Added Combobox and Tags input
+description: Pick one or more values from a long list by typing to filter it, or type free values such as email addresses that turn into chips.
+date: 2026-10-25
+---
+
+Two new form components, which install with `shadcn add`.
+
+- [Combobox](/docs/components/combobox): a field with the same look as Input that filters a long list as you type. It picks one value, or several with `multiple`, shown as chips you can reach and remove from the keyboard. The list takes groups, a message when nothing matches and a check on each chosen item, and it scrolls with an edge fade once it outgrows its popup.
+- [Tags input](/docs/components/tags-input): free text that turns into chips when you press Enter, type a comma or leave the field. A pasted list becomes one chip per line or delimiter, and a value already in the list is skipped. `validate` marks a mistyped value in red with an alert icon, and `isEmail` comes with it for invite forms. It can also offer `suggestions` and stop at a `max`.
