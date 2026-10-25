@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "settings",
+  "type": "registry:block",
+  "title": "Settings",
+  "description": "A settings card with a title, a description, fields and a Save that turns on only when something changed, and a settings page around it: section navigation, profile, notifications, an API key and a danger zone that asks for confirmation.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/button",
+    "@kosmos/copy-field",
+    "@kosmos/dialog",
+    "@kosmos/field",
+    "@kosmos/input",
+    "@kosmos/input-group",
+    "@kosmos/number-field",
+    "@kosmos/radio-group",
+    "@kosmos/switch",
+    "@kosmos/textarea"
+  ],
+  "categories": ["settings"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/settings/settings.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

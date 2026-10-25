@@ -1,0 +1,65 @@
+---
+title: Members
+description: Who is in a workspace and who is on the way, with an invite form for many emails at once, roles in a table, and pending invites to resend or revoke.
+---
+
+## Installation
+
+<ComponentInstall name="members" />
+
+The block brings [Tags input](/docs/components/tags-input), [Select](/docs/components/select), [Table](/docs/components/table), [Dialog](/docs/components/dialog), [Dropdown menu](/docs/components/dropdown-menu), [Status](/docs/components/status), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Empty state](/docs/components/empty) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/members.tsx`.
+
+## Usage
+
+```tsx
+import { Members } from '@/components/members';
+
+<Members
+  workspace="Acme"
+  members={members}
+  invites={invites}
+  currentMemberId="lena"
+  onInvite={(emails, role) => sendInvites(emails, role)}
+  onRoleChange={(member, role) => updateRole(member.id, role)}
+  onRemove={(member) => removeMember(member.id)}
+  onResend={(invite) => resendInvite(invite.id)}
+  onRevoke={(invite) => revokeInvite(invite.id)}
+/>;
+```
+
+Without props it shows sample members and invites. The block keeps its own lists, starting from `members` and `invites`, and calls back with each change so you can save it. It lays itself out by its own width: the form stacks on a narrow container, and the table drops its Last active, then its Status column, when space runs short.
+
+## What it does
+
+- **Invite many**: paste a list or press Enter after each address, with one role for the batch. A mistyped address, or one that already belongs to a member or a pending invite, shows in red, and sending waits until every address is fixed or removed. Up to 20 addresses at a time.
+- **Roles**: Admin, Member and Viewer, changed from a select in each row. The owner and the signed-in member keep their role.
+- **Remove**: the row menu opens a confirmation first. The owner and the signed-in member cannot be removed.
+- **Pending invites**: each shows its role, who sent it and when, and whether it is pending or expired. Resend renews it and Revoke takes it away. Each action is announced to screen readers.
+- **Empty and loading**: no invites shows an empty state, and `loading` swaps every value for a skeleton of the same shape.
+
+## API
+
+### Members
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    workspace: { description: 'The workspace named in the form and the remove confirmation.', type: 'string', default: "'Acme'" },
+    members: { description: 'The members to start with.', type: 'Member[]' },
+    invites: { description: 'The pending and expired invites to start with.', type: 'Invite[]' },
+    currentMemberId: { description: 'The signed-in member: marked "You", kept from changing their own role or removing themselves.', type: 'string', default: "'lena'" },
+    suggestions: { description: 'Addresses offered while typing an invite. Those already invited are left out.', type: 'string[]' },
+    defaultInviteRole: { description: 'The role new invites start with.', type: "'admin' | 'member' | 'viewer'", default: "'member'" },
+    onInvite: { description: 'Called with the addresses and the role when the admin sends.', type: "(emails: string[], role: 'admin' | 'member' | 'viewer') => void" },
+    onRoleChange: { description: 'Called with the member and the newly selected role.', type: "(member: Member, role: 'admin' | 'member' | 'viewer') => void" },
+    onRemove: { description: 'Called after the admin confirms removing a member.', type: '(member: Member) => void' },
+    onResend: { description: 'Called when an invite is sent again.', type: '(invite: Invite) => void' },
+    onRevoke: { description: 'Called when an invite is revoked.', type: '(invite: Invite) => void' },
+    loading: { description: 'Shows skeletons while the data loads.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+`Member` is `{ id: string; name: string; email: string; avatarUrl?: string; role: 'owner' | 'admin' | 'member' | 'viewer'; status?: 'active' | 'suspended'; lastActive?: string }`.
+
+`Invite` is `{ id: string; email: string; role: 'admin' | 'member' | 'viewer'; sentLabel: string; status?: 'pending' | 'expired' }`.

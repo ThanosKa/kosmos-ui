@@ -5,7 +5,7 @@ export default function CopyFieldRevealed() {
   return (
     <Field className="w-full max-w-sm">
       <FieldLabel>New secret key</FieldLabel>
-      <CopyField secret defaultRevealed label="secret key" value="acme_sk_7Q2KfM9r3Vx7bT2nLp8sYc4d" />
+      <CopyField secret defaultRevealed label="secret key" value="acme_secret_demo_7Q2Kf9r3Vx" />
       <FieldDescription>Copy it now. Once you leave this page it shows only its last four characters.</FieldDescription>
     </Field>
   );

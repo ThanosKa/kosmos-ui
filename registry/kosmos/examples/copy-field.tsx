@@ -7,7 +7,7 @@ import CopyFieldRevealed from '@/registry/kosmos/examples/copy-field-revealed';
 const rows = ['plain', 'secret, hidden', 'secret, shown'] as const;
 const states = ['default', 'disabled'] as const;
 
-const key = 'acme_sk_7Q2KfM9r3Vx7bT2nLp8sYc4d';
+const key = 'acme_secret_demo_7Q2Kf9r3Vx';
 
 export default function CopyFieldPreview() {
   return (

@@ -1,0 +1,10 @@
+---
+title: Added the Settings block
+description: A settings card whose Save turns on only when something changed, and a settings page with section links, notifications, an API key and a danger zone that asks for confirmation.
+date: 2026-10-25
+---
+
+A new block category, Settings, which installs with `shadcn add`.
+
+- [Settings](/docs/blocks/settings): `SettingsCard` holds a title, a description, fields and a footer with Save and Discard. Save is off until a field differs from what was saved, and the footer says whether there are unsaved changes, a save is under way, it worked or why it failed. `useSettingsForm` keeps the values for it.
+- `SettingsPage` puts four cards beside section links: profile, notifications, API access with a hidden key you can copy, and a danger zone. Each danger action opens a dialog, and deleting the workspace needs its name typed first.

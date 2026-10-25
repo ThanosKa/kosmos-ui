@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "members",
+  "type": "registry:block",
+  "title": "Members",
+  "description": "Who is in a workspace and who is on the way: invite many emails at once with a role, change roles in a table, remove members after a confirmation, and resend or revoke pending and expired invites. Loading and empty states included. Lays itself out by its own width.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/button",
+    "@kosmos/dialog",
+    "@kosmos/dropdown-menu",
+    "@kosmos/empty",
+    "@kosmos/field",
+    "@kosmos/select",
+    "@kosmos/skeleton",
+    "@kosmos/status",
+    "@kosmos/table",
+    "@kosmos/tags-input"
+  ],
+  "categories": ["members"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/members/members.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
