@@ -7,7 +7,7 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 
 ## Checks
 
-- [ ] **Docs writing.** Review the landing page and the docs pages with a technical-writing skill (the "pstack" skill the maintainer named; confirm which one) and fix what it finds.
+- [ ] **Docs writing.** Review the landing page and the docs pages with the pstack technical-writing skill (https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) and fix what it finds.
 - [ ] **Presets are downloadable.** Every preset a visitor picks can be taken away: the DESIGN.md downloads as a file, the CSS copies for light and dark, and the `preset-<id>` registry item installs with the shadcn CLI in a clean app.
 - [ ] **Branch-wide code review.** The code review at the end of the black and white spec was skipped. Run it over the release and fix the findings.
 - [ ] **Light reviews to finish.** Items that skipped the full `build-component` review (better-interface, break-ui, mobile-native): landing (15 and its revision), stat and chart cards (18), combobox and tags input (22), settings (25), members and invites (26). Also check the calendar (24) in the browser after its last fixes.
