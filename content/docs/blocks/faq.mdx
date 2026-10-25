@@ -1,0 +1,82 @@
+---
+title: FAQ
+description: Questions that open to their answers under a centered title, with a line and a link to ask more.
+---
+
+## Installation
+
+<ComponentInstall name="faq" />
+
+The block brings [Accordion](/docs/components/accordion) with it, and lands in `components/faq.tsx`.
+
+## Usage
+
+```tsx
+import Link from 'next/link';
+import { Faq } from '@/components/faq';
+
+export function PricingQuestions() {
+  return (
+    <Faq
+      title="Questions before you start"
+      items={[
+        {
+          id: 'trial',
+          question: 'Can I try Pro before I pay?',
+          answer: 'Yes. Every new project starts on a 14-day Pro trial with no card.',
+        },
+        {
+          id: 'export',
+          question: 'Can I take my data with me?',
+          answer: (
+            <>
+              Yes. Export any table as CSV. See <Link href="/docs/export">exporting events</Link>.
+            </>
+          ),
+        },
+      ]}
+      contact={
+        <>
+          Still have a question? <Link href="/contact">Talk to the team</Link>
+        </>
+      }
+    />
+  );
+}
+```
+
+Give each question an `id` that stays the same, so `defaultValue` can name it. The title, questions and contact line at the top of the file are sample data.
+
+## What it does
+
+- **One at a time**: a question opens to its answer and closes the one that was open, and the content below holds still while the two swap. The first question starts open; pass `defaultValue` to open others, or `[]` to open none.
+- **Keyboard**: Tab moves between questions, and Enter or Space opens and closes them. Each question is a heading, so screen readers can jump through the list.
+- **Links**: links in an answer and in the contact line take the text color with an underline, so they read as links without a color of their own.
+- **Reduced motion**: when the visitor asks for less motion, an answer fades in instead of growing.
+- **Width**: the questions keep to a 672px column, and the block lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 20px to 32px.
+
+## API
+
+### Faq
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The heading. `null` leaves it out; then give the page a heading above the questions.', type: 'ReactNode', default: "'Questions before you start'" },
+    items: { description: 'The questions, in order. Links in an `answer` take the underlined text style. An empty list renders nothing.', type: 'FaqItem[]', default: 'sample questions' },
+    defaultValue: { description: 'The `id`s of the questions open at first. `[]` opens none.', type: 'string[]', default: 'the first question' },
+    contact: { description: 'A line under the questions with a link to ask more. `null` leaves it out.', type: 'ReactNode', default: 'a sample line' },
+    headingLevel: { description: 'The heading level of the title; each question is one level below. Pass 3 for a section nested one level deeper.', type: '2 | 3', default: '2' },
+  }}
+/>
+
+### FaqItem
+
+<TypeTable
+  type={{
+    id: { description: 'A stable key for the question, which `defaultValue` names to open it.', type: 'string', required: true },
+    question: { description: 'The question, a heading one level below the title.', type: 'ReactNode', required: true },
+    answer: { description: 'The answer under the question. Links in it take the underlined text style.', type: 'ReactNode', required: true },
+  }}
+/>

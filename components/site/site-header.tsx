@@ -5,6 +5,7 @@ import { XIcon } from './brand-icons';
 import { GitHubLink } from './github-link';
 import { SearchButton } from './search-button';
 import { SiteNavbar } from './site-navbar';
+import { SitePresetMenu } from './site-preset-menu';
 import { ThemeToggle } from './theme-toggle';
 
 type SiteHeaderProps = {
@@ -14,7 +15,7 @@ type SiteHeaderProps = {
   fullWidth?: boolean;
 };
 
-/** The site header on the landing page and the docs, built from the Navbar block: logo, site links, search, GitHub, X and the theme toggle. */
+/** The site header on the landing page and the docs, built from the Navbar block: logo, site links, search, GitHub, X, the site's preset and the theme toggle. */
 export function SiteHeader({ menu, fullWidth = false }: SiteHeaderProps) {
   return (
     <SiteNavbar
@@ -28,6 +29,7 @@ export function SiteHeader({ menu, fullWidth = false }: SiteHeaderProps) {
           <Button variant="secondary" size="icon" href={author.xUrl} aria-label={`${author.name} on X`}>
             <XIcon className="size-3.5" />
           </Button>
+          <SitePresetMenu />
           <ThemeToggle />
         </>
       }

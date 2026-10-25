@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "faq",
+  "type": "registry:block",
+  "title": "FAQ",
+  "description": "Questions that open to their answers one at a time under a centered title, with a line and a link to ask more. Lays itself out by its own width.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/accordion"],
+  "categories": ["faq"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/faq/faq.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

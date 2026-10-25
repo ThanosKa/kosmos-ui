@@ -1,13 +1,14 @@
 // Usage: pnpm registry:build
 // Composes every registry/**/<name>.registry.json into the root registry.json (generated, gitignored),
 // runs `shadcn build` into public/r, then validates every output file against the shadcn schema and checks that
-// none holds the site's brand colour (lib/brand.ts).
+// none holds the site's brand colour (lib/brand.ts). It also writes one `preset-*` theme item per choice of the preset
+// picker (lib/presets), which the index does not list.
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { registryItemSchema, registrySchema } from 'shadcn/schema';
 import { findBrand, readBrandColors } from '../lib/brand.ts';
-import { defaultPreset, presetCss } from '../lib/presets/index.ts';
+import { defaultPreset, presetChoices, presetCss, presetRegistryItem } from '../lib/presets/index.ts';
 import { readRegistryItems } from '../lib/registry.ts';
 import { siteUrl } from '../lib/shared.ts';
 
@@ -63,4 +64,15 @@ for (const file of built) {
 const missing = items.filter((item) => !built.includes(`${item.name}.json`));
 if (missing.length) throw new Error(`No output for: ${missing.map((item) => item.name).join(', ')}`);
 
-console.log(`registry: ${items.length} items -> public/r (${items.map((item) => item.name).join(', ')})`);
+// One theme item per choice the preset picker offers, written straight from lib/presets and left out of the index.
+const presetItems = presetChoices().map(presetRegistryItem);
+for (const item of presetItems) {
+  const json = { $schema: 'https://ui.shadcn.com/schema/registry-item.json', ...item };
+  registryItemSchema.parse(json);
+  const source = `${JSON.stringify(json, null, 2)}\n`;
+  const brandHits = findBrand(source, brandColors);
+  if (brandHits.length) throw new Error(`${item.name} holds the site's brand colour (${brandHits.join(', ')}): it belongs to the site only`);
+  writeFileSync(join(outDir, `${item.name}.json`), source);
+}
+
+console.log(`registry: ${items.length} items -> public/r (${items.map((item) => item.name).join(', ')}), and ${presetItems.length} preset items`);

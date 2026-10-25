@@ -8,7 +8,9 @@ import assert from 'node:assert/strict';
 import { globSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
+import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/index.ts';
 import { readProVariants } from '../lib/registry.ts';
+import { sitePresetCss } from '../lib/site-preset.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
 import { openSitePage, serverBase, serverOptions, type ReducedMotion } from './site.mts';
 
@@ -669,6 +671,30 @@ const checks: Check[] = [
     },
   },
   {
+    name: 'the pricing block switches between monthly and yearly prices and tells screen readers the new prices',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/view/pricing-demo');
+      const pricing = page.locator('[data-slot="pricing"]');
+      const billing = pricing.getByRole('radiogroup', { name: 'Billing' });
+      const announcement = pricing.getByRole('status');
+      const proPrice = pricing.getByRole('listitem').filter({ has: page.getByRole('heading', { name: 'Pro' }) }).locator('[data-slot="pricing-price"]');
+      assert.equal(await billing.getByRole('radio', { name: 'Monthly' }).isChecked(), true, 'monthly is the first choice');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'Pro shows its monthly price');
+      assert.equal(await announcement.textContent(), '', 'nothing is announced before a change');
+      await billing.getByRole('radio', { name: 'Yearly' }).click();
+      assert.equal(await proPrice.innerText(), '$39\nper month, billed yearly', 'Pro shows its yearly price');
+      assert.equal(
+        await announcement.textContent(),
+        'Yearly. Free: $0 forever. Pro: $39 per month, billed yearly. Scale: $960 per month, billed yearly.',
+        'the new prices are announced',
+      );
+      await billing.getByRole('radio', { name: 'Monthly' }).press('Space');
+      assert.equal(await proPrice.innerText(), '$49\nper month', 'the keyboard switches back');
+      assert.match((await announcement.textContent()) ?? '', /^Monthly\. .*Pro: \$49 per month\./, 'switching back is announced too');
+      await close();
+    },
+  },
+  {
     name: 'the bento shows real Kosmos components, each with a one-line caption and a link to its docs',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
@@ -743,32 +769,35 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'preset, radius and theme change only the dashboard, and Reset brings them back',
+    name: "the landing's preset picker changes the whole site, the dashboard follows, and Reset brings the Default back",
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="dashboard"]');
       const iframe = section.locator('iframe');
-      await iframe.contentFrame().locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      await iframe.contentFrame().locator('[data-preview-ready]').waitFor({ state: 'attached' });
       const look = (target: 'page' | 'dashboard') =>
         (target === 'page' ? page.locator('html') : iframe.contentFrame().locator('html')).evaluate((html) => {
           const style = getComputedStyle(html);
           return { ring: style.getPropertyValue('--ring').trim(), radius: style.getPropertyValue('--radius').trim(), dark: html.classList.contains('dark') };
         });
       const pageBefore = await look('page');
-      const dashboardBefore = await look('dashboard');
-      assert.deepEqual(dashboardBefore, pageBefore, 'the dashboard starts in the page look');
+      const brandBefore = await cssColor(page, '--brand');
+      assert.deepEqual(await look('dashboard'), pageBefore, 'the dashboard starts in the page look');
       await section.getByRole('radiogroup', { name: 'Preset' }).getByRole('radio', { name: 'Soft' }).click();
       await section.getByRole('radiogroup', { name: 'Radius' }).getByRole('radio', { name: '0px', exact: true }).click();
       await section.getByRole('radiogroup', { name: 'Theme' }).getByRole('radio', { name: 'Dark' }).click();
-      await page.waitForFunction(() => (document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      const changed = await look('dashboard');
-      assert.notEqual(changed.ring, dashboardBefore.ring, 'the preset changes the dashboard');
-      assert.match(changed.radius, /^0(px|rem)?$/, 'radius changes the dashboard');
-      assert.equal(changed.dark, true, 'theme changes the dashboard');
-      assert.deepEqual(await look('page'), pageBefore, 'the page keeps its look');
+      await page.waitForFunction(() => {
+        const frame = document.querySelector<HTMLIFrameElement>('[data-landing-section="dashboard"] iframe')?.contentDocument;
+        return frame?.documentElement.classList.contains('dark') && getComputedStyle(frame.documentElement).getPropertyValue('--radius').trim() === '0rem';
+      });
+      const changed = await look('page');
+      const soft = chosenPreset({ preset: 'soft', accent: true, radius: '0' });
+      assert.deepEqual(changed, { ring: presetPalette(soft, 'dark').ring, radius: '0rem', dark: true }, 'the page takes the preset');
+      assert.deepEqual(await look('dashboard'), changed, 'the dashboard follows the page');
+      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
       await section.getByRole('button', { name: 'Reset' }).click();
-      await page.waitForFunction(() => !(document.querySelector('[data-landing-section="dashboard"] iframe') as HTMLIFrameElement).contentDocument?.documentElement.classList.contains('dark'));
-      assert.deepEqual(await look('dashboard'), dashboardBefore, 'Reset restores the dashboard');
+      await page.waitForFunction((radius) => getComputedStyle(document.documentElement).getPropertyValue('--radius').trim() === radius, pageBefore.radius);
+      assert.equal((await look('page')).radius, pageBefore.radius, 'Reset brings the Default back');
       await close();
     },
   },
@@ -779,7 +808,7 @@ const checks: Check[] = [
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
       const frame = page.locator('[data-landing-section="dashboard"] iframe').contentFrame();
-      await frame.locator('[data-dashboard-ready]').waitFor({ state: 'attached' });
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
       const frameOverflow = await frame.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth);
       assert.ok(frameOverflow <= 0, `the dashboard scrolls ${frameOverflow}px sideways`);
       const cut = await frame.locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
@@ -787,6 +816,123 @@ const checks: Check[] = [
       );
       assert.deepEqual(cut, [], 'truncated metric text');
       await page.screenshot({ path: '.screenshots/landing-check-375.png', fullPage: true });
+      await close();
+    },
+  },
+  {
+    name: "a shared Presets link makes its preset the whole site's, on every page, preview and reload, and the brand colour stays",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/');
+      const brandBefore = await cssColor(page, '--brand');
+      const radius = (target: ReturnType<Page['locator']>) => target.evaluate((html) => getComputedStyle(html).getPropertyValue('--radius').trim());
+      await page.goto(new URL('/presets?preset=soft&accent=off&radius=6', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'the Presets page takes the shared preset');
+      const preview = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await preview.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      assert.equal(await radius(preview.locator('html')), '0.375rem', 'its preview too');
+      await page.getByRole('button', { name: 'Preset: Soft' }).waitFor();
+      await page.goto(new URL('/docs/blocks/stats-overview', base).href);
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a docs page takes it');
+      const exampleFrame = page.locator('iframe[src*="/view/"]').first();
+      await exampleFrame.scrollIntoViewIfNeeded();
+      const example = exampleFrame.contentFrame();
+      await example.locator('[data-preview-root]').waitFor({ state: 'attached' });
+      assert.equal(await radius(example.locator('html')), '0.375rem', 'a block preview takes it');
+      await page.reload();
+      assert.equal(await radius(page.locator('html')), '0.375rem', 'a reload keeps it');
+      assert.equal(await cssColor(page, '--brand'), brandBefore, 'the brand colour stays');
+      await close();
+    },
+  },
+  {
+    name: 'Get code on the Presets page gives the CSS the site applies, its registry item and its DESIGN.md',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=console&radius=0');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await page.getByRole('button', { name: 'Get code' }).click();
+      const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
+      const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
+      const choice = { preset: 'console', accent: true, radius: '0' };
+      assert.equal((await code())?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
+      assert.equal(await frame.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the preview applies');
+      assert.equal(await page.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the page applies');
+      await dialog.getByRole('tab', { name: 'Registry' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
+      assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
+      const item = await fetchText('/r/preset-console-radius-0.json');
+      assert.equal(JSON.parse(item).cssVars.light.radius, '0rem', 'the registry item');
+      await dialog.getByRole('tab', { name: 'DESIGN.md' }).click();
+      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: '## Palette' }).first().waitFor();
+      assert.match((await code()) ?? '', /^# Console preset/, 'the DESIGN.md tab');
+      await close();
+    },
+  },
+  {
+    name: "the Presets page preview's menus, dialogs and toasts take the preset",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=warm');
+      const frame = page.locator('iframe[src="/preset-preview"]').contentFrame();
+      await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
+      await frame.getByRole('button', { name: 'Show toast' }).click();
+      const popover = presetPalette(presets.find((preset) => preset.id === 'warm')!, 'light').popover;
+      const fill = (selector: string) =>
+        frame.locator(selector).first().evaluate((element, color) => {
+          const probe = document.body.appendChild(document.createElement('span'));
+          probe.style.color = color;
+          const expected = getComputedStyle(probe).color;
+          probe.remove();
+          return { actual: getComputedStyle(element).backgroundColor, expected };
+        }, popover);
+      const takesPreset = async (selector: string) => {
+        const { actual, expected } = await fill(selector);
+        assert.equal(actual, expected, `${selector} takes the Warm popover`);
+      };
+      await takesPreset('[data-slot="toast"]');
+      await page.getByRole('tablist', { name: 'Preview' }).getByRole('tab', { name: 'Dashboard' }).click();
+      await frame.getByRole('button', { name: /switch workspace/ }).click();
+      await takesPreset('[data-slot="dropdown-menu-content"]');
+      await frame.locator('body').press('Escape');
+      await frame.getByRole('link', { name: 'Roadmap' }).click();
+      await frame.getByRole('button', { name: 'New roadmap item' }).click();
+      await takesPreset('[data-slot="dialog-content"]');
+      await close();
+    },
+  },
+  {
+    name: 'the Presets page fits a 375px phone, its picker opens in a bottom sheet and works with the keyboard',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets', phone);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
+      await page.locator('main').getByRole('button', { name: 'Preset', exact: true }).click();
+      const sheet = page.getByRole('dialog', { name: 'Preset' });
+      const presetGroup = sheet.getByRole('radiogroup', { name: 'Preset' });
+      await presetGroup.getByRole('radio', { name: 'Default' }).focus();
+      await page.keyboard.press('ArrowDown');
+      await page.waitForURL((url) => url.search === '?preset=warm');
+      assert.equal(await presetGroup.getByRole('radio', { name: 'Warm' }).getAttribute('aria-checked'), 'true', 'the arrow keys pick a preset');
+      await page.screenshot({ path: '.screenshots/presets-check-375.png' });
+      await page.keyboard.press('Escape');
+      await sheet.waitFor({ state: 'hidden' });
+      await close();
+    },
+  },
+  {
+    name: "the header names the site's preset on every page, and its picker resets it to the Default from the keyboard",
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/presets?preset=night');
+      await page.goto(new URL('/docs', base).href);
+      const trigger = page.getByRole('button', { name: 'Preset: Night' });
+      await trigger.focus();
+      await page.keyboard.press('Enter');
+      const reset = page.locator('[data-slot="popover-content"]').getByRole('button', { name: 'Reset' });
+      await reset.waitFor();
+      await reset.focus();
+      await page.keyboard.press('Enter');
+      await page.getByRole('button', { name: 'Preset: Default' }).waitFor();
+      assert.equal((await page.locator('#site-preset').textContent()) ?? '', '', 'the Default needs no preset CSS');
+      await page.keyboard.press('Escape');
       await close();
     },
   },
