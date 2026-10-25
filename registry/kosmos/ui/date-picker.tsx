@@ -98,6 +98,7 @@ function usePickerNames({ 'aria-label': label, 'aria-labelledby': labelledBy, 'a
   return {
     trigger: {
       label,
+      'aria-label': undefined,
       labelId,
       valueId,
       'aria-labelledby': nameIds && `${nameIds} ${valueId}`,
@@ -183,15 +184,17 @@ function DatePicker({
   const [value, setValue] = useControllableState(valueProp, defaultValue ?? null, onValueChange as (date: Date | null) => void);
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange);
   const popupRef = React.useRef<HTMLDivElement>(null);
+  const names = usePickerNames(triggerProps);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PickerTrigger empty={!value} disabled={disabled} className={className} {...triggerProps}>
+      <PickerTrigger empty={!value} disabled={disabled} className={className} {...triggerProps} {...names.trigger}>
         {value ? (formatValue?.(value) ?? formatDate(value, locale)) : placeholder}
       </PickerTrigger>
       {name && <input type="hidden" name={name} value={value ? dateKey(value) : ''} />}
       <PopoverContent
         ref={popupRef}
+        aria-labelledby={names.popup['aria-labelledby']}
         align={align}
         container={container}
         initialFocus={() => tabbableDay(popupRef.current)}
@@ -270,6 +273,7 @@ function DateRangePicker({
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange);
   const [draft, setDraft] = React.useState<DateRange | null>(null);
   const popupRef = React.useRef<HTMLDivElement>(null);
+  const names = usePickerNames(triggerProps);
   const months = useMonthsThatFit();
   const ranges = React.useMemo(() => rangesProp ?? quickRanges(startOfDay(new Date())), [rangesProp]);
   const quick = matchQuickRange(ranges, value);
@@ -286,11 +290,12 @@ function DateRangePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PickerTrigger empty={!value} disabled={disabled} className={className} {...triggerProps}>
+      <PickerTrigger empty={!value} disabled={disabled} className={className} {...triggerProps} {...names.trigger}>
         {value ? (quick?.label ?? formatValue?.(value) ?? formatRange(value, locale)) : placeholder}
       </PickerTrigger>
       <PopoverContent
         ref={popupRef}
+        aria-labelledby={names.popup['aria-labelledby']}
         align={align}
         container={container}
         initialFocus={() => tabbableDay(popupRef.current)}
