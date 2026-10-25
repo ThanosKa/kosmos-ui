@@ -518,11 +518,11 @@ const checks: Check[] = [
         })),
       );
       assert.deepEqual(
-        sections.slice(0, 4).map((section) => section.id),
-        ['hero', 'dashboard', 'bento', 'inventory'],
-        'the landing opens with the hero, the dashboard, the bento and the inventory',
+        sections.map((section) => section.id),
+        ['hero', 'stack', 'dashboard', 'bento', 'inventory', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, stack, dashboard, bento, inventory, pricing, FAQ, CTA and footer, in that order',
       );
-      assert.deepEqual(sections.slice(-3).map((section) => section.id), ['install', 'proof', 'footer'], 'the landing ends with install, proof and the footer');
+      assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
       for (const section of sections) {
         assert.ok(section.links.length > 0, `${section.id}: names its blocks`);
         for (const url of section.links) {
@@ -530,24 +530,35 @@ const checks: Check[] = [
         }
       }
       assert.deepEqual(sections.at(-1)?.links, ['/docs/blocks/footer'], 'footer: labelled with the Footer block');
-      assert.deepEqual(sections[0].links, ['/docs/blocks/hero'], 'hero: labelled with the Hero block');
-      assert.equal(sections[1].links.length, 8, 'dashboard: labelled with the 8 application blocks');
+      assert.deepEqual(
+        sections[0].links,
+        ['/docs/blocks/hero', '/docs/components/announcement', '/docs/components/code-tabs'],
+        'hero: labelled with the Hero block, Announcement and Code Tabs',
+      );
+      assert.equal(sections[2].links.length, 8, 'dashboard: labelled with the 8 application blocks');
+      for (const [index, block] of [[1, 'logo-marquee'], [5, 'pricing'], [6, 'faq'], [7, 'cta']] as const) {
+        assert.deepEqual(sections[index].links, [`/docs/blocks/${block}`], `${sections[index].id}: labelled with its block`);
+      }
       for (const url of new Set(sections.flatMap((section) => section.links))) await fetchText(url);
       assert.equal(await page.locator('[role="dialog"]:visible, [role="alertdialog"]:visible').count(), 0, 'nothing pops up on load');
       await close();
     },
   },
   {
-    name: 'the hero shows the title, one line, Browse components and GitHub, and the install command',
+    name: 'the hero shows the news, the title, one line, Browse components and GitHub, and the install command per package manager',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const hero = page.locator('[data-landing-section="hero"]');
       assert.equal(await hero.locator('h1').count(), 1, 'one h1');
-      assert.equal(await hero.locator('h1 + p, [data-slot="hero-description"]').count() > 0, true, 'one line under the title');
+      assert.equal(await hero.locator('[data-slot="hero-description"]').count(), 1, 'one line under the title');
+      assert.equal(await hero.locator('[data-slot="hero-announcement"] a').getAttribute('href'), '/presets', 'the news links to the Presets page');
       assert.equal(await hero.getByRole('link', { name: 'Browse components' }).getAttribute('href'), '/docs/components', 'Browse components');
       assert.match((await hero.getByRole('link', { name: 'GitHub' }).getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'GitHub');
-      const copy = hero.getByRole('button', { name: /^Copy install command: .*shadcn@latest/ });
-      assert.equal(await copy.count(), 1, 'install command with a copy button');
+      const managers = hero.getByRole('tablist', { name: 'Package manager' });
+      assert.deepEqual(await managers.getByRole('tab').allTextContents(), ['npm', 'pnpm', 'yarn', 'bun'], 'one tab per package manager');
+      assert.equal(await hero.getByRole('button', { name: /^Copy command: npx shadcn@latest registry add @kosmos=/ }).count(), 1, 'the npm command with a copy button');
+      await managers.getByRole('tab', { name: 'pnpm' }).click();
+      assert.equal(await hero.getByRole('button', { name: /^Copy command: pnpm dlx shadcn@latest registry add @kosmos=/ }).count(), 1, 'pnpm switches the command');
       const variants = await openPage(browser, '/docs/blocks/hero');
       const variant = variants.page.locator('[data-block-variant]');
       assert.equal(await variant.count(), 1, 'the Hero category page shows one variant');
@@ -558,42 +569,66 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the install section shows the shadcn command, the files it adds, and links to llms.txt and Markdown pages',
+    name: 'the stack strip names Base UI, Tailwind CSS, React, Next.js and the shadcn CLI, each with its mark',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="install"]');
-      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
-      const copy = section.getByRole('button', { name: /^Copy command: npx shadcn@latest add @kosmos\// });
-      assert.equal(await copy.count(), 1, 'the npm command with a copy button');
-      const command = (await copy.getAttribute('aria-label'))!.replace('Copy command: ', '');
-      const name = command.split('@kosmos/')[1];
-      const files = await section.locator('[data-terminal-file]').allTextContents();
-      const item = JSON.parse(await fetchText(`/r/${name}.json`)) as { files: { path: string }[] };
-      assert.ok(files.length > item.files.length, `the transcript lists the block's files and its components (${files.length})`);
-      assert.ok(files.includes(`components/${name}.tsx`), `the transcript lists components/${name}.tsx`);
-      await section.getByRole('tab', { name: 'pnpm' }).click();
-      assert.equal(await section.getByRole('button', { name: /^Copy command: pnpm dlx shadcn@latest add/ }).count(), 1, 'pnpm switches the command');
-      const paths = await section.locator('a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      for (const path of ['/llms.txt', '/llms-full.txt']) assert.ok(paths.includes(path), `links to ${path}`);
-      const markdown = paths.find((path) => path.endsWith('.md'));
-      assert.ok(markdown, 'links to a docs page as Markdown');
-      for (const path of ['/llms.txt', '/llms-full.txt', markdown]) await fetchText(path);
+      const list = page.locator('[data-landing-section="stack"] [data-slot="logo-marquee"]').getByRole('list');
+      assert.equal(
+        await list.ariaSnapshot(),
+        ['- list "Built on the stack you already use":', ...['Base UI', 'Tailwind CSS', 'React', 'Next.js', 'shadcn CLI'].map((name) => `  - listitem: ${name}`)].join('\n'),
+        'one list of the stack, each item named once',
+      );
+      assert.equal(await list.locator('li svg').count(), 5, 'each item shows a mark');
       await close();
     },
   },
   {
-    name: 'the proof shows the GitHub stars or no number at all, and a real date of the last update',
+    name: 'the pricing shows Free and Pro, Pro raised, and the brand colour only on the logo and the Pro link',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="proof"]');
-      assert.equal(await section.getByRole('heading', { level: 2 }).count(), 1, 'one h2');
-      const stars = section.locator('[data-stars]');
-      if ((await stars.count()) > 0) assert.match((await stars.textContent()) ?? '', /^\d+(\.\d)?[KM]?$/, 'stars as a number');
-      assert.match((await section.getByRole('link', { name: /GitHub/ }).first().getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'links to GitHub');
-      const date = await section.locator('time[datetime]').first().getAttribute('datetime');
-      assert.match(date ?? '', /^\d{4}-\d{2}-\d{2}/, 'last update as a <time>');
-      assert.ok(new Date(date!).getTime() <= Date.now(), 'the last update is not in the future');
+      const pricing = page.locator('[data-landing-section="pricing"]');
+      const plans = pricing.locator('[data-slot="pricing-plan"]');
+      assert.deepEqual(await plans.locator('h3').allTextContents(), ['Free', 'Pro'], 'Free and Pro');
+      assert.equal(await plans.nth(1).getAttribute('data-featured'), '', 'Pro is the raised plan');
+      const brand = await cssColor(page, '--brand');
+      const branded = await page.evaluate((color) => {
+        const marks: string[] = [];
+        for (const element of document.querySelectorAll('body *')) {
+          const style = getComputedStyle(element);
+          if ([style.color, style.backgroundColor, style.fill, style.stroke].includes(color)) {
+            const section = element.closest('[data-landing-section], header');
+            marks.push(`${section?.getAttribute('data-landing-section') ?? section?.tagName.toLowerCase()}:${element.tagName.toLowerCase()}:${element.textContent?.trim() ?? ''}`);
+          }
+        }
+        return marks;
+      }, brand);
+      const outside = branded.filter((mark) => !/^(header|footer):(svg|circle|path|ellipse)/.test(mark) && !/^pricing:a:(Get Pro|Browse the blocks)$/.test(mark));
+      assert.deepEqual(outside, [], 'the brand colour shows nowhere but the logo and the Pro link');
+      assert.ok(branded.some((mark) => mark.startsWith('pricing:a:')), 'the Pro link takes the brand colour');
       await close();
+    },
+  },
+  {
+    name: 'the landing shows its content without JavaScript',
+    async run(browser) {
+      const context = await browser.newContext({ viewport: desktop, javaScriptEnabled: false, reducedMotion: 'reduce' });
+      const page = await context.newPage();
+      await page.goto(new URL('/', base).href, { waitUntil: 'load' });
+      const visible = async (selector: string, text: string | RegExp) => {
+        const target = page.locator(selector).getByText(text).first();
+        assert.ok(await target.isVisible(), `${selector}: "${text}" shows without JavaScript`);
+      };
+      await visible('[data-landing-section="hero"]', 'Dashboard UI with the details already done');
+      await visible('[data-landing-section="hero"]', /^\$/);
+      await visible('[data-landing-section="stack"]', 'Tailwind CSS');
+      await visible('[data-landing-section="dashboard"]', 'in the preset you pick');
+      await visible('[data-landing-section="bento"]', 'Search Acme');
+      await visible('[data-landing-section="inventory"]', 'Dropdown menu');
+      await visible('[data-landing-section="pricing"]', 'Pay once');
+      await visible('[data-landing-section="faq"]', 'Is Kosmos UI free?');
+      await visible('[data-landing-section="cta"]', 'Read the installation guide');
+      await visible('[data-landing-section="footer"]', 'Introduction');
+      await context.close();
     },
   },
   {
@@ -619,12 +654,14 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the logo marquee moves, stops while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
+    name: 'the logo marquee moves, eases to a stop while the pointer is on it or until its pause button is pressed again, stands still under reduced motion, and names every logo',
     async run(browser) {
+      const settle = 1800;
       const path = '/view/logo-marquee-demo';
       const names = ['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel', 'Cirrus Weather', 'Ironbark Logistics'];
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
       const offsetOf = (page: Page) =>
-        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41);
+        page.locator('[data-slot="logo-marquee-track"]').evaluate((track) => new DOMMatrix(getComputedStyle(track).transform).m41 + 0);
 
       const moving = await openPage(browser, path, desktop, 'no-preference');
       const marquee = moving.page.locator('[data-slot="logo-marquee"]');
@@ -633,12 +670,14 @@ const checks: Check[] = [
         ['- list "Used by the teams behind":', ...names.map((name) => `  - listitem: ${name}`)].join('\n'),
         'one list, named by its line, with one named item per logo; the copies stay hidden',
       );
-      await moving.page.waitForFunction(() => document.getAnimations().some((animation) => animation.playState === 'running'));
       const start = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.ok((await offsetOf(moving.page)) < start, 'the logos move toward the start');
       await marquee.locator('[data-slot="logo-marquee-viewport"]').hover();
-      await moving.page.waitForTimeout(100);
+      const hovered = await offsetOf(moving.page);
+      await moving.page.waitForTimeout(150);
+      assert.ok((await offsetOf(moving.page)) < hovered, 'the logos glide on for a moment instead of halting');
+      await moving.page.waitForTimeout(settle);
       const held = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.equal(await offsetOf(moving.page), held, 'the logos stop while the pointer is on them');
@@ -646,7 +685,7 @@ const checks: Check[] = [
       await moving.page.waitForTimeout(500);
       assert.ok((await offsetOf(moving.page)) < held, 'the logos move again once the pointer leaves');
       await marquee.getByRole('button', { name: 'Pause logos' }).press('Enter');
-      await moving.page.waitForTimeout(100);
+      await moving.page.waitForTimeout(settle);
       const stopped = await offsetOf(moving.page);
       await moving.page.waitForTimeout(500);
       assert.equal(await offsetOf(moving.page), stopped, 'the pause button stops the logos until it is pressed again');
@@ -659,7 +698,7 @@ const checks: Check[] = [
       const stillMarquee = still.page.locator('[data-slot="logo-marquee"]');
       await stillMarquee.waitFor();
       await still.page.waitForTimeout(500);
-      assert.equal(await still.page.evaluate(() => document.getAnimations().length), 0, 'reduced motion: nothing animates');
+      assert.equal(await offsetOf(still.page), 0, 'reduced motion: nothing moves');
       assert.equal(await stillMarquee.locator('li:visible').count(), names.length, 'reduced motion: each logo shows once');
       assert.equal(await stillMarquee.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
       const box = (await stillMarquee.boundingBox())!;
@@ -667,6 +706,59 @@ const checks: Check[] = [
         const itemBox = (await item.boundingBox())!;
         assert.ok(itemBox.x >= box.x && itemBox.x + itemBox.width <= box.x + box.width, 'reduced motion: every logo fits in the row');
       }
+      await still.close();
+    },
+  },
+  {
+    name: 'the testimonials wall moves its columns both ways, eases a column to a stop under the pointer, pauses with its button, and stands still with every quote once under reduced motion',
+    async run(browser) {
+      const path = '/view/testimonials-demo';
+      const settle = 1800;
+      const quotes = 9;
+      // `+ 0` turns the -0 of a still track into 0, which strict equality tells apart.
+      const offsets = (page: Page) =>
+        page
+          .locator('[data-slot="testimonials-column"]:visible > div')
+          .evaluateAll((tracks) => tracks.map((track) => new DOMMatrix(getComputedStyle(track).transform).m42 + 0));
+
+      const moving = await openPage(browser, path, desktop, 'no-preference');
+      const wall = moving.page.locator('[data-slot="testimonials-wall"]');
+      assert.equal(await moving.page.getByRole('figure').count(), quotes + 1, 'each quote, and the featured one, is one figure screen readers reach');
+      const start = await offsets(moving.page);
+      assert.equal(start.length, 3, 'three columns at 1280px');
+      await moving.page.waitForTimeout(500);
+      const later = await offsets(moving.page);
+      const moved = later.map((offset, index) => Math.sign(offset - start[index]));
+      assert.ok(moved.includes(-1) && moved.includes(1), `the columns move up and down: ${moved}`);
+      const column = wall.locator('[data-slot="testimonials-column"]:visible').first();
+      await column.hover({ position: { x: 40, y: 200 } });
+      await moving.page.waitForTimeout(settle);
+      const [held, ...others] = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      const [stillHeld, ...othersLater] = await offsets(moving.page);
+      assert.equal(stillHeld, held, 'the column under the pointer stops');
+      assert.notDeepEqual(othersLater, others, 'the other columns keep moving');
+      await moving.page.mouse.move(0, 0);
+      await wall.getByRole('button', { name: 'Pause testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(settle);
+      const paused = await offsets(moving.page);
+      await moving.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(moving.page), paused, 'the pause button stops every column');
+      await wall.getByRole('button', { name: 'Play testimonials' }).press('Enter');
+      await moving.page.waitForTimeout(500);
+      assert.notDeepEqual(await offsets(moving.page), paused, 'the play button moves them again');
+      await moving.close();
+
+      const still = await openPage(browser, path);
+      const stillWall = still.page.locator('[data-slot="testimonials-wall"]');
+      await stillWall.waitFor();
+      await still.page.waitForTimeout(500);
+      assert.deepEqual(await offsets(still.page), [0, 0, 0], 'reduced motion: nothing moves');
+      assert.equal(await stillWall.locator('[data-slot="testimonial"]:visible').count(), quotes, 'reduced motion: each quote shows once');
+      assert.equal(await stillWall.getByRole('button').count(), 0, 'reduced motion: nothing to pause');
+      const wallBox = (await stillWall.boundingBox())!;
+      const lastCard = (await stillWall.locator('[data-slot="testimonial"]:visible').last().boundingBox())!;
+      assert.ok(lastCard.y + lastCard.height <= wallBox.y + wallBox.height, 'reduced motion: the wall is as tall as its quotes');
       await still.close();
     },
   },
@@ -728,26 +820,34 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the inventory counts components, block categories and variants from the registry',
+    name: 'the inventory counts components and block categories from the registry, and shows six of each with a link to all',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="inventory"]');
-      const counts = Object.fromEntries(
-        await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
-          items.map((item) => [item.querySelector('h3')?.textContent?.trim(), item.querySelector('[data-slot="bento-item-visual"]')?.textContent?.trim()]),
-        ),
-      );
-      assert.deepEqual(
-        counts,
-        {
-          Components: String(authoredItems.filter((item) => item.type === 'registry:ui').length),
-          'Block categories': String(new Set(authoredBlocks.map(categoryUrl)).size),
-          Variants: String(authoredBlocks.length + proVariants.length),
-        },
-        'inventory counts',
-      );
+      const shelves = section.getByRole('tablist', { name: 'Library' });
+      const counts = {
+        Components: authoredItems.filter((item) => item.type === 'registry:ui').length,
+        Blocks: new Set(authoredBlocks.map(categoryUrl)).size,
+      };
+      for (const [name, count] of Object.entries(counts)) {
+        await shelves.getByRole('tab', { name: `${name} ${count}` }).click();
+        const panel = section.getByRole('tabpanel');
+        const cards = await panel.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+          items.map((item) => ({ href: item.querySelector('h3 a[href]')?.getAttribute('href'), image: item.querySelector('img')?.getAttribute('src') })),
+        );
+        assert.equal(cards.length, 6, `${name}: six cards`);
+        for (const card of cards) {
+          assert.match(card.href ?? '', new RegExp(`^/docs/${name.toLowerCase()}/[a-z-]+$`), `${name}: a card links to its docs page`);
+          assert.ok(card.image, `${name}: a card shows its thumbnail`);
+        }
+        const all = panel.getByRole('link', { name: `See all ${count} ${name.toLowerCase()}` });
+        assert.equal(await all.getAttribute('href'), `/docs/${name.toLowerCase()}`, `${name}: links to all ${count}`);
+      }
+      const phone375 = await openPage(browser, '/', phone);
+      assert.equal(await phone375.page.locator('[data-landing-section="inventory"] [data-slot="bento-item"]:visible').count(), 3, 'a phone shows the first three cards');
+      await phone375.close();
       const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      assert.deepEqual(labels, ['/docs/blocks/bento'], 'inventory: labelled with the Bento block');
+      assert.deepEqual(labels, ['/docs/blocks/bento', '/docs/components/tabs'], 'inventory: labelled with the Bento block and Tabs');
       await close();
     },
   },

@@ -2,15 +2,19 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GitHubIcon } from '@/components/site/brand-icons';
 import { DashboardCanvas } from '@/components/site/dashboard-canvas';
+import { InstallTabs } from '@/components/site/install-tabs';
 import { ComponentBento } from '@/components/site/landing-bento';
-import { Inventory } from '@/components/site/landing-inventory';
-import { LandingInstall, landingInstallHeadingId } from '@/components/site/landing-install';
-import { LandingProof, landingProofHeadingId } from '@/components/site/landing-proof';
-import { LandingSection, type LandingSectionProps } from '@/components/site/landing-section';
+import { LandingFaq } from '@/components/site/landing-faq';
+import { Inventory, landingInventoryHeadingId } from '@/components/site/landing-inventory';
+import { LandingPricing } from '@/components/site/landing-pricing';
+import { BlockLabel, LandingSection, LandingTitle, type LandingSectionProps } from '@/components/site/landing-section';
+import { LandingStack } from '@/components/site/landing-stack';
 import { SiteFooter } from '@/components/site/site-footer';
 import { itemsInGroup, packageRunners, readRegistryItems, registryAddArgs } from '@/lib/registry';
-import { appDescription, appName, githubUrl, siteOpenGraph } from '@/lib/shared';
+import { appDescription, appName, docsRoute, githubUrl, siteOpenGraph } from '@/lib/shared';
+import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { Hero } from '@/registry/kosmos/blocks/hero/hero';
+import { Announcement } from '@/registry/kosmos/ui/announcement';
 import { Button, buttonVariants } from '@/registry/kosmos/ui/button';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
@@ -33,6 +37,11 @@ const dashboardBlocks = [
   'command-menu',
 ];
 
+const dashboardHeadingId = 'landing-dashboard-heading';
+
+/** The first command of an install, adding the @kosmos registry, for each package manager. */
+const registryCommands = Object.fromEntries(Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} ${registryAddArgs}`]));
+
 export default function HomePage() {
   const items = readRegistryItems();
   const componentCount = items.filter((item) => item.type === 'registry:ui').length;
@@ -42,14 +51,21 @@ export default function HomePage() {
     {
       id: 'hero',
       blocks: ['hero'],
+      components: ['announcement', 'code-tabs'],
+      space: 'hero',
       children: (
         <Hero
+          announcement={
+            <Announcement badge="New" render={<Link href="/presets" />}>
+              Presets: pick a look and copy its CSS
+            </Announcement>
+          }
           title="Dashboard UI with the details already done"
-          description={`${componentCount} components and ${blockCount} blocks, installed from the shadcn registry. Free and open source under MIT.`}
+          description={`${componentCount} components and ${blockCount} blocks on Base UI, added with the shadcn CLI as code you own. Free and open source under MIT.`}
           actions={
             <>
               {/* A router link styled as a button: `Button href` renders a plain <a>, which reloads the page. */}
-              <Link href="/docs/components" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+              <Link href={`${docsRoute}/components`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
                 Browse components
               </Link>
               <Button variant="secondary" size="lg" href={githubUrl}>
@@ -58,59 +74,90 @@ export default function HomePage() {
               </Button>
             </>
           }
-          command={`${packageRunners.npm} ${registryAddArgs}`}
-          className="px-0 pb-0 @2xl:px-0 @2xl:pb-0"
+          install={<InstallTabs commands={registryCommands} />}
         />
       ),
     },
     {
+      id: 'stack',
+      blocks: ['logo-marquee'],
+      children: <LandingStack />,
+    },
+    {
       id: 'dashboard',
       blocks: dashboardBlocks,
-      srHeading: 'Live dashboard',
-      children: <DashboardCanvas />,
+      labelledBy: dashboardHeadingId,
+      column: 'wide',
+      children: (
+        <>
+          <LandingTitle id={dashboardHeadingId}>
+            A whole app from the blocks,
+            <br />
+            in the preset you pick
+          </LandingTitle>
+          <DashboardCanvas />
+        </>
+      ),
     },
     {
       id: 'bento',
       blocks: ['bento'],
-      children: <ComponentBento componentCount={componentCount} />,
+      column: 'wide',
+      children: <ComponentBento />,
     },
     {
       id: 'inventory',
       blocks: ['bento'],
-      srHeading: 'Inventory',
+      components: ['tabs'],
+      labelledBy: landingInventoryHeadingId,
+      column: 'wide',
       children: <Inventory />,
     },
     {
-      id: 'install',
-      components: ['code-tabs'],
-      labelledBy: landingInstallHeadingId,
-      children: <LandingInstall />,
+      id: 'pricing',
+      blocks: ['pricing'],
+      children: <LandingPricing componentCount={componentCount} blockCount={blockCount} />,
     },
     {
-      id: 'proof',
-      components: ['button'],
-      labelledBy: landingProofHeadingId,
-      children: <LandingProof />,
+      id: 'faq',
+      blocks: ['faq'],
+      children: <LandingFaq />,
+    },
+    {
+      id: 'cta',
+      blocks: ['cta'],
+      space: 'last',
+      children: (
+        <Cta
+          title={
+            <>
+              Add your first block,
+              <br />
+              keep every line of it
+            </>
+          }
+          action={
+            <Link href={`${docsRoute}/installation`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+              Read the installation guide
+            </Link>
+          }
+        />
+      ),
     },
   ];
 
-  // The page footer closes the landing outside <main>, in a <div>, so it stays the page's footer landmark.
-  const footer: LandingSectionProps = {
-    id: 'footer',
-    blocks: ['footer'],
-    as: 'div',
-    className: 'pb-8',
-    children: <SiteFooter />,
-  };
-
   return (
     <>
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 pb-16 sm:gap-20 sm:px-6 sm:pb-24">
+      <main className="flex w-full flex-1 flex-col">
         {sections.map((section) => (
           <LandingSection key={section.id} {...section} />
         ))}
       </main>
-      <LandingSection {...footer} />
+      {/* The page footer closes the landing outside <main>, in a <div>, so it stays the page's footer landmark. */}
+      <div data-landing-section="footer" className="flex flex-col gap-6 pb-8">
+        <SiteFooter />
+        <BlockLabel blocks={['footer']} />
+      </div>
     </>
   );
 }

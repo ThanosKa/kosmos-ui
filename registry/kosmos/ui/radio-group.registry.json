@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "title": "Radio Group",
+  "description": "A radio group on Base UI that picks one option from a short list, as radios beside their labels or as radio cards whose edge turns ink when selected. Inside a Field it takes its name, description and error from the field.",
+  "dependencies": ["@base-ui/react@^1.9.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/radio-group.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

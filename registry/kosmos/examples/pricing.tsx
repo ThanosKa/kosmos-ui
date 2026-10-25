@@ -3,7 +3,7 @@ import { Pricing, type PricingPlan } from '@/registry/kosmos/blocks/pricing/pric
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 
-const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
+const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background px-4 py-12 shadow-card';
 
 const twoPlans: PricingPlan[] = [
   {

@@ -66,7 +66,7 @@ test('each choice has its own registry item, named after the preset when it ship
 
 /**
  * The capitalised words a DESIGN.md may use besides the first word of a sentence: the presets' names and the tools a
- * Kosmos project uses. Any other could be the name of a product (ADR 0004).
+ * Kosmos project uses. Any other could be the name of a product.
  */
 const designMdNames = new Set([...presets.map((preset) => preset.name), 'Kosmos', 'UI', 'CSS', 'Tailwind', 'DESIGN', 'MD', 'Meter']);
 

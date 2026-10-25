@@ -177,7 +177,8 @@ type PricingProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 
 /**
  * Plans side by side, with a monthly and yearly switch, the featured plan raised on a card, a list of features and
- * a link at the foot of each plan. Lays itself out by its own width: plans stack in a narrow container.
+ * a link at the foot of each plan. Lays itself out by its own width: plans stack in a narrow container. It sets no
+ * padding around itself, so the page that stacks it sets the space above and below.
  */
 function Pricing({
   title = sampleTitle,
@@ -221,8 +222,7 @@ function Pricing({
       className={cn('@container', className)}
       {...props}
     >
-      {/* The padding sits inside the container, since a container query never matches the container itself. */}
-      <div className="mx-auto flex max-w-5xl flex-col items-center px-4 py-14 @2xl:px-6 @2xl:py-24">
+      <div className="mx-auto flex max-w-5xl flex-col items-center">
         {title ? (
           <Heading id={`${id}-title`} className="max-w-[20em] text-center text-heading text-balance text-foreground @2xl:text-display @2xl:font-semibold">
             {title}
