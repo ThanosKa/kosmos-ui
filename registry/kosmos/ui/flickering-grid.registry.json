@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "flickering-grid",
+  "type": "registry:ui",
+  "title": "Flickering grid",
+  "description": "A grid of small squares that flicker behind a section, in the accent colour (ink when the preset sets no accent). Pauses off screen, shows a still grid under reduced motion and is hidden from assistive technology. Ported from Magic UI (MIT).",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    { "path": "registry/kosmos/ui/flickering-grid.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }
+  ]
+}

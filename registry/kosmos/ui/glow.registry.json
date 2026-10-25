@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glow",
+  "type": "registry:ui",
+  "title": "Glow",
+  "description": "A soft glow of the accent colour behind a section, in ink when the preset sets no accent. Clips itself, takes no space and is hidden from assistive technology. Ported from Launch UI (MIT).",
+  "dependencies": ["class-variance-authority@^0.7.1"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [
+    { "path": "registry/kosmos/ui/glow.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-LAUNCH-UI", "type": "registry:file", "target": "~/LICENSE-LAUNCH-UI" }
+  ]
+}
