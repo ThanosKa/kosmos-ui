@@ -54,6 +54,12 @@ export default function StatsOverviewPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="Error">
+        <div className={frame}>
+          <StatsOverview error onRetry={() => {}} />
+        </div>
+      </PreviewSection>
+
       <PreviewSection title="No data yet">
         <div className={frame}>
           <StatsOverview metrics={everyRange(emptyMetrics)} topEvents={everyRange([])} />

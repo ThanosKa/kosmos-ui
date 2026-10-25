@@ -1,0 +1,90 @@
+---
+title: Feature section
+description: One feature on a marketing page, shown and explained in two cards that sit side by side on a recessed tray.
+---
+
+## Installation
+
+<ComponentInstall name="feature-section" />
+
+The block brings [Badge](/docs/components/badge), [Button](/docs/components/button), [Chart](/docs/components/chart) and [Segmented control](/docs/components/segmented-control) with it for its sample dashboard, and lands in `components/feature-section.tsx`.
+
+## Usage
+
+```tsx
+import { Link2, FileDown } from 'lucide-react';
+import { FeatureSection, type FeatureSectionPoint } from '@/components/feature-section';
+import { Asset, AssetImage } from '@/components/ui/asset';
+import { Button } from '@/components/ui/button';
+
+const points: FeatureSectionPoint[] = [
+  { id: 'share', title: 'Share it with a link', description: 'Anyone in your workspace opens the live view.', href: '/docs/dashboards/share', icon: <Link2 /> },
+  { id: 'export', title: 'Export any chart', description: 'Take the rows behind it into a spreadsheet as CSV.', href: '/docs/dashboards/export', icon: <FileDown /> },
+];
+
+export function Dashboards() {
+  return (
+    <FeatureSection
+      title="Dashboards your whole team reads"
+      description={null}
+      visual={
+        <Asset ratio={4 / 3}>
+          <AssetImage src="/dashboards.png" alt="A dashboard of active users, signups and revenue" />
+        </Asset>
+      }
+      cardTitle="One view for everyone"
+      cardDescription="Build a dashboard once and every teammate opens the same numbers."
+      points={points}
+      action={
+        <Button variant="secondary" href="/docs/dashboards">
+          Read the dashboards guide
+        </Button>
+      }
+    />
+  );
+}
+```
+
+The visual is whatever shows the feature best: a live piece of your product, which a visitor can click and change, or an image in an [Asset](/docs/components/asset). The title, line, sample dashboard, card text, points and action at the top of the file are sample data; delete the sample dashboard and its imports once you pass your own visual.
+
+## What it does
+
+- **Header**: the title is an `<h2>` and the card's heading an `<h3>`. Pass `headingLevel={3}` when the feature section sits inside a part of the page that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the cards their heading.
+- **Tray**: a recessed tray holds two raised cards, the visual in the larger one and the text beside it. The text card holds a heading, a short paragraph, the points and one action, pinned to its bottom so it lines up with the end of the visual.
+- **Points**: each point has a 16px icon, a title and one line under it. A point with `href` turns its title into a link, so a visitor can read more about that point alone. Without an `icon`, a check mark leads the point.
+- **Side**: `visualSide="end"` puts the visual after the text, so features in a row can alternate. The reading order follows the order on screen.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's. The cards stack on a phone and sit side by side from 768px.
+- **Unlike the bento**: the bento shows several features at once, one caption each. The feature section gives one feature the room to explain itself.
+
+## API
+
+### FeatureSection
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The heading. `null` leaves the header out.', type: 'ReactNode', default: "'Dashboards your whole team reads'" },
+    description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode' },
+    visual: { description: 'What the feature looks like: a live piece of your product or an image. Sits in the larger card.', type: 'ReactNode' },
+    cardTitle: { description: 'The heading of the card beside the visual. `null` leaves it out.', type: 'ReactNode', default: "'One view for everyone'" },
+    cardDescription: { description: "A short paragraph under the card's heading. `null` leaves it out.", type: 'ReactNode' },
+    points: { description: 'What the feature lets people do, each with an optional link.', type: 'FeatureSectionPoint[]' },
+    action: { description: 'One `secondary` Button under the points. `null` leaves it out.', type: 'ReactNode' },
+    visualSide: { description: 'Where the visual sits: before the text, or after it.', type: "'start' | 'end'", default: "'start'" },
+    headingLevel: { description: "The level of the title; the card's heading takes the next one. Pass 3 inside a section that has an `<h2>`.", type: '2 | 3', default: '2' },
+    linkComponent: { description: "Renders the point links, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
+  }}
+/>
+
+### FeatureSectionPoint
+
+<TypeTable
+  type={{
+    id: { description: 'A stable key for the point.', type: 'string', required: true },
+    title: { description: 'The point in a few words. With `href`, it is the link.', type: 'ReactNode', required: true },
+    description: { description: 'One line under the title.', type: 'ReactNode' },
+    href: { description: 'Where the title links to, such as the docs page of the point.', type: 'string' },
+    icon: { description: 'A 16px icon before the point, decorative. A check mark when left out.', type: 'ReactNode' },
+  }}
+/>
