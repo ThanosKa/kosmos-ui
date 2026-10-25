@@ -15,7 +15,7 @@ Call the Skill tool with `kosmos-style` before writing a line, and keep its **Be
 
 ## 2. Build
 
-Write the component fresh on Base UI (`@base-ui/react`). For a component that already exists, check each file below against this table and fix what differs. Each file is found by its name; adding a component edits no shared file.
+Build the component on Base UI (`@base-ui/react`), from scratch or from MIT-licensed code restyled to the Kosmos style, with the source's copyright line in a third-party notice (ADR 0010). For a component that already exists, check each file below against this table and fix what differs. Each file is found by its name; adding a component edits no shared file.
 
 | File | What it holds |
 | --- | --- |
