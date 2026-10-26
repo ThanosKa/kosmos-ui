@@ -2,7 +2,7 @@
 
 Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. `/tokens` renders them live. The palette and radius in it are the CSS of the default preset in `lib/presets`, written by `pnpm registry:build`; `pnpm test` checks every preset's text (4.5:1), focus and chart marks (3:1) in both modes.
 
-Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles. "Adjusted" marks a value changed for contrast, with the reason.
+Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. A preset with an accent also sets `primary` (ADR 0011). The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles. "Adjusted" marks a value changed for contrast, with the reason.
 
 ## How the file maps to the registry
 
@@ -24,7 +24,7 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `background`, `foreground` | Page surface and its text: a near-white page and near-black ink in light, near-black and off-white in dark | ADR 0009 |
 | `card`, `card-foreground` | Cards, tiles: white on the near-white page in light, a step lighter than the page in dark | ADR 0009 |
 | `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0009 |
-| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox, switch on, slider range. Ink with light text in light; the light ink with dark text in dark | ADR 0009: ink, the same value as `foreground`. Never an accent fill: white on a saturated accent rarely reaches 4.5:1 |
+| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox and radio, switch on, slider range, Tabs indicator, done step. Ink with light text in light; the light ink with dark text in dark. In a preset with an accent, the accent's primary step under its own `primary-foreground` | ADR 0009: ink, the same value as `foreground`. ADR 0011: a preset's accent sets it, and `primary-foreground` is 4.5:1 on it and under its 90% hover (white where it passes, dark ink where it does not, as for Warm's orange), the fill 3:1 on `background` and `card`. Also `sidebar-primary` |
 | `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0009 |
 | `muted` | Track and quiet fills | ADR 0009 |
 | `muted-foreground` | Secondary text | Set in both modes to pass 4.5:1 on `background`, `card`, `muted` and `sidebar` |
@@ -33,10 +33,10 @@ shadcn names, so components installed with `shadcn add` from any registry pick t
 | `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the page; dark study. With `destructive`, the only chroma in the default |
 | `border` | Dividers between items | ADR 0009 |
 | `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0009 |
-| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent's ring step, which also takes `sidebar-ring` and `chart-1` | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
-| `accent-text` | The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter's `primary` tone | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes. In Warm a step deeper than `ring` in light, so a primary Meter never shares a lightness with `warning` (about 1.7:1 apart). The name keeps clear of shadcn's `accent`, the hover fill |
+| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent's ring step, which also takes `sidebar-ring` and `chart-1` (the first chart series, coherent with `primary`: one hue, a step apart in lightness where the fill needs it) | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
+| `accent-text` | The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu, the current page in Pagination), the Meter's `primary` tone and decorative tints (Glow, Flickering grid) | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes. In Warm a step deeper than `ring` in light, so a primary Meter never shares a lightness with `warning` (about 1.7:1 apart). The name keeps clear of shadcn's `accent`, the hover fill |
 | `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
-| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode | ADR 0007, kept by ADR 0009 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
+| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode and each preset, so a preset sets no `thumb` of its own | ADR 0007, kept by ADR 0009 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
 | `scrollbar-thumb` | The ScrollArea thumb: a grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
 | `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0009; a step darker than the page in light, focus = `ring` |
 
@@ -48,7 +48,7 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | A mono ramp (ADR 0009): slot 1 is ink (`foreground`), slots 2–5 step toward the page in grey, about 1.4–1.6:1 apart, each 3:1 or more against `card` and `background` in both modes. Lightness alone carries the series, so it reads in grayscale and for color-blind readers; touching segments are split by a 1px line in the surface color |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | A mono ramp in every preset, Warm included (ADR 0009, ADR 0011): slot 1 is ink (`foreground`), or the accent's ring step in a preset with one; slots 2–5 step toward the page in grey, about 1.4–1.6:1 apart, each 3:1 or more against `card` and `background` in both modes. Lightness alone carries the series, so it reads in grayscale and for color-blind readers; touching segments are split by a 1px line in the surface color |
 
 ## Tag colors
 

@@ -1,3 +1,7 @@
+---
+status: partly superseded by ADR 0011, which lets a preset's color set the primary
+---
+
 # Black and white palette, with colour from presets
 
 Kosmos ships true greys: a white page and near-black ink in light, the inverse in dark, and no accent. Focus, the current nav item, meters and the first chart series are ink. Charts use a mono ramp, ink then grey steps, and colour enters only through status hues or a preset's accent. This replaces ADR 0007: the maintainer wants Kosmos to read like the black and white dev tools its users already build, and seven research rounds over those products found the same palette each time. Only the palette changes. The style stays as it was: layered shadows instead of borders, the rim in dark, density, type roles and motion.

@@ -8,11 +8,11 @@ export const consolePreset: Preset = {
   id: 'console',
   name: 'Console',
   description:
-    'Violet-tinted greys on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent, for dense tools that live in dark mode.',
+    'Violet-tinted greys on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series, for dense tools that live in dark mode.',
   radius: '0.375rem',
   accent: {
-    light: { ring: 'oklch(0.55 0.22 287)', text: 'oklch(0.54 0.22 287)' },
-    dark: { ring: '#8b68ff', text: '#9b7dff' },
+    light: { primary: 'oklch(0.52 0.22 287)', onPrimary: '#ffffff', ring: 'oklch(0.55 0.22 287)', text: 'oklch(0.54 0.22 287)' },
+    dark: { primary: '#9b7dff', onPrimary: '#0c0c0f', ring: '#8b68ff', text: '#9b7dff' },
   },
   light: {
     background: '#f4f4f6',

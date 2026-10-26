@@ -4,7 +4,7 @@ description: Every Kosmos color token in light and dark, the Tailwind class it g
 icon: Palette
 ---
 
-The colors are true grays and ink, with no accent: color is left to status and destructive. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS. For other grays, an accent or another radius, pick a preset on the [Presets page](/presets) and take its CSS or registry command.
+The colors are true grays and ink, with no accent: color is left to status and destructive. A preset with an accent also colors `primary`, so its buttons and checked controls take that color. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS. For other grays, an accent or another radius, pick a preset on the [Presets page](/presets) and take its CSS or registry command.
 
 Each swatch shows the light value on the left and the dark value on the right. Click a swatch to copy its class. Every value below is read from the tokens file, so this page always matches what you install.
 
@@ -14,7 +14,7 @@ Each swatch shows the light value on the left and the dark value on the right. C
 
 ## Text
 
-Gray carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab and the current item in a nav menu) takes `text-accent-text`, ink on the flat hover fill, and so does a Meter in its primary tone. A preset with an accent colors these, focus and the first chart series with it.
+Gray carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu and the current page in Pagination) takes `text-accent-text`, ink on the flat hover fill, and so does a Meter in its primary tone. A preset with an accent colors these, focus and the first chart series with it, and also fills `primary`: buttons, checked checkboxes and radios, switches that are on, the slider range and the tabs indicator.
 
 <ColorTokens group="text" />
 

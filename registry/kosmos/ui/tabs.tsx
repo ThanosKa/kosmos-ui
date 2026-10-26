@@ -50,7 +50,7 @@ function TabsList({ className, children, activateOnFocus = true, ...props }: Tab
         data-slot="tabs-indicator"
         renderBeforeHydration
         className={cn(
-          'pointer-events-none absolute bg-foreground motion-reduce:hidden',
+          'pointer-events-none absolute bg-primary motion-reduce:hidden',
           'transition-[translate,width,height] duration-slow ease-smooth-in-out',
           'data-[orientation=horizontal]:bottom-0 data-[orientation=horizontal]:left-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:w-(--active-tab-width) data-[orientation=horizontal]:translate-x-(--active-tab-left)',
           'data-[orientation=vertical]:top-0 data-[orientation=vertical]:-start-px data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:h-(--active-tab-height) data-[orientation=vertical]:translate-y-(--active-tab-top)',
@@ -81,7 +81,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         'data-disabled:opacity-50',
         'group-data-[orientation=vertical]/tabs-list:h-8 group-data-[orientation=vertical]/tabs-list:justify-start group-data-[orientation=vertical]/tabs-list:px-3',
         // The underline the reduced-motion cross-fade uses in place of the sliding indicator.
-        'after:pointer-events-none after:absolute after:bg-foreground after:opacity-0 after:transition-opacity motion-safe:after:hidden data-active:after:opacity-100',
+        'after:pointer-events-none after:absolute after:bg-primary after:opacity-0 after:transition-opacity motion-safe:after:hidden data-active:after:opacity-100',
         'group-data-[orientation=horizontal]/tabs-list:after:inset-x-0 group-data-[orientation=horizontal]/tabs-list:after:bottom-0 group-data-[orientation=horizontal]/tabs-list:after:h-0.5',
         'group-data-[orientation=vertical]/tabs-list:after:inset-y-0 group-data-[orientation=vertical]/tabs-list:after:-start-px group-data-[orientation=vertical]/tabs-list:after:w-0.5',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
