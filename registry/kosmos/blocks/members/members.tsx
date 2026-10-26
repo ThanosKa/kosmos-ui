@@ -113,10 +113,22 @@ function RoleSelect({
   );
 }
 
-function PersonCell({ name, email, avatarUrl, you }: { name?: string; email: string; avatarUrl?: string; you?: boolean }) {
+function PersonCell({
+  name,
+  email,
+  avatarUrl,
+  you,
+  avatarClassName,
+}: {
+  name?: string;
+  email: string;
+  avatarUrl?: string;
+  you?: boolean;
+  avatarClassName?: string;
+}) {
   return (
     <span className="flex min-w-0 items-center gap-3">
-      <Avatar>
+      <Avatar className={avatarClassName}>
         {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
         <AvatarFallback>{name ? initials(name) : <Mail aria-hidden className="size-3.5" />}</AvatarFallback>
       </Avatar>
@@ -318,10 +330,10 @@ function Members({
               ? Array.from({ length: 3 }, (_, row) => (
                   <TableRow key={row}>
                     <TableCell>
-                      <Skeleton className="h-8 w-40" />
+                      <Skeleton className="h-8 w-28" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="h-7.5 w-28" />
+                      <Skeleton className="h-7.5 w-24" />
                     </TableCell>
                     <TableCell className="hidden @md:table-cell">
                       <Skeleton className="h-3.5 w-16" />
@@ -337,8 +349,8 @@ function Members({
                   const locked = member.role === 'owner' || you;
                   return (
                     <TableRow key={member.id}>
-                      <TableCell className="w-full max-w-0 min-w-44">
-                        <PersonCell name={member.name} email={member.email} avatarUrl={member.avatarUrl} you={you} />
+                      <TableCell className="w-full max-w-0 min-w-20">
+                        <PersonCell name={member.name} email={member.email} avatarUrl={member.avatarUrl} you={you} avatarClassName="hidden @md:flex" />
                       </TableCell>
                       <TableCell>
                         {member.role === 'owner' ? (
