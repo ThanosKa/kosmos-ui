@@ -23,7 +23,7 @@ const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisf
 <GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
 ```
 
-`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of grey, so they read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent greys stay apart. For more than five series, group the smallest into "Other".
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of gray, so they read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
 
 ## Examples
 

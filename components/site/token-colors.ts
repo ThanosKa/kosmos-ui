@@ -29,7 +29,7 @@ function oklchToHex(value: string) {
 }
 
 /**
- * Palette tokens and the brand colour as hex, for the places CSS variables never reach: the browser's theme color
+ * Palette tokens and the brand color as hex, for the places CSS variables never reach: the browser's theme color
  * and the generated icons and social images. Server only (reads `tokens.css` and `app/global.css`).
  */
 export function tokenColors(mode: 'light' | 'dark') {

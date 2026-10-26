@@ -32,7 +32,7 @@ Pass the value already formatted, in the user's locale and currency. Write a mil
 
 ### When falling is good
 
-`StatCardDelta` takes the change as a number, 9.6 for a 9.6% rise, and writes it with an arrow and a sign: ↗ +9.6%, ↘ −11.1%, → 0%. A rise is green and a fall red. For a metric such as errors or latency, set `goodWhen="down"` so a fall is green. For one that is neither good nor bad, `goodWhen="neither"` keeps it grey. A change in a rate reads in percentage points with `unit="points"`.
+`StatCardDelta` takes the change as a number, 9.6 for a 9.6% rise, and writes it with an arrow and a sign: ↗ +9.6%, ↘ −11.1%, → 0%. A rise is green and a fall red. For a metric such as errors or latency, set `goodWhen="down"` so a fall is green. For one that is neither good nor bad, `goodWhen="neither"` keeps it gray. A change in a rate reads in percentage points with `unit="points"`.
 
 <ComponentPreview name="stat-card-good-when" />
 
@@ -86,7 +86,7 @@ Renders a `<span>` with the change in a tag, then its `children` in muted text. 
       required: true,
     },
     goodWhen: {
-      description: 'Whether a rise is good news (green), bad news (red) or neither (grey).',
+      description: 'Whether a rise is good news (green), bad news (red) or neither (gray).',
       type: "'up' | 'down' | 'neither'",
       default: "'up'",
     },
