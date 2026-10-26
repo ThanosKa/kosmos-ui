@@ -167,7 +167,7 @@ const sampleNotifications = [
 
 function Notifications() {
   return (
-    <ul className={cn(card, 'max-w-sm divide-y divide-border')}>
+    <ul className={cn(card, 'w-full max-w-sm divide-y divide-border')}>
       {sampleNotifications.map((notification) => (
         <li key={notification.id} className="flex min-w-0 items-center gap-3 px-4 py-2.5 text-body">
           <Bell aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
