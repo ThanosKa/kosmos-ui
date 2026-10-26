@@ -1,0 +1,11 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "browser-frame",
+  "type": "registry:ui",
+  "title": "Browser frame",
+  "description": "A browser window around a screenshot or a live screen: three neutral dots, an optional address and the content. An optional perspective tilt stands straight on hover and never moves under reduced motion.",
+  "dependencies": ["class-variance-authority@^0.7.1"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "misc" },
+  "files": [{ "path": "registry/kosmos/ui/browser-frame.tsx", "type": "registry:ui" }]
+}
