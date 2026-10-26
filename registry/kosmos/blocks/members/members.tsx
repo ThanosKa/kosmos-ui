@@ -420,9 +420,11 @@ function Members({
           <h3 data-slot="invites-heading" tabIndex={-1} className="text-title outline-none">
             Pending invites
           </h3>
-          <p className="text-small text-muted-foreground tabular-nums">
-            {loading ? 'Loading…' : invites.length === 0 ? 'Nobody is waiting' : countLabel(invites.length, 'invite', 'invites')}
-          </p>
+          {!loading && invites.length === 0 ? null : (
+            <p className="text-small text-muted-foreground tabular-nums">
+              {loading ? 'Loading…' : countLabel(invites.length, 'invite', 'invites')}
+            </p>
+          )}
         </div>
         {loading ? (
           <div className="flex flex-col gap-3">

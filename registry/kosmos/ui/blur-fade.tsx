@@ -24,14 +24,11 @@ function BlurFade({ delay = 0, className, style, ...props }: BlurFadeProps) {
     const rect = element.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) return;
     setHidden(true);
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setHidden(false);
-        observer.disconnect();
-      },
-      { rootMargin: '0px 0px -12% 0px' },
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setHidden(false);
+      observer.disconnect();
+    });
     observer.observe(element);
     return () => observer.disconnect();
   }, []);

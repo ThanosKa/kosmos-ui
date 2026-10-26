@@ -99,7 +99,7 @@ const syncNodes = [
   { Icon: Server, position: 'left-[22.5em]' },
 ];
 
-const syncPaths = ['M70 120 H125', 'M195 120 H250'];
+const syncPaths = ['M60 120 H160', 'M160 120 H260'];
 
 /**
  * Three nodes on one line, with a pulse running along each link from left to right, one after the other.
@@ -125,7 +125,7 @@ function SyncIllustration(props: IllustrationProps) {
           <g key={path}>
             <path d={path} fill="none" strokeWidth={1} vectorEffect="non-scaling-stroke" className="stroke-border" />
             {reduced ? (
-              <circle cx={index === 0 ? 97.5 : 222.5} cy={120} r={3} className="fill-foreground" />
+              <circle cx={index === 0 ? 110 : 210} cy={120} r={3} className="fill-foreground" />
             ) : (
               <circle r={3} className="fill-foreground" opacity={0}>
                 <animateMotion

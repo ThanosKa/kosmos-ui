@@ -160,16 +160,16 @@ function Granularity() {
 }
 
 const sampleNotifications = [
-  { id: 'signups', text: 'Signups fell below 40 a day', time: '2 min ago' },
-  { id: 'errors', text: 'Error events passed 2%', time: '1 h ago' },
-  { id: 'summary', text: 'Your weekly summary is ready', time: 'Mon' },
+  { id: 'signups', text: 'Signups below 40', time: '2 min ago' },
+  { id: 'errors', text: 'Errors passed 2%', time: '1 h ago' },
+  { id: 'summary', text: 'Weekly summary', time: 'Mon' },
 ];
 
 function Notifications() {
   return (
-    <ul className={cn(card, 'max-w-sm divide-y divide-border')}>
+    <ul className={cn(card, 'w-full max-w-sm divide-y divide-border')}>
       {sampleNotifications.map((notification) => (
-        <li key={notification.id} className="flex min-w-0 items-center gap-3 px-4 py-2.5 text-body">
+        <li key={notification.id} className="flex min-w-0 items-center gap-2.5 px-3 py-2.5 text-body">
           <Bell aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
           <span className="min-w-0 truncate text-foreground">{notification.text}</span>
           <span className="ms-auto shrink-0 text-small text-muted-foreground tabular-nums">{notification.time}</span>
