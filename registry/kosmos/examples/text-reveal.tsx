@@ -21,6 +21,13 @@ export default function TextRevealPreview() {
           <TextReveal>A longer line that wraps onto a second line inside a narrow column and still breaks between words</TextReveal>
         </p>
       </PreviewSection>
+      <PreviewSection title="On scroll into view (below the fold)">
+        <div className="flex min-h-screen items-end">
+          <p className="text-heading font-semibold text-foreground">
+            <TextReveal trigger="view">Revealed the first time it scrolls into view, then it stays</TextReveal>
+          </p>
+        </div>
+      </PreviewSection>
     </PreviewStack>
   );
 }

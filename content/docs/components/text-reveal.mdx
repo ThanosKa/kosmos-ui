@@ -1,6 +1,6 @@
 ---
 title: Text reveal
-description: Text that comes in word by word as the page first paints, from a blur, with no JavaScript.
+description: Text that rises out of a soft blur word by word, once, as the page paints or when it scrolls into view.
 ---
 
 <ComponentPreview name="text-reveal-demo" />
@@ -23,11 +23,13 @@ import { TextReveal } from '@/components/ui/text-reveal';
 </h1>
 ```
 
-The words are plain text in the markup, so search engines, screen readers and a browser without JavaScript get the whole title. The entrance is a CSS transition from the `starting` style, so it plays on the first paint, with no hydration wait. Pass a string: a title with markup inside cannot be split into words.
+The words are plain text in the markup, so search engines, screen readers and a browser without JavaScript get the whole title. By default the entrance is a CSS transition from the `starting` style, so it plays on the first paint, with no hydration wait. Pass a string: a title with markup inside cannot be split into words.
+
+For a section further down the page, set `trigger="view"`: text below the fold waits hidden and plays once, the first time it scrolls into view; text already on screen stays put. The stagger shortens for a long text, so the last word lands within a second.
 
 ## Examples
 
-### Stagger and delay
+### Stagger, delay and scroll
 
 <ComponentPreview name="text-reveal" />
 
@@ -42,7 +44,8 @@ TextReveal is a `<span>` and accepts all of its props. It wraps no Base UI part.
 <TypeTable
   type={{
     children: { description: 'The text, revealed word by word.', type: 'string', required: true },
-    stagger: { description: 'The wait between one word and the next, in milliseconds.', type: 'number', default: '40' },
+    trigger: { description: 'When it plays: as the page first paints, or the first time it scrolls into view.', type: "'mount' | 'view'", default: "'mount'" },
+    stagger: { description: 'The wait between one word and the next, in milliseconds. A long text shortens it.', type: 'number', default: '40' },
     delay: { description: 'The wait before the first word, in milliseconds.', type: 'number', default: '0' },
   }}
 />

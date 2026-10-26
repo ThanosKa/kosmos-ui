@@ -1,0 +1,44 @@
+---
+title: Shimmer
+description: A soft light that sweeps across text while a state is still working, such as Thinking or Generating.
+---
+
+<ComponentPreview name="shimmer-demo" />
+
+## Installation
+
+<ComponentInstall name="shimmer" />
+
+## Usage
+
+```tsx
+import { Shimmer } from '@/components/ui/shimmer';
+```
+
+```tsx
+<Shimmer>Thinking…</Shimmer>
+```
+
+Use it for a short status line that stands for work in progress: an assistant that is thinking, a report that is generating. Pass `active={false}` when the work is done, and the text settles in place. For the shape of content that is loading, use [Skeleton](/docs/components/skeleton).
+
+The light is a gradient clipped to the letters, from `muted-foreground` to `foreground` and back, and it moves on the `shimmer` animation that comes with the tokens. Text stays in the muted tone outside the sweep, so it passes contrast at every moment.
+
+## Examples
+
+### Sizes and wrapping
+
+<ComponentPreview name="shimmer" />
+
+## Accessibility
+
+The text is real text, so screen readers read it and it can be selected. The sweep is decoration: tell assistive technology about the change itself, for example by putting the status in a `role="status"` region. Under reduced motion and in forced-colors mode the text is plain and still.
+
+## API
+
+Shimmer is a `<span>` and accepts all of its props. It wraps no Base UI part.
+
+<TypeTable
+  type={{
+    active: { description: 'Whether the light sweeps. Set it to false when the work is done and the text should settle.', type: 'boolean', default: 'true' },
+  }}
+/>
