@@ -197,6 +197,7 @@ function Members({
   const [emails, setEmails] = React.useState<string[]>([]);
   const [inviteRole, setInviteRole] = React.useState<AssignableRole>(defaultInviteRole);
   const [removing, setRemoving] = React.useState<Member | null>(null);
+  const [removeOpen, setRemoveOpen] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState('');
   const inviteCount = React.useRef(0);
 
@@ -236,7 +237,7 @@ function Members({
     setMembers((current) => current.filter((item) => item.id !== removing.id));
     onRemove?.(removing);
     setConfirmation(`${removing.name} was removed from ${workspace}.`);
-    setRemoving(null);
+    setRemoveOpen(false);
   };
 
   const resend = (invite: Invite) => {
@@ -377,7 +378,10 @@ function Members({
                               <Ellipsis aria-hidden />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => setRemoving(member)}>
+                              <DropdownMenuItem onClick={() => {
+                                  setRemoving(member);
+                                  setRemoveOpen(true);
+                                }}>
                                 <UserMinus aria-hidden />
                                 Remove from {workspace}
                               </DropdownMenuItem>
@@ -443,7 +447,7 @@ function Members({
         )}
       </div>
 
-      <Dialog open={removing !== null} onOpenChange={(open) => !open && setRemoving(null)}>
+      <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove {removing?.name}?</DialogTitle>
