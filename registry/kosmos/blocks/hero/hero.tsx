@@ -74,11 +74,11 @@ function Hero({
         ) : null}
         <Heading className="max-w-[14em] text-display font-semibold text-balance wrap-break-word text-foreground @2xl:text-hero">{title}</Heading>
         {description ? (
-          <p data-slot="hero-description" className="mt-4 max-w-[34em] text-body text-pretty text-muted-foreground @2xl:mt-5 @2xl:text-lead">
+          <p data-slot="hero-description" className="mt-4 max-w-[40em] text-body text-pretty text-muted-foreground @2xl:mt-5 @2xl:text-lead">
             {description}
           </p>
         ) : null}
-        {actions ? <div className="mt-8 flex max-w-full flex-wrap justify-center gap-3">{actions}</div> : null}
+        {actions ? <div data-slot="hero-actions" className="mt-8 flex max-w-full flex-wrap justify-center gap-3">{actions}</div> : null}
         {install ? (
           <div data-slot="hero-install" className="mt-10 w-full max-w-xl text-start">
             {install}

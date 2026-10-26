@@ -136,6 +136,12 @@ type DataTableAction = 'copy-link' | 'export' | 'pause' | 'resume' | 'delete';
 /** Columns that step aside as the block narrows, so the table fits its frame before it scrolls sideways. */
 const wideColumn = 'hidden @min-[74rem]:table-cell';
 const midColumn = 'hidden @min-[60rem]:table-cell';
+const narrowColumns = {
+  quota: 'hidden @min-[52rem]:table-cell',
+  plan: 'hidden @min-[42rem]:table-cell',
+  users: 'hidden @min-[37rem]:table-cell',
+  mrr: 'hidden @min-[32rem]:table-cell',
+};
 
 type Column = {
   id: SortKey;
@@ -151,11 +157,11 @@ const nameColumn: Column = { id: 'name', label: 'Project', orders: ['A to Z', 'Z
 const lowHigh: Column['orders'] = ['Low to high', 'High to low'];
 const columns: (Column & { id: DataTableColumn })[] = [
   { id: 'platform', label: 'Platform', fit: wideColumn, orders: ['A to Z', 'Z to A'] },
-  { id: 'plan', label: 'Plan', orders: ['Free to Scale', 'Scale to Free'] },
-  { id: 'users', label: 'Users', align: 'end', orders: lowHigh },
+  { id: 'plan', label: 'Plan', fit: narrowColumns.plan, orders: ['Free to Scale', 'Scale to Free'] },
+  { id: 'users', label: 'Users', align: 'end', fit: narrowColumns.users, orders: lowHigh },
   { id: 'events', label: 'Events', align: 'end', fit: midColumn, orders: lowHigh },
-  { id: 'quota', label: 'Event quota', orders: lowHigh },
-  { id: 'mrr', label: 'MRR', align: 'end', orders: lowHigh },
+  { id: 'quota', label: 'Event quota', fit: narrowColumns.quota, orders: lowHigh },
+  { id: 'mrr', label: 'MRR', align: 'end', fit: narrowColumns.mrr, orders: lowHigh },
   { id: 'status', label: 'Status', orders: ['Live to Paused', 'Paused to Live'] },
   { id: 'lastEventAt', label: 'Last event', fit: wideColumn, orders: ['Oldest first', 'Newest first'] },
 ];
@@ -780,8 +786,8 @@ function DataTable({
                         onCheckedChange={(checked) => toggleRow(row.id, checked)}
                       />
                     </TableCell>
-                    <TableCell className="w-64 max-w-72">
-                      <div className="flex min-w-0 items-center gap-2.5">
+                    <TableCell className="w-64 max-w-72 @max-lg:w-auto">
+                      <div className="flex min-w-0 items-center gap-2.5 @max-md:w-28">
                         <Avatar size="sm" aria-hidden className="rounded-md">
                           <AvatarFallback>{row.name.charAt(0)}</AvatarFallback>
                         </Avatar>

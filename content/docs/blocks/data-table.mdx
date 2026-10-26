@@ -38,7 +38,7 @@ To pair the table with the [page header](/docs/blocks/page-header), turn the too
 - **Opening a row**: with `onOpen`, the project name becomes a button and a click anywhere on the row opens it too, for example in the [detail drawer](/docs/blocks/detail-drawer). Clicks on the checkbox and the actions menu do not.
 - **Row actions**: each row has a menu with Open project (with `onOpen`), and Copy link, Pause project or Resume project, and Delete project (with `onAction`). Without either, the menu is hidden.
 - **Loading and empty**: `loading` shows skeleton rows. When a search, status or filter hides every row, the table says so and offers Clear filters, which clears its own search and filters and calls `onClearFilters` for the rest.
-- **Narrow screens**: the table lays out by its own width. Below 1184px it hides Platform and Last event, below 960px it hides Events too, and when the columns still don't fit, it scrolls sideways inside its own frame while the page stays put.
+- **Narrow screens**: the table lays out by its own width. Below 1184px it hides Platform and Last event, below 960px it hides Events too, and below 832px, 672px, 592px and 512px it also hides Event quota, Plan, Users and MRR in turn, so that on a phone Project and Status remain. A column you hide yourself stays hidden; the rest step aside before the table would scroll sideways.
 
 The Delete actions are placeholders. Wire them to a confirmation dialog or an undo toast before you ship.
 
