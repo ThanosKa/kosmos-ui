@@ -6,9 +6,9 @@ import { codeThemes } from './code-themes';
 
 type HighlightedCodeProps = Omit<ComponentProps<typeof CodeBlock>, 'children'> & { code: string; lang: string };
 
-/** `code` highlighted on the server with the Kosmos code themes, in a Kosmos code block. */
-export async function HighlightedCode({ code, lang, className, ...codeblock }: HighlightedCodeProps) {
-  return await highlight(code, {
+/** `code` highlighted with the Kosmos code themes, in a Kosmos code block. */
+export function highlightCode({ code, lang, className, ...codeblock }: HighlightedCodeProps) {
+  return highlight(code, {
     lang,
     ...codeThemes,
     components: {
@@ -19,4 +19,9 @@ export async function HighlightedCode({ code, lang, className, ...codeblock }: H
       ),
     },
   });
+}
+
+/** `code` highlighted on the server with the Kosmos code themes, in a Kosmos code block. */
+export async function HighlightedCode(props: HighlightedCodeProps) {
+  return await highlightCode(props);
 }
