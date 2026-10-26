@@ -3,7 +3,7 @@
   "name": "cta",
   "type": "registry:block",
   "title": "CTA",
-  "description": "The end of a marketing page: a two-line title and one action, centered, with room around them. Lays itself out by its own width.",
+  "description": "The end of a marketing page: a two-line title and one action, centered, with room around them. It lays itself out by its own width, not the screen's.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
   "categories": ["cta"],
   "meta": { "group": "blocks", "section": "marketing", "tier": "free" },

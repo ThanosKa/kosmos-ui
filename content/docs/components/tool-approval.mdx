@@ -104,7 +104,7 @@ Set `surface="none"` to drop the card and sit flat inside a card, a chat message
       default: "'pending'",
     },
     decision: {
-      description: 'While submitting, the decision being sent; once decided, the decision taken.',
+      description: 'While submitting, the decision being sent. Once decided, the decision taken.',
       type: "'allow-once' | 'always-allow' | 'deny'",
     },
     decidedBy: {
@@ -120,7 +120,7 @@ Set `surface="none"` to drop the card and sit flat inside a card, a chat message
       type: "(decision: 'allow-once' | 'always-allow' | 'deny') => void | Promise<void>",
     },
     surface: {
-      description: '`card` draws its own card; `none` sits flat in the surface that hosts it.',
+      description: '`card` draws its own card. `none` sits flat in the surface that hosts it.',
       type: "'card' | 'none'",
       default: "'card'",
     },

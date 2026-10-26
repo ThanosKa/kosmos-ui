@@ -73,7 +73,7 @@ Send, its spinner and Stop cross-fade into each other in 150ms with `power3-out`
     },
     onStop: { description: 'Called by Stop and by Escape while `status` is `streaming`.', type: '() => void' },
     status: {
-      description: '`submitting` spins Send and keeps it from sending again; `streaming` turns Send into Stop.',
+      description: '`submitting` spins Send and keeps it from sending again. `streaming` turns Send into Stop.',
       type: "'idle' | 'submitting' | 'streaming'",
       default: "'idle'",
     },
