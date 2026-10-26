@@ -26,7 +26,9 @@ function NumberTicker({ value, duration = 1200, locale = 'en-US', className, ...
   React.useEffect(() => {
     const element = ref.current;
     const shown = counter.current;
-    if (!element || !shown || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!element || !shown) return;
+    shown.textContent = final;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const rect = element.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) return;
 

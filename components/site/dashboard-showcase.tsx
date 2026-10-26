@@ -15,8 +15,8 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 
 /*
- * The live dashboard of the landing page, composed from the eight free blocks. It renders as a whole app in its own
- * document (`/dashboard`), which the landing shows in an iframe, so the tokens a visitor picks there stay inside it.
+ * The live dashboard of the Presets page preview, composed from the free blocks. It renders as a whole app in the
+ * preview document (`/preset-preview`), which the Presets page shows in an iframe.
  * The Overview page is the stats overview's Acme sample data, and the board is the Acme roadmap, where the new
  * item dialog adds its cards. The table, the drawer and the command menu share the data table's sample projects, so a
  * change in one shows in the others. Only Overview, Projects, its saved views and the roadmap are wired up; the other
