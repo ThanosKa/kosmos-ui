@@ -1,0 +1,58 @@
+---
+title: Illustrations
+description: Three small animated product illustrations for bento tiles and feature cards.
+---
+
+<ComponentPreview name="illustrations-demo" />
+
+## Installation
+
+<ComponentInstall name="illustrations" />
+
+## Usage
+
+```tsx
+import { ChecklistIllustration, LayerStackIllustration, SyncIllustration } from '@/components/ui/illustrations';
+```
+
+```tsx
+<div className="overflow-hidden rounded-2xl bg-muted">
+  <LayerStackIllustration />
+</div>
+```
+
+Each illustration is drawn in tokens, with no image. It is a 4:3 stage that fills the width of its container and scales with it, so put it in a bento tile or a feature card and let the container set the size. It carries no text and is hidden from assistive technology: the words around it say what it shows.
+
+## Examples
+
+### Layer stack
+
+Four cards stacked like pages. They fan out once the stack scrolls into view. With `trigger="hover"` they fan out while the pointer is over the stack and close when it leaves.
+
+<ComponentPreview name="illustrations-layer-stack" />
+
+### Sync
+
+Three nodes with a pulse that runs along each link in turn.
+
+<ComponentPreview name="illustrations-sync" />
+
+### Checklist
+
+Rows tick one after the other, hold, then clear and run again.
+
+<ComponentPreview name="illustrations-checklist" />
+
+## Accessibility
+
+The illustrations are decoration and carry `aria-hidden`. The pulses and the ticking run only while the illustration is on screen. Under reduced motion nothing moves: the stack stands fanned out, the pulses rest mid-link and every row is ticked.
+
+## API
+
+Each illustration is a `<div>` and accepts all of its props.
+
+<TypeTable
+  type={{
+    trigger: { description: 'LayerStackIllustration only. What fans the layers out: the stack scrolling into view, or the pointer over it.', type: "'view' | 'hover'", default: "'view'" },
+  }}
+/>
