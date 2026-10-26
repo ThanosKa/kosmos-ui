@@ -1,0 +1,48 @@
+---
+title: Browser frame
+description: A browser window around a screenshot or a live screen, with an optional address and a tilt that stands straight on hover.
+---
+
+<ComponentPreview name="browser-frame-demo" />
+
+## Installation
+
+<ComponentInstall name="browser-frame" />
+
+## Usage
+
+```tsx
+import Image from 'next/image';
+import { BrowserFrame } from '@/components/ui/browser-frame';
+```
+
+```tsx
+<BrowserFrame url="acme.example/overview">
+  <Image src="/overview.png" alt="The overview page of Acme" width={1600} height={1000} className="block w-full" />
+</BrowserFrame>
+```
+
+The frame draws the window and nothing else: the bar, the card surface, its shadow and its 16px radius. The content is yours, a screenshot or a live component. Give a screenshot the content outline from the style, and an `alt` that says what it shows.
+
+## Examples
+
+### Tilt
+
+`tilt` leans the window back in perspective and stands it straight when the pointer is over it. Under reduced motion it stands straight from the start. Leave a little room above it, since the top edge swings outward as it leans.
+
+<ComponentPreview name="browser-frame-tilt" />
+
+## Accessibility
+
+The bar, with its dots and address, is decorative and `aria-hidden`. The content keeps its own semantics.
+
+## API
+
+BrowserFrame is a `<div>` and accepts all of its props. It wraps no Base UI part.
+
+<TypeTable
+  type={{
+    url: { description: 'The address in the bar, without a scheme. Leave it out for a bar with only the dots.', type: 'string' },
+    tilt: { description: 'Leans the window back in perspective until the pointer is over it. Never moves under reduced motion.', type: 'boolean', default: 'false' },
+  }}
+/>

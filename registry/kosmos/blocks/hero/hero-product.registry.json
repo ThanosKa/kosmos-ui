@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hero-product",
+  "type": "registry:block",
+  "title": "Hero with product",
+  "description": "A marketing hero with a title, one line and two actions, then a live dashboard in a tilted browser frame with a glow behind it and a fade into the page. Swap the screen for an image.",
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/hero",
+    "@kosmos/browser-frame",
+    "@kosmos/glow",
+    "@kosmos/sidebar",
+    "@kosmos/app-sidebar",
+    "@kosmos/stats-overview"
+  ],
+  "categories": ["hero"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [{ "path": "registry/kosmos/blocks/hero/hero-product.tsx", "type": "registry:component" }]
+}
