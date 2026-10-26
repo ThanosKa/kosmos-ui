@@ -55,6 +55,17 @@ Put `Empty` in a single cell that spans every column, so the headers stay and th
 
 <ComponentPreview name="empty-table" />
 
+### Variants
+
+`EmptyState` is an `Empty` with the five usual reasons built in. Pick the `variant`, name what the list holds with `noun`, and it writes the icon, title and sentence. Pass `title`, `description` or `icon` to say it your own way.
+
+<ComponentPreview name="empty-states" />
+
+```tsx
+<EmptyState variant="no-results" noun="projects" query="fernhil" onClear={clearFilters} />
+<EmptyState variant="error" noun="projects" onRetry={reload} />
+```
+
 ## API
 
 Each part renders a `<div>` (`EmptyDescription` a `<p>`) and accepts all of its props. No part wraps a Base UI part.
@@ -92,3 +103,24 @@ The media is decorative and hidden from screen readers. The title carries the me
 | `EmptyHeader` | Holds the media, title and description. |
 | `EmptyDescription` | Says why, or what to do next. A `<p>`. |
 | `EmptyContent` | The next step: one or two buttons, a link or a short form. |
+
+### EmptyState
+
+<TypeTable
+  type={{
+    variant: {
+      description: '`first-use` for a list that was never filled, `no-results` when a search found nothing, `filtered` when filters hide everything, `error` when the data did not load, `no-permission` when the viewer may not see it.',
+      type: "'first-use' | 'no-results' | 'filtered' | 'error' | 'no-permission'",
+    },
+    noun: { description: 'What the list holds, plural. Used in the default title.', type: 'string', default: "'items'" },
+    query: { description: 'The search text, quoted in the `no-results` title.', type: 'string' },
+    title: { description: 'Replaces the default title.', type: 'ReactNode' },
+    description: { description: 'Replaces the default sentence.', type: 'ReactNode' },
+    icon: { description: 'Replaces the variant icon.', type: 'ReactNode' },
+    action: { description: 'The primary action, such as the button that creates the first item or asks for access.', type: 'ReactNode' },
+    onClear: { description: 'Shows Clear filters in `no-results` and `filtered`.', type: '() => void' },
+    onRetry: { description: 'Shows Try again in `error`, which also announces itself as an alert.', type: '() => void' },
+    headingLevel: { description: 'Renders the title as a heading of this level; plain `<div>` when left out.', type: '2 | 3 | 4 | 5 | 6' },
+    compact: { description: 'Drops the icon and tightens the spacing, for a narrow column or a small card.', type: 'boolean', default: 'false' },
+  }}
+/>
