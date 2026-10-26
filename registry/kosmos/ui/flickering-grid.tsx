@@ -38,7 +38,7 @@ const haloEasing = 0.12;
 type Cells = [firstCol: number, lastCol: number, firstRow: number, lastRow: number];
 
 /**
- * A grid of small squares that flicker, as a background. Squares take the accent colour (ink when the preset sets no
+ * A grid of small squares that flicker, as a background. Squares take the accent color (ink when the preset sets no
  * accent). It fills the nearest positioned parent, pauses while off screen and while the tab is hidden, shows a still grid
  * when the visitor asks for less motion, and is hidden from assistive technology. With `spotlight`, squares near a mouse
  * or pen pointer over the parent brighten in a soft halo that follows it. A frame redraws only the squares that changed.

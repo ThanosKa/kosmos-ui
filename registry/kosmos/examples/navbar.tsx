@@ -81,14 +81,14 @@ export default function NavbarPreview() {
         </OverlayStage>
       </PreviewSection>
 
-      <PreviewSection title="Centred links">
+      <PreviewSection title="Centered links">
         <div className={frame}>
           <Navbar layout="center" current="/pricing" data-scrolled="" />
           {page}
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Centred links with search, 640px">
+      <PreviewSection title="Centered links with search, 640px">
         <div className={`${frame} max-w-160`}>
           <Navbar layout="center" search={search} current="/pricing" data-scrolled="" />
           {page}

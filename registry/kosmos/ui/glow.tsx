@@ -16,7 +16,7 @@ const glowPosition = cva('absolute inset-x-0 h-0', {
 type GlowProps = React.ComponentProps<'div'> & VariantProps<typeof glowPosition>;
 
 /**
- * A soft glow of the accent colour (ink when the preset sets no accent) behind a section, for a hero or a call to action.
+ * A soft glow of the accent color (ink when the preset sets no accent) behind a section, for a hero or a call to action.
  * It fills the nearest positioned parent, clips itself, sits behind the content and is hidden from assistive technology.
  */
 function Glow({ position, className, ...props }: GlowProps) {

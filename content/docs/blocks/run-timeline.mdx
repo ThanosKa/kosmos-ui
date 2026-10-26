@@ -30,7 +30,7 @@ Without props it shows a sample run waiting for an approval. Pass the run as you
 - **Steps**: each step sits on a line with its time since the start of the run (**+0:14**). Hover it for the clock time. A step is a plan, a reasoning block, a tool call, an approval or a message, and each brings the component that shows it, so its status and details work as they do on their own.
 - **Approvals**: an approval step asks inline and calls `onDecide` with the step id and the decision. Set the step's `status` to `submitting` while you send it and to `decided` with `decidedBy` and `decidedAt` once it lands. It then folds to a record of who decided and when.
 - **While running**: a **Working…** row closes the timeline. New steps fade in.
-- **Finished**: a done run folds its steps behind a summary such as **7 steps · 3 tool calls · 1 approval**. A failed or cancelled run keeps them open. Control this with `stepsOpen` and `onStepsOpenChange`, or set where it starts with `defaultStepsOpen`.
+- **Finished**: a done run folds its steps behind a summary such as **7 steps · 3 tool calls · 1 approval**. A failed or canceled run keeps them open. Control this with `stepsOpen` and `onStepsOpenChange`, or set where it starts with `defaultStepsOpen`.
 - **Failed**: `run.error` shows its message under the steps with **Retry from step 3**, which calls `onRetry` with the id of the step that failed.
 - **Queued**: an empty state says the run starts when a worker is free, and how many runs are ahead when you pass `queuePosition`.
 - **Width**: the block lays itself out by its own width. In a narrow container the step times hide and the header wraps.

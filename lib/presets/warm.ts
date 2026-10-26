@@ -10,7 +10,7 @@ const lightInkRing = 'oklch(0.97 0.004 106.5 / 0.55)';
 export const warm: Preset = {
   id: 'warm',
   name: 'Warm',
-  description: 'A cream page, near-white cards, warm greys and a warm near-black ink, with one saturated orange for focus, the current page in navigation, meters and the first chart series.',
+  description: 'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange for focus, the current page in navigation, meters and the first chart series.',
   radius: '0.625rem',
   // The orange of ADR 0007. In light the text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
   accent: {

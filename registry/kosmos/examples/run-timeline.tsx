@@ -215,7 +215,7 @@ export default function RunTimelinePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Cancelled by Tomás Ortega">
+      <PreviewSection title="Canceled by Tomás Ortega">
         <div className={frame}>
           <RunTimeline run={cancelledRun} />
         </div>

@@ -53,7 +53,7 @@ function accentSection({ accent }: Preset) {
   if (!accent) {
     return 'This preset has no accent: focus, the current page in navigation, meters and the first chart series are ink, so color is left to status and destructive.';
   }
-  return `This preset's one accent colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: buttons, links and every other text stay ink or grey.
+  return `This preset's one accent colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: buttons, links and every other text stay ink or gray.
 
 | Step | Light | Dark | Use |
 | --- | --- | --- | --- |
@@ -111,7 +111,7 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 - Use \`accent-text\` for anything but the current nav item and a primary Meter.
 - Fill a button or a large surface with \`ring\`.
 - Let a hover take the \`ring\` color: that color means focus.
-- Add a grey fainter than \`muted-foreground\` for text.
+- Add a gray fainter than \`muted-foreground\` for text.
 - Write a color literal in a component: every color goes through its token.
 `;
 }

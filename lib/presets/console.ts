@@ -3,12 +3,12 @@ import type { Preset } from './palette.ts';
 const ink = '#18181d';
 const lightInk = '#ededf2';
 
-/** Violet-tinted greys and a tight radius for a dense pro tool, dark first. */
+/** Violet-tinted grays and a tight radius for a dense pro tool, dark first. */
 export const consolePreset: Preset = {
   id: 'console',
   name: 'Console',
   description:
-    'Violet-tinted greys on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent, for dense tools that live in dark mode.',
+    'Violet-tinted grays on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent, for dense tools that live in dark mode.',
   radius: '0.375rem',
   accent: {
     light: { ring: 'oklch(0.55 0.22 287)', text: 'oklch(0.54 0.22 287)' },

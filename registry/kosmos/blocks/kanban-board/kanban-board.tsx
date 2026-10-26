@@ -480,7 +480,7 @@ function KanbanBoard({
     onDragOver: ({ active, over }) => (over ? `${titleOf(active.id)} is now in ${position(active.id)}.` : undefined),
     onDragEnd: ({ active }) => `Dropped ${titleOf(active.id)} in ${position(active.id)}.`,
     // Runs after the cancel has put every card back, so the position is the original one.
-    onDragCancel: ({ active }) => `Move cancelled. ${titleOf(active.id)} is back in ${position(active.id)}.`,
+    onDragCancel: ({ active }) => `Move canceled. ${titleOf(active.id)} is back in ${position(active.id)}.`,
   };
 
   // Up and Down move within a column (the sortable default); Left and Right jump to the same

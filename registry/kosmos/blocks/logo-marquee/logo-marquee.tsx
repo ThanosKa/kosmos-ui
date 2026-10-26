@@ -11,7 +11,7 @@ type LogoMarqueeLogo = {
   name: string;
   /** The mark, such as an `<svg>` or an `<img alt="">`. Decorative: `name` names it. */
   logo?: React.ReactNode;
-  /** The brand colour the logo turns to on hover or focus, any CSS colour. Without one it turns to the text colour. */
+  /** The brand color the logo turns to on hover or focus, any CSS color. Without one it turns to the text color. */
   color?: string;
   /** Makes the logo a link, which also brings it into the keyboard's reach. */
   href?: string;
@@ -101,7 +101,7 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 };
 
 /**
- * A row of logos in grey that turn to their own colours on hover or focus: still in centered rows, or as a marquee that moves toward the start, fades out at both
+ * A row of logos in gray that turn to their own colors on hover or focus: still in centered rows, or as a marquee that moves toward the start, fades out at both
  * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
  * motion the marquee stands still in centered rows. Lays itself out by its own width, and sets no padding around itself.
  */

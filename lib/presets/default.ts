@@ -5,12 +5,12 @@ const paper = 'oklch(1 0 0)';
 const page = 'oklch(0.985 0 0)';
 const lightInk = 'oklch(0.97 0 0)';
 
-/** True greys and ink, with color only for status and destructive (ADR 0009). */
+/** True grays and ink, with color only for status and destructive (ADR 0009). */
 export const defaultPreset: Preset = {
   id: 'default',
   name: 'Default',
   description:
-    'White cards on a near-white page, true greys and a near-black ink, with no accent: focus, the current page in navigation, meters and charts are ink and grey, so color is left to status and destructive.',
+    'White cards on a near-white page, true grays and a near-black ink, with no accent: focus, the current page in navigation, meters and charts are ink and gray, so color is left to status and destructive.',
   radius: '0.625rem',
   light: {
     background: page,

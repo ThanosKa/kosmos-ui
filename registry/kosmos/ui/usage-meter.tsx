@@ -42,7 +42,7 @@ type UsageMeterProps = {
 
 type UsageTone = 'normal' | 'warning' | 'critical';
 
-// A category keeps its hue by position: the five chart series, then ink, then grey for the long tail.
+// A category keeps its hue by position: the five chart series, then ink, then gray for the long tail.
 const categoryFill = [
   'bg-chart-1',
   'bg-chart-2',

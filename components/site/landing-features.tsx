@@ -154,7 +154,7 @@ const items: FeatureRowItem[] = [
   {
     id: 'chart',
     title: 'Numbers that read at a glance',
-    description: 'Charts and stat tiles share one grey ramp, and each chart comes with a table for screen readers.',
+    description: 'Charts and stat tiles share one gray ramp, and each chart comes with a table for screen readers.',
     media: <ChartAndStat />,
     href: '/docs/components/chart',
     linkLabel: 'See the chart',

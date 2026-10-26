@@ -79,7 +79,7 @@
  * `hover:not-data-disabled:bg-brand-hover`: the primary hover lightens the fill, and white falls under 4.5:1 on a light card.
  * The light edge is a ring in the fill color, re-declared here because `--shadow-primary` resolves `--primary` on `:root`.
  */
-/* The one place the brand colour colours a large area: the glow behind the landing's hero product. */
+/* The one place the brand color colors a large area: the glow behind the landing's hero product. */
 .landing-hero [data-slot='glow'] {
   --accent-text: var(--brand);
 }
