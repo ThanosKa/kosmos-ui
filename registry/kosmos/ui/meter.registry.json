@@ -3,7 +3,7 @@
   "name": "meter",
   "type": "registry:ui",
   "title": "Meter",
-  "description": "A value within a known range, built on Base UI Meter: label, formatted value and a continuous bar or a segment bar, in a fixed tone or colored by region.",
+  "description": "A value within a known range, built on Base UI Meter. It shows a label, a formatted value, and a continuous or segmented bar in a fixed tone or colored by region.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "data" },

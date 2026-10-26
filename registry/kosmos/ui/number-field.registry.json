@@ -3,7 +3,7 @@
   "name": "number-field",
   "type": "registry:ui",
   "title": "Number Field",
-  "description": "A number input on Base UI with a minus and a plus button, arrow-key steps, a min and max, and Intl formatting for currency, percent and units. Inside a Field it takes its label, description and error from the field.",
+  "description": "A number input on Base UI with minus and plus buttons, arrow-key steps, min and max, and Intl formatting. Inside a Field it takes its label, description and error from the field.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
   "meta": { "group": "forms" },

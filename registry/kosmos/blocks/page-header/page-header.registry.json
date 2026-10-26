@@ -3,7 +3,7 @@
   "name": "page-header",
   "type": "registry:block",
   "title": "Page header",
-  "description": "The top of a list page: a title and a description with a primary action and a More actions menu, saved views as tabs with counts, search, a grouped filter menu, and a removable chip for each filter that is on. It lays itself out by its own width, not the screen's.",
+  "description": "The top of a list page: a title, a description, a primary action and a More actions menu. It also has saved views as tabs, search, a filter menu, and a removable chip per active filter. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

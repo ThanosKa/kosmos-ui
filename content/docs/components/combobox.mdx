@@ -1,6 +1,6 @@
 ---
 title: Combobox
-description: Picks one or more values from a long list by typing to filter it. A field with the same look as Input opens the list, and chosen values show as chips when there can be several. Built on Base UI.
+description: Picks one or more values from a long list by typing to filter it. A field that looks like Input opens the list, and chosen values show as chips when you allow more than one. Built on Base UI.
 baseUi: https://base-ui.com/react/components/combobox
 ---
 
@@ -37,7 +37,7 @@ const projects = [
 </Combobox>;
 ```
 
-Combobox filters `items` by their label as people type, so the list only ever shows matches. Items shaped `{ value, label }` show their label in the field. For any other shape, pass `itemToStringLabel`. Use a [Select](/docs/components/select) when the list is short enough to read at a glance, and Combobox when people would rather type than scroll.
+Combobox filters `items` by their label as people type, so the list only ever shows matches. Items shaped `{ value, label }` show their label in the field. For any other shape, pass `itemToStringLabel`. Use a [Select](/docs/components/select) when the list is short enough to read in one look, and Combobox when people would rather type than scroll.
 
 ## Examples
 
@@ -59,7 +59,7 @@ In a form, put the Combobox in a [Field](/docs/components/field). The input take
 
 <ComponentPreview name="combobox-with-field" />
 
-To type values that are not in a list, such as email addresses, use the [Tags input](/docs/components/tags-input), which is built on the multiple Combobox.
+To type values that are not in a list, such as email addresses, use the [Tags input](/docs/components/tags-input), which builds on the multiple Combobox.
 
 ## API
 
@@ -197,8 +197,8 @@ The list's popup: Base UI `Combobox.Portal`, `Combobox.Positioner` and `Combobox
 | `ComboboxChipsInput` | The input after the chips. Base UI `Combobox.Input`. |
 | `ComboboxValue` | Renders the chosen value through a function child, such as the chips. Base UI `Combobox.Value`. |
 | `ComboboxList` | The matching items, scrolling with an edge fade once the list outgrows the popup. Base UI `Combobox.List` in a [ScrollArea](/docs/components/scroll-area). |
-| `ComboboxItem` | One option, with a check while it is chosen. Base UI `Combobox.Item`. |
-| `ComboboxEmpty` | Its text shows while nothing matches, and is announced. Base UI `Combobox.Empty`. |
+| `ComboboxItem` | One option, with a check while selected. Base UI `Combobox.Item`. |
+| `ComboboxEmpty` | Its text shows while nothing matches, and screen readers announce it. Base UI `Combobox.Empty`. |
 | `ComboboxGroup` | One group of items. Base UI `Combobox.Group`. |
 | `ComboboxGroupLabel` | The heading of a group. Base UI `Combobox.GroupLabel`. |
 | `ComboboxCollection` | Renders the items of the group it sits in. Base UI `Combobox.Collection`. |

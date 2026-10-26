@@ -1,0 +1,25 @@
+extends: substitution
+message: "GLOSSARY.md lists '%[2]s' under Avoid. Use '%[1]s'."
+ignorecase: true
+level: error
+swap:
+  widget: component
+  widgets: components
+  golden image: baseline
+  kitchen sink: state matrix
+  customizer: Presets page
+  theme builder: Presets page
+  design skill: style skill
+  autoscroll: drift
+  mini sidebar: icon mode
+  free tier: free components
+  premium block: Pro variant
+  paid variant: Pro variant
+  basic version: free variant
+  Pro site: Pro deployment
+  Pro server: Pro deployment
+  design variable: token
+  status color: status tint
+  signature color: brand color
+  tap animation: press scale
+  design language: foundations

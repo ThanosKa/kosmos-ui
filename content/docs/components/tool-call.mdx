@@ -28,13 +28,13 @@ import { ToolCall } from '@/components/ui/tool-call';
 />
 ```
 
-The row shows the tool's icon, the title, the tool id, the duration and a status badge. Pass an icon per tool, so a list of calls reads at a glance. Without one the row shows a wrench. `icon` takes the component itself, such as `Database` from `lucide-react`, so render ToolCall from a client component.
+The row shows the tool's icon, the title, the tool id, the duration and a status badge. Pass an icon per tool, so a list of calls reads in one look. Without one the row shows a wrench. `icon` takes the component itself, such as `Database` from `lucide-react`. Render ToolCall from a client component.
 
-A tool call has no surface of its own. Put it in the card, message or timeline that hosts it, and stack several with `divide-y divide-border` on their parent.
+A tool call has no surface of its own. Put it in the card, message or timeline that hosts it, and stack many with `divide-y divide-border` on their parent.
 
 The row fits the width of its container. The tool id shows from 576px, and the duration from 384px. Below that, both move to the top of the open panel. A long title wraps to two lines and shows in full once the call is open.
 
-A string `input` or `output` shows as is, and an object is printed as indented JSON. A panel scrolls past 256px. When a call has no input, output or error yet, its row does not open and shows no chevron.
+A string `input` or `output` shows as is, and an object shows as indented JSON. A panel scrolls past 256px. When a call has no input, output or error yet, its row does not open and shows no chevron.
 
 The panel grows to its height as it opens, in 300ms, and shrinks back in 150ms. When the reduced motion setting is on, it fades in and out instead.
 

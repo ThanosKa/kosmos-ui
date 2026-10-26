@@ -3,7 +3,7 @@
   "name": "reasoning",
   "type": "registry:ui",
   "title": "Reasoning",
-  "description": "Shows that an agent is thinking and folds its reasoning away under one quiet row: streamed prose or steps, auto-collapse when done, and a live announcement of how long it took.",
+  "description": "Shows that an agent is thinking and folds its reasoning under one quiet row. It streams prose or steps, collapses when done, and announces how long it took.",
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

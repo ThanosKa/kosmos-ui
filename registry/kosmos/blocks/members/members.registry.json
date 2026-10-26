@@ -3,7 +3,7 @@
   "name": "members",
   "type": "registry:block",
   "title": "Members",
-  "description": "Who is in a workspace and who is on the way: invite many emails at once with a role, change roles in a table, remove members after a confirmation, and resend or revoke pending and expired invites. Loading and empty states included. It lays itself out by its own width, not the screen's.",
+  "description": "A workspace members page: invite many emails at once with a role, change roles in a table, remove members, and resend or revoke pending invites. It has loading and empty states. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

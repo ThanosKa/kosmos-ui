@@ -1,6 +1,6 @@
 ---
 title: Status
-description: Six states for a task, a step or a run, as a row icon, a dot beside its word and a Badge, so every view shows progress the same way.
+description: Six states for a task, a step, or a run, shown as a row icon, a dot beside its word, or a Badge. Every view shows progress the same way.
 ---
 
 <ComponentPreview name="status-demo" />
@@ -23,7 +23,7 @@ import { StatusBadge, StatusDot, StatusIcon, type Status } from '@/components/ui
 
 There are six states: `pending`, `running`, `waiting`, `done`, `error` and `skipped`. Map your own words onto them, such as queued to `pending`, needs approval to `waiting` and failed to `error`, and write those words as the label.
 
-The color sits on the icon or the dot, never on the text, and each state has its own icon shape and its own word, so the label and the shape carry the meaning without the color.
+The color sits on the icon or the dot, never on the text. Each state has its own icon shape and its own word. The label and the shape carry the meaning without the color.
 
 The running icon spins. When the reduced motion setting is on, it pulses instead. A new icon fades in as a status changes, with a small scale that the reduced motion setting turns off.
 
@@ -37,7 +37,7 @@ The running icon spins. When the reduced motion setting is on, it pulses instead
 
 ### Dots
 
-`StatusDot` is a state in a table cell, a list or a detail page: a 6px dot beside the word, in the text color around it, with no pill. The dot takes the status tint of its state: gray for `pending` and `skipped`, blue for `running` (it pulses), orange for `waiting`, green for `done` and red for `error`. A label too long for its slot truncates.
+`StatusDot` is a state in a table cell, a list or a detail page. It is a 6px dot beside the word, in the text color around it, with no pill. The dot takes the status tint of its state: gray for `pending` and `skipped`, blue for `running` (it pulses), orange for `waiting`, green for `done` and red for `error`. A label too long for its slot truncates.
 
 <ComponentPreview name="status-dots" />
 
@@ -79,7 +79,7 @@ A list of steps, each led by its icon. When no text beside the icon names the st
 
 ### StatusDot
 
-Renders a `<span>` and accepts all of its props, and:
+Renders a `<span>` and accepts all its props, and:
 
 <TypeTable
   type={{

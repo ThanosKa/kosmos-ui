@@ -4,6 +4,6 @@ description: A card for one number and how it changed, and a card for a chart wi
 date: 2026-10-25
 ---
 
-- **[Stat card](/docs/components/stat-card)**: a label, a value, a change that reads without color (↗ +9.6%, ↘ −11.1%, → 0%) in a green or red tag, and an optional sparkline. `goodWhen="down"` turns the colors around for a metric like errors, and `loading` swaps the numbers for skeletons.
-- **[Chart card](/docs/components/chart-card)**: a header with a title, a description and a place for a range switch, a legend for charts that draw none, and loading, empty and error states at the chart's height, with Try again when you pass `onRetry`.
+- **[Stat card](/docs/components/stat-card)**: a label, a value, a change and an optional sparkline. The change reads without color (↗ +9.6%, ↘ −11.1%, → 0%) in a green or red tag. `goodWhen="down"` turns the colors around for a metric like errors, and `loading` swaps the numbers for skeletons.
+- **[Chart card](/docs/components/chart-card)**: a header with a title, a description and a place for a range switch, and a legend for charts that draw none. It also has loading, empty and error states at the chart's height, with Try again when you pass `onRetry`.
 - **[Stats overview](/docs/blocks/stats-overview)**: the chart and the top events sit on chart cards, and the metrics show their change with the stat card's delta. New `error` and `onRetry` props show an error in place of the data, and `goodWhen: 'neither'` keeps a change gray. Run `shadcn add` for it again to pick this up.

@@ -4,13 +4,13 @@ description: The first four blocks, ready-made pieces of a dashboard built from 
 date: 2026-10-11
 ---
 
-The first blocks. Each one installs with `shadcn add` and brings the components it is made of:
+The first blocks. Each one installs with `shadcn add` and brings the components it uses:
 
 - [App sidebar](/docs/blocks/app-sidebar): a workspace switcher, search, pages with unread counts, saved views and an account menu, in the resizable Sidebar.
 - [Page header](/docs/blocks/page-header): a title with a primary action, tabs for saved views, and search, filters and a table or board switch.
 - [Data table](/docs/blocks/data-table): sortable columns, row selection with bulk actions, status, owner, a health meter and row actions, with loading and empty states.
 - [Stats overview](/docs/blocks/stats-overview): stat tiles with sparklines, a revenue chart with a range switch, and each plan's share of revenue.
 
-The page header, data table and stats overview lay themselves out by the width they are given, so they fit beside a sidebar or inside a panel.
+The page header, data table and stats overview lay themselves out by the width of their container. They fit beside a sidebar or inside a panel.
 
-Every value a user changes works controlled or uncontrolled, including the app sidebar's workspace (`workspace` or `defaultWorkspace`). Menu items that run an action (add workspace, the account menu, import and export, row and bulk actions) appear only when you pass `onAction`, so no item does nothing. The app sidebar shows the ⌘K hint only with `searchShortcut`, and the page header takes a `headingLevel` for pages that already have an `<h1>`.
+Every value a user changes works controlled or uncontrolled, including the app sidebar's workspace (`workspace` or `defaultWorkspace`). Menu items that run an action (add workspace, the account menu, import and export, row and bulk actions) appear only when you pass `onAction`. No item does nothing. The app sidebar shows the ⌘K hint only with `searchShortcut`, and the page header takes a `headingLevel` for pages that already have an `<h1>`.

@@ -3,7 +3,7 @@
   "name": "data-table",
   "type": "registry:block",
   "title": "Data table",
-  "description": "A table of projects with search and faceted filters with counts, column menus to sort and hide columns, row selection and a bulk action bar, pages, plan tags, status dots, a row actions menu, totals in the footer, and loading and empty states.",
+  "description": "A projects table with search, faceted filters, sortable columns, row selection with a bulk action bar, and pages. It also has a row actions menu, a totals footer, and loading and empty states.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

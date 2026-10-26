@@ -27,7 +27,7 @@ import { Badge } from '@/components/ui/badge';
 
 ### Tags
 
-For categories, such as a segment, a plan or a label, use a hue: `orange`, `blue`, `amber`, `magenta`, `green` or `red`. Each one tints the pill with its hue and draws its text in a darker or lighter step of the same hue, which passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. Orange, blue, green and red are the same colors as the status tints of those hues. A status keeps the neutral pill with a dot.
+For categories, such as a segment, a plan or a label, use a hue: `orange`, `blue`, `amber`, `magenta`, `green` or `red`. Each one tints the pill with its hue and draws its text in a darker or lighter step of the same hue. That passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. Orange, blue, green and red are the same colors as the status tints of those hues. A status keeps the neutral pill with a dot.
 
 <ComponentPreview name="badge-tags" />
 
@@ -39,13 +39,13 @@ For a code, such as an HTTP status or a method, use a status tint: `tint-gray`, 
 
 ### Current item
 
-Inside the current item of a nav, the element with `aria-current`, `tint-blue`, `tint-green`, `tint-orange` and `tint-red` fill with their solid step under white text, at 4.5:1 or more in both themes. An API reference uses it to mark the method of the page you are on.
+Inside the current item of a nav, the element with `aria-current`, `tint-blue`, `tint-green`, `tint-orange` and `tint-red` fill with their solid step under white text. That is 4.5:1 or more in both themes. An API reference uses it to mark the method of the page you are on.
 
 <ComponentPreview name="badge-current" />
 
 ### With an icon
 
-An icon inside a badge is sized to 12px. Put it before the label, or after it when it points somewhere, like an arrow on a link.
+An icon inside a badge is 12px. Put it before the label, or after it when it points somewhere, like an arrow on a link.
 
 <ComponentPreview name="badge-icon" />
 
@@ -63,13 +63,13 @@ Pass an `<a>` through `render` to make the whole badge a link. It gets a hover b
 
 ### Long labels
 
-A badge never wraps. When the label can be longer than its slot, wrap it in `<span className="min-w-0 truncate">` and show the full text somewhere the user can reach, such as the detail view.
+A badge never wraps. When the label can outgrow its slot, wrap it in `<span className="min-w-0 truncate">`. Show the full text where the user can reach it, such as the detail view.
 
 <ComponentPreview name="badge-long" />
 
 ## API
 
-Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all of its props.
+Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all its props.
 
 <TypeTable
   type={{

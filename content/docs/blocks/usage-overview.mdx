@@ -1,6 +1,6 @@
 ---
 title: Usage overview
-description: Agent usage and cost for a workspace, with stat tiles, tokens per day by model, and a breakdown by model or member against the monthly budget.
+description: Agent usage and cost for a workspace, with stat tiles and tokens per day by model. A breakdown by model or member sits against the monthly budget.
 ---
 
 ## Installation
@@ -17,16 +17,16 @@ import { UsageOverview } from '@/components/usage-overview';
 <UsageOverview workspace="Acme" usage={usage} budget={{ usedUsd: 1062.99, limitUsd: 2000 }} />;
 ```
 
-Without props it shows sample usage for three models. The overview lays itself out by its own width: four tiles in a row on a wide container, two or one on a narrower one, and the breakdown drops its Share, then its Runs column, when space runs short.
+Without props it shows sample usage for three models. The overview lays itself out by its own width. It shows four tiles in a row on a wide container and two or one on a narrower one. The breakdown drops its Share, then its Runs column, when space runs short.
 
 ## What it does
 
 - **Period**: 7, 30 or 90 days. Each period has its own data in `usage`, and the header names the workspace and the dates it covers.
-- **Stat tiles**: tokens, runs, spend and cost per run, each with the change against the previous period. The change is green when it is good news and red when it is bad: more tokens and runs are good, more spend and a higher cost per run are bad. Cost per run is worked out from spend and runs.
+- **Stat tiles**: tokens, runs, spend and cost per run, each with the change against the previous period. The change is green when it is good news and red when it is bad. More tokens and runs are good, and more spend and a higher cost per run are bad. The block works out cost per run from spend and runs.
 - **Tokens per day**: a bar per day, stacked by model, with a tooltip, a legend and a hidden data table for screen readers. Each model in `models` is a series, up to five, read from the key in `daily` that matches its `id`.
 - **Breakdown**: runs, tokens, share and cost for each model or each member. Members show an avatar with their initials, or `avatarUrl` when you pass one.
 - **Monthly budget**: a meter under the breakdown, which turns to the warning tone at 90%. Leave `budget` out to hide it.
-- **Empty and loading**: a period with no runs shows an empty state with a link to your agents, and `loading` swaps every value for a skeleton of the same shape.
+- **Empty and loading**: a period with no runs shows an empty state with a link to your agents. `loading` swaps every value for a skeleton of the same shape.
 
 ## API
 

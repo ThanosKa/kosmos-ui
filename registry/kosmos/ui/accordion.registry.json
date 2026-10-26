@@ -3,7 +3,7 @@
   "name": "accordion",
   "type": "registry:ui",
   "title": "Accordion",
-  "description": "Sections that open and close under their headings, on Base UI: divider borders, a height animation that turns into a fade under reduced motion, and full keyboard support.",
+  "description": "Sections that open and close under their headings, on Base UI. It has divider borders, a height animation that becomes a fade under reduced motion, and keyboard support.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },

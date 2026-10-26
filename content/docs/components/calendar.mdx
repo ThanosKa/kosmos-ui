@@ -1,6 +1,6 @@
 ---
 title: Calendar
-description: A month grid to pick one day or a range, with one or more months side by side, days that can't be picked, the week start of the locale and the whole date grid keyboard path.
+description: A month grid to pick one day or a range. It shows one or more months side by side, disables days, follows the locale's week start, and supports the keyboard throughout.
 ---
 
 <ComponentPreview name="calendar-demo" />
@@ -21,9 +21,9 @@ import { Calendar } from '@/components/ui/calendar';
 <Calendar value={date} onValueChange={setDate} aria-label="Due date" />
 ```
 
-Calendar picks whole days: it hands you a `Date` at midnight in the user's time zone. Every month takes six rows, so the calendar keeps its height from one month to the next, and screen readers hear the new month when it changes.
+Calendar picks whole days: it hands you a `Date` at midnight in the user's time zone. Every month takes six rows, so the calendar keeps its height from one month to the next. Screen readers hear the new month when it changes.
 
-Tab lands on one day: the picked day, else today, else the first of the month. From there the arrow keys move a day or a week, Home and End go to the start and the end of the week, Page Up and Page Down move a month, and a year with Shift. Enter or Space picks the day. A day that can't be picked keeps its place in that path, so the arrows never jump over it.
+Tab lands on one day: the chosen day, else today, else the first of the month. From there the arrow keys move a day or a week. Home and End go to the start and the end of the week. Page Up and Page Down move a month, and a year with Shift. Enter or Space chooses the day. A day that is off limits keeps its place in that path, so the arrows never jump over it.
 
 Most of the time you want Calendar inside a [Date picker](/docs/components/date-picker), which opens it from a field.
 
@@ -37,15 +37,15 @@ Pass `mode="range"`. The first pick starts the range and the second ends it, in 
 
 `onValueChange` runs on each pick: with `{ from }` after the first, and with `{ from, to }` after the second.
 
-### Days that can't be picked
+### Days that are off limits
 
-`min` and `max` set the first and last day, and the month buttons stop there. The days past them fade. `isDateDisabled` turns off single days, such as weekends, which fade and are struck through.
+`min` and `max` set the first and last day, and the month buttons stop there. The days past them fade. `isDateDisabled` turns off single days, such as weekends, which fade and show a strike-through.
 
 <ComponentPreview name="calendar-limits" />
 
 ### Another language
 
-Pass `locale` for the month and weekday names, the digits and the first day of the week, which follows the locale: Sunday in the United States, Monday in most of Europe, Saturday in Egypt. Set `weekStartsOn` to choose it yourself. Name the month buttons with `previousMonthLabel` and `nextMonthLabel`. Inside a right-to-left page, the grid and the arrow keys turn around with it.
+Pass `locale` for the month and weekday names, the digits and the first day of the week. The first day follows the locale: Sunday in the United States, Monday in most of Europe, Saturday in Egypt. Set `weekStartsOn` to choose it yourself. Name the month buttons with `previousMonthLabel` and `nextMonthLabel`. On a right-to-left page, the grid and the arrow keys turn around with it.
 
 <ComponentPreview name="calendar-locale" />
 

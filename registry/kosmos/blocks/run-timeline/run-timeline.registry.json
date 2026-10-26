@@ -3,7 +3,7 @@
   "name": "run-timeline",
   "type": "registry:block",
   "title": "Run timeline",
-  "description": "One agent run in a card: who started it, its status, elapsed time, tokens and cost, then its plan, reasoning, tool calls and approvals in order on a timeline. A finished run folds to a summary, a failed one offers a retry, and a queued one shows an empty state. It lays itself out by its own width, not the screen's.",
+  "description": "One agent run in a card: who started it, status, elapsed time, tokens and cost. A timeline shows its plan, reasoning, tool calls and approvals. Failed runs offer a retry. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
