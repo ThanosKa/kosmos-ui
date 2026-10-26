@@ -1,6 +1,6 @@
 ---
 title: Logo marquee
-description: A row of logos in gray under one line, still or moving, that glides to a stop while the pointer is on it and has a pause button.
+description: A row of logos in gray under one line, still or moving, that turn to their brand colors on hover and glide to a stop while the pointer is on them.
 ---
 
 ## Installation
@@ -20,8 +20,8 @@ export function BuiltOn() {
     <LogoMarquee
       title="Built on"
       logos={[
-        { name: 'Base UI', logo: <Image src="/logos/base-ui.svg" alt="" width={88} height={24} /> },
-        { name: 'Tailwind CSS', logo: <Image src="/logos/tailwind-css.svg" alt="" width={120} height={24} /> },
+        { name: 'Base UI', color: '#0b0b0b', logo: <Image src="/logos/base-ui.svg" alt="" width={88} height={24} /> },
+        { name: 'Tailwind CSS', color: '#06b6d4', href: 'https://tailwindcss.com', logo: <Image src="/logos/tailwind-css.svg" alt="" width={120} height={24} /> },
         { name: 'React' },
         { name: 'Next.js' },
         { name: 'shadcn CLI' },
@@ -41,6 +41,7 @@ Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an ima
 - **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
 - **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
 - **Gray**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns gray too and no logo outshouts the page.
+- **Brand color**: give a logo a `color` and it turns to it, with the filter gone, while the pointer is on it or focus is in it. A mark drawn in `currentColor` takes the color; a colored `<img>` shows its own. The color is content, passed as data with each logo, never written into the block. A logo without one turns to the text color. A touch screen has no hover, so there the logos stay gray and nothing sticks. Give a logo an `href` and it becomes a link the keyboard reaches.
 - **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the second copy that keeps the row full is hidden from them.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
 - **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
@@ -54,7 +55,7 @@ Takes every `<section>` prop, plus:
 <TypeTable
   type={{
     title: { description: 'The line above the logos, which also names their list. `null` leaves it out.', type: 'ReactNode', default: "'Used by the teams behind'" },
-    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own. An empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
+    logos: { description: 'The logos in order. A `color` is the CSS color a logo turns to on hover or focus; an `href` makes it a link. A `logo` is 20px tall unless it sets a height class of its own. An empty array renders nothing.', type: '{ name: string; logo?: ReactNode; color?: string; href?: string }[]', default: 'sample logos' },
     variant: { description: '`marquee` moves the logos in one row that fades out at both edges. `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
     speed: { description: 'How fast the marquee moves, in pixels per second.', type: 'number', default: '40' },
   }}
