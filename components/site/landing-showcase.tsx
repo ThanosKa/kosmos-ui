@@ -6,8 +6,10 @@ import { AuthForms } from '@/registry/kosmos/blocks/auth-forms/auth-forms';
 import { DataTable, sampleProjects, type DataTableAction, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
 import { KanbanBoard } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { SettingsPage } from '@/registry/kosmos/blocks/settings/settings';
-import { Showcase, type ShowcaseScreen } from '@/registry/kosmos/blocks/showcase/showcase';
+import type { ShowcaseScreen } from '@/registry/kosmos/blocks/showcase/showcase';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
+import { Tabs, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+import './landing-motion.css';
 
 /** A product screen: the app sidebar, a page bar with the title, and the page under it. */
 function AppScreen({ active, title, children }: { active: string; title: string; children: React.ReactNode }) {
@@ -90,7 +92,49 @@ const screens: ShowcaseScreen[] = [
   },
 ];
 
-/** The landing's showcase: whole screens in a browser frame, the Dashboard tab the data table with everything on. */
+/**
+ * The landing's showcase: whole screens in a browser frame, the Dashboard tab the data table with everything on. Every
+ * screen stays mounted and stacked in one grid cell, so a tab switch is a true cross-fade (the outgoing screen leaves
+ * in 150ms, the incoming one arrives in 200ms) and scroll position and table state survive a switch.
+ */
 export function LandingShowcase() {
-  return <Showcase screens={screens} />;
+  const [screen, setScreen] = React.useState(screens[0].id);
+  const current = screens.find((item) => item.id === screen) ?? screens[0];
+  return (
+    <div data-slot="showcase" className="@container">
+      <Tabs value={current.id} onValueChange={(value) => setScreen(String(value))} className="items-center gap-6">
+        <TabsList aria-label="Screens">
+          {screens.map((item) => (
+            <TabsTrigger key={item.id} value={item.id}>
+              {item.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <div data-slot="showcase-frame" className="w-full overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
+          <div aria-hidden className="grid h-9 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-border px-3.5">
+            <span className="flex gap-1.5">
+              <span className="size-2.5 rounded-full bg-foreground/15" />
+              <span className="size-2.5 rounded-full bg-foreground/15" />
+              <span className="size-2.5 rounded-full bg-foreground/15" />
+            </span>
+            <span className="truncate text-caption text-muted-foreground">{current.address}</span>
+          </div>
+          <div data-slot="showcase-panels" className="grid h-[34rem] bg-background @3xl:h-[40rem]">
+            {screens.map((item) => (
+              <div
+                key={item.id}
+                role="tabpanel"
+                aria-label={item.label}
+                data-active={item.id === current.id ? '' : undefined}
+                inert={item.id === current.id ? undefined : true}
+                className="landing-panel col-start-1 row-start-1 min-h-0 overflow-x-hidden overflow-y-auto"
+              >
+                {item.content}
+              </div>
+            ))}
+          </div>
+        </div>
+      </Tabs>
+    </div>
+  );
 }
