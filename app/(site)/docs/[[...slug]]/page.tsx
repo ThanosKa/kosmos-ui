@@ -50,7 +50,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         />
         <DocsTocDisclosure toc={toc} className="xl:hidden" />
         {category && <BlockViewers category={category} />}
-        <DocsBody className={cn('[&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title', category && 'max-w-none [&>ol]:max-w-prose [&>p]:max-w-prose [&>ul]:max-w-prose')}>
+        <DocsBody className={cn('[&_:not(pre)>code]:[overflow-wrap:anywhere] [&_h2:not(.not-prose_*)]:text-heading [&_h3:not(.not-prose_*)]:text-title', category && 'max-w-none [&>ol]:max-w-prose [&>p]:max-w-prose [&>ul]:max-w-prose')}>
           <MDX
             components={getMDXComponents({
               // this allows you to link to other pages with relative file paths
