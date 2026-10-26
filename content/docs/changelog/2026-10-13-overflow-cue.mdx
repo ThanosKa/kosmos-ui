@@ -8,7 +8,7 @@ Scrolling content now shows overflow the same way everywhere: the edge with cont
 
 - **[Dialog](/docs/components/dialog), [Drawer](/docs/components/drawer)**: `DialogBody` and `DrawerBody` scroll in a scroll area. `className` still styles the padded box that holds the content.
 - **[Dropdown menu](/docs/components/dropdown-menu)**: items scroll in a scroll area when the menu is taller than the room it has. `className` on `DropdownMenuContent` still styles the surface.
-- **[Popover](/docs/components/popover)**: content scrolls in a scroll area when it is taller than the room it has. `className` on `PopoverContent` styles the surface, such as its width; the 16px padding and 12px gap now sit inside the scroll area, so a padding class there no longer changes them.
+- **[Popover](/docs/components/popover)**: content scrolls in a scroll area when it is taller than the room it has. `className` on `PopoverContent` styles the surface, such as its width. The 16px padding and 12px gap now sit inside the scroll area, so a padding class there no longer changes them.
 - **[Tabs](/docs/components/tabs)**: a horizontal `TabsList` scrolls sideways in a scroll area instead of showing the platform's scrollbar. `className` still styles the row of tabs.
 - **[Scroll area](/docs/components/scroll-area)**: new `focusable` prop. Pass `focusable={false}` when every item inside takes focus and scrolls itself into view, as in a menu or a tab list.
 - **[Page header](/docs/blocks/page-header)**: the view tabs sit in a wrapper that takes the free width, since the tab list is now inside a scroll area.

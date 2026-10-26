@@ -71,7 +71,7 @@ Takes every `<footer>` prop, plus:
     description: { description: 'One line under the name. `null` leaves it out.', type: 'ReactNode', default: 'sample line' },
     homeHref: { description: 'Where the name links.', type: 'string', default: "'/'" },
     columns: { description: 'Columns of links, each under its title. An empty array leaves them out.', type: '{ title: string; links: { label: string; href: string }[] }[]', default: 'sample columns' },
-    social: { description: 'Icon links at the end of the bottom row, such as your profiles. `label` is the accessible name of each; an empty array leaves them out.', type: '{ label: string; href: string; icon: ReactNode }[]', default: 'sample links' },
+    social: { description: 'Icon links at the end of the bottom row, such as your profiles. `label` is the accessible name of each. An empty array leaves them out.', type: '{ label: string; href: string; icon: ReactNode }[]', default: 'sample links' },
     legal: { description: 'The start of the bottom row, such as a copyright. `null` leaves it out.', type: 'ReactNode', default: "'© 2026 Acme'" },
     linkComponent: { description: "Renders the name and the column links, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
   }}

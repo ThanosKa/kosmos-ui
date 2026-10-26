@@ -37,7 +37,7 @@ const projects = [
 </Combobox>;
 ```
 
-Combobox filters `items` by their label as people type, so the list only ever shows matches. Items shaped `{ value, label }` show their label in the field; for any other shape, pass `itemToStringLabel`. Use a [Select](/docs/components/select) when the list is short enough to read at a glance, and Combobox when people would rather type than scroll.
+Combobox filters `items` by their label as people type, so the list only ever shows matches. Items shaped `{ value, label }` show their label in the field. For any other shape, pass `itemToStringLabel`. Use a [Select](/docs/components/select) when the list is short enough to read at a glance, and Combobox when people would rather type than scroll.
 
 ## Examples
 
@@ -210,7 +210,7 @@ The list's popup: Base UI `Combobox.Portal`, `Combobox.Positioner` and `Combobox
 | --- | --- |
 | Typing | Filters the list and opens it. |
 | `ArrowDown` or `ArrowUp` | Opens the list, or highlights the next or previous match. |
-| `Enter` | Chooses the highlighted item. With `multiple`, it adds the item or removes a chosen one; after a search, the search clears and the list closes. |
+| `Enter` | Chooses the highlighted item. With `multiple`, it adds the item or removes a chosen one. After a search, the search clears and the list closes. |
 | `Escape` | Closes the list. On a closed list, clears the value. |
 | `ArrowLeft` | With `multiple`, from the start of the input: moves onto the last chip, then along the chips. |
 | `Backspace` | With `multiple`, in an empty input: removes the last chip. On a chip: removes it. |

@@ -54,8 +54,8 @@ Takes every `<section>` prop, plus:
 <TypeTable
   type={{
     title: { description: 'The line above the logos, which also names their list. `null` leaves it out.', type: 'ReactNode', default: "'Used by the teams behind'" },
-    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own; an empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
-    variant: { description: '`marquee` moves the logos in one row that fades out at both edges; `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
+    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own. An empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
+    variant: { description: '`marquee` moves the logos in one row that fades out at both edges. `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
     speed: { description: 'How fast the marquee moves, in pixels per second.', type: 'number', default: '40' },
   }}
 />

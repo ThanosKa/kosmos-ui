@@ -25,7 +25,7 @@ import { Pagination, PaginationNext, PaginationPages, PaginationPrevious } from 
 </Pagination>
 ```
 
-`Pagination` holds the page and renders a `nav` named "Pagination"; the parts inside it read the page from it, so you place them in any order and any wrapper. Pass `aria-label` when a page has two of them.
+`Pagination` holds the page and renders a `nav` named "Pagination". The parts inside it read the page from it, so you place them in any order and any wrapper. Pass `aria-label` when a page has two of them.
 
 The numbered pages show the first and last page, the current one with a neighbor either side, and a gap for each run of hidden pages. The row keeps the same length on every page, so the pages never shift under the pointer, and below 640px it drops the neighbors so it fits a phone. At either end, the previous or next button turns off but keeps focus, so pressing Next up to the last page never drops focus to the page.
 
@@ -35,7 +35,7 @@ The counting it does comes from `@kosmos/paging`, which installs with it as `lib
 
 ### Table footer
 
-Pass `total` instead of `pageCount`, and Pagination counts the pages from the rows. `PaginationStatus` then shows the rows in view, such as "21–30 of 2,450", or the page, "Page 3 of 245", with `show="pages"`; screen readers hear it change. `PaginationPageSize` picks the rows per page, and keeps the first row of the page in view when the size changes.
+Pass `total` instead of `pageCount`, and Pagination counts the pages from the rows. `PaginationStatus` then shows the rows in view, such as "21–30 of 2,450", or the page, "Page 3 of 245", with `show="pages"`. Screen readers hear it change. `PaginationPageSize` picks the rows per page, and keeps the first row of the page in view when the size changes.
 
 <ComponentPreview name="pagination-table" />
 
@@ -50,7 +50,7 @@ const visible = rows.slice(from - 1, to);
 
 ### Links
 
-Pass `getPageHref` when the server renders each page, and every page becomes a link. Give the previous and next buttons children to show a label next to the arrow; below 640px they keep only the arrow, and the label stays their name.
+Pass `getPageHref` when the server renders each page, and every page becomes a link. Give the previous and next buttons children to show a label next to the arrow. Below 640px they keep only the arrow, and the label stays their name.
 
 <ComponentPreview name="pagination-links" />
 
@@ -163,7 +163,7 @@ Takes every `p` prop, plus:
 <TypeTable
   type={{
     show: {
-      description: '`rows` shows the rows in view and needs `total` on Pagination; `pages` shows the page and the page count.',
+      description: '`rows` shows the rows in view and needs `total` on Pagination. `pages` shows the page and the page count.',
       type: "'rows' | 'pages'",
       default: "'rows' with total, else 'pages'",
     },

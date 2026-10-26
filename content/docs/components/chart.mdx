@@ -45,7 +45,7 @@ A small trend line with no axes, for a stat tile or a table cell. It reads as on
 
 <ComponentPreview name="chart-custom" />
 
-Give the container a height or an aspect ratio; it is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
+Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
 
 ## Accessibility
 
@@ -98,7 +98,7 @@ Accepts all `<div>` props.
 
 <TypeTable
   type={{
-    config: { description: 'The series, keyed by data key; each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
+    config: { description: 'The series, keyed by data key. Each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
     children: { description: 'One Recharts chart, such as `<BarChart>`.', type: 'ReactElement', required: true },
   }}
 />
