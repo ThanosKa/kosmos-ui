@@ -69,12 +69,12 @@ export function SitePresetSync() {
 }
 
 /** Applies a preset change in one frame, as next-themes' `disableTransitionOnChange` does for the theme. */
-function withoutTransitions(change: () => void) {
-  const style = document.createElement('style');
+export function withoutTransitions(change: () => void, doc: Document = document) {
+  const style = doc.createElement('style');
   style.textContent = '*,*::before,*::after{transition:none!important}';
-  document.head.appendChild(style);
+  doc.head.appendChild(style);
   change();
   // Reading a computed style flushes the change before the override is removed.
-  window.getComputedStyle(document.body).transition;
-  requestAnimationFrame(() => style.remove());
+  doc.defaultView?.getComputedStyle(doc.body).transition;
+  doc.defaultView?.requestAnimationFrame(() => style.remove());
 }

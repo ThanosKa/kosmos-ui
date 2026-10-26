@@ -36,7 +36,7 @@ export function Features() {
 }
 ```
 
-Each tile shows a real piece of your product, not a picture of it, so a visitor can click, type and toggle it. The title, line and tiles at the top of the file are sample data; delete the sample tiles and their imports once you pass your own.
+Each tile shows a real piece of your product, not a picture of it, so a visitor can click, type and toggle it. The title, line and tiles at the top of the file are sample data. Delete the sample tiles and their imports once you pass your own.
 
 ## What it does
 
@@ -57,7 +57,7 @@ Takes every `<section>` prop, plus:
     title: { description: 'The heading. `null` leaves it out.', type: 'ReactNode', default: "'From the first event to the answer'" },
     description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode' },
     items: { description: 'The tiles, in reading order.', type: 'BentoItem[]' },
-    headingLevel: { description: 'The level of the title; tile titles take the next one. Pass 3 inside a section that has an `<h2>`.', type: '2 | 3', default: '2' },
+    headingLevel: { description: 'The level of the title. Tile titles take the next one. Pass 3 inside a section that has an `<h2>`.', type: '2 | 3', default: '2' },
   }}
 />
 

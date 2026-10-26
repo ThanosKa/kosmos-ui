@@ -28,7 +28,7 @@ import { ToolCall } from '@/components/ui/tool-call';
 />
 ```
 
-The row shows the tool's icon, the title, the tool id, the duration and a status badge. Pass an icon per tool, so a list of calls reads at a glance; without one the row shows a wrench. `icon` takes the component itself, such as `Database` from `lucide-react`, so render ToolCall from a client component.
+The row shows the tool's icon, the title, the tool id, the duration and a status badge. Pass an icon per tool, so a list of calls reads at a glance. Without one the row shows a wrench. `icon` takes the component itself, such as `Database` from `lucide-react`, so render ToolCall from a client component.
 
 A tool call has no surface of its own. Put it in the card, message or timeline that hosts it, and stack several with `divide-y divide-border` on their parent.
 

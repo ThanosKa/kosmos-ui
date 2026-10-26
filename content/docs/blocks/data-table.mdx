@@ -29,7 +29,7 @@ To pair the table with the [page header](/docs/blocks/page-header), turn the too
 
 - **Columns**: each project shows its name and domain, platform, plan as a colored tag, monthly active users, events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
 - **Event quota**: a [meter](/docs/components/meter) of how much of its plan's monthly event allowance (Free 50,000, Pro 3 million, Scale 8 million) the project used in the last 30 days. Up to 75% is green, up to 95% amber and above that red. The bar stops at full and the number beside it does not, so a project at 112% reads as red and 112%.
-- **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value: the rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values; across filters it needs one of each.
+- **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value: the rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values. Across filters it needs one of each.
 - **Column menus**: each header opens a menu that sorts its column either way, in words that fit the values (Low to high, A to Z, Newest first), and hides any column but Project. The sorted header carries `aria-sort`, and hiding the sorted column clears the sort.
 - **Showing columns**: the button at the end of the header row shows and hides columns, and marks a column that is on but has no room at the current width.
 - **Selection**: a checkbox per row and one for every row on the page, which shows a mixed state when some are selected. With a selection, the footer swaps the totals for the bulk bar: the count, Clear selection, Select all when the whole page is selected and more rows match, plus Export, Pause (Resume when every selected project is paused) and Delete when you pass `onAction`. In a narrow table those buttons show only their icon. Screen readers hear the count change.
@@ -58,7 +58,7 @@ Takes every `<div>` prop, plus:
     query: { description: 'Keeps rows whose name or domain contains this text. Use with `onQueryChange`.', type: 'string' },
     defaultQuery: { description: 'The search at first, when the table keeps its own state.', type: 'string', default: "''" },
     onQueryChange: { description: 'Called with the search as it is typed or reset.', type: '(query: string) => void' },
-    status: { description: 'Keeps rows with this status; `all` keeps every row.', type: "'all' | 'live' | 'trial' | 'paused'", default: "'all'" },
+    status: { description: 'Keeps rows with this status. `all` keeps every row.', type: "'all' | 'live' | 'trial' | 'paused'", default: "'all'" },
     filters: { description: 'Keeps rows on these plans (`free`, `pro`, `scale`), platforms (`web`, `ios`, `android`, `server`) and statuses (`live`, `trial`, `paused`). Other values are ignored. Use with `onFiltersChange`.', type: 'string[]' },
     defaultFilters: { description: 'The filters at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
     onFiltersChange: { description: 'Called with every filter value that is on.', type: '(filters: string[]) => void' },
@@ -68,7 +68,7 @@ Takes every `<div>` prop, plus:
     selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
     defaultSelection: { description: 'The ids selected at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
     onSelectionChange: { description: 'Called with the ids of the selected rows.', type: '(ids: string[]) => void' },
-    sort: { description: 'The sort. Use with `onSortChange`; `null` keeps the rows in their own order.', type: 'DataTableSort | null' },
+    sort: { description: 'The sort. Use with `onSortChange`. `null` keeps the rows in their own order.', type: 'DataTableSort | null' },
     defaultSort: { description: 'The sort at first, when the table keeps its own state.', type: 'DataTableSort' },
     onSortChange: { description: 'Called with the new sort when a header menu sorts a column, or with `null` when the sorted column is hidden.', type: '(sort: DataTableSort | null) => void' },
     hiddenColumns: { description: 'The columns hidden from the header menus and the Columns menu. Use with `onHiddenColumnsChange`.', type: 'DataTableColumn[]' },

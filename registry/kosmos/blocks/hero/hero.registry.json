@@ -3,7 +3,7 @@
   "name": "hero",
   "type": "registry:block",
   "title": "Hero",
-  "description": "The top of a marketing page: a line of news, a title, one line, two actions and the install command in tabs, centered. Lays itself out by its own width.",
+  "description": "The top of a marketing page: a line of news, a title, one line, two actions and the install command in tabs, centered. It lays itself out by its own width, not the screen's.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/announcement", "@kosmos/button", "@kosmos/code-tabs"],
   "categories": ["hero"],
   "meta": { "group": "blocks", "section": "marketing", "tier": "free" },

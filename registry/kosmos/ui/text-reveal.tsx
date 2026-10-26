@@ -13,7 +13,7 @@ type TextRevealProps = Omit<React.ComponentProps<'span'>, 'children'> & {
 /**
  * Text that comes in word by word as the page first paints: each word rises a few pixels out of a blur while it fades
  * in. It is plain text in the markup, so it reads and shows without JavaScript, and it needs none: the entrance is a
- * CSS transition from the `starting` style. Under reduced motion the words are there at once.
+ * CSS transition from the `starting` style. Under reduced motion the words only fade in, together.
  */
 function TextReveal({ children, stagger = 40, delay = 0, className, ...props }: TextRevealProps) {
   const words = children.split(' ');
@@ -26,7 +26,8 @@ function TextReveal({ children, stagger = 40, delay = 0, className, ...props }: 
             className={cn(
               'inline-block',
               'motion-safe:transition-[opacity,filter,translate] motion-safe:duration-slow motion-safe:ease-power3-out motion-safe:delay-(--reveal-delay)',
-              'motion-safe:starting:translate-y-1.5 motion-safe:starting:opacity-0 motion-safe:starting:blur-sm',
+              'motion-reduce:transition-[opacity] motion-reduce:duration-fast motion-reduce:ease-power3-out',
+              'starting:opacity-0 motion-safe:starting:translate-y-1.5 motion-safe:starting:blur-sm',
             )}
           >
             {word}

@@ -42,7 +42,7 @@ The control can be [Input](/docs/components/input), [Textarea](/docs/components/
 
 ### Validation
 
-Field runs the browser's own checks (`required`, `type`, `minLength`, `pattern`) and shows a FieldError when one fails. `validationMode="onBlur"` checks when focus leaves the control; the default checks on submit. Give each check its own message with `match`. Type a name without a domain in the demo at the top, then leave the field.
+Field runs the browser's own checks (`required`, `type`, `minLength`, `pattern`) and shows a FieldError when one fails. `validationMode="onBlur"` checks when focus leaves the control. The default checks on submit. Give each check its own message with `match`. Type a name without a domain in the demo at the top, then leave the field.
 
 ```tsx
 <Field name="email" validationMode="onBlur">

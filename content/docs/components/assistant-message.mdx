@@ -24,7 +24,7 @@ import { AssistantMessage, Citation } from '@/components/ui/assistant-message';
 
 The body is `children`, so render the reply with any Markdown renderer or your own components. Put a `Citation` right after the word it supports, with no space before it, so it never wraps onto a line of its own. It links to its source, opens it in a new tab and shows the source's title in a tooltip.
 
-Below the body come a button that opens the list of `sources`, the actions and the `followUps`. Copy puts the rendered text of the reply on the clipboard, without the citation numbers. Pass `copyText` to copy something else, such as the Markdown source. Retry shows only when you pass `onRetry`. Good answer and Bad answer are toggle buttons; pressing the pressed one clears it.
+Below the body come a button that opens the list of `sources`, the actions and the `followUps`. Copy puts the rendered text of the reply on the clipboard, without the citation numbers. Pass `copyText` to copy something else, such as the Markdown source. Retry shows only when you pass `onRetry`. Good answer and Bad answer are toggle buttons. Pressing the pressed one clears it.
 
 While `status` is `streaming`, a caret blinks at the end of the body, the message is marked busy for screen readers, and the sources and actions wait until the reply is done. With `status="error"`, the message shows the error under the body, with a Retry button when you pass `onRetry`.
 
@@ -61,7 +61,7 @@ Pass the reason as `error` and a way to try again as `onRetry`.
       type: 'React.ReactNode',
     },
     role: {
-      description: 'user renders the prompt as a bubble at the end of the row; assistant renders the full reply.',
+      description: 'user renders the prompt as a bubble at the end of the row. Assistant renders the full reply.',
       type: "'assistant' | 'user'",
       default: "'assistant'",
     },

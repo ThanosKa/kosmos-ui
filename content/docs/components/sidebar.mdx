@@ -95,11 +95,11 @@ An item can hold one level of pages under it. Put a `SidebarSubmenu` in the `Sid
 </SidebarMenuItem>
 ```
 
-Beside the page and in the drawer, the trigger opens a panel under it, and the pages line up with the trigger's label. In icon mode the panel closes and the trigger opens the pages in a popover beside its icon, on hover, on click or with `Enter`, under the submenu's `label`; a click on a page closes it. Give the trigger `isActive` when the current page is inside: it takes the current page's highlight while that page is out of sight, with the panel closed or in icon mode.
+Beside the page and in the drawer, the trigger opens a panel under it, and the pages line up with the trigger's label. In icon mode the panel closes and the trigger opens the pages in a popover beside its icon, on hover, on click or with `Enter`, under the submenu's `label`. A click on a page closes it. Give the trigger `isActive` when the current page is inside: it takes the current page's highlight while that page is out of sight, with the panel closed or in icon mode.
 
 ## Workspace switcher and user menu
 
-`SidebarWorkspaceSwitcher` sits in the header and switches workspace from a menu; `SidebarUserMenu` sits in the footer and opens the account actions you pass as menu items:
+`SidebarWorkspaceSwitcher` sits in the header and switches workspace from a menu. `SidebarUserMenu` sits in the footer and opens the account actions you pass as menu items:
 
 ```tsx
 <SidebarHeader>
@@ -142,7 +142,7 @@ The switcher shows the current workspace's mark, the first letter of its name un
 | `offcanvas` (default) | The sidebar slides off to the edge and gives the page its space. |
 | `icon` | A 48px column of icons stays. The labels, counts and group labels fade out, the active item keeps its highlight, each item shows its `tooltip` on hover and keyboard focus, and a submenu opens in a popover. |
 
-In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. The button's first child stays visible, so put the icon first; the label and count after it fade. The workspace switcher and the user menu do this for you. Your own content in the header or footer can fade with it: `group-data-[collapsible=icon]/sidebar:opacity-0` hides a name and leaves its logo, and `motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)` holds it back on expand until the column is wide enough. On phones the drawer always shows the full sidebar.
+In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. The button's first child stays visible, so put the icon first. The label and count after it fade. The workspace switcher and the user menu do this for you. Your own content in the header or footer can fade with it: `group-data-[collapsible=icon]/sidebar:opacity-0` hides a name and leaves its logo, and `motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)` holds it back on expand until the column is wide enough. On phones the drawer always shows the full sidebar.
 
 The sidebar remembers whether it was collapsed. It saves the state in local storage under `storageKey` (`'sidebar-state'`), and a small script puts it back before the page paints, so a collapsed sidebar never flashes open on reload. Give each sidebar on a page its own key, or pass `storageKey={false}` to keep nothing. `keyboardShortcut` changes the key, and `false` turns the shortcut off.
 
@@ -167,7 +167,7 @@ The width resets on every visit. To keep it, control `width` and save it, as in 
 
 ## Motion
 
-The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`; in icon mode the labels fade out in 150ms as it narrows. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar (in icon mode, its labels) fades out, then the width changes at once; on reopen the width comes back first and the content fades in.
+The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`. In icon mode the labels fade out in 150ms as it narrows. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar (in icon mode, its labels) fades out, then the width changes at once. On reopen the width comes back first and the content fades in.
 
 ## API
 
@@ -364,7 +364,7 @@ Takes every [Dropdown menu](/docs/components/dropdown-menu) root prop, plus:
 <TypeTable
   type={{
     user: {
-      description: 'The signed-in user. `avatar` is the address of a photo; without it the avatar shows `initials`, or the first letter of the name.',
+      description: 'The signed-in user. `avatar` is the address of a photo. Without it the avatar shows `initials`, or the first letter of the name.',
       type: '{ name: string; email?: string; avatar?: string; initials?: string }',
     },
     children: {
@@ -385,10 +385,10 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | Part | What it is |
 | --- | --- |
 | `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
-| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `collapsible` sets where it collapses to; `label` names the drawer for screen readers. |
+| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `collapsible` sets where it collapses to. `label` names the drawer for screen readers. |
 | `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
 | `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. Beside the page, its tooltip shows the keyboard shortcut. |
-| `SidebarInset` | The page beside the sidebar. Renders `<main>`; pass `render={<div />}` when your layout already has one. |
+| `SidebarInset` | The page beside the sidebar. Renders `<main>`. Pass `render={<div />}` when your layout already has one. |
 | `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
 | `SidebarContent` | The scrolling middle, a Scroll area whose edges fade while items hide past them. `render` and the other props go to the element that scrolls: `render={<nav aria-label="Main" />}`. |
 | `SidebarFooter` | The bottom of the sidebar, for the user menu or help links, below a full-width line. |
@@ -418,7 +418,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `Enter` | On the resize handle: collapses or reopens the sidebar at once, without the width easing. |
 | `Enter` or `Space` | On `SidebarTrigger`: opens or closes the sidebar, or the drawer on phones. |
 | `Enter` or `Space` | On a submenu trigger: opens or closes its panel, or in icon mode its popover, with focus on the first page. |
-| `Tab` | In a submenu's popover: moves through its pages; past the last one, focus moves on and the popover closes. |
+| `Tab` | In a submenu's popover: moves through its pages. Past the last one, focus moves on and the popover closes. |
 | `Escape` | Closes a submenu's popover or a menu, and puts focus back on its trigger. On phones, closes the drawer the same way. |
 
 A sidebar collapsed to the edge is out of the tab order, so `Tab` skips its links until it opens again. In icon mode the icons stay in the tab order, and each one shows its name as it takes focus.
