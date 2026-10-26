@@ -539,6 +539,11 @@ const checks: Check[] = [
       assert.equal(await hero.locator('[data-slot="hero-product"] [data-slot="stats-overview"]').count(), 1, 'the live dashboard');
       assert.equal(await hero.locator('[data-slot="glow"]').count(), 1, 'the glow behind it');
       assert.equal(await hero.locator('[data-slot="hero-announcement"], [data-slot="hero-install"]').count(), 0, 'no announcement or install command');
+      const variants = await openPage(browser, '/docs/blocks/hero');
+      const variant = variants.page.locator('[data-block-variant]');
+      assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.id)), ['hero', 'hero-product'], 'the Hero category page shows the hero and hero-product variants');
+      assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.getAttribute('data-tier'))), ['free', 'free'], 'both Hero variants are free');
+      await variants.close();
       await close();
     },
   },
