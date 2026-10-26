@@ -1,0 +1,124 @@
+/*
+ * The landing's motion, one scale from the Kosmos tokens: durations fast 150 / base 200 / slow 300 / reveal 500,
+ * easing power3-out. Distances: 8 (hero line, parts), 16 (sections), 40 (product frame). Nothing tilts.
+ * Under reduced motion every distance is 0, so each entrance is an opacity fade.
+ * Everything is visible without JavaScript: entrances are CSS animations that fill backwards, and the scroll reveals
+ * are armed by script (`data-reveal`), never by the markup.
+ */
+[data-landing-section] {
+  --m-ease: var(--ease-power3-out);
+  --m-rise-line: 8px;
+  --m-rise-frame: 40px;
+  --m-rise: 16px;
+  --m-rise-row: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-section] {
+    --m-rise-line: 0px;
+    --m-rise-frame: 0px;
+    --m-rise: 0px;
+    --m-rise-row: 0px;
+  }
+}
+
+@keyframes m-rise-line {
+  from {
+    opacity: 0;
+    translate: 0 var(--m-rise-line);
+  }
+}
+@keyframes m-rise-frame {
+  from {
+    opacity: 0;
+    translate: 0 var(--m-rise-frame);
+  }
+}
+@keyframes m-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes m-arrive {
+  from {
+    background-color: var(--accent);
+    opacity: 0;
+  }
+}
+@keyframes m-shift {
+  from {
+    translate: 0 calc(var(--m-row-height, 0px) * -1);
+  }
+}
+
+/*
+ * Hero: the title enters per word on its own (TextReveal, mount). The line and the actions come in together as one
+ * short block while it plays. The frame and its glow follow when the last word is in (6 steps of 120ms + 500ms).
+ */
+.landing-hero [data-slot='hero-description'],
+.landing-hero [data-slot='hero-actions'],
+.landing-hero [data-slot='hero-install'] {
+  animation: m-rise-line var(--transition-duration-slow) var(--m-ease) 240ms both;
+}
+.landing-hero [data-slot='browser-frame'] {
+  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 1200ms both;
+}
+.landing-hero [data-slot='hero-product-glow'] {
+  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 1300ms both;
+}
+
+/* The product screen: a row arrives at the top of the table once the frame has settled. */
+.landing-rows[data-arrived] tbody tr:first-child {
+  animation: m-arrive var(--transition-duration-slow) var(--m-ease) both;
+}
+.landing-rows[data-arrived] tbody tr:not(:first-child) {
+  animation: m-shift var(--transition-duration-slow) var(--m-ease) both;
+}
+
+/* Sections: each part rises once as it first scrolls into view. `data-reveal` is set by script. */
+[data-landing-section] [data-reveal] {
+  transition:
+    opacity var(--transition-duration-reveal) var(--m-ease) var(--m-delay, 0ms),
+    translate var(--transition-duration-reveal) var(--m-ease) var(--m-delay, 0ms);
+}
+[data-landing-section] [data-reveal='hidden'] {
+  opacity: 0;
+  translate: 0 var(--m-rise);
+}
+
+/* Cards: a 2px lift on hover. */
+@media (hover: hover) and (pointer: fine) {
+  [data-landing-section] [data-slot='pricing-plan'],
+  [data-landing-section] [data-slot='feature-rows-item-media'] {
+    transition: translate var(--transition-duration-fast) var(--m-ease);
+  }
+  [data-landing-section] [data-slot='pricing-plan']:hover,
+  [data-landing-section] [data-slot='feature-rows-item-media']:hover {
+    translate: 0 -2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-section] [data-slot='pricing-plan']:hover,
+  [data-landing-section] [data-slot='feature-rows-item-media']:hover {
+    translate: none;
+  }
+}
+
+/* Showcase tabs: a cross-fade with a small rise. The outgoing screen leaves in 150ms, the incoming one arrives in 200ms. */
+.landing-panel {
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 var(--m-rise-row);
+  transition:
+    opacity var(--transition-duration-fast) var(--m-ease),
+    translate var(--transition-duration-fast) var(--m-ease),
+    visibility 0s linear var(--transition-duration-fast);
+}
+.landing-panel[data-active] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity var(--transition-duration-base) var(--m-ease),
+    translate var(--transition-duration-base) var(--m-ease),
+    visibility 0s;
+}

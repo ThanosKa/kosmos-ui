@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { BlurFade } from '@/registry/kosmos/ui/blur-fade';
-import { TextReveal } from '@/registry/kosmos/ui/text-reveal';
+import './landing-motion.css';
 
 /**
  * The space a landing section keeps below itself, which sets the rhythm of the page (kosmos-style, Marketing pages):
@@ -20,21 +19,16 @@ const columns = {
   wide: 'max-w-6xl',
 } as const;
 
-/** The wait between a section's title and its content, in milliseconds: one chunk step. */
-const chunkStep = 100;
-
 /**
- * One section of the landing page. The landing is an ordered list of these, top to bottom. A section with a `title`
- * reveals it word by word as it scrolls into view and brings its content in 100ms later; a section built from a block
- * that has its own title blurs in as a whole. The hero plays on its own.
+ * One section of the landing page. The landing is an ordered list of these, top to bottom. A section's title and its
+ * content carry a marker that `LandingMotion` reads, so each rises once as it first scrolls into view, the title first.
+ * Section titles are one block, never per word: only the hero title is. The hero plays on its own.
  */
 export type LandingSectionProps = {
   /** A stable name for the section, its `data-landing-section`. */
   id: string;
   /** The section's heading, for a section whose content brings none. At most two short lines. */
   title?: string;
-  /** How the title comes in: word by word as it scrolls into view (`view`), or tied to the scroll position (`scroll`), for one closing statement. */
-  titleReveal?: 'view' | 'scroll';
   /** A heading for screen readers, for a section with neither a title nor a heading of its own. */
   srHeading?: string;
   /** The space around the section: `hero` at the top of the page, `last` before the footer. */
@@ -44,7 +38,7 @@ export type LandingSectionProps = {
   children: ReactNode;
 };
 
-export function LandingSection({ id, title, titleReveal = 'view', srHeading, space = 'section', column = 'default', className, children }: LandingSectionProps) {
+export function LandingSection({ id, title, srHeading, space = 'section', column = 'default', className, children }: LandingSectionProps) {
   const headingId = `landing-${id}`;
   return (
     <section
@@ -60,15 +54,11 @@ export function LandingSection({ id, title, titleReveal = 'view', srHeading, spa
         ) : null}
         {space === 'hero' ? (
           children
-        ) : title ? (
-          <>
-            <LandingTitle id={headingId} reveal={titleReveal}>
-              {title}
-            </LandingTitle>
-            <BlurFade delay={chunkStep}>{children}</BlurFade>
-          </>
         ) : (
-          <BlurFade>{children}</BlurFade>
+          <>
+            {title ? <LandingTitle id={headingId}>{title}</LandingTitle> : null}
+            <div data-landing-content>{children}</div>
+          </>
         )}
       </div>
     </section>
@@ -79,11 +69,11 @@ export function LandingSection({ id, title, titleReveal = 'view', srHeading, spa
  * The title of a section built from blocks that bring no title of their own, set like the title of a marketing
  * block: centered, `text-heading` growing to `text-display` from a 672px-wide container.
  */
-export function LandingTitle({ id, reveal = 'view', children }: { id: string; reveal?: 'view' | 'scroll'; children: string }) {
+export function LandingTitle({ id, children }: { id: string; children: string }) {
   return (
-    <div className="@container flex justify-center">
+    <div data-landing-title className="@container flex justify-center">
       <h2 id={id} className="max-w-[20em] text-center text-heading font-semibold text-balance text-foreground @2xl:text-display">
-        <TextReveal trigger={reveal}>{children}</TextReveal>
+        {children}
       </h2>
     </div>
   );

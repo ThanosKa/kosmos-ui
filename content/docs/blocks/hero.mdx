@@ -58,17 +58,17 @@ A `Button` with `href` renders a plain link, which loads the whole page. For lin
 ## What it does
 
 - **News**: an optional [Announcement](/docs/components/announcement) sits above the title, for a release or a new page.
-- **Title and line**: the title is the page's `<h1>`, and it balances its lines so the last one is never a single word. The line under it wraps at about 70 characters, so it stays readable.
+- **Title and line**: the title is the page's `<h1>`, and it balances its lines so the last one is never a single word. The line under it wraps at about 70 characters, so it stays easy to read.
 - **Actions**: one primary action and one secondary at most, side by side, wrapping under each other when they don't fit.
-- **Install**: the install command sits under the actions in [Code Tabs](/docs/components/code-tabs), one tab per package manager or platform. Each tab has a copy button that tells screen readers when it copies the command.
-- **Width**: the hero lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 32px to 48px and the line under it from 14px to 18px.
+- **Install**: the install command sits under the actions in [Code Tabs](/docs/components/code-tabs), one tab per package manager or platform, each with a copy button that tells screen readers when the command is copied.
+- **Width**: the hero lays itself out by its own width, with container queries, not by the screen's. From 672px wide the title grows from 32px to 56px and the line under it from 14px to 18px.
 - **Spacing**: the hero sets no padding around itself. Give the section around it the space your page uses between sections, as above, so every block on the page keeps the same rhythm.
 
 ## Variants
 
 ### With the product
 
-A title, one line and two actions, then a screen of the product in a [Browser frame](/docs/components/browser-frame) that leans back and stands straight on hover. A [Glow](/docs/components/glow) sits behind it and the bottom fades into the page. The screen is a live dashboard built from [App sidebar](/docs/blocks/app-sidebar) and [Stats overview](/docs/blocks/stats-overview). It stays sharp at any size and is a few kilobytes of markup, not an image. It is a picture to visitors: keyboard and screen readers skip it.
+A title, one line and two actions, then a screen of the product in a [Browser frame](/docs/components/browser-frame) that stays flat. A [Glow](/docs/components/glow) sits behind the frame, never behind the actions, and the frame crops the screen at its edge. The screen is a live dashboard built from [App sidebar](/docs/blocks/app-sidebar) and [Stats overview](/docs/blocks/stats-overview), so it stays sharp at any size and is a few kilobytes of markup, not an image. It is a picture to visitors: keyboard and screen readers skip it.
 
 <ComponentInstall name="hero-product" />
 
@@ -80,13 +80,13 @@ Pass `product` to show your own screen, a live component or an image:
 <HeroProduct product={<Image src="/overview.png" alt="" width={1600} height={1000} className="block w-full" />} url="acme.example/overview" />
 ```
 
-The block sets no padding around itself. Give the section above it room, as on the default hero, and none below: the fade ends on the page background.
+The block sets no padding around itself. Give the section above it room, as on the default hero, and none below.
 
 ## API
 
 ### HeroProduct
 
-Takes the props of `Hero` except `announcement` and `install`, plus:
+Takes the props of `Hero` except `announcement`, plus (`install` defaults to `null` here):
 
 <TypeTable
   type={{

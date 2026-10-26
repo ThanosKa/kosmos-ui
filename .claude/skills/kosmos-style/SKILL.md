@@ -101,7 +101,7 @@ Text in components sits between 12 and 14px; only marketing blocks and the site'
 | `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium`; a name in the Logo marquee |
 | `text-heading` | 20 / 28 / 600 / -0.01em | Section headings in the docs and titles of site pages outside the app frame (gallery, tokens); a marketing section title in a container under 672px. Never in app chrome |
 | `text-display` | 32 / 40 / 500 / -0.02em | Stat values (always `tabular-nums`); at `font-semibold`, a marketing section title (a block from a 672px container, `@2xl:`) and a hero title in a container under 672px |
-| `text-hero` | 48 / 1.1 / 600 / -0.03em | The title of a marketing hero, from a 672px container (`@2xl:`); a count that is the visual of a marketing tile (`tabular-nums`) |
+| `text-hero` | 56 / 1.1 / 600 / -0.035em | The title of a marketing hero, from a 672px container (`@2xl:`); a count that is the visual of a marketing tile (`tabular-nums`) |
 | `text-lead` | 18 / 1.6 / 400 / -0.01em | The one line under a hero title or a marketing section title (in a block from `@2xl:`, `text-body` below); the featured quote in Testimonials |
 
 - The site has one more role, outside this table because no component uses it: `text-page-title`, the title of every docs page (28 / 1.25 / 600 / -0.02em on phones, 32px from `md`). It lives in `app/global.css` and never ships in `@kosmos/tokens` (tokens.md, Site-only roles).

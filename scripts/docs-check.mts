@@ -529,23 +529,108 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the hero shows the title, one line, Get started and Browse blocks, and a live dashboard in a browser frame with a glow',
+    name: 'the hero shows the title, one line, Get started, Browse blocks and a copyable install command, and the Projects data table in a flat browser frame with a glow',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const hero = page.locator('[data-landing-section="hero"]');
       assert.equal(await hero.locator('h1').count(), 1, 'one h1');
-      assert.equal(await hero.locator('[data-slot="hero-description"]').count(), 1, 'one line under the title');
+      const description = hero.locator('[data-slot="hero-description"]');
+      assert.equal(await description.count(), 1, 'one line under the title');
+      assert.match((await description.textContent()) ?? '', /^Base UI components and dashboard blocks you own/, 'the line promises what you get');
+      assert.ok((await description.evaluate((element) => element.getBoundingClientRect().height)) < 40, 'the line stays on one line at 1280px');
       assert.equal(await hero.getByRole('link', { name: 'Get started' }).getAttribute('href'), '/docs/installation', 'Get started');
       assert.equal(await hero.getByRole('link', { name: 'Browse blocks' }).getAttribute('href'), '/docs/blocks', 'Browse blocks');
-      assert.equal(await hero.locator('[data-slot="hero-product"] [data-slot="stats-overview"]').count(), 1, 'the live dashboard');
+      assert.equal(await hero.locator('[data-slot="hero-install"] input').inputValue(), 'npx shadcn@latest add @kosmos/data-table', 'the install command');
+      assert.equal(await hero.locator('[data-slot="hero-install"]').getByRole('button', { name: 'Copy install command' }).count(), 1, 'a button copies it');
+      const product = hero.locator('[data-slot="hero-product"] [data-slot="browser-frame"]');
+      assert.equal(await product.locator('[data-slot="data-table"]').count(), 1, 'the data table in the frame');
+      assert.equal(await product.getByRole('heading', { name: 'Projects', includeHidden: true }).count(), 1, 'it is the Projects screen');
+      assert.equal(await hero.locator('[data-slot="stats-overview"]').count(), 0, 'not the overview');
       assert.equal(await hero.locator('[data-slot="glow"]').count(), 1, 'the glow behind it');
-      assert.equal(await hero.locator('[data-slot="hero-announcement"], [data-slot="hero-install"]').count(), 0, 'no announcement or install command');
+      assert.equal(await hero.locator('[data-slot="hero-announcement"]').count(), 0, 'no announcement');
+      const clearOfActions = await hero.evaluate((section) => {
+        const glow = section.querySelector('[data-slot="hero-product-glow"]')!.getBoundingClientRect();
+        const last = section.querySelector('[data-slot="hero-install"]')!.getBoundingClientRect();
+        return glow.top - last.bottom;
+      });
+      assert.ok(clearOfActions >= 0, `the glow starts ${clearOfActions}px below the install command, never behind the buttons`);
       const variants = await openPage(browser, '/docs/blocks/hero');
       const variant = variants.page.locator('[data-block-variant]');
       assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.id)), ['hero', 'hero-product'], 'the Hero category page shows the hero and hero-product variants');
       assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.getAttribute('data-tier'))), ['free', 'free'], 'both Hero variants are free');
       await variants.close();
       await close();
+    },
+  },
+  {
+    name: 'the hero frame never tilts, stays crisp once settled, and its table hides columns before it would scroll sideways',
+    async run(browser) {
+      for (const viewport of [{ width: 1280, height: 800 }, { width: 1440, height: 900 }, phone]) {
+        const { page, close } = await openPage(browser, '/', viewport, 'no-preference');
+        await page.waitForFunction(() => document.querySelector('[data-landing-section="hero"] [data-slot="browser-frame"]')!.getAnimations({ subtree: true }).every((animation) => animation.playState === 'finished'), undefined, { timeout: 8000 });
+        const frame = await page.locator('[data-landing-section="hero"] [data-slot="hero-product"]').evaluate((product) => {
+          const softened: string[] = [];
+          for (let element = product.querySelector<HTMLElement>('[data-slot="browser-frame"]'); element && element !== product.parentElement; element = element.parentElement) {
+            const style = getComputedStyle(element);
+            if (style.transform !== 'none' || style.rotate !== 'none' || style.scale !== 'none') softened.push(`${element.dataset.slot ?? element.tagName}: transformed`);
+            if (style.filter !== 'none' || style.backdropFilter !== 'none') softened.push(`${element.dataset.slot ?? element.tagName}: filtered`);
+            if (style.perspective !== 'none') softened.push(`${element.dataset.slot ?? element.tagName}: perspective`);
+          }
+          const inside = [...product.querySelectorAll<HTMLElement>('[data-slot="browser-frame"] *')].filter((element) => {
+            const style = getComputedStyle(element);
+            const identity = style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)';
+            const edgeFade = element.dataset.slot === 'scroll-area-viewport';
+            return style.filter !== 'none' || (style.maskImage !== 'none' && !edgeFade) || !identity;
+          });
+          const frameBox = product.querySelector('[data-slot="browser-frame"]')!.getBoundingClientRect();
+          const overlays = [...product.querySelectorAll<HTMLElement>(':scope > div:last-child *')].filter((element) => /gradient/.test(getComputedStyle(element).backgroundImage) && element.getBoundingClientRect().bottom > frameBox.bottom - 4 && element.closest('[data-slot="hero-product-glow"]') === null);
+          return { softened, softenedInside: inside.map((element) => element.dataset.slot ?? element.tagName), overlays: overlays.length };
+        });
+        assert.deepEqual(frame.softened, [], `${viewport.width}px: the frame and its ancestors have no transform, filter or perspective`);
+        assert.deepEqual(frame.softenedInside, [], `${viewport.width}px: nothing inside the frame is transformed, blurred or masked`);
+        assert.equal(frame.overlays, 0, `${viewport.width}px: no gradient covers the bottom of the frame`);
+        const scrolling = await page.locator('[data-landing-section="hero"] [data-slot="data-table"]').evaluate((table) =>
+          [table, ...table.querySelectorAll<HTMLElement>('*')]
+            .filter((element) => element.scrollWidth > element.clientWidth + 1 && (element.tagName === 'TABLE' || ['auto', 'scroll'].includes(getComputedStyle(element).overflowX)))
+            .map((element) => `${element.tagName} ${element.scrollWidth}>${element.clientWidth}`),
+        );
+        assert.deepEqual(scrolling, [], `${viewport.width}px: the hero table does not scroll sideways`);
+        assert.ok((await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)) <= 0, `${viewport.width}px: the page does not scroll sideways`);
+        await close();
+      }
+    },
+  },
+  {
+    name: 'the landing moves as one system: sections rise once and stay, titles are one block, cards lift, the hero frame waits for the title',
+    async run(browser) {
+      const { page, close } = await openPage(browser, '/', desktop, 'no-preference');
+      assert.equal(await page.locator('[data-slot="text-reveal"]').count(), 1, 'only the hero title reveals word by word');
+      assert.equal(await page.locator('[data-landing-section="hero"] h1 [data-slot="text-reveal"]').count(), 1, 'the hero title is that one');
+      assert.equal(await page.locator('[data-landing-section="cta"] [data-slot="text-reveal"]').count(), 0, 'the CTA title is not scroll-scrubbed');
+      const hero = await page.locator('[data-landing-section="hero"]').evaluate((section) => {
+        const timing = (selector: string) => {
+          const style = getComputedStyle(section.querySelector(selector)!);
+          return { name: style.animationName, delay: Number.parseFloat(style.animationDelay) * 1000, duration: Number.parseFloat(style.animationDuration) * 1000 };
+        };
+        return { line: timing('[data-slot="hero-description"]'), actions: timing('[data-slot="hero-actions"]'), frame: timing('[data-slot="browser-frame"]') };
+      });
+      assert.deepEqual(hero.line, hero.actions, 'the line and the actions come in as one block');
+      assert.ok(hero.line.duration <= 300 && hero.line.delay < 500, 'the block is short and starts with the title');
+      assert.ok(hero.frame.delay >= 1200, `the frame starts at ${hero.frame.delay}ms, after the 7-word title has finished`);
+      const below = page.locator('[data-landing-section="pricing"] [data-slot="pricing-plan"]').first();
+      assert.equal(await below.evaluate((element) => getComputedStyle(element).opacity), '0', 'a part below the fold waits hidden');
+      await below.scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('[data-landing-section="pricing"] [data-slot="pricing-plan"]')!).opacity) === 1, undefined, { timeout: 4000 });
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.evaluate(() => scrollTo(0, document.querySelector('[data-landing-section="pricing"]')!.getBoundingClientRect().top + scrollY));
+      assert.equal(await below.evaluate((element) => getComputedStyle(element).opacity), '1', 'it stays once shown and never replays');
+      await page.evaluate(() => scrollTo(0, 0));
+      assert.equal(await page.locator('[data-reveal]').evaluateAll((elements) => elements.filter((element) => (element as HTMLElement).dataset.reveal === 'hidden').length > 0), true, 'the parts further down still wait');
+      await close();
+      const reduced = await openPage(browser, '/', desktop, 'reduce');
+      const rise = await reduced.page.locator('[data-landing-section="pricing"]').evaluate((section) => getComputedStyle(section).getPropertyValue('--m-rise').trim());
+      assert.equal(rise, '0px', 'under reduced motion a section only fades');
+      await reduced.close();
     },
   },
   {
@@ -598,7 +683,8 @@ const checks: Check[] = [
         assert.ok(await target.isVisible(), `${selector}: "${text}" shows without JavaScript`);
       };
       await visible('[data-landing-section="hero"]', 'Dashboard UI with the details already done');
-      await visible('[data-landing-section="hero"]', /^\$/);
+      await visible('[data-landing-section="hero"]', 'Fernhill Books');
+      await visible('[data-landing-section="hero"]', 'Base UI components and dashboard blocks you own');
       await visible('[data-landing-section="stack"]', 'Tailwind CSS');
       await visible('[data-landing-section="showcase"]', 'acme.example/projects');
       await visible('[data-landing-section="features"]', 'Go to Projects');
@@ -607,6 +693,18 @@ const checks: Check[] = [
       await visible('[data-landing-section="cta"]', 'Read the installation guide');
       await visible('[data-landing-section="footer"]', 'Introduction');
       await context.close();
+      const moving = await browser.newContext({ viewport: desktop, javaScriptEnabled: false, reducedMotion: 'no-preference' });
+      const movingPage = await moving.newPage();
+      await movingPage.goto(new URL('/', base).href, { waitUntil: 'load' });
+      await movingPage.waitForTimeout(2800);
+      for (const selector of ['[data-slot="hero-actions"]', '[data-slot="hero-install"]', '[data-slot="browser-frame"]', '[data-slot="hero-product-glow"]']) {
+        assert.equal(await movingPage.locator(`[data-landing-section="hero"] ${selector}`).evaluate((element) => getComputedStyle(element).opacity), '1', `${selector} has come in without JavaScript`);
+      }
+      for (const id of ['stack', 'features', 'showcase', 'pricing', 'faq', 'cta']) {
+        assert.equal(await movingPage.locator(`[data-landing-section="${id}"] [data-reveal]`).count(), 0, `${id}: nothing waits hidden without JavaScript`);
+        assert.equal(await movingPage.locator(`[data-landing-section="${id}"] [data-landing-content]`).evaluate((element) => getComputedStyle(element).opacity), '1', `${id}: visible without JavaScript`);
+      }
+      await moving.close();
     },
   },
   {
@@ -799,21 +897,29 @@ const checks: Check[] = [
         await tabs.getByRole('tab', { name }).click();
         assert.equal(await tabs.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
         await section.getByText(address, { exact: true }).waitFor();
-        await page.waitForFunction(() => document.querySelectorAll('[data-landing-section="showcase"] [data-slot="showcase-frame"] > [role="tabpanel"]').length === 1);
+        await page.waitForFunction(
+          (label) => {
+            const panels = [...document.querySelectorAll<HTMLElement>('[data-landing-section="showcase"] [data-slot="showcase-panels"] > [role="tabpanel"]')];
+            const shown = panels.filter((panel) => getComputedStyle(panel).visibility === 'visible' && Number(getComputedStyle(panel).opacity) === 1);
+            return shown.length === 1 && shown[0].getAttribute('aria-label') === label && panels.filter((panel) => panel.hasAttribute('inert')).length === panels.length - 1;
+          },
+          name,
+        );
       }
+      const panels = section.locator('[data-slot="showcase-panels"] > [role="tabpanel"]');
+      assert.equal(await panels.count(), 4, 'every screen stays mounted, so a switch is a cross-fade');
+      assert.match(await panels.first().evaluate((panel) => getComputedStyle(panel).transitionProperty), /opacity/, 'the screens fade');
       await close();
     },
   },
   {
-    name: 'the landing fits a 375px phone with no sideways scroll, and the dashboard values never truncate',
+    name: 'the landing fits a 375px phone with no sideways scroll, and the install command never truncates',
     async run(browser) {
       const { page, close } = await openPage(browser, '/', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      const cut = await page.locator('[data-landing-section="hero"]').locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
-        spans.filter((span) => span.scrollWidth > span.clientWidth + 1).map((span) => span.textContent),
-      );
-      assert.deepEqual(cut, [], 'truncated metric text');
+      const cut = await page.locator('[data-landing-section="hero"] [data-slot="hero-install"] input').evaluate((input) => (input as HTMLInputElement).scrollWidth - (input as HTMLInputElement).clientWidth);
+      assert.ok(cut <= 1, `the install command is cut by ${cut}px`);
       await page.screenshot({ path: '.screenshots/landing-check-375.png', fullPage: true });
       await close();
     },
