@@ -514,8 +514,8 @@ const checks: Check[] = [
       const ids = await page.locator('[data-landing-section]').evaluateAll((elements) => elements.map((section) => section.getAttribute('data-landing-section')));
       assert.deepEqual(
         ids,
-        ['hero', 'stack', 'bento', 'showcase', 'pricing', 'faq', 'cta', 'footer'],
-        'the landing runs hero, stack, bento, showcase, pricing, FAQ, CTA and footer, in that order',
+        ['hero', 'stack', 'features', 'showcase', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, stack, features, showcase, pricing, FAQ, CTA and footer, in that order',
       );
       assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
       assert.equal(await page.locator('[data-block-label]').count(), 0, 'no "Built with" labels');
@@ -600,7 +600,7 @@ const checks: Check[] = [
       await visible('[data-landing-section="hero"]', /^\$/);
       await visible('[data-landing-section="stack"]', 'Tailwind CSS');
       await visible('[data-landing-section="showcase"]', 'acme.example/projects');
-      await visible('[data-landing-section="bento"]', 'Go to Projects');
+      await visible('[data-landing-section="features"]', 'Go to Projects');
       await visible('[data-landing-section="pricing"]', 'Pay once');
       await visible('[data-landing-section="faq"]', 'Is Kosmos UI free?');
       await visible('[data-landing-section="cta"]', 'Read the installation guide');
@@ -764,26 +764,26 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the bento shows live Kosmos components and illustrations, each with a one-line caption and a link to its docs',
+    name: 'the feature rows show live Kosmos components, each with a one-sentence caption and a link to its docs',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="bento"]');
-      assert.equal(await section.locator('h2').count(), 1, 'the bento has a heading');
-      const tiles = await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+      const section = page.locator('[data-landing-section="features"]');
+      assert.equal(await section.locator('h2').count(), 1, 'the features section has a heading');
+      const rows = await section.locator('[data-slot="feature-rows-item"]').evaluateAll((items) =>
         items.map((item) => ({
           title: item.querySelector('h3')?.textContent?.trim(),
-          href: item.querySelector('h3 a[href]')?.getAttribute('href'),
-          caption: item.querySelector('[data-slot="bento-item-description"]')?.textContent?.trim(),
-          components: [...item.querySelectorAll('[data-slot="bento-item-visual"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
+          href: item.querySelector('[data-slot="feature-rows-item-link"]')?.getAttribute('href'),
+          caption: item.querySelector('[data-slot="feature-rows-item-description"]')?.textContent?.trim(),
+          components: [...item.querySelectorAll('[data-slot="feature-rows-item-media"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
         })),
       );
-      assert.ok(tiles.length >= 6, `bento tiles: ${tiles.length}`);
-      for (const tile of tiles) {
-        assert.ok(tile.title, 'a tile has a title');
-        assert.match(tile.href ?? '', /^\/docs\/(components|blocks)\/[a-z-]+$/, `${tile.title}: links to its docs page`);
-        assert.ok(tile.caption && !tile.caption.includes('\n'), `${tile.title}: one line of caption`);
-        assert.ok(tile.components.length > 0, `${tile.title}: shows a real component`);
-        await fetchText(tile.href!);
+      assert.equal(rows.length, 3, `feature rows: ${rows.length}`);
+      for (const row of rows) {
+        assert.ok(row.title, 'a row has a title');
+        assert.match(row.href ?? '', /^\/docs\/(components|blocks)\/[a-z-]+$/, `${row.title}: links to its docs page`);
+        assert.ok(row.caption && !row.caption.includes('\n'), `${row.title}: one sentence of caption`);
+        assert.ok(row.components.length > 0, `${row.title}: shows a real component`);
+        await fetchText(row.href!);
       }
       await close();
     },
