@@ -1,9 +1,9 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { ArrowUpRight, Check, ChevronDown, Copy, FileText, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronDown, Copy, FileText } from 'lucide-react';
 import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
-import { GitHubIcon } from '@/components/site/brand-icons';
+import { ClaudeIcon, GitHubIcon, OpenAIIcon } from '@/components/site/brand-icons';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   DropdownMenu,
@@ -59,12 +59,12 @@ export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; g
           </DropdownMenuLinkItem>
           <DropdownMenuSeparator />
           <DropdownMenuLinkItem href={`https://claude.ai/new?q=${prompt}`} {...external}>
-            <MessageCircle aria-hidden />
+            <ClaudeIcon />
             Open in Claude
             <ArrowUpRight aria-hidden className="ms-auto" />
           </DropdownMenuLinkItem>
           <DropdownMenuLinkItem href={`https://chatgpt.com/?prompt=${prompt}`} {...external}>
-            <MessageCircle aria-hidden />
+            <OpenAIIcon />
             Open in ChatGPT
             <ArrowUpRight aria-hidden className="ms-auto" />
           </DropdownMenuLinkItem>
