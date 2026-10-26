@@ -231,6 +231,7 @@ const checks: Check[] = [
           items: [...group.querySelectorAll('a[href]')].map((link) => ({
             url: new URL((link as HTMLAnchorElement).href).pathname,
             count: link.querySelector('[data-slot="sidebar-menu-badge"]')?.textContent?.trim(),
+            isNew: link.querySelector('[data-slot="badge"]')?.textContent?.trim() === 'New',
             text: link.textContent?.replace(/\s+/g, ' ').trim(),
           })),
         })),
@@ -248,7 +249,7 @@ const checks: Check[] = [
       for (const url of ['/docs/blocks/hero', '/docs/blocks/bento', '/docs/blocks/footer']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
       for (const item of [...application, ...marketing, ...ai]) {
         const count = variantCount(item.url);
-        if (item.text?.endsWith(' New')) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
+        if (item.isNew) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
         else if (count > 1) {
           assert.equal(item.count, String(count), `${item.url}: variant count`);
           assert.match(item.text ?? '', new RegExp(`${count} variants`), `${item.url}: screen reader count`);
@@ -333,11 +334,8 @@ const checks: Check[] = [
       const preview = viewer.getByRole('tab', { name: 'Preview' });
       await preview.focus();
       await page.keyboard.press('Shift+Tab');
-      assert.match(
-        (await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))) ?? '',
-        /^Copy install command: .*add @kosmos\/data-table$/,
-        'the install command comes before the tabs',
-      );
+      assert.equal(await viewer.getByRole('button', { name: /^Copy install command/ }).count(), 0, 'no install command in the viewer');
+      assert.equal(await viewer.evaluate((root) => root.contains(document.activeElement)), false, 'the tabs come first in the viewer');
       await page.keyboard.press('Tab');
       assert.ok(await preview.evaluate((tab) => tab === document.activeElement), 'Tab returns to Preview');
       await page.keyboard.press('ArrowRight');
@@ -455,6 +453,9 @@ const checks: Check[] = [
   {
     name: 'the block viewer shows a Pro variant with a Pro badge, its live preview and its code locked',
     async run(browser) {
+      const fixture = await fetch(new URL('/fixtures/pro-variant', base));
+      // The fixture is a made-up Pro variant that exists only on a dev server; a production build must not serve it.
+      if (fixture.status === 404) return;
       const { page, close } = await openPage(browser, '/fixtures/pro-variant');
       const viewer = page.locator('[data-block-variant][data-tier="pro"]');
       assert.equal(await viewer.count(), 1, 'one Pro variant');
@@ -850,19 +851,19 @@ const checks: Check[] = [
       await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
       await page.getByRole('button', { name: 'Get code' }).click();
       const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
-      const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
+      const code = (tab: string) => dialog.getByRole('tabpanel', { name: tab, exact: true }).locator('pre').first().textContent();
       const choice = { preset: 'console', accent: true, radius: '0' };
-      assert.equal((await code())?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
+      assert.equal((await code('CSS'))?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
       assert.equal(await frame.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the preview applies');
       assert.equal(await page.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the page applies');
       await dialog.getByRole('tab', { name: 'Registry' }).click();
-      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
-      assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
+      await dialog.getByRole('tabpanel', { name: 'Registry', exact: true }).locator('pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
+      assert.match((await code('Registry')) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
       const item = await fetchText('/r/preset-console-radius-0.json');
       assert.equal(JSON.parse(item).cssVars.light.radius, '0rem', 'the registry item');
       await dialog.getByRole('tab', { name: 'DESIGN.md' }).click();
-      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: '## Palette' }).first().waitFor();
-      assert.match((await code()) ?? '', /^# Console preset/, 'the DESIGN.md tab');
+      await dialog.getByRole('tabpanel', { name: 'DESIGN.md', exact: true }).locator('pre', { hasText: '## Palette' }).first().waitFor();
+      assert.match((await code('DESIGN.md')) ?? '', /^# Console preset/, 'the DESIGN.md tab');
       await close();
     },
   },
