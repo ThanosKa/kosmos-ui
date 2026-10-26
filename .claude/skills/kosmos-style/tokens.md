@@ -100,7 +100,8 @@ Shadows are style, not palette: they are written once in `tokens.css`, and no pr
 | --- | --- | --- |
 | `ease-power3-out` | `cubic-bezier(0.25, 1, 0.5, 1)` | Default for everything; also the theme's default transition curve |
 | `ease-smooth-in-out` | `cubic-bezier(0.7, 0, 0, 1)` | Size and position: sidebar width, indicators, switch thumb, accordion height |
-| `duration-instant` / `fast` / `base` / `overlay` / `slow` | 100 / 150 / 200 / 250 / 300ms | See the motion table in SKILL.md |
+| `duration-instant` / `fast` / `base` / `overlay` / `slow` / `reveal` | 100 / 150 / 200 / 250 / 300 / 500ms | See the motion table in SKILL.md |
+| `reveal` keyframes, `animate-reveal-fade` | One word of a Text reveal rising out of a blur (the `reveal` keyframes at `duration-reveal`, `animate-[reveal_…]`), and its plain fade under reduced motion (150ms) | The mount entrance of Text reveal; a keyframe animation, so a theme or preset change that drops transitions cannot cut it short |
 | `animate-shimmer` | `shimmer 2s linear infinite` (background-position sweep) | The light across text in Shimmer |
 
 The same values are in `registry/kosmos/lib/motion.ts` for Motion (`ease.power3Out`, `ease.smoothInOut`, `duration.*` in seconds, `spring`).

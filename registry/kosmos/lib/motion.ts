@@ -9,6 +9,7 @@ export const duration = {
   base: 0.2,
   overlay: 0.25,
   slow: 0.3,
+  reveal: 0.5,
 } as const;
 
 export const spring = { type: 'spring', duration: 0.3, bounce: 0 } as const;

@@ -62,7 +62,7 @@ export default function HomePage() {
         <LandingSection id="faq" title="Questions before you install">
           <LandingFaq />
         </LandingSection>
-        <LandingSection id="cta" space="last" title="Add your first block and keep every line of it">
+        <LandingSection id="cta" space="last" titleReveal="scroll" title="Add your first block and keep every line of it">
           <Cta
             title={null}
             action={

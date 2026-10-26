@@ -11,7 +11,7 @@ export default function TextRevealPreview() {
       </PreviewSection>
       <PreviewSection title="Slower stagger and a delay">
         <p className="text-heading font-semibold text-foreground">
-          <TextReveal stagger={120} delay={200}>
+          <TextReveal stagger={240} delay={200}>
             One word at a time
           </TextReveal>
         </p>
@@ -25,6 +25,13 @@ export default function TextRevealPreview() {
         <div className="flex min-h-screen items-end">
           <p className="text-heading font-semibold text-foreground">
             <TextReveal trigger="view">Revealed the first time it scrolls into view, then it stays</TextReveal>
+          </p>
+        </div>
+      </PreviewSection>
+      <PreviewSection title="Tied to the scroll position (below the fold)">
+        <div className="flex min-h-screen items-end pb-[20vh]">
+          <p className="max-w-[20em] text-display font-semibold text-balance text-foreground">
+            <TextReveal trigger="scroll">Every word goes from faint to full as you scroll it up the screen</TextReveal>
           </p>
         </div>
       </PreviewSection>
