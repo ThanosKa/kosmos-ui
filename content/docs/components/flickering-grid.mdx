@@ -9,8 +9,6 @@ description: A grid of small squares that flicker behind a section, still when t
 
 <ComponentInstall name="flickering-grid" />
 
-Ported from the flickering grid of [Magic UI](https://github.com/magicuidesign/magicui) (MIT) and restyled to the Kosmos tokens. Its copyright line lands next to the component, in `LICENSE-MAGIC-UI`.
-
 ## Usage
 
 ```tsx
@@ -36,7 +34,7 @@ The squares take the preset's accent. A preset with no accent gives ink. The col
 
 ### Cursor spotlight
 
-Pass `spotlight` and the squares near a mouse or pen pointer over the parent brighten in a soft halo that follows it, while the rest keeps flickering. The halo is not drawn for a finger, and not under reduced motion.
+Pass `spotlight` and the squares near a mouse or pen pointer over the parent brighten in a soft halo that follows it. The rest keeps flickering. The grid draws no halo for a finger or under reduced motion.
 
 ```tsx
 <FlickeringGrid spotlight />
@@ -44,11 +42,11 @@ Pass `spotlight` and the squares near a mouse or pen pointer over the parent bri
 
 ## Accessibility
 
-The grid is decorative, so it is `aria-hidden` and screen readers skip it. When the visitor asks for reduced motion, it draws one still grid and never animates. Otherwise it stops drawing while it is off screen and while the tab is hidden, so it costs nothing it cannot be seen. A frame redraws only the squares that changed. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
+The grid is decorative, so it is `aria-hidden` and screen readers skip it. When the visitor asks for reduced motion, it draws one still grid and never animates. Otherwise it stops drawing while it is off screen and while the tab is in the background. It costs nothing when nobody can see it. A frame redraws only the squares that changed. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
 
 ## API
 
-FlickeringGrid is a `<div>` and accepts all of its props. It wraps no Base UI part.
+FlickeringGrid is a `<div>` and accepts all its props. It wraps no Base UI part.
 
 <TypeTable
   type={{

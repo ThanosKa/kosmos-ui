@@ -3,7 +3,7 @@
   "name": "select",
   "type": "registry:ui",
   "title": "Select",
-  "description": "A select on Base UI: a trigger with the control surface and a popup list with groups, separators and a check on the selected item, fully usable with the keyboard.",
+  "description": "A select on Base UI with a trigger in the control surface and a popup list. The list has groups, separators and a check on the selected item, and works with the keyboard.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "forms" },

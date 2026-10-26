@@ -8,11 +8,11 @@ export const night: Preset = {
   id: 'night',
   name: 'Night',
   description:
-    'Made for dark mode: a near-black page, cards and popovers each one step lighter, a darker sidebar, an 8px radius and a mint accent, with a cool daylight version for light mode.',
+    'Made for dark mode: a near-black page, cards and popovers each one step lighter, a darker sidebar, an 8px radius and a mint accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series, with a cool daylight version for light mode.',
   radius: '0.5rem',
   accent: {
-    light: { ring: 'oklch(0.52 0.11 172)', text: 'oklch(0.475 0.11 172)' },
-    dark: { ring: 'oklch(0.8 0.15 168)', text: 'oklch(0.8 0.15 168)' },
+    light: { primary: 'oklch(0.49 0.11 172)', onPrimary: '#ffffff', ring: 'oklch(0.52 0.11 172)', text: 'oklch(0.475 0.11 172)' },
+    dark: { primary: 'oklch(0.8 0.15 168)', onPrimary: '#0d0e10', ring: 'oklch(0.8 0.15 168)', text: 'oklch(0.8 0.15 168)' },
   },
   light: {
     background: '#f2f3f5',

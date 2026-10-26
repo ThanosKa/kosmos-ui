@@ -55,7 +55,7 @@ A RadioCard shows an option as a card: a RadioCardTitle, an optional RadioCardDe
 
 ### Invalid
 
-Set `invalid` on the Field and put the message in a FieldError. A `required` group also fails the browser's checks until an option is picked.
+Set `invalid` on the Field and put the message in a FieldError. A `required` group also fails the browser's checks until someone picks an option.
 
 <ComponentPreview name="radio-group-invalid" />
 
@@ -124,13 +124,13 @@ Take every Base UI `Radio.Root` prop, such as:
 
 ### RadioCardTitle and RadioCardDescription
 
-Render a `<div>` and take its props. The title names the card's radio and the description is read after it, so give every RadioCard a RadioCardTitle.
+Render a `<div>` and take its props. The title names the card's radio and screen readers read the description after it, so give every RadioCard a RadioCardTitle.
 
 ## Keyboard
 
 | Key | Action |
 | --- | --- |
-| `Tab` | Moves focus to the selected option, or the first one when none is selected, then on to the next control. |
+| `Tab` | Moves focus to the selected option, or the first one when none has a selection, then on to the next control. |
 | `ArrowDown` or `ArrowRight` | Selects the next option. From the last, it goes back to the first. |
 | `ArrowUp` or `ArrowLeft` | Selects the previous option. From the first, it goes to the last. |
 | `Space` | Selects the focused option. |

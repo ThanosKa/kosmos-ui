@@ -3,7 +3,7 @@
   "name": "showcase",
   "type": "registry:block",
   "title": "Showcase",
-  "description": "A live product in a browser-style frame with a tab for each screen: a dashboard, the sign-in, a marketing page and the settings, each a real block. It lays itself out by its own width, not the screen's.",
+  "description": "A live product in a browser-style frame with a tab for each screen: dashboard, sign-in, marketing page and settings. Each tab is a real block. It lays itself out by its own width, not the screen's.",
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

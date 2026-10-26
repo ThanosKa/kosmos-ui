@@ -10,7 +10,7 @@ export const defaultPreset: Preset = {
   id: 'default',
   name: 'Default',
   description:
-    'White cards on a near-white page, true grays and a near-black ink, with no accent: focus, the current page in navigation, meters and charts are ink and gray, so color is left to status and destructive.',
+    'White cards on a near-white page, true grays and a near-black ink, with no accent: buttons and every checked control, focus, the current page in navigation, meters and charts are ink and gray, so color is left to status and destructive.',
   radius: '0.625rem',
   light: {
     background: page,

@@ -3,7 +3,7 @@
   "name": "tool-call",
   "type": "registry:ui",
   "title": "Tool call",
-  "description": "One tool call by an agent: the tool, its status and its timing in a row that opens to show the input and output, with an error panel and a slot for a custom output.",
+  "description": "One tool call by an agent. A row shows the tool, status and timing, and opens to the input and output. It has an error panel and a slot for a custom output.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

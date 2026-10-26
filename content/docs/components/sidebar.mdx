@@ -1,6 +1,6 @@
 ---
 title: Sidebar
-description: The app sidebar, made of parts you compose, with submenus, a workspace switcher and a user menu. Resize it by dragging its edge or with the keyboard, collapse it to a column of icons or to the edge, and open it as a drawer on phones.
+description: The app sidebar, made of parts you compose, with submenus, a workspace switcher, and a user menu. Drag its edge or use the keyboard to resize it. It collapses to icons or to the edge, and opens as a drawer on phones.
 ---
 
 <ComponentPreview name="sidebar-demo" />
@@ -69,7 +69,7 @@ import {
 </SidebarProvider>
 ```
 
-`SidebarProvider` wraps the whole app shell and fills the screen. The sidebar sticks to the top while the page scrolls, and its content scrolls on its own between the header and the footer, in a [Scroll area](/docs/components/scroll-area): an edge with items hidden past it fades out.
+`SidebarProvider` wraps the whole app shell and fills the screen. The sidebar sticks to the top while the page scrolls. Its content scrolls on its own between the header and the footer, in a [Scroll area](/docs/components/scroll-area). An edge with items out of view past it fades out.
 
 From 768px up the sidebar sits beside the page. Below that it leaves the layout, `SidebarTrigger` opens it as a drawer from the left edge, and a click on a link closes the drawer. `mobileBreakpoint` moves that point.
 
@@ -95,7 +95,7 @@ An item can hold one level of pages under it. Put a `SidebarSubmenu` in the `Sid
 </SidebarMenuItem>
 ```
 
-Beside the page and in the drawer, the trigger opens a panel under it, and the pages line up with the trigger's label. In icon mode the panel closes and the trigger opens the pages in a popover beside its icon, on hover, on click or with `Enter`, under the submenu's `label`. A click on a page closes it. Give the trigger `isActive` when the current page is inside: it takes the current page's highlight while that page is out of sight, with the panel closed or in icon mode.
+Beside the page and in the drawer, the trigger opens a panel under it, and the pages line up with the trigger's label. In icon mode the panel closes. The trigger then opens the pages in a popover beside its icon, on hover, on click or with `Enter`, under the submenu's `label`. A click on a page closes it. Give the trigger `isActive` when the current page is inside: it takes the current page's highlight while that page is out of sight. That happens with the panel closed or in icon mode.
 
 ## Workspace switcher and user menu
 
@@ -131,7 +131,7 @@ Beside the page and in the drawer, the trigger opens a panel under it, and the p
 </SidebarFooter>
 ```
 
-The switcher shows the current workspace's mark, the first letter of its name unless you pass a `logo`, beside its name and description, and lists every workspace with a check on the current one. The user menu shows the avatar, name and email, and opens upward. In icon mode both keep only the mark or the avatar, name themselves in a tooltip and open their menu beside the column. A user menu with no items shows the user as plain text.
+The switcher shows the current workspace's mark, the first letter of its name unless you pass a `logo`, beside its name and description. It lists every workspace with a check on the current one. The user menu shows the avatar, name and email, and opens upward. In icon mode both keep only the mark or the avatar. They name themselves in a tooltip and open their menu beside the column. A user menu with no items shows the user as plain text.
 
 ## Collapsing
 
@@ -140,11 +140,11 @@ The switcher shows the current workspace's mark, the first letter of its name un
 | `collapsible` | Collapsed |
 | --- | --- |
 | `offcanvas` (default) | The sidebar slides off to the edge and gives the page its space. |
-| `icon` | A 48px column of icons stays. The labels, counts and group labels fade out, the active item keeps its highlight, each item shows its `tooltip` on hover and keyboard focus, and a submenu opens in a popover. |
+| `icon` | A 48px column of icons stays. The labels, counts and group labels fade out. The active item keeps its highlight. Each item shows its `tooltip` on hover and keyboard focus, and a submenu opens in a popover. |
 
-In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. The button's first child stays visible, so put the icon first. The label and count after it fade. The workspace switcher and the user menu do this for you. Your own content in the header or footer can fade with it: `group-data-[collapsible=icon]/sidebar:opacity-0` hides a name and leaves its logo, and `motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)` holds it back on expand until the column is wide enough. On phones the drawer always shows the full sidebar.
+In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. The button's first child stays visible, so put the icon first. The label and count after it fade. The workspace switcher and the user menu do this for you. Your own content in the header or footer can fade with it. `group-data-[collapsible=icon]/sidebar:opacity-0` hides a name and leaves its logo. `motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)` holds it back on expand until the column is wide enough. On phones the drawer always shows the full sidebar.
 
-The sidebar remembers whether it was collapsed. It saves the state in local storage under `storageKey` (`'sidebar-state'`), and a small script puts it back before the page paints, so a collapsed sidebar never flashes open on reload. Give each sidebar on a page its own key, or pass `storageKey={false}` to keep nothing. `keyboardShortcut` changes the key, and `false` turns the shortcut off.
+The sidebar remembers whether you collapsed it. It saves the state in local storage under `storageKey` (`'sidebar-state'`), and a small script puts it back before the page paints. A collapsed sidebar then never flashes open on reload. Give each sidebar on a page its own key, or pass `storageKey={false}` to keep nothing. `keyboardShortcut` changes the key, and `false` turns the shortcut off.
 
 ## Resizing
 
@@ -157,7 +157,7 @@ The sidebar remembers whether it was collapsed. It saves the state in local stor
 
 It also takes focus and resizes from the keyboard: see [Keyboard](#keyboard).
 
-The width resets on every visit. To keep it, control `width` and save it, as in the example below. A controlled `open` is yours to save too: the sidebar stores nothing while `open` is controlled.
+The width resets on every visit. To keep it, control `width` and save it, as in the example below. You save a controlled `open` too, because the sidebar stores nothing while you control `open`.
 
 ## Examples
 
@@ -397,7 +397,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `SidebarGroupLabel` | The small uppercase heading of a group. `render={<h2 />}` makes it a heading. |
 | `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
 | `SidebarMenuItem` | One item. Renders `<li>`. |
-| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page: idle items are muted, and the active one sits on the flat hover fill with its label and icon in `accent-text`, ink by default. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Idle items take a muted tone, and the active one sits on the flat hover fill with its label and icon in `accent-text`, ink by default. Put the label in a `<span>` so it truncates. |
 | `SidebarMenuBadge` | A count at the end of an item, in a small pill. |
 | `SidebarSubmenu` | An item that holds a level of pages: a panel under its trigger, a popover in icon mode. |
 | `SidebarSubmenuTrigger` | The row that opens the submenu, with a chevron that turns as the panel opens. |

@@ -1,6 +1,6 @@
 ---
 title: Plan checklist
-description: An agent's plan as a live checklist, showing what it will do, what it is doing and what is done. Built on Base UI Collapsible.
+description: An agent's plan as a live checklist, showing what it will do, what it is doing and what it did. Built on Base UI Collapsible.
 baseUi: https://base-ui.com/react/components/collapsible
 ---
 
@@ -26,7 +26,7 @@ const steps: PlanStep[] = [
 <PlanChecklist title="Prepare the weekly summary for Acme" steps={steps} />;
 ```
 
-The header shows the title and how many steps are done, such as "1 of 3". Click it to open or close the list. Each step leads with a status mark:
+The header shows the title and how many steps are complete, such as "1 of 3". Click it to open or close the list. Each step leads with a status mark:
 
 | Status | Mark | Label |
 | --- | --- | --- |
@@ -36,7 +36,7 @@ The header shows the title and how many steps are done, such as "1 of 3". Click 
 | `error` | Red cross | Full ink. Put the reason in `detail`. |
 | `skipped` | Slashed circle | Muted and struck through |
 
-Update `steps` as the agent works. When the last step is done, the list closes and the header icon turns into a green check. Set `collapseWhenDone={false}` to keep it open.
+Update `steps` as the agent works. When the last step completes, the list closes and the header icon turns into a green check. Set `collapseWhenDone={false}` to keep it open.
 
 Screen readers hear each step's status after its label. A hidden live region announces progress, such as "Step 3 of 5 done", and names a step when it fails.
 
@@ -62,7 +62,7 @@ Set `surface="none"` to drop the card, so the checklist sits flat inside a messa
 
 ### Controlled
 
-Pass `open` and `onOpenChange` to open and close the list from your own state. When every step is done, `onOpenChange` is called with `false`, unless `collapseWhenDone` is `false`.
+Pass `open` and `onOpenChange` to open and close the list from your own state. When every step is complete, `onOpenChange` runs with `false`, unless `collapseWhenDone` is `false`.
 
 <ComponentPreview name="plan-checklist-controlled" />
 

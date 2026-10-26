@@ -6,16 +6,17 @@ const lightInk = 'oklch(0.97 0.004 106.5)';
 const inkRing = 'oklch(0.263 0.013 100.5 / 0.55)';
 const lightInkRing = 'oklch(0.97 0.004 106.5 / 0.55)';
 
-/** The warm neutrals and the orange of ADR 0007. */
+/** The warm neutrals and the orange of ADR 0007, now also the primary fill (ADR 0011). */
 export const warm: Preset = {
   id: 'warm',
   name: 'Warm',
-  description: 'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange for focus, the current page in navigation, meters and the first chart series.',
+  description:
+    'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
   radius: '0.625rem',
-  // The orange of ADR 0007. In light the text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
+  // In light the orange fill carries dark ink, as white on it is 3.5:1. The text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
   accent: {
-    light: { ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
-    dark: { ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
+    light: { primary: 'oklch(0.67 0.2 40)', onPrimary: 'oklch(0.22 0.013 100.5)', ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
+    dark: { primary: 'oklch(0.7 0.18 42)', onPrimary: 'oklch(0.2 0.006 95)', ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
   },
   light: {
     background: 'oklch(0.975 0.004 106.5)',
@@ -51,10 +52,10 @@ export const warm: Preset = {
     'sidebar-border': 'oklch(0.915 0.006 97)',
     'sidebar-ring': inkRing,
     'chart-1': ink,
-    'chart-2': 'oklch(0.55 0.15 252)',
-    'chart-3': 'oklch(0.64 0.14 82)',
-    'chart-4': 'oklch(0.5 0.17 330)',
-    'chart-5': 'oklch(0.6 0.13 160)',
+    'chart-2': 'oklch(0.4 0.012 100)',
+    'chart-3': 'oklch(0.49 0.012 100)',
+    'chart-4': 'oklch(0.57 0.012 100)',
+    'chart-5': 'oklch(0.63 0.012 100)',
   },
   dark: {
     background: 'oklch(0.2 0.006 95)',
@@ -90,9 +91,9 @@ export const warm: Preset = {
     'sidebar-border': 'oklch(0.26 0.006 95)',
     'sidebar-ring': lightInkRing,
     'chart-1': lightInk,
-    'chart-2': 'oklch(0.65 0.14 250)',
-    'chart-3': 'oklch(0.76 0.14 82)',
-    'chart-4': 'oklch(0.62 0.17 330)',
-    'chart-5': 'oklch(0.7 0.14 160)',
+    'chart-2': 'oklch(0.82 0.008 100)',
+    'chart-3': 'oklch(0.71 0.008 100)',
+    'chart-4': 'oklch(0.62 0.008 100)',
+    'chart-5': 'oklch(0.54 0.008 100)',
   },
 };

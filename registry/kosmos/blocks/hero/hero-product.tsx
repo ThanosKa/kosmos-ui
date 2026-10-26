@@ -25,7 +25,7 @@ function SampleDashboard() {
   );
 }
 
-type HeroProductProps = Omit<HeroProps, 'announcement' | 'install'> & {
+type HeroProductProps = Omit<HeroProps, 'announcement'> & {
   /** The product under the actions: a live screen or an `<img>`. It is a picture, so keyboard and screen readers skip it. */
   product?: React.ReactNode;
   /** The address in the browser bar, without a scheme. `null` leaves the pill out. */
@@ -33,24 +33,23 @@ type HeroProductProps = Omit<HeroProps, 'announcement' | 'install'> & {
 };
 
 /**
- * A marketing hero that shows the product: a title, one line and two actions, then a screen of the product in a tilted
- * browser frame with a glow behind it, fading into the page at the bottom. The default screen is a live dashboard
+ * A marketing hero that shows the product: a title, one line and two actions, then a screen of the product in a flat
+ * browser frame with a glow behind it that stays below the actions. The screen is cropped by the frame. The default screen is a live dashboard
  * built from App sidebar and Stats overview. Lays itself out by its own width and sets no padding around itself.
  */
-function HeroProduct({ product, url = 'acme.example/overview', headingLevel = 1, className, ...props }: HeroProductProps) {
+function HeroProduct({ install = null, product, url = 'acme.example/overview', headingLevel = 1, className, ...props }: HeroProductProps) {
   return (
     <section data-slot="hero-product" className={cn('@container relative isolate overflow-hidden', className)}>
-      <Hero announcement={null} install={null} headingLevel={headingLevel} {...props} />
+      <Hero announcement={null} install={install}headingLevel={headingLevel} {...props} />
       <div className="relative mx-auto mt-12 max-w-6xl @2xl:mt-16">
-        <div className="absolute -inset-x-8 -inset-y-24">
+        <div data-slot="hero-product-glow" className="absolute -inset-x-20 -inset-y-10">
           <Glow position="center" />
         </div>
-        <BrowserFrame tilt url={url ?? undefined} className="relative">
-          <div inert className="h-80 overflow-hidden select-none @3xl:h-120">
+        <BrowserFrame url={url ?? undefined} className="relative">
+          <div inert className="h-96 overflow-hidden select-none @3xl:h-136">
             {product ?? <SampleDashboard />}
           </div>
         </BrowserFrame>
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-px h-1/2 bg-linear-to-t from-background from-15% to-transparent" />
       </div>
     </section>
   );

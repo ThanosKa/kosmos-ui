@@ -3,7 +3,7 @@
   "name": "scroll-area",
   "type": "registry:ui",
   "title": "Scroll area",
-  "description": "A native scroll container on Base UI with a thin scrollbar that looks the same on every platform, edge fades where content is hidden, and keyboard scrolling.",
+  "description": "A native scroll container on Base UI with a thin scrollbar that looks the same on every platform. It fades edges over clipped content and supports keyboard scrolling.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },

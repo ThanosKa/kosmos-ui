@@ -26,17 +26,17 @@ The body is `children`, so render the reply with any Markdown renderer or your o
 
 Below the body come a button that opens the list of `sources`, the actions and the `followUps`. Copy puts the rendered text of the reply on the clipboard, without the citation numbers. Pass `copyText` to copy something else, such as the Markdown source. Retry shows only when you pass `onRetry`. Good answer and Bad answer are toggle buttons. Pressing the pressed one clears it.
 
-While `status` is `streaming`, a caret blinks at the end of the body, the message is marked busy for screen readers, and the sources and actions wait until the reply is done. With `status="error"`, the message shows the error under the body, with a Retry button when you pass `onRetry`.
+While `status` is `streaming`, a caret blinks at the end of the body and the message tells screen readers it is busy. The sources and actions wait until the reply finishes. With `status="error"`, the message shows the error under the body, with a Retry button when you pass `onRetry`.
 
 ## Examples
 
 ### Thread
 
-Messages stack in a column with a `gap-4`. In a long thread, pass `actionsVisibility="hover"` to every reply except the latest, so only the reply people are most likely to act on shows its actions all the time.
+Messages stack in a column with a `gap-4`. In a long thread, pass `actionsVisibility="hover"` to every reply except the latest. Then only the reply people most likely act on shows its actions all the time.
 
 <ComponentPreview name="assistant-message-thread" />
 
-With `hover`, the actions appear when the pointer is over the message or when one of them has keyboard focus, and stay visible while an answer is rated. On touch screens they always show. Their row keeps its space while hidden, so nothing moves when they appear.
+With `hover`, the actions appear when the pointer is over the message or when one of them has keyboard focus. They stay visible while someone rates an answer. On touch screens they always show. Their row keeps its space while hidden, so nothing moves when they appear.
 
 ### Streaming
 

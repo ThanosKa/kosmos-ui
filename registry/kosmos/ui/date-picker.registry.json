@@ -3,7 +3,7 @@
   "name": "date-picker",
   "type": "registry:ui",
   "title": "Date picker",
-  "description": "A field that opens a calendar: one day, or a range over two months with quick ranges such as \"Last 7 days\" beside it. The trigger names the quick range a value matches, and the focus goes to the picked day on open and back to the field on close.",
+  "description": "A field that opens a calendar for one day or a two-month range with quick ranges such as \"Last 7 days\". The trigger names the matching quick range, and focus moves to the picked day on open.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/dates", "@kosmos/button", "@kosmos/calendar", "@kosmos/popover"],
   "meta": { "group": "forms" },

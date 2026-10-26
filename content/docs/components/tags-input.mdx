@@ -21,7 +21,7 @@ import { TagsInput } from '@/components/ui/tags-input';
 <TagsInput aria-label="Invite by email" name="emails" delimiters={[',', ';', ' ']} validate={isEmail} placeholder="name@acme.example" />
 ```
 
-Typing a delimiter or pressing Enter turns the text before it into a tag, and so does leaving the field, so a form never drops the last one. A pasted list becomes one tag per line or delimiter, and a tag already in the list is skipped, whatever its case. Each add is announced to screen readers, with how many were skipped.
+Typing a delimiter or pressing Enter turns the text before it into a tag. So does leaving the field, so a form never drops the last one. A pasted list becomes one tag per line or delimiter. The field skips a tag already in the list, whatever its case. It announces each add to screen readers, with how many it skipped.
 
 `validate` marks the tags it rejects in red with an alert icon, and keeps them, so people can see the typo and remove it. `isEmail`, installed with the component, checks for a name, one @ and a domain with a dot. Pair it with a FieldError that names the bad address.
 
@@ -29,7 +29,7 @@ Typing a delimiter or pressing Enter turns the text before it into a tag, and so
 
 ### Invite by email
 
-In a [Field](/docs/components/field), with an error while any address is mistyped and a button that counts the invites.
+In a [Field](/docs/components/field), with an error while any address has a typo and a button that counts the invites.
 
 <ComponentPreview name="tags-input-invite" />
 
@@ -41,7 +41,7 @@ Pass `suggestions` to offer known values as people type. ArrowDown and Enter add
 
 ### A limit
 
-`max` caps the list. Once it is full, the input takes no more text until a tag is removed.
+`max` caps the list. Once it is full, the input takes no more text until someone removes a tag.
 
 <ComponentPreview name="tags-input-max" />
 
@@ -49,7 +49,7 @@ To choose only from a list, use the [Combobox](/docs/components/combobox) with `
 
 ## API
 
-TagsInput is built on the [Base UI Combobox](https://base-ui.com/react/components/combobox) with `multiple`, using the [Combobox](/docs/components/combobox) chips. Other props go to the text input, such as `placeholder`, `aria-label` and `aria-invalid`.
+TagsInput builds on the [Base UI Combobox](https://base-ui.com/react/components/combobox) with `multiple`, using the [Combobox](/docs/components/combobox) chips. Other props go to the text input, such as `placeholder`, `aria-label` and `aria-invalid`.
 
 <TypeTable
   type={{
@@ -122,7 +122,7 @@ TagsInput is built on the [Base UI Combobox](https://base-ui.com/react/component
 | --- | --- |
 | `isEmail(value)` | Whether the text reads as an email address. |
 | `splitTags(text, delimiters)` | The tags in a text, split on each delimiter and line break, trimmed. |
-| `addTags(tags, incoming, { max, allowDuplicates })` | The list after adding, with the tags that were added and those left out as duplicates or past the limit. |
+| `addTags(tags, incoming, { max, allowDuplicates })` | The list after adding, with the tags it added and those it left out as duplicates or past the limit. |
 
 ## Keyboard
 
@@ -131,5 +131,5 @@ TagsInput is built on the [Base UI Combobox](https://base-ui.com/react/component
 | `Enter` or a delimiter | Adds the typed text as a tag. With a suggestion highlighted, Enter adds the suggestion. |
 | `ArrowLeft` | From the start of the input: moves onto the last tag, then along the tags. |
 | `Backspace` | In an empty input: removes the last tag. On a tag: removes it. |
-| `Escape` | Clears the text being typed, or closes the suggestions. The tags stay. |
+| `Escape` | Clears the text in the input, or closes the suggestions. The tags stay. |
 | `ArrowDown` | With `suggestions`: highlights the next suggestion. |

@@ -3,7 +3,7 @@
   "name": "settings",
   "type": "registry:block",
   "title": "Settings",
-  "description": "A settings card with a title, a description, fields and a Save that turns on only when something changed, and a settings page around it: section navigation, profile, notifications, an API key and a danger zone that asks for confirmation.",
+  "description": "A settings card with fields and a Save that turns on only when something changes, plus a settings page around it. The page has section navigation, profile, notifications, an API key and a danger zone.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

@@ -31,7 +31,7 @@ import { ToolApproval } from '@/components/ui/tool-approval';
 
 The title asks the question in plain words, and the tool id below it shows exactly what will run. Details stay folded under **Show details** until someone needs them.
 
-Tool approval holds no state of its own: you pass `status` and `decision`, and `onDecide` tells you which button was pressed. While your request runs, set `status="submitting"` with the `decision` being sent. The pressed button shows a spinner and all three stay disabled but focusable, so focus never jumps. Once it lands, set `status="decided"`.
+Tool approval holds no state of its own: you pass `status` and `decision`, and `onDecide` tells you which button the user pressed. While your request runs, set `status="submitting"` with the `decision` you are sending. The pressed button shows a spinner and all three stay disabled but focusable, so focus never jumps. Once it lands, set `status="decided"`.
 
 A decided approval folds the details and the buttons away in 300ms and leaves a record line, such as "Allowed once by you · 14:02". When the reduced motion setting is on, they fade instead. If focus was on a button, it moves to the record line, and screen readers announce the record.
 
@@ -45,13 +45,13 @@ Set `danger` for an action that can't be undone. Allow once turns red, Deny gets
 
 ### Decided
 
-The badge turns to Allowed or Denied, and the record says what was decided, by whom and when. Pass `decidedBy` as a role or a name from your own data.
+The badge turns to Allowed or Denied, and the record says what the user decided, by whom and when. Pass `decidedBy` as a role or a name from your own data.
 
 <ComponentPreview name="tool-approval-decided" />
 
 ### Inside a host
 
-Set `surface="none"` to drop the card and sit flat inside a card, a chat message or a timeline that already draws one. Set `allowAlways={false}` when a tool must be approved every time.
+Set `surface="none"` to drop the card and sit flat inside a card, a chat message or a timeline that already draws one. Set `allowAlways={false}` when the user must approve a tool every time.
 
 <ComponentPreview name="tool-approval-flat" />
 
@@ -131,7 +131,7 @@ Set `surface="none"` to drop the card and sit flat inside a card, a chat message
   }}
 />
 
-The types `ApprovalDecision`, `ToolApprovalDetail` and `ToolApprovalProps` are exported too.
+The types `ApprovalDecision`, `ToolApprovalDetail` and `ToolApprovalProps` also ship with it.
 
 ## Keyboard
 

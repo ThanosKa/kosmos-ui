@@ -34,12 +34,14 @@ test('the CSS of a preset as it ships is the CSS of the preset', () => {
   for (const preset of presets) assert.equal(presetCss(chosenPreset(defaultChoice(preset))), presetCss(preset), preset.name);
 });
 
-test('the CSS of a choice carries its radius, and with the accent off focus and the current nav item go back to the palette', () => {
+test('the CSS of a choice carries its radius, and with the accent off primary, focus and the current nav item go back to the palette', () => {
   const soft = byId('soft');
   const { light, dark } = css({ preset: 'soft', accent: false, radius: '6' });
   assert.equal(light.radius, '0.375rem');
   assert.equal(light.ring, soft.light.ring);
   assert.equal(light['accent-text'], soft.light['accent-text']);
+  assert.equal(light.primary, soft.light.primary);
+  assert.equal(css({ preset: 'soft', accent: true, radius: '6' }).light.primary, soft.accent!.light.primary);
   assert.equal(dark['chart-1'], soft.dark['chart-1']);
   assert.equal(css({ preset: 'soft', accent: true, radius: '0' }).light.radius, '0rem');
   assert.equal(css({ preset: 'soft', accent: true, radius: '0' }).light.ring, '#1f6bff');
