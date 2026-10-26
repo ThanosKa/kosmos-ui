@@ -26,13 +26,13 @@ import { StatCard, StatCardDelta, StatCardLabel, StatCardSparkline, StatCardValu
 </StatCard>
 ```
 
-Pass the value already formatted, in the user's locale and currency. Write a million and up compact (28.5M), so the number fits a narrow card. A value too wide for its card truncates. Lay several cards out in a grid with `gap-4`: each one is its own card.
+Pass the value already formatted, in the user's locale and currency. Write a million and up compact (28.5M), so the number fits a narrow card. A value too wide for its card truncates. Lay cards out in a grid with `gap-4`. Each one is its own card.
 
 ## Examples
 
 ### When falling is good
 
-`StatCardDelta` takes the change as a number, 9.6 for a 9.6% rise, and writes it with an arrow and a sign: ↗ +9.6%, ↘ −11.1%, → 0%. A rise is green and a fall red. For a metric such as errors or latency, set `goodWhen="down"` so a fall is green. For one that is neither good nor bad, `goodWhen="neither"` keeps it gray. A change in a rate reads in percentage points with `unit="points"`.
+`StatCardDelta` takes the change as a number, 9.6 for a 9.6% rise. It writes the change with an arrow and a sign: ↗ +9.6%, ↘ −11.1%, → 0%. A rise is green and a fall red. For a metric such as errors or latency, set `goodWhen="down"` so a fall is green. For a metric that is neither good nor bad, `goodWhen="neither"` keeps it gray. A change in a rate reads in percentage points with `unit="points"`.
 
 <ComponentPreview name="stat-card-good-when" />
 
@@ -54,7 +54,7 @@ The arrow and the sign carry the direction, so the change reads the same in gray
 
 ### StatCard
 
-Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all of its props.
+Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all its props.
 
 <TypeTable
   type={{
@@ -117,4 +117,4 @@ Renders a `<p>` in muted text, for a stat with no change to show ("No earlier pe
 
 ### StatCardSparkline
 
-The [Sparkline](/docs/components/chart#sparkline) across the card under the number, 40px high, in `--chart-1`. Takes its props, and `aria-label` is required.
+The [Sparkline](/docs/components/chart#sparkline) across the card under the number, 40px high, in `--chart-1`. Takes its props, and it requires `aria-label`.

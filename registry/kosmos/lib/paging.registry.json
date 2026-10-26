@@ -3,7 +3,7 @@
   "name": "paging",
   "type": "registry:lib",
   "title": "Paging",
-  "description": "The counting behind Pagination: how many pages a list takes, the rows a page shows, the page after a new page size or a shorter list, and which page buttons to show.",
+  "description": "The counting behind Pagination. It computes how many pages a list takes, the rows on a page, the page after a size change, and which page buttons to show.",
   "files": [
     {
       "path": "registry/kosmos/lib/paging.ts",

@@ -1,6 +1,6 @@
 ---
 title: Logo marquee
-description: A row of logos in gray under one line, still or moving, that turn to their brand colors on hover and glide to a stop while the pointer is on them.
+description: A row of gray logos under one line, still or moving. Each logo turns to its brand color on hover and glides to a stop while the pointer is on it.
 ---
 
 ## Installation
@@ -35,14 +35,14 @@ Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an ima
 
 ## What it does
 
-- **Marquee**: the logos move toward the start in one row, over and over, and fade out at both edges. The row is two copies of the list, so it never shows a gap at any width, and it keeps the same speed when its width changes.
-- **First paint**: the logos move from the first paint, even before JavaScript loads: a CSS animation carries the row until the page is live, then the drift takes over from where the animation had got to. The server cannot measure the row, so until then it moves at about the right speed.
-- **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it, and picks up speed again when it leaves. A small button at its end pauses it until it is pressed again, from the keyboard or a phone too, and screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
+- **Marquee**: the logos move toward the start in one row, over and over, and fade out at both edges. The row is two copies of the list, so it never shows a gap at any width. It keeps the same speed when its width changes.
+- **First paint**: the logos move from the first paint, even before JavaScript loads. A CSS animation carries the row until the page is live. Then the drift takes over from where the animation had got to. The server cannot measure the row, so until then it moves at about the right speed.
+- **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it. It picks up speed again when it leaves. A small button at its end pauses it until you press it again, from the keyboard or a phone too. Screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
 - **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
 - **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
 - **Gray**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns gray too and no logo outshouts the page.
-- **Brand color**: give a logo a `color` and it turns to it, with the filter gone, while the pointer is on it or focus is in it. A mark drawn in `currentColor` takes the color; a colored `<img>` shows its own. The color is content, passed as data with each logo, never written into the block. A logo without one turns to the text color. A touch screen has no hover, so there the logos stay gray and nothing sticks. Give a logo an `href` and it becomes a link the keyboard reaches.
-- **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the second copy that keeps the row full is hidden from them.
+- **Brand color**: give a logo a `color` and it turns to that color while the pointer or focus is on it. The filter drops away. A mark drawn in `currentColor` takes the color, and a colored `<img>` shows its own. The color is content, passed as data with each logo, never written into the block. A logo without one turns to the text color. A touch screen has no hover, so there the logos stay gray and nothing sticks. Give a logo an `href` and it becomes a link the keyboard reaches.
+- **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the block hides the second copy that keeps the row full from them.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
 - **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
 

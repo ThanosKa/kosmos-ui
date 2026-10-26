@@ -26,13 +26,13 @@ Pass `variant` on every Button, even when you want the default `primary`. The ca
 
 ### Variants
 
-Use one `primary` per view for the main action. Its neighbors take `secondary` or `ghost`. `destructive` is for actions that delete or can't be undone. `item` looks like `ghost` but doesn't scale when pressed: use it for buttons repeated in dense rows, such as nav items, table row actions and sortable column headers.
+Use one `primary` per view for the main action. Its neighbors take `secondary` or `ghost`. `destructive` is for actions that delete or can't be undone. `item` looks like `ghost` but doesn't scale when pressed. Use it for buttons repeated in dense rows, such as nav items, table row actions and sortable column headers.
 
 <ComponentPreview name="button-variants" />
 
 ### Sizes
 
-`md` (30px, 14px icons) is the default and fits most toolbars and forms. Use `sm` in dense rows and `lg` for a lone call to action. In the secondary and ghost looks, an icon without its own color is muted, so the label leads.
+`md` (30px, 14px icons) is the default and fits most toolbars and forms. Use `sm` in dense rows and `lg` for a lone call to action. In the secondary and ghost looks, an icon without its own color takes a muted tone, so the label leads.
 
 <ComponentPreview name="button-sizes" />
 
@@ -44,19 +44,19 @@ Mark the icon with `data-icon="inline-start"` or `data-icon="inline-end"`, so th
 
 ### Icon only
 
-Use the `icon`, `icon-sm` or `icon-lg` size and give the button an `aria-label` that names the action, such as "Open settings", because the icon has no text to read out.
+Use the `icon`, `icon-sm` or `icon-lg` size and give the button an `aria-label` that names the action, such as "Open settings". The icon has no text to read out.
 
 <ComponentPreview name="button-icon" />
 
 ### Link
 
-With `href`, the Button renders an `<a>` with the same look, so it navigates like any link: middle-click, open in new tab, and the browser's status bar all work. For client-side routing, put `buttonVariants({ variant, size })` on your router's link component instead.
+With `href`, the Button renders an `<a>` with the same look, so it navigates like any link. Middle-click, open in new tab and the browser's status bar all work. For client-side routing, put `buttonVariants({ variant, size })` on your router's link component instead.
 
 <ComponentPreview name="button-link" />
 
 ### Disabled
 
-A disabled button can't be clicked or focused. Add `focusableWhenDisabled` when it should stay in the tab order, for example while a form is saving, so focus doesn't jump.
+Nobody can click or focus a disabled button. Add `focusableWhenDisabled` when it should stay in the tab order, for example while a form saves, so focus doesn't jump.
 
 <ComponentPreview name="button-disabled" />
 
@@ -77,7 +77,7 @@ The Button also takes shadcn's variant and size names. When you replace shadcn's
 
 ## API
 
-Button wraps the [Base UI Button](https://base-ui.com/react/components/button) and accepts all of its props, or all `<a>` props when `href` is set.
+Button wraps the [Base UI Button](https://base-ui.com/react/components/button) and accepts all its props, or all `<a>` props when you set `href`.
 
 <TypeTable
   type={{

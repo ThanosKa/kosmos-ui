@@ -3,7 +3,7 @@
   "name": "tags-input",
   "type": "registry:ui",
   "title": "Tags input",
-  "description": "Free text that turns into chips: Enter, a comma or a pasted list adds tags, typos such as a malformed email show in red, and known values can be offered as you type.",
+  "description": "Free text that turns into chips. Enter, a comma or a pasted list adds tags, and malformed values such as a bad email show in red.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/combobox"],
   "meta": { "group": "forms" },

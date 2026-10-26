@@ -26,7 +26,7 @@ const models: ModelOption[] = [
 <ModelSelect models={models} defaultValue="claude-sonnet-5-5" efforts={['low', 'medium', 'high']} />;
 ```
 
-The trigger shows the model name and the effort in muted text, and lights up on hover and while the menu is open. The menu lists one model per row, with its hint after the name and a check mark on the chosen one. A long name truncates in the trigger and wraps in the menu, so it can always be read in full. Picking a model closes the menu.
+The trigger shows the model name and the effort in muted text, and lights up on hover and while the menu is open. The menu lists one model per row, with its hint after the name and a check mark on the chosen one. A long name truncates in the trigger and wraps in the menu, so you can always read it in full. Picking a model closes the menu.
 
 Pass `efforts` to add a segmented control for the reasoning effort at the foot of the menu. Changing the effort keeps the menu open, so people can pick a model and then tune it. Without `efforts`, the menu picks the model only.
 
@@ -36,7 +36,7 @@ Use it in a composer toolbar or a settings row. For a long list of models, build
 
 ### Efforts per model
 
-Give a model its own `efforts` when it offers fewer than the menu. The efforts it lacks are disabled, and a model with an empty list disables the whole control and drops the effort from the trigger. A disabled model stays in the list, with its `hint` saying why: the hint of a disabled model never truncates.
+Give a model its own `efforts` when it offers fewer than the menu. The efforts it lacks turn off, and a model with an empty list disables the whole control and drops the effort from the trigger. A disabled model stays in the list, with its `hint` saying why. The hint of a disabled model never truncates.
 
 <ComponentPreview name="model-select-efforts" />
 
@@ -48,7 +48,7 @@ Pass `value` and `onValueChange` for the model, and `effort` and `onEffortChange
 
 ### Searchable
 
-For a long list, put a [Command](/docs/components/command) in a [Popover](/docs/components/popover): a search field, the models in groups with a tag on each row, and `ModelSelectEffort` in the footer. `ModelSelectButton` is the same quiet trigger, passed as the popover trigger's `render`. Typing filters the models by name, and Enter picks the first match.
+For a long list, put a [Command](/docs/components/command) in a [Popover](/docs/components/popover). It holds a search field, the models in groups with a tag on each row, and `ModelSelectEffort` in the footer. `ModelSelectButton` is the same quiet trigger, which you pass as the popover trigger's `render`. Typing filters the models by name, and Enter picks the first match.
 
 <ComponentPreview name="model-select-search" />
 
@@ -127,7 +127,7 @@ The menu grows out of the trigger from `scale-[0.97]` with a fade over 200ms, an
 | --- | --- |
 | `ModelSelect` | The trigger and the menu, with the model and effort state. Built on the Kosmos [Dropdown menu](/docs/components/dropdown-menu). |
 | `ModelSelectButton` | The quiet trigger: a ghost [Button](/docs/components/button) with the name, the effort and a chevron. Takes `model`, `effort` and every Button prop. Pass it as the `render` of a menu or popover trigger. |
-| `ModelSelectEffort` | The "Effort" label and a small [Segmented control](/docs/components/segmented-control). Takes `efforts`, `available` (the efforts the chosen model offers, the rest being disabled), `value` and `onValueChange`. |
+| `ModelSelectEffort` | The "Effort" label and a small [Segmented control](/docs/components/segmented-control). Takes `efforts`, `available` (the efforts the chosen model offers, and the rest turn off), `value` and `onValueChange`. |
 | `modelEffortLabels` | The label of each effort: Low, Medium and High. |
 
 ## Keyboard

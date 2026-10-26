@@ -3,7 +3,7 @@
   "name": "sidebar",
   "type": "registry:ui",
   "title": "Sidebar",
-  "description": "A composable app sidebar: provider, header, content, groups, menu items with one level of submenus, a workspace switcher, a user menu, a footer and a resize handle that works by drag and by keyboard. Collapses to a column of icons, where submenus open in a popover and items name themselves in tooltips, or to the left edge; toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
+  "description": "A composable app sidebar with provider, header, groups, menu items with one level of submenus, a workspace switcher, a user menu and a resize handle. It collapses to icons or off screen, toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

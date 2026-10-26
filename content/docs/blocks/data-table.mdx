@@ -1,13 +1,13 @@
 ---
 title: Data table
-description: A table of projects with search and faceted filters, column menus to sort and hide columns, row selection and bulk actions, pages, plan tags, status dots, totals, and loading and empty states.
+description: A table of projects with search, faceted filters, column menus, row selection, and bulk actions. It also has pages, plan tags, status dots, totals, and loading and empty states.
 ---
 
 ## Installation
 
 <ComponentInstall name="data-table" />
 
-The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Status](/docs/components/status), [Avatar](/docs/components/avatar), [Input](/docs/components/input), [Popover](/docs/components/popover), [Dropdown menu](/docs/components/dropdown-menu), [Pagination](/docs/components/pagination), [Empty state](/docs/components/empty), [Meter](/docs/components/meter), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button) with it, plus the `facets` and `paging` helpers that do the counting, and lands in `components/data-table.tsx`.
+The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Status](/docs/components/status) and [Avatar](/docs/components/avatar) with it. It also brings [Input](/docs/components/input), [Popover](/docs/components/popover), [Dropdown menu](/docs/components/dropdown-menu), [Pagination](/docs/components/pagination), [Empty state](/docs/components/empty), [Meter](/docs/components/meter), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button), plus the `facets` and `paging` helpers that do the counting. Everything lands in `components/data-table.tsx`.
 
 ## Usage
 
@@ -19,7 +19,7 @@ import { DataTable } from '@/components/data-table';
 
 The `Project` type, the columns, the filters and the sample rows live in the file: change them to fit your records. On its own the table keeps its search, filters, sort, hidden columns and page. Pass `query`, `filters`, `sort`, `hiddenColumns` or `page` with its `on…Change` to hold one yourself, for example in the URL.
 
-To pair the table with the [page header](/docs/blocks/page-header), turn the toolbar off and pass the header's `query`, tab and filters straight through: its tabs are `all`, `live`, `trial` and `paused`, the values of `status`, and its filter values are the plans and platforms `filters` reads.
+To pair the table with the [page header](/docs/blocks/page-header), turn the toolbar off and pass the header's `query`, tab and filters straight through. Its tabs are `all`, `live`, `trial` and `paused`, the values of `status`. Its filter values are the plans and platforms that `filters` reads.
 
 ```tsx
 <DataTable toolbar={false} query={query} status={tab} filters={filters} onClearFilters={clearHeader} />
@@ -27,18 +27,18 @@ To pair the table with the [page header](/docs/blocks/page-header), turn the too
 
 ## What it does
 
-- **Columns**: each project shows its name and domain, platform, plan as a colored tag, monthly active users, events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
-- **Event quota**: a [meter](/docs/components/meter) of how much of its plan's monthly event allowance (Free 50,000, Pro 3 million, Scale 8 million) the project used in the last 30 days. Up to 75% is green, up to 95% amber and above that red. The bar stops at full and the number beside it does not, so a project at 112% reads as red and 112%.
-- **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value: the rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values. Across filters it needs one of each.
-- **Column menus**: each header opens a menu that sorts its column either way, in words that fit the values (Low to high, A to Z, Newest first), and hides any column but Project. The sorted header carries `aria-sort`, and hiding the sorted column clears the sort.
-- **Showing columns**: the button at the end of the header row shows and hides columns, and marks a column that is on but has no room at the current width.
-- **Selection**: a checkbox per row and one for every row on the page, which shows a mixed state when some are selected. With a selection, the footer swaps the totals for the bulk bar: the count, Clear selection, Select all when the whole page is selected and more rows match, plus Export, Pause (Resume when every selected project is paused) and Delete when you pass `onAction`. In a narrow table those buttons show only their icon. Screen readers hear the count change.
+- **Columns**: each project shows its name and domain, platform, plan as a colored tag and monthly active users. It also shows events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
+- **Event quota**: a [meter](/docs/components/meter) of how much of its plan's monthly event allowance the project used in the last 30 days. The allowances are Free 50,000, Pro 3 million and Scale 8 million. Up to 75% is green, up to 95% amber and above that red. The bar stops at full and the number beside it does not, so a project at 112% reads as red and 112%.
+- **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value. The count is the number of rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values. Across filters it needs one of each.
+- **Column menus**: each header opens a menu that sorts its column either way. The sort labels fit the values (Low to high, A to Z, Newest first). The menu also hides any column but Project. The sorted header carries `aria-sort`, and hiding the sorted column clears the sort.
+- **Showing columns**: the button at the end of the header row shows and hides columns. It also marks a column that is on but has no room at the current width.
+- **Selection**: a checkbox per row and one for every row on the page, which shows a mixed state when you select some rows. With a selection, the footer swaps the totals for the bulk bar. The bar holds the count and Clear selection. It adds Select all when you select the whole page and more rows match. It also adds Export, Pause (Resume when you select only paused projects) and Delete when you pass `onAction`. In a narrow table those buttons show only their icon. Screen readers hear the count change.
 - **Pages**: ten rows to a page (`pageSize`), with the rows in view and previous and next in the footer. A new search, filter or sort goes back to the first page.
 - **Totals**: the footer adds up the users, events and revenue of every row that matches, on every page.
-- **Opening a row**: with `onOpen`, the project name becomes a button and a click anywhere on the row opens it too, for example in the [detail drawer](/docs/blocks/detail-drawer). Clicks on the checkbox and the actions menu do not.
-- **Row actions**: each row has a menu with Open project (with `onOpen`), and Copy link, Pause project or Resume project, and Delete project (with `onAction`). Without either, the menu is hidden.
-- **Loading and empty**: `loading` shows skeleton rows. When a search, status or filter hides every row, the table says so and offers Clear filters, which clears its own search and filters and calls `onClearFilters` for the rest.
-- **Narrow screens**: the table lays out by its own width. Below 1184px it hides Platform and Last event, below 960px it hides Events too, and when the columns still don't fit, it scrolls sideways inside its own frame while the page stays put.
+- **Opening a row**: with `onOpen`, the project name becomes a button and a click anywhere on the row opens the project. You can open it in the [detail drawer](/docs/blocks/detail-drawer), for example. Clicks on the checkbox and the actions menu do not.
+- **Row actions**: each row has a menu with Open project (with `onOpen`), and Copy link, Pause project or Resume project, and Delete project (with `onAction`). Without either, the menu disappears.
+- **Loading and empty**: `loading` shows skeleton rows. When a search, status or filter hides every row, the table says so and offers Clear filters. That button clears its own search and filters and calls `onClearFilters` for the rest.
+- **Narrow screens**: the table lays out by its own width. Below 1184px it hides Platform and Last event, and below 960px it hides Events too. When the columns still don't fit, it scrolls sideways inside its own frame while the page stays put.
 
 The Delete actions are placeholders. Wire them to a confirmation dialog or an undo toast before you ship.
 

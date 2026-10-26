@@ -37,7 +37,7 @@ While the media loads, the frame shows a pulsing placeholder. Once loaded, the m
 
 `AssetVideo` takes the props of a `<video>`. List the formats as `<source>` children, WebM first and MP4 for older browsers, and give a `poster` to show before it plays.
 
-With `autoPlay`, the video plays muted and inline, and only when the reduced motion setting is off. Without `controls`, it gets a pause button in the corner, so the motion can always be stopped. Change its labels with `pauseLabel` and `playLabel`.
+With `autoPlay`, the video plays muted and inline, and only when the reduced motion setting is off. Without `controls`, it gets a pause button in the corner, so people can always stop the motion. Change its labels with `pauseLabel` and `playLabel`.
 
 <ComponentPreview name="asset-video" />
 
@@ -53,7 +53,7 @@ Describe what the image shows that matters here, in a short phrase. For an image
 
 ### Asset
 
-A `<div>`. Accepts all of its props.
+A `<div>`. Accepts all its props.
 
 <TypeTable
   type={{
@@ -72,7 +72,7 @@ A `<div>`. Accepts all of its props.
 
 ### AssetImage
 
-An `<img>`. Accepts all of its props.
+An `<img>`. Accepts all its props.
 
 <TypeTable
   type={{
@@ -82,7 +82,7 @@ An `<img>`. Accepts all of its props.
       required: true,
     },
     fit: {
-      description: '`cover` fills the frame and crops the image. `contain` shows all of it inside the frame.',
+      description: '`cover` fills the frame and crops the image. `contain` shows all it inside the frame.',
       type: "'cover' | 'contain'",
       default: "'cover'",
     },
@@ -101,12 +101,12 @@ An `<img>`. Accepts all of its props.
 
 ### AssetVideo
 
-A `<video>`. Accepts all of its props.
+A `<video>`. Accepts all its props.
 
 <TypeTable
   type={{
     fit: {
-      description: '`cover` fills the frame and crops the video. `contain` shows all of it inside the frame.',
+      description: '`cover` fills the frame and crops the video. `contain` shows all it inside the frame.',
       type: "'cover' | 'contain'",
       default: "'cover'",
     },

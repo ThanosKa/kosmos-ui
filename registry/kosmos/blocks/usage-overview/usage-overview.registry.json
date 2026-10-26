@@ -3,7 +3,7 @@
   "name": "usage-overview",
   "type": "registry:block",
   "title": "Usage overview",
-  "description": "Agent usage and cost for a workspace: stat tiles for tokens, runs, spend and cost per run, tokens per day stacked by model, and a breakdown by model or member with the monthly budget. Loading and empty states included. It lays itself out by its own width, not the screen's.",
+  "description": "Agent usage and cost for a workspace: stat tiles, tokens per day stacked by model, and a breakdown with the monthly budget. It has loading and empty states. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0", "recharts@^3.10.1"],
   "registryDependencies": [
     "@kosmos/tokens",

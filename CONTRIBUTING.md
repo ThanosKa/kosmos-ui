@@ -14,7 +14,7 @@ Use pnpm only. `package.json` pins the version.
 
 ### Screenshots and browser checks
 
-Each component and block is reviewed in four screenshots and in a real browser. On a new machine, install both browsers once. The comments below say what each command does:
+You review each component and block in four screenshots and in a real browser. On a new machine, install both browsers once. The comments below say what each command does:
 
 ```bash
 pnpm exec playwright install chromium   # the browser `pnpm screenshots` drives
@@ -26,9 +26,9 @@ With `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs 
 
 ### Site checks
 
-With `pnpm dev` running, `pnpm docs:check --port 3000` opens the docs, the landing page and the Presets page in a browser and asserts what a visitor sees: header tabs, sidebars, the block viewer, the landing sections, the preset previews, search and the Markdown pages. Run it after you change the docs shell, the landing page or the Presets page.
+With `pnpm dev` running, `pnpm docs:check --port 3000` opens the docs, the landing page, and the Presets page in a browser and asserts what a visitor sees. That covers header tabs, sidebars, the block viewer, the landing sections, the preset previews, search, and the Markdown pages. Run it after you change the docs shell, the landing page or the Presets page.
 
-The command reads `NEXT_PUBLIC_KOSMOS_PRO_URL` like the dev server does. If the variable is unset, the command asserts that no Pro variant shows. If it is set to a running Pro deployment, which only the maintainer has, the command asserts that each Pro variant shows live on its category page. Give the dev server and the command the same value.
+The command reads `NEXT_PUBLIC_KOSMOS_PRO_URL` like the dev server does. If the variable is unset, the command asserts that no Pro variant shows. If it points to a running Pro deployment, the command asserts that each Pro variant shows live on its category page. Only the maintainer has such a deployment. Give the dev server and the command the same value.
 
 Before a release, crawl the production build for broken links:
 
@@ -38,20 +38,24 @@ pnpm links:check --port 3000              # every internal link, image and #anch
 pnpm links:check --port 3000 --external   # also requests every outside link once
 ```
 
-The crawl also fails on a page error, on an indexable page that lacks a title, a description, or a social image, and on a missing page that does not answer 404.
+The crawl also fails on a page error. It fails on an indexable page that lacks a title, a description, or a social image. It also fails on a missing page that does not answer 404.
 
 ### Index thumbnails
 
-The cards on `/docs/components` and `/docs/blocks` show a light and a dark thumbnail of each item. The thumbnails are committed in `public/thumbs/`. Shoot them again when you add a component or block, or when its demo changes how it looks:
+The cards on `/docs/components` and `/docs/blocks` show a light and a dark thumbnail of each item. The repo commits the thumbnails in `public/thumbs/`. Shoot them again when you add a component or block, or when its demo changes how it looks:
 
 ```bash
 pnpm thumbnails --port 3000                # every component and block
 pnpm thumbnails button badge --port 3000   # only these, by registry name
 ```
 
-The command needs `pnpm dev` running. `--port` is the dev server's port, 3000 by default. Each thumbnail is the first `<ComponentPreview>` on the item's docs page, usually `<name>-demo`, saved as `public/thumbs/<name>-light.png` and `public/thumbs/<name>-dark.png`.
+The command needs `pnpm dev` running. `--port` is the dev server's port, 3000 by default. Each thumbnail is the first `<ComponentPreview>` on the item's docs page, which is `<name>-demo` in most cases. The command saves it as `public/thumbs/<name>-light.png` and `public/thumbs/<name>-dark.png`.
 
 A demo renders an overlay closed. An overlay, such as a dialog, menu, select, or tooltip, therefore gets its own `<name>-thumb.tsx` in `registry/kosmos/examples/`, with the overlay pinned open in a `ThumbStage`. The thumbnail shoots that file instead.
+
+### Prose check
+
+`pnpm prose` runs [Vale](https://vale.sh) over `content/docs/`, the README, this file, `GLOSSARY.md`, `docs/adr/`, and every registry and docs `description`. It needs no global install, because the `@vvago/vale` package supplies the binary. The rules live in `.vale/styles/Kosmos` and follow the technical-writing standard. They ban marketing words, require US spelling, flag the Avoid terms from `GLOSSARY.md`, and cap sentences at 25 words (an error above 35). Errors fail the command. Warnings do not, but fix them in the lines you touch. `pnpm lint` runs it after ESLint and takes about two seconds.
 
 ### Install smoke test
 
@@ -68,7 +72,7 @@ The command prints the install, dependencies, types, and build results per item 
 
 The repo ships its Claude Code setup, so a fresh clone works on any machine.
 
-- **Project skills** (`better-*`, `review-animations`) are committed in `.claude/skills/` and load automatically. `skills-lock.json` records where each one came from. Update them with `npx skills update -p`, or restore them from the lockfile with `npx skills experimental_install`. An update brings back `disable-model-invocation: true` in `review-animations`. Delete that line again, because `build-component` calls the skill itself.
+- **Project skills** (`better-*`, `review-animations`) live in `.claude/skills/` and load automatically. `skills-lock.json` records where each one came from. Update them with `npx skills update -p`, or restore them from the lockfile with `npx skills experimental_install`. An update brings back `disable-model-invocation: true` in `review-animations`. Delete that line again, because `build-component` calls the skill itself.
 - **`code-review`** comes from the `mattpocock-skills` plugin. `.claude/settings.json` registers its marketplace and enables it, so Claude Code offers to install it the first time you trust the folder. To install it by hand, run `/plugin marketplace add mattpocock/skills`, then `/plugin install mattpocock-skills@mattpocock`.
 
 ## Commits and branches
@@ -76,7 +80,7 @@ The repo ships its Claude Code setup, so a fresh clone works on any machine.
 - Commit messages: `type(scope): description`, one line, imperative mood, no body.
 - Types: `feat`, `fix`, `refactor`, `style` (code formatting only), `docs`, `test`, `chore`. The scope is the component or area, such as `feat(button): add loading state`.
 - A visual change to a component is `feat` or `fix`, never `style`.
-- Branch from `dev` with a `feature/`, `fix/`, `refactor/` or `docs/` prefix and open the PR against `dev`. `main` holds what is released. The maintainer merges `dev` into it.
+- Branch from `dev` with a `feature/`, `fix/`, `refactor/` or `docs/` prefix and open the PR against `dev`. `main` holds the released code, and the maintainer merges `dev` into it.
 
 ## Pull requests
 
@@ -90,4 +94,4 @@ Every PR is squash merged, and its title becomes the commit on `dev`, so write t
 
 ## License
 
-By contributing, you agree that your contribution is licensed under the [MIT License](LICENSE). There is no CLA to sign.
+By contributing, you agree that your contribution falls under the [MIT License](LICENSE). There is no CLA to sign.

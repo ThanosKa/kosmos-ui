@@ -3,7 +3,7 @@
   "name": "segmented-control",
   "type": "registry:ui",
   "title": "Segmented control",
-  "description": "A row of options built on Base UI Radio Group that picks exactly one, like a view mode or a time range: Tab lands on the selected item and the arrow keys move the selection. Two sizes and an icon-only form.",
+  "description": "A row of options built on Base UI Radio Group that picks exactly one, such as a view mode. Tab lands on the selected item and arrow keys move the selection. It has two sizes and an icon-only form.",
   "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "navigation" },

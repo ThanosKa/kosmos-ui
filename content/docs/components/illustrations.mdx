@@ -21,7 +21,7 @@ import { ChecklistIllustration, LayerStackIllustration, SyncIllustration } from 
 </div>
 ```
 
-Each illustration is drawn in tokens, with no image. It is a 4:3 stage that fills the width of its container and scales with it, so put it in a bento tile or a feature card and let the container set the size. It carries no text and is hidden from assistive technology: the words around it say what it shows.
+Each illustration uses tokens and no image. It is a 4:3 stage that fills the width of its container and scales with it. Put it in a bento tile or a feature card and let the container set the size. It carries no text and assistive technology skips it, so the words around it say what it shows.
 
 ## Examples
 
@@ -45,11 +45,11 @@ Rows tick one after the other, hold, then clear and run again.
 
 ## Accessibility
 
-The illustrations are decoration and carry `aria-hidden`. The pulses and the ticking run only while the illustration is on screen. Under reduced motion nothing moves: the stack stands fanned out, the pulses rest mid-link and every row is ticked.
+The illustrations are decoration and carry `aria-hidden`. The pulses and the ticking run only while the illustration is on screen. Under reduced motion nothing moves: the stack stands fanned out, the pulses rest mid-link and every row has its tick.
 
 ## API
 
-Each illustration is a `<div>` and accepts all of its props.
+Each illustration is a `<div>` and accepts all its props.
 
 <TypeTable
   type={{

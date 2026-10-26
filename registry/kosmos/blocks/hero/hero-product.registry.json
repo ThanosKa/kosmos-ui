@@ -3,7 +3,7 @@
   "name": "hero-product",
   "type": "registry:block",
   "title": "Hero with product",
-  "description": "A marketing hero with a title, one line and two actions, then a live dashboard in a tilted browser frame with a glow behind it and a fade into the page. Swap the screen for an image.",
+  "description": "A marketing hero with a title, one line and two actions. Below it, a live dashboard sits in a tilted browser frame with a glow behind it. Swap the screen for an image.",
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

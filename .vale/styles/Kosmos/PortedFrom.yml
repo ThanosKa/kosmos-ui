@@ -1,0 +1,6 @@
+extends: existence
+message: "Do not write 'Ported from'. Credit the source in the third-party notice (ADR 0010)."
+ignorecase: true
+level: error
+tokens:
+  - ported from

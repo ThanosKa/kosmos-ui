@@ -38,19 +38,19 @@ Wrap the label and description in a FieldContent. The checkbox stays on the labe
 
 ### Group with a parent
 
-A parent checkbox ticks or unticks a whole list and shows the mixed state when only part of it is ticked. Wrap the list in Base UI's `CheckboxGroup` with every child value in `allValues`, mark the parent `parent`, and give each option a FieldItem so it gets its own label.
+A parent checkbox ticks or unticks a whole list and shows the mixed state when only part of it has a tick. Wrap the list in Base UI's `CheckboxGroup` with every child value in `allValues`. Mark the parent `parent`, and give each option a FieldItem so it gets its own label.
 
 <ComponentPreview name="checkbox-group" />
 
 ### Invalid
 
-Set `invalid` on the Field and put the message in a FieldError. A `required` checkbox also fails the browser's checks until it is ticked.
+Set `invalid` on the Field and put the message in a FieldError. A `required` checkbox also fails the browser's checks until someone ticks it.
 
 <ComponentPreview name="checkbox-invalid" />
 
 ## API
 
-Checkbox wraps the [Base UI Checkbox](https://base-ui.com/react/components/checkbox) and accepts all of its props.
+Checkbox wraps the [Base UI Checkbox](https://base-ui.com/react/components/checkbox) and accepts all its props.
 
 <TypeTable
   type={{

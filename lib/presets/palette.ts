@@ -44,14 +44,15 @@ export type Palette = Record<PaletteToken, string>;
 export type Mode = 'light' | 'dark';
 
 /**
- * The one color a preset brings, per mode: `ring` for focus, the sidebar's focus and the first chart series (3:1 marks),
- * `text` for the current page in navigation and the Meter's primary tone (4.5:1 on every nav surface).
+ * The one color a preset brings, per mode (ADR 0011): `primary` fills every filled control and `onPrimary` is the text
+ * on it (4.5:1, also under the 90% hover fill), `ring` is focus, the sidebar's focus and the first chart series (3:1
+ * marks), `text` is the current page in navigation and the Meter's primary tone (4.5:1 on every nav surface).
  */
-export type Accent = Record<Mode, { ring: string; text: string }>;
+export type Accent = Record<Mode, { primary: string; onPrimary: string; ring: string; text: string }>;
 
 /**
  * A ready set of palette and radius values. It never changes fonts, density or shadows (ADR 0009). The palette holds
- * the preset without its accent, ink where the accent would go, so the accent can be turned off.
+ * the preset without its accent, ink where the accent would go (primary included), so the accent can be turned off.
  */
 export type Preset = {
   id: string;
@@ -67,5 +68,15 @@ export type Preset = {
 export function presetPalette(preset: Preset, mode: Mode): Palette {
   const accent = preset.accent?.[mode];
   if (!accent) return preset[mode];
-  return { ...preset[mode], ring: accent.ring, 'sidebar-ring': accent.ring, 'chart-1': accent.ring, 'accent-text': accent.text };
+  return {
+    ...preset[mode],
+    primary: accent.primary,
+    'primary-foreground': accent.onPrimary,
+    'sidebar-primary': accent.primary,
+    'sidebar-primary-foreground': accent.onPrimary,
+    ring: accent.ring,
+    'sidebar-ring': accent.ring,
+    'chart-1': accent.ring,
+    'accent-text': accent.text,
+  };
 }

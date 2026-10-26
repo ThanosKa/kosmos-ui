@@ -12,7 +12,7 @@ import { useSitePreset } from './site-preset';
 
 /** The preset's mark: its accent, or its ink when it has none, in the page's own mode. */
 export function PresetSwatch({ preset }: { preset: Preset }) {
-  const color = (mode: Mode) => (preset.accent ? presetPalette(preset, mode).ring : preset[mode].primary);
+  const color = (mode: Mode) => presetPalette(preset, mode).primary;
   return (
     <span
       aria-hidden

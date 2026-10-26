@@ -1,12 +1,12 @@
 ---
 title: Motion
-description: How Kosmos components animate, which tokens set the speed, and how reduced motion is respected.
+description: How Kosmos components animate, which tokens set the speed, and how they handle reduced motion.
 icon: Activity
 ---
 
 ## Animations ship with each component
 
-Every animation lives in the component file you install. A menu that grows from its trigger, a drawer that slides in or a switch thumb that moves does the same in your app as it does on this site. You don't add an animation library or a setup step.
+Every animation lives in the component file you install. A menu grows from its trigger, a drawer slides in and a switch thumb moves. Each does the same in your app as on this site. You don't add an animation library or a setup step.
 
 The animations are CSS transitions written as Tailwind classes, such as `transition-[opacity,scale] duration-base`. Base UI marks the start and end of each open and close with `data-starting-style` and `data-ending-style`, and the transition runs between them. Loading states use Tailwind's built-in `animate-pulse` and `animate-spin`.
 
@@ -14,7 +14,7 @@ Each transition names the properties it changes and reads its duration and easin
 
 ## The tokens
 
-The tokens come with `@kosmos/tokens`, next to the colors and shadows. Every value below is read from the tokens file.
+The tokens come with `@kosmos/tokens`, next to the colors and shadows. This page reads every value below from the tokens file.
 
 <MotionTokens />
 
@@ -70,7 +70,7 @@ When the system setting asks for reduced motion (`prefers-reduced-motion: reduce
 - The accordion fades its content instead of growing its height, and its chevron cross-fades instead of turning.
 - The switch thumb, the tab indicator and the sidebar fade instead of sliding or resizing.
 - Buttons don't scale down when pressed.
-- The Chart draws without animating, a video in an Asset doesn't play by itself, and a dropped card on the Kanban board fades out where you let go.
+- The Chart draws without animating and a video in an Asset doesn't play by itself. A dropped card on the Kanban board fades out where you let go.
 
 The loading pulse keeps running, because it only changes opacity. A loading toast swaps its spinner for the same pulse.
 

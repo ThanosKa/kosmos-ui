@@ -3,7 +3,7 @@
   "name": "table",
   "type": "registry:ui",
   "title": "Table",
-  "description": "A native table with 38px header and 42px rows, divider borders, row hover and selection, tabular numbers, and a Kosmos scroll area with edge fades for narrow screens.",
+  "description": "A native table with 38px headers, 42px rows, divider borders, row hover and selection, and tabular numbers. A Kosmos scroll area with edge fades handles narrow screens.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/scroll-area"],
   "meta": { "group": "data" },
   "files": [

@@ -3,7 +3,7 @@
   "name": "separator",
   "type": "registry:ui",
   "title": "Separator",
-  "description": "A 1px horizontal or vertical line between groups of content, built on Base UI and drawn as a border so it stays visible in forced-colors mode.",
+  "description": "A 1px horizontal or vertical line between groups of content, built on Base UI. It draws as a border, so it stays visible in forced-colors mode.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "basics" },

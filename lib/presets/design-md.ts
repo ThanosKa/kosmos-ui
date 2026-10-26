@@ -7,8 +7,8 @@ const uses: Record<PaletteToken, string> = {
   'card-foreground': 'Text on a card.',
   popover: 'Popovers, menus, tooltips, toasts, dialogs and drawers.',
   'popover-foreground': 'Text in a popover, menu or dialog.',
-  primary: 'The one filled action per view, a checked checkbox, a switch that is on.',
-  'primary-foreground': 'Text and icons on a primary fill.',
+  primary: 'The one filled action per view, a checked checkbox or radio, a switch that is on, the slider range and the tabs indicator. The accent in a preset with one.',
+  'primary-foreground': 'Text and icons on a primary fill: 4.5:1 on it, also under its hover.',
   secondary: 'Secondary buttons and text fields.',
   'secondary-foreground': 'Text on a secondary button.',
   muted: 'Tracks and quiet fills: segmented control, switch, meter.',
@@ -27,7 +27,7 @@ const uses: Record<PaletteToken, string> = {
   'scrollbar-thumb': 'The scrollbar thumb, lighter than muted text.',
   sidebar: 'The sidebar surface.',
   'sidebar-foreground': 'Sidebar text and a hovered sidebar item.',
-  'sidebar-primary': 'A filled mark in the sidebar, like the workspace initial.',
+  'sidebar-primary': 'A filled mark in the sidebar, like the workspace initial. The same value as primary.',
   'sidebar-primary-foreground': 'Text on a sidebar-primary fill.',
   'sidebar-accent': 'The hover on sidebar items.',
   'sidebar-accent-foreground': 'Text on a hovered sidebar item.',
@@ -51,12 +51,14 @@ const table = (preset: Preset, tokens: readonly PaletteToken[]) => {
 
 function accentSection({ accent }: Preset) {
   if (!accent) {
-    return 'This preset has no accent: focus, the current page in navigation, meters and the first chart series are ink, so color is left to status and destructive.';
+    return 'This preset has no accent: buttons and every checked control, focus, the current page in navigation, meters and the first chart series are ink, so color is left to status and destructive.';
   }
-  return `This preset's one accent colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: buttons, links and every other text stay ink or grey.
+  return `This preset's one accent fills every primary control (\`primary\`, \`sidebar-primary\`): the primary button, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator and a done step. It also colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: links and every other text stay ink or grey.
 
 | Step | Light | Dark | Use |
 | --- | --- | --- | --- |
+| Primary | \`${accent.light.primary}\` | \`${accent.dark.primary}\` | \`primary\` and \`sidebar-primary\`: a fill under \`primary-foreground\`. |
+| On primary | \`${accent.light.onPrimary}\` | \`${accent.dark.onPrimary}\` | \`primary-foreground\`: 4.5:1 on the fill and under its 90% hover. White where it passes, dark ink where it does not. |
 | Ring | \`${accent.light.ring}\` | \`${accent.dark.ring}\` | Focus and \`chart-1\`: a mark, 3:1 on every surface. |
 | Text | \`${accent.light.text}\` | \`${accent.dark.text}\` | \`accent-text\`: 4.5:1 on every surface a nav item sits on. |`;
 }
@@ -97,7 +99,7 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 
 ## Do
 
-- Give each view one filled \`primary\` action; its peers take the secondary or ghost look.
+- Give each view one filled \`primary\` action; its peers take the secondary or ghost look. Put only \`primary-foreground\` on a primary fill.
 - Keep text in \`foreground\` or \`muted-foreground\`. Both pass 4.5:1 on every surface.
 - Mark the current page in navigation with \`accent-text\`, on the flat \`accent\` hover fill.
 - Highlight hovered items with \`accent\`, the see-through fill that works on every surface.
@@ -108,8 +110,8 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 ## Don't
 
 - Color text with \`ring\` or a chart color: they are made for 3:1 marks, not 4.5:1 text.
-- Use \`accent-text\` for anything but the current nav item and a primary Meter.
-- Fill a button or a large surface with \`ring\`.
+- Use \`accent-text\` for anything but the current page in navigation, a primary Meter and decorative glows and grids.
+- Fill a button or a large surface with \`ring\`: fills take \`primary\`.
 - Let a hover take the \`ring\` color: that color means focus.
 - Add a grey fainter than \`muted-foreground\` for text.
 - Write a color literal in a component: every color goes through its token.
