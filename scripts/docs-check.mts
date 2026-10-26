@@ -231,6 +231,7 @@ const checks: Check[] = [
           items: [...group.querySelectorAll('a[href]')].map((link) => ({
             url: new URL((link as HTMLAnchorElement).href).pathname,
             count: link.querySelector('[data-slot="sidebar-menu-badge"]')?.textContent?.trim(),
+            isNew: link.querySelector('[data-slot="badge"]')?.textContent?.trim() === 'New',
             text: link.textContent?.replace(/\s+/g, ' ').trim(),
           })),
         })),
@@ -248,7 +249,7 @@ const checks: Check[] = [
       for (const url of ['/docs/blocks/hero', '/docs/blocks/bento', '/docs/blocks/footer']) assert.ok(categoryUrls('marketing').includes(url), `Marketing lists ${url}`);
       for (const item of [...application, ...marketing, ...ai]) {
         const count = variantCount(item.url);
-        if (item.text?.endsWith(' New')) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
+        if (item.isNew) assert.equal(item.count, undefined, `${item.url}: New replaces the count`);
         else if (count > 1) {
           assert.equal(item.count, String(count), `${item.url}: variant count`);
           assert.match(item.text ?? '', new RegExp(`${count} variants`), `${item.url}: screen reader count`);
@@ -333,11 +334,8 @@ const checks: Check[] = [
       const preview = viewer.getByRole('tab', { name: 'Preview' });
       await preview.focus();
       await page.keyboard.press('Shift+Tab');
-      assert.match(
-        (await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))) ?? '',
-        /^Copy install command: .*add @kosmos\/data-table$/,
-        'the install command comes before the tabs',
-      );
+      assert.equal(await viewer.getByRole('button', { name: /^Copy install command/ }).count(), 0, 'no install command in the viewer');
+      assert.equal(await viewer.evaluate((root) => root.contains(document.activeElement)), false, 'the tabs come first in the viewer');
       await page.keyboard.press('Tab');
       assert.ok(await preview.evaluate((tab) => tab === document.activeElement), 'Tab returns to Preview');
       await page.keyboard.press('ArrowRight');
@@ -455,6 +453,9 @@ const checks: Check[] = [
   {
     name: 'the block viewer shows a Pro variant with a Pro badge, its live preview and its code locked',
     async run(browser) {
+      const fixture = await fetch(new URL('/fixtures/pro-variant', base));
+      // The fixture is a made-up Pro variant that exists only on a dev server; a production build must not serve it.
+      if (fixture.status === 404) return;
       const { page, close } = await openPage(browser, '/fixtures/pro-variant');
       const viewer = page.locator('[data-block-variant][data-tier="pro"]');
       assert.equal(await viewer.count(), 1, 'one Pro variant');
@@ -514,8 +515,8 @@ const checks: Check[] = [
       const ids = await page.locator('[data-landing-section]').evaluateAll((elements) => elements.map((section) => section.getAttribute('data-landing-section')));
       assert.deepEqual(
         ids,
-        ['hero', 'stack', 'bento', 'showcase', 'pricing', 'faq', 'cta', 'footer'],
-        'the landing runs hero, stack, bento, showcase, pricing, FAQ, CTA and footer, in that order',
+        ['hero', 'stack', 'features', 'showcase', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, stack, features, showcase, pricing, FAQ, CTA and footer, in that order',
       );
       assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
       assert.equal(await page.locator('[data-block-label]').count(), 0, 'no "Built with" labels');
@@ -600,7 +601,7 @@ const checks: Check[] = [
       await visible('[data-landing-section="hero"]', /^\$/);
       await visible('[data-landing-section="stack"]', 'Tailwind CSS');
       await visible('[data-landing-section="showcase"]', 'acme.example/projects');
-      await visible('[data-landing-section="bento"]', 'Go to Projects');
+      await visible('[data-landing-section="features"]', 'Go to Projects');
       await visible('[data-landing-section="pricing"]', 'Pay once');
       await visible('[data-landing-section="faq"]', 'Is Kosmos UI free?');
       await visible('[data-landing-section="cta"]', 'Read the installation guide');
@@ -764,26 +765,26 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the bento shows live Kosmos components and illustrations, each with a one-line caption and a link to its docs',
+    name: 'the feature rows show live Kosmos components, each with a one-sentence caption and a link to its docs',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="bento"]');
-      assert.equal(await section.locator('h2').count(), 1, 'the bento has a heading');
-      const tiles = await section.locator('[data-slot="bento-item"]').evaluateAll((items) =>
+      const section = page.locator('[data-landing-section="features"]');
+      assert.equal(await section.locator('h2').count(), 1, 'the features section has a heading');
+      const rows = await section.locator('[data-slot="feature-rows-item"]').evaluateAll((items) =>
         items.map((item) => ({
           title: item.querySelector('h3')?.textContent?.trim(),
-          href: item.querySelector('h3 a[href]')?.getAttribute('href'),
-          caption: item.querySelector('[data-slot="bento-item-description"]')?.textContent?.trim(),
-          components: [...item.querySelectorAll('[data-slot="bento-item-visual"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
+          href: item.querySelector('[data-slot="feature-rows-item-link"]')?.getAttribute('href'),
+          caption: item.querySelector('[data-slot="feature-rows-item-description"]')?.textContent?.trim(),
+          components: [...item.querySelectorAll('[data-slot="feature-rows-item-media"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
         })),
       );
-      assert.ok(tiles.length >= 6, `bento tiles: ${tiles.length}`);
-      for (const tile of tiles) {
-        assert.ok(tile.title, 'a tile has a title');
-        assert.match(tile.href ?? '', /^\/docs\/(components|blocks)\/[a-z-]+$/, `${tile.title}: links to its docs page`);
-        assert.ok(tile.caption && !tile.caption.includes('\n'), `${tile.title}: one line of caption`);
-        assert.ok(tile.components.length > 0, `${tile.title}: shows a real component`);
-        await fetchText(tile.href!);
+      assert.equal(rows.length, 3, `feature rows: ${rows.length}`);
+      for (const row of rows) {
+        assert.ok(row.title, 'a row has a title');
+        assert.match(row.href ?? '', /^\/docs\/(components|blocks)\/[a-z-]+$/, `${row.title}: links to its docs page`);
+        assert.ok(row.caption && !row.caption.includes('\n'), `${row.title}: one sentence of caption`);
+        assert.ok(row.components.length > 0, `${row.title}: shows a real component`);
+        await fetchText(row.href!);
       }
       await close();
     },
@@ -850,19 +851,19 @@ const checks: Check[] = [
       await frame.locator('[data-preview-ready]').waitFor({ state: 'attached' });
       await page.getByRole('button', { name: 'Get code' }).click();
       const dialog = page.getByRole('dialog', { name: 'Get the Console preset' });
-      const code = () => dialog.locator('[role="tabpanel"]:visible pre').first().textContent();
+      const code = (tab: string) => dialog.getByRole('tabpanel', { name: tab, exact: true }).locator('pre').first().textContent();
       const choice = { preset: 'console', accent: true, radius: '0' };
-      assert.equal((await code())?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
+      assert.equal((await code('CSS'))?.trim(), presetCss(chosenPreset(choice)).trim(), 'the CSS tab');
       assert.equal(await frame.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the preview applies');
       assert.equal(await page.locator('#site-preset').textContent(), sitePresetCss(choice), 'the CSS the page applies');
       await dialog.getByRole('tab', { name: 'Registry' }).click();
-      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
-      assert.match((await code()) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
+      await dialog.getByRole('tabpanel', { name: 'Registry', exact: true }).locator('pre', { hasText: 'add @kosmos/preset-' }).first().waitFor();
+      assert.match((await code('Registry')) ?? '', /add @kosmos\/preset-console-radius-0$/, 'the Registry tab');
       const item = await fetchText('/r/preset-console-radius-0.json');
       assert.equal(JSON.parse(item).cssVars.light.radius, '0rem', 'the registry item');
       await dialog.getByRole('tab', { name: 'DESIGN.md' }).click();
-      await dialog.locator('[role="tabpanel"]:visible pre', { hasText: '## Palette' }).first().waitFor();
-      assert.match((await code()) ?? '', /^# Console preset/, 'the DESIGN.md tab');
+      await dialog.getByRole('tabpanel', { name: 'DESIGN.md', exact: true }).locator('pre', { hasText: '## Palette' }).first().waitFor();
+      assert.match((await code('DESIGN.md')) ?? '', /^# Console preset/, 'the DESIGN.md tab');
       await close();
     },
   },

@@ -1,0 +1,10 @@
+---
+title: Changed Text reveal
+description: A slower entrance that plays in full, and a scroll trigger that fills the words in as you scroll.
+date: 2026-10-26
+---
+
+- [Text reveal](/docs/components/text-reveal): each word now takes 500ms and starts 120ms after the one before (it was 300ms and 40ms), so a seven-word title is in after about 1.2s. A long text shortens the stagger so the last word starts within 900ms. The default stagger is 120.
+- The `trigger="mount"` entrance is now a CSS animation rather than a transition, so a theme change at load no longer cuts it short.
+- New `trigger="scroll"`: each word goes from faint to full as the text scrolls up the screen. Under reduced motion it shows the whole text.
+- `@kosmos/tokens` gains `duration-reveal` (500ms), the `reveal` keyframes and `animate-reveal-fade`; `@kosmos/motion` gains `duration.reveal`. Run `shadcn add` for Text reveal and the tokens again.

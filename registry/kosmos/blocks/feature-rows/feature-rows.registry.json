@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feature-rows",
+  "type": "registry:block",
+  "title": "Feature rows",
+  "description": "A list of features for a marketing page, one per row: a title, one sentence and a link beside a live piece of your product on a recessed stage that crops it at the edge. The rows alternate sides. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/chart", "@kosmos/chart-card", "@kosmos/command", "@kosmos/meter"],
+  "categories": ["feature-rows"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/feature-rows/feature-rows.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

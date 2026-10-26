@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ComponentBento } from '@/components/site/landing-bento';
+import { LandingFeatures } from '@/components/site/landing-features';
 import { LandingFaq } from '@/components/site/landing-faq';
 import { LandingPricing } from '@/components/site/landing-pricing';
 import { LandingSection } from '@/components/site/landing-section';
@@ -50,8 +50,8 @@ export default function HomePage() {
         <LandingSection id="stack">
           <LandingStack />
         </LandingSection>
-        <LandingSection id="bento" column="wide" title="The small parts are already built">
-          <ComponentBento />
+        <LandingSection id="features" column="wide" title="The parts are already built">
+          <LandingFeatures />
         </LandingSection>
         <LandingSection id="showcase" column="wide" title="Whole screens from the same blocks">
           <LandingShowcase />
@@ -62,7 +62,7 @@ export default function HomePage() {
         <LandingSection id="faq" title="Questions before you install">
           <LandingFaq />
         </LandingSection>
-        <LandingSection id="cta" space="last" title="Add your first block and keep every line of it">
+        <LandingSection id="cta" space="last" titleReveal="scroll" title="Add your first block and keep every line of it">
           <Cta
             title={null}
             action={

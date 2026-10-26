@@ -264,6 +264,7 @@ const motionDocs: Record<string, string> = {
   'transition-duration-base': 'Popover, menu, select and tooltip open.',
   'transition-duration-overlay': 'Dialog open.',
   'transition-duration-slow': 'Drawer, sidebar width, accordion height, tab indicator, switch thumb.',
+  'transition-duration-reveal': 'Each word of a text reveal and other marketing entrances.',
   'ease-power3-out': 'The default curve for everything.',
   'ease-smooth-in-out': 'Size and position: sidebar width, accordion height, indicators, switch thumb.',
   'default-transition-duration': 'Any transition without a duration class.',

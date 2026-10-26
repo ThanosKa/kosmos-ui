@@ -33,6 +33,8 @@ export type LandingSectionProps = {
   id: string;
   /** The section's heading, for a section whose content brings none. At most two short lines. */
   title?: string;
+  /** How the title comes in: word by word as it scrolls into view (`view`), or tied to the scroll position (`scroll`), for one closing statement. */
+  titleReveal?: 'view' | 'scroll';
   /** A heading for screen readers, for a section with neither a title nor a heading of its own. */
   srHeading?: string;
   /** The space around the section: `hero` at the top of the page, `last` before the footer. */
@@ -42,7 +44,7 @@ export type LandingSectionProps = {
   children: ReactNode;
 };
 
-export function LandingSection({ id, title, srHeading, space = 'section', column = 'default', className, children }: LandingSectionProps) {
+export function LandingSection({ id, title, titleReveal = 'view', srHeading, space = 'section', column = 'default', className, children }: LandingSectionProps) {
   const headingId = `landing-${id}`;
   return (
     <section
@@ -60,7 +62,9 @@ export function LandingSection({ id, title, srHeading, space = 'section', column
           children
         ) : title ? (
           <>
-            <LandingTitle id={headingId}>{title}</LandingTitle>
+            <LandingTitle id={headingId} reveal={titleReveal}>
+              {title}
+            </LandingTitle>
             <BlurFade delay={chunkStep}>{children}</BlurFade>
           </>
         ) : (
@@ -75,11 +79,11 @@ export function LandingSection({ id, title, srHeading, space = 'section', column
  * The title of a section built from blocks that bring no title of their own, set like the title of a marketing
  * block: centered, `text-heading` growing to `text-display` from a 672px-wide container.
  */
-export function LandingTitle({ id, children }: { id: string; children: string }) {
+export function LandingTitle({ id, reveal = 'view', children }: { id: string; reveal?: 'view' | 'scroll'; children: string }) {
   return (
     <div className="@container flex justify-center">
       <h2 id={id} className="max-w-[20em] text-center text-heading font-semibold text-balance text-foreground @2xl:text-display">
-        <TextReveal trigger="view">{children}</TextReveal>
+        <TextReveal trigger={reveal}>{children}</TextReveal>
       </h2>
     </div>
   );
