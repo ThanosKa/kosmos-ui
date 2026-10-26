@@ -1,6 +1,6 @@
 ---
 title: Scroll area
-description: A scroll container with a thin scrollbar that looks the same on every platform, and fades on the edges where content is hidden.
+description: A scroll container with a thin scrollbar that looks the same on every platform, and fades on the edges where content runs out of view.
 baseUi: https://base-ui.com/react/components/scroll-area
 ---
 
@@ -24,9 +24,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 Give the scroll area a height (`h-64`) or a maximum height (`max-h-80`). Content taller or wider than that scrolls inside it, with the browser's own scrolling, so wheel, touch, trackpad and keyboard all work as usual.
 
-While content is hidden past an edge, that edge fades out and a 6px scrollbar shows, so people can tell there is more. Content that fits shows neither. The scrollbar never covers content: the scroll area makes room for it on the side where it shows.
+While content runs out of view past an edge, that edge fades out and a 6px scrollbar shows, so people can tell there is more. Content that fits shows neither. The scrollbar never covers content, because the scroll area makes room for it on the side where it shows.
 
-While the content scrolls, the scroll area can take keyboard focus: Tab reaches it, and the arrow keys, Page Up, Page Down, Home and End scroll it. Pass `focusable={false}` when the content is a list whose items take focus themselves.
+While the content scrolls, the scroll area can take keyboard focus. Tab reaches it, and the arrow keys, Page Up, Page Down, Home and End scroll it. Pass `focusable={false}` when the content is a list whose items take focus themselves.
 
 Dialog, Drawer, Dropdown Menu, Popover, Tabs and Command scroll their content in a scroll area, so overflow looks the same everywhere.
 
@@ -106,7 +106,7 @@ Code written for shadcn's ScrollArea that passes `<ScrollBar orientation="horizo
 
 | Key | Action |
 | --- | --- |
-| `Tab` | Focuses the scroll area while its content overflows. Content that fits is skipped. |
+| `Tab` | Focuses the scroll area while its content overflows. Tab skips content that fits. |
 | `ArrowDown` or `ArrowUp` | Scrolls down or up by a line. |
 | `ArrowRight` or `ArrowLeft` | Scrolls sideways by a line. |
 | `PageDown` or `PageUp` | Scrolls down or up by a screen. `Space` and `Shift` + `Space` do the same. |

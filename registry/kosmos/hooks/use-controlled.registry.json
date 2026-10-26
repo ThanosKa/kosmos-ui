@@ -3,7 +3,7 @@
   "name": "use-controlled",
   "type": "registry:hook",
   "title": "Use Controlled",
-  "description": "State that a parent can own: uses the value prop when it is set, keeps its own state when it is not, and calls onChange either way.",
+  "description": "State that a parent can own. It uses the value prop when set, keeps its own state when not, and calls onChange either way.",
   "files": [
     {
       "path": "registry/kosmos/hooks/use-controlled.ts",

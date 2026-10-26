@@ -1,6 +1,6 @@
 ---
 title: Page header
-description: The top of a list page, with a title, a description and a primary action, saved views as tabs, search, a grouped filter menu and a chip for each filter that is on.
+description: The top of a list page, with a title, a description, and a primary action. It also has saved views as tabs, search, a grouped filter menu, and a chip for each active filter.
 ---
 
 ## Installation
@@ -62,7 +62,7 @@ The header holds the state. Your page does the filtering, as above. Pass the pag
 - **Title and description**: the description says in one line what the page lists. Both wrap instead of cutting off.
 - **Actions**: the primary action (`newLabel`, "New project" by default) shows when you pass `onNew`, and the More actions menu when you pass `onAction`. A read-only page passes neither.
 - **Views**: the tabs sit in a track, each with an optional count, and scroll sideways when they don't fit.
-- **Filter menu**: options that share a `group` sit under its name. Within a group, filters usually widen the list (Pro or Scale). Across groups they narrow it (Pro and iOS). That logic is yours, in the page.
+- **Filter menu**: options that share a `group` sit under its name. Within a group, filters widen the list (Pro or Scale). Across groups they narrow it (Pro and iOS). That logic is yours, in the page.
 - **Chips**: each filter that is on shows as a chip under the toolbar, named with its group. Removing one moves focus to the next chip, or back to Filter.
 - **Width**: the header lays itself out by its own width, with container queries, not by the screen's. From 768px wide the tabs and the search share a row. Narrower, the search moves under the tabs. Below 448px the primary action and Filter shrink to icons.
 

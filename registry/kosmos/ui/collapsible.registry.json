@@ -3,7 +3,7 @@
   "name": "collapsible",
   "type": "registry:ui",
   "title": "Collapsible",
-  "description": "One panel that opens and closes under a Button trigger, on Base UI: a chevron that turns over, and a height animation that turns into a fade under reduced motion.",
+  "description": "One panel that opens and closes under a Button trigger, on Base UI. A chevron turns over, and the height animation becomes a fade under reduced motion.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
   "meta": { "group": "misc" },

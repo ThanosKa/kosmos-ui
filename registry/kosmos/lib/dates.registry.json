@@ -3,7 +3,7 @@
   "name": "dates",
   "type": "registry:lib",
   "title": "Dates",
-  "description": "The day counting behind Calendar and Date picker: month grids, keyboard moves, range picks, quick ranges such as the last 7 days, the first day of the week in a locale, and short labels for dates and ranges.",
+  "description": "The day counting behind Calendar and Date picker. It covers month grids, keyboard moves, range picks, quick ranges such as the last 7 days, and short date labels.",
   "files": [
     {
       "path": "registry/kosmos/lib/dates.ts",

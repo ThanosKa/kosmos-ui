@@ -28,13 +28,13 @@ OTP field renders one box per character, six by default. Typing moves to the nex
 
 Put it in a [Field](/docs/components/field), which gives it a visible label and connects the help text and error to it. Screen readers hear the label on the first box and "Character 2 of 6" and so on for the others.
 
-Inside a form, `autoSubmit` submits it as soon as the last box is filled, and `name` sends the whole code as one value.
+Inside a form, `autoSubmit` submits it as soon as the last box has a digit, and `name` sends the whole code as one value.
 
 ## Examples
 
 ### Groups
 
-`groupSize` splits the boxes into groups with a dash between them, which makes a long code easier to read and copy. Set `validationType="alphanumeric"` for codes with letters.
+`groupSize` splits the boxes into groups with a dash between them, which helps people read and copy a long code. Set `validationType="alphanumeric"` for codes with letters.
 
 <ComponentPreview name="otp-field-groups" />
 
@@ -46,13 +46,13 @@ Set `invalid` on the Field and add a FieldError. Every box gets a red ring, and 
 
 ### Your own boxes
 
-Pass `OtpFieldInput` and `OtpFieldSeparator` as children to place the boxes yourself. Give every box after the first an `aria-label`. `mask` hides what was typed, like a password.
+Pass `OtpFieldInput` and `OtpFieldSeparator` as children to place the boxes yourself. Give every box after the first an `aria-label`. `mask` hides what people type, like a password.
 
 <ComponentPreview name="otp-field-custom" />
 
 ## API
 
-OTP field wraps the [Base UI OTP Field](https://base-ui.com/react/components/otp-field) and accepts all of its props.
+OTP field wraps the [Base UI OTP Field](https://base-ui.com/react/components/otp-field) and accepts all its props.
 
 ### OtpField
 
@@ -75,7 +75,7 @@ OTP field wraps the [Base UI OTP Field](https://base-ui.com/react/components/otp
 
 ### OtpFieldInput
 
-One box. Accepts every `<input>` prop. The first box is named by the field's label. Give every other box an `aria-label`.
+One box. Accepts every `<input>` prop. The field's label names the first box. Give every other box an `aria-label`.
 
 ### OtpFieldSeparator
 

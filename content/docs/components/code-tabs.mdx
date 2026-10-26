@@ -26,9 +26,9 @@ import { CodeTabs } from '@/components/ui/code-tabs';
 />
 ```
 
-Each key of `commands` is a tab, in order, and its value is the command the tab shows. The button in the well copies the command. Once it is on the clipboard the icon turns into a check mark for two seconds and screen readers hear "Command copied". When the browser refuses, as it does on a page served over plain http, the command is selected instead, so it can be copied with the keyboard, and screen readers hear that.
+Each key of `commands` is a tab, in order, and its value is the command the tab shows. The button in the well copies the command. Once the command is on the clipboard, the icon turns into a check mark for two seconds and screen readers hear "Command copied". When the browser refuses, as it does on a page served over plain http, the component selects the command instead. You can then copy it with the keyboard, and screen readers hear that.
 
-A command too long for the well wraps onto the next line, after a space or a `/` or `=` of a URL, and the new line starts under the command, not under the prompt. All of it stays readable on a phone. The commands stay left to right on a right-to-left page.
+A command too long for the well wraps onto the next line, after a space or a `/` or `=` of a URL. The new line starts under the command, not under the prompt. It stays readable on a phone. The commands stay left to right on a right-to-left page.
 
 ## Examples
 
@@ -40,7 +40,7 @@ Children show under the well in every tab, such as a note or what the command pr
 
 ### Remember the choice
 
-Pass `value` and `onValueChange` to keep the open tab yourself. Several code tabs that share one value switch together, so a visitor picks a package manager once. Save the value, for example in `localStorage`, to keep the choice on the next visit.
+Pass `value` and `onValueChange` to keep the open tab yourself. Code tabs that share one value switch together, so a visitor picks a package manager once. Save the value, for example in `localStorage`, to keep the choice on the next visit.
 
 <ComponentPreview name="code-tabs-controlled" />
 

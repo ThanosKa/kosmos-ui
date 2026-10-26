@@ -1,8 +1,8 @@
 # Docs shell on Kosmos components
 
-The docs render their own shell instead of Fumadocs' docs layout: the landing page's site header, a docked Kosmos Sidebar, the page, and a sticky right rail with the table of contents and the edit and issue links. On phones the header's menu button opens the same Sidebar as a drawer. The docs are where a visitor first sees the product, so the frame around every page is built from the components it documents and follows the Kosmos style, and any change to the Sidebar shows up in the docs too.
+The docs render their own shell instead of Fumadocs' docs layout. The shell has the landing page's site header, a docked Kosmos Sidebar, and the page. A sticky right rail holds the table of contents and the edit and issue links. On phones the header's menu button opens the same Sidebar as a drawer. The docs are where a visitor first sees the product. So we build the frame around every page from the components it documents. The frame follows the Kosmos style, and any change to the Sidebar shows up in the docs too.
 
-Fumadocs stays underneath for what it does well: the page tree, the search index and API, the ⌘K shortcut, the table of contents data and headless observer, code highlighting and the MDX components. The search dialog is ours: the Kosmos `CommandDialog` and `Command` parts, fed by the Fumadocs search client.
+Fumadocs stays underneath for what it does well. That is the page tree, the search index and API, and the ⌘K shortcut. It also covers the table of contents data and headless observer, code highlighting, and the MDX components. The search dialog is ours. It uses the Kosmos `CommandDialog` and `Command` parts and takes its results from the Fumadocs search client.
 
 _Decided without the user (2026-10-12), pending confirmation._
 

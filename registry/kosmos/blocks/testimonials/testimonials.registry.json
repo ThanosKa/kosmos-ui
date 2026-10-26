@@ -3,7 +3,7 @@
   "name": "testimonials",
   "type": "registry:block",
   "title": "Testimonials",
-  "description": "What customers said: one quote set large, then the rest as cards in columns that move up and down, fade out at the top and bottom, ease to a stop while a pointer or keyboard focus is on them, pause with a button and stand still under reduced motion. It lays itself out by its own width, not the screen's.",
+  "description": "A customer quotes wall: one large quote, then cards in columns that move up and down and fade at the edges. They ease to a stop on hover or focus, have a pause button, and stand still under reduced motion. It lays itself out by its own width, not the screen's.",
   "dependencies": [
     "lucide-react@^1.50.0"
   ],

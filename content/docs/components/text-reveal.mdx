@@ -1,6 +1,6 @@
 ---
 title: Text reveal
-description: Text that rises out of a soft blur word by word, once, as the page paints or when it scrolls into view, or that fills in word by word as you scroll.
+description: Text that rises out of a soft blur word by word. It plays once, as the page paints or when it scrolls into view. It can also fill in word by word as you scroll.
 ---
 
 <ComponentPreview name="text-reveal-demo" />
@@ -23,11 +23,11 @@ import { TextReveal } from '@/components/ui/text-reveal';
 </h1>
 ```
 
-The words are plain text in the markup, so search engines, screen readers and a browser without JavaScript get the whole title. By default the entrance is a CSS transition from the `starting` style, so it plays on the first paint, with no hydration wait. Pass a string: a title with markup inside cannot be split into words.
+The words are plain text in the markup, so search engines, screen readers and a browser without JavaScript get the whole title. By default the entrance is a CSS transition from the `starting` style, so it plays on the first paint, with no hydration wait. Pass a string: you cannot split a title with markup inside into words.
 
-For a section further down the page, set `trigger="view"`: text below the fold waits hidden and plays once, the first time it scrolls into view; text already on screen stays put. Each word takes 500ms and starts 120ms after the one before, so a title of seven words is in after about 1.2s. The stagger shortens for a long text, so the last word starts within 900ms. The entrance is a CSS animation, so a theme change that switches transitions off cannot cut it short.
+For a section further down the page, set `trigger="view"`. Text below the fold waits hidden and plays once, the first time it scrolls into view. Text already on screen stays put. Each word takes 500ms and starts 120ms after the one before, so a title of seven words is in after about 1.2s. The stagger shortens for a long text, so the last word starts within 900ms. The entrance is a CSS animation, so a theme change that switches transitions off cannot cut it short.
 
-For a statement that should be read at the reader's pace, set `trigger="scroll"`. Each word goes from faint to full as the text scrolls up the screen, and fades back when the reader scrolls up again. It needs no tall section and no sticky wrapper: the text keeps its place in the page. Use it for one closing statement, not for every title.
+For a statement the reader should take at their own pace, set `trigger="scroll"`. Each word goes from faint to full as the text scrolls up the screen, and fades back when the reader scrolls up again. It needs no tall section and no sticky wrapper: the text keeps its place in the page. Use it for one closing statement, not for every title.
 
 ## Examples
 
@@ -37,11 +37,11 @@ For a statement that should be read at the reader's pace, set `trigger="scroll"`
 
 ## Accessibility
 
-Nothing is hidden from assistive technology and the text never changes. Under reduced motion the entrances fade in together, with no blur and no rise, and the scroll trigger shows the whole text at full strength.
+Assistive technology sees the whole text, and the text never changes. Under reduced motion the entrances fade in together, with no blur and no rise. The scroll trigger shows the whole text at full strength.
 
 ## API
 
-TextReveal is a `<span>` and accepts all of its props. It wraps no Base UI part.
+TextReveal is a `<span>` and accepts all its props. It wraps no Base UI part.
 
 <TypeTable
   type={{

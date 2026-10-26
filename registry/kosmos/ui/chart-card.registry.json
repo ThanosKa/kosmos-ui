@@ -3,7 +3,7 @@
   "name": "chart-card",
   "type": "registry:ui",
   "title": "Chart card",
-  "description": "A chart on a card: a header with title, description and a place for a range control, a legend, and loading, empty and error states at the chart's height.",
+  "description": "A chart on a card with a header, a slot for a range control, and a legend. It has loading, empty and error states at the chart's height.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

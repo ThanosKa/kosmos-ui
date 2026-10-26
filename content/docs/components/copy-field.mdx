@@ -1,6 +1,6 @@
 ---
 title: Copy Field
-description: A read-only field that shows an API key, a webhook URL or an ID with a button that copies it, and hides a secret until it is shown.
+description: A read-only field that shows an API key, a webhook URL, or an ID, with a button that copies it. It hides a secret until you reveal it.
 ---
 
 <ComponentPreview name="copy-field-demo" />
@@ -23,21 +23,21 @@ import { CopyField } from '@/components/ui/copy-field';
 <CopyField secret label="secret key" aria-label="Secret key" value={secretKey} />
 ```
 
-The button at the end copies `value`. Once it is on the clipboard, the icon turns into a check mark for two seconds and screen readers hear "Webhook URL copied". When the browser refuses, as it does on a page served over plain http, the value is shown and selected instead, so it can be copied with the keyboard, and screen readers hear that. A secret stays shown until the eye button hides it again.
+The button at the end copies `value`. Once the value is on the clipboard, the icon turns into a check mark for two seconds and screen readers hear "Webhook URL copied". When the browser refuses, as it does on a page served over plain http, the field shows and selects the value instead. You can then copy it with the keyboard, and screen readers hear that. A revealed secret stays visible until the eye button hides it again.
 
 `label` says what the value is. It names the buttons ("Copy webhook URL", "Show secret key") and the message screen readers hear. The field itself takes its name from a [Field](/docs/components/field) label, or from `aria-label` on its own.
 
-With `secret`, the field shows 12 dots and the last four characters, so people can tell two keys apart without seeing them. Every secret takes the same 12 dots, so the field gives away nothing of its length, and a secret shorter than 16 characters shows only the dots. The eye button shows the value and hides it again, and the copy button copies the value while it is hidden too. Only the dots are in the page while the secret is hidden.
+With `secret`, the field shows 12 dots and the last four characters, so people can tell two keys apart without seeing them. Every secret takes the same 12 dots, so the field gives away nothing of its length. A secret shorter than 16 characters shows only the dots. The eye button shows the value and hides it again. The copy button copies the value even with the dots showing. With the dots showing, the page holds only the dots.
 
 Keys and URLs read left to right on a right-to-left page too. A value too long for the field ends in an ellipsis. The full value is what the button copies.
 
-The hiding and the copying come from `@kosmos/secret` and `@kosmos/use-copy`, which install with it as `lib/secret.ts` and `hooks/use-copy.ts`, for your own code too: `maskSecret(secret)` returns the dots and the last four characters, and `useCopy(text, { onFailure })` returns the result (`'idle' | 'copied' | 'failed'`) and a function that copies.
+The hiding and the copying come from `@kosmos/secret` and `@kosmos/use-copy`, which install with it as `lib/secret.ts` and `hooks/use-copy.ts`. You can use them in your own code too. `maskSecret(secret)` returns the dots and the last four characters. `useCopy(text, { onFailure })` returns the result (`'idle' | 'copied' | 'failed'`) and a function that copies.
 
 ## Examples
 
 ### Shown at first
 
-`defaultRevealed` shows the secret when the field appears, such as a key just created that people should save now.
+`defaultRevealed` shows the secret when the field appears, such as a key you created a moment ago that people should save now.
 
 <ComponentPreview name="copy-field-revealed" />
 

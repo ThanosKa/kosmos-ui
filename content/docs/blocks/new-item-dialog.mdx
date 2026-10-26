@@ -1,6 +1,6 @@
 ---
 title: New item dialog
-description: A dialog with the form for a new roadmap item. Only the title is required, and Create more keeps it open for the next one.
+description: A dialog with the form for a new roadmap item. The form needs only a title, and Create more keeps the dialog open for the next item.
 ---
 
 ## Installation
@@ -53,7 +53,7 @@ The card shows no description, so keep it for the item's own page or drop the fi
 
 - **Validation**: submitting without a title shows the error under the field and moves focus to it.
 - **Creating**: `onCreate` gets the trimmed title and description, the stage, and the area, assignee and target as ids (or `null`), then the dialog closes.
-- **Create more**: with the switch on, the dialog stays open. It clears the title and description, keeps the stage, area, assignee and target, and confirms the item just created.
+- **Create more**: with the switch on, the dialog stays open. It clears the title and description, keeps the stage, area, assignee and target, and confirms the new item.
 - **Fresh form**: each time the dialog opens, the form starts from `defaultValues` again. To hold the form yourself, pass `values` and `onValuesChange`. A controlled form stays as you set it.
 - **Narrow containers**: the stage, area, assignee and target selects stack in one column when the dialog is narrower than 20rem.
 

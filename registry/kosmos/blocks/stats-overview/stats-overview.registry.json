@@ -3,7 +3,7 @@
   "name": "stats-overview",
   "type": "registry:block",
   "title": "Stats overview",
-  "description": "The overview of an analytics dashboard: the headline metrics as tabs over one chart that compares the range with the period before it, a 7, 30 or 90 day switch, and the top events, each on a chart card. Loading, empty and error states included. It lays itself out by its own width, not the screen's.",
+  "description": "The overview of an analytics dashboard: headline metrics as tabs over one chart that compares the range with the period before. It has a 7, 30 or 90 day switch, top events, and loading, empty and error states. It lays itself out by its own width, not the screen's.",
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",

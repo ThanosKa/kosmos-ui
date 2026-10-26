@@ -1,0 +1,20 @@
+extends: existence
+message: "Cut '%s'. The technical-writing rules ban it in docs: say the fact plainly."
+ignorecase: true
+level: error
+tokens:
+  - simply
+  - easy
+  - easily
+  - easier
+  - quickly
+  - please
+  - utilize
+  - utilise
+  - leverage
+  - in order to
+  - click here
+  - etc\.
+  - e\.g\.
+  - i\.e\.
+  - and/or

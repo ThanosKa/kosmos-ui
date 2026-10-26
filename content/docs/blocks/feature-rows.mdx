@@ -35,17 +35,17 @@ export function Features() {
 }
 ```
 
-The media is whatever shows the feature best: a live piece of your product, which a visitor can click and change, or an image in an [Asset](/docs/components/asset). The title, line and three sample rows at the top of the file are sample data. Delete them and their imports once you pass your own.
+The media is whatever shows the feature best. It can be a live piece of your product, which a visitor can click and change, or an image in an [Asset](/docs/components/asset). The title, line and three sample rows at the top of the file are sample data. Delete them and their imports once you pass your own.
 
 ## What it does
 
 - **Rows**: each row is a title, one sentence and an optional link on one side, and the media on a recessed stage on the other. The rows alternate sides, and the reading order follows the order on screen.
-- **Crop**: the stage clips its media at the outer edge, so the product reads larger than the stage and the row does not look like a small widget in an empty box. Give the media room to be wide; from 768px it keeps at least 544px.
+- **Crop**: the stage clips its media at the outer edge, so the product reads larger than the stage. The row does not look like a small component in an empty box. Give the media room to be wide. From 768px it keeps at least 544px.
 - **Header**: the title is an `<h2>` and each row's title an `<h3>`. Pass `headingLevel={3}` when the block sits inside a part of the page that already has an `<h2>`. With `title={null}`, the header goes and the page above supplies the heading.
 - **Link**: a row with `href` gets a link under its sentence. Pass your router's `Link` as `linkComponent` so it navigates without a reload.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's. The copy sits above the stage on a phone and beside it from 768px.
 - **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`.
-- **Unlike the bento and the feature section**: the [bento](/docs/blocks/bento) shows many features at once as small tiles, and the [feature section](/docs/blocks/feature-section) gives one feature a tray of two cards. Feature rows gives each of a few features a full row at real size.
+- **Unlike the bento and the feature section**: the [bento](/docs/blocks/bento) shows many features at once as small tiles. The [feature section](/docs/blocks/feature-section) gives one feature a tray of two cards. Feature rows gives each of a few features a full row at real size.
 
 ## API
 

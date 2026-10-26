@@ -3,7 +3,7 @@
   "name": "model-select",
   "type": "registry:ui",
   "title": "Model select",
-  "description": "Picks the model an agent runs on and its reasoning effort: a quiet trigger for a composer toolbar, a menu with one row per model, and a segmented control for the effort at its foot.",
+  "description": "Picks the model an agent runs on and its reasoning effort. It has a quiet trigger for a composer toolbar, a menu with one row per model, and a segmented control for effort.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/dropdown-menu", "@kosmos/segmented-control"],
   "meta": { "group": "ai" },

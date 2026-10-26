@@ -24,7 +24,7 @@ import { Reasoning } from '@/components/ui/reasoning';
 
 Reasoning has no surface of its own: it is one row with a status mark, a label and a chevron, and a panel under it. While `status` is `thinking`, the row reads "Thinking…" next to a spinner. Once it is `done`, it reads "Thought for 12s", or "Thought for a moment" when `durationMs` is under a second or missing.
 
-By default the panel opens while the agent thinks and closes once it is done. If the reader opens or closes it in the meantime, it stays as they left it. Set `autoCollapse={false}` to keep it closed until the reader opens it.
+By default the panel opens while the agent thinks and closes once the agent finishes. If the reader opens or closes it in the meantime, it stays as they left it. Set `autoCollapse={false}` to keep it closed until the reader opens it.
 
 Streamed text scrolls inside the panel once it passes 256px, and follows the newest line while the agent thinks. When thinking ends, screen readers announce "Thought for 12 seconds" once.
 

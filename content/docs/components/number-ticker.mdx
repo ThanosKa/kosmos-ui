@@ -9,7 +9,7 @@ description: A number that counts up to its value the first time it scrolls into
 
 <ComponentInstall name="number-ticker" />
 
-Ported from the number ticker of [Magic UI](https://github.com/magicuidesign/magicui) (MIT) and restyled to the Kosmos tokens. Its copyright line lands next to the component, in `LICENSE-MAGIC-UI`.
+Adapted from the `number-ticker` in [Magic UI](https://github.com/magicuidesign/magicui) (MIT) and restyled to Kosmos. Its copyright line ships next to the component, in `LICENSE-MAGIC-UI`.
 
 ## Usage
 
@@ -23,7 +23,7 @@ import { NumberTicker } from '@/components/ui/number-ticker';
 </p>
 ```
 
-The final number is in the markup, so it shows without JavaScript and holds the width: counting up shifts nothing, and the digits keep one width (`tabular-nums`). A number already on screen at load does not count. One further down counts when it scrolls into view.
+The final number is in the markup, so it shows without JavaScript and holds the width. Counting up shifts nothing, and the digits keep one width (`tabular-nums`). A number already on screen at load does not count. A number further down counts when it scrolls into view.
 
 ## Examples
 
@@ -33,11 +33,11 @@ The final number is in the markup, so it shows without JavaScript and holds the 
 
 ## Accessibility
 
-Screen readers hear the final number once. The counting digits are hidden from them. Under reduced motion the number never counts.
+Screen readers hear the final number once. They skip the counting digits. Under reduced motion the number never counts.
 
 ## API
 
-NumberTicker is a `<span>` and accepts all of its props. It wraps no Base UI part.
+NumberTicker is a `<span>` and accepts all its props. It wraps no Base UI part.
 
 <TypeTable
   type={{

@@ -52,7 +52,7 @@ The color only repeats what the value says, so keep `MeterValue` or a visible nu
 
 ### In a table cell
 
-A short row of `MeterSegments` with the number beside it fits a table cell. Give the meter a fixed width and an `aria-label` that names the row, since the column header is not read with it. Clamp `value` to the range for the bar and show the real number as the text, so a quota at 112% fills the bar and still reads 112%.
+A short row of `MeterSegments` with the number beside it fits a table cell. Give the meter a fixed width and an `aria-label` that names the row, since screen readers do not read the column header with it. Clamp `value` to the range for the bar and show the real number as the text. A quota at 112% then fills the bar and still reads 112%.
 
 <ComponentPreview name="meter-table" />
 
