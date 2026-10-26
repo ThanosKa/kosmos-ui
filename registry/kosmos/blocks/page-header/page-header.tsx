@@ -2,6 +2,7 @@
 
 import { Download, Ellipsis, Link2, ListFilter, Plus, Search, Upload, X } from 'lucide-react';
 import * as React from 'react';
+import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
@@ -42,19 +43,6 @@ const sampleFilters: FilterOption[] = [
 ];
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
-
-function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
-  const current = value === undefined ? uncontrolled : value;
-  const setValue = React.useCallback(
-    (next: T) => {
-      if (value === undefined) setUncontrolled(next);
-      onChange?.(next);
-    },
-    [value, onChange],
-  );
-  return [current, setValue] as const;
-}
 
 /** Options in their order, gathered under each group's name. */
 function groupOptions(options: FilterOption[]) {
