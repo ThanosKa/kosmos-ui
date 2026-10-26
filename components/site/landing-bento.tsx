@@ -7,10 +7,7 @@ import { Bento, type BentoItem } from '@/registry/kosmos/blocks/bento/bento';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/registry/kosmos/ui/command';
-import { Field, FieldContent, FieldDescription, FieldLabel } from '@/registry/kosmos/ui/field';
-import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
-import { OtpField } from '@/registry/kosmos/ui/otp-field';
-import { Switch } from '@/registry/kosmos/ui/switch';
+import { ChecklistIllustration, LayerStackIllustration, SyncIllustration } from '@/registry/kosmos/ui/illustrations';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 const titleLink =
@@ -20,6 +17,15 @@ const titleLink =
 function ComponentTitle({ name, children }: { name: string; children: ReactNode }) {
   return (
     <Link href={`/docs/components/${name}`} className={titleLink}>
+      {children}
+    </Link>
+  );
+}
+
+/** A tile title that opens a block's docs page. */
+function BlockTitle({ name, children }: { name: string; children: ReactNode }) {
+  return (
+    <Link href={`/docs/blocks/${name}`} className={titleLink}>
       {children}
     </Link>
   );
@@ -49,39 +55,6 @@ function CommandVisual() {
         )}
       </CommandList>
     </Command>
-  );
-}
-
-const alerts = [
-  { id: 'signup-alert', label: 'Signups drop below 40 a day', description: 'Checked every hour', on: true },
-  { id: 'error-alert', label: 'Error events pass 2%', description: 'Checked every 5 minutes', on: false },
-];
-
-function SwitchVisual() {
-  return (
-    <div className={`${card} max-w-sm divide-y divide-border px-4`}>
-      {alerts.map((alert) => (
-        <Field key={alert.id} name={alert.id} orientation="horizontal" className="py-3">
-          <FieldContent>
-            <FieldLabel>{alert.label}</FieldLabel>
-            <FieldDescription>{alert.description}</FieldDescription>
-          </FieldContent>
-          <Switch defaultChecked={alert.on} />
-        </Field>
-      ))}
-    </div>
-  );
-}
-
-function OtpVisual() {
-  return (
-    <div className={`${card} max-w-sm p-4`}>
-      <Field>
-        <FieldLabel>Verification code</FieldLabel>
-        <OtpField name="landing-code" />
-        <FieldDescription>We sent a code to lena@acme.example.</FieldDescription>
-      </Field>
-    </div>
   );
 }
 
@@ -160,23 +133,6 @@ function TableVisual() {
   );
 }
 
-function MeterVisual() {
-  return (
-    <div className={`${card} flex max-w-sm flex-col gap-5 p-4`}>
-      <Meter value={78}>
-        <MeterLabel>Events this month</MeterLabel>
-        <MeterValue />
-        <MeterBar />
-      </Meter>
-      <Meter value={7} max={10} format={{ style: 'decimal' }}>
-        <MeterLabel>Seats used</MeterLabel>
-        <MeterValue>{(_formatted, value) => `${value} of 10`}</MeterValue>
-        <MeterSegments count={10} />
-      </Meter>
-    </div>
-  );
-}
-
 const tiles: BentoItem[] = [
   {
     id: 'command',
@@ -186,16 +142,16 @@ const tiles: BentoItem[] = [
     visual: <CommandVisual />,
   },
   {
-    id: 'switch',
-    title: <ComponentTitle name="switch">Switch</ComponentTitle>,
-    description: 'Settings that take effect the moment you flip them.',
-    visual: <SwitchVisual />,
+    id: 'layers',
+    title: <BlockTitle name="app-sidebar">Blocks that stack</BlockTitle>,
+    description: 'Sidebar, header, table and drawer share one set of tokens.',
+    visual: <LayerStackIllustration trigger="view" className="max-w-80" />,
   },
   {
-    id: 'otp-field',
-    title: <ComponentTitle name="otp-field">OTP field</ComponentTitle>,
-    description: 'A one-time code that pastes and moves on by itself.',
-    visual: <OtpVisual />,
+    id: 'sync',
+    title: <ComponentTitle name="status">States that are not an afterthought</ComponentTitle>,
+    description: 'Loading, syncing and failed are designed, not left to chance.',
+    visual: <SyncIllustration className="max-w-80" />,
   },
   {
     id: 'chart',
@@ -205,33 +161,21 @@ const tiles: BentoItem[] = [
     visual: <ChartVisual />,
   },
   {
+    id: 'checklist',
+    title: <ComponentTitle name="plan-checklist">Plan checklist</ComponentTitle>,
+    description: 'Follow an agent step by step, from pending to done.',
+    visual: <ChecklistIllustration className="max-w-80" />,
+  },
+  {
     id: 'table',
     size: 'wide',
     title: <ComponentTitle name="table">Table</ComponentTitle>,
     description: 'Rows with tags, status dots and numbers that line up.',
     visual: <TableVisual />,
   },
-  {
-    id: 'meter',
-    title: <ComponentTitle name="meter">Meter</ComponentTitle>,
-    description: 'A quota or a score, as a bar or as segments.',
-    visual: <MeterVisual />,
-  },
 ];
 
-/** The landing's bento: real Kosmos components in the Bento block, each linked to its docs. */
+/** The landing's bento: live Kosmos components and animated illustrations in the Bento block, each linked to its docs. */
 export function ComponentBento() {
-  return (
-    <Bento
-      title={
-        <>
-          Every tile is the real component,
-          <br />
-          so try one
-        </>
-      }
-      description={null}
-      items={tiles}
-    />
-  );
+  return <Bento title={null} description={null} items={tiles} />;
 }

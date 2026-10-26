@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { BlurFade } from '@/registry/kosmos/ui/blur-fade';
+import { TextReveal } from '@/registry/kosmos/ui/text-reveal';
 
 /**
  * The space a landing section keeps below itself, which sets the rhythm of the page (kosmos-style, Marketing pages):
@@ -19,51 +20,52 @@ const columns = {
   wide: 'max-w-6xl',
 } as const;
 
+/** The wait between a section's title and its content, in milliseconds: one chunk step. */
+const chunkStep = 100;
+
 /**
- * One section of the landing page. The landing is an ordered list of these, top to bottom, each built from Kosmos
- * blocks. Every section but the hero comes in once, blurring into view as it scrolls on screen.
+ * One section of the landing page. The landing is an ordered list of these, top to bottom. A section with a `title`
+ * reveals it word by word as it scrolls into view and brings its content in 100ms later; a section built from a block
+ * that has its own title blurs in as a whole. The hero plays on its own.
  */
 export type LandingSectionProps = {
   /** A stable name for the section, its `data-landing-section`. */
   id: string;
-  /** A heading for screen readers, for a section whose content has none of its own. */
+  /** The section's heading, for a section whose content brings none. At most two short lines. */
+  title?: string;
+  /** A heading for screen readers, for a section with neither a title nor a heading of its own. */
   srHeading?: string;
-  /** The `id` of the section's own visible heading, which names it. */
-  labelledBy?: string;
   /** The space around the section: `hero` at the top of the page, `last` before the footer. */
   space?: keyof typeof rhythm;
   column?: keyof typeof columns;
-  /** Drawn behind the whole section, full width: a `FlickeringGrid`, say. */
-  background?: ReactNode;
   className?: string;
   children: ReactNode;
 };
 
-export function LandingSection({
-  id,
-  srHeading,
-  labelledBy,
-  space = 'section',
-  column = 'default',
-  background,
-  className,
-  children,
-}: LandingSectionProps) {
+export function LandingSection({ id, title, srHeading, space = 'section', column = 'default', className, children }: LandingSectionProps) {
   const headingId = `landing-${id}`;
   return (
     <section
       data-landing-section={id}
-      aria-labelledby={srHeading ? headingId : labelledBy}
-      className={cn('px-4 sm:px-6', background && 'relative isolate overflow-hidden', rhythm[space], className)}
+      aria-labelledby={title || srHeading ? headingId : undefined}
+      className={cn('px-4 sm:px-6', rhythm[space], className)}
     >
-      {background}
       <div className={cn('mx-auto flex w-full flex-col gap-8', columns[column])}>
         {srHeading ? (
           <h2 id={headingId} className="sr-only">
             {srHeading}
           </h2>
         ) : null}
-        {space === 'hero' ? children : <BlurFade className="flex flex-col gap-8">{children}</BlurFade>}
+        {space === 'hero' ? (
+          children
+        ) : title ? (
+          <>
+            <LandingTitle id={headingId}>{title}</LandingTitle>
+            <BlurFade delay={chunkStep}>{children}</BlurFade>
+          </>
+        ) : (
+          <BlurFade>{children}</BlurFade>
+        )}
       </div>
     </section>
   );
@@ -73,11 +75,11 @@ export function LandingSection({
  * The title of a section built from blocks that bring no title of their own, set like the title of a marketing
  * block: centered, `text-heading` growing to `text-display` from a 672px-wide container.
  */
-export function LandingTitle({ id, children }: { id: string; children: ReactNode }) {
+export function LandingTitle({ id, children }: { id: string; children: string }) {
   return (
     <div className="@container flex justify-center">
       <h2 id={id} className="max-w-[20em] text-center text-heading font-semibold text-balance text-foreground @2xl:text-display">
-        {children}
+        <TextReveal trigger="view">{children}</TextReveal>
       </h2>
     </div>
   );
