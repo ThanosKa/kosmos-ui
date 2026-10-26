@@ -3,7 +3,7 @@
   "name": "text-reveal",
   "type": "registry:ui",
   "title": "Text reveal",
-  "description": "Text that rises out of a soft blur word by word over about a second, once. It plays on first paint or on first scroll into view, or follows the scroll. It fades plainly under reduced motion. Based on Magic UI (MIT).",
+  "description": "Text that rises out of a soft blur word by word over about a second, once. It plays on first paint or on first scroll into view, or follows the scroll. It fades plainly under reduced motion.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },
   "files": [
