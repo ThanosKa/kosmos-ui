@@ -311,7 +311,7 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
               <h3 className="px-2.5 pb-1 text-caption text-muted-foreground">{item.label}</h3>
               {item.sections.map((section, sectionIndex) => (
                 <div key={section.title} className="flex flex-col gap-0.5">
-                  <h4 id={`${id}-${index}-${sectionIndex}`} className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-foreground">
+                  <h4 id={`${id}-${index}-${sectionIndex}`} className="px-2.5 pt-1.5 pb-1 text-caption text-muted-foreground">
                     {section.title}
                   </h4>
                   <ul aria-labelledby={`${id}-${index}-${sectionIndex}`} className="flex flex-col gap-0.5">
@@ -397,7 +397,7 @@ function NavbarBanner({
   if (dismissed) return null;
   const line = (
     <>
-      <span className="min-w-0 truncate">{children}</span>
+      <span className="min-w-0 line-clamp-2 text-pretty">{children}</span>
       {linkLabel ? (
         <span className="flex shrink-0 items-center gap-1 font-medium text-foreground">
           {linkLabel}
@@ -409,7 +409,7 @@ function NavbarBanner({
   return (
     <div
       data-slot="navbar-banner"
-      className={cn('flex h-9 items-center gap-2 border-b border-border bg-muted ps-4 pe-2 text-small text-muted-foreground', className)}
+      className={cn('flex min-h-9 items-center gap-2 border-b border-border bg-muted py-1 ps-4 pe-2 text-small text-muted-foreground', className)}
       {...props}
     >
       <span className="size-6 shrink-0" aria-hidden />
