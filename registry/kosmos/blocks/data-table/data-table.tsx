@@ -26,6 +26,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import * as React from 'react';
+import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { facetCounts, matchesFacets, type Facet } from '@/registry/kosmos/lib/facets';
 import { clampPage, pageCount, pageRows } from '@/registry/kosmos/lib/paging';
@@ -209,19 +210,6 @@ const facets: (Facet<Project> & { title: string; noun: string; option: (value: s
 
 const facetLabel = (value: string) =>
   plans[value as ProjectPlan]?.label ?? platforms[value as ProjectPlatform]?.label ?? statuses[value as ProjectStatus]?.label ?? value;
-
-function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
-  const current = value === undefined ? uncontrolled : value;
-  const setValue = React.useCallback(
-    (next: T) => {
-      if (value === undefined) setUncontrolled(next);
-      onChange?.(next);
-    },
-    [value, onChange],
-  );
-  return [current, setValue] as const;
-}
 
 /** Ten segments for the share of the plan's allowance used: green up to 75%, amber to 95%, red above. The bar stops at full; the number does not. */
 function EventQuota({ row }: { row: Project }) {

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
@@ -227,16 +228,6 @@ function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[];
       </ChartCardContent>
     </ChartCard>
   );
-}
-
-function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (value: T) => void) {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
-  const current = value === undefined ? uncontrolled : value;
-  const setValue = (next: T) => {
-    if (value === undefined) setUncontrolled(next);
-    onChange?.(next);
-  };
-  return [current, setValue] as const;
 }
 
 type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
