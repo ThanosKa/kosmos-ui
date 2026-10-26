@@ -17,6 +17,7 @@
     "@kosmos/avatar",
     "@kosmos/button",
     "@kosmos/badge",
+    "@kosmos/empty",
     "@kosmos/scroll-area",
     "@kosmos/skeleton"
   ],
