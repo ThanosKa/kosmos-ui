@@ -2,12 +2,11 @@
 
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
-import { ChartNoAxesColumn, CircleAlert, RotateCw } from 'lucide-react';
+import { ChartNoAxesColumn, CircleAlert } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Button } from '@/registry/kosmos/ui/button';
 import type { ChartConfig } from '@/registry/kosmos/ui/chart';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 
 type ChartCardState = 'ready' | 'loading' | 'empty' | 'error';
@@ -162,33 +161,23 @@ function ChartCardContent({
       {state === 'loading' ? (
         <Skeleton className="min-h-0 flex-1" />
       ) : state === 'empty' ? (
-        <Empty className="p-0">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <ChartNoAxesColumn />
-            </EmptyMedia>
-            <EmptyTitle>{emptyTitle}</EmptyTitle>
-            <EmptyDescription>{emptyDescription}</EmptyDescription>
-          </EmptyHeader>
-        </Empty>
+        <EmptyState
+          className="p-0"
+          variant="first-use"
+          icon={<ChartNoAxesColumn />}
+          title={emptyTitle}
+          description={emptyDescription}
+        />
       ) : state === 'error' ? (
-        <Empty role="alert" className="p-0">
-          <EmptyHeader>
-            <EmptyMedia variant="icon" className="text-destructive">
-              <CircleAlert />
-            </EmptyMedia>
-            <EmptyTitle>{errorTitle}</EmptyTitle>
-            <EmptyDescription>{errorDescription}</EmptyDescription>
-          </EmptyHeader>
-          {onRetry ? (
-            <EmptyContent>
-              <Button variant="secondary" size="sm" onClick={onRetry}>
-                <RotateCw data-icon="inline-start" />
-                {retryLabel}
-              </Button>
-            </EmptyContent>
-          ) : null}
-        </Empty>
+        <EmptyState
+          className="p-0"
+          variant="error"
+          icon={<CircleAlert />}
+          title={errorTitle}
+          description={errorDescription}
+          onRetry={onRetry}
+          retryLabel={retryLabel}
+        />
       ) : (
         children
       )}

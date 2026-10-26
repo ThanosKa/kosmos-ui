@@ -29,6 +29,7 @@ import { duration, ease } from '@/registry/kosmos/lib/motion';
 import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
+import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 
@@ -376,9 +377,13 @@ function KanbanColumnView({
                 <Skeleton className="h-24 rounded-2xl" />
               </>
             ) : items.length === 0 ? (
-              <p className="flex min-h-20 flex-1 items-center justify-center px-4 text-center text-small text-muted-foreground">
-                {dragging ? 'Drop here' : 'Nothing here'}
-              </p>
+              <EmptyState
+                compact
+                variant="first-use"
+                className="min-h-20"
+                title={dragging ? 'Drop here' : 'No items'}
+                description={dragging ? 'Release to move the card to this column.' : 'Drag a card here to plan it.'}
+              />
             ) : (
               items.map((item) => (
                 <SortableCard key={item.id} item={item} reducedMotion={reducedMotion} dragging={dragging} onOpen={onOpen} />
