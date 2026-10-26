@@ -198,58 +198,60 @@ function Testimonials({
   if (!featured && layouts.length === 0) return null;
 
   return (
-    <section data-slot="testimonials" data-variant={variant} className={cn('@container flex flex-col gap-8 @2xl:gap-10', className)} {...props}>
-      {title || description ? (
-        <header className="flex flex-col items-center text-center">
-          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
-          {description ? (
-            <p className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">{description}</p>
-          ) : null}
-        </header>
-      ) : null}
-      {featured ? (
-        <figure data-slot="testimonials-featured" className="mx-auto flex w-full max-w-[36em] flex-col items-center gap-6 text-center">
-          <blockquote className="w-full text-lead text-balance wrap-break-word text-foreground">{featured.quote}</blockquote>
-          <figcaption className="max-w-full">
-            <Person testimonial={featured} featured />
-          </figcaption>
-        </figure>
-      ) : null}
-      {layouts.length > 0 ? (
-        <div data-slot="testimonials-wall" className="relative">
-          {/* Cards fade out at the top, and before the last 2.5rem at the bottom, so the pause button sits on a clear strip. */}
-          <div
-            className={cn(
-              moving &&
-                'motion-safe:-mx-2 motion-safe:h-120 motion-safe:overflow-hidden motion-safe:px-2 motion-safe:mask-t-from-[calc(100%-6rem)] motion-safe:mask-b-from-[calc(100%-8.5rem)] motion-safe:mask-b-to-[calc(100%-2.5rem)] motion-safe:@2xl:h-150',
-            )}
-          >
-            {layouts.map((count) => (
-              <div key={count} data-columns={count} className={cn('items-start gap-4', columnsShown[count])}>
-                {deal(testimonials, count).map((column, index) => (
-                  <WallColumn key={index} testimonials={column} index={index} speed={speed} held={stopped || onButton} moving={moving} />
-                ))}
-              </div>
-            ))}
-          </div>
-          {moving ? (
-            <Button
-              variant="secondary"
-              size="icon-sm"
-              aria-label={stopped ? 'Play testimonials' : 'Pause testimonials'}
-              onClick={() => {
-                setStopped((value) => !value);
-                buttonHold.onPointerLeave();
-              }}
-              onPointerEnter={buttonHold.onPointerEnter}
-              onPointerLeave={buttonHold.onPointerLeave}
-              className="absolute end-2 bottom-2 motion-reduce:hidden"
+    <section data-slot="testimonials" data-variant={variant} className={cn('@container', className)} {...props}>
+      <div className="flex flex-col gap-8 @2xl:gap-10">
+        {title || description ? (
+          <header className="flex flex-col items-center text-center">
+            {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+            {description ? (
+              <p className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">{description}</p>
+            ) : null}
+          </header>
+        ) : null}
+        {featured ? (
+          <figure data-slot="testimonials-featured" className="mx-auto flex w-full max-w-[36em] flex-col items-center gap-6 text-center">
+            <blockquote className="w-full text-lead text-balance wrap-break-word text-foreground">{featured.quote}</blockquote>
+            <figcaption className="max-w-full">
+              <Person testimonial={featured} featured />
+            </figcaption>
+          </figure>
+        ) : null}
+        {layouts.length > 0 ? (
+          <div data-slot="testimonials-wall" className="relative">
+            {/* Cards fade out at the top, and before the last 2.5rem at the bottom, so the pause button sits on a clear strip. */}
+            <div
+              className={cn(
+                moving &&
+                  'motion-safe:-mx-2 motion-safe:h-120 motion-safe:overflow-hidden motion-safe:px-2 motion-safe:mask-t-from-[calc(100%-6rem)] motion-safe:mask-b-from-[calc(100%-8.5rem)] motion-safe:mask-b-to-[calc(100%-2.5rem)] motion-safe:@2xl:h-150',
+              )}
             >
-              {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
+              {layouts.map((count) => (
+                <div key={count} data-columns={count} className={cn('items-start gap-4', columnsShown[count])}>
+                  {deal(testimonials, count).map((column, index) => (
+                    <WallColumn key={index} testimonials={column} index={index} speed={speed} held={stopped || onButton} moving={moving} />
+                  ))}
+                </div>
+              ))}
+            </div>
+            {moving ? (
+              <Button
+                variant="secondary"
+                size="icon-sm"
+                aria-label={stopped ? 'Play testimonials' : 'Pause testimonials'}
+                onClick={() => {
+                  setStopped((value) => !value);
+                  buttonHold.onPointerLeave();
+                }}
+                onPointerEnter={buttonHold.onPointerEnter}
+                onPointerLeave={buttonHold.onPointerLeave}
+                className="absolute end-2 bottom-2 motion-reduce:hidden"
+              >
+                {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }
