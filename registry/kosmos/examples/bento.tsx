@@ -10,7 +10,7 @@ function Visual({ children }: { children: ReactNode }) {
 }
 
 const threeTiles: BentoItem[] = [
-  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>acme.track()</Visual> },
+  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>acme.track()</Visual>, href: '#web' },
   { id: 'ios', title: 'iOS', description: 'A Swift package.', visual: <Visual>Acme.track()</Visual> },
   { id: 'server', title: 'Server', description: 'Node, Go and Python.', visual: <Visual>acme.track()</Visual> },
 ];
@@ -31,7 +31,7 @@ const longTiles: BentoItem[] = [
       </Visual>
     ),
   },
-  { id: 'short', title: 'Short', description: 'One word.', visual: <Visual>Short</Visual> },
+  { id: 'short', title: 'Short', description: 'One word.', visual: <Visual>Short</Visual>, href: '#short', linkLabel: 'Read the guide to every platform Acme supports' },
 ];
 
 export default function BentoPreview() {
