@@ -16,7 +16,7 @@ import {
   chartAnimation,
   type ChartConfig,
 } from '@/registry/kosmos/ui/chart';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
@@ -325,20 +325,19 @@ function UsageOverview({
 
       {empty ? (
         <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">
-          <Empty className="p-0 py-10">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <Bot />
-              </EmptyMedia>
-              <EmptyTitle render={<h3 />}>No agent runs in this period</EmptyTitle>
-              <EmptyDescription>Tokens, runs and spend show up here once an agent runs.</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
+          <EmptyState
+            className="p-0 py-10"
+            variant="first-use"
+            headingLevel={3}
+            icon={<Bot />}
+            title="No agent runs in this period"
+            description="Tokens, runs and spend show up here once an agent runs."
+            action={
               <Button variant="secondary" href={agentsHref}>
                 Open agents
               </Button>
-            </EmptyContent>
-          </Empty>
+            }
+          />
         </div>
       ) : (
         <>

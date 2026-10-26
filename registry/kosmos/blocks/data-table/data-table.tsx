@@ -46,7 +46,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Input } from '@/registry/kosmos/ui/input';
 import { Meter, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Pagination, PaginationNext, PaginationPrevious, PaginationStatus } from '@/registry/kosmos/ui/pagination';
@@ -877,32 +877,23 @@ function DataTable({
       </Table>
 
       {!loading && visible.length === 0 ? (
-        <Empty className="py-10">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">{filtering ? <SearchX /> : <Boxes />}</EmptyMedia>
-            <EmptyTitle render={<h2 />}>
-              {!filtering ? 'No projects yet' : query.trim() ? `No projects match “${query.trim()}”` : 'No projects match'}
-            </EmptyTitle>
-            <EmptyDescription>
-              {filtering
-                ? 'Try another search, or clear the filters to see every project.'
-                : 'Add a project, and it shows up here once it sends its first event.'}
-            </EmptyDescription>
-          </EmptyHeader>
-          {filtering && (ownFilters || onClearFilters) ? (
-            <EmptyContent>
-              <Button
-                variant="secondary"
-                onClick={() => {
+        <EmptyState
+          className="py-10"
+          headingLevel={2}
+          noun="projects"
+          variant={!filtering ? 'first-use' : query.trim() ? 'no-results' : 'filtered'}
+          query={query}
+          icon={!filtering ? <Boxes /> : undefined}
+          description={filtering ? undefined : 'Add a project, and it shows up here once it sends its first event.'}
+          onClear={
+            ownFilters || onClearFilters
+              ? () => {
                   resetFilters();
                   onClearFilters?.();
-                }}
-              >
-                Clear filters
-              </Button>
-            </EmptyContent>
-          ) : null}
-        </Empty>
+                }
+              : undefined
+          }
+        />
       ) : null}
 
       <div className="flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border px-4 py-1.5 text-small text-muted-foreground tabular-nums">

@@ -11,12 +11,17 @@ type LogoMarqueeLogo = {
   name: string;
   /** The mark, such as an `<svg>` or an `<img alt="">`. Decorative: `name` names it. */
   logo?: React.ReactNode;
+  /** The brand colour the logo turns to on hover or focus, any CSS colour. Without one it turns to the text colour. */
+  color?: string;
+  /** Makes the logo a link, which also brings it into the keyboard's reach. */
+  href?: string;
 };
 
 /** A stand-in logo: an icon beside the name. */
-function sampleLogo(name: string, Icon: React.ElementType): LogoMarqueeLogo {
+function sampleLogo(name: string, Icon: React.ElementType, color: string): LogoMarqueeLogo {
   return {
     name,
+    color,
     logo: (
       <span className="flex items-center gap-2">
         <Icon />
@@ -29,13 +34,13 @@ function sampleLogo(name: string, Icon: React.ElementType): LogoMarqueeLogo {
 // Sample data: replace it with the line and the logos of your customers or your stack.
 const sampleTitle = 'Used by the teams behind';
 const sampleLogos: LogoMarqueeLogo[] = [
-  sampleLogo('Fernhill Books', BookOpen),
-  sampleLogo('Brightloop Fitness', Activity),
-  sampleLogo('Copperline Bank', Landmark),
-  sampleLogo('Saltmarsh Coffee', Coffee),
-  sampleLogo('Driftwood Travel', Sailboat),
-  sampleLogo('Cirrus Weather', Cloud),
-  sampleLogo('Ironbark Logistics', Truck),
+  sampleLogo('Fernhill Books', BookOpen, 'var(--tint-blue-solid)'),
+  sampleLogo('Brightloop Fitness', Activity, 'var(--tint-orange-solid)'),
+  sampleLogo('Copperline Bank', Landmark, 'var(--tint-green-solid)'),
+  sampleLogo('Saltmarsh Coffee', Coffee, 'var(--tint-red-solid)'),
+  sampleLogo('Driftwood Travel', Sailboat, 'var(--tint-teal-solid)'),
+  sampleLogo('Cirrus Weather', Cloud, 'var(--tint-blue-solid)'),
+  sampleLogo('Ironbark Logistics', Truck, 'var(--tint-orange-solid)'),
 ];
 
 /** How fast the logos move, in pixels per second. */
@@ -53,23 +58,35 @@ const driftKeyframes = '@keyframes kosmos-marquee-drift{to{transform:translateX(
  * An `<svg>` or `<img>` is 20px tall at its own aspect ratio, unless it sets a height class of its own.
  */
 const itemClass =
-  "flex min-h-8 shrink-0 items-center px-5 text-center text-title text-balance text-muted-foreground grayscale @2xl:px-7 [&_:is(svg,img)]:w-auto [&_:is(svg,img)]:shrink-0 [&_:is(svg,img):not([class*='h-'])]:h-5";
+  "flex min-h-8 shrink-0 items-center px-5 text-center text-title text-balance text-muted-foreground grayscale transition-[color,filter] hover:text-(--logo-color,var(--foreground)) hover:grayscale-0 focus-within:text-(--logo-color,var(--foreground)) focus-within:grayscale-0 @2xl:px-7 [&_:is(svg,img)]:w-auto [&_:is(svg,img)]:shrink-0 [&_:is(svg,img):not([class*='h-'])]:h-5";
 
-function LogoItems({ logos }: { logos: LogoMarqueeLogo[] }) {
-  return logos.map(({ name, logo }, index) => (
-    <li key={index} className={itemClass}>
-      {logo ? (
-        <>
-          <span aria-hidden className="flex items-center">
-            {logo}
-          </span>
-          <span className="sr-only">{name}</span>
-        </>
-      ) : (
-        name
-      )}
-    </li>
-  ));
+function LogoItems({ logos, interactive }: { logos: LogoMarqueeLogo[]; interactive: boolean }) {
+  return logos.map(({ name, logo, color, href }, index) => {
+    const label = logo ? (
+      <>
+        <span aria-hidden className="flex items-center">
+          {logo}
+        </span>
+        <span className="sr-only">{name}</span>
+      </>
+    ) : (
+      name
+    );
+    return (
+      <li key={index} style={color ? ({ '--logo-color': color } as React.CSSProperties) : undefined} className={itemClass}>
+        {href && interactive ? (
+          <a
+            href={href}
+            className="flex items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            {label}
+          </a>
+        ) : (
+          label
+        )}
+      </li>
+    );
+  });
 }
 
 type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
@@ -84,7 +101,7 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 };
 
 /**
- * A row of logos in grey: still in centered rows, or as a marquee that moves toward the start, fades out at both
+ * A row of logos in grey that turn to their own colours on hover or focus: still in centered rows, or as a marquee that moves toward the start, fades out at both
  * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
  * motion the marquee stands still in centered rows. Lays itself out by its own width, and sets no padding around itself.
  */
@@ -139,10 +156,10 @@ function LogoMarquee({
                 aria-labelledby={labelledBy}
                 className="flex min-w-[100cqw] justify-around motion-safe:*:whitespace-nowrap motion-reduce:w-full motion-reduce:min-w-0 motion-reduce:flex-wrap motion-reduce:*:max-w-full motion-reduce:justify-center motion-reduce:gap-y-4 motion-reduce:@2xl:gap-y-6"
               >
-                <LogoItems logos={logos} />
+                <LogoItems logos={logos} interactive />
               </ul>
               <ul aria-hidden inert className="flex min-w-[100cqw] justify-around *:whitespace-nowrap motion-reduce:hidden">
-                <LogoItems logos={logos} />
+                <LogoItems logos={logos} interactive={false} />
               </ul>
             </div>
           </div>
@@ -163,7 +180,7 @@ function LogoMarquee({
         </div>
       ) : (
         <ul aria-labelledby={labelledBy} className="flex w-full flex-wrap justify-center gap-y-4 px-4 *:max-w-full @2xl:gap-y-6">
-          <LogoItems logos={logos} />
+          <LogoItems logos={logos} interactive />
         </ul>
       )}
     </section>
