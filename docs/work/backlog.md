@@ -36,3 +36,11 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 - [ ] **Install chip above block previews.** The install command chip above every block preview (next to the device toggles) repeats the install that the page shows below the preview. Remove it from all block pages.
 - [ ] **Go live.** When the above is in: release `dev` to `main` (maintainer's PR with a merge commit) and deploy.
 - [ ] **MIT catalogue, wave A.** Port the first wave from the MIT catalogue (mockup and screenshot, device frames, marquee primitive, avatar circles, glow and section wrapper, card, spinner, progress, alert dialog and sheet, login and signup blocks).
+
+## Later
+
+Not started until the maintainer decides to go live.
+
+- [ ] **Pro in a private repo.** Each block category keeps one free variant here and gets at least one Pro variant in the private repo, shown live on the site with locked code (ADR 0003).
+- [ ] **Templates.** Whole apps built from blocks: SaaS analytics admin, AI assistant workspace, project management, agent ops console, a marketing site in the dashboard style.
+- [ ] **Packaging.** Prices, licence, a private registry with a licence key, and payments.
