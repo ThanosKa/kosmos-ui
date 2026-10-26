@@ -1,11 +1,10 @@
 import { Lock } from 'lucide-react';
-import { addCommands, blockTiers, getRegistryItem, type BlockCategory, type BlockTier, type BlockVariant } from '@/lib/registry';
+import { blockTiers, getRegistryItem, type BlockCategory, type BlockTier, type BlockVariant } from '@/lib/registry';
 import { proUrl } from '@/lib/shared';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { BlockViewerPanels } from './block-viewer-panels';
 import { ComponentSource } from './component-install';
-import { InstallChip } from './install-chip';
 
 /** Free is a green tag; Pro is the brand's Pro mark, a primary Badge filled with the brand (`brand-primary`, app/global.css). */
 const tierBadges: Record<BlockTier, BadgeProps> = { free: { variant: 'green' }, pro: { variant: 'primary', className: 'brand-primary' } };
@@ -43,11 +42,6 @@ function BlockViewer({ variant }: { variant: BlockVariant }) {
           {variant.title}
         </h2>
         <Badge {...tierBadges[variant.tier]}>{blockTiers[variant.tier]}</Badge>
-        {item && (
-          <div className="ms-auto flex min-w-0">
-            <InstallChip commands={addCommands(item.name)} />
-          </div>
-        )}
       </div>
       <BlockViewerPanels
         title={variant.title}
