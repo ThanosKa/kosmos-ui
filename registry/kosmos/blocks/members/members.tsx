@@ -197,8 +197,19 @@ function Members({
   const [emails, setEmails] = React.useState<string[]>([]);
   const [inviteRole, setInviteRole] = React.useState<AssignableRole>(defaultInviteRole);
   const [removing, setRemoving] = React.useState<Member | null>(null);
+  const [removeOpen, setRemoveOpen] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState('');
   const inviteCount = React.useRef(0);
+  const invitesRef = React.useRef<HTMLDivElement>(null);
+  const focusAfterRevoke = React.useRef<string | null>(null);
+
+  React.useEffect(() => {
+    const target = focusAfterRevoke.current;
+    if (target === null) return;
+    focusAfterRevoke.current = null;
+    const button = invitesRef.current?.querySelector<HTMLElement>(`[data-invite-id="${target}"] button`);
+    (button ?? invitesRef.current?.querySelector<HTMLElement>('[data-slot=invites-heading]'))?.focus();
+  }, [invites]);
 
   const taken = React.useMemo(
     () => new Set([...members.map((member) => member.email), ...invites.map((invite) => invite.email)].map((email) => email.toLocaleLowerCase())),
@@ -236,7 +247,7 @@ function Members({
     setMembers((current) => current.filter((item) => item.id !== removing.id));
     onRemove?.(removing);
     setConfirmation(`${removing.name} was removed from ${workspace}.`);
-    setRemoving(null);
+    setRemoveOpen(false);
   };
 
   const resend = (invite: Invite) => {
@@ -246,6 +257,8 @@ function Members({
   };
 
   const revoke = (invite: Invite) => {
+    const at = invites.findIndex((item) => item.id === invite.id);
+    focusAfterRevoke.current = (invites[at + 1] ?? invites[at - 1])?.id ?? '';
     setInvites((current) => current.filter((item) => item.id !== invite.id));
     onRevoke?.(invite);
     setConfirmation(`Invite to ${invite.email} revoked.`);
@@ -377,7 +390,10 @@ function Members({
                               <Ellipsis aria-hidden />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => setRemoving(member)}>
+                              <DropdownMenuItem onClick={() => {
+                                  setRemoving(member);
+                                  setRemoveOpen(true);
+                                }}>
                                 <UserMinus aria-hidden />
                                 Remove from {workspace}
                               </DropdownMenuItem>
@@ -392,9 +408,11 @@ function Members({
         </Table>
       </div>
 
-      <div className={card}>
+      <div ref={invitesRef} className={card}>
         <div className="flex flex-col gap-0.5">
-          <h3 className="text-title">Pending invites</h3>
+          <h3 data-slot="invites-heading" tabIndex={-1} className="text-title outline-none">
+            Pending invites
+          </h3>
           <p className="text-small text-muted-foreground tabular-nums">
             {loading ? 'Loading…' : invites.length === 0 ? 'Nobody is waiting' : countLabel(invites.length, 'invite', 'invites')}
           </p>
@@ -417,7 +435,7 @@ function Members({
         ) : (
           <ul className="flex flex-col divide-y divide-border">
             {invites.map((invite) => (
-              <li key={invite.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
+              <li key={invite.id} data-invite-id={invite.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
                 <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
                   <PersonCell email={invite.email} />
                   <p className="ms-11 truncate text-small text-muted-foreground">
@@ -443,7 +461,7 @@ function Members({
         )}
       </div>
 
-      <Dialog open={removing !== null} onOpenChange={(open) => !open && setRemoving(null)}>
+      <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove {removing?.name}?</DialogTitle>
