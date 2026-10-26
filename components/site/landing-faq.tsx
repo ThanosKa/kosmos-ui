@@ -55,7 +55,7 @@ const items: FaqItem[] = [
 export function LandingFaq() {
   return (
     <Faq
-      title="Questions before you install"
+      title={null}
       items={items}
       contact={
         <>
