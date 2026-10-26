@@ -201,6 +201,8 @@ function Members({
   const [confirmation, setConfirmation] = React.useState('');
   const inviteCount = React.useRef(0);
   const invitesRef = React.useRef<HTMLDivElement>(null);
+  const membersRef = React.useRef<HTMLDivElement>(null);
+  const focusAfterRemove = React.useRef<string | null>(null);
   const focusAfterRevoke = React.useRef<string | null>(null);
 
   React.useEffect(() => {
@@ -244,6 +246,9 @@ function Members({
 
   const confirmRemove = () => {
     if (!removing) return;
+    const removable = members.filter((item) => item.role !== 'owner' && item.id !== currentMemberId);
+    const at = removable.findIndex((item) => item.id === removing.id);
+    focusAfterRemove.current = (removable[at + 1] ?? removable[at - 1])?.id ?? '';
     setMembers((current) => current.filter((item) => item.id !== removing.id));
     onRemove?.(removing);
     setConfirmation(`${removing.name} was removed from ${workspace}.`);
@@ -321,9 +326,11 @@ function Members({
         </p>
       </form>
 
-      <div className={card}>
+      <div ref={membersRef} className={card}>
         <div className="flex flex-col gap-0.5">
-          <h3 className="text-title">Members</h3>
+          <h3 data-slot="members-heading" tabIndex={-1} className="text-title outline-none">
+            Members
+          </h3>
           <p className="text-small text-muted-foreground tabular-nums">{loading ? 'Loading…' : countLabel(members.length, 'member', 'members')}</p>
         </div>
         <Table aria-label="Members" containerClassName="-mx-3 w-auto">
@@ -361,7 +368,7 @@ function Members({
                   const you = member.id === currentMemberId;
                   const locked = member.role === 'owner' || you;
                   return (
-                    <TableRow key={member.id}>
+                    <TableRow key={member.id} data-member-id={member.id}>
                       <TableCell className="w-full max-w-0 min-w-20">
                         <PersonCell name={member.name} email={member.email} avatarUrl={member.avatarUrl} you={you} avatarClassName="hidden @md:flex" />
                       </TableCell>
@@ -461,7 +468,17 @@ function Members({
         )}
       </div>
 
-      <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>
+      <Dialog
+        open={removeOpen}
+        onOpenChange={setRemoveOpen}
+        onOpenChangeComplete={(open) => {
+          const target = focusAfterRemove.current;
+          if (open || target === null) return;
+          focusAfterRemove.current = null;
+          const trigger = membersRef.current?.querySelector<HTMLElement>(`[data-member-id="${target}"] button[data-slot=dropdown-menu-trigger]`);
+          (trigger ?? membersRef.current?.querySelector<HTMLElement>('[data-slot=members-heading]'))?.focus();
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove {removing?.name}?</DialogTitle>
