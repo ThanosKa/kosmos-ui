@@ -3,7 +3,7 @@
   "name": "tabs",
   "type": "registry:ui",
   "title": "Tabs",
-  "description": "Tabs built on Base UI that switch between panels in one spot, with an underline indicator that slides to the active tab (a cross-fade under reduced motion), arrow-key navigation and a vertical form.",
+  "description": "Tabs built on Base UI that switch between panels. An underline slides to the active tab, or cross-fades under reduced motion. It supports arrow-key navigation and a vertical form.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/scroll-area"],
   "meta": { "group": "navigation" },

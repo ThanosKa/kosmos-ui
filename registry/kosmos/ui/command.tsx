@@ -1,9 +1,10 @@
 'use client';
 
 import { Autocomplete as AutocompletePrimitive } from '@base-ui/react/autocomplete';
-import { ArrowDown, ArrowUp, CornerDownLeft, Search } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, CornerDownLeft, LoaderCircle, Search } from 'lucide-react';
 import type * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { Button } from '@/registry/kosmos/ui/button';
 import {
   Dialog,
   DialogBackdrop,
@@ -102,7 +103,7 @@ function CommandDialog({
             <DialogTitle className="sr-only">{title}</DialogTitle>
             <DialogDescription className="sr-only">{description}</DialogDescription>
             {children}
-            <DialogClose className="sr-only">Close</DialogClose>
+            <DialogClose tabIndex={-1} className="sr-only">Close</DialogClose>
           </DialogPopup>
         </DialogViewport>
       </DialogPortal>
@@ -200,6 +201,62 @@ function CommandItem({ className, ...props }: AutocompletePrimitive.Item.Props) 
   );
 }
 
+/** Stacks an item's label over a `CommandDescription`. Put it where the label goes when the row has a second line. */
+function CommandItemText({ className, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span data-slot="command-item-text" className={cn('flex min-w-0 flex-1 flex-col gap-0.5', className)} {...props} />
+  );
+}
+
+/** The muted line under an item's label, inside a `CommandItemText`. */
+function CommandDescription({ className, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-slot="command-description"
+      className={cn('truncate text-small font-normal text-muted-foreground', className)}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Shown in place of the list while results load, announced to screen readers. Render it instead of the
+ * `CommandList` and `CommandEmpty` when your search asks a server.
+ */
+function CommandLoading({ className, children = 'Searching…', ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="command-loading"
+      role="status"
+      className={cn('flex items-center justify-center gap-2 px-4 py-10 text-body text-muted-foreground', className)}
+      {...props}
+    >
+      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The header of a nested page: a Back button and the page's title, above the input. Call `onBack` to return to the
+ * list one level up. Backspace in an empty field is the keyboard way back, which you wire on the input.
+ */
+function CommandBack({
+  title,
+  onBack,
+  className,
+  ...props
+}: Omit<React.ComponentProps<'div'>, 'title'> & { title: string; onBack: () => void }) {
+  return (
+    <div data-slot="command-back" className={cn('flex shrink-0 items-center gap-1.5 px-2 pt-2', className)} {...props}>
+      <Button variant="ghost" size="icon-sm" aria-label="Back" onClick={onBack}>
+        <ArrowLeft aria-hidden />
+      </Button>
+      <span className="text-caption font-medium text-muted-foreground">{title}</span>
+    </div>
+  );
+}
+
 function CommandSeparator({ className, ...props }: AutocompletePrimitive.Separator.Props) {
   return (
     <AutocompletePrimitive.Separator
@@ -215,8 +272,11 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<typeof Kb
   return <KbdGroup data-slot="command-shortcut" className={cn('ms-auto ps-4', className)} {...props} />;
 }
 
-/** A bar under the list. Without children it shows the keys that move through the list, run a command and close. */
-function CommandFooter({ className, children, ...props }: React.ComponentProps<'div'>) {
+/**
+ * A bar under the list. Without children it shows the keys that move through the list, run a command and close;
+ * `back` makes Esc read "Back", for a nested page where Esc returns to the list above.
+ */
+function CommandFooter({ className, children, back = false, ...props }: React.ComponentProps<'div'> & { back?: boolean }) {
   return (
     <div
       data-slot="command-footer"
@@ -247,7 +307,7 @@ function CommandFooter({ className, children, ...props }: React.ComponentProps<'
           </span>
           <span className="flex items-center gap-1.5">
             <Kbd>Esc</Kbd>
-            Close
+            {back ? 'Back' : 'Close'}
           </span>
         </>
       )}
@@ -257,7 +317,9 @@ function CommandFooter({ className, children, ...props }: React.ComponentProps<'
 
 export {
   Command,
+  CommandBack,
   CommandCollection,
+  CommandDescription,
   CommandDialog,
   CommandEmpty,
   CommandFooter,
@@ -265,7 +327,9 @@ export {
   CommandGroupLabel,
   CommandInput,
   CommandItem,
+  CommandItemText,
   CommandList,
+  CommandLoading,
   CommandSeparator,
   CommandShortcut,
   type CommandDialogProps,

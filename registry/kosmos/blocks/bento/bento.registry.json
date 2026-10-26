@@ -3,7 +3,7 @@
   "name": "bento",
   "type": "registry:block",
   "title": "Bento",
-  "description": "A grid of tiles for a marketing page, each a live piece of your product above one line of caption and a link, under a title. The visual lifts on hover. It lays itself out by its own width, not the screen's.",
+  "description": "A grid of tiles for a marketing page. Each tile shows a live piece of your product above a caption and a link. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/chart", "@kosmos/chart-card", "@kosmos/command", "@kosmos/meter", "@kosmos/segmented-control", "@kosmos/table"],
   "categories": ["bento"],

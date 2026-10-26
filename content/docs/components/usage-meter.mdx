@@ -26,7 +26,7 @@ const breakdown: UsageBreakdownRow[] = [
 <UsageMeter breakdown={breakdown} limit={200_000} />;
 ```
 
-The ring fills as the limit fills, and hovering or focusing it shows a tooltip with the percent and the counts. Clicking it opens a panel with the percent full, the tokens used out of the limit, one bar split by category and a list of the categories with their counts.
+The ring fills as the limit fills, and hovering or focusing it shows a tooltip with the percent and the counts. Clicking it opens a panel with the percent full and the tokens used out of the limit. The panel also holds one bar split by category and a list of the categories with their counts.
 
 Each row of `breakdown` is a segment of the bar and a line of the list, in the order you pass them. Categories take their color by position: the five chart colors, then ink, then gray for every row after that. Keep the order the same everywhere, so a category keeps its color.
 

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { contrastRatio } from '../contrast.ts';
+import { contrastRatio, parseColor } from '../contrast.ts';
 import { parseKosmosTokens } from '../tokens.ts';
 import { defaultPreset, presetCss, presetDesignMd, presets, type Mode, type Palette, type PaletteToken, type Preset } from './index.ts';
 
@@ -19,108 +19,19 @@ function cssPalette(preset: Preset, mode: Mode): Palette {
 /** The same preset with its accent turned off, as a picker offers it. */
 const withoutAccent = (preset: Preset): Preset => ({ ...preset, accent: undefined });
 
-// The palette of ADR 0007, as tokens.css shipped it before presets existed.
-const adr0007 = {
-  light: {
-    radius: '0.625rem',
-    background: 'oklch(0.975 0.004 106.5)',
-    foreground: 'oklch(0.263 0.013 100.5)',
-    card: 'oklch(0.99 0.002 106.5)',
-    'card-foreground': 'oklch(0.263 0.013 100.5)',
-    popover: 'oklch(0.99 0.002 106.5)',
-    'popover-foreground': 'oklch(0.263 0.013 100.5)',
-    primary: 'oklch(0.263 0.013 100.5)',
-    'primary-foreground': 'oklch(0.985 0.003 106.5)',
-    secondary: 'oklch(0.99 0.002 106.5)',
-    'secondary-foreground': 'oklch(0.263 0.013 100.5)',
-    muted: 'oklch(0.94 0.006 97)',
-    'muted-foreground': 'oklch(0.52 0.01 97)',
-    accent: 'oklch(0.263 0.013 100.5 / 0.05)',
-    'accent-foreground': 'oklch(0.263 0.013 100.5)',
-    destructive: 'oklch(0.55 0.225 28.5)',
-    success: 'oklch(0.627 0.17 149.2)',
-    warning: 'oklch(0.65 0.157 58.3)',
-    border: 'oklch(0.915 0.006 97)',
-    input: 'oklch(0.915 0.006 97)',
-    ring: 'oklch(0.652 0.214 38)',
-    'active-foreground': 'oklch(0.53 0.17 38)',
-    scrim: 'oklch(0.263 0.013 100.5 / 0.4)',
-    thumb: 'oklch(0.99 0.002 106.5)',
-    'scrollbar-thumb': 'oklch(0.6 0.01 97)',
-    'meter-primary': 'oklch(0.53 0.17 38)',
-    sidebar: 'oklch(0.958 0.005 95)',
-    'sidebar-foreground': 'oklch(0.263 0.013 100.5)',
-    'sidebar-primary': 'oklch(0.263 0.013 100.5)',
-    'sidebar-primary-foreground': 'oklch(0.985 0.003 106.5)',
-    'sidebar-accent': 'oklch(0.263 0.013 100.5 / 0.05)',
-    'sidebar-accent-foreground': 'oklch(0.263 0.013 100.5)',
-    'sidebar-border': 'oklch(0.915 0.006 97)',
-    'sidebar-ring': 'oklch(0.652 0.214 38)',
-    'chart-1': 'oklch(0.652 0.214 38)',
-    'chart-2': 'oklch(0.55 0.15 252)',
-    'chart-3': 'oklch(0.64 0.14 82)',
-    'chart-4': 'oklch(0.5 0.17 330)',
-    'chart-5': 'oklch(0.6 0.13 160)',
-  },
-  dark: {
-    background: 'oklch(0.2 0.006 95)',
-    foreground: 'oklch(0.97 0.004 106.5)',
-    card: 'oklch(0.23 0.006 95)',
-    'card-foreground': 'oklch(0.97 0.004 106.5)',
-    popover: 'oklch(0.2 0.006 95)',
-    'popover-foreground': 'oklch(0.97 0.004 106.5)',
-    primary: 'oklch(0.94 0.005 100)',
-    'primary-foreground': 'oklch(0.263 0.013 100.5)',
-    secondary: 'oklch(0.235 0.006 95)',
-    'secondary-foreground': 'oklch(0.97 0.004 106.5)',
-    muted: 'oklch(0.285 0.007 95)',
-    'muted-foreground': 'oklch(0.7 0.008 97)',
-    accent: 'oklch(1 0 0 / 0.06)',
-    'accent-foreground': 'oklch(0.97 0.004 106.5)',
-    destructive: 'oklch(0.715 0.165 22.1)',
-    success: 'oklch(0.723 0.192 149.6)',
-    warning: 'oklch(0.837 0.164 84.4)',
-    border: 'oklch(0.26 0.006 95)',
-    input: 'oklch(0.345 0.006 95)',
-    ring: 'oklch(0.7 0.18 42)',
-    'active-foreground': 'oklch(0.7 0.18 42)',
-    scrim: 'oklch(0 0 0 / 0.6)',
-    thumb: 'oklch(0.97 0.004 106.5)',
-    'scrollbar-thumb': 'oklch(0.58 0.008 97)',
-    'meter-primary': 'oklch(0.7 0.18 42)',
-    sidebar: 'oklch(0.205 0.006 95)',
-    'sidebar-foreground': 'oklch(0.97 0.004 106.5)',
-    'sidebar-primary': 'oklch(0.94 0.005 100)',
-    'sidebar-primary-foreground': 'oklch(0.263 0.013 100.5)',
-    'sidebar-accent': 'oklch(1 0 0 / 0.06)',
-    'sidebar-accent-foreground': 'oklch(0.97 0.004 106.5)',
-    'sidebar-border': 'oklch(0.26 0.006 95)',
-    'sidebar-ring': 'oklch(0.7 0.18 42)',
-    'chart-1': 'oklch(0.7 0.18 42)',
-    'chart-2': 'oklch(0.65 0.14 250)',
-    'chart-3': 'oklch(0.76 0.14 82)',
-    'chart-4': 'oklch(0.62 0.17 330)',
-    'chart-5': 'oklch(0.7 0.14 160)',
-  },
-};
+const accentTokens = {
+  primary: ['primary', 'sidebar-primary'],
+  onPrimary: ['primary-foreground', 'sidebar-primary-foreground'],
+  ring: ['ring', 'sidebar-ring', 'chart-1'],
+  text: ['accent-text'],
+} as const;
+const accentTokenList: string[] = Object.values(accentTokens).flat();
 
-/** ADR 0007 colored the current nav item and the meter with two tokens of one value; presets name it `accent-text`. */
-function foldNavAndMeter({ 'active-foreground': nav, 'meter-primary': meter, ...rest }: Record<string, string>) {
-  assert.equal(nav, meter);
-  return { ...rest, 'accent-text': nav };
-}
-
-test('the Warm CSS gives exactly the values of ADR 0007', () => {
-  const { light, dark } = parseKosmosTokens(presetCss(warm));
-  assert.deepEqual(light, foldNavAndMeter(adr0007.light));
-  assert.deepEqual(dark, foldNavAndMeter(adr0007.dark));
-});
-
-test('Warm has the orange of ADR 0007 as its accent', () => {
-  assert.deepEqual(warm.accent, {
-    light: { ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
-    dark: { ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
-  });
+test('Warm has the orange as its accent, an orange fill under dark ink in light and dark', () => {
+  assert.deepEqual(warm.accent?.light.ring, 'oklch(0.652 0.214 38)');
+  assert.deepEqual(warm.accent?.dark.ring, 'oklch(0.7 0.18 42)');
+  assert.equal(warm.accent?.light.text, 'oklch(0.53 0.17 38)');
+  for (const mode of ['light', 'dark'] as Mode[]) assert.equal(contrastRatio(warm.accent![mode].onPrimary, warm.accent![mode].primary) > 4.5, true);
 });
 
 test('Default has no accent, and Soft, Console and Night take the accents of their designs', () => {
@@ -133,21 +44,113 @@ test('Default has no accent, and Soft, Console and Night take the accents of the
   assert.equal(byId('night').accent?.dark.ring, 'oklch(0.8 0.15 168)');
 });
 
-const accentTokens = { ring: ['ring', 'sidebar-ring', 'chart-1'], text: ['accent-text'] } as const;
-
 for (const preset of presets.filter((candidate) => candidate.accent)) {
   for (const mode of ['light', 'dark'] as Mode[]) {
-    test(`${preset.name} ${mode}: the accent colors focus, the current nav item, the meter and chart-1, nothing else`, () => {
+    test(`${preset.name} ${mode}: the accent fills primary and colors focus, the current nav item, the meter and chart-1, nothing else`, () => {
       const withAccent = cssPalette(preset, mode);
       const bare = cssPalette(withoutAccent(preset), mode);
       const accent = preset.accent![mode];
+      for (const token of accentTokens.primary) assert.equal(withAccent[token], accent.primary, token);
+      for (const token of accentTokens.onPrimary) assert.equal(withAccent[token], accent.onPrimary, token);
       for (const token of accentTokens.ring) assert.equal(withAccent[token], accent.ring, token);
       for (const token of accentTokens.text) assert.equal(withAccent[token], accent.text, token);
       const changed = (Object.keys(bare) as PaletteToken[]).filter((token) => bare[token] !== withAccent[token]);
-      assert.ok(changed.every((token) => [...accentTokens.ring, ...accentTokens.text].includes(token as never)), changed.join());
+      assert.deepEqual(
+        changed.filter((token) => !accentTokenList.includes(token)),
+        [],
+      );
     });
   }
 }
+
+const rgbSpread = (color: string) => {
+  const { r, g, b } = parseColor(color);
+  return Math.max(r, g, b) - Math.min(r, g, b);
+};
+
+for (const mode of ['light', 'dark'] as Mode[]) {
+  test(`Default ${mode}: primary and its foreground are achromatic`, () => {
+    const palette = cssPalette(defaultPreset, mode);
+    for (const token of ['primary', 'primary-foreground', 'sidebar-primary', 'sidebar-primary-foreground'] as const) {
+      assert.ok(rgbSpread(palette[token]) < 0.001, `${token}: ${palette[token]}`);
+    }
+  });
+}
+
+for (const preset of presets.filter((candidate) => candidate.accent)) {
+  test(`${preset.name}: its accent is a color, so its primary is not a grey`, () => {
+    for (const mode of ['light', 'dark'] as Mode[]) {
+      assert.ok(rgbSpread(preset.accent![mode].primary) > 0.15, `${mode} primary: ${preset.accent![mode].primary}`);
+    }
+  });
+}
+
+/** A fill at 90%, which is how a primary button, checkbox, radio and switch look under the pointer. */
+function atNinetyPercent(color: string) {
+  const { r, g, b } = parseColor(color);
+  const byte = (channel: number) => Math.round(channel * 255).toString(16).padStart(2, '0');
+  return `#${byte(r)}${byte(g)}${byte(b)}e6`;
+}
+
+for (const { label, preset } of presets.flatMap((candidate) => [{ label: candidate.name, preset: candidate }, ...(candidate.accent ? [{ label: `${candidate.name} without its accent`, preset: withoutAccent(candidate) }] : [])])) {
+  for (const mode of ['light', 'dark'] as Mode[]) {
+    test(`${label} ${mode}: primary-foreground is 4.5:1 on primary and on its 90% hover, and the fill is a 3:1 mark on the page and cards`, () => {
+      const palette = cssPalette(preset, mode);
+      const misses: string[] = [];
+      const rest = contrastRatio(palette['primary-foreground'], palette.primary);
+      if (rest < 4.5) misses.push(`rest ${rest.toFixed(2)}:1`);
+      for (const surface of ['background', 'card', 'popover', 'secondary', 'muted'] as const) {
+        const hover = contrastRatio(palette['primary-foreground'], atNinetyPercent(palette.primary), palette[surface]);
+        if (hover < 4.5) misses.push(`hover over ${surface} ${hover.toFixed(2)}:1`);
+      }
+      for (const surface of ['background', 'card'] as const) {
+        const mark = contrastRatio(palette.primary, palette[surface]);
+        if (mark < 3) misses.push(`fill on ${surface} ${mark.toFixed(2)}:1`);
+      }
+      assert.deepEqual(misses, []);
+    });
+  }
+}
+
+test('each description says what the color drives, or that there is none', () => {
+  assert.match(defaultPreset.description, /no accent/);
+  assert.match(defaultPreset.description, /buttons/);
+  for (const preset of presets.filter((candidate) => candidate.accent)) {
+    for (const part of [/fills buttons/, /switches/, /checkboxes/, /radios/, /sliders/, /tabs indicator/, /focus/, /current page in navigation/, /meters/, /first chart series/]) {
+      assert.match(preset.description, part, preset.name);
+    }
+  }
+});
+
+test('a preset may set only these tokens, and nothing else', () => {
+  const allowed = [
+    'background', 'foreground', 'card', 'card-foreground', 'popover', 'popover-foreground',
+    'primary', 'primary-foreground', 'secondary', 'secondary-foreground', 'muted', 'muted-foreground',
+    'accent', 'accent-foreground', 'destructive', 'success', 'warning', 'border', 'input', 'ring', 'accent-text',
+    'scrim', 'thumb', 'scrollbar-thumb',
+    'sidebar', 'sidebar-foreground', 'sidebar-primary', 'sidebar-primary-foreground', 'sidebar-accent',
+    'sidebar-accent-foreground', 'sidebar-border', 'sidebar-ring',
+    'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5',
+  ].sort();
+  for (const preset of presets) {
+    const { light, dark } = parseKosmosTokens(presetCss(preset));
+    const { radius, ...lightPalette } = light;
+    assert.ok(radius, `${preset.name}: radius`);
+    assert.deepEqual(Object.keys(lightPalette).sort(), allowed, `${preset.name} light`);
+    assert.deepEqual(Object.keys(dark).sort(), allowed, `${preset.name} dark`);
+  }
+});
+
+test('a preset brings one accent: the same four steps per mode, and chart-2 to chart-5 are a mono ramp in every preset', () => {
+  for (const preset of presets) {
+    if (preset.accent) for (const mode of ['light', 'dark'] as Mode[]) assert.deepEqual(Object.keys(preset.accent[mode]).sort(), ['onPrimary', 'primary', 'ring', 'text']);
+    for (const mode of ['light', 'dark'] as Mode[]) {
+      for (const token of ['chart-2', 'chart-3', 'chart-4', 'chart-5'] as const) {
+        assert.ok(rgbSpread(preset[mode][token]) < 0.05, `${preset.name} ${mode} ${token}: ${preset[mode][token]}`);
+      }
+    }
+  }
+});
 
 test('the shipped tokens.css carries the CSS of the default preset', () => {
   const tokensCss = readFileSync(new URL('../../registry/kosmos/styles/tokens.css', import.meta.url), 'utf8');

@@ -23,7 +23,7 @@ const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisf
 <GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
 ```
 
-`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of gray, so they read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
 
 ## Examples
 
@@ -49,7 +49,7 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
 
 ## Accessibility
 
-- The growth chart is named by `title`, and keyboard users can focus it and step through the points with the arrow keys.
+- `title` names the growth chart, and keyboard users can focus it and step through the points with the arrow keys.
 - It also renders its data as a visually hidden table, so screen reader users get every value.
 - Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
 

@@ -180,7 +180,7 @@ const runBadge: Record<RunStatus, { status: Status; label: string }> = {
   waiting: { status: 'waiting', label: 'Waiting for approval' },
   done: { status: 'done', label: 'Done' },
   failed: { status: 'error', label: 'Failed' },
-  cancelled: { status: 'skipped', label: 'Cancelled' },
+  cancelled: { status: 'skipped', label: 'Canceled' },
 };
 
 const stepEnter =

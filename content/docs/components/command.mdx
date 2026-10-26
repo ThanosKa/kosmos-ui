@@ -10,7 +10,7 @@ baseUi: https://base-ui.com/react/components/autocomplete
 
 <ComponentInstall name="command" />
 
-Command installs [Dialog](/docs/components/dialog) and [Kbd](/docs/components/kbd) with it.
+Command installs [Button](/docs/components/button), [Dialog](/docs/components/dialog) and [Kbd](/docs/components/kbd) with it.
 
 ## Usage
 
@@ -79,6 +79,22 @@ Without `CommandDialog`, `Command` renders as a panel on the page, for a searcha
 
 <ComponentPreview name="command-inline" />
 
+### Descriptions and shortcuts
+
+Put a `CommandItemText` where the label goes, with the label and a `CommandDescription` inside it, for a row with a second line. A `CommandShortcut` at the end of the row shows the command's own keys as `Kbd`s.
+
+### Nested pages
+
+An item can open a second list, such as Change theme with Light, Dark and System. Swap the `items` of `Command`, clear the query, and show a `CommandBack` above the input. Back, Backspace in the empty field and Escape return, which you wire on the input. Give `CommandFooter` the `back` prop so Esc reads "Back".
+
+<ComponentPreview name="command-pages" />
+
+### Loading
+
+While your search asks a server, render `CommandLoading` instead of `CommandEmpty` and hide the `CommandList`. It is announced to screen readers.
+
+<ComponentPreview name="command-loading" />
+
 ## Motion
 
 The palette appears and closes without animation, because it opens from a keyboard shortcut and should be ready the moment you type. The highlight changes color in 100ms.
@@ -141,7 +157,11 @@ Takes every [Dialog](/docs/components/dialog) root prop, such as `open` and `onO
 | `CommandItem` | One command. Base UI `Autocomplete.Item`. |
 | `CommandSeparator` | A 1px line between items. Base UI `Autocomplete.Separator`. |
 | `CommandShortcut` | A `KbdGroup` at the end of an item, for the command's own shortcut. |
-| `CommandFooter` | A bar under the list. Without children it shows the keys that move, run and close. |
+| `CommandFooter` | A bar under the list. Without children it shows the keys that move, run and close. `back` makes Esc read "Back". |
+| `CommandItemText` | Stacks an item's label over a `CommandDescription`. |
+| `CommandDescription` | The muted second line of an item. |
+| `CommandLoading` | A spinner and text shown while results load, announced to screen readers. |
+| `CommandBack` | The header of a nested page: a Back button and the page title. Takes `title` and `onBack`. |
 
 ## Keyboard
 

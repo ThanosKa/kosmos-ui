@@ -218,7 +218,7 @@ function AssetVideo({
         poster={poster}
         preload={preload ?? (poster ? 'metadata' : 'auto')}
         // Hidden on error, so its controls leave the tab order with it.
-        className={cn(mediaClasses(fit), 'group-data-[status=error]/asset:invisible', className)}
+        className={cn(mediaClasses(fit), 'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring', 'group-data-[status=error]/asset:invisible', className)}
         onLoadedMetadata={(event) => {
           if (poster) setStatus('loaded');
           onLoadedMetadata?.(event);

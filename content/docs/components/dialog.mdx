@@ -50,13 +50,13 @@ Give every dialog a `DialogTitle`: it names the dialog for screen readers. Rende
 
 ### Confirm a destructive action
 
-Name the action and the object in the title, say what is lost in the description, and repeat the action on the button. Hide the close button and set `disablePointerDismissal`, so the dialog closes only through a clear choice.
+Name the action and the object in the title, say what the user loses in the description, and repeat the action on the button. Hide the close button and set `disablePointerDismissal`, so the dialog closes only through a clear choice.
 
 <ComponentPreview name="dialog-confirm" />
 
 ### Long content
 
-`DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view. It scrolls in a [Scroll area](/docs/components/scroll-area): while content is hidden past its top or bottom, that edge fades out and a scrollbar shows.
+`DialogBody` scrolls on its own once the dialog reaches the height of the screen, so the title and the actions stay in view. It scrolls in a [Scroll area](/docs/components/scroll-area): while content runs out of view past its top or bottom, that edge fades out and a scrollbar shows.
 
 <ComponentPreview name="dialog-scroll" />
 

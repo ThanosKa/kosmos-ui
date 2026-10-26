@@ -57,12 +57,12 @@ Every handler can return a promise: the form shows its loading state until it se
 
 ## What it does
 
-- **Other ways in**: pass buttons such as single sign-on as `alternatives`, and they sit above the log in and sign up forms with an "or" line under them.
-- **Log in**: email and password, with a link to reset the password beside its label and a link to sign up under the card. When `onLogIn` succeeds it says who is logged in, with a button to continue.
+- **Other ways in**: pass buttons such as single sign-on as `alternatives`. They sit above the log in and sign up forms, with an "or" line under them.
+- **Log in**: email and password, with a link to reset the password beside its label and a link to sign up under the card. When `onLogIn` succeeds it says who logged in, with a button to continue.
 - **Sign up**: name, email and a password of at least 8 characters, with your terms under the button. When `onSignUp` succeeds, `onViewChange` gets `'email-code'`, the next step. On its own route, send people to the code form from `onSignUp` instead.
-- **Email code**: one box per character of the code. Pasting it, or the code autofill on phones, fills every box, and the form submits itself when the last one is filled. A new code can be sent once `resendAfter` seconds have passed.
+- **Email code**: one box per character of the code. Pasting it, or the code autofill on phones, fills every box, and the form submits itself when you fill the last one. You can send a new code once `resendAfter` seconds have passed.
 - **Forgot password**: asks for the email and sends a reset link. Then it says to check the inbox without telling whether an account uses that address.
-- **Errors**: each field says what is wrong under it once the form is submitted, and focus moves to the first field to fix. Errors from your server show above the fields, or under the code.
+- **Errors**: once you submit the form, each field says what is wrong under it, and focus moves to the first field to fix. Errors from your server show above the fields, or under the code.
 - **Loading**: the button shows a spinner and says what is happening, the fields can't change, and pressing the button again does nothing.
 - **Keyboard and screen readers**: every field has a visible label. When a link switches the view in `AuthForms`, focus moves to its first field. When a success state replaces a form, focus moves to its title.
 - **Width**: the card is at most 384px wide and fills a narrower container, with less padding below 384px.

@@ -1,0 +1,12 @@
+---
+title: Presets now color the primary
+description: A preset with an accent fills buttons, switches, checkboxes, radios, sliders and the tabs indicator with it, and Warm's chart ramp is gray.
+date: 2026-10-26
+---
+
+A preset's color now drives `primary` too, as shadcn themes do. With Console the primary button, a checked checkbox, a switch that is on and the slider range are violet; with Warm they are orange. Default stays black and white. Each preset states its own `primary-foreground`, white where it passes 4.5:1 and dark ink where it does not (Warm in light, every preset in dark). To pick it up, take the preset's CSS or run `shadcn add` for it again.
+
+- **[Tabs](/docs/components/tabs)**: the indicator takes `primary` instead of `foreground`, so it follows the preset.
+- **Presets**: each one also sets `primary`, `primary-foreground`, `sidebar-primary` and `sidebar-primary-foreground`. Turning the Accent switch off returns the ink primary.
+- **Warm**: chart series 2 to 5 are warm grays like every other preset, not blue, amber, magenta and green.
+- **[Tokens](/docs/foundations/color)**: `accent-text` also colors the current page in Pagination.

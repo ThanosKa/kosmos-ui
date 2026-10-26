@@ -4,7 +4,7 @@ description: Add the Kosmos registry to a shadcn project, install the tokens, th
 icon: Download
 ---
 
-Kosmos installs with the shadcn CLI into a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components are built on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
+Kosmos installs with the shadcn CLI into a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components build on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
 
 <LinkCards>
 <LinkCard title="New project" href="#create-the-app">Create a Next.js app with shadcn on Base UI. Start at step 1.</LinkCard>
@@ -48,7 +48,7 @@ The tokens are the CSS variables every Kosmos component reads: colors, shadows, 
 
 They go into your global CSS and replace shadcn's default colors, after the CLI asks you to confirm. Run this command on its own. When a component pulls the tokens in as a dependency instead, the CLI only adds the variables you don't have yet, and shadcn's colors stay.
 
-The CLI also writes `LICENSE-RADIX-COLORS` at the root of your project: the status tints are [Radix Colors](https://github.com/radix-ui/colors) values, and their MIT License asks that the notice stays with them.
+The CLI also writes `LICENSE-RADIX-COLORS` at the root of your project. The status tints are [Radix Colors](https://github.com/radix-ui/colors) values, and their MIT License asks that the notice stays with them.
 
 </Step>
 <Step>
@@ -92,7 +92,7 @@ export function SaveBar() {
 
 ## Fonts
 
-Kosmos is designed for Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
+Kosmos targets Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
 
 ```tsx title="app/layout.tsx"
 import { Geist, Geist_Mono } from 'next/font/google';

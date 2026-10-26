@@ -137,7 +137,7 @@ function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
       // The 20px padding already clears the scrollbar.
       viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
     >
-      <div data-slot="dialog-body" className={cn('px-5 pt-4', className)} {...props} />
+      <div data-slot="dialog-body" className={cn('px-5 pt-4 pb-1', className)} {...props} />
     </ScrollArea>
   );
 }

@@ -1,6 +1,6 @@
 # Kosmos UI
 
-Kosmos UI is an open source design system for dashboard app UI: components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, quick motion and dense typography. You install them with the shadcn CLI. The code lands in your project as plain files that you own and edit.
+Kosmos UI is an open source design system for dashboard app UI. It has components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, fast motion, and dense typography. You install them with the shadcn CLI. The code lands in your project as plain files that you own and edit.
 
 ```bash
 npx shadcn add @kosmos/button
@@ -10,7 +10,7 @@ This repo holds the components, the blocks, the registry they install from, and 
 
 ## Development
 
-Requirements: Node.js 20.9 or later. The pnpm version is pinned in `package.json`, and Corepack picks it up.
+Requirements: Node.js 20.9 or later. `package.json` pins the pnpm version, and Corepack picks it up.
 
 ```bash
 corepack enable

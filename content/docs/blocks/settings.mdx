@@ -1,6 +1,6 @@
 ---
 title: Settings
-description: A settings card whose Save turns on only when something changed, and a settings page with section links, profile, notifications, an API key and a danger zone that asks for confirmation.
+description: A settings card whose Save turns on only when something changed. A settings page adds section links, profile, notifications, an API key, and a danger zone that asks for confirmation.
 ---
 
 ## Installation
@@ -63,9 +63,9 @@ export function WorkspaceCard() {
 ## What it does
 
 - **Save**: off until a field differs from what was last saved, and off again after a save or Discard. The footer says "Unsaved changes", "Saving", "Changes saved" or why saving failed, and screen readers hear each change.
-- **Saving**: the fields are held and the button shows a spinner. When your handler throws, its message shows in the footer and the values stay as typed.
-- **Danger zone**: each action has its own button that opens a dialog saying what is lost. When the action has `confirmText`, such as the workspace name, its button stays off until that is typed exactly.
-- **Section links**: the link of the section in view is marked as the current page.
+- **Saving**: the fields lock and the button shows a spinner. When your handler throws, its message shows in the footer and the values stay as typed.
+- **Danger zone**: each action has its own button that opens a dialog that says what you lose. When the action has `confirmText`, such as the workspace name, its button stays off until you type it exactly.
+- **Section links**: the block marks the link of the section in view as the current page.
 - **Width**: the page lays itself out by its own width. The links sit in a column from 768px and above the cards below it, and two-column fields stack in a narrow container.
 
 ## API

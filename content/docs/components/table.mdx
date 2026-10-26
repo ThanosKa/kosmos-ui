@@ -41,7 +41,7 @@ import {
 </Table>
 ```
 
-Headers are 38px tall and rows 42px. Rows are split by 1px borders, and body rows highlight on hover. The whole table uses tabular numbers, so digits line up down a column. Align number columns to the end with `text-end`.
+Headers are 38px tall and rows 42px. 1px borders separate the rows, and body rows highlight on hover. The whole table uses tabular numbers, so digits line up down a column. Align number columns to the end with `text-end`.
 
 The parts and their names match shadcn's Table, so data table code written for it, such as TanStack Table examples, works unchanged.
 
@@ -55,7 +55,7 @@ Mark a selected row with `data-state="selected"`. With TanStack Table, pass `dat
 
 ### Wide tables on small screens
 
-A table wider than its container scrolls sideways inside it, so the page never scrolls sideways. While columns are hidden, the clipped edge fades out and a scrollbar shows under the table. The scroll area can take keyboard focus, and the arrow keys scroll it. Narrow the preview to see it.
+A table wider than its container scrolls sideways inside it, so the page never scrolls sideways. While columns run out of view, the clipped edge fades out and a scrollbar shows under the table. The scroll area can take keyboard focus, and the arrow keys scroll it. Narrow the preview to see it.
 
 <ComponentPreview name="table-wide" />
 
@@ -65,7 +65,7 @@ Cells don't wrap. For a column of long text, give the table `className="table-fi
 
 ## API
 
-Each part renders the matching native element and accepts all of its props. No part wraps a Base UI part.
+Each part renders the matching native element and accepts all its props. No part wraps a Base UI part.
 
 ### Table
 
@@ -108,5 +108,5 @@ Renders a `<tr>` that highlights on hover. Takes every `<tr>` prop, plus:
 
 | Key | Action |
 | --- | --- |
-| `Tab` | Focuses the table while its columns overflow. A table that fits is skipped. |
+| `Tab` | Focuses the table while its columns overflow. Tab skips a table that fits. |
 | `ArrowRight` or `ArrowLeft` | Scrolls sideways to the hidden columns. |

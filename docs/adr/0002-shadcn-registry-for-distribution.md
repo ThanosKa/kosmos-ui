@@ -1,6 +1,6 @@
 # Distribute through a shadcn registry, not npm or our own CLI
 
-Users install components with `npx shadcn add @kosmos/<name>`, which copies the source into their project. We publish no npm package and ship no CLI of our own. Copy-in source is what users of shadcn-style libraries expect, lets them edit every component, and needs no release process: the registry updates with each deploy of `main`.
+Users install components with `npx shadcn add @kosmos/<name>`, which copies the source into their project. We publish no npm package and ship no CLI of our own. Copy-in source is what users of shadcn-style libraries expect, lets them edit every component, and needs no release process. The registry updates with each deploy of `main`.
 
 ## Considered Options
 

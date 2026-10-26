@@ -14,7 +14,7 @@ export default function LogoMarqueePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Links, a brand colour on hover or focus">
+      <PreviewSection title="Links, a brand color on hover or focus">
         <div className={frame}>
           <LogoMarquee
             variant="static"
@@ -22,7 +22,7 @@ export default function LogoMarqueePreview() {
               { name: 'Fernhill Books', color: 'var(--tint-blue-solid)', href: '#fernhill' },
               { name: 'Brightloop Fitness', color: 'var(--tint-orange-solid)', href: '#brightloop' },
               { name: 'Copperline Bank', color: 'var(--tint-green-solid)', href: '#copperline' },
-              { name: 'No colour given', href: '#plain' },
+              { name: 'No color given', href: '#plain' },
             ]}
           />
         </div>

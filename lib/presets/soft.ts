@@ -3,16 +3,16 @@ import type { Preset } from './palette.ts';
 const ink = '#1c1f24';
 const lightInk = '#eceef2';
 
-/** Cool paper greys and a large radius, for interfaces that read as soft cushions on a desk. */
+/** Cool paper grays and a large radius, for interfaces that read as soft cushions on a desk. */
 export const soft: Preset = {
   id: 'soft',
   name: 'Soft',
   description:
-    'A cool grey page, white cards and blue-tinted greys under a 16px radius, so every surface reads as a soft cushion on a paper desk, with a blue accent.',
+    'A cool gray page, white cards and blue-tinted grays under a 16px radius, so every surface reads as a soft cushion on a paper desk, with a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
   radius: '1rem',
   accent: {
-    light: { ring: '#1f6bff', text: 'oklch(0.537 0.232 261.9)' },
-    dark: { ring: '#6ea1ff', text: '#6ea1ff' },
+    light: { primary: 'oklch(0.537 0.232 261.9)', onPrimary: '#ffffff', ring: '#1f6bff', text: 'oklch(0.537 0.232 261.9)' },
+    dark: { primary: '#6ea1ff', onPrimary: '#121418', ring: '#6ea1ff', text: '#6ea1ff' },
   },
   light: {
     background: '#f5f6f8',

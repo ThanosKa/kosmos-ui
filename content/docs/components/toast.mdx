@@ -39,7 +39,7 @@ toast.add({ title: 'Invite sent', description: 'Kai Nakamura will get an email i
 
 A toast closes after 5 seconds. The timer pauses while the pointer is over the stack, while a toast has focus and while the window is in the background. Up to three toasts show at a time. Older ones leave as new ones arrive.
 
-Screen readers announce every new toast politely, after what they are reading. Pass `priority: 'high'` for an error that needs attention now, and it is announced at once. F6 moves focus into the toasts, so keyboard users can reach their buttons.
+Screen readers announce every new toast politely, after what they are reading. Pass `priority: 'high'` for an error that needs attention now, and screen readers announce it at once. F6 moves focus into the toasts, so keyboard users can reach their buttons.
 
 ## Examples
 
@@ -51,7 +51,7 @@ Screen readers announce every new toast politely, after what they are reading. P
 
 ### Action
 
-`actionProps` adds one button, such as Undo. Give a toast with an action `timeout: 0`, so it stays until it is closed and nobody misses the chance to use it.
+`actionProps` adds one button, such as Undo. Give a toast with an action `timeout: 0`, so it stays until someone closes it and nobody misses the chance to use it.
 
 <ComponentPreview name="toast-action" />
 
@@ -63,7 +63,7 @@ Screen readers announce every new toast politely, after what they are reading. P
 
 ## Motion
 
-A toast slides up from the bottom edge and fades in over 300ms with `power3-out`, and leaves the same way, or in the direction it was swiped, over 150ms. While collapsed, the two toasts before the newest peek out above it, each 5% smaller. Hovering or focusing the stack spreads them out.
+A toast slides up from the bottom edge and fades in over 300ms with `power3-out`. It leaves the same way over 150ms, or in the direction of the swipe. While collapsed, the two toasts before the newest peek out above it, each 5% smaller. Hovering or focusing the stack spreads them out.
 
 Under reduced motion toasts only fade in and out, and the stack stays spread out, so nothing moves when you hover it. The loading icon pulses instead of spinning.
 

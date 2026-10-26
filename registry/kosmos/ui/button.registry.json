@@ -3,7 +3,7 @@
   "name": "button",
   "type": "registry:ui",
   "title": "Button",
-  "description": "A button built on Base UI with an explicit variant (primary, secondary, ghost, destructive), three sizes plus icon-only sizes, a press scale and a link form through href. Takes shadcn's variant and size names as aliases, so shadcn components keep working after the swap.",
+  "description": "A button built on Base UI with four variants, three sizes plus icon-only sizes, and a link form through href. It accepts shadcn's variant and size names as aliases.",
   "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "basics" },

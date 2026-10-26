@@ -110,10 +110,13 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
   },
   'accent-text': {
     group: 'text',
-    use: 'The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu) and the Meter in its primary tone. Ink, or the accent of a preset that has one.',
+    use: 'The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu, the current page in Pagination) and the Meter in its primary tone. Ink, or the accent of a preset that has one.',
   },
-  primary: { group: 'actions', use: 'The one filled action per view, a checked checkbox, a switch that is on.' },
-  'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill.' },
+  primary: {
+    group: 'actions',
+    use: 'The one filled action per view, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator. Ink, or the color of a preset that has one.',
+  },
+  'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill, 4.5:1 on it and under its hover.' },
   secondary: { group: 'actions', use: 'Secondary buttons and text fields.' },
   'secondary-foreground': { group: 'actions', use: 'Text on a secondary button.' },
   accent: { group: 'actions', use: 'The see-through hover on ghost buttons, nav items, menu items and rows.' },

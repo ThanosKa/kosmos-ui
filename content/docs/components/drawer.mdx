@@ -67,7 +67,7 @@ With `modal={false}` there is no scrim and the page stays usable. Add `disablePo
 
 ## Motion
 
-The drawer slides in from its edge over 300ms and out over 150ms, both with `power3-out`, and follows the pointer while it is swiped. Under reduced motion it fades instead of sliding.
+The drawer slides in from its edge over 300ms and out over 150ms, both with `power3-out`, and follows the pointer while someone swipes it. Under reduced motion it fades instead of sliding.
 
 ## API
 
@@ -123,7 +123,7 @@ Takes every Base UI `Drawer.Popup` prop, plus:
 | `DrawerBody` | The content, in a scroll area that scrolls on its own, so header and footer stay in view. The edge with content hidden past it fades out. `className` styles the padded box inside. |
 | `DrawerFooter` | The actions, on the bottom edge. |
 | `DrawerPortal` | Renders its children into `document.body`. Base UI `Drawer.Portal`. |
-| `DrawerBackdrop` | The scrim, which fades as the drawer is swiped. Base UI `Drawer.Backdrop`. |
+| `DrawerBackdrop` | The scrim, which fades as someone swipes the drawer. Base UI `Drawer.Backdrop`. |
 | `DrawerViewport` | The full-screen layer the popup sits in. Base UI `Drawer.Viewport`. |
 | `DrawerPopup` | The drawer surface, placed by `swipeDirection`. Base UI `Drawer.Popup`. |
 

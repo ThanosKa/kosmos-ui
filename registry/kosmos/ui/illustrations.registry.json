@@ -3,7 +3,7 @@
   "name": "illustrations",
   "type": "registry:ui",
   "title": "Illustrations",
-  "description": "Three small animated product illustrations for marketing tiles and feature cards: a layer stack that fans out, a sync with pulses between nodes, and a checklist that ticks itself. Drawn in tokens, scale with their container, pause off screen and stand still under reduced motion.",
+  "description": "Three small animated illustrations for marketing tiles and feature cards: a layer stack, a sync between nodes, and a checklist. They scale with their container, pause off screen and stand still under reduced motion.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },

@@ -58,7 +58,7 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
   return <li data-slot="breadcrumb-item" className={cn('inline-flex min-w-0 items-center gap-1.5', className)} {...props} />;
 }
 
-/** A parent page, in muted grey until hovered. Renders an `<a>`; pass `render` for a router link. */
+/** A parent page, in muted gray until hovered. Renders an `<a>`; pass `render` for a router link. */
 function BreadcrumbLink({ className, render, ref, ...props }: useRender.ComponentProps<'a'>) {
   return useRender({
     defaultTagName: 'a',

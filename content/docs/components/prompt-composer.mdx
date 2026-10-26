@@ -1,6 +1,6 @@
 ---
 title: Prompt composer
-description: Where people write to an agent. The text box grows with the message and holds attachments, the model choice and the context meter, and Send turns into Stop while the agent answers.
+description: Where people write to an agent. The text box grows with the message and holds attachments, the model choice, and the context meter. Send turns into Stop while the agent answers.
 ---
 
 <ComponentPreview name="prompt-composer-demo" />
@@ -51,7 +51,7 @@ Leave out `onAttach`, `models` and `context` for a plain message box, such as a 
 
 ### Error and disabled
 
-Pass `error` when a message cannot be sent: the composer takes a red ring and shows the text under it. Say what failed and how to fix it. Pass `disabled` with a `disabledReason` when people cannot write at all, and say what would let them write again.
+Pass `error` when a message fails to send. The composer takes a red ring and shows the text under it. Say what failed and how to fix it. Pass `disabled` with a `disabledReason` when people cannot write at all, and say what would let them write again.
 
 <ComponentPreview name="prompt-composer-states" />
 

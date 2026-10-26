@@ -1,6 +1,6 @@
 ---
 title: Pagination
-description: Moves through a long list a page at a time, with numbered pages, rows per page and the rows in view, or loads more rows under it with a Load more button that says how many are left.
+description: Moves through a long list a page at a time, with numbered pages, rows per page, and the rows in view. Or it loads more rows with a Load more button that says how many remain.
 ---
 
 <ComponentPreview name="pagination-demo" />
@@ -27,9 +27,9 @@ import { Pagination, PaginationNext, PaginationPages, PaginationPrevious } from 
 
 `Pagination` holds the page and renders a `nav` named "Pagination". The parts inside it read the page from it, so you place them in any order and any wrapper. Pass `aria-label` when a page has two of them.
 
-The numbered pages show the first and last page, the current one with a neighbor either side, and a gap for each run of hidden pages. The row keeps the same length on every page, so the pages never shift under the pointer, and below 640px it drops the neighbors so it fits a phone. At either end, the previous or next button turns off but keeps focus, so pressing Next up to the last page never drops focus to the page.
+The numbered pages show the first and last page. They also show the current one with a neighbor either side, and a gap for each run of hidden pages. The row keeps the same length on every page, so the pages never shift under the pointer. Below 640px it drops the neighbors so it fits a phone. At either end, the previous or next button turns off but keeps focus. Pressing Next up to the last page never drops focus to the page.
 
-The counting it does comes from `@kosmos/paging`, which installs with it as `lib/paging.ts`, for your own code too: `pageCount(total, pageSize)`, `pageRows(page, pageSize, total)` for the rows a page shows, `clampPage(page, pageCount)` for after a filter shortens the list, `pageForPageSize(page, pageSize, nextPageSize)` and `paginationItems(page, pageCount)`.
+The counting it does comes from `@kosmos/paging`, which installs with it as `lib/paging.ts`. You can use it in your own code too. It exports `pageCount(total, pageSize)`, `pageRows(page, pageSize, total)` for the rows a page shows, `clampPage(page, pageCount)` for after a filter shortens the list, `pageForPageSize(page, pageSize, nextPageSize)` and `paginationItems(page, pageCount)`.
 
 ## Examples
 
@@ -58,7 +58,7 @@ For client-side routing, keep the links and push the route in `onPageChange`, wh
 
 ### Load more
 
-`PaginationLoadMore` goes under a list that grows instead of turning pages. The button says how many rows are left, keeps its place and its focus while the next rows load, and gives way to "All 12 shown" when every row is in, which takes the button's focus. Screen readers hear how many rows show after each load.
+`PaginationLoadMore` goes under a list that grows instead of turning pages. The button says how many rows remain. It keeps its place and its focus while the next rows load. When every row is in, it gives way to "All 12 shown", which takes the button's focus. Screen readers hear how many rows show after each load.
 
 <ComponentPreview name="pagination-load-more" />
 

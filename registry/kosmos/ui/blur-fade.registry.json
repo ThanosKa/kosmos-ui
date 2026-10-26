@@ -3,7 +3,7 @@
   "name": "blur-fade",
   "type": "registry:ui",
   "title": "Blur fade",
-  "description": "Content that rises out of a blur and fades in once, the first time it scrolls into view. Visible without JavaScript, never shifts the layout, a plain fade under reduced motion. Ported from Magic UI (MIT).",
+  "description": "Content that rises out of a blur and fades in once, the first time it scrolls into view. It is visible without JavaScript, never shifts the layout, and fades plainly under reduced motion.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },
   "files": [

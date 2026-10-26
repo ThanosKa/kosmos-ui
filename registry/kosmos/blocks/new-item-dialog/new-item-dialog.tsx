@@ -287,7 +287,7 @@ function NewItemDialog({
               ) : null}
             </p>
           </DialogHeader>
-          <DialogBody className="flex flex-col gap-4 pb-1">
+          <DialogBody className="flex flex-col gap-4">
             <Field invalid={submitted && titleMissing}>
               <FieldLabel>Title</FieldLabel>
               <Input

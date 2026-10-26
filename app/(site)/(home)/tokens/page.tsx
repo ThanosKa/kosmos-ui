@@ -95,7 +95,8 @@ export default function TokensPage() {
   const durations = Object.entries(tokens.theme).filter(([name]) =>
     name.startsWith('transition-duration-'),
   );
-  const typeRoles = Object.keys(tokens.theme)
+  const longestDuration = Math.max(...durations.map(([, value]) => Number.parseFloat(value)));
+  const typeRoles =Object.keys(tokens.theme)
     .filter((name) => name.startsWith('text-') && !name.includes('--'))
     .map((name) => name.replace('text-', ''));
 
@@ -217,7 +218,7 @@ export default function TokensPage() {
                 {value}
               </span>
               <span
-                style={{ width: `calc(${value.replace('ms', '')} / 300 * 100%)` }}
+                style={{ width: `${(Number.parseFloat(value) / longestDuration) * 100}%` }}
                 className="h-2 rounded-full bg-primary"
               />
             </li>

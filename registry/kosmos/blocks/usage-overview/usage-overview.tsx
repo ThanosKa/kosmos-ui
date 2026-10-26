@@ -120,7 +120,7 @@ const sampleBudget: UsageBudget = { usedUsd: sampleUsage['30d'].totals.costUsd, 
 
 const rangeLabels: Record<UsageRange, string> = { '7d': '7 days', '30d': '30 days', '90d': '90 days' };
 
-/** A line in the card color between stacked segments, so adjacent greys of the mono ramp stay apart. */
+/** A line in the card color between stacked segments, so adjacent grays of the mono ramp stay apart. */
 const stackSeparator = { stroke: 'var(--card)', strokeWidth: 1 };
 
 /** One chart series per model, in `models` order, colored `chart-1` to `chart-5`. */
