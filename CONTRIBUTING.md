@@ -30,6 +30,14 @@ With `pnpm dev` running, `pnpm docs:check --port 3000` opens the docs, the landi
 
 The command reads `NEXT_PUBLIC_KOSMOS_PRO_URL` like the dev server does. If the variable is unset, the command asserts that no Pro variant shows. If it is set to a running Pro deployment, which only the maintainer has, the command asserts that each Pro variant shows live on its category page. Give the dev server and the command the same value.
 
+Three of its checks guard against bugs that only show in a browser. Run them against a production build (`pnpm build && pnpm start`), since a dev server compiles each page on first visit and times out:
+
+- The focus-clip check guards the focus ring: on every `/view` route, tabbing, opening popups and clicking fields never leaves a ring cut off by an ancestor with `overflow`. Give the clipping container room, such as padding, or `scroll-p-1` on a scroller. `node scripts/focus-clip.mts --port 3000 --filter <name> --theme dark --width 375` runs it alone.
+- The sideways-scroll check guards the phone layout: no docs page is wider than a 375px screen.
+- The console check guards the page's health: no docs page logs a console error or warning. React's development warnings only show on a dev server, so also open a page you changed there.
+
+`pnpm lint` guards the tokens: registry code has no color literal (hex, `rgb()`, `oklch()`) and no Tailwind palette class (`text-orange-500`), so every color comes from a token. The token files are the only place a color value is written.
+
 Before a release, crawl the production build for broken links:
 
 ```bash

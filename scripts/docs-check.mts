@@ -12,6 +12,7 @@ import { chosenPreset, presetCss, presetPalette, presets } from '../lib/presets/
 import { readProVariants } from '../lib/registry.ts';
 import { sitePresetCss } from '../lib/site-preset.ts';
 import { proDeploymentUrl, proUrl } from '../lib/shared.ts';
+import { exampleNames, sweepRoutes } from './focus-clip.mts';
 import { openSitePage, serverBase, serverOptions, type ReducedMotion } from './site.mts';
 
 const { values } = parseArgs({
@@ -128,6 +129,54 @@ const variantCount = (url: string) =>
 const blockViewer = (page: Page, name: string) => page.locator(`[data-block-variant][id="${name}"]`);
 
 type Check = { name: string; run: (browser: Browser) => Promise<void> };
+
+/** Runs `work` over `items`, `size` at a time, and returns the results in order. */
+async function inBatches<T, R>(items: T[], size: number, work: (item: T) => Promise<R>) {
+  const results: R[] = [];
+  const queue = items.map((item, index) => ({ item, index }));
+  await Promise.all(
+    Array.from({ length: size }, async () => {
+      for (let next = queue.shift(); next; next = queue.shift()) results[next.index] = await work(next.item);
+    }),
+  );
+  return results;
+}
+
+/** Every docs page the sitemap lists, plus the internal Tokens page. */
+async function docsPages() {
+  const sitemap = await fetchText('/sitemap.xml');
+  const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]).pathname).filter((path) => path.startsWith('/docs'));
+  return [...new Set([...paths, '/tokens'])].sort();
+}
+
+type DocsPageProbe = { path: string; overflow: number; messages: string[] };
+let docsProbe: Promise<DocsPageProbe[]> | undefined;
+
+/** Opens every docs page once at 375px in dark and records its sideways scroll and its console errors and warnings; the two checks that read it share the visit. */
+function probeDocsPages(browser: Browser) {
+  docsProbe ??= docsPages().then((paths) =>
+    inBatches(paths, 8, async (path) => {
+      const context = await browser.newContext({ viewport: phone, colorScheme: 'dark', reducedMotion: 'reduce' });
+      const messages: string[] = [];
+      try {
+        const page = await context.newPage();
+        page.on('pageerror', (error) => messages.push(`error: ${error.message}`));
+        page.on('console', (message) => {
+          if (message.type() === 'error' || message.type() === 'warning') messages.push(`${message.type()}: ${message.text().split('\n')[0]}`);
+        });
+        const response = await page.goto(new URL(path, base).href, { waitUntil: 'load' });
+        assert.ok(response?.ok(), `${path} returned ${response?.status()}`);
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(300);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+        return { path, overflow, messages };
+      } finally {
+        await context.close();
+      }
+    }),
+  );
+  return docsProbe;
+}
 
 const checks: Check[] = [
   {
@@ -953,6 +1002,40 @@ const checks: Check[] = [
         const results = JSON.parse(await fetchText(`/api/search?query=${encodeURIComponent(query)}`)) as { url: string }[];
         assert.equal(results[0]?.url.split('#')[0], url, `search "${query}": first result`);
       }
+    },
+  },
+  {
+    name: 'no focus ring is cut off by an overflow ancestor on any /view route, on a desktop in light and a phone in dark',
+    async run(browser) {
+      const names = exampleNames();
+      const hits = [...(await sweepRoutes(browser, base, names, 'light', desktop.width)), ...(await sweepRoutes(browser, base, names, 'dark', phone.width))];
+      assert.deepEqual(
+        hits.map((hit) => `${hit.route} (${hit.phase}): ${hit.element} cut by ${hit.clipper}${hit.sides.length ? `, ${hit.sides.join(', ')}` : ''}`),
+        [],
+        'clipped focus rings',
+      );
+    },
+  },
+  {
+    name: 'no docs page scrolls sideways on a 375px phone',
+    async run(browser) {
+      const wide = (await probeDocsPages(browser)).filter((probe) => probe.overflow > 0);
+      assert.deepEqual(
+        wide.map((probe) => `${probe.path}: ${probe.overflow}px sideways`),
+        [],
+        'pages wider than the phone',
+      );
+    },
+  },
+  {
+    name: 'no docs page logs a console error or warning',
+    async run(browser) {
+      const noisy = (await probeDocsPages(browser)).filter((probe) => probe.messages.length > 0);
+      assert.deepEqual(
+        noisy.map((probe) => `${probe.path}: ${[...new Set(probe.messages)].join(' | ')}`),
+        [],
+        'pages that log to the console',
+      );
     },
   },
 ];
