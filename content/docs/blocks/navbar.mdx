@@ -1,13 +1,13 @@
 ---
 title: Navbar
-description: The top of a marketing page, with the product, its links and dropdowns, actions at the end and a sheet on phones.
+description: The top of a marketing page, with the product, its links and dropdowns, actions at the end and a sheet on phones, and variants with a mega menu, centred links, search and a banner.
 ---
 
 ## Installation
 
 <ComponentInstall name="navbar" />
 
-The block brings [Button](/docs/components/button), [Drawer](/docs/components/drawer) and [Scroll area](/docs/components/scroll-area) with it, and lands in `components/navbar.tsx`.
+The block brings [Button](/docs/components/button), [Drawer](/docs/components/drawer), [Kbd](/docs/components/kbd) and [Scroll area](/docs/components/scroll-area) with it, and lands in `components/navbar.tsx`.
 
 ## Usage
 
@@ -54,6 +54,63 @@ export function SiteHeader() {
 
 Pass your router's `Link` as `linkComponent`, so the name and the links move between pages without loading the whole page, and the address of the page being shown as `current`. The name, links and actions at the top of the file are sample data.
 
+## Variants
+
+Each variant is a prop. Below 768px wide all of them collapse into the same sheet.
+
+### Mega menu
+
+Give an item `sections` instead of `links`: titled columns, one per section, in a wide panel. Each link takes an `icon` and a one-line `description`. In the sheet the sections become titled lists.
+
+<ComponentPreview name="navbar-mega" />
+
+```tsx
+<Navbar
+  items={[
+    {
+      label: 'Product',
+      sections: [
+        {
+          title: 'Analyze',
+          links: [{ label: 'Funnels', href: '/features/funnels', description: 'See where users drop off.', icon: <Filter /> }],
+        },
+        { title: 'Act', links: [{ label: 'Alerts', href: '/features/alerts', description: 'A message when a number moves.', icon: <Bell /> }] },
+      ],
+    },
+  ]}
+/>
+```
+
+### Centred links
+
+`layout="center"` puts the links in the middle of the bar, with the name and the actions each taking half of the rest, so the links stay centred whatever the width of either side.
+
+<ComponentPreview name="navbar-centered" />
+
+### Search
+
+`search` takes a trigger, usually `NavbarSearch`, which sits before the actions from 768px wide and at the top of the sheet below it. Its `onClick` opens your search; here it opens the [Command menu](/docs/blocks/command-menu), which ⌘K opens too. Following the trigger in the sheet closes the sheet first.
+
+<ComponentPreview name="navbar-search" />
+
+```tsx
+function SiteHeader() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <Navbar search={<NavbarSearch shortcut={['⌘', 'K']} onClick={() => setOpen(true)} />} />
+      <CommandMenu open={open} onOpenChange={setOpen} trigger={null} />
+    </>
+  );
+}
+```
+
+### Banner
+
+`banner` takes a `NavbarBanner`: one line, a link and a button that dismisses it. It sits above the bar and sticks with it. The banner hides itself when dismissed; keep the choice yourself in `onDismiss` and stop rendering it next time.
+
+<ComponentPreview name="navbar-banner" />
+
 ## What it does
 
 - **Landmark**: the bar is a `<header>`. Placed outside `<main>`, `<article>` and `<section>`, it becomes the page's banner landmark, and its links sit in a navigation named by `navLabel`.
@@ -76,10 +133,13 @@ Takes every `<header>` prop, plus:
     logo: { description: 'Replaces the letter tile beside the name, usually with your logo. Decorative: the name names the link.', type: 'ReactNode' },
     homeHref: { description: 'Where the name links.', type: 'string', default: "'/'" },
     items: {
-      description: 'Links, and groups of links that open a dropdown. An empty array leaves them out.',
-      type: '({ label: string; href: string; description?: string } | { label: string; links: { label: string; href: string; description?: string }[] })[]',
+      description: 'Links, groups of links that open a dropdown, and mega menus of titled sections. An empty array leaves them out.',
+      type: '({ label: string; href: string; description?: string; icon?: ReactNode } | { label: string; links: NavbarLink[] } | { label: string; sections: { title: string; links: NavbarLink[] }[] })[]',
       default: 'sample links',
     },
+    layout: { description: 'Where the links sit: after the name, or in the middle of the bar.', type: "'start' | 'center'", default: "'start'" },
+    search: { description: 'A search trigger, usually a `NavbarSearch`: in the bar from 768px wide, at the top of the sheet below it.', type: 'ReactNode' },
+    banner: { description: 'A line above the bar, usually a `NavbarBanner`. It sticks with the bar.', type: 'ReactNode' },
     current: { description: 'The `href` of the page being shown: its link, and the group that holds it, take the current-page color.', type: 'string' },
     navLabel: { description: 'The accessible name of the navigation landmark.', type: 'string', default: "'Main'" },
     actions: { description: 'Buttons at the end of the bar, at every width. `null` leaves them out.', type: 'ReactNode', default: 'sample buttons' },
@@ -90,5 +150,31 @@ Takes every `<header>` prop, plus:
     sheetProps: { description: 'Controls the sheet, such as `{ open: true, modal: false }` to pin it open in a preview.', type: '{ open?: boolean; onOpenChange?: (open: boolean) => void; modal?: boolean; initialFocus?: … }' },
     dropdownProps: { description: 'Controls which dropdown is open, by its group label.', type: '{ value?: string | null; onValueChange?: … }' },
     container: { description: 'The element the sheet and the dropdowns render into.', type: 'HTMLElement', default: 'document.body' },
+  }}
+/>
+
+### NavbarSearch
+
+A button that looks like a search field. Takes every `<button>` prop, plus:
+
+<TypeTable
+  type={{
+    children: { description: 'The hint inside the trigger.', type: 'ReactNode', default: "'Search…'" },
+    shortcut: { description: 'Keys that open the search from the keyboard, shown as a hint.', type: 'string[]' },
+  }}
+/>
+
+### NavbarBanner
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    children: { description: 'One short line. Text too long for the bar is cut off with an ellipsis.', type: 'ReactNode' },
+    href: { description: 'Where the line links. Leave it out for a line with no link.', type: 'string' },
+    linkLabel: { description: 'The label that follows the line, such as "Read more".', type: 'string' },
+    onDismiss: { description: 'Called when the banner is dismissed.', type: '() => void' },
+    dismissLabel: { description: 'The accessible name of the dismiss button.', type: 'string', default: "'Dismiss'" },
+    linkComponent: { description: "Renders the link, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
   }}
 />

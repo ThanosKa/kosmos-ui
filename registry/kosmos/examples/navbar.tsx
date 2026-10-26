@@ -3,12 +3,20 @@
 import { Menu } from 'lucide-react';
 import { OverlayStage } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { Navbar, type NavbarItem } from '@/registry/kosmos/blocks/navbar/navbar';
+import { Navbar, NavbarBanner, NavbarSearch, type NavbarItem } from '@/registry/kosmos/blocks/navbar/navbar';
+import { megaItems } from './navbar-mega';
 import { Button } from '@/registry/kosmos/ui/button';
 
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
 /** Stands in for the page under the bar, so the bar's bottom edge has something to sit on. */
 const page = <div aria-hidden className="h-16" />;
+
+const search = <NavbarSearch shortcut={['⌘', 'K']}>Search…</NavbarSearch>;
+const banner = (
+  <NavbarBanner href="/changelog" linkLabel="Read more">
+    Annual billing is live, with two months free.
+  </NavbarBanner>
+);
 
 const longItems: NavbarItem[] = [
   {
@@ -49,6 +57,67 @@ export default function NavbarPreview() {
             <Navbar current="/features/funnels" container={container} dropdownProps={{ value: 'Product' }} />
           )}
         </OverlayStage>
+      </PreviewSection>
+
+      <PreviewSection title="Mega menu open">
+        <OverlayStage label="Product open" className="h-[28rem] p-0">
+          {(container) => (
+            <Navbar items={megaItems} current="/features/funnels" container={container} dropdownProps={{ value: 'Product' }} />
+          )}
+        </OverlayStage>
+      </PreviewSection>
+
+      <PreviewSection title="Mega menu in the sheet">
+        <OverlayStage label="Sheet open" className="h-[40rem] max-w-96 p-0">
+          {(container) => (
+            <Navbar
+              items={megaItems}
+              search={search}
+              current="/features/funnels"
+              container={container}
+              sheetProps={{ open: true, modal: false, initialFocus: false }}
+            />
+          )}
+        </OverlayStage>
+      </PreviewSection>
+
+      <PreviewSection title="Centred links">
+        <div className={frame}>
+          <Navbar layout="center" current="/pricing" data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Centred links with search, 640px">
+        <div className={`${frame} max-w-160`}>
+          <Navbar layout="center" search={search} current="/pricing" data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Search slot">
+        <div className={frame}>
+          <Navbar search={search} current="/pricing" data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Banner">
+        <div className={frame}>
+          <Navbar banner={banner} current="/pricing" data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Banner, long line, 320px">
+        <div className={`${frame} max-w-80`}>
+          <Navbar
+            banner={<NavbarBanner href="/changelog" linkLabel="Read more">Annual billing is live for every plan, with two months free until the end of the year.</NavbarBanner>}
+            current="/pricing"
+            data-scrolled=""
+          />
+          {page}
+        </div>
       </PreviewSection>
 
       <PreviewSection title="Narrow container, 320px">
