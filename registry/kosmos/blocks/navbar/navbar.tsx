@@ -1,17 +1,26 @@
 'use client';
 
 import { NavigationMenu as NavigationMenuPrimitive } from '@base-ui/react/navigation-menu';
-import { Check, ChevronDown, Menu } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Menu, Search, X } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
 
-type NavbarLink = { label: string; href: string; description?: string };
+type NavbarLink = {
+  label: string;
+  href: string;
+  description?: string;
+  /** A 14px icon in a small tile beside the label in a mega menu, and before it in the sheet. */
+  icon?: React.ReactNode;
+};
 /** Links under one label: a dropdown in the bar, a titled list in the sheet. */
 type NavbarGroup = { label: string; links: NavbarLink[] };
-type NavbarItem = NavbarLink | NavbarGroup;
+/** Titled columns of links under one label: a wide mega menu in the bar, a list per title in the sheet. */
+type NavbarMegaMenu = { label: string; sections: { title: string; links: NavbarLink[] }[] };
+type NavbarItem = NavbarLink | NavbarGroup | NavbarMegaMenu;
 type NavbarLinkComponent = React.ElementType<React.ComponentProps<'a'> & { href: string }>;
 
 // Sample data: replace it with your product's name, pages and actions.
@@ -52,6 +61,9 @@ const sampleSheetActions = (
 );
 
 const isGroup = (item: NavbarItem): item is NavbarGroup => 'links' in item;
+const isMega = (item: NavbarItem): item is NavbarMegaMenu => 'sections' in item;
+const groupLinks = (item: NavbarGroup | NavbarMegaMenu) =>
+  isMega(item) ? item.sections.flatMap((section) => section.links) : item.links;
 
 /** Whether the page has scrolled at all, so the bar can show its bottom edge. */
 function useScrolled() {
@@ -121,6 +133,37 @@ type NavbarSheetProps = {
 /** Opens a dropdown by its group label, such as `{ value: 'Product' }` in a preview. */
 type NavbarDropdownProps = Pick<NavigationMenuPrimitive.Root.Props<string>, 'value' | 'onValueChange'>;
 
+/** One link in a dropdown or mega menu: an optional icon tile, the label with its check, and a line under it. */
+function renderDropdownLink(link: NavbarLink, current: string | undefined, Link: NavbarLinkComponent) {
+  return (
+    <NavigationMenuPrimitive.Link
+      active={link.href === current}
+      closeOnClick
+      render={<Link href={link.href} />}
+      className={cn(
+        'group/link flex gap-2.5 rounded-lg px-2.5 py-2 transition-[background-color] duration-instant hover:bg-accent aria-[current=page]:bg-accent',
+        'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+      )}
+    >
+      {link.icon ? (
+        <span
+          aria-hidden
+          className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-transparent bg-secondary text-muted-foreground shadow-control [&_svg]:size-3.5"
+        >
+          {link.icon}
+        </span>
+      ) : null}
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="flex items-center gap-2 text-body font-medium text-foreground group-aria-[current=page]/link:text-accent-text">
+          {link.label}
+          {link.href === current ? <Check aria-hidden className="ms-auto size-3.5 shrink-0" /> : null}
+        </span>
+        {link.description ? <span className="text-small text-pretty text-muted-foreground">{link.description}</span> : null}
+      </span>
+    </NavigationMenuPrimitive.Link>
+  );
+}
+
 /** The links in the bar, from 768px wide: plain links and groups that open a dropdown on hover or click. */
 function NavbarBarLinks({
   items,
@@ -129,12 +172,13 @@ function NavbarBarLinks({
   Link,
   container,
   dropdownProps,
-}: NavbarLinksProps & { container?: NavbarContainer; dropdownProps?: NavbarDropdownProps }) {
+  centered,
+}: NavbarLinksProps & { container?: NavbarContainer; dropdownProps?: NavbarDropdownProps; centered?: boolean }) {
   return (
     <NavigationMenuPrimitive.Root
       data-slot="navbar-nav"
       aria-label={label}
-      className="ms-3 flex min-w-0 flex-1 @max-3xl:hidden"
+      className={cn('flex min-w-0 @max-3xl:hidden', centered ? 'shrink' : 'ms-3 flex-1')}
       {...dropdownProps}
     >
       <ScrollArea
@@ -147,10 +191,10 @@ function NavbarBarLinks({
         <NavigationMenuPrimitive.List className="flex w-max items-center gap-0.5 px-1 py-3">
           {items.map((item) => (
             <NavigationMenuPrimitive.Item key={item.label} value={item.label}>
-              {isGroup(item) ? (
+              {isGroup(item) || isMega(item) ? (
                 <>
                   <NavigationMenuPrimitive.Trigger
-                    data-current={item.links.some((link) => link.href === current) ? '' : undefined}
+                    data-current={groupLinks(item).some((link) => link.href === current) ? '' : undefined}
                     className={cn(barItemClass, 'pe-2 data-popup-open:bg-accent data-popup-open:text-foreground')}
                   >
                     {item.label}
@@ -165,31 +209,34 @@ function NavbarBarLinks({
                   </NavigationMenuPrimitive.Trigger>
                   <NavigationMenuPrimitive.Content
                     keepMounted
-                    className="w-80 max-w-(--available-width) p-1 transition-[opacity] duration-base data-ending-style:opacity-0 data-ending-style:duration-fast data-starting-style:opacity-0"
+                    className={cn(
+                      'max-w-(--available-width) p-1 transition-[opacity] duration-base data-ending-style:opacity-0 data-ending-style:duration-fast data-starting-style:opacity-0',
+                      isMega(item) ? 'w-176' : 'w-80',
+                    )}
                   >
-                    <ul className="flex flex-col gap-0.5">
-                      {item.links.map((link) => (
-                        <li key={`${link.label}:${link.href}`}>
-                          <NavigationMenuPrimitive.Link
-                            active={link.href === current}
-                            closeOnClick
-                            render={<Link href={link.href} />}
-                            className={cn(
-                              'group/link flex flex-col gap-0.5 rounded-lg px-2.5 py-2 transition-[background-color] duration-instant hover:bg-accent aria-[current=page]:bg-accent',
-                              'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
-                            )}
-                          >
-                            <span className="flex items-center gap-2 text-body font-medium text-foreground group-aria-[current=page]/link:text-accent-text">
-                              {link.label}
-                              {link.href === current ? <Check aria-hidden className="ms-auto size-3.5 shrink-0" /> : null}
-                            </span>
-                            {link.description ? (
-                              <span className="text-small text-pretty text-muted-foreground">{link.description}</span>
-                            ) : null}
-                          </NavigationMenuPrimitive.Link>
-                        </li>
-                      ))}
-                    </ul>
+                    {isMega(item) ? (
+                      <div
+                        className="grid gap-x-1"
+                        style={{ gridTemplateColumns: `repeat(${item.sections.length}, minmax(0, 1fr))` }}
+                      >
+                        {item.sections.map((section) => (
+                          <div key={section.title} className="flex flex-col gap-0.5">
+                            <p className="px-2.5 pt-2 pb-1 text-caption text-muted-foreground">{section.title}</p>
+                            <ul className="flex flex-col gap-0.5">
+                              {section.links.map((link) => (
+                                <li key={`${link.label}:${link.href}`}>{renderDropdownLink(link, current, Link)}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <ul className="flex flex-col gap-0.5">
+                        {item.links.map((link) => (
+                          <li key={`${link.label}:${link.href}`}>{renderDropdownLink(link, current, Link)}</li>
+                        ))}
+                      </ul>
+                    )}
                   </NavigationMenuPrimitive.Content>
                 </>
               ) : (
@@ -245,6 +292,11 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
         onClick={onNavigate}
         className={sheetLinkClass}
       >
+        {link.icon ? (
+          <span aria-hidden className="flex shrink-0 text-muted-foreground [&_svg]:size-4">
+            {link.icon}
+          </span>
+        ) : null}
         <span className="truncate">{link.label}</span>
         {link.href === current ? <Check aria-hidden className="ms-auto size-4 shrink-0" /> : null}
       </Link>
@@ -254,7 +306,21 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
     <nav data-slot="navbar-sheet-nav" aria-label={label}>
       <ul className="flex flex-col gap-0.5">
         {items.map((item, index) =>
-          isGroup(item) ? (
+          isMega(item) ? (
+            <li key={item.label} className="flex flex-col gap-0.5 py-2 first:pt-0 last:pb-0">
+              <h3 className="px-2.5 pb-1 text-caption text-muted-foreground">{item.label}</h3>
+              {item.sections.map((section, sectionIndex) => (
+                <div key={section.title} className="flex flex-col gap-0.5">
+                  <h4 id={`${id}-${index}-${sectionIndex}`} className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-foreground">
+                    {section.title}
+                  </h4>
+                  <ul aria-labelledby={`${id}-${index}-${sectionIndex}`} className="flex flex-col gap-0.5">
+                    {section.links.map(renderLink)}
+                  </ul>
+                </div>
+              ))}
+            </li>
+          ) : isGroup(item) ? (
             <li key={item.label} className="flex flex-col gap-0.5 py-2 first:pt-0 last:pb-0">
               <h3 id={`${id}-${index}`} className="px-2.5 pb-1 text-caption text-muted-foreground">
                 {item.label}
@@ -272,6 +338,109 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
   );
 }
 
+type NavbarSearchProps = Omit<React.ComponentProps<'button'>, 'children'> & {
+  /** The hint inside the trigger. */
+  children?: React.ReactNode;
+  /** Keys that open the search from the keyboard, shown as a hint, such as `['⌘', 'K']`. */
+  shortcut?: string[];
+};
+
+/** A search field look-alike that opens a search, such as the command menu. Takes the width of its slot. */
+function NavbarSearch({ children = 'Search…', shortcut, className, ...props }: NavbarSearchProps) {
+  return (
+    <Button
+      variant="secondary"
+      data-slot="navbar-search"
+      aria-keyshortcuts={shortcut ? 'Meta+K Control+K' : undefined}
+      className={cn('w-full justify-start ps-2.5 pe-1.5 font-normal text-muted-foreground', className)}
+      {...props}
+    >
+      <Search aria-hidden />
+      <span className="flex-1 truncate text-start">{children}</span>
+      {shortcut ? (
+        <KbdGroup aria-hidden>
+          {shortcut.map((key) => (
+            <Kbd key={key}>{key}</Kbd>
+          ))}
+        </KbdGroup>
+      ) : null}
+    </Button>
+  );
+}
+
+type NavbarBannerProps = Omit<React.ComponentProps<'div'>, 'children'> & {
+  /** One short line. The link, when there is one, wraps the whole line. */
+  children: React.ReactNode;
+  /** Where the line links. Leave it out for a line with no link. */
+  href?: string;
+  /** The label that follows the line, such as "Read more". */
+  linkLabel?: string;
+  /** Called when the banner is dismissed. Keep the choice (a cookie, local storage) and stop rendering it. */
+  onDismiss?: () => void;
+  /** The accessible name of the dismiss button. */
+  dismissLabel?: string;
+  linkComponent?: NavbarLinkComponent;
+};
+
+/** One line above the bar, with a link and a button that dismisses it. Pass it to `Navbar` as `banner`. */
+function NavbarBanner({
+  children,
+  href,
+  linkLabel,
+  onDismiss,
+  dismissLabel = 'Dismiss',
+  linkComponent: Link = 'a',
+  className,
+  ...props
+}: NavbarBannerProps) {
+  const [dismissed, setDismissed] = React.useState(false);
+  if (dismissed) return null;
+  const line = (
+    <>
+      <span className="min-w-0 truncate">{children}</span>
+      {linkLabel ? (
+        <span className="flex shrink-0 items-center gap-1 font-medium text-foreground">
+          {linkLabel}
+          <ArrowRight aria-hidden className="size-3.5 rtl:-scale-x-100" />
+        </span>
+      ) : null}
+    </>
+  );
+  return (
+    <div
+      data-slot="navbar-banner"
+      className={cn('flex h-9 items-center gap-2 border-b border-border bg-muted ps-4 pe-2 text-small text-muted-foreground', className)}
+      {...props}
+    >
+      <span className="size-6 shrink-0" aria-hidden />
+      {href ? (
+        <Link
+          href={href}
+          className={cn(
+            'mx-auto flex min-w-0 items-center gap-2 rounded-md px-1 py-0.5 transition-[color] hover:text-foreground',
+            focusRing,
+          )}
+        >
+          {line}
+        </Link>
+      ) : (
+        <span className="mx-auto flex min-w-0 items-center gap-2">{line}</span>
+      )}
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={dismissLabel}
+        onClick={() => {
+          setDismissed(true);
+          onDismiss?.();
+        }}
+      >
+        <X aria-hidden />
+      </Button>
+    </div>
+  );
+}
+
 type NavbarProps = React.ComponentProps<'header'> & {
   /** The product name beside the logo, linking to `homeHref`. */
   name?: React.ReactNode;
@@ -283,6 +452,12 @@ type NavbarProps = React.ComponentProps<'header'> & {
   items?: readonly NavbarItem[];
   /** The `href` of the page being shown: its link, and the group that holds it, take the current-page color. */
   current?: string;
+  /** Where the links sit: after the name (`start`) or in the middle of the bar (`center`). */
+  layout?: 'start' | 'center';
+  /** A search trigger, usually a `NavbarSearch`: in the bar from 768px wide, at the top of the sheet below it. */
+  search?: React.ReactNode;
+  /** A line above the bar, usually a `NavbarBanner`. It sticks with the bar. */
+  banner?: React.ReactNode;
   /** The accessible name of the navigation landmark. */
   navLabel?: string;
   /** Buttons at the end of the bar, at every width. Hide one below the wide layout with `@max-3xl:hidden`. */
@@ -315,6 +490,9 @@ function Navbar({
   items = sampleItems,
   current,
   navLabel = 'Main',
+  layout = 'start',
+  search,
+  banner,
   actions = sampleActions,
   sheetActions = sampleSheetActions,
   menu,
@@ -336,7 +514,8 @@ function Navbar({
     setInnerSheetOpen(open);
     sheetProps?.onOpenChange?.(open);
   };
-  const hasSheet = items.length > 0 || Boolean(sheetActions);
+  const hasSheet = items.length > 0 || Boolean(sheetActions) || Boolean(search);
+  const centered = layout === 'center' && items.length > 0;
 
   return (
     <header
@@ -354,46 +533,54 @@ function Navbar({
       )}
       {...props}
     >
+      {banner}
       <div className={cn('mx-auto flex h-14 w-full items-center gap-1 px-4', !fullWidth && 'max-w-7xl @min-[40rem]:px-6')}>
-        {menu ? (
-          <div className="me-2 flex @3xl:hidden">{menu}</div>
-        ) : hasSheet ? (
-          <Drawer swipeDirection={startEdge} open={sheetOpen} onOpenChange={setSheetOpen} modal={sheetProps?.modal}>
-            <DrawerTrigger
-              render={<Button variant="secondary" size="icon" aria-label="Open menu" className="me-2 @3xl:hidden" />}
-            >
-              <Menu aria-hidden />
-            </DrawerTrigger>
-            <DrawerContent data-slot="navbar-sheet" container={container} initialFocus={sheetProps?.initialFocus}>
-              <DrawerHeader>
-                <DrawerTitle className="flex items-center gap-2">
-                  {logo ?? <NavbarMark name={name} />}
-                  {name}
-                </DrawerTitle>
-              </DrawerHeader>
-              <DrawerBody>
-                <NavbarSheetLinks
-                  items={items}
-                  current={current}
-                  label={navLabel}
-                  Link={Link}
-                  onNavigate={() => setSheetOpen(false)}
-                />
-              </DrawerBody>
-              {sheetActions ? <DrawerFooter className="sm:flex-col-reverse sm:justify-start">{sheetActions}</DrawerFooter> : null}
-            </DrawerContent>
-          </Drawer>
-        ) : null}
-        <Link
-          href={homeHref}
-          className={cn(
-            '-mx-1 flex min-w-0 items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold whitespace-nowrap text-foreground [&>:first-child]:shrink-0',
-            focusRing,
-          )}
-        >
-          {logo ?? <NavbarMark name={name} />}
-          <span className="truncate">{name}</span>
-        </Link>
+        <div className={cn('flex min-w-0 items-center', centered && 'flex-1 basis-0')}>
+          {menu ? (
+            <div className="me-2 flex @3xl:hidden">{menu}</div>
+          ) : hasSheet ? (
+            <Drawer swipeDirection={startEdge} open={sheetOpen} onOpenChange={setSheetOpen} modal={sheetProps?.modal}>
+              <DrawerTrigger
+                render={<Button variant="secondary" size="icon" aria-label="Open menu" className="me-2 @3xl:hidden" />}
+              >
+                <Menu aria-hidden />
+              </DrawerTrigger>
+              <DrawerContent data-slot="navbar-sheet" container={container} initialFocus={sheetProps?.initialFocus}>
+                <DrawerHeader>
+                  <DrawerTitle className="flex items-center gap-2">
+                    {logo ?? <NavbarMark name={name} />}
+                    {name}
+                  </DrawerTitle>
+                </DrawerHeader>
+                <DrawerBody>
+                  {search ? (
+                    <div className="mb-3" onClickCapture={() => setSheetOpen(false)}>
+                      {search}
+                    </div>
+                  ) : null}
+                  <NavbarSheetLinks
+                    items={items}
+                    current={current}
+                    label={navLabel}
+                    Link={Link}
+                    onNavigate={() => setSheetOpen(false)}
+                  />
+                </DrawerBody>
+                {sheetActions ? <DrawerFooter className="sm:flex-col-reverse sm:justify-start">{sheetActions}</DrawerFooter> : null}
+              </DrawerContent>
+            </Drawer>
+          ) : null}
+          <Link
+            href={homeHref}
+            className={cn(
+              '-mx-1 flex min-w-0 items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold whitespace-nowrap text-foreground [&>:first-child]:shrink-0',
+              focusRing,
+            )}
+          >
+            {logo ?? <NavbarMark name={name} />}
+            <span className="truncate">{name}</span>
+          </Link>
+        </div>
         {items.length > 0 ? (
           <NavbarBarLinks
             items={items}
@@ -402,12 +589,31 @@ function Navbar({
             Link={Link}
             container={container}
             dropdownProps={dropdownProps}
+            centered={centered}
           />
         ) : null}
-        {actions ? <div className="ms-auto flex shrink-0 items-center gap-1.5">{actions}</div> : null}
+        {search || actions ? (
+          <div className={cn('flex items-center justify-end gap-1.5', centered ? 'min-w-0 flex-1 basis-0' : 'ms-auto shrink-0')}>
+            {search ? <div className="w-56 shrink-0 @max-3xl:hidden">{search}</div> : null}
+            {actions}
+          </div>
+        ) : null}
       </div>
     </header>
   );
 }
 
-export { Navbar, type NavbarDropdownProps, type NavbarGroup, type NavbarItem, type NavbarLink, type NavbarProps, type NavbarSheetProps };
+export {
+  Navbar,
+  NavbarBanner,
+  NavbarSearch,
+  type NavbarBannerProps,
+  type NavbarDropdownProps,
+  type NavbarGroup,
+  type NavbarItem,
+  type NavbarLink,
+  type NavbarMegaMenu,
+  type NavbarProps,
+  type NavbarSearchProps,
+  type NavbarSheetProps,
+};
