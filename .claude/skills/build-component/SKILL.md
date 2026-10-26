@@ -45,7 +45,7 @@ Read all four PNGs it prints (light and dark, 375 and 1280 wide). A page error m
 
 ## 4. Review
 
-Call the Skill tool with `better-interface` and review the review preview, its four screenshots and its source files, as a screen review. Here the review leads to fixes in step 5, as when the user asks better-interface to implement its findings. Use its findings format. Then go through the kosmos-style **Before you finish** table line by line.
+Call the Skill tool with `emil-design-eng` and review the review preview, its four screenshots and its source files, as a screen review. The review leads to fixes in step 5. Write findings in the format at the end of the kosmos-style [conflicts.md](../kosmos-style/conflicts.md). Then go through the kosmos-style **Before you finish** table line by line.
 
 Then explore what a screenshot cannot show with `agent-browser` on `/view/<name>?theme=light` and `?theme=dark` (`agent-browser --help` lists every command; give `screenshot` an absolute path). Cover one control of each kind (each variant, each size, the link form, the disabled-but-focusable case), not every cell:
 
@@ -84,7 +84,7 @@ Then call the Skill tool with `mattpocock-skills:code-review`. Its fixed point i
 
 The docs page from step 2 matches the final code: every prop in `TypeTable`, every example file used on the page. The docs nav lists every file in `content/docs/components/` and `content/docs/blocks/` by itself.
 
-When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: `content/docs/changelog/YYYY-MM-DD-<slug>.mdx`, frontmatter `title`, `description` and `date`, the date in the file name equal to `date`. The title starts with the action ("Added Badge", "Changed Button focus outline"), so search tells it apart from the component's own page. Copy the shape of the newest entry there. A change to a component that has not been released since its "Added" entry goes into that entry. Internal refactors and changes to examples or docs text get no entry. Write the text with `better-writing`.
+When a component or block is added, or changes for its users (new prop or variant, visual change, behavior change, rename, removal), add a changelog entry: `content/docs/changelog/YYYY-MM-DD-<slug>.mdx`, frontmatter `title`, `description` and `date`, the date in the file name equal to `date`. The title starts with the action ("Added Badge", "Changed Button focus outline"), so search tells it apart from the component's own page. Copy the shape of the newest entry there. A change to a component that has not been released since its "Added" entry goes into that entry. Internal refactors and changes to examples or docs text get no entry.
 
 ## 8. Report
 

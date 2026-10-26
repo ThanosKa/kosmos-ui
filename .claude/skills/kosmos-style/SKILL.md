@@ -7,7 +7,7 @@ description: The Kosmos UI style, with the exact tokens and rules for every comp
 
 The values live in one file, `registry/kosmos/styles/tokens.css`, and `/tokens` renders all of them in light and dark. Its palette and radius are written there by `pnpm registry:build` from the default preset in `lib/presets`, so a palette value changes in the preset, never in `tokens.css`. This skill says which token each job takes. Every token, its role and its source is in [tokens.md](tokens.md).
 
-This skill wins every conflict with a review skill (`better-*`, `review-animations`). The conflicts and the value that wins are in [conflicts.md](conflicts.md). When a reviewer flags a value listed there, keep the Kosmos value and mark the finding `Kosmos style` in the report.
+This skill wins every conflict with a review skill (`emil-design-eng`, `review-animations`, `better-accessibility` and the others listed there). The conflicts and the value that wins are in [conflicts.md](conflicts.md). When a reviewer flags a value listed there, keep the Kosmos value and mark the finding `Kosmos style` in the report.
 
 ## Tokens only
 
@@ -57,7 +57,7 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 - Inside the sidebar, the header, every group after the first and the footer are split by full-width `border-sidebar-border` lines, edge to edge, never inset.
 - Board columns are open lanes: `divide-x divide-border` on the row, no fill and no radius behind the cards. A board card splits who it is from its numbers with `divide-y divide-border`.
 
-Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and `better-ui` keeps borders for dividers. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
+Borders are what forced-colors mode keeps, what screen magnifiers render crisply and what shadcn's Table, Command and Menu use, and dividers stay borders. Outlines on adjacent cells stack into a 2px line instead of collapsing to one, and the studied products used three different techniques, so there was no single source convention to keep.
 
 ## Overflow
 
@@ -148,7 +148,7 @@ An enabled button scales to `0.96` while pressed: `motion-safe:not-disabled:not-
 
 A link styled as a Button presses like one: people cannot tell the two apart, and shadcn's Button applies its press feedback to every rendered element, links included.
 
-`0.96` is the one value both reviewers accept: `better-ui` prescribes exactly `0.96`, and Emil Kowalski's range is `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
+`0.96` sits inside Emil Kowalski's range of `0.95` to `0.98`. The studied products shipped no working press scale, so there was no source value to keep.
 
 ## Focus
 
