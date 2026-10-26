@@ -79,7 +79,7 @@ async function visitHtml(context: BrowserContext, path: string): Promise<Visit> 
   try {
     const response = await page.goto(new URL(path, base).href, { waitUntil: 'load' });
     const status = response?.status() ?? 0;
-    const previewRoute = path.startsWith('/view/') || path === '/dashboard';
+    const previewRoute = path.startsWith('/view/') || path === '/preset-preview';
     // An example cancels its link clicks only once React has hydrated it, so wait for React's props on every example
     // link (an internal key, the one sign of hydration a page can read), then a frame for the effects to run.
     await page
