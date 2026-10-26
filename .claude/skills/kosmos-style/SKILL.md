@@ -126,6 +126,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 | Popover, menu, select, tooltip open | `duration-base` (200ms) | `ease-power3-out` |
 | Dialog open | `duration-overlay` (250ms) | `ease-power3-out` |
 | Drawer open, sidebar resize, accordion height, sliding indicator, switch thumb | `duration-slow` (300ms) | `ease-smooth-in-out` for size and position, `ease-power3-out` for slides |
+| Marketing entrance: each word of a Text reveal | `duration-reveal` (500ms), staggered 120ms | `ease-power3-out` |
 | Any exit | `duration-fast` (150ms) | `ease-power3-out` |
 | Accordion close (height and chevron) | `duration-slow` (300ms) | `ease-smooth-in-out` |
 

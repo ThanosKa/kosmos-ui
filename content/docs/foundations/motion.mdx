@@ -31,7 +31,7 @@ Play the curves to compare how each one moves.
 Some animations run in JavaScript, where CSS variables don't reach. `@kosmos/motion` holds the same values as plain numbers in `lib/motion.ts`:
 
 - `ease.power3Out` and `ease.smoothInOut`, as cubic-bezier arrays.
-- `duration.instant` to `duration.slow`, in seconds.
+- `duration.instant` to `duration.reveal`, in seconds.
 - `spring`, a 300ms spring with no bounce, for layout moves and drag.
 
 The Chart uses it for its Recharts animation and the Kanban board block uses it for drag and drop. The CLI adds it when you install either one. The other components don't need it.
@@ -86,6 +86,7 @@ Every component reads the same tokens, so one edit changes the whole app. `shadc
   --transition-duration-base: 270ms;
   --transition-duration-overlay: 330ms;
   --transition-duration-slow: 400ms;
+  --transition-duration-reveal: 650ms;
 }
 ```
 

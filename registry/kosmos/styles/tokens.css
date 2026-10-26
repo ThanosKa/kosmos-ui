@@ -81,6 +81,21 @@
   --transition-duration-base: 200ms;
   --transition-duration-overlay: 250ms;
   --transition-duration-slow: 300ms;
+  --transition-duration-reveal: 500ms;
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      translate: 0 0.35em;
+      filter: blur(8px);
+    }
+  }
+  --animate-reveal-fade: reveal-fade var(--transition-duration-fast) var(--ease-power3-out) both;
+  @keyframes reveal-fade {
+    from {
+      opacity: 0;
+    }
+  }
 
   --animate-shimmer: shimmer 2s linear infinite;
   @keyframes shimmer {
