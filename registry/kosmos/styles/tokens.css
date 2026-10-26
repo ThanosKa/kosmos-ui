@@ -82,6 +82,16 @@
   --transition-duration-overlay: 250ms;
   --transition-duration-slow: 300ms;
 
+  --animate-shimmer: shimmer 2s linear infinite;
+  @keyframes shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
+  }
+
   --text-caption: 0.75rem;
   --text-caption--line-height: calc(16 / 12);
   --text-caption--letter-spacing: 0em;
