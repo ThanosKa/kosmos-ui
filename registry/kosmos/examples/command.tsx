@@ -15,6 +15,8 @@ import {
 import { useEffect, useState } from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
+import CommandLoadingExample from '@/registry/kosmos/examples/command-loading';
+import CommandPages from '@/registry/kosmos/examples/command-pages';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Command,
@@ -124,6 +126,10 @@ export default function CommandPreview() {
               </CommandDialog>
             )}
           </OverlayStage>
+
+          <OverlayStage label="loading">{() => <CommandLoadingExample forceLoading />}</OverlayStage>
+
+          <OverlayStage label="nested page with back step">{() => <CommandPages defaultPage="theme" />}</OverlayStage>
 
           <OverlayStage label="inline (no dialog)">
             {() => (

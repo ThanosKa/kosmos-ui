@@ -2,7 +2,6 @@
 
 import {
   Activity,
-  ArrowLeft,
   ArrowLeftRight,
   Building,
   CircleDashed,
@@ -24,7 +23,9 @@ import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Command,
+  CommandBack,
   CommandCollection,
+  CommandDescription,
   CommandDialog,
   CommandEmpty,
   CommandFooter,
@@ -32,7 +33,9 @@ import {
   CommandGroupLabel,
   CommandInput,
   CommandItem,
+  CommandItemText,
   CommandList,
+  CommandLoading,
   CommandShortcut,
 } from '@/registry/kosmos/ui/command';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
@@ -46,6 +49,8 @@ type CommandMenuItem = {
   title?: string;
   /** Muted text after the title, such as a domain. Not searched unless it is also in `label`. */
   hint?: string;
+  /** A muted second line under the title. Not searched unless it is also in `label`. */
+  description?: string;
   icon?: LucideIcon;
   /** A colored status dot in place of the icon: a background class such as `bg-success`. */
   dot?: string;
@@ -100,8 +105,8 @@ const sampleGroups: CommandMenuGroup[] = [
   {
     value: 'Actions',
     items: [
-      { value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus },
-      { value: 'invite', label: 'Invite teammate', icon: UserPlus },
+      { value: 'new-roadmap-item', label: 'New roadmap item', icon: Plus, keys: ['C'] },
+      { value: 'invite', label: 'Invite teammate', description: 'Send an email invite to your workspace', icon: UserPlus },
       { value: 'assigned', label: 'Show roadmap items assigned to…', icon: UserRoundSearch, page: 'assignee' },
       { value: 'switch-workspace', label: 'Switch workspace…', icon: ArrowLeftRight, page: 'workspace' },
     ],
@@ -179,7 +184,14 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
       ) : Icon ? (
         <Icon aria-hidden />
       ) : null}
-      <span className="min-w-0 truncate">{item.title ?? item.label}</span>
+      {item.description ? (
+        <CommandItemText>
+          <span className="truncate">{item.title ?? item.label}</span>
+          <CommandDescription>{item.description}</CommandDescription>
+        </CommandItemText>
+      ) : (
+        <span className="min-w-0 truncate">{item.title ?? item.label}</span>
+      )}
       {item.hint ? <span className="min-w-0 shrink-[2] truncate text-small text-muted-foreground">{item.hint}</span> : null}
       {item.keys ? (
         <CommandShortcut>
@@ -197,6 +209,8 @@ type CommandMenuProps = {
   groups?: CommandMenuGroup[];
   /** Second lists, by the key an item names in `page`. */
   pages?: Record<string, CommandMenuPage>;
+  /** Replaces the list with a loading row while your records load. */
+  loading?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -235,6 +249,7 @@ type CommandMenuProps = {
 function CommandMenu({
   groups = sampleGroups,
   pages = samplePages,
+  loading = false,
   open: openProp,
   defaultOpen = false,
   onOpenChange,
@@ -361,14 +376,7 @@ function CommandMenu({
         }}
       >
         <Command items={current ? current.groups : groups} value={query} onValueChange={(value) => setQuery(value)}>
-          {current ? (
-            <div className="flex shrink-0 items-center gap-1.5 px-2 pt-2">
-              <Button variant="ghost" size="icon-sm" aria-label="Back to all commands" onClick={() => goTo(null)}>
-                <ArrowLeft aria-hidden />
-              </Button>
-              <span className="text-caption font-medium text-muted-foreground">{current.title}</span>
-            </div>
-          ) : null}
+          {current ? <CommandBack title={current.title} onBack={() => goTo(null)} /> : null}
           <CommandInput
             ref={inputRef}
             placeholder={current ? current.placeholder : 'Search projects, actions and pages…'}
@@ -380,8 +388,12 @@ function CommandMenu({
               }
             }}
           />
-          <CommandEmpty>No results for “{query}”.</CommandEmpty>
-          <CommandList>
+          {loading ? (
+            <CommandLoading />
+          ) : (
+            <CommandEmpty>No results for “{query}”.</CommandEmpty>
+          )}
+          <CommandList className={loading ? 'hidden' : undefined}>
             {(group: CommandMenuGroup) => (
               <CommandGroup key={group.value} items={group.items}>
                 <CommandGroupLabel>{group.value}</CommandGroupLabel>
@@ -395,7 +407,7 @@ function CommandMenu({
               </CommandGroup>
             )}
           </CommandList>
-          <CommandFooter />
+          <CommandFooter back={Boolean(current)} />
         </Command>
       </CommandDialog>
     </>

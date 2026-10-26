@@ -46,6 +46,19 @@ export default function CommandMenuPreview() {
               />
             )}
           </OverlayStage>
+          <OverlayStage label="loading" className={stage}>
+            {(container) => (
+              <CommandMenu
+                open
+                loading
+                modal={false}
+                container={container}
+                initialFocus={false}
+                trigger={null}
+                hotkey={false}
+              />
+            )}
+          </OverlayStage>
           <OverlayStage label="no match" className={stage}>
             {(container) => (
               <CommandMenu

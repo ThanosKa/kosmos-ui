@@ -29,6 +29,8 @@ The menu renders a search button that shows its shortcut. Click it, or press ⌘
 - **Search**: typing filters every list by each item's `label`, the first match stays highlighted and Enter runs it.
 - **Running**: each command calls `onRun` with its value, such as `new-roadmap-item`, `open:fernhill` or `assignee:lena`, and closes the menu.
 - **Second lists**: an item with a `page` opens that list instead of running (**Show roadmap items assigned to…**, **Switch workspace…**). Backspace in the empty field or Escape goes back to the main list.
+- **Loading**: pass `loading` to show a loading row instead of the list while your records load.
+- **Descriptions and shortcuts**: an item's `description` is a muted second line, and `keys` shows its shortcut at the end.
 - **Closing**: Escape on the main list or a click outside closes the menu, and focus goes back where it was. It opens on the main list every time.
 - **Shortcut**: use one menu with `hotkey` on per page. Pass `trigger={null}` to hide the button, or your own element.
 
@@ -44,6 +46,7 @@ The menu appears and closes without animation, because it opens from a keyboard 
   type={{
     groups: { description: 'The main list.', type: 'CommandMenuGroup[]', default: 'sample projects, actions and pages' },
     pages: { description: 'Second lists, by the key an item names in `page`.', type: 'Record<string, CommandMenuPage>', default: 'assignee and workspace' },
+    loading: { description: 'Shows a loading row instead of the list.', type: 'boolean', default: 'false' },
     onRun: { description: 'Called with the value of the command that ran.', type: '(value: string) => void' },
     open: { description: 'Whether the menu is open, controlled.', type: 'boolean' },
     defaultOpen: { description: 'Whether the menu starts open, uncontrolled.', type: 'boolean', default: 'false' },
@@ -71,6 +74,7 @@ The menu appears and closes without animation, because it opens from a keyboard 
     label: { description: 'What the search matches.', type: 'string', required: true },
     title: { description: 'What the row shows, when it differs from `label`.', type: 'string' },
     hint: { description: 'Muted text after the title, such as a domain.', type: 'string' },
+    description: { description: 'A muted second line under the title.', type: 'string' },
     icon: { description: 'The icon at the start of the row.', type: 'LucideIcon' },
     dot: { description: 'A status dot in place of the icon, as a background class such as `bg-success`.', type: 'string' },
     initials: { description: 'An avatar in place of the icon.', type: 'string' },
