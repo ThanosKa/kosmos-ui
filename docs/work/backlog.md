@@ -15,17 +15,9 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 
 ## Build
 
-- [ ] **Richer showcase.** The landing's Dashboard tab shows more than cards: the data table in full, with faceted filters, the bulk bar and the column menu working, in the dense pro-tool look.
-- [ ] **Empty states.** More empty-state variants (first use, no results, cleared filters, error, no permission) as components or blocks, and use them in the tables, lists and charts that have none yet.
-- [ ] **More navbar options.** Navbar variants: a mega menu with grouped links and descriptions, a centred-links layout, a search slot, and a banner above it.
 - [ ] **Example dashboards.** Full dashboards built only from Kosmos blocks, so visitors and the maintainer can judge the style across a whole app: a CRM (contacts, deals pipeline, activity), an analytics dashboard (traffic, funnels, sources), and one more common kind (e.g. billing and usage, or an admin panel). Each also checks the current app for gaps in components and blocks. Pick which stay free and which become Pro templates (ADR 0003).
-- [ ] **Logo marquee, brand on hover.** Logos sit grey and turn to their own brand colours on hover or focus, as in the reference marquee at https://www.affectui.com/blocks/logo-marquee (MIT, ADR 0010).
 - [ ] **Pricing variants.** More pricing layouts next to the current block, studied from the reference's pricing page.
-- [ ] **Illustrations.** Animated product illustrations for marketing sections, e.g. a layer stack (https://www.affectui.com/illustrations/layer-stack), ported and restyled.
-- [ ] **Motion pieces.** A nicer text reveal (https://www.affectui.com/motion/text-reveal) to replace or sit beside the current one, a shimmer loader (https://www.affectui.com/motion/shimmer-loader), and the rest of the reference's motion set.
 - [ ] **AI product components.** Thinking loader, tool call card, message actions, change summary and the like from the reference, merged with what Kosmos already has (tool-call, tool-approval, run-timeline, prompt composer) into one coherent set, plus new blocks built from them.
-- [ ] **A proper landing page.** The current landing reads as generic. Before building again: study the strongest component-library landings, decide what Kosmos's page must say and show (message, hero, showcase, proof, pricing, path to install), prototype two or three directions, pick one with the maintainer, then build it from blocks. One direction to prototype: follow the reference landing (https://www.affectui.com) closely, section by section, with its kind of motion (animated illustrations in sections, text reveal, shimmer, marquee with brand on hover). Its site source is not public, only its MIT components (github.com/flohoeller/affectui), so the page is rebuilt from those components and Kosmos blocks, restyled. Research notes and screenshots: `.scratch/research/landings/affectui.md`.
-- [ ] **A better bento.** The bento block reads weak. Rebuild it from the Magic UI bento grid (https://magicui.design/docs/components/bento-grid, MIT, ADR 0010), restyled, with live components in the tiles.
 - [ ] **Go live.** When the above is in: release `dev` to `main` (maintainer's PR with a merge commit) and deploy.
 - [ ] **MIT catalogue, wave A.** Port the first wave from the MIT catalogue (mockup and screenshot, device frames, marquee primitive, avatar circles, glow and section wrapper, card, spinner, progress, alert dialog and sheet, login and signup blocks).
 

@@ -11,6 +11,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/registry/kosmos/ui/empty';
+import EmptyStates from '@/registry/kosmos/examples/empty-states';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 export default function EmptyPreview() {
@@ -101,6 +102,10 @@ export default function EmptyPreview() {
             </Empty>
           </div>
         </div>
+      </PreviewSection>
+
+      <PreviewSection title="EmptyState variants">
+        <EmptyStates />
       </PreviewSection>
 
       <PreviewSection title="Inside a table">

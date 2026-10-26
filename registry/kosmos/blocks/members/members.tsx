@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/registry/kosmos/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
@@ -420,9 +420,11 @@ function Members({
           <h3 data-slot="invites-heading" tabIndex={-1} className="text-title outline-none">
             Pending invites
           </h3>
-          <p className="text-small text-muted-foreground tabular-nums">
-            {loading ? 'Loading…' : invites.length === 0 ? 'Nobody is waiting' : countLabel(invites.length, 'invite', 'invites')}
-          </p>
+          {!loading && invites.length === 0 ? null : (
+            <p className="text-small text-muted-foreground tabular-nums">
+              {loading ? 'Loading…' : countLabel(invites.length, 'invite', 'invites')}
+            </p>
+          )}
         </div>
         {loading ? (
           <div className="flex flex-col gap-3">
@@ -430,15 +432,14 @@ function Members({
             <Skeleton className="h-8 w-full" />
           </div>
         ) : invites.length === 0 ? (
-          <Empty className="p-0 py-8">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <Mail />
-              </EmptyMedia>
-              <EmptyTitle render={<h4 />}>No pending invites</EmptyTitle>
-              <EmptyDescription>Invites you send show up here until they are accepted.</EmptyDescription>
-            </EmptyHeader>
-          </Empty>
+          <EmptyState
+            className="p-0 py-8"
+            variant="first-use"
+            headingLevel={4}
+            icon={<Mail />}
+            title="No pending invites"
+            description="Invites you send show up here until they are accepted."
+          />
         ) : (
           <ul className="flex flex-col divide-y divide-border">
             {invites.map((invite) => (

@@ -2,14 +2,13 @@ import Link from 'next/link';
 import { docsRoute, licenseUrl, proUrl } from '@/lib/shared';
 import { Pricing, type PricingPlan } from '@/registry/kosmos/blocks/pricing/pricing';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
-import { cn } from '@/registry/kosmos/lib/cn';
 
 const inlineLink =
   'rounded-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 /**
- * The landing's pricing: Free, which is this repository, and Pro, raised on a card. The Pro link is the brand's Pro
- * mark (`brand-primary`): it opens the store once there is one, and the blocks until then.
+ * The landing's pricing: Free, which is this repository, and Pro, raised on a card. The Pro link opens the store once there
+ * is one, and the blocks until then.
  */
 export function LandingPricing({ componentCount, blockCount }: { componentCount: number; blockCount: number }) {
   const plans: PricingPlan[] = [
@@ -37,10 +36,7 @@ export function LandingPricing({ componentCount, blockCount }: { componentCount:
       period: 'updates included',
       features: ['Everything in Free', 'More variants in every block category', 'Templates you can run as whole apps', 'Installs with the same shadcn CLI'],
       action: (
-        <Link
-          href={proUrl ?? `${docsRoute}/blocks`}
-          className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'brand-primary hover:not-data-disabled:bg-brand-hover')}
-        >
+        <Link href={proUrl ?? `${docsRoute}/blocks`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
           {proUrl ? 'Get Pro' : 'Browse the blocks'}
         </Link>
       ),
@@ -50,13 +46,7 @@ export function LandingPricing({ componentCount, blockCount }: { componentCount:
 
   return (
     <Pricing
-      title={
-        <>
-          Free to build with,
-          <br />
-          Pro when you want more
-        </>
-      }
+      title={null}
       description={null}
       plans={plans}
       footnote={

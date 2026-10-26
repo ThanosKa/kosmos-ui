@@ -508,45 +508,41 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the landing is an ordered list of sections, with the showcase under the hero and no "Built with" labels',
+    name: 'the landing is an ordered list of sections, with the stack under the hero and no "Built with" labels',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const ids = await page.locator('[data-landing-section]').evaluateAll((elements) => elements.map((section) => section.getAttribute('data-landing-section')));
       assert.deepEqual(
         ids,
-        ['hero', 'showcase', 'stack', 'bento', 'inventory', 'pricing', 'faq', 'cta', 'footer'],
-        'the landing runs hero, showcase, stack, bento, inventory, pricing, FAQ, CTA and footer, in that order',
+        ['hero', 'stack', 'bento', 'showcase', 'pricing', 'faq', 'cta', 'footer'],
+        'the landing runs hero, stack, bento, showcase, pricing, FAQ, CTA and footer, in that order',
       );
       assert.equal(await page.locator('[data-slot="testimonials"], [data-slot^="testimonial"]').count(), 0, 'no testimonials on the landing');
       assert.equal(await page.locator('[data-block-label]').count(), 0, 'no "Built with" labels');
       assert.equal(await page.getByText('Built with', { exact: false }).count(), 0, 'no "Built with" text');
-      assert.equal(await page.locator('main [role="radiogroup"], main [data-slot="preset-picker"]').count(), 0, 'no preset controls on the landing');
+      assert.equal(await page.locator('main [data-slot="preset-picker"], main [role="radiogroup"][aria-label="Preset"]').count(), 0, 'no preset controls on the landing');
       const tabs = page.locator('[data-landing-section="showcase"]').getByRole('tablist', { name: 'Screens' });
-      assert.deepEqual(await tabs.getByRole('tab').allTextContents(), ['Dashboard', 'Auth', 'Marketing', 'Settings'], 'one tab per screen');
+      assert.deepEqual(await tabs.getByRole('tab').allTextContents(), ['Dashboard', 'Roadmap', 'Auth', 'Settings'], 'one tab per screen');
       assert.equal(await page.locator('[role="dialog"]:visible, [role="alertdialog"]:visible').count(), 0, 'nothing pops up on load');
       await close();
     },
   },
   {
-    name: 'the hero shows the news, the title, one line, Browse components and GitHub, and the install command per package manager',
+    name: 'the hero shows the title, one line, Get started and Browse blocks, and a live dashboard in a browser frame with a glow',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const hero = page.locator('[data-landing-section="hero"]');
       assert.equal(await hero.locator('h1').count(), 1, 'one h1');
       assert.equal(await hero.locator('[data-slot="hero-description"]').count(), 1, 'one line under the title');
-      assert.equal(await hero.locator('[data-slot="hero-announcement"] a').getAttribute('href'), '/presets', 'the news links to the Presets page');
-      assert.equal(await hero.getByRole('link', { name: 'Browse components' }).getAttribute('href'), '/docs/components', 'Browse components');
-      assert.match((await hero.getByRole('link', { name: 'GitHub' }).getAttribute('href')) ?? '', /^https:\/\/github\.com\//, 'GitHub');
-      const managers = hero.getByRole('tablist', { name: 'Package manager' });
-      assert.deepEqual(await managers.getByRole('tab').allTextContents(), ['npm', 'pnpm', 'yarn', 'bun'], 'one tab per package manager');
-      assert.equal(await hero.getByRole('button', { name: /^Copy command: npx shadcn@latest registry add @kosmos=/ }).count(), 1, 'the npm command with a copy button');
-      await managers.getByRole('tab', { name: 'pnpm' }).click();
-      assert.equal(await hero.getByRole('button', { name: /^Copy command: pnpm dlx shadcn@latest registry add @kosmos=/ }).count(), 1, 'pnpm switches the command');
+      assert.equal(await hero.getByRole('link', { name: 'Get started' }).getAttribute('href'), '/docs/installation', 'Get started');
+      assert.equal(await hero.getByRole('link', { name: 'Browse blocks' }).getAttribute('href'), '/docs/blocks', 'Browse blocks');
+      assert.equal(await hero.locator('[data-slot="hero-product"] [data-slot="stats-overview"]').count(), 1, 'the live dashboard');
+      assert.equal(await hero.locator('[data-slot="glow"]').count(), 1, 'the glow behind it');
+      assert.equal(await hero.locator('[data-slot="hero-announcement"], [data-slot="hero-install"]').count(), 0, 'no announcement or install command');
       const variants = await openPage(browser, '/docs/blocks/hero');
       const variant = variants.page.locator('[data-block-variant]');
-      assert.equal(await variant.count(), 1, 'the Hero category page shows one variant');
-      assert.equal(await variant.getAttribute('id'), 'hero', 'the free Hero variant');
-      assert.equal(await variant.getAttribute('data-tier'), 'free', 'Hero is free');
+      assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.id)), ['hero', 'hero-product'], 'the Hero category page shows the hero and hero-product variants');
+      assert.deepEqual(await variant.evaluateAll((items) => items.map((item) => item.getAttribute('data-tier'))), ['free', 'free'], 'both Hero variants are free');
       await variants.close();
       await close();
     },
@@ -566,7 +562,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the pricing shows Free and Pro, Pro raised, and the brand colour only on the logo and the Pro link',
+    name: 'the pricing shows Free and Pro, Pro raised, and the brand colour only on the logo',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const pricing = page.locator('[data-landing-section="pricing"]');
@@ -585,9 +581,8 @@ const checks: Check[] = [
         }
         return marks;
       }, brand);
-      const outside = branded.filter((mark) => !/^(header|footer):(svg|circle|path|ellipse)/.test(mark) && !/^pricing:a:(Get Pro|Browse the blocks)$/.test(mark));
-      assert.deepEqual(outside, [], 'the brand colour shows nowhere but the logo and the Pro link');
-      assert.ok(branded.some((mark) => mark.startsWith('pricing:a:')), 'the Pro link takes the brand colour');
+      const outside = branded.filter((mark) => !/^(header|footer):(svg|g|circle|path|ellipse)/.test(mark));
+      assert.deepEqual(outside, [], 'the brand colour shows nowhere but the logo');
       await close();
     },
   },
@@ -604,9 +599,8 @@ const checks: Check[] = [
       await visible('[data-landing-section="hero"]', 'Dashboard UI with the details already done');
       await visible('[data-landing-section="hero"]', /^\$/);
       await visible('[data-landing-section="stack"]', 'Tailwind CSS');
-      await visible('[data-landing-section="showcase"]', 'acme.example/overview');
-      await visible('[data-landing-section="bento"]', 'Search Acme');
-      await visible('[data-landing-section="inventory"]', 'Dropdown menu');
+      await visible('[data-landing-section="showcase"]', 'acme.example/projects');
+      await visible('[data-landing-section="bento"]', 'Go to Projects');
       await visible('[data-landing-section="pricing"]', 'Pay once');
       await visible('[data-landing-section="faq"]', 'Is Kosmos UI free?');
       await visible('[data-landing-section="cta"]', 'Read the installation guide');
@@ -770,7 +764,7 @@ const checks: Check[] = [
     },
   },
   {
-    name: 'the bento shows real Kosmos components, each with a one-line caption and a link to its docs',
+    name: 'the bento shows live Kosmos components and illustrations, each with a one-line caption and a link to its docs',
     async run(browser) {
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="bento"]');
@@ -783,52 +777,14 @@ const checks: Check[] = [
           components: [...item.querySelectorAll('[data-slot="bento-item-visual"] [data-slot]')].map((element) => element.getAttribute('data-slot')),
         })),
       );
-      assert.ok(tiles.length >= 4, `bento tiles: ${tiles.length}`);
+      assert.ok(tiles.length >= 6, `bento tiles: ${tiles.length}`);
       for (const tile of tiles) {
         assert.ok(tile.title, 'a tile has a title');
-        assert.match(tile.href ?? '', /^\/docs\/components\/[a-z-]+$/, `${tile.title}: links to its component page`);
+        assert.match(tile.href ?? '', /^\/docs\/(components|blocks)\/[a-z-]+$/, `${tile.title}: links to its docs page`);
         assert.ok(tile.caption && !tile.caption.includes('\n'), `${tile.title}: one line of caption`);
         assert.ok(tile.components.length > 0, `${tile.title}: shows a real component`);
         await fetchText(tile.href!);
       }
-      const labels = await section.locator('[data-block-label] a[href]').evaluateAll((links) => links.map((link) => new URL((link as HTMLAnchorElement).href).pathname));
-      assert.deepEqual(labels, ['/docs/blocks/bento'], 'bento: labelled with the Bento block');
-      const variants = await openPage(browser, '/docs/blocks/bento');
-      const variant = variants.page.locator('[data-block-variant]');
-      assert.equal(await variant.count(), 1, 'the Bento category page shows one variant');
-      assert.equal(await variant.getAttribute('id'), 'bento', 'the free Bento variant');
-      assert.equal(await variant.getAttribute('data-tier'), 'free', 'Bento is free');
-      await variants.close();
-      await close();
-    },
-  },
-  {
-    name: 'the inventory counts components and block categories from the registry, and shows six of each with a link to all',
-    async run(browser) {
-      const { page, close } = await openPage(browser, '/');
-      const section = page.locator('[data-landing-section="inventory"]');
-      const shelves = section.getByRole('tablist', { name: 'Library' });
-      const counts = {
-        Components: authoredItems.filter((item) => item.type === 'registry:ui').length,
-        Blocks: new Set(authoredBlocks.map(categoryUrl)).size,
-      };
-      for (const [name, count] of Object.entries(counts)) {
-        await shelves.getByRole('tab', { name: `${name} ${count}` }).click();
-        const panel = section.getByRole('tabpanel');
-        const cards = await panel.locator('[data-slot="bento-item"]').evaluateAll((items) =>
-          items.map((item) => ({ href: item.querySelector('h3 a[href]')?.getAttribute('href'), image: item.querySelector('img')?.getAttribute('src') })),
-        );
-        assert.equal(cards.length, 6, `${name}: six cards`);
-        for (const card of cards) {
-          assert.match(card.href ?? '', new RegExp(`^/docs/${name.toLowerCase()}/[a-z-]+$`), `${name}: a card links to its docs page`);
-          assert.ok(card.image, `${name}: a card shows its thumbnail`);
-        }
-        const all = panel.getByRole('link', { name: `See all ${count} ${name.toLowerCase()}` });
-        assert.equal(await all.getAttribute('href'), `/docs/${name.toLowerCase()}`, `${name}: links to all ${count}`);
-      }
-      const phone375 = await openPage(browser, '/', phone);
-      assert.equal(await phone375.page.locator('[data-landing-section="inventory"] [data-slot="bento-item"]:visible').count(), 3, 'a phone shows the first three cards');
-      await phone375.close();
       await close();
     },
   },
@@ -838,11 +794,11 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/');
       const section = page.locator('[data-landing-section="showcase"]');
       const tabs = section.getByRole('tablist', { name: 'Screens' });
-      for (const [name, address] of [['Auth', 'acme.example/login'], ['Marketing', 'acme.example'], ['Settings', 'acme.example/settings'], ['Dashboard', 'acme.example/overview']]) {
+      for (const [name, address] of [['Roadmap', 'acme.example/roadmap'], ['Auth', 'acme.example/login'], ['Settings', 'acme.example/settings'], ['Dashboard', 'acme.example/projects']]) {
         await tabs.getByRole('tab', { name }).click();
         assert.equal(await tabs.getByRole('tab', { name }).getAttribute('aria-selected'), 'true', `${name}: selected`);
         await section.getByText(address, { exact: true }).waitFor();
-        assert.equal(await section.getByRole('tabpanel').count(), 1, `${name}: one panel`);
+        await page.waitForFunction(() => document.querySelectorAll('[data-landing-section="showcase"] [data-slot="showcase-frame"] > [role="tabpanel"]').length === 1);
       }
       await close();
     },
@@ -853,7 +809,7 @@ const checks: Check[] = [
       const { page, close } = await openPage(browser, '/', phone);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       assert.ok(overflow <= 0, `the page scrolls ${overflow}px sideways`);
-      const cut = await page.locator('[data-landing-section="showcase"]').locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
+      const cut = await page.locator('[data-landing-section="hero"]').locator('[data-slot="stats-overview"] [role="tab"] .truncate').evaluateAll((spans) =>
         spans.filter((span) => span.scrollWidth > span.clientWidth + 1).map((span) => span.textContent),
       );
       assert.deepEqual(cut, [], 'truncated metric text');

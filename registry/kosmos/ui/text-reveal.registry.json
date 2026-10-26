@@ -3,7 +3,7 @@
   "name": "text-reveal",
   "type": "registry:ui",
   "title": "Text reveal",
-  "description": "Text that comes in word by word as the page first paints, from a blur, with no JavaScript. A plain fade under reduced motion. Ported from Magic UI (MIT).",
+  "description": "Text that rises out of a soft blur word by word, staggered, once: as the page first paints or when it first scrolls into view. A plain fade under reduced motion. Ported from Magic UI (MIT).",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "misc" },
   "files": [

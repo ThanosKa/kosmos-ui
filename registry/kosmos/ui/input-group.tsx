@@ -86,6 +86,8 @@ function InputGroupInput({ className, type = 'text', ...props }: InputGroupInput
         'h-full w-full min-w-16 flex-1 rounded-[inherit] bg-transparent px-3 text-base text-foreground sm:text-body',
         'dark:scheme-dark',
         'placeholder:text-muted-foreground',
+        // The native clear button of a search field, redrawn in the muted text color: the browser paints it in its own blue.
+        "[&::-webkit-search-cancel-button]:size-3.5 [&::-webkit-search-cancel-button]:cursor-pointer [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:bg-muted-foreground [&::-webkit-search-cancel-button]:mask-[url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%222.5%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M18%206%206%2018M6%206l12%2012%22/%3E%3C/svg%3E')] [&::-webkit-search-cancel-button]:mask-contain [&::-webkit-search-cancel-button]:mask-center [&::-webkit-search-cancel-button]:mask-no-repeat",
         // The group draws the focus line and halo around the whole field.
         'outline-none disabled:cursor-not-allowed',
         className,

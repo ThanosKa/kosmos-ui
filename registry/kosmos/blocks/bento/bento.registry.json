@@ -3,15 +3,20 @@
   "name": "bento",
   "type": "registry:block",
   "title": "Bento",
-  "description": "A grid of tiles for a marketing page, each a live piece of your product above one line of caption, under a title. It lays itself out by its own width, not the screen's.",
+  "description": "A grid of tiles for a marketing page, each a live piece of your product above one line of caption and a link, under a title. The visual lifts on hover. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/field", "@kosmos/meter", "@kosmos/switch"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/chart", "@kosmos/chart-card", "@kosmos/command", "@kosmos/meter", "@kosmos/segmented-control", "@kosmos/table"],
   "categories": ["bento"],
   "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
   "files": [
     {
       "path": "registry/kosmos/blocks/bento/bento.tsx",
       "type": "registry:component"
+    },
+    {
+      "path": "registry/kosmos/blocks/bento/LICENSE-MAGIC-UI",
+      "type": "registry:file",
+      "target": "~/LICENSE-MAGIC-UI"
     }
   ]
 }
