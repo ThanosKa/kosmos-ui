@@ -321,7 +321,7 @@ function PageHeader({
       </div>
 
       {children !== undefined ? (
-        <TabsContent value={tab} className="flex min-h-0 flex-col">
+        <TabsContent value={tab} className="flex min-h-0 flex-col focus-visible:-outline-offset-2">
           {children}
         </TabsContent>
       ) : null}

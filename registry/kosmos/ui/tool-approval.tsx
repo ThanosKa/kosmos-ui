@@ -119,7 +119,7 @@ function ToolApproval({
       {description ? <p className="mt-2 max-w-[40em] text-small text-muted-foreground">{description}</p> : null}
 
       <Collapsible open={!decided}>
-        <CollapsibleContent className="-m-1 p-1">
+        <CollapsibleContent className="-m-3 p-3">
           {details && details.length > 0 ? (
             <Collapsible defaultOpen={defaultDetailsOpen} className="mt-2">
               <CollapsibleTrigger variant="ghost" size="sm" className="-ms-2">

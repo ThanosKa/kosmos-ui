@@ -25,7 +25,7 @@ function SampleDashboard() {
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
       <AppSidebar activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
-      <SidebarInset render={<div />} className="overflow-y-auto">
+      <SidebarInset render={<div />} className="scroll-p-1 overflow-y-auto">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
           <h3 className="truncate text-body font-medium">Overview</h3>
@@ -116,7 +116,7 @@ function Showcase({ screens = sampleScreens, label = 'Screens', defaultScreen, c
             <TabsContent
               key={item.id}
               value={item.id}
-              className="h-[34rem] overflow-x-hidden overflow-y-auto bg-background transition-[opacity] duration-base starting:opacity-0 @3xl:h-[40rem]"
+              className="h-[34rem] scroll-p-1 focus-visible:-outline-offset-2 overflow-x-hidden overflow-y-auto bg-background transition-[opacity] duration-base starting:opacity-0 @3xl:h-[40rem]"
             >
               {item.content}
             </TabsContent>

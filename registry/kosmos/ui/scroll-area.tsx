@@ -61,7 +61,8 @@ function ScrollArea({
         {...(focusable ? null : { tabIndex: -1 })}
         className={cn(
           // `relative` keeps absolutely positioned content (an `sr-only` label) inside the clip, so it never widens the page.
-          'relative min-h-0 flex-auto overscroll-x-contain rounded-[inherit] outline-none',
+          // `scroll-p-1`: focus scrolls an item into view with 4px to spare, so its focus ring is not cut by the edge.
+          'relative min-h-0 flex-auto scroll-p-1 overscroll-x-contain rounded-[inherit] outline-none',
           // Room for the scrollbar, so it never covers content.
           'data-has-overflow-x:pb-3 data-has-overflow-y:pe-3',
           fade && [

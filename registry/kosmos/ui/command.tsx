@@ -102,7 +102,7 @@ function CommandDialog({
             <DialogTitle className="sr-only">{title}</DialogTitle>
             <DialogDescription className="sr-only">{description}</DialogDescription>
             {children}
-            <DialogClose className="sr-only">Close</DialogClose>
+            <DialogClose tabIndex={-1} className="sr-only">Close</DialogClose>
           </DialogPopup>
         </DialogViewport>
       </DialogPortal>
