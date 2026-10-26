@@ -6,7 +6,7 @@ const browserFrame = cva('', {
   variants: {
     tilt: {
       false: '',
-      true: 'motion-safe:rotate-x-6 motion-safe:transition-[transform] motion-safe:duration-slow motion-safe:ease-power3-out motion-safe:hover:rotate-x-0',
+      true: 'motion-safe:rotate-x-6 motion-safe:transition-[transform] motion-safe:duration-slow motion-safe:ease-power3-out motion-safe:group-hover/frame:rotate-x-0',
     },
   },
   defaultVariants: { tilt: false },
@@ -25,7 +25,7 @@ type BrowserFrameProps = Omit<React.ComponentProps<'div'>, 'title'> &
  */
 function BrowserFrame({ url, tilt = false, className, children, ...props }: BrowserFrameProps) {
   return (
-    <div data-slot="browser-frame" className={cn(tilt && 'perspective-distant', className)} {...props}>
+    <div data-slot="browser-frame" className={cn(tilt && 'group/frame perspective-distant', className)} {...props}>
       <div className={cn('overflow-hidden rounded-2xl border border-transparent bg-card shadow-card', browserFrame({ tilt }))}>
         <div
           data-slot="browser-frame-bar"
