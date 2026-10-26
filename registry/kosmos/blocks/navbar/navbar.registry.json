@@ -3,7 +3,7 @@
   "name": "navbar",
   "type": "registry:block",
   "title": "Navbar",
-  "description": "The top of a marketing page: the product, its links and dropdowns, and actions at the end. Sticks to the top, and opens into a sheet on a phone. Lays itself out by its own width.",
+  "description": "The top of a marketing page: the product, its links and dropdowns, and actions at the end. Sticks to the top, and opens into a sheet on a phone. It lays itself out by its own width, not the screen's.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/drawer", "@kosmos/scroll-area"],
   "categories": ["navbar"],

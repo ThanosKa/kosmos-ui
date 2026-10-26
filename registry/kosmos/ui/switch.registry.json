@@ -3,7 +3,7 @@
   "name": "switch",
   "type": "registry:ui",
   "title": "Switch",
-  "description": "An on/off switch on Base UI for settings that apply at once, with a sliding thumb, a focus outline and an invalid ring. Beside a FieldLabel in a horizontal Field it takes its label from the field.",
+  "description": "A switch on Base UI for settings that apply at once, with a sliding thumb, a focus outline and an invalid ring. Beside a FieldLabel in a horizontal Field it takes its label from the field.",
   "dependencies": ["@base-ui/react@^1.9.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
   "meta": { "group": "forms" },

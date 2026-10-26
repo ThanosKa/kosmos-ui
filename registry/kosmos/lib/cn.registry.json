@@ -3,7 +3,7 @@
   "name": "cn",
   "type": "registry:lib",
   "title": "cn",
-  "description": "Class merging that knows the Kosmos type roles (text-caption to text-display) are font sizes, so they never drop a text color.",
+  "description": "Merges class names and treats the Kosmos type roles, text-caption to text-display, as font sizes, so merging never removes a text color.",
   "dependencies": ["cn@^0.4.0"],
   "files": [
     {
