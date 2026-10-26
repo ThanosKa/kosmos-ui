@@ -3,9 +3,12 @@
 /*
  * How a site page drives a preview iframe that shows several screens (the landing's dashboard, the Presets page):
  * the page sends the screen through `postMessage`, and the frame reports a screen a visitor opens inside it. The
- * preset and the theme need no message: the frame's document reads the site's own (`site-preset.tsx`, next-themes).
+ * preset and the theme need no message: the frame's document reads the site's own (`site-preset.tsx`, next-themes),
+ * and the page copies them into the frame in the same frame it changes them (`mirrorSiteStyle`).
  */
 import * as React from 'react';
+import { sitePresetStyleId } from '@/lib/site-preset';
+import { withoutTransitions } from './site-preset';
 
 const hostSource = 'kosmos-site';
 const frameSource = 'kosmos-preview';
@@ -30,8 +33,45 @@ function readMessage<M extends HostMessage | FrameMessage>(event: MessageEvent, 
   return data && typeof data === 'object' && data.source === from ? (data as M) : null;
 }
 
+/**
+ * The frame learns of a preset or theme change through a storage event, two to five frames after the page changed it,
+ * so the frame showed the old preset or theme while the page already had the new one. A mutation observer runs before
+ * the next paint: it copies the page's dark class, color scheme and preset CSS into the frame's document at once, and
+ * the frame's own sync then finds nothing left to change.
+ */
+function mirrorSiteStyle(frame: React.RefObject<HTMLIFrameElement | null>) {
+  const mirror = () => {
+    const target = frame.current?.contentDocument;
+    if (!target?.head) return;
+    const root = document.documentElement;
+    const targetRoot = target.documentElement;
+    const css = document.getElementById(sitePresetStyleId)?.textContent ?? '';
+    const style = target.getElementById(sitePresetStyleId);
+    const dark = root.classList.contains('dark');
+    if (
+      (style?.textContent ?? '') === css &&
+      targetRoot.classList.contains('dark') === dark &&
+      targetRoot.style.colorScheme === root.style.colorScheme
+    ) {
+      return;
+    }
+    withoutTransitions(() => {
+      const el = style ?? target.head.appendChild(Object.assign(target.createElement('style'), { id: sitePresetStyleId }));
+      el.textContent = css;
+      targetRoot.classList.toggle('dark', dark);
+      targetRoot.style.colorScheme = root.style.colorScheme;
+    }, target);
+  };
+  const observer = new MutationObserver(mirror);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+  observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+  return () => observer.disconnect();
+}
+
 /** The page side: sends `page` each time it changes or the frame loads again, and reports screens opened inside the frame through `onPage`. */
 export function usePreviewHost(frame: React.RefObject<HTMLIFrameElement | null>, { page, onPage }: { page: string; onPage: (page: string) => void }) {
+  React.useEffect(() => mirrorSiteStyle(frame), [frame]);
+
   // Counts the frame's loads: each fresh document starts on its first screen and needs the page's screen again.
   const [loads, setLoads] = React.useState(0);
   const onPageRef = React.useRef(onPage);

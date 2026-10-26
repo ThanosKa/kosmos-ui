@@ -7,16 +7,9 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 
 ## Checks
 
-- [ ] **Docs writing.** Review the landing page and the docs pages with the pstack technical-writing skill (https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) and fix what it finds.
-- [ ] **Presets are downloadable.** Every preset a visitor picks can be taken away: the DESIGN.md downloads as a file, the CSS copies for light and dark, and the `preset-<id>` registry item installs with the shadcn CLI in a clean app.
-- [ ] **Branch-wide code review.** The code review at the end of the black and white spec was skipped. Run it over the release and fix the findings.
-- [ ] **Light reviews to finish.** Items that skipped the full `build-component` review (better-interface, break-ui, mobile-native): landing (15 and its revision), stat and chart cards (18), combobox and tags input (22), settings (25), members and invites (26). Also check the calendar (24) in the browser after its last fixes.
-- [ ] **Motion across the app.** Review every animation on the site and in the components (entrances, blur fades, marquee, flickering grid, menus, dialogs) with `review-animations`, in light and dark and under reduced motion.
-- [ ] **Get code looks like code.** The Presets page's "Get code" dialog shows the CSS, the registry command and the DESIGN.md as plain black and white text. Show them syntax-highlighted, like an editor, with the docs' code-block highlighting in light and dark.
-- [ ] **Presets page flicker.** On the Presets page, the preset tab flickers when you click things. Find the cause (likely the preset being reapplied to the document or the preview iframe on each change) and fix it.
 - [ ] **Retro on the black and white run.** What cost the most tokens and time (full review cycles on every ticket, Opus everywhere, usage limits, merges, disk), what to keep, and how the next spec should run (model, review depth, concurrency).
 - [ ] **Rules that check agents' work.** Use the `writing-for-agents` skill to tighten AGENTS.md and the skills, and turn the rules agents broke this run into lint or test checks so they fail automatically: tokens only (no raw colours), the brand colour never in registry items, a third-party notice on ported items, no key-like demo strings, no blurred sticky headers, the docs-check assertions kept in sync.
-- [ ] **System design review.** Review the architecture with the `codebase-design` skill: the presets module, the registry build and checks, the preview and docs pipeline, and the shared lib items (e.g. `useControlled` is copied in three blocks).
+- [ ] **Act on the design review.** `docs/work/design-review.md` ranks the findings of the system design review (the `useControlled` dedupe is done). Pick which to do.
 - [ ] **Open decisions.** Go through the decisions collected during the run (`.scratch/decisions-black-and-white.md`) and settle each one.
 
 ## Build
