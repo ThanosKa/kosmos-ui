@@ -1,26 +1,39 @@
 'use client';
 
-import { Code } from 'lucide-react';
+import { Code, Download } from 'lucide-react';
 import { CodeBlock, Pre } from '@/components/docs/code-block';
 import { PackageManagerTabs } from '@/components/docs/docs-tabs';
+import { LiveHighlightedCode } from '@/components/docs/live-highlighted-code';
 import { chosenPreset, presetCss, presetDesignMd, presetItemName, type PresetChoice } from '@/lib/presets';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/registry/kosmos/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
-/** Code in a Kosmos code block, unhighlighted: it is written in the browser from the visitor's choice. */
-function PlainCode({ code, title, embedded }: { code: string; title?: string; embedded?: boolean }) {
+type ChosenCodeProps = { code: string; lang: string; title?: string; embedded?: boolean };
+
+/** Code in a Kosmos code block, highlighted in the browser as the visitor's choice changes; plain until the first highlight is ready. */
+function ChosenCode({ code, lang, title, embedded }: ChosenCodeProps) {
+  const className = embedded ? undefined : 'my-0';
   return (
-    <CodeBlock title={title} embedded={embedded} className={embedded ? undefined : 'my-0'}>
-      <Pre>
-        <code>
-          {code
-            .replace(/\n$/, '')
-            .split('\n')
-            .flatMap((line, index) => [index ? '\n' : null, <span key={index} className="line">{line}</span>])}
-        </code>
-      </Pre>
-    </CodeBlock>
+    <LiveHighlightedCode
+      code={code}
+      lang={lang}
+      title={title}
+      embedded={embedded}
+      className={className}
+      fallback={
+        <CodeBlock title={title} embedded={embedded} className={className}>
+          <Pre>
+            <code>
+              {code
+                .replace(/\n$/, '')
+                .split('\n')
+                .flatMap((line, index) => [index ? '\n' : null, <span key={index} className="line">{line}</span>])}
+            </code>
+          </Pre>
+        </CodeBlock>
+      }
+    />
   );
 }
 
@@ -32,11 +45,12 @@ type PresetCodeDialogProps = {
   registryAdd: string;
 };
 
-/** "Get code": the chosen preset as CSS, as a registry command and as a DESIGN.md, each with a copy button. */
+/** "Get code": the chosen preset as CSS, as a registry command and as a DESIGN.md, each with a copy button, and the DESIGN.md as a download. */
 export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDialogProps) {
   const preset = chosenPreset(choice);
   const item = presetItemName(choice);
   const managers = Object.keys(runners);
+  const designMd = presetDesignMd(preset);
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="primary" />}>
@@ -58,7 +72,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
             </TabsList>
             <TabsContent value="css" className="flex flex-col gap-3">
               <p className="text-small text-muted-foreground">Paste it after the Kosmos tokens in your global CSS: light on <code className="font-mono">:root</code>, dark on <code className="font-mono">.dark</code>.</p>
-              <PlainCode title="app/globals.css" code={presetCss(preset)} />
+              <ChosenCode title="app/globals.css" lang="css" code={presetCss(preset)} />
             </TabsContent>
             <TabsContent value="registry" className="flex flex-col gap-3">
               <p className="text-small text-muted-foreground">Adds the @kosmos registry once, then installs the tokens with this preset over them.</p>
@@ -67,14 +81,24 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
                 panels={Object.fromEntries(
                   managers.map((manager) => [
                     manager,
-                    <PlainCode key={manager} embedded code={`${runners[manager]} ${registryAdd}\n${runners[manager]} add @kosmos/${item}`} />,
+                    <ChosenCode key={manager} embedded lang="bash" code={`${runners[manager]} ${registryAdd}\n${runners[manager]} add @kosmos/${item}`} />,
                   ]),
                 )}
               />
             </TabsContent>
             <TabsContent value="design" className="flex flex-col gap-3">
-              <p className="text-small text-muted-foreground">Save it as DESIGN.md at the root of your project, so an agent builds new screens in this preset.</p>
-              <PlainCode title="DESIGN.md" code={presetDesignMd(preset)} />
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-small text-muted-foreground">Save it as DESIGN.md at the root of your project, so an agent builds new screens in this preset.</p>
+                <Button
+                  variant="secondary"
+                  nativeButton={false}
+                  render={<a href={`data:text/markdown;charset=utf-8,${encodeURIComponent(designMd)}`} download="DESIGN.md" />}
+                >
+                  <Download aria-hidden data-icon="inline-start" />
+                  Download
+                </Button>
+              </div>
+              <ChosenCode title="DESIGN.md" lang="md" code={designMd} />
             </TabsContent>
           </Tabs>
         </DialogBody>
