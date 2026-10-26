@@ -1,12 +1,12 @@
 # Kosmos UI
 
-Kosmos UI is an open source design system for dashboard app UI: components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, quick motion and dense typography. You install them with the shadcn CLI, and the code lands in your project for you to own and edit.
+Kosmos UI is an open source design system for dashboard app UI: components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, quick motion and dense typography. You install them with the shadcn CLI. The code lands in your project as plain files that you own and edit.
 
 ```bash
 npx shadcn add @kosmos/button
 ```
 
-This repo holds everything: the components, the blocks, the registry they are installed from, and the docs site.
+This repo holds the components, the blocks, the registry they install from, and the docs site.
 
 ## Development
 
@@ -18,11 +18,11 @@ pnpm install
 pnpm dev
 ```
 
-Then open http://localhost:3000.
+The dev server runs at http://localhost:3000.
 
-To take the review screenshots (`pnpm screenshots <name>`), install Playwright's browser once with `pnpm exec playwright install chromium`. [CONTRIBUTING.md](CONTRIBUTING.md#screenshots-and-browser-checks) also covers `agent-browser`.
+To take the review screenshots with `pnpm screenshots <name>`, first install the Playwright browser once with `pnpm exec playwright install chromium`. [Screenshots and browser checks](CONTRIBUTING.md#screenshots-and-browser-checks) in CONTRIBUTING.md also covers `agent-browser`.
 
-Before you open a pull request:
+Before you open a pull request, run these three commands:
 
 ```bash
 pnpm types:check
@@ -32,7 +32,7 @@ pnpm build
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Design decisions are recorded in [docs/adr](docs/adr).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before you open an issue or a pull request. [docs/adr](docs/adr) records the design decisions.
 
 ## License
 

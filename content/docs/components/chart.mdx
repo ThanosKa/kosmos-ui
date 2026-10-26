@@ -23,7 +23,7 @@ const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisf
 <GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
 ```
 
-`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of grey, so they read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent greys stay apart. For more than five series, group the smallest into "Other".
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of gray, so they read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
 
 ## Examples
 
@@ -45,7 +45,7 @@ A small trend line with no axes, for a stat tile or a table cell. It reads as on
 
 <ComponentPreview name="chart-custom" />
 
-Give the container a height or an aspect ratio; it is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
+Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
 
 ## Accessibility
 
@@ -98,7 +98,7 @@ Accepts all `<div>` props.
 
 <TypeTable
   type={{
-    config: { description: 'The series, keyed by data key; each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
+    config: { description: 'The series, keyed by data key. Each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
     children: { description: 'One Recharts chart, such as `<BarChart>`.', type: 'ReactElement', required: true },
   }}
 />

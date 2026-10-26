@@ -17,11 +17,11 @@ import { StatsOverview } from '@/components/stats-overview';
 <StatsOverview metrics={metrics} topEvents={topEvents} />;
 ```
 
-Without props it shows sample metrics. Pass the metrics and top events for each range (`7d`, `30d` and `90d`); the overview switches between them. To load a range only when it is picked, control `range` and fill in its data in `onRangeChange`.
+Without props it shows sample metrics. Pass the metrics and top events for each range (`7d`, `30d` and `90d`). The overview switches between them. To load a range only when it is picked, control `range` and fill in its data in `onRangeChange`.
 
 ## What it does
 
-- **Metrics as tabs**: each metric shows its label, its value and its change against the period before, with the [Stat card](/docs/components/stat-card) value and delta: an arrow, a sign and a percentage, in a green or red tag. Set `goodWhen: 'down'` for a metric like errors, where falling is good, or `'neither'` to keep it grey. A change in a `percent` metric reads in points. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
+- **Metrics as tabs**: each metric shows its label, its value and its change against the period before, with the [Stat card](/docs/components/stat-card) value and delta: an arrow, a sign and a percentage, in a green or red tag. Set `goodWhen: 'down'` for a metric like errors, where falling is good, or `'neither'` to keep it gray. A change in a `percent` metric reads in points. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
 - **Chart**: the selected metric over the range against the same span before it, on a [Chart card](/docs/components/chart-card) with the range switch in its header, a tooltip and a hidden data table for screen readers.
 - **Top events**: the most frequent events on a chart card of their own, each with a bar to scale against the first.
 - **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container, two on a narrower one, and one per row, value beside the label, under 448px, so a value never cuts off on a phone. The top events move beside the chart from 1152px.

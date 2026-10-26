@@ -21,7 +21,7 @@ import { DatePicker, DateRangePicker } from '@/components/ui/date-picker';
 <DatePicker aria-label="Due date" value={date} onValueChange={setDate} />
 ```
 
-The field opens a [Calendar](/docs/components/calendar) in a popover, with the focus on the picked day, or today. Picking a day closes it and gives the focus back to the field, and so does Escape. The field has the look of a [Select](/docs/components/select) trigger and hugs its value; give it a width with `className`.
+The field opens a [Calendar](/docs/components/calendar) in a popover, with the focus on the picked day, or today. Picking a day closes it and gives the focus back to the field, and so does Escape. The field has the look of a [Select](/docs/components/select) trigger and hugs its value. Give it a width with `className`.
 
 Name the field with `aria-label`, or with a label that points to its `id`, as in the example above. Pass `name` and the day goes with the form as `2026-10-25`.
 
@@ -29,7 +29,7 @@ Name the field with `aria-label`, or with a label that points to its `id`, as in
 
 ### Range
 
-`DateRangePicker` picks a first and a last day over two months, one on a phone. Beside them sit quick ranges: today, yesterday, the last 7, 30 and 90 days, this month and last month. A quick range picks at once; otherwise the range is set when its second day is picked. The field names the quick range a value matches, such as "Last 30 days", and writes the dates for any other.
+`DateRangePicker` picks a first and a last day over two months, one on a phone. Beside them sit quick ranges: today, yesterday, the last 7, 30 and 90 days, this month and last month. A quick range picks at once. Otherwise the range is set when its second day is picked. The field names the quick range a value matches, such as "Last 30 days", and writes the dates for any other.
 
 <ComponentPreview name="date-picker-range" />
 

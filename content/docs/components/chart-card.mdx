@@ -48,7 +48,7 @@ import {
 
 ### States
 
-`state` on the card picks what `ChartCardContent` shows: the chart (`ready`), a skeleton (`loading`), an empty state (`empty`) or an error (`error`). Each takes the chart's height, 240px by default, so the card never jumps as the data arrives. Name the empty and error states with `emptyTitle`, `emptyDescription`, `errorTitle` and `errorDescription`; `onRetry` adds a Try again button to the error.
+`state` on the card picks what `ChartCardContent` shows: the chart (`ready`), a skeleton (`loading`), an empty state (`empty`) or an error (`error`). Each takes the chart's height, 240px by default, so the card never jumps as the data arrives. Name the empty and error states with `emptyTitle`, `emptyDescription`, `errorTitle` and `errorDescription`. `onRetry` adds a Try again button to the error.
 
 <ComponentPreview name="chart-card-states" />
 
@@ -58,7 +58,7 @@ import {
 
 <ComponentPreview name="chart-card-legend" />
 
-The series take `--chart-1` to `--chart-5` in order: ink, or the preset's accent, then four steps of grey. In a stacked chart, give each segment a 1px `stroke` in `var(--card)` so adjacent greys stay apart.
+The series take `--chart-1` to `--chart-5` in order: ink, or the preset's accent, then four steps of gray. In a stacked chart, give each segment a 1px `stroke` in `var(--card)` so adjacent grays stay apart.
 
 ## Accessibility
 
@@ -113,7 +113,7 @@ Renders a `<ul>` with a swatch and a name for each series.
 
 ### ChartCardContent
 
-Renders a `<div>` that holds the chart, or the state in its place. It is at least 240px high, not counting its padding; give a taller chart a `min-h-*` to match.
+Renders a `<div>` that holds the chart, or the state in its place. It is at least 240px high, not counting its padding. Give a taller chart a `min-h-*` to match.
 
 <TypeTable
   type={{

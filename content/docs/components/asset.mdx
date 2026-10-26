@@ -53,7 +53,7 @@ Describe what the image shows that matters here, in a short phrase. For an image
 
 ### Asset
 
-A `<div>`; accepts all of its props.
+A `<div>`. Accepts all of its props.
 
 <TypeTable
   type={{
@@ -72,17 +72,17 @@ A `<div>`; accepts all of its props.
 
 ### AssetImage
 
-An `<img>`; accepts all of its props.
+An `<img>`. Accepts all of its props.
 
 <TypeTable
   type={{
     alt: {
-      description: 'Describes the image. Required; pass `""` for an image that only decorates.',
+      description: 'Describes the image. Required. Pass `""` for an image that only decorates.',
       type: 'string',
       required: true,
     },
     fit: {
-      description: '`cover` fills the frame and crops the image; `contain` shows all of it inside the frame.',
+      description: '`cover` fills the frame and crops the image. `contain` shows all of it inside the frame.',
       type: "'cover' | 'contain'",
       default: "'cover'",
     },
@@ -101,12 +101,12 @@ An `<img>`; accepts all of its props.
 
 ### AssetVideo
 
-A `<video>`; accepts all of its props.
+A `<video>`. Accepts all of its props.
 
 <TypeTable
   type={{
     fit: {
-      description: '`cover` fills the frame and crops the video; `contain` shows all of it inside the frame.',
+      description: '`cover` fills the frame and crops the video. `contain` shows all of it inside the frame.',
       type: "'cover' | 'contain'",
       default: "'cover'",
     },

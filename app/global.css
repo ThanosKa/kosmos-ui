@@ -52,7 +52,7 @@
 }
 
 /*
- * The brand colour of the Kosmos site: the logo's ring, the Pro marks and text selection. The same in light and dark,
+ * The brand color of the Kosmos site: the logo's ring, the Pro marks and text selection. The same in light and dark,
  * and white text passes 4.5:1 on it and on its hover step (lib/brand.test.mts). Site-only: no registry item may hold it, which
  * `pnpm registry:build` and `pnpm test` check (lib/brand.ts). `apple-icon`, the social image and `app/icon.svg` take it too.
  */
