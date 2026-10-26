@@ -1,6 +1,6 @@
 ---
 title: Logo marquee
-description: A row of logos in grey under one line, still or moving, that glides to a stop while the pointer is on it and has a pause button.
+description: A row of logos in gray under one line, still or moving, that glides to a stop while the pointer is on it and has a pause button.
 ---
 
 ## Installation
@@ -40,7 +40,7 @@ Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an ima
 - **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it, and picks up speed again when it leaves. A small button at its end pauses it until it is pressed again, from the keyboard or a phone too, and screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
 - **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
 - **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
-- **Grey**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns grey too and no logo outshouts the page.
+- **Gray**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns gray too and no logo outshouts the page.
 - **Screen readers**: the logos are a list, named by the line above it. Each item reads its `name`, and the second copy that keeps the row full is hidden from them.
 - **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
 - **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
@@ -54,8 +54,8 @@ Takes every `<section>` prop, plus:
 <TypeTable
   type={{
     title: { description: 'The line above the logos, which also names their list. `null` leaves it out.', type: 'ReactNode', default: "'Used by the teams behind'" },
-    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own; an empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
-    variant: { description: '`marquee` moves the logos in one row that fades out at both edges; `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
+    logos: { description: 'The logos in order. A `logo` is 20px tall unless it sets a height class of its own. An empty array renders nothing.', type: '{ name: string; logo?: ReactNode }[]', default: 'sample logos' },
+    variant: { description: '`marquee` moves the logos in one row that fades out at both edges. `static` sets them in centered rows.', type: "'marquee' | 'static'", default: "'marquee'" },
     speed: { description: 'How fast the marquee moves, in pixels per second.', type: 'number', default: '40' },
   }}
 />

@@ -3,7 +3,7 @@
   "name": "breadcrumb",
   "type": "registry:ui",
   "title": "Breadcrumb",
-  "description": "Shows where a page sits: parent pages in muted grey, the current page in ink. A trail that runs out of room hides the pages after the first behind an ellipsis that opens them in a menu.",
+  "description": "Shows where a page sits: parent pages in muted gray, the current page in ink. A trail that runs out of room hides the pages after the first behind an ellipsis that opens them in a menu.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/dropdown-menu", "@kosmos/tooltip"],
   "meta": { "group": "navigation" },

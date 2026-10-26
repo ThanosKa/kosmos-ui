@@ -31,7 +31,7 @@ Most of the time you want Calendar inside a [Date picker](/docs/components/date-
 
 ### Range
 
-Pass `mode="range"`. The first pick starts the range and the second ends it, in either order; until then the days up to the pointer show the range it would make. `months={2}` puts two months side by side, and they wrap one under the other when the room runs out.
+Pass `mode="range"`. The first pick starts the range and the second ends it, in either order. Until then the days up to the pointer show the range it would make. `months={2}` puts two months side by side, and they wrap one under the other when the room runs out.
 
 <ComponentPreview name="calendar-range" />
 
@@ -39,7 +39,7 @@ Pass `mode="range"`. The first pick starts the range and the second ends it, in 
 
 ### Days that can't be picked
 
-`min` and `max` set the first and last day, and the month buttons stop there; the days past them fade. `isDateDisabled` turns off single days, such as weekends, which fade and are struck through.
+`min` and `max` set the first and last day, and the month buttons stop there. The days past them fade. `isDateDisabled` turns off single days, such as weekends, which fade and are struck through.
 
 <ComponentPreview name="calendar-limits" />
 
@@ -68,7 +68,7 @@ Takes every `div` prop, plus:
 <TypeTable
   type={{
     mode: {
-      description: '`single` picks one day; `range` picks a first and a last day.',
+      description: '`single` picks one day. `range` picks a first and a last day.',
       type: "'single' | 'range'",
       default: "'single'",
     },

@@ -54,13 +54,13 @@ Takes every `<section>` prop, plus:
 
 <TypeTable
   type={{
-    title: { description: 'The section heading. `null` leaves it out; then give the page a heading above the quotes.', type: 'ReactNode', default: "'Teams that know what happens next'" },
+    title: { description: 'The section heading. `null` leaves it out. Then give the page a heading above the quotes.', type: 'ReactNode', default: "'Teams that know what happens next'" },
     description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode', default: 'a sample line' },
     featured: { description: 'One quote set large above the others. `null` leaves it out.', type: 'Testimonial | null', default: 'a sample quote' },
     testimonials: { description: 'The quotes in the wall, in reading order. An empty array leaves the wall out.', type: 'Testimonial[]', default: 'sample quotes' },
-    variant: { description: '`wall` moves the quotes in columns that fade out at the top and bottom; `static` stands them still.', type: "'wall' | 'static'", default: "'wall'" },
+    variant: { description: '`wall` moves the quotes in columns that fade out at the top and bottom. `static` stands them still.', type: "'wall' | 'static'", default: "'wall'" },
     speed: { description: 'How fast the wall moves, in pixels per second.', type: 'number', default: '28' },
-    headingLevel: { description: 'The title is an `<h2>`; pass 3 for a section nested one level deeper.', type: '2 | 3', default: '2' },
+    headingLevel: { description: 'The title is an `<h2>`. Pass 3 for a section nested one level deeper.', type: '2 | 3', default: '2' },
   }}
 />
 

@@ -90,7 +90,7 @@ Takes the props of a `<form>`, plus:
 
 ### useSettingsForm
 
-`useSettingsForm(initial, onSave)` returns `values`, `setValue(key, value)`, `dirty`, `state`, `error`, `save` and `reset`. `onSave` gets the values and may return a promise; throw an `Error` to show its message.
+`useSettingsForm(initial, onSave)` returns `values`, `setValue(key, value)`, `dirty`, `state`, `error`, `save` and `reset`. `onSave` gets the values and may return a promise. Throw an `Error` to show its message.
 
 ### SettingsPanel
 
@@ -110,7 +110,7 @@ A card for settings with nothing to save, such as an API key. Takes `title`, `de
 
 <TypeTable
   type={{
-    actions: { description: 'The rows. `confirmText` is typed before the dialog confirms; `onConfirm` may return a promise and throw an `Error` to show its message.', type: '{ id: string; title: string; description: string; label: string; confirmText?: string; onConfirm?: () => Promise<void> | void }[]' },
+    actions: { description: 'The rows. `confirmText` is typed before the dialog confirms. `onConfirm` may return a promise and throw an `Error` to show its message.', type: '{ id: string; title: string; description: string; label: string; confirmText?: string; onConfirm?: () => Promise<void> | void }[]' },
     title: { description: 'The title of the card.', type: 'ReactNode', default: "'Danger zone'" },
     description: { description: 'The line under the title.', type: 'ReactNode', default: "'These actions cannot be undone.'" },
     headingLevel: { description: 'The level of the title.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '2' },

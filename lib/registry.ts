@@ -356,13 +356,6 @@ export const packageInstallers = {
   bun: 'bun add',
 } as const satisfies Record<keyof typeof packageRunners, string>;
 
-/** The one-line `shadcn add` of an item for each package manager, keyed like `packageRunners`. */
-export function addCommands(name: string): Record<keyof typeof packageRunners, string> {
-  return Object.fromEntries(
-    Object.entries(packageRunners).map(([manager, runner]) => [manager, `${runner} add ${registryNamespace}/${name}`]),
-  ) as Record<keyof typeof packageRunners, string>;
-}
-
 /** The `shadcn add` lines for an item, in the documented order. */
 export function installCommands(name: string, runner: string = packageRunners.npm): string {
   return [

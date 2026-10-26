@@ -32,7 +32,7 @@ const fieldClass = cn(
 );
 
 const inputClass =
-  'min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed sm:text-body';
+  'min-w-0 flex-1 bg-transparent text-base text-ellipsis text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed sm:text-body';
 
 /** The small buttons at the end of the field. Quiet until hovered, and out of the Tab order: the keyboard works from the input. */
 const fieldButtonClass = 'text-muted-foreground transition-[background-color,color] hover:not-data-disabled:text-foreground';

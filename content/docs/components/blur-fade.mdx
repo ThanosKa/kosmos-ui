@@ -23,7 +23,7 @@ import { BlurFade } from '@/components/ui/blur-fade';
 </BlurFade>
 ```
 
-The content is in the markup and visible without JavaScript. Once the page is live, content below the fold waits hidden and comes in the first time a part of it scrolls into view; content already on screen is left alone, so nothing flashes at load. Only opacity, blur and a few pixels of translation change, so the layout never shifts. It runs once per element.
+The content is in the markup and visible without JavaScript. Once the page is live, content below the fold waits hidden and comes in the first time a part of it scrolls into view. Content already on screen is left alone, so nothing flashes at load. Only opacity, blur and a few pixels of translation change, so the layout never shifts. It runs once per element.
 
 ## Examples
 
@@ -33,7 +33,7 @@ The content is in the markup and visible without JavaScript. Once the page is li
 
 ## Accessibility
 
-The content stays in the accessibility tree the whole time. Under reduced motion it is never hidden and never moves.
+The content stays in the accessibility tree the whole time. Under reduced motion it only fades in, with no blur and no rise.
 
 ## API
 

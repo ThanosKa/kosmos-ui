@@ -45,7 +45,7 @@ export function Dashboards() {
 }
 ```
 
-The visual is whatever shows the feature best: a live piece of your product, which a visitor can click and change, or an image in an [Asset](/docs/components/asset). The title, line, sample dashboard, card text, points and action at the top of the file are sample data; delete the sample dashboard and its imports once you pass your own visual.
+The visual is whatever shows the feature best: a live piece of your product, which a visitor can click and change, or an image in an [Asset](/docs/components/asset). The title, line, sample dashboard, card text, points and action at the top of the file are sample data. Delete the sample dashboard and its imports once you pass your own visual.
 
 ## What it does
 
@@ -73,7 +73,7 @@ Takes every `<section>` prop, plus:
     points: { description: 'What the feature lets people do, each with an optional link.', type: 'FeatureSectionPoint[]' },
     action: { description: 'One `secondary` Button under the points. `null` leaves it out.', type: 'ReactNode' },
     visualSide: { description: 'Where the visual sits: before the text, or after it.', type: "'start' | 'end'", default: "'start'" },
-    headingLevel: { description: "The level of the title; the card's heading takes the next one. Pass 3 inside a section that has an `<h2>`.", type: '2 | 3', default: '2' },
+    headingLevel: { description: "The level of the title. The card's heading takes the next one. Pass 3 inside a section that has an `<h2>`.", type: '2 | 3', default: '2' },
     linkComponent: { description: "Renders the point links, such as your router's `Link`.", type: 'ElementType', default: "'a'" },
   }}
 />

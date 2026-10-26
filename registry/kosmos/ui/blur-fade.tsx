@@ -12,7 +12,7 @@ type BlurFadeProps = React.ComponentProps<'div'> & {
  * Content that comes in the first time it scrolls into view: it rises a few pixels out of a blur while it fades in, once.
  * It is in the markup and visible without JavaScript. Once the page is live, content that is below the fold waits
  * hidden and content already on screen stays put, so nothing flashes. It reserves its space, so nothing shifts.
- * Under reduced motion it never hides or moves.
+ * Under reduced motion it only fades.
  */
 function BlurFade({ delay = 0, className, style, ...props }: BlurFadeProps) {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -20,7 +20,7 @@ function BlurFade({ delay = 0, className, style, ...props }: BlurFadeProps) {
 
   React.useEffect(() => {
     const element = ref.current;
-    if (!element || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!element) return;
     const rect = element.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) return;
     setHidden(true);
@@ -44,7 +44,8 @@ function BlurFade({ delay = 0, className, style, ...props }: BlurFadeProps) {
       style={{ '--fade-delay': `${delay}ms`, ...style } as React.CSSProperties}
       className={cn(
         'motion-safe:transition-[opacity,filter,translate] motion-safe:duration-slow motion-safe:ease-power3-out motion-safe:delay-(--fade-delay)',
-        'motion-safe:data-hidden:translate-y-2 motion-safe:data-hidden:opacity-0 motion-safe:data-hidden:blur-sm',
+        'motion-reduce:transition-[opacity] motion-reduce:duration-fast motion-reduce:ease-power3-out',
+        'data-hidden:opacity-0 motion-safe:data-hidden:translate-y-2 motion-safe:data-hidden:blur-sm',
         className,
       )}
       {...props}

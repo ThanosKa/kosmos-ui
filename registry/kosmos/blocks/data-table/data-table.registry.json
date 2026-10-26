@@ -8,6 +8,7 @@
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
+    "@kosmos/use-controlled",
     "@kosmos/facets",
     "@kosmos/paging",
     "@kosmos/table",

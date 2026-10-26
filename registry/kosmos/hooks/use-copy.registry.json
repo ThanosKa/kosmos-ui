@@ -2,8 +2,8 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "use-copy",
   "type": "registry:hook",
-  "title": "Use Copy",
-  "description": "The copying behind Copy Field and Code Tabs: puts text on the clipboard, says whether it got there, and shows a copy as done for two seconds.",
+  "title": "useCopy",
+  "description": "The copy logic behind Copy Field and Code Tabs. It puts text on the clipboard, reports whether the copy worked, and shows the copied state for two seconds.",
   "files": [
     {
       "path": "registry/kosmos/hooks/use-copy.ts",

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-controlled",
+  "type": "registry:hook",
+  "title": "Use Controlled",
+  "description": "State that a parent can own: uses the value prop when it is set, keeps its own state when it is not, and calls onChange either way.",
+  "files": [
+    {
+      "path": "registry/kosmos/hooks/use-controlled.ts",
+      "type": "registry:hook"
+    }
+  ]
+}
