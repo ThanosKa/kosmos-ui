@@ -35,15 +35,16 @@ export const revenueSummary: Record<RevenueRange, { total: number; change: numbe
   '90d': { total: 14628, change: 18.9 },
 };
 
-const planRevenue = { scale: 13700, pro: 928 };
-
-/** Monthly revenue per plan, rising to today's figure; deterministic so screenshots stay stable. */
-function series(labels: string[], change: number): { label: string; scale: number; pro: number }[] {
+/** Monthly revenue against the period before, rising to today's figure; deterministic so screenshots stay stable. */
+function series(labels: string[], change: number): { label: string; revenue: number; previous: number }[] {
+  const total = revenueSummary['30d'].total;
   const start = 1 / (1 + change / 100);
   return labels.map((label, index) => {
     const progress = index / (labels.length - 1);
-    const factor = start + (1 - start) * progress + Math.sin(index * 1.3) * 0.01 * (1 - progress);
-    return { label, scale: Math.round(planRevenue.scale * factor), pro: Math.round(planRevenue.pro * factor) };
+    const noise = Math.sin(index * 1.9) * 0.006 + Math.sin(index * 4.7) * 0.004;
+    const factor = start + (1 - start) * progress + noise * (0.4 + progress);
+    const previous = start * (0.97 + 0.02 * progress) + Math.sin(index * 2.3 + 1) * 0.01;
+    return { label, revenue: Math.round(total * factor), previous: Math.round(total * previous) };
   });
 }
 

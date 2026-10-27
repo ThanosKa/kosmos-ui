@@ -15,11 +15,11 @@ import {
 } from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 
-const days = [73100, 73400, 65400, 65700, 66100, 66400, 66700, 75300, 75700, 67700, 68000, 68300, 68600, 69000];
+const days = [66100, 66400, 66200, 66900, 67300, 67100, 67800, 68200, 68000, 68700, 69100, 68900, 69500, 70000];
 const events = days.map((count, i) => ({ day: `Sep ${12 + i}`, current: count, previous: Math.round(count * 0.88) }));
 const twoSeries = {
   current: { label: 'Last 14 days', color: 'var(--chart-1)' },
-  previous: { label: 'Previous 14 days', color: 'var(--chart-2)' },
+  previous: { label: 'Previous 14 days', color: 'var(--chart-1)' },
 } satisfies ChartConfig;
 const oneSeries = { current: { label: 'Events', color: 'var(--chart-1)' } } satisfies ChartConfig;
 
@@ -80,7 +80,7 @@ export default function ChartCardPreview() {
             </ChartCardAction>
           </ChartCardHeader>
           <ChartCardContent>
-            <GrowthChart title="Events a day, against the 14 days before" data={events} config={twoSeries} xKey="day" />
+            <GrowthChart title="Events a day, against the 14 days before" data={events} config={twoSeries} xKey="day" previousKeys={['previous']} />
           </ChartCardContent>
         </ChartCard>
       </PreviewSection>
@@ -128,7 +128,7 @@ export default function ChartCardPreview() {
               <ChartCardLegend
                 config={{
                   current: { label: 'Last 14 days, every project in every region', color: 'var(--chart-1)' },
-                  previous: { label: 'Same 14 days a year ago', color: 'var(--chart-2)' },
+                  previous: { label: 'Same 14 days a year ago', color: 'var(--chart-1)' },
                 }}
               />
             </ChartCardHeader>

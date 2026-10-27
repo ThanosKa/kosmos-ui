@@ -25,8 +25,8 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',
 const rangeLabel: Record<RevenueRange, string> = { '7d': 'last 7 days', '30d': 'last 30 days', '90d': 'last 90 days' };
 
 const revenueConfig = {
-  scale: { label: 'Scale', color: 'var(--chart-1)' },
-  pro: { label: 'Pro', color: 'var(--chart-2)' },
+  revenue: { label: 'This period', color: 'var(--chart-1)' },
+  previous: { label: 'Period before', color: 'var(--chart-1)' },
 } satisfies ChartConfig;
 
 /** Chart, SegmentedControl, Badge. */
@@ -36,7 +36,7 @@ export function RevenueCard() {
   return (
     <GalleryCard
       title="Monthly revenue"
-      description="Scale and Pro plans"
+      description="All plans, against the period before"
       action={
         <SegmentedControl
           size="sm"
@@ -60,6 +60,7 @@ export function RevenueCard() {
         title={`Monthly revenue, ${rangeLabel[range]}`}
         data={revenue[range]}
         config={revenueConfig}
+        previousKeys={['previous']}
         xKey="label"
         xLabel="Date"
         valueFormatter={(value) => usd.format(value)}

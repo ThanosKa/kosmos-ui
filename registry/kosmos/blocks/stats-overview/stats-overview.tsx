@@ -1,12 +1,11 @@
 'use client';
 
-import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import * as React from 'react';
-import * as Recharts from 'recharts';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { statDelta } from '@/registry/kosmos/lib/stat-delta';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, chartAnimation, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   ChartCard,
   ChartCardAction,
@@ -53,12 +52,12 @@ const sampleLabels: Record<Range, string[]> = {
   '90d': Array.from({ length: 13 }, (_, i) => dayBefore((12 - i) * 7)),
 };
 
-/** A curve that rises by `rise` (a share of `end`) and lands on `end`, with a stable wobble. */
+/** A curve that rises by `rise` (a share of `end`) and lands on `end`, with small steps around the trend. */
 const curve = (length: number, end: number, rise: number, swing: number, phase: number) =>
   Array.from({ length }, (_, i) => {
     const progress = length === 1 ? 1 : i / (length - 1);
-    const wobble = i === length - 1 ? 0 : Math.sin(i * 1.7 + phase) + 0.5 * Math.cos(i * 0.6 + phase);
-    return Math.round(end * (1 - rise * (1 - progress) + swing * wobble));
+    const wobble = i === length - 1 ? 0 : Math.sin(i * 0.9 + phase) + 0.4 * Math.cos(i * 2.3 + phase);
+    return Math.round(end * (1 - rise * (1 - progress) + swing * 0.4 * wobble));
   });
 
 const steps = (labels: string[], current: number[], previous: number[]) =>
@@ -146,17 +145,32 @@ function formatValue(value: number, format: StatFormat) {
   if (Math.abs(value) < 1_000_000) return formats[format].format(value);
   return format === 'currency' ? usdCompact.format(value) : compactNumber.format(value);
 }
-const arrows = { up: ArrowUpRight, down: ArrowDownRight, flat: ArrowRight };
 
-/** The change as an arrow and a signed number in muted text. The arrow's color adds the good or bad news; its direction and the sign carry it alone. */
+/** The change as a green or red triangle and signed number, with the muted period it is measured against. A flat change stays muted. */
 function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
   const delta = metric.change === undefined ? null : statDelta(metric.change, { goodWhen: metric.goodWhen, unit: metric.format === 'percent' ? 'points' : 'percent' });
   if (!delta) return <span className="truncate text-caption text-muted-foreground">No earlier period</span>;
-  const Arrow = arrows[delta.direction];
   return (
-    <span className="flex min-w-0 items-center gap-0.5 text-caption text-muted-foreground tabular-nums">
-      <Arrow aria-hidden className={cn('size-3.5 shrink-0', delta.tone === 'good' && 'text-success', delta.tone === 'bad' && 'text-destructive')} />
-      {delta.text}
+    <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-caption tabular-nums">
+      <span
+        className={cn(
+          'flex items-center gap-1 font-medium text-muted-foreground',
+          delta.tone === 'good' && 'text-tint-green-foreground',
+          delta.tone === 'bad' && 'text-tint-red-foreground',
+        )}
+      >
+        {delta.direction === 'flat' ? (
+          <ArrowRight aria-hidden className="size-3 shrink-0" />
+        ) : (
+          <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
+            <path d="M4 0.5 7.5 7H0.5z" />
+          </svg>
+        )}
+        {delta.text}
+      </span>
+      <span className="text-muted-foreground" aria-hidden>
+        vs. last period
+      </span>
       <span className="sr-only">against the previous {rangeLabel}</span>
     </span>
   );
@@ -196,7 +210,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
   );
 }
 
-/** The legend as HTML so it can sit in the chart's header: a solid line for this period, a dashed one for the one before. */
+/** The legend as HTML so it can sit in the chart's header: a solid line for this period, the same line at reduced opacity for the one before. */
 function PeriodLegend({ rangeLabel }: { rangeLabel: string }) {
   return (
     <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption text-muted-foreground">
@@ -205,89 +219,34 @@ function PeriodLegend({ rangeLabel }: { rangeLabel: string }) {
         Last {rangeLabel}
       </li>
       <li className="flex items-center gap-1.5">
-        <span aria-hidden className="w-4 border-t-2 border-dashed border-chart-4 forced-colors:border-[CanvasText]" />
+        <span aria-hidden className="h-0.5 w-4 rounded-full bg-chart-1/45 forced-colors:bg-[CanvasText]" />
         Previous {rangeLabel}
       </li>
     </ul>
   );
 }
 
-/** The selected metric as two bare lines: this period solid in `chart-1`, the period before dashed in `chart-4`. A hidden table repeats the data. */
+/** The selected metric as a faint-filled line for this period and the same line at reduced opacity for the period before. A hidden table repeats the data. */
 function MetricChart({ metric, range }: { metric: Metric; range: Range }) {
   const rangeLabel = ranges[range].label;
-  const title = `${metric.label}, last ${rangeLabel} against the ${rangeLabel} before`;
   const config = {
     current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
-    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-4)' },
+    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-1)' },
   } satisfies ChartConfig;
-  const format = (value: number) => formatValue(value, metric.format);
 
   return (
-    <figure data-slot="metric-chart" className="m-0 w-full">
-      <ChartContainer config={config} className="aspect-auto h-60">
-        <Recharts.LineChart key={range} title={title} data={metric.points} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
-          <Recharts.CartesianGrid vertical={false} strokeDasharray="2 4" />
-          <Recharts.XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={10} minTickGap={32} />
-          <Recharts.YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            width="auto"
-            tickCount={4}
-            domain={['auto', 'auto']}
-            tickFormatter={(value: number) => compactNumber.format(value)}
-          />
-          <ChartTooltip
-            cursor
-            isAnimationActive={false}
-            content={<ChartTooltipContent valueFormatter={(value) => (typeof value === 'number' ? format(value) : String(value))} />}
-          />
-          <Recharts.Line
-            dataKey="previous"
-            name={config.previous.label}
-            type="monotone"
-            stroke="var(--color-previous)"
-            strokeWidth={1.5}
-            strokeDasharray="4 4"
-            dot={false}
-            activeDot={{ r: 3.5, strokeWidth: 2, stroke: 'var(--card)' }}
-            {...chartAnimation}
-          />
-          <Recharts.Line
-            dataKey="current"
-            name={config.current.label}
-            type="monotone"
-            stroke="var(--color-current)"
-            strokeWidth={2}
-            strokeLinecap="round"
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card)' }}
-            {...chartAnimation}
-          />
-        </Recharts.LineChart>
-      </ChartContainer>
-      <div className="sr-only">
-        <table>
-          <caption>{title}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{ranges[range].xLabel}</th>
-              <th scope="col">{config.current.label}</th>
-              <th scope="col">{config.previous.label}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {metric.points.map((point) => (
-              <tr key={point.label}>
-                <th scope="row">{point.label}</th>
-                <td>{format(point.current)}</td>
-                <td>{format(point.previous)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </figure>
+    <GrowthChart
+      key={range}
+      title={`${metric.label}, last ${rangeLabel} against the ${rangeLabel} before`}
+      data={metric.points}
+      config={config}
+      xKey="label"
+      xLabel={ranges[range].xLabel}
+      previousKeys={['previous']}
+      valueFormatter={(value) => formatValue(value, metric.format)}
+      legend={false}
+      grid
+    />
   );
 }
 
