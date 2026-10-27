@@ -2,11 +2,10 @@
 
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
-import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { statDelta, type StatDeltaOptions } from '@/registry/kosmos/lib/stat-delta';
-import { Badge } from '@/registry/kosmos/ui/badge';
 import { Sparkline } from '@/registry/kosmos/ui/chart';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 
@@ -62,8 +61,6 @@ function StatCardValue({ className, ...props }: React.ComponentProps<'span'>) {
   );
 }
 
-const arrows = { up: ArrowUpRight, down: ArrowDownRight, flat: ArrowRight };
-const toneVariant = { good: 'green', bad: 'red', neutral: 'secondary' } as const;
 
 type StatCardDeltaProps = Omit<React.ComponentProps<'span'>, 'children'> &
   StatDeltaOptions & {
@@ -74,27 +71,39 @@ type StatCardDeltaProps = Omit<React.ComponentProps<'span'>, 'children'> &
   };
 
 /**
- * The change, in a tag that reads without color: an arrow, a sign and the percentage ("+12.4%"). Good news
- * tints it green and bad news red; set `goodWhen="down"` for a metric where falling is good.
+ * The change, read without color: a triangle, a sign and the percentage ("▲ +12.4%"). Good news is green and bad news
+ * red; set `goodWhen="down"` for a metric where falling is good. A flat change is a muted arrow.
  */
 function StatCardDelta({ value, goodWhen, unit, fractionDigits, format, className, children, ...props }: StatCardDeltaProps) {
   const { loading } = React.useContext(StatCardContext);
-  if (loading) return <Skeleton data-slot="stat-card-delta" className={cn('h-5.5 w-28 max-w-full rounded-full', className)} />;
+  if (loading) return <Skeleton data-slot="stat-card-delta" className={cn('h-5 w-28 max-w-full', className)} />;
   const delta = statDelta(value, { goodWhen, unit, fractionDigits, format });
   if (!delta && children === undefined) return null;
-  const Arrow = delta ? arrows[delta.direction] : null;
 
   return (
     <span
       data-slot="stat-card-delta"
-      className={cn('flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-small tabular-nums', className)}
+      className={cn('flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-small tabular-nums', className)}
       {...props}
     >
-      {delta && Arrow ? (
-        <Badge variant={toneVariant[delta.tone]} data-direction={delta.direction}>
-          <Arrow aria-hidden />
+      {delta ? (
+        <span
+          data-direction={delta.direction}
+          className={cn(
+            'flex items-center gap-1 font-medium text-muted-foreground',
+            delta.tone === 'good' && 'text-tint-green-foreground',
+            delta.tone === 'bad' && 'text-tint-red-foreground',
+          )}
+        >
+          {delta.direction === 'flat' ? (
+            <ArrowRight aria-hidden className="size-3 shrink-0" />
+          ) : (
+            <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
+              <path d="M4 0.5 7.5 7H0.5z" />
+            </svg>
+          )}
           {delta.text}
-        </Badge>
+        </span>
       ) : null}
       {children === undefined ? null : <span className="min-w-0 wrap-break-word text-muted-foreground">{children}</span>}
     </span>
