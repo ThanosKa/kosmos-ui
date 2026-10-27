@@ -15,8 +15,8 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 
 ## Build
 
-- [ ] **Example dashboards.** Full dashboards built only from Kosmos blocks, so visitors and the maintainer can judge the style across a whole app: a CRM (contacts, deals pipeline, activity), an analytics dashboard (traffic, funnels, sources), and one more common kind (e.g. billing and usage, or an admin panel). Each also checks the current app for gaps in components and blocks. Pick which stay free and which become Pro templates (ADR 0003).
-- [ ] **Pricing variants.** More pricing layouts next to the current block, studied from the reference's pricing page.
+- [ ] **Example dashboards.** Two full dashboards built only from Kosmos blocks, so visitors and the maintainer can judge the style across a whole app: a CRM (contacts, deals pipeline, activity) and an analytics dashboard (traffic, funnels, sources). Each also checks the current app for gaps in components and blocks. Pick which stay free and which become Pro templates (ADR 0003). Start with a prototype of each.
+- [ ] **Pricing variants.** More pricing layouts next to the current block. Research first (in `.scratch/`), then prototype: a monthly/yearly toggle where the prices change with motion, and other layouts worth having. The maintainer picks from the prototype.
 - [ ] **AI product components.** Thinking loader, tool call card, message actions, change summary and the like from the reference, merged with what Kosmos already has (tool-call, tool-approval, run-timeline, prompt composer) into one coherent set, plus new blocks built from them.
 - [ ] **Go live.** When the above is in: release `dev` to `main` (maintainer's PR with a merge commit) and deploy.
 - [ ] **MIT catalogue, wave A.** Port the first wave from the MIT catalogue (mockup and screenshot, device frames, marquee primitive, avatar circles, glow and section wrapper, card, spinner, progress, alert dialog and sheet, login and signup blocks).
