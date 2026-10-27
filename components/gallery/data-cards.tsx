@@ -190,7 +190,7 @@ export function UsageCard() {
     <GalleryCard
       title="Usage"
       description="Pro plan · next invoice on November 1"
-      action={<Badge variant="orange">Pro</Badge>}
+      action={<Badge variant="blue">Pro</Badge>}
     >
       <Meter value={18} max={25}>
         <MeterLabel>Seats</MeterLabel>

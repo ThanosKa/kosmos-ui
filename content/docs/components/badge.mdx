@@ -1,6 +1,6 @@
 ---
 title: Badge
-description: A small pill for a status, a count, a label or a code. A neutral and a primary look, three status looks with a colored dot, six tag hues and six status tints for codes.
+description: A small pill for a status, a count, a label or a code. A neutral and a primary look, three status looks with a colored dot, and six hues for categories, plans and codes.
 ---
 
 <ComponentPreview name="badge-demo" />
@@ -27,21 +27,15 @@ import { Badge } from '@/components/ui/badge';
 
 ### Tags
 
-For categories, such as a segment, a plan or a label, use a hue: `orange`, `blue`, `amber`, `magenta`, `green` or `red`. Each one tints the pill with its hue and draws its text in a darker or lighter step of the same hue. That passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. Orange, blue, green and red are the same colors as the status tints of those hues. A status keeps the neutral pill with a dot.
+For categories, such as a segment or a label, and for plans, use a hue: `gray`, `blue`, `green`, `amber`, `red` or `violet`. Each one tints the pill with a faint fill and draws its text in a deep step of the same hue, with no edge. That passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. A status keeps the neutral pill with a dot.
 
 <ComponentPreview name="badge-tags" />
 
 ### Codes
 
-For a code, such as an HTTP status or a method, use a status tint: `tint-gray`, `tint-blue`, `tint-green`, `tint-teal`, `tint-orange` or `tint-red`. The pill takes the tint's fill and text, with no edge, so it reads as a value rather than a category. Map status codes by class: 2xx `tint-green`, 4xx `tint-orange`, 5xx `tint-red` and anything else `tint-gray`. Methods take GET `tint-green`, POST `tint-blue`, PATCH `tint-orange` and DELETE `tint-red`.
+For a code, such as an HTTP status or a method, use the same hues. Map status codes by class: 2xx `green`, 4xx `amber`, 5xx `red` and anything else `gray`. Methods take GET `green`, POST `blue`, PATCH `amber` and DELETE `red`. Plans take Free `gray`, Pro `blue`, Scale `violet` and Trial `amber`.
 
 <ComponentPreview name="badge-codes" />
-
-### Current item
-
-Inside the current item of a nav, the element with `aria-current`, `tint-blue`, `tint-green`, `tint-orange` and `tint-red` fill with their solid step under white text. That is 4.5:1 or more in both themes. An API reference uses it to mark the method of the page you are on.
-
-<ComponentPreview name="badge-current" />
 
 ### With an icon
 
@@ -74,8 +68,8 @@ Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/rea
 <TypeTable
   type={{
     variant: {
-      description: 'The look. The status looks add a colored dot before the label. The hues tint the pill with an edge, for categories. The `tint-*` looks show a code in its status tint.',
-      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' | 'tint-gray' | 'tint-blue' | 'tint-green' | 'tint-teal' | 'tint-orange' | 'tint-red'",
+      description: 'The look. The status looks add a colored dot before the label. The hues tint the pill with no edge, for categories, plans and codes.',
+      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet'",
       default: "'secondary'",
     },
     render: {

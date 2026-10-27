@@ -3,17 +3,17 @@ import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 const methodTints: Record<Method, BadgeProps['variant']> = {
-  GET: 'tint-green',
-  POST: 'tint-blue',
-  PATCH: 'tint-orange',
-  DELETE: 'tint-red',
+  GET: 'green',
+  POST: 'blue',
+  PATCH: 'amber',
+  DELETE: 'red',
 };
 
 function statusTint(code: number): BadgeProps['variant'] {
-  if (code >= 200 && code < 300) return 'tint-green';
-  if (code >= 400 && code < 500) return 'tint-orange';
-  if (code >= 500) return 'tint-red';
-  return 'tint-gray';
+  if (code >= 200 && code < 300) return 'green';
+  if (code >= 400 && code < 500) return 'amber';
+  if (code >= 500) return 'red';
+  return 'gray';
 }
 
 const requests: { method: Method; path: string; code: number }[] = [

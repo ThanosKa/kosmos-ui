@@ -52,7 +52,7 @@ export function Lab({ only }: { only?: string }) {
                   <h2 id={`${slug}-title`} className="text-title">
                     {title}
                   </h2>
-                  <Badge variant={kind === 'block' ? 'blue' : 'orange'}>{kind}</Badge>
+                  <Badge variant={kind === 'block' ? 'blue' : 'violet'}>{kind}</Badge>
                 </div>
                 <p className="max-w-[48em] text-small text-pretty text-muted-foreground">{why}</p>
               </div>

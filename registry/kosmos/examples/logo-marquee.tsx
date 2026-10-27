@@ -20,7 +20,7 @@ export default function LogoMarqueePreview() {
             variant="static"
             logos={[
               { name: 'Fernhill Books', color: 'var(--tint-blue-solid)', href: '#fernhill' },
-              { name: 'Brightloop Fitness', color: 'var(--tint-orange-solid)', href: '#brightloop' },
+              { name: 'Brightloop Fitness', color: 'var(--tint-amber-solid)', href: '#brightloop' },
               { name: 'Copperline Bank', color: 'var(--tint-green-solid)', href: '#copperline' },
               { name: 'No color given', href: '#plain' },
             ]}

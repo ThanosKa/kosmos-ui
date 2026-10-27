@@ -52,7 +52,7 @@
 
 /*
  * Hero: the title enters per word on its own (TextReveal, mount). The line and the actions come in together as one
- * short block while it plays. The frame and its glow follow when the last word is in (6 steps of 120ms + 500ms).
+ * short block while it plays. The frame and its glow follow while the last words play (the title's last word starts at 720ms).
  */
 .landing-hero [data-slot='hero-description'],
 .landing-hero [data-slot='hero-actions'],
@@ -60,10 +60,10 @@
   animation: m-rise-line var(--transition-duration-slow) var(--m-ease) 240ms both;
 }
 .landing-hero [data-slot='browser-frame'] {
-  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 1200ms both;
+  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 700ms both;
 }
 .landing-hero [data-slot='hero-product-glow'] {
-  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 1300ms both;
+  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 800ms both;
 }
 
 /* The product screen: a row arrives at the top of the table once the frame has settled. */
@@ -85,20 +85,17 @@
   translate: 0 var(--m-rise);
 }
 
-/* Cards: a 2px lift on hover. */
+/* Pricing plans: a 2px lift on hover, once the scroll reveal has finished with them. */
 @media (hover: hover) and (pointer: fine) {
-  [data-landing-section] [data-slot='pricing-plan'],
-  [data-landing-section] [data-slot='feature-rows-item-media'] {
+  [data-landing-section] [data-slot='pricing-plan']:not([data-reveal]) {
     transition: translate var(--transition-duration-fast) var(--m-ease);
   }
-  [data-landing-section] [data-slot='pricing-plan']:hover,
-  [data-landing-section] [data-slot='feature-rows-item-media']:hover {
+  [data-landing-section] [data-slot='pricing-plan']:not([data-reveal]):hover {
     translate: 0 -2px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  [data-landing-section] [data-slot='pricing-plan']:hover,
-  [data-landing-section] [data-slot='feature-rows-item-media']:hover {
+  [data-landing-section] [data-slot='pricing-plan']:hover {
     translate: none;
   }
 }

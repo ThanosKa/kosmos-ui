@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "banner",
+  "type": "registry:ui",
+  "title": "Banner",
+  "description": "A full-width strip at the top of an app page for a project-wide state to resolve, with an icon, a sentence and an action. Neutral, info, success, warning and destructive.",
+  "dependencies": ["class-variance-authority@^0.7.1", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "basics" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/banner.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

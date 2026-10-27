@@ -61,33 +61,30 @@ export const colorGroups = {
   lines: 'Lines',
   sidebar: 'Sidebar',
   chart: 'Chart',
-  tags: 'Tags',
-  tints: 'Status tints',
+  tints: 'Tints',
 } as const;
 export type ColorGroup = keyof typeof colorGroups;
 
 const tintHues = {
-  gray: 'a neutral state or code (queued, skipped, a 3xx)',
-  blue: 'info and running',
+  gray: 'a neutral state or code, or the Free plan (queued, skipped, a 3xx)',
+  blue: 'info and running, or the Pro plan',
   green: 'success and a 2xx',
-  teal: 'a second positive state',
-  orange: 'warning and a 4xx',
+  amber: 'warning and a 4xx',
   red: 'errors and a 5xx',
+  violet: 'a category or the Scale plan',
 };
 
 function tintDocs(): Record<string, { group: ColorGroup; use: string }> {
-  const docs: Record<string, { group: ColorGroup; use: string }> = {
-    'tint-solid-foreground': { group: 'tints', use: 'White text on a solid tint.' },
-  };
+  const docs: Record<string, { group: ColorGroup; use: string }> = {};
   for (const [hue, meaning] of Object.entries(tintHues)) {
-    docs[`tint-${hue}`] = { group: 'tints', use: `The ${hue} fill of a code pill or an alert, for ${meaning}.` };
+    docs[`tint-${hue}`] = { group: 'tints', use: `The ${hue} fill of a badge or an alert, for ${meaning}.` };
     docs[`tint-${hue}-border`] = { group: 'tints', use: `The edge of a ${hue} alert.` };
     docs[`tint-${hue}-foreground`] = { group: 'tints', use: `Text on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-link`] = { group: 'tints', use: `A link on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-dot`] = { group: 'tints', use: `The dot beside a ${hue} state.` };
   }
-  for (const hue of ['blue', 'green', 'orange', 'red']) {
-    docs[`tint-${hue}-solid`] = { group: 'tints', use: `The fill of a ${hue} code in the current nav item, under white text.` };
+  for (const hue of ['blue', 'green', 'amber', 'red', 'violet']) {
+    docs[`tint-${hue}-solid`] = { group: 'tints', use: `A saturated ${hue} for sample marks, such as the logo marquee's logos.` };
   }
   return docs;
 }
@@ -116,6 +113,7 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
     group: 'actions',
     use: 'The one filled action per view, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator. Ink, or the color of a preset that has one.',
   },
+  'primary-hover': { group: 'actions', use: 'The primary button under the pointer: a step darker in light, the fill at 90% in dark.' },
   'primary-foreground': { group: 'actions', use: 'Text and icons on a primary fill, 4.5:1 on it and under its hover.' },
   secondary: { group: 'actions', use: 'Secondary buttons and text fields.' },
   'secondary-foreground': { group: 'actions', use: 'Text on a secondary button.' },
@@ -140,18 +138,6 @@ const colorDocs: Record<string, { group: ColorGroup; use: string }> = {
   'chart-3': { group: 'chart', use: 'The third chart series.' },
   'chart-4': { group: 'chart', use: 'The fourth chart series.' },
   'chart-5': { group: 'chart', use: 'The fifth chart series. More than five fold into "Other".' },
-  'tag-orange': { group: 'tags', use: 'The fill of an orange tag.' },
-  'tag-orange-foreground': { group: 'tags', use: 'The text of an orange tag, and its edge at 20%.' },
-  'tag-blue': { group: 'tags', use: 'The fill of a blue tag.' },
-  'tag-blue-foreground': { group: 'tags', use: 'The text of a blue tag, and its edge at 20%.' },
-  'tag-amber': { group: 'tags', use: 'The fill of an amber tag.' },
-  'tag-amber-foreground': { group: 'tags', use: 'The text of an amber tag, and its edge at 20%.' },
-  'tag-magenta': { group: 'tags', use: 'The fill of a magenta tag.' },
-  'tag-magenta-foreground': { group: 'tags', use: 'The text of a magenta tag, and its edge at 20%.' },
-  'tag-green': { group: 'tags', use: 'The fill of a green tag, and the rise in a stat tile.' },
-  'tag-green-foreground': { group: 'tags', use: 'The text of a green tag, and its edge at 20%.' },
-  'tag-red': { group: 'tags', use: 'The fill of a red tag, and the drop in a stat tile.' },
-  'tag-red-foreground': { group: 'tags', use: 'The text of a red tag, and its edge at 20%.' },
 };
 
 /** The Tailwind class a token is mostly used through. */
@@ -218,6 +204,7 @@ export function typeRoles() {
 const shadowDocs: Record<string, { fill: string; surface: string }> = {
   'shadow-control': { fill: 'bg-secondary', surface: 'Secondary buttons, the segmented group, the active sidebar item.' },
   'shadow-primary': { fill: 'bg-primary', surface: 'The primary button. Flat in light, raised in dark.' },
+  'shadow-primary-hover': { fill: 'bg-primary-hover', surface: 'The primary button under the pointer: its edge lifts a little in light.' },
   'shadow-card': { fill: 'bg-card', surface: 'Cards, stat tiles and board cards.' },
   'shadow-popover': { fill: 'bg-popover', surface: 'Popovers, menus, select lists, tooltips, toasts and the command palette.' },
   'shadow-modal': { fill: 'bg-popover', surface: 'Dialogs and drawers.' },

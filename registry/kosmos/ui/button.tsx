@@ -9,7 +9,7 @@ const pressScale = 'motion-safe:not-disabled:not-data-disabled:active:scale-96';
 const quietIcon = "[&_svg:not([class*='text-'])]:text-muted-foreground";
 
 const variants = {
-  primary: [pressScale, 'bg-primary text-primary-foreground shadow-primary hover:not-data-disabled:bg-primary/90'],
+  primary: [pressScale, 'bg-primary text-primary-foreground shadow-primary hover:not-data-disabled:bg-primary-hover hover:not-data-disabled:shadow-primary-hover'],
   secondary: [pressScale, quietIcon, 'bg-secondary text-secondary-foreground shadow-control hover:not-data-disabled:bg-muted'],
   ghost: [pressScale, quietIcon, 'bg-transparent text-foreground hover:not-data-disabled:bg-accent'],
   destructive: [pressScale, 'bg-secondary text-destructive shadow-control hover:not-data-disabled:bg-muted'],

@@ -5,9 +5,9 @@ import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { DataTable, sampleProjects, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
 import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
 
-/** Milliseconds after the page loads: the frame has settled by 1700, then a project signs up, then its trial converts. */
-const arrivesAt = 2400;
-const convertsAt = 5600;
+/** Milliseconds after the page loads: the frame has settled by 1200, then a project signs up, then its trial converts. */
+const arrivesAt = 1900;
+const convertsAt = 5100;
 
 const newProject: Project = {
   id: 'lumenfield',

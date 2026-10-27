@@ -1,7 +1,7 @@
 'use client';
 
-import { AnchorProvider, ScrollProvider, TOCItem, type TableOfContents } from 'fumadocs-core/toc';
-import { useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { AnchorProvider, ScrollProvider, TOCItem, useTOCListener, type TableOfContents } from 'fumadocs-core/toc';
+import { useRef, useState, type MouseEvent, type RefObject } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration } from '@/registry/kosmos/lib/motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
@@ -10,19 +10,47 @@ import { eyebrowClass } from './classes';
 /** One motion step past the accordion's `fast` close, so the panel is gone before the page jumps. */
 const jumpDelay = duration.base * 1000;
 
-function DocsTocList({ toc, itemClassName }: { toc: TableOfContents; itemClassName?: string }) {
+/** The marker on the track: spans the items in view and glides between them. */
+function DocsTocThumb({ list }: { list: RefObject<HTMLUListElement | null> }) {
+  const thumb = useRef<HTMLSpanElement>(null);
+  useTOCListener((items) => {
+    const element = thumb.current;
+    const root = list.current;
+    if (!element || !root) return;
+    const active = items.filter((item) => item.active);
+    const links = [...root.querySelectorAll<HTMLElement>('a')];
+    const find = (id: string | undefined) => links.find((link) => link.getAttribute('href') === `#${id}`);
+    const first = find(active[0]?.id);
+    const last = find(active[active.length - 1]?.id);
+    if (!first || !last) {
+      element.style.setProperty('--thumb-height', '0px');
+      return;
+    }
+    element.style.setProperty('--thumb-top', `${first.offsetTop}px`);
+    element.style.setProperty('--thumb-height', `${last.offsetTop + last.offsetHeight - first.offsetTop}px`);
+  });
+
   return (
-    <ul className="flex flex-col">
+    <span
+      ref={thumb}
+      aria-hidden
+      className="pointer-events-none absolute -inset-s-px top-0 h-(--thumb-height,0px) w-px translate-y-(--thumb-top,0px) bg-foreground motion-safe:transition-[translate,height] motion-safe:duration-slow motion-safe:ease-smooth-in-out"
+    />
+  );
+}
+
+function DocsTocList({ toc, itemClassName, thumb = false }: { toc: TableOfContents; itemClassName?: string; thumb?: boolean }) {
+  const list = useRef<HTMLUListElement>(null);
+  return (
+    <ul ref={list} className="relative flex flex-col border-s border-border">
+      {thumb && <DocsTocThumb list={list} />}
       {toc.map((item) => (
-        <li
-          key={item.url}
-          style={{ '--toc-depth': Math.max(item.depth - 2, 0) } as CSSProperties}
-          className="ms-[calc(var(--toc-depth)*0.75rem)]"
-        >
+        <li key={item.url}>
           <TOCItem
             href={item.url}
             className={cn(
-              'block rounded-md py-1 text-small text-muted-foreground transition-[color] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring data-[active=true]:text-foreground',
+              'block rounded-md py-1 pe-2 text-small text-muted-foreground transition-[color] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring data-[active=true]:text-foreground',
+              item.depth <= 2 ? 'ps-3' : item.depth === 3 ? 'ps-6' : 'ps-9',
               itemClassName,
             )}
           >
@@ -47,7 +75,7 @@ export function DocsToc({ toc, className }: { toc: TableOfContents; className?: 
         </h2>
         <div ref={viewport} className="min-h-0 overflow-y-auto overscroll-contain p-1">
           <ScrollProvider containerRef={viewport}>
-            <DocsTocList toc={toc} />
+            <DocsTocList toc={toc} thumb />
           </ScrollProvider>
         </div>
       </nav>
@@ -88,7 +116,7 @@ export function DocsTocDisclosure({ toc, className }: { toc: TableOfContents; cl
         <AccordionContent className="px-0 pb-2">
           <nav aria-label="On this page" onClickCapture={jumpAfterClosing}>
             <AnchorProvider toc={toc}>
-              <DocsTocList toc={toc} itemClassName="px-2 focus-visible:-outline-offset-2" />
+              <DocsTocList toc={toc} itemClassName="focus-visible:-outline-offset-2" />
             </AnchorProvider>
           </nav>
         </AccordionContent>

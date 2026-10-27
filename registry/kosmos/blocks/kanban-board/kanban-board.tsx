@@ -48,7 +48,7 @@ type KanbanColumn = {
 type KanbanPerson = { name: string; initials: string };
 
 /** A category on the card, shown as a tag in one of the Badge hues. */
-type KanbanTag = { label: string; hue: 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' };
+type KanbanTag = { label: string; hue: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet' };
 
 /** One card: a roadmap item. */
 type KanbanItem = {

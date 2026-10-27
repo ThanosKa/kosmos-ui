@@ -68,9 +68,9 @@ _Avoid_: theme, skin, variant
 Το ένα χρώμα που δίνει ένα **preset** στο primary (κουμπιά, checkbox, radio, switch, slider, tabs indicator), στο focus, στο τρέχον item της πλοήγησης, στο meter και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
 _Avoid_: brand, primary, highlight
 
-**Status tint**:
-Ένα από τα έξι status hues (gray, blue, green, teal, orange, red) με τα tokens του: fill, border, κείμενο, link, dot και, για τα τέσσερα, solid. Δίνει dot σε ένα state, tinted pill σε έναν κωδικό και χρώμα σε ένα Alert. Μένει ίδιο σε κάθε **preset** και δεν είναι ποτέ **accent**.
-_Avoid_: status color (είναι τα `success`, `warning`, `destructive`), tag (είναι κατηγορία)
+**Tint**:
+Ένα από τα έξι hues (gray, blue, green, amber, red, violet) με τα tokens του: fill, border, κείμενο, link, dot και, για τα πέντε χρωματιστά, solid (για τα sample logos). Δίνει χρώμα σε ένα Badge (κατηγορία, plan, κωδικός), dot σε ένα state και χρώμα σε ένα Alert. Μένει ίδιο σε κάθε **preset** και δεν είναι ποτέ **accent**.
+_Avoid_: status tint, status color (είναι τα `success`, `warning`, `destructive`), tag
 
 **Brand color**:
 Το χρώμα της ταυτότητας του Kosmos UI ως προϊόν: φαίνεται μόνο στο δικό μας site (logo, σημάδια **Pro**, text selection) και δεν μπαίνει ποτέ στα tokens που εγκαθιστά ο χρήστης.

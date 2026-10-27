@@ -34,13 +34,13 @@ The signed-in user comes first. Use these four as the user menu, roadmap assigne
 | Pro | from $49 / month | `orange` |
 | Scale | from $1,200 / month | `magenta` |
 
-A plan is a category, so it is a tag (Badge hue variant) and keeps its hue everywhere.
+A plan is a category, so it is a tag (Badge hue variant) and keeps its hue everywhere: Free `gray`, Pro `blue`, Scale `violet`, Trial `amber`.
 
 ## Projects
 
 A project is one customer site or app sending events. Fields, in this order: `id`, `name`, `domain`, `platform` (`web` | `ios` | `android` | `server`), `plan` (`free` | `pro` | `scale`), `status` (`live` | `trial` | `paused`), `users` (monthly active users), `events` (last 30 days), `mrr` (USD; 0 on Free and on a trial), `lastEventAt` (ISO date).
 
-Status is a `StatusDot` beside its label: `live` is green (`done`), `trial` gray (`pending`), `paused` orange (`waiting`). Platform shows as text with an icon (lucide `Globe`, `Smartphone` for iOS and Android, `Server`), never as a tag.
+Status is a `StatusDot` beside its label: `live` is green (`done`), `trial` gray (`pending`), `paused` amber (`waiting`). Platform shows as text with an icon (lucide `Globe`, `Smartphone` for iOS and Android, `Server`), never as a tag.
 
 A block that needs fewer rows takes the first ones, in this order:
 

@@ -35,12 +35,12 @@ function sampleLogo(name: string, Icon: React.ElementType, color: string): LogoM
 const sampleTitle = 'Used by the teams behind';
 const sampleLogos: LogoMarqueeLogo[] = [
   sampleLogo('Fernhill Books', BookOpen, 'var(--tint-blue-solid)'),
-  sampleLogo('Brightloop Fitness', Activity, 'var(--tint-orange-solid)'),
+  sampleLogo('Brightloop Fitness', Activity, 'var(--tint-amber-solid)'),
   sampleLogo('Copperline Bank', Landmark, 'var(--tint-green-solid)'),
   sampleLogo('Saltmarsh Coffee', Coffee, 'var(--tint-red-solid)'),
-  sampleLogo('Driftwood Travel', Sailboat, 'var(--tint-teal-solid)'),
+  sampleLogo('Driftwood Travel', Sailboat, 'var(--tint-violet-solid)'),
   sampleLogo('Cirrus Weather', Cloud, 'var(--tint-blue-solid)'),
-  sampleLogo('Ironbark Logistics', Truck, 'var(--tint-orange-solid)'),
+  sampleLogo('Ironbark Logistics', Truck, 'var(--tint-amber-solid)'),
 ];
 
 /** How fast the logos move, in pixels per second. */

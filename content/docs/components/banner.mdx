@@ -1,0 +1,75 @@
+---
+title: Banner
+description: A full-width strip at the top of an app page for a project-wide state to resolve, with an icon, a sentence and an action.
+---
+
+<ComponentPreview name="banner-demo" />
+
+## Installation
+
+<ComponentInstall name="banner" />
+
+## Usage
+
+```tsx
+import { Banner, BannerAction, BannerText } from '@/components/ui/banner';
+```
+
+```tsx
+<Banner variant="warning">
+  <BannerText>Cirrus Weather was rolled back by Kai Nakamura.</BannerText>
+  <BannerAction href="/deploys">Undo rollback</BannerAction>
+</Banner>
+```
+
+A banner is about the whole project or account, not about the content under it: an overdue invoice, a paused project, a rollback in progress. Put it above the page header, edge to edge, and show one at a time. It has no close button, because the state is still there when it closes. The banner goes away when the state does. For a message next to a field, a card or a section, use an [Alert](/docs/components/alert). For news that links away, use an [Announcement](/docs/components/announcement).
+
+Write one sentence that names the impact, and an action that names the way out with a verb and a noun, such as "Update card". A banner without an action is a dead end.
+
+## Examples
+
+### Variants
+
+`neutral` is a card, for a routine notice. The others take the status tint of their hue: `info` blue, `success` green, `warning` amber and `destructive` red. Pick the variant by urgency: `warning` when the state needs action soon, `destructive` when it needs action now. Each variant has its own icon, so the color is never the only signal.
+
+<ComponentPreview name="banner-variants" />
+
+### On a page
+
+<ComponentPreview name="banner-page" />
+
+### Actions
+
+`BannerAction` is a ghost [Button](/docs/components/button). Pass `href` for a link, or `onClick` for an action that runs in place. Links inside `BannerText` take the foreground color, medium weight and a soft underline. The banner has the same fill, text and icon as a filled [Alert](/docs/components/alert).
+
+### Screen readers
+
+Banner renders a plain `<div>`. When it appears because something just happened, give it `role="status"`, or `role="alert"` for a failure, so screen readers say it. Leave the role off for a banner that is there when the page loads.
+
+## API
+
+### Banner
+
+Renders a `<div>` and accepts all its props.
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The look. `neutral` is a card. The others take the status tint of their hue.',
+      type: "'neutral' | 'info' | 'success' | 'warning' | 'destructive'",
+      default: "'neutral'",
+    },
+    icon: {
+      description: 'Replaces the icon of the variant. Pass `null` for a banner without one.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### BannerText
+
+Renders a `<p>` for the sentence.
+
+### BannerAction
+
+Renders a [Button](/docs/components/button), `ghost` and `sm` by default, in the banner's text color. With `href` it renders a link.

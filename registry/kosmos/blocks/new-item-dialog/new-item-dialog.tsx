@@ -36,7 +36,7 @@ type NewItemStage = {
 };
 
 /** A part of the product, shown as a tag in one of the Badge hues. */
-type NewItemArea = { value: string; label: string; hue: 'orange' | 'blue' | 'amber' | 'magenta' | 'green' | 'red' };
+type NewItemArea = { value: string; label: string; hue: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet' };
 
 /** The form, and what `onCreate` receives. */
 type NewItemValues = {

@@ -1,0 +1,14 @@
+---
+title: Changed Badge hues to one tint family
+description: Badge takes six hues, gray, blue, green, amber, red and violet, with a faint fill and no edge. The tag and status tint families are one family, and orange, magenta and teal are gone.
+date: 2026-10-27
+---
+
+Every colored [Badge](/docs/components/badge) now draws from one family of six hues: `gray`, `blue`, `green`, `amber`, `red` and `violet`. Each has a faint fill and a deep text step, with no edge. Statuses do not change: a neutral pill with a colored dot.
+
+- **Badge variants:** `orange`, `magenta` and the `tint-gray`, `tint-blue`, `tint-green`, `tint-teal`, `tint-orange` and `tint-red` variants are removed. Use `gray`, `blue`, `green`, `amber`, `red` or `violet`. Orange becomes `amber` or `blue`, magenta becomes `violet`, teal becomes `gray` or `violet`.
+- **Tokens:** `tag-*` and `tint-teal`, `tint-orange` are removed. `tint-amber` and `tint-violet` are added, with `-border`, `-foreground` and `-dot`, and `-solid` for sample marks. `tint-gray` and the other tints take the new values.
+- **Alert and Banner:** the warning tone moves from orange to amber.
+- **Alert, Banner and Field:** the tints are deeper in dark and vivid in light. Alert is `filled` by default, with `subtle` as the outline. Links inside an Alert, Banner or Callout take the foreground color with a soft underline, and `tint-*-link` is removed. A FieldError takes the red text with a 14px alert icon.
+- **License:** the tints are no longer Radix Colors values, so `LICENSE-RADIX-COLORS` is no longer installed with `@kosmos/tokens`.
+- **Badge and amber:** a Badge looks the same in the current nav item and no longer fills with `-solid`, and `tint-solid-foreground` is removed. `tint-amber` moves from yellow toward orange, a warmer hue with a clearer edge in dark, so the warning Alert and Banner read as amber and not olive.

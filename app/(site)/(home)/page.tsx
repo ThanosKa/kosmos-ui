@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LandingFeatures } from '@/components/site/landing-features';
 import { LandingFaq } from '@/components/site/landing-faq';
+import { LandingGallery } from '@/components/site/landing-gallery/landing-gallery';
 import { LandingHeroProduct } from '@/components/site/landing-hero-product';
 import { LandingMotion } from '@/components/site/landing-motion';
 import { LandingPricing } from '@/components/site/landing-pricing';
@@ -14,7 +14,6 @@ import { appDescription, appName, docsRoute, siteOpenGraph } from '@/lib/shared'
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { HeroProduct } from '@/registry/kosmos/blocks/hero/hero-product';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
-import { CopyField } from '@/registry/kosmos/ui/copy-field';
 import { TextReveal } from '@/registry/kosmos/ui/text-reveal';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
@@ -40,7 +39,6 @@ export default function HomePage() {
             product={<LandingHeroProduct />}
             url="acme.example/projects"
             description="Base UI components and dashboard blocks you own, added with the shadcn CLI."
-            install={<CopyField value="npx shadcn@latest add @kosmos/data-table" label="install command" className="mx-auto max-w-sm **:data-[slot=input-group-control]:text-caption sm:**:data-[slot=input-group-control]:text-small" />}
             actions={
               <>
                 {/* Router links styled as buttons: `Button href` renders a plain <a>, which reloads the page. */}
@@ -58,7 +56,7 @@ export default function HomePage() {
           <LandingStack />
         </LandingSection>
         <LandingSection id="features" column="wide" title="The parts are already built">
-          <LandingFeatures />
+          <LandingGallery />
         </LandingSection>
         <LandingSection id="showcase" column="wide" title="Whole screens from the same blocks">
           <LandingShowcase />

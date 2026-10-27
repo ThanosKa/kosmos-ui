@@ -38,10 +38,23 @@ const copy: Record<AlertVariant, { title: string; description: string; link: str
 export default function AlertPreview() {
   return (
     <PreviewStack>
-      <PreviewSection title="Variants">
+      <PreviewSection title="Subtle">
         <div className="flex flex-col gap-3">
           {variants.map((variant) => (
-            <Alert key={variant} variant={variant}>
+            <Alert key={variant} variant={variant} appearance="subtle">
+              <AlertTitle>{copy[variant].title}</AlertTitle>
+              <AlertDescription>
+                {copy[variant].description} <a href="https://acme.example/docs">{copy[variant].link}</a>
+              </AlertDescription>
+            </Alert>
+          ))}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Filled (default)">
+        <div className="flex flex-col gap-3">
+          {variants.map((variant) => (
+            <Alert key={variant} variant={variant} appearance="filled">
               <AlertTitle>{copy[variant].title}</AlertTitle>
               <AlertDescription>
                 {copy[variant].description} <a href="https://acme.example/docs">{copy[variant].link}</a>
@@ -104,7 +117,7 @@ export default function AlertPreview() {
       </PreviewSection>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Title only, own icon, no icon">
+        <PreviewSection title="One-line rows, with and without an action">
           <div className="flex flex-col gap-3">
             <Alert variant="success">
               <AlertTitle>Saved</AlertTitle>
@@ -115,6 +128,16 @@ export default function AlertPreview() {
             <Alert variant="neutral" icon={null}>
               <AlertDescription>Dates on this page are in UTC.</AlertDescription>
             </Alert>
+            {variants.map((variant) => (
+              <Alert key={variant} variant={variant}>
+                <AlertDescription>{copy[variant].title}</AlertDescription>
+                <AlertAction>
+                  <Button variant="secondary" size="sm">
+                    Review
+                  </Button>
+                </AlertAction>
+              </Alert>
+            ))}
           </div>
         </PreviewSection>
 
@@ -131,11 +154,16 @@ export default function AlertPreview() {
         </PreviewSection>
       </div>
 
-      <PreviewSection title="On a card">
+      <PreviewSection title="On a card, subtle and filled">
         <div className="flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <p className="text-title">Event quota</p>
           {(['info', 'warning', 'destructive'] as const).map((variant) => (
-            <Alert key={variant} variant={variant}>
+            <Alert key={variant} variant={variant} appearance="subtle">
+              <AlertTitle>{copy[variant].title}</AlertTitle>
+            </Alert>
+          ))}
+          {(['info', 'warning', 'destructive'] as const).map((variant) => (
+            <Alert key={`filled-${variant}`} variant={variant} appearance="filled">
               <AlertTitle>{copy[variant].title}</AlertTitle>
             </Alert>
           ))}

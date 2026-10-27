@@ -23,7 +23,7 @@ import {
 } from '@/registry/kosmos/ui/model-select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/registry/kosmos/ui/popover';
 
-type SearchModel = ModelOption & { tag?: { label: string; hue: 'magenta' | 'green' | 'blue' } };
+type SearchModel = ModelOption & { tag?: { label: string; hue: 'violet' | 'green' | 'blue' } };
 type ModelGroup = { value: string; items: SearchModel[] };
 
 const groups: ModelGroup[] = [
@@ -37,7 +37,7 @@ const groups: ModelGroup[] = [
   {
     value: 'More models',
     items: [
-      { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', tag: { label: 'Most capable', hue: 'magenta' } },
+      { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', tag: { label: 'Most capable', hue: 'violet' } },
       { id: 'claude-opus-5-5-1m', name: 'Claude Opus 5.5 (1M context)', hint: 'Not on your plan', disabled: true },
     ],
   },

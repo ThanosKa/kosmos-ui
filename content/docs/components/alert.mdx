@@ -22,23 +22,29 @@ import { Alert, AlertAction, AlertDescription, AlertTitle } from '@/components/u
 </Alert>
 ```
 
-An alert stays where it is until the page changes. For a short message that closes on its own after an action, use a [Toast](/docs/components/toast).
+An alert is compact. Text with no title or no description is one 36px row. A title with a description stacks, the description in 13px muted text. An alert stays where it is until the page changes. For a short message that closes on its own, use a [Toast](/docs/components/toast). For a state of the whole page or project, use a [Banner](/docs/components/banner).
 
 ## Examples
 
 ### Variants
 
-`neutral` is a card, for a note that needs no color. The other four take the status tint of their hue: `info` blue, `success` green, `warning` orange and `destructive` red. The fill, the edge, the text and the links come from the tint. Every text and link color reads at 4.5:1 or more on its fill, in both themes. Each variant has its own icon, and the title says what happened, so the color is never the only signal.
+`neutral` is a card, for a note that needs no color. The other four take the status tint of their hue: `info` blue, `success` green, `warning` amber and `destructive` red. The fill, the text and the icon come from the tint. Links take the foreground color. Every tint text reads at 4.5:1 or more on its fill, in both themes. Each variant has its own icon, and the title says what happened, so the color is never the only signal.
 
 <ComponentPreview name="alert-variants" />
 
+### Appearance
+
+`filled`, the default, draws a deep tint fill with text and icon in the hue and no edge. `subtle` is the outline: no fill, a 1px edge in the hue, and the same text and icon. It reads on the page and on a card. The neutral variant is always a card.
+
+<ComponentPreview name="alert-appearance" />
+
 ### Links
 
-A link inside an alert has an underline and takes the alert's link color. That is a darker step of the hue in light and a lighter one in dark. Write the link as the next step, such as "Raise the allowance", not as a bare "here".
+A link inside an alert takes the foreground color, medium weight and a soft underline that turns solid on hover. The underline keeps the link from relying on color alone. Write the link as the next step, such as "Raise the allowance", not as a bare "here".
 
 ### Actions
 
-Put buttons in `AlertAction`. In an alert narrower than 448px they sit under the text. From 448px they sit beside it. Use `secondary` or `ghost` buttons, so the page keeps its one primary action.
+Put buttons in `AlertAction`. In an alert narrower than 448px they sit under the text. From 448px they sit at the end of the row, centered on the text. Use `secondary` or `ghost` buttons, so the page keeps its one primary action.
 
 <ComponentPreview name="alert-action" />
 
@@ -62,6 +68,11 @@ Renders a `<div>` and accepts all its props.
       description: 'The look. `neutral` is a card. The others take the status tint of their hue.',
       type: "'neutral' | 'info' | 'success' | 'warning' | 'destructive'",
       default: "'neutral'",
+    },
+    appearance: {
+      description: 'How the tint shows. `filled` is a tint fill with no edge. `subtle` is the outline: a tint edge on the surface under it. No effect on `neutral`.',
+      type: "'subtle' | 'filled'",
+      default: "'filled'",
     },
     icon: {
       description: 'Replaces the icon of the variant. Pass `null` for an alert without one.',
