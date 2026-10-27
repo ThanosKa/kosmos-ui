@@ -48,8 +48,6 @@ The tokens are the CSS variables every Kosmos component reads: colors, shadows, 
 
 They go into your global CSS and replace shadcn's default colors, after the CLI asks you to confirm. Run this command on its own. When a component pulls the tokens in as a dependency instead, the CLI only adds the variables you don't have yet, and shadcn's colors stay.
 
-The CLI also writes `LICENSE-RADIX-COLORS` at the root of your project. The status tints are [Radix Colors](https://github.com/radix-ui/colors) values, and their MIT License asks that the notice stays with them.
-
 </Step>
 <Step>
 
@@ -131,10 +129,6 @@ Every Kosmos file is plain source, so you can copy it in by hand. Start from a N
 Merge each block below into the matching block of `app/globals.css` (`@theme inline`, `:root` and `.dark`), after the Tailwind import. Where a variable already exists, such as shadcn's `--background` or `--primary`, replace its value.
 
 <RegistryCss name="tokens" />
-
-<Callout variant="info" title="Keep the Radix Colors notice">
-  The `--tint-*` values are Radix Colors, under the MIT License. Copy [LICENSE-RADIX-COLORS](https://github.com/ThanosKa/kosmos-ui/blob/HEAD/registry/kosmos/styles/LICENSE-RADIX-COLORS) into your project with them.
-</Callout>
 
 </Step>
 <Step>

@@ -71,7 +71,9 @@ export function SitePresetSync() {
 /** Applies a preset change in one frame, as next-themes' `disableTransitionOnChange` does for the theme. */
 export function withoutTransitions(change: () => void, doc: Document = document) {
   const style = doc.createElement('style');
-  style.textContent = '*,*::before,*::after{transition:none!important}';
+  // The picker's own switch and sliding thumbs keep their motion, or the control that made the change would jump.
+  style.textContent =
+    ":not([data-slot='switch'],[data-slot='switch-thumb'],[data-slot='segmented-control-thumb']),*::before,*::after{transition:none!important}";
   doc.head.appendChild(style);
   change();
   // Reading a computed style flushes the change before the override is removed.

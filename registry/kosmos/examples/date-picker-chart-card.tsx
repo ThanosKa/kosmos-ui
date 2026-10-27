@@ -23,7 +23,7 @@ function points(range: DateRangeValue) {
   return Array.from({ length: rangeLength(range) }, (_, i) => {
     const date = addDays(from, i);
     const seed = date.getFullYear() * 400 + date.getMonth() * 31 + date.getDate();
-    return { day: dayLabel.format(date), signups: Math.round(420 + 60 * Math.sin(seed * 0.7) + 2 * i) };
+    return { day: dayLabel.format(date), signups: Math.round(420 + 18 * Math.sin(seed * 0.7) + 4 * i) };
   });
 }
 

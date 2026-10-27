@@ -44,16 +44,10 @@ Chart series take `chart-1` to `chart-5` in order: a mono ramp from ink through 
 
 <ColorTokens group="chart" />
 
-## Tags
+## Tints
 
-A tag marks a category, such as a plan or a segment. Its fill is the `tag-*` color, its text and 1px edge the matching `tag-*-foreground`, which passes 4.5:1 on the fill. Orange, blue, green and red are the status tints of those hues.
+Six hues color every badge, state dot and alert: `gray`, `blue`, `green`, `amber`, `red` and `violet`. None of them changes with a preset. A category, a plan or a code is a [Badge](/docs/components/badge#tags) in the fill and `-foreground`, with no edge. A state is a `tint-*-dot` beside its word, through [StatusDot](/docs/components/status#dots). An [Alert](/docs/components/alert) or a [Banner](/docs/components/banner) takes the fill, `-border`, `-foreground` and `-link`. Text and links pass 4.5:1 on their fill, dots 3:1, in both themes.
 
-<ColorTokens group="tags" />
-
-## Status tints
-
-Six hues mark states and codes: `gray`, `blue`, `green`, `teal`, `orange` and `red`. None of them changes with a preset. A state is a `tint-*-dot` beside its word, through [StatusDot](/docs/components/status#dots). A code, such as an HTTP status, is a [Badge](/docs/components/badge#codes) in the fill and `-foreground`, with no edge. An [Alert](/docs/components/alert) takes the fill, `-border`, `-foreground` and `-link`. Text and links pass 4.5:1 on their fill, and white `tint-solid-foreground` passes 4.5:1 on each `-solid`, in both themes.
-
-The values are steps of [Radix Colors](https://github.com/radix-ui/colors), under the MIT License: `shadcn add @kosmos/tokens` writes its notice into your project as `LICENSE-RADIX-COLORS`.
+The fill, `-foreground` and `-dot` are OKLCH values; `-border`, `-link` and `-solid` (the logo marquee's sample colors) are derived from them in the same style.
 
 <ColorTokens group="tints" />

@@ -50,40 +50,28 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 | --- | --- | --- |
 | `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | A mono ramp in every preset, Warm included (ADR 0009, ADR 0011): slot 1 is ink (`foreground`), or the accent's ring step in a preset with one; slots 2–5 step toward the page in grey, about 1.4–1.6:1 apart, each 3:1 or more against `card` and `background` in both modes. Lightness alone carries the series, so it reads in grayscale and for color-blind readers; touching segments are split by a 1px line in the surface color |
 
-## Tag colors
+## Tints
 
-In their own labelled blocks after the chart colors. They exist for the Badge hue variants, which mark categories; a state is a dot and a code a tinted pill (Status tints below).
-
-| Token | Role | Source |
-| --- | --- | --- |
-| `tag-orange`, `tag-blue`, `tag-green`, `tag-red` | Tag fill: the status tint of the same hue (`var(--tint-*)`), so a blue tag is the info blue and never follows a preset | Status tints below |
-| `tag-amber`, `tag-magenta` | Tag fill: Radix amber and plum step 3, the tint construction for the two hues that are no status | Radix Colors (MIT) |
-| `tag-*-foreground` | Tag text, and its 1px edge at 20% | The tint's `-foreground` for the four status hues; amber and plum step 11 (the light amber moved toward step 12 to `#a46003`, 4.55:1). `pnpm test` checks 4.5:1 on the fill in both modes |
-
-## Status tints
-
-In their own labelled blocks after the tags, the same under every preset. The values are Radix Colors steps, MIT, Copyright (c) 2021 Radix; the notice is `registry/kosmos/styles/LICENSE-RADIX-COLORS`, which the tokens item ships to `~/LICENSE-RADIX-COLORS`, and `pnpm test` checks it is there.
+In their own labelled blocks after the chart colors, the same under every preset. They color every Badge hue (categories, plans, codes), the `StatusDot`, and the Alert, Banner and Callout tones. The fill, `-foreground` and `-dot` are the OKLCH values of the badge palette study ("one subtle family"); the rest are derived in the same style. The old `tag-*` family and `tint-teal`, `tint-orange`, `tag-orange` and `tag-magenta` are gone, and with them the Radix Colors values and their notice.
 
 | Token | Role | Source |
 | --- | --- | --- |
-| `tint-<hue>` (`gray`, `blue`, `green`, `teal`, `orange`, `red`) | The fill of a code pill (Badge `tint-*`) and of a tinted Alert | Radix step 3 |
-| `tint-<hue>-border` | The edge of a tinted Alert; a code pill's hover edge as a link | Radix step 6 |
-| `tint-<hue>-foreground` | Text on the fill | Radix step 11; in light moved toward step 12 only as far as 4.5:1 on the fill needs, in dark step 11 as it is |
-| `tint-<hue>-link` | A link inside a tinted Alert | Radix step 12 |
-| `tint-<hue>-dot` | The dot of `StatusDot` | Radix step 9; gray's is dimmer (`#c7c7c7` / `#4a4a4a`) |
-| `tint-<hue>-solid` (`blue`, `green`, `orange`, `red`) | A code in the current nav item, under `tint-solid-foreground` | Radix light step 11, the same in both modes, 4.5:1 or more with white |
-| `tint-solid-foreground` | White text on a solid tint | `#ffffff` |
+| `tint-<hue>` (`gray`, `blue`, `green`, `amber`, `red`, `violet`) | The fill of a Badge hue and of a tinted Alert (filled by default), a Banner and a Callout | Light: L 0.96 to 0.97, chroma 0.03 to 0.04 (pale, clearly tinted). Dark: L 0.24, chroma 0.055 to 0.077 (deep, saturated); gray chroma 0 |
+| `tint-<hue>-foreground` | Text on the fill, and on `background` and `card` in an outline Alert, and the icon | Light: L 0.5 to 0.52, chroma 0.14 to 0.2 (vivid, darker). Dark: L 0.65 to 0.72, chroma 0.15 to 0.2 (amber 0.721 0.17 60, red 0.651 0.198 22, blue 0.668 0.148 250, green 0.72 0.18 146, violet 0.7 0.15 300); the amber, red and blue fills and texts are the maintainer's reference colors |
+| `tint-<hue>-dot` | The dot of `StatusDot` | Light L 0.62, chroma 0.16 to 0.2; dark the same as `-foreground`; 3:1 on the fill and on `background` (`pnpm test`) |
+| `tint-<hue>-border` | The edge of an outline Alert and the Banner's bottom divider; a linked Badge's hover fill | Derived: light L 0.84 to 0.85, chroma 0.07 to 0.09; dark L 0.4 to 0.42, chroma 0.1 to 0.12 (a dark-mid step). A decorative edge, not held to 3:1 |
+| `tint-<hue>-solid` (`blue`, `green`, `amber`, `red`, `violet`) | The logo marquee's sample colors | Derived: L 0.5 in both modes, chroma 0.17 (amber 0.12, hue 58) |
 
 ## Shadows
 
-Shadows are style, not palette: they are written once in `tokens.css`, and no preset changes them (ADR 0009).
+Shadows are style, not palette: they are written once in `tokens.css`, and no preset sets them (ADR 0009). Light shadows are tinted from the preset's own `--foreground` through `color-mix`, so none is ever warm on a cool preset; dark ones stay black.
 
 | Token | Surface | Structure |
 | --- | --- | --- |
-| `shadow-control` | Secondary button, segmented group | Light: 1px ring + 1px drop. Dark: dark ring + top rim + inner rim |
+| `shadow-control` | Secondary button, segmented group | Light: 1px ring at foreground 10% + 1px drop. Dark: dark ring + top rim + inner rim |
 | `shadow-field` | Input, textarea, select trigger | One 1px ring in `input`, no drop, in both modes |
-| `shadow-primary` | Primary button | Light: flat, one ring in the `primary` fill. Dark: dark ring + drop + top highlight + inner rim + bottom inner shade |
-| `shadow-card` | Cards, tiles | Light: 3px soft halo + two drops, no hard ring. Dark: dark ring + drop + rim |
+| `shadow-primary` | Primary button | Light: 1px rim in `primary` mixed 78% toward black, small drop, inner top highlight (white 28%) and bottom shade (black 10%). Hover (`shadow-primary-hover`, with `primary-hover`, the fill one lightness step 0.04 darker at the same chroma and hue, so Warm's orange stays orange): darker rim, deeper drop, stronger highlight. Dark (hover unchanged, `primary-hover` is the fill at 90%): dark ring + drop + top highlight + inner rim + bottom inner shade |
+| `shadow-card` | Cards, tiles | Light: 1px ring at foreground 7% + short drop + soft drop. Dark: dark ring + drop + rim |
 | `shadow-popover` | Popover, menu, tooltip, toast, command palette | Ring + stacked drops; dark adds the rim (inner ring at white 10%, so the edge reads on a dark page) |
 | `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim (as popover) |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |

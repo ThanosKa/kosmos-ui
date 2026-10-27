@@ -57,7 +57,7 @@ For your own rules, pass `validate`: a function that gets the value and returns 
 
 ### Errors from your app
 
-When a form library or the server decides the value is wrong, set `invalid` on the Field and put the message in a FieldError. It shows for as long as `invalid` is true.
+When a form library or the server decides the value is wrong, set `invalid` on the Field and put the message in a FieldError. It shows for as long as `invalid` is true. The message takes the red tint text color, with a 14px alert icon before it that screen readers skip.
 
 <ComponentPreview name="field-invalid" />
 

@@ -23,7 +23,9 @@ const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisf
 <GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
 ```
 
-`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. They are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
+A line is 1.5px and straight, with a faint flat fill of its own color under the first series. The chart has no value axis and labels only its first and last x value, so it reads as a shape; the tooltip gives the numbers.
+
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. A previous period is not a new series: give it the same color as the current one and list its key in `previousKeys`, and it draws at 45% opacity with no fill. They are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
 
 ## Examples
 
@@ -69,13 +71,16 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
     },
     xLabel: { description: 'Heads the x column of the hidden table.', type: 'string', default: 'xKey' },
     valueFormatter: {
-      description: 'Formats values in the tooltip and the hidden table. Axis ticks stay compact (1.2K).',
+      description: 'Formats values in the tooltip and the hidden table.',
       type: '(value: number) => string',
     },
     xFormatter: {
       description: 'Formats x values on the axis, in the tooltip and in the hidden table.',
       type: '(value: string) => string',
     },
+    previousKeys: { description: 'Keys of the series that are the period before: the same line at 45% opacity, with no fill.', type: 'string[]', default: '[]' },
+    grid: { description: 'Draws a faint dotted vertical grid. For a large chart only.', type: 'boolean', default: 'false' },
+    legend: { description: 'Draws the legend. By default it shows for two or more series.', type: 'boolean' },
     defaultIndex: { description: 'Shows the tooltip at this point without hovering.', type: 'number' },
   }}
 />

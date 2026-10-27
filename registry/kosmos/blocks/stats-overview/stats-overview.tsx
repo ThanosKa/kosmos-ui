@@ -1,8 +1,10 @@
 'use client';
 
+import { ArrowRight } from 'lucide-react';
 import * as React from 'react';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { statDelta } from '@/registry/kosmos/lib/stat-delta';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   ChartCard,
@@ -15,7 +17,6 @@ import {
 } from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
-import { StatCardDelta, StatCardValue } from '@/registry/kosmos/ui/stat-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
 type StatFormat = 'currency' | 'number' | 'percent';
@@ -51,12 +52,12 @@ const sampleLabels: Record<Range, string[]> = {
   '90d': Array.from({ length: 13 }, (_, i) => dayBefore((12 - i) * 7)),
 };
 
-/** A curve that rises by `rise` (a share of `end`) and lands on `end`, with a stable wobble. */
+/** A curve that rises by `rise` (a share of `end`) and lands on `end`, with small steps around the trend. */
 const curve = (length: number, end: number, rise: number, swing: number, phase: number) =>
   Array.from({ length }, (_, i) => {
     const progress = length === 1 ? 1 : i / (length - 1);
-    const wobble = i === length - 1 ? 0 : Math.sin(i * 1.7 + phase) + 0.5 * Math.cos(i * 0.6 + phase);
-    return Math.round(end * (1 - rise * (1 - progress) + swing * wobble));
+    const wobble = i === length - 1 ? 0 : Math.sin(i * 0.9 + phase) + 0.4 * Math.cos(i * 2.3 + phase);
+    return Math.round(end * (1 - rise * (1 - progress) + swing * 0.4 * wobble));
   });
 
 const steps = (labels: string[], current: number[], previous: number[]) =>
@@ -144,64 +145,131 @@ function formatValue(value: number, format: StatFormat) {
   if (Math.abs(value) < 1_000_000) return formats[format].format(value);
   return format === 'currency' ? usdCompact.format(value) : compactNumber.format(value);
 }
+
+/** The change as a green or red triangle and signed number, with the muted period it is measured against. A flat change stays muted. */
 function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
-  if (metric.change === undefined) return <span className="truncate text-small text-muted-foreground">No earlier period</span>;
+  const delta = metric.change === undefined ? null : statDelta(metric.change, { goodWhen: metric.goodWhen, unit: metric.format === 'percent' ? 'points' : 'percent' });
+  if (!delta) return <span className="truncate text-caption text-muted-foreground">No earlier period</span>;
   return (
-    <StatCardDelta value={metric.change} goodWhen={metric.goodWhen} unit={metric.format === 'percent' ? 'points' : 'percent'}>
+    <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-caption tabular-nums">
+      <span
+        className={cn(
+          'flex items-center gap-1 font-medium text-muted-foreground',
+          delta.tone === 'good' && 'text-tint-green-foreground',
+          delta.tone === 'bad' && 'text-tint-red-foreground',
+        )}
+      >
+        {delta.direction === 'flat' ? (
+          <ArrowRight aria-hidden className="size-3 shrink-0" />
+        ) : (
+          <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
+            <path d="M4 0.5 7.5 7H0.5z" />
+          </svg>
+        )}
+        {delta.text}
+      </span>
+      <span className="text-muted-foreground" aria-hidden>
+        vs. last period
+      </span>
       <span className="sr-only">against the previous {rangeLabel}</span>
-    </StatCardDelta>
+    </span>
   );
 }
 
-/** Where the value sits: beside the label and the change in a container under 448px, under the label from there up. */
-const valueSlot =
-  'col-start-2 row-span-2 row-start-1 justify-self-end @md:col-start-1 @md:row-span-1 @md:row-start-auto @md:justify-self-start';
-
-/** One metric as a tab: its label, its value and its change. The selected one lifts onto a raised surface. */
+/**
+ * One metric as a tab cell: its label, its value and its change. The selected cell keeps its value in ink while idle
+ * cells step back to muted, and the Tabs indicator slides under it in `primary`.
+ */
 function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: boolean; rangeLabel: string }) {
   return (
     <TabsTrigger
       value={metric.id}
       className={cn(
-        'grid h-auto min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center justify-items-start gap-x-3 gap-y-1 rounded-lg px-3 py-2.5 text-start whitespace-normal @md:grid-cols-1',
-        'transition-[color,background-color,box-shadow] hover:not-data-active:bg-accent',
-        'data-active:bg-secondary data-active:shadow-control',
-        // The raised surface marks the selected metric, so the tab list's underline and its reduced-motion twin stay hidden.
-        'after:hidden',
+        'h-auto min-w-0 flex-col items-start justify-start gap-1 rounded-none px-4 py-3 text-start whitespace-normal',
+        'border-s-border transition-[color,background-color] hover:not-data-active:bg-accent',
+        // Two cells a row below 768px, four from there: a divider before every cell that is not first in its row, and a rule above the second row.
+        'nth-[odd]:border-s-transparent @3xl:nth-[odd]:border-s-border @3xl:first:border-s-transparent',
+        'nth-[n+3]:border-t nth-[n+3]:border-t-border @3xl:nth-[n+3]:border-t-transparent',
       )}
     >
-      <span title={metric.label} className="w-full wrap-break-word @md:truncate">
+      <span title={metric.label} className="w-full truncate text-small">
         {metric.label}
       </span>
       {loading ? (
         <>
-          {/* The track is the skeleton's own fill, so these take a darker one. */}
-          <Skeleton className={cn('h-6 w-24 bg-foreground/10 @md:my-1.5', valueSlot)} />
+          <Skeleton className="my-0.5 h-6 w-24 max-w-full bg-foreground/10" />
           <Skeleton className="h-4 w-14 bg-foreground/10" />
         </>
       ) : (
         <>
-          <StatCardValue className={cn('max-w-full', valueSlot)}>{formatValue(metric.value, metric.format)}</StatCardValue>
-          <span className="flex min-w-0 items-center">
-            <MetricChange metric={metric} rangeLabel={rangeLabel} />
-          </span>
+          <span className="max-w-full truncate text-title font-medium text-foreground tabular-nums">{formatValue(metric.value, metric.format)}</span>
+          <MetricChange metric={metric} rangeLabel={rangeLabel} />
         </>
       )}
     </TabsTrigger>
   );
 }
 
-function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[]; state: ChartCardState; onRetry?: () => void; rangeLabel: string }) {
-  const top = events[0]?.count ?? 0;
-  const headingId = React.useId();
+/** The legend as HTML so it can sit in the chart's header: a solid line for this period, the same line at reduced opacity for the one before. */
+function PeriodLegend({ rangeLabel }: { rangeLabel: string }) {
+  return (
+    <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption text-muted-foreground">
+      <li className="flex items-center gap-1.5">
+        <span aria-hidden className="h-0.5 w-4 rounded-full bg-chart-1 forced-colors:bg-[CanvasText]" />
+        Last {rangeLabel}
+      </li>
+      <li className="flex items-center gap-1.5">
+        <span aria-hidden className="h-0.5 w-4 rounded-full bg-chart-1/45 forced-colors:bg-[CanvasText]" />
+        Previous {rangeLabel}
+      </li>
+    </ul>
+  );
+}
+
+/** The selected metric as a faint-filled line for this period and the same line at reduced opacity for the period before. A hidden table repeats the data. */
+function MetricChart({ metric, range }: { metric: Metric; range: Range }) {
+  const rangeLabel = ranges[range].label;
+  const config = {
+    current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
+    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-1)' },
+  } satisfies ChartConfig;
 
   return (
-    <ChartCard state={state}>
-      <ChartCardHeader>
+    <GrowthChart
+      key={range}
+      title={`${metric.label}, last ${rangeLabel} against the ${rangeLabel} before`}
+      data={metric.points}
+      config={config}
+      xKey="label"
+      xLabel={ranges[range].xLabel}
+      previousKeys={['previous']}
+      valueFormatter={(value) => formatValue(value, metric.format)}
+      legend={false}
+      grid
+    />
+  );
+}
+
+const sharePercent = (count: number, total: number) => {
+  const share = (count / total) * 100;
+  return share < 1 ? '<1%' : `${Math.round(share)}%`;
+};
+
+/** The most frequent events as a numbered list in two columns from 768px, each with its count and its share of the list. */
+function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[]; state: ChartCardState; onRetry?: () => void; rangeLabel: string }) {
+  const headingId = React.useId();
+  const total = events.reduce((sum, event) => sum + event.count, 0);
+  const half = Math.ceil(events.length / 2);
+  const columns = [events.slice(0, half), events.slice(half)];
+
+  return (
+    // A card of its own inside the overview's, only for its loading, empty and error states.
+    <ChartCard state={state} className="rounded-none border-t border-border bg-transparent shadow-none">
+      <ChartCardHeader className="items-baseline">
         <ChartCardTitle id={headingId} render={<h2 />}>
           Top events
         </ChartCardTitle>
-        <ChartCardDescription>Last {rangeLabel}</ChartCardDescription>
+        <ChartCardDescription className="col-start-2 row-start-1 justify-self-end">Last {rangeLabel}</ChartCardDescription>
       </ChartCardHeader>
       <ChartCardContent
         loadingLabel="Loading top events"
@@ -209,22 +277,24 @@ function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[];
         emptyDescription="Events show up here as soon as a project sends its first one."
         errorTitle="The top events could not load"
         onRetry={onRetry}
+        className="pb-3"
       >
-        <ol aria-labelledby={headingId} className="flex flex-col gap-1">
-          {events.map((event) => (
-            <li
-              key={event.name}
-              className="relative isolate flex h-8 min-w-0 items-center justify-between gap-3 px-2.5 text-small"
-              style={{ '--share': `${(event.count / top) * 100}%` } as React.CSSProperties}
-            >
-              <span aria-hidden className="absolute inset-y-0 start-0 -z-10 w-(--share) rounded-lg bg-muted" />
-              <span title={event.name} className="min-w-0 truncate font-mono">
-                {event.name}
-              </span>
-              <span className="shrink-0 text-foreground tabular-nums">{formatValue(event.count, 'number')}</span>
-            </li>
+        <div aria-labelledby={headingId} role="group" className="grid grid-cols-1 gap-x-10 @3xl:grid-cols-2">
+          {columns.map((column, columnIndex) => (
+            <ol key={columnIndex} start={columnIndex === 0 ? 1 : half + 1} className="divide-y divide-border">
+              {column.map((event, i) => (
+                <li key={event.name} className="grid min-h-10 grid-cols-[1.25rem_minmax(0,1fr)_auto_3rem] items-center gap-x-3 text-small">
+                  <span className="text-caption text-muted-foreground tabular-nums">{columnIndex * half + i + 1}</span>
+                  <span title={event.name} className="min-w-0 truncate font-mono">
+                    {event.name}
+                  </span>
+                  <span className="font-medium text-foreground tabular-nums">{formatValue(event.count, 'number')}</span>
+                  <span className="text-end text-caption text-muted-foreground tabular-nums">{sharePercent(event.count, total)}</span>
+                </li>
+              ))}
+            </ol>
           ))}
-        </ol>
+        </div>
       </ChartCardContent>
     </ChartCard>
   );
@@ -252,9 +322,9 @@ type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
 };
 
 /**
- * The overview of an analytics dashboard: the headline metrics as tabs over one chart that compares the
- * selected range with the period before it, a range switch, and the top events. Lays itself out by its
- * own width, not the screen's.
+ * The overview of an analytics dashboard on one flat card: the headline metrics as divided cells over one chart that
+ * compares the selected range with the period before it, a range switch, and the top events below. Lays itself out
+ * by its own width, not the screen's.
  */
 function StatsOverview({
   metrics = sampleMetrics,
@@ -282,13 +352,9 @@ function StatsOverview({
   const chartState = stateOf(!active || active.points.length === 0);
   const showTabs = list.length > 0 && !error;
 
-  const chartConfig = {
-    current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
-    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-2)' },
-  } satisfies ChartConfig;
-
   const chart = (
     <ChartCardContent
+      className="px-4 pb-5"
       emptyTitle={list.length === 0 ? 'No metrics yet' : 'No data in this range'}
       emptyDescription={
         list.length === 0
@@ -298,15 +364,15 @@ function StatsOverview({
       onRetry={onRetry}
     >
       {active ? (
-        <GrowthChart
-          key={range}
-          title={`${active.label}, last ${rangeLabel} against the ${rangeLabel} before`}
-          data={active.points}
-          config={chartConfig}
-          xKey="label"
-          xLabel={ranges[range].xLabel}
-          valueFormatter={(value) => formatValue(value, active.format)}
-        />
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pb-3">
+            <span className="truncate text-small text-muted-foreground">
+              {active.label}, last {rangeLabel}
+            </span>
+            <PeriodLegend rangeLabel={rangeLabel} />
+          </div>
+          <MetricChart metric={active} range={range} />
+        </>
       ) : null}
     </ChartCardContent>
   );
@@ -319,43 +385,37 @@ function StatsOverview({
       className={cn('@container min-w-0', className)}
       {...props}
     >
-      <div className="grid grid-cols-1 gap-4 @6xl:grid-cols-3">
-        <ChartCard state={chartState} className="@6xl:col-span-2">
-          <ChartCardHeader>
-            <ChartCardTitle render={<h2 />}>Overview</ChartCardTitle>
-            <ChartCardAction>
-              <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
-                {(Object.keys(ranges) as Range[]).map((key) => (
-                  <SegmentedControlItem key={key} value={key}>
-                    {ranges[key].label}
-                  </SegmentedControlItem>
-                ))}
-              </SegmentedControl>
-            </ChartCardAction>
-          </ChartCardHeader>
+      <ChartCard state={chartState}>
+        <ChartCardHeader>
+          <ChartCardTitle render={<h2 />}>Overview</ChartCardTitle>
+          <ChartCardDescription>
+            Last {rangeLabel} against the {rangeLabel} before
+          </ChartCardDescription>
+          <ChartCardAction>
+            <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => setRange(value as Range)}>
+              {(Object.keys(ranges) as Range[]).map((key) => (
+                <SegmentedControlItem key={key} value={key}>
+                  {ranges[key].label}
+                </SegmentedControlItem>
+              ))}
+            </SegmentedControl>
+          </ChartCardAction>
+        </ChartCardHeader>
 
-          {showTabs && active ? (
-            <Tabs value={active.id} onValueChange={(value) => setMetric(String(value))} className="min-w-0 flex-1 gap-0">
-              <TabsList
-                aria-label="Metric"
-                className={cn(
-                  'mx-3 grid grid-cols-1 gap-1 rounded-xl border border-transparent bg-muted p-1 shadow-inset @md:grid-cols-2 @3xl:grid-cols-4',
-                  'data-[orientation=horizontal]:overflow-visible data-[orientation=horizontal]:border-b-transparent',
-                  '*:data-[slot=tabs-indicator]:hidden',
-                )}
-              >
-                {list.map((item) => (
-                  <MetricTab key={item.id} metric={item} loading={loading} rangeLabel={rangeLabel} />
-                ))}
-              </TabsList>
-              <TabsContent value={active.id} className="flex flex-1 flex-col pt-3">
-                {chart}
-              </TabsContent>
-            </Tabs>
-          ) : (
-            chart
-          )}
-        </ChartCard>
+        {showTabs && active ? (
+          <Tabs value={active.id} onValueChange={(value) => setMetric(String(value))} className="min-w-0 flex-1 gap-0">
+            <TabsList aria-label="Metric" className="grid grid-cols-2 gap-0 border-t border-border @3xl:grid-cols-4">
+              {list.map((item) => (
+                <MetricTab key={item.id} metric={item} loading={loading} rangeLabel={rangeLabel} />
+              ))}
+            </TabsList>
+            <TabsContent value={active.id} className="flex flex-1 flex-col pt-5">
+              {chart}
+            </TabsContent>
+          </Tabs>
+        ) : (
+          chart
+        )}
 
         <TopEvents
           events={events}
@@ -363,7 +423,7 @@ function StatsOverview({
           onRetry={onRetry}
           rangeLabel={rangeLabel}
         />
-      </div>
+      </ChartCard>
     </section>
   );
 }

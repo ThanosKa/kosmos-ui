@@ -1,45 +1,31 @@
 'use client';
 
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useSyncExternalStore } from 'react';
 import { Button } from '@/registry/kosmos/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from '@/registry/kosmos/ui/dropdown-menu';
 
-const themes = [
-  { value: 'light', label: 'Light', Icon: Sun },
-  { value: 'dark', label: 'Dark', Icon: Moon },
-  { value: 'system', label: 'System', Icon: Monitor },
-] as const;
+const subscribe = () => () => {};
 
 /**
- * Picks light, dark or the system theme, and the menu marks the current choice. Before hydration the theme
- * is unknown, so the trigger renders both icons and CSS shows the one for the class on `<html>`.
+ * Flips between light and dark. The theme is unknown on the server, so the name stays neutral until mounted.
+ * The icons follow the `dark` class on `<html>`, so they are right before hydration too.
  */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
+  const dark = mounted && resolvedTheme === 'dark';
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="Change theme" />}>
-        <Sun aria-hidden className="dark:hidden" />
-        <Moon aria-hidden className="hidden dark:block" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-36">
-        <DropdownMenuRadioGroup value={theme} onValueChange={(value: string) => setTheme(value)}>
-          {themes.map(({ value, label, Icon }) => (
-            <DropdownMenuRadioItem key={value} value={value} closeOnClick>
-              <Icon aria-hidden />
-              {label}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="secondary"
+      size="icon"
+      aria-label={!mounted ? 'Switch theme' : dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      onClick={() => setTheme(dark ? 'light' : 'dark')}
+      className="relative"
+    >
+      <Sun aria-hidden className="transition-[opacity] motion-safe:duration-base dark:opacity-0" />
+      <Moon aria-hidden className="absolute opacity-0 transition-[opacity] motion-safe:duration-base dark:opacity-100" />
+    </Button>
   );
 }

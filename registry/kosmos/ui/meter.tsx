@@ -145,4 +145,4 @@ function MeterSegments({ className, count = 20, ...props }: MeterPrimitive.Track
   );
 }
 
-export { Meter, MeterLabel, MeterValue, MeterBar, MeterSegments, type MeterProps, type MeterTone };
+export { autoTone, toneFill, Meter, MeterLabel, MeterValue, MeterBar, MeterSegments, type MeterProps, type MeterTone };

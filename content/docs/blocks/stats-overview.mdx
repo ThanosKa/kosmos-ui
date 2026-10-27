@@ -1,13 +1,13 @@
 ---
 title: Stats overview
-description: The overview of an analytics dashboard. The headline metrics are tabs over one chart that compares each range with the period before it, with the top events below.
+description: The overview of an analytics dashboard. The headline metrics are divided cells over one chart that compares each range with the period before it, with the top events below, all on one flat card.
 ---
 
 ## Installation
 
 <ComponentInstall name="stats-overview" />
 
-The block brings [Chart card](/docs/components/chart-card), [Stat card](/docs/components/stat-card), [Chart](/docs/components/chart), [Tabs](/docs/components/tabs), [Segmented control](/docs/components/segmented-control) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
+The block brings [Chart card](/docs/components/chart-card), [Stat card](/docs/components/stat-card) (for the change maths), [Chart](/docs/components/chart), [Tabs](/docs/components/tabs), [Segmented control](/docs/components/segmented-control) and [Skeleton](/docs/components/skeleton) with it, and lands in `components/stats-overview.tsx`.
 
 ## Usage
 
@@ -21,10 +21,10 @@ Without props it shows sample metrics. Pass the metrics and top events for each 
 
 ## What it does
 
-- **Metrics as tabs**: each metric shows its label, its value and its change against the period before. Value and delta follow the [Stat card](/docs/components/stat-card): an arrow, a sign and a percentage, in a green or red tag. Set `goodWhen: 'down'` for a metric like errors, where falling is good, or `'neither'` to keep it gray. A change in a `percent` metric reads in points. The selected metric lifts onto a raised surface and drives the chart. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
-- **Chart**: the selected metric over the range against the same span before it. It sits on a [Chart card](/docs/components/chart-card) with the range switch in its header, a tooltip and a hidden data table for screen readers.
-- **Top events**: the most frequent events on a chart card of their own, each with a bar to scale against the first.
-- **Width**: the overview lays itself out by its own width. The metrics sit four in a row on a wide container and two on a narrower one. Under 448px they sit one per row, value beside the label, so a value never cuts off on a phone. The top events move beside the chart from 1152px.
+- **Metrics as tabs**: each metric is a cell with its label, its value and its change against the period before, split by divider lines. The change is a triangle and a signed percentage with the muted context "vs. last period" (▲ +9.6%). It is green when the news is good and red when it is bad. The direction and the sign carry the meaning without the color. Set `goodWhen: 'down'` for a metric like errors, where falling is good, or `'neither'` to keep the change gray. A change in a `percent` metric reads in points. The selected cell keeps its value in ink while the label of the others stays muted, and the Tabs indicator slides under it in `primary`. Arrow keys move between metrics. Values of a million and up go compact (28.5M).
+- **Chart**: the selected metric as a 1.5px line with a faint fill over the range, and the period before as the same line at reduced opacity with no fill. It has no value axis and labels only the first and last day, with a faint dotted grid, a tooltip with a thin cursor line and a hidden data table for screen readers. The legend sits at the right of the chart header. The range switch is in the card's header.
+- **Top events**: a numbered list below the chart, split into two columns from 768px, each row with its count and its share of the list.
+- **Width**: the overview lays itself out by its own width. The metrics sit four in a row from 768px and two below it. The top events split into two columns from 768px.
 - **Loading, empty and error**: `loading` swaps every value for a skeleton of the same shape. A range with no points, no metrics or no events shows an empty state. `error` shows what could not load in place of the metrics, the chart and the top events, with a Try again button when you pass `onRetry`.
 
 ## API

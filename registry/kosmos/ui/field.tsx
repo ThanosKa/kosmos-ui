@@ -127,11 +127,10 @@ function FieldError({ className, match, ...props }: FieldErrorProps) {
     <FieldPrimitive.Error
       data-slot="field-error"
       match={match ?? (invalid && hasMessage ? true : undefined)}
-      className={cn('flex items-start gap-1.5 text-small text-foreground', className)}
+      className={cn('flex items-start gap-1.5 text-small text-tint-red-foreground', className)}
       render={(errorProps) => (
         <div {...errorProps}>
-          {/* The icon carries the error meaning beside the color, so the text stays foreground. */}
-          <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0 text-destructive" />
+          <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
           <div className="min-w-0 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-0.5">{errorProps.children}</div>
         </div>
       )}

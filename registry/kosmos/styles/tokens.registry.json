@@ -6,12 +6,5 @@
   "description": "The Kosmos UI theme: colors, status tints, layered shadows, radius ladder, power easings, durations and type roles as CSS variables, in light and dark. Every Kosmos component depends on it.",
   "meta": {
     "cssVarsFrom": "registry/kosmos/styles/tokens.css"
-  },
-  "files": [
-    {
-      "path": "registry/kosmos/styles/LICENSE-RADIX-COLORS",
-      "type": "registry:file",
-      "target": "~/LICENSE-RADIX-COLORS"
-    }
-  ]
+  }
 }

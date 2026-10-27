@@ -9,6 +9,7 @@ export function Callout({ variant = 'neutral', title, children }: { variant?: Al
   return (
     <Alert
       variant={variant}
+      appearance="filled"
       role="note"
       className="not-prose my-6 [&_code]:font-mono [&_strong]:font-medium"
     >

@@ -29,11 +29,11 @@ function points(range: Range) {
   const end = step === 7 ? 74800 : 29400;
   return Array.from({ length: days }, (_, i) => {
     const progress = i / (days - 1);
-    const wobble = i === days - 1 ? 0 : 0.03 * Math.sin(i * 1.7);
+    const wobble = i === days - 1 ? 0 : 0.012 * Math.sin(i * 0.9);
     return {
       day: dayLabel.format(today - (days - 1 - i) * step * 86_400_000),
       current: Math.round(end * (0.9 + 0.1 * progress + wobble)),
-      previous: Math.round(end * (0.84 + 0.08 * progress + 0.03 * Math.cos(i * 0.9))),
+      previous: Math.round(end * (0.84 + 0.08 * progress + 0.012 * Math.cos(i * 1.1))),
     };
   });
 }
@@ -45,7 +45,7 @@ export default function ChartCardDemo() {
   const { label } = ranges[range];
   const config = {
     current: { label: `Last ${label}`, color: 'var(--chart-1)' },
-    previous: { label: `Previous ${label}`, color: 'var(--chart-2)' },
+    previous: { label: `Previous ${label}`, color: 'var(--chart-1)' },
   } satisfies ChartConfig;
 
   return (
@@ -69,6 +69,7 @@ export default function ChartCardDemo() {
           title={`Active users, last ${label} against the ${label} before`}
           data={points(range)}
           config={config}
+          previousKeys={['previous']}
           xKey="day"
           xLabel={range === '90d' ? 'Week of' : 'Day'}
           valueFormatter={(value) => count.format(value)}

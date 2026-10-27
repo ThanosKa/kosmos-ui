@@ -1,6 +1,5 @@
 // Usage: node --test lib/tints.test.mts
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { contrastRatio } from './contrast.ts';
 import { presetPalette, presets, type Mode } from './presets/index.ts';
@@ -9,9 +8,8 @@ import { readKosmosTokens } from './tokens.ts';
 
 const tokens = readKosmosTokens();
 const modes = { light: tokens.light, dark: { ...tokens.light, ...tokens.dark } };
-const hues = ['gray', 'blue', 'green', 'teal', 'orange', 'red'] as const;
-const solidHues = ['blue', 'green', 'orange', 'red'] as const;
-const tagHues = ['orange', 'blue', 'amber', 'magenta', 'green', 'red'] as const;
+const hues = ['gray', 'blue', 'green', 'amber', 'red', 'violet'] as const;
+const solidHues = ['blue', 'green', 'amber', 'red', 'violet'] as const;
 
 for (const [mode, declarations] of Object.entries(modes)) {
   const value = (name: string) => {
@@ -25,26 +23,38 @@ for (const [mode, declarations] of Object.entries(modes)) {
   };
 
   for (const hue of hues) {
-    test(`${hue} tint, ${mode}: its text and its link read at 4.5:1 on its fill`, () => {
+    test(`${hue} tint, ${mode}: its text reads at 4.5:1 on its fill`, () => {
       const fill = value(`tint-${hue}`);
-      for (const role of ['foreground', 'link']) {
-        const ratio = contrastRatio(value(`tint-${hue}-${role}`), fill);
-        assert.ok(ratio >= 4.5, `tint-${hue}-${role} on tint-${hue}: ${ratio.toFixed(2)}:1`);
+      const ratio = contrastRatio(value(`tint-${hue}-foreground`), fill);
+      assert.ok(ratio >= 4.5, `tint-${hue}-foreground on tint-${hue}: ${ratio.toFixed(2)}:1`);
+      const link = contrastRatio(value('foreground'), fill);
+      assert.ok(link >= 4.5, `foreground (the link) on tint-${hue}: ${link.toFixed(2)}:1`);
+    });
+  }
+
+  for (const hue of hues) {
+    test(`${hue} tint, ${mode}: its dot reads at 3:1 on its fill and on the page`, () => {
+      const dot = value(`tint-${hue}-dot`);
+      assert.ok(contrastRatio(dot, value(`tint-${hue}`)) >= 3, `tint-${hue}-dot on tint-${hue}`);
+      assert.ok(contrastRatio(dot, value('background')) >= 3, `tint-${hue}-dot on background`);
+    });
+  }
+
+  test(`${mode}: no tint of the old tag and Radix hues is left`, () => {
+    for (const name of ['tint-teal', 'tint-orange', 'tag-orange', 'tag-magenta']) {
+      assert.equal(declarations[name], undefined, `--${name} was removed`);
+    }
+  });
+
+  test(`${mode}: every preset's page and card read the text of an outline alert at 4.5:1`, () => {
+    for (const preset of presets) {
+      const palette = presetPalette(preset, mode as Mode);
+      for (const surface of ['background', 'card'] as const) {
+        for (const hue of hues) {
+          const ratio = contrastRatio(value(`tint-${hue}-foreground`), palette[surface]);
+          assert.ok(ratio >= 4.5, `${preset.name}: tint-${hue}-foreground on ${surface}: ${ratio.toFixed(2)}:1`);
+        }
       }
-    });
-  }
-
-  for (const hue of tagHues) {
-    test(`${hue} tag, ${mode}: its text reads at 4.5:1 on its fill`, () => {
-      const ratio = contrastRatio(resolved(`tag-${hue}-foreground`), resolved(`tag-${hue}`));
-      assert.ok(ratio >= 4.5, `tag-${hue}-foreground on tag-${hue}: ${ratio.toFixed(2)}:1`);
-    });
-  }
-
-  test(`${mode}: a tag that shares a status hue is that hue's tint`, () => {
-    for (const hue of ['orange', 'blue', 'green', 'red']) {
-      assert.equal(resolved(`tag-${hue}`), value(`tint-${hue}`));
-      assert.equal(resolved(`tag-${hue}-foreground`), value(`tint-${hue}-foreground`));
     }
   });
 
@@ -58,24 +68,11 @@ for (const [mode, declarations] of Object.entries(modes)) {
       }
     }
   });
-
-  for (const hue of solidHues) {
-    test(`${hue} solid, ${mode}: white text reads at 4.5:1 on it`, () => {
-      assert.equal(value('tint-solid-foreground'), '#ffffff');
-      const ratio = contrastRatio(value('tint-solid-foreground'), value(`tint-${hue}-solid`));
-      assert.ok(ratio >= 4.5, `tint-solid-foreground on tint-${hue}-solid: ${ratio.toFixed(2)}:1`);
-    });
-  }
 }
 
-test('the tokens registry item ships the Radix Colors notice with the tints', () => {
+test('the tokens item carries the tints and no Radix notice', () => {
   const item = readRegistryItems().find((candidate) => candidate.name === 'tokens');
   assert.ok(item, 'the tokens item exists');
   assert.ok(Object.keys(item.cssVars?.light ?? {}).some((name) => name.startsWith('tint-')), 'the item carries the tints');
-  const notice = (item.files ?? []).find((file) => readFileSync(file.path, 'utf8').includes('Copyright (c) 2021 Radix'));
-  assert.ok(notice, 'a file of the item holds the Radix Colors copyright line');
-  const text = readFileSync(notice.path, 'utf8');
-  assert.match(text, /^MIT License/);
-  assert.match(text, /The above copyright notice and this permission notice shall be included/);
-  assert.ok(notice.target, 'the notice has a target, so shadcn add writes it into the app');
+  assert.equal((item.files ?? []).length, 0);
 });

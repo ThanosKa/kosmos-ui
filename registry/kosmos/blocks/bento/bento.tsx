@@ -43,9 +43,9 @@ const card = 'w-full rounded-xl border border-transparent bg-card shadow-card';
 const wholeNumber = new Intl.NumberFormat('en-US');
 
 const sampleProjects = [
-  { name: 'Fernhill Books', plan: 'Scale', hue: 'magenta', dot: 'bg-success', status: 'Live', users: 48210 },
-  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'orange', dot: 'bg-success', status: 'Live', users: 6120 },
-  { name: 'Marigold Recipes', plan: 'Pro', hue: 'orange', dot: 'bg-muted-foreground', status: 'Trial', users: 1920 },
+  { name: 'Fernhill Books', plan: 'Scale', hue: 'violet', dot: 'bg-success', status: 'Live', users: 48210 },
+  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'blue', dot: 'bg-success', status: 'Live', users: 6120 },
+  { name: 'Marigold Recipes', plan: 'Pro', hue: 'blue', dot: 'bg-muted-foreground', status: 'Trial', users: 1920 },
 ] as const;
 
 function ProjectsTable() {

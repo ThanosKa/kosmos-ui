@@ -101,9 +101,9 @@ const platforms: Record<ProjectPlatform, { label: string; icon: LucideIcon }> = 
 };
 
 const plans: Record<ProjectPlan, { label: string; variant: BadgeProps['variant'] }> = {
-  free: { label: 'Free', variant: 'blue' },
-  pro: { label: 'Pro', variant: 'orange' },
-  scale: { label: 'Scale', variant: 'magenta' },
+  free: { label: 'Free', variant: 'gray' },
+  pro: { label: 'Pro', variant: 'blue' },
+  scale: { label: 'Scale', variant: 'violet' },
 };
 
 const planAllowance: Record<ProjectPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
@@ -111,7 +111,7 @@ const planAllowance: Record<ProjectPlan, number> = { free: 50_000, pro: 3_000_00
 /** The share of its plan's monthly allowance a project used in the last 30 days, in percent. It can pass 100. */
 const eventQuota = (row: Project) => Math.round((row.events / planAllowance[row.plan]) * 100);
 
-/** Each status as a state of `StatusDot`: live is green, trial gray, paused orange. */
+/** Each status as a state of `StatusDot`: live is green, trial gray, paused amber. */
 const statuses: Record<ProjectStatus, { label: string; dot: Status }> = {
   live: { label: 'Live', dot: 'done' },
   trial: { label: 'Trial', dot: 'pending' },

@@ -48,7 +48,7 @@ function StatusIcon({ status, label, className }: StatusIconProps) {
 const statusDot: Record<Status, string> = {
   pending: 'bg-tint-gray-dot',
   running: 'bg-tint-blue-dot animate-pulse',
-  waiting: 'bg-tint-orange-dot',
+  waiting: 'bg-tint-amber-dot',
   done: 'bg-tint-green-dot',
   error: 'bg-tint-red-dot',
   skipped: 'bg-tint-gray-dot',

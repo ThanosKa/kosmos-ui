@@ -361,10 +361,10 @@ function ConfirmDialog({
                 <Input autoComplete="off" spellCheck={false} value={typed} onValueChange={setTyped} />
               </Field>
             ) : null}
-            <p role="alert" className="flex min-w-0 items-start gap-1.5 text-small text-foreground empty:hidden">
+            <p role="alert" className="flex min-w-0 items-start gap-1.5 text-small text-tint-red-foreground empty:hidden">
               {error ? (
                 <>
-                  <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0 text-destructive" />
+                  <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
                   <span className="min-w-0">{error}</span>
                 </>
               ) : null}

@@ -1,0 +1,119 @@
+---
+title: Gauge
+description: Shows a value within a known range as a ring that fills to the value, with the value in the center. Built on Base UI Meter.
+baseUi: https://base-ui.com/react/components/meter
+---
+
+<ComponentPreview name="gauge-demo" />
+
+## Installation
+
+<ComponentInstall name="gauge" />
+
+## Usage
+
+```tsx
+import { Gauge } from '@/components/ui/gauge';
+```
+
+```tsx
+<Gauge value={68} showValue aria-label="Profile completeness" />
+```
+
+A gauge is the circular sibling of [Meter](/docs/components/meter): it shows a measurement, like a score or a quota, and takes the same `min`, `max`, `format`, `tone`, `low`, `high` and `optimum`. Screen readers announce it as a meter with its value as text. A gauge has no visible label of its own, so always give it an `aria-label`, or point `aria-labelledby` at the text beside it.
+
+For the progress of a task that finishes, such as an upload, use a progress bar instead.
+
+## Examples
+
+### Sizes
+
+`size` is `xs` (20px), `sm` (32px), `md` (64px, the default) or `lg` (128px). The number in the center scales with it. `xs` is too small for a label: it ignores `showValue` and keeps the value text for screen readers.
+
+<ComponentPreview name="gauge-sizes" />
+
+### Color by region
+
+With `tone="auto"`, the arc takes the color of its region, the way `Meter` does. With the defaults, the top third of the range is `success`, the middle `warning` and the bottom `destructive`. Set `optimum={0}` when less is better, as for disk usage. The color only repeats what the value says, so keep the value or a number beside the gauge.
+
+<ComponentPreview name="gauge-tone" />
+
+### Indeterminate
+
+`indeterminate` shows a spinning arc while you work out the value. Pair it with text such as "Calculating usage…", so it is not read as zero. Under the reduced motion setting the arc pulses instead of spinning.
+
+<ComponentPreview name="gauge-indeterminate" />
+
+### Center content
+
+`showValue` prints the number alone, such as `80`. Use `format` to add a unit, for example `{ style: 'percent' }` with `max={1}`.
+
+Pass `children` to replace the number with an icon or your own text.
+
+<ComponentPreview name="gauge-content" />
+
+## API
+
+Gauge wraps the [Base UI Meter](https://base-ui.com/react/components/meter) and takes its `Meter.Root` props.
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The current value. Left out with `indeterminate`.',
+      type: 'number',
+    },
+    min: { description: 'The lowest value.', type: 'number', default: '0' },
+    max: { description: 'The highest value.', type: 'number', default: '100' },
+    size: {
+      description: 'The diameter of the ring.',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+    },
+    tone: {
+      description: 'The arc color, or `auto` to color by region.',
+      type: "'primary' | 'success' | 'warning' | 'destructive' | 'auto'",
+      default: "'primary'",
+    },
+    low: {
+      description: 'Upper end of the low region, for `tone="auto"`.',
+      type: 'number',
+      default: 'a third of the range',
+    },
+    high: {
+      description: 'Lower end of the high region, for `tone="auto"`.',
+      type: 'number',
+      default: 'two thirds of the range',
+    },
+    optimum: {
+      description: 'The best value, for `tone="auto"`.',
+      type: 'number',
+      default: 'max',
+    },
+    showValue: {
+      description: 'Shows the value in the center. Ignored at `xs`.',
+      type: 'boolean',
+      default: 'false',
+    },
+    indeterminate: {
+      description: 'Shows a spinning arc instead of a value.',
+      type: 'boolean',
+      default: 'false',
+    },
+    children: {
+      description: 'Replaces the value in the center.',
+      type: 'ReactNode',
+    },
+    format: {
+      description: 'How the center value reads. A whole number by default.',
+      type: 'Intl.NumberFormatOptions',
+    },
+    locale: {
+      description: 'The locale used to format the value.',
+      type: 'Intl.LocalesArgument',
+    },
+    getAriaValueText: {
+      description: 'Returns the text screen readers announce. A percentage of the range by default.',
+      type: '(formattedValue: string, value: number) => string',
+    },
+  }}
+/>

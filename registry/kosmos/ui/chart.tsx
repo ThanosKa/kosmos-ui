@@ -77,12 +77,12 @@ function ChartContainer({
 const seriesColor = (key: string) => `var(--color-${key})`;
 
 /** The color square beside a series name in the tooltip and the legend. */
-function SeriesSwatch({ seriesKey, fallback }: { seriesKey: string; fallback?: string }) {
+function SeriesSwatch({ seriesKey, fallback, previous }: { seriesKey: string; fallback?: string; previous?: boolean }) {
   return (
     <span
       aria-hidden
       style={{ '--series': `var(--color-${seriesKey}, ${fallback ?? 'currentColor'})` } as React.CSSProperties}
-      className="size-2 shrink-0 rounded-sm bg-(--series) forced-colors:bg-[CanvasText]"
+      className={cn('size-2 shrink-0 rounded-sm bg-(--series) forced-colors:bg-[CanvasText]', previous && 'opacity-45')}
     />
   );
 }
@@ -106,6 +106,8 @@ type ChartTooltipContentProps = Partial<Pick<TooltipContentProps, 'active' | 'pa
   labelFormatter?: (label: React.ReactNode) => React.ReactNode;
   /** Formats each value; numbers default to en-US grouping (1,234). */
   valueFormatter?: (value: TooltipValueType, key: string) => React.ReactNode;
+  /** Keys of the series that are the period before, whose swatch is faint like their line. */
+  previousKeys?: string[];
 };
 
 /** The tooltip card: the x value, then one row per series with its color, name and value. */
@@ -118,6 +120,7 @@ function ChartTooltipContent({
   hideIndicator = false,
   labelFormatter,
   valueFormatter,
+  previousKeys = [],
 }: ChartTooltipContentProps) {
   const { config } = useChart();
   if (!active || !payload?.length) return null;
@@ -144,7 +147,7 @@ function ChartTooltipContent({
                 <Icon />
               ) : (
                 !hideIndicator && (
-                  <SeriesSwatch seriesKey={key} fallback={item.color} />
+                  <SeriesSwatch seriesKey={key} fallback={item.color} previous={previousKeys.includes(key)} />
                 )
               )}
               <span className="min-w-0 flex-1 truncate text-muted-foreground">{series?.label ?? item.name}</span>
@@ -166,10 +169,13 @@ function ChartLegendContent({
   payload,
   className,
   verticalAlign = 'bottom',
+  previousKeys = [],
 }: {
   payload?: readonly LegendPayload[];
   className?: string;
   verticalAlign?: 'top' | 'middle' | 'bottom';
+  /** Keys of the series that are the period before, whose swatch is faint like their line. */
+  previousKeys?: string[];
 }) {
   const { config } = useChart();
   if (!payload?.length) return null;
@@ -199,7 +205,7 @@ function ChartLegendContent({
             {Icon ? (
               <Icon />
             ) : (
-              <SeriesSwatch seriesKey={key} fallback={item.color} />
+              <SeriesSwatch seriesKey={key} fallback={item.color} previous={previousKeys.includes(key)} />
             )}
             {series?.label ?? item.value}
           </li>
@@ -242,11 +248,12 @@ function Sparkline({
         <Recharts.YAxis hide domain={['dataMin', 'dataMax']} />
         <Recharts.Area
           dataKey={dataKey}
-          type="monotone"
+          type="linear"
           stroke={seriesColor(dataKey)}
           strokeWidth={1.5}
+          strokeLinejoin="round"
           fill={seriesColor(dataKey)}
-          fillOpacity={fill ? 0.1 : 0}
+          fillOpacity={fill ? 0.05 : 0}
           dot={false}
           activeDot={false}
           baseValue="dataMin"
@@ -257,11 +264,27 @@ function Sparkline({
   );
 }
 
-const compactNumber = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+/** Gives the value axis 10% of room above and below the data, so a calm line does not sit on the edges. */
+const paddedDomain = ([min, max]: readonly [number, number]): [number, number] => {
+  const pad = (max - min) * 0.1 || 1;
+  return [min - pad, max + pad];
+};
+
+/** Draws the first and last x label only, each pulled inside the plot so neither is cut off. */
+function EndTick({ x, y, payload, first }: { x?: number; y?: number; payload?: { value: string }; first: string }) {
+  return (
+    <text x={x} y={y} dy={14} textAnchor={payload?.value === first ? 'start' : 'end'} className="fill-muted-foreground">
+      {payload?.value}
+    </text>
+  );
+}
 
 /**
- * A value over time: one or more series as lines with a soft area wash, a horizontal grid, axes
- * and a tooltip. Two or more series get a legend. A hidden table repeats the data for screen readers.
+ * A value over time: each series is a 1.5px straight line, and the first series is washed with a faint flat fill.
+ * A series named in `previousKeys` is the period before: the same hue at 45% opacity, with no fill. The
+ * chrome stays quiet: no value axis, only the first and last x labels, a thin cursor line in the tooltip, and
+ * with `grid` a faint dotted vertical grid for a large chart. Two or more series get a legend. A hidden
+ * table repeats the data for screen readers.
  */
 function GrowthChart({
   data,
@@ -271,6 +294,9 @@ function GrowthChart({
   title,
   valueFormatter,
   xFormatter,
+  previousKeys = [],
+  grid = false,
+  legend,
   defaultIndex,
   className,
   ...props
@@ -283,64 +309,80 @@ function GrowthChart({
   xLabel?: string;
   /** Names the chart for screen readers and captions its hidden data table. */
   title: string;
-  /** Formats values in the tooltip and the hidden table. Axis ticks are compact (1.2K). */
+  /** Formats values in the tooltip and the hidden table. */
   valueFormatter?: (value: number) => string;
   /** Formats x values on the axis, the tooltip and the hidden table. */
   xFormatter?: (value: string) => string;
+  /** Keys of the series that are the period before: drawn at reduced opacity, with no fill. Give them the same color as the current series. */
+  previousKeys?: string[];
+  /** Draws a faint dotted vertical grid. For a large chart only. */
+  grid?: boolean;
+  /** Draws the legend. By default it shows for two or more series. */
+  legend?: boolean;
   /** Shows the tooltip at this index without hovering, for a pinned state. */
   defaultIndex?: number;
 }) {
   const keys = Object.keys(config);
   const formatX = (value: unknown) => (xFormatter ? xFormatter(String(value)) : String(value));
   const formatY = (value: number) => (valueFormatter ? valueFormatter(value) : defaultNumber.format(value));
+  const first = data.length > 0 ? String(data[0][xKey]) : '';
+  const last = data.length > 0 ? String(data[data.length - 1][xKey]) : '';
+  const filledKey = keys.find((key) => !previousKeys.includes(key));
+  const ends = first === last ? [first] : [first, last];
 
   return (
     <figure data-slot="growth-chart" className={cn('m-0 flex w-full flex-col', className)}>
-      <ChartContainer config={config} className="aspect-auto h-60" {...props}>
-        <Recharts.AreaChart title={title} data={data as Datum[]} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-          <Recharts.CartesianGrid vertical={false} />
+      <ChartContainer
+        config={config}
+        className="aspect-auto h-60 [&_.recharts-cartesian-grid_line]:stroke-foreground/15"
+        {...props}
+      >
+        <Recharts.AreaChart title={title} data={data as Datum[]} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
+          {grid ? <Recharts.CartesianGrid horizontal={false} strokeDasharray="1 5" strokeLinecap="round" /> : null}
           <Recharts.XAxis
             dataKey={xKey}
+            ticks={ends}
+            interval={0}
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            minTickGap={24}
             tickFormatter={formatX}
+            tick={<EndTick first={first} />}
           />
-          <Recharts.YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            width="auto"
-            tickFormatter={(value: number) => compactNumber.format(value)}
-          />
+          <Recharts.YAxis hide domain={paddedDomain} />
           <ChartTooltip
-            cursor
+            cursor={{ strokeWidth: 1 }}
             defaultIndex={defaultIndex}
             isAnimationActive={false}
             content={
               <ChartTooltipContent
                 labelFormatter={(label) => formatX(label)}
                 valueFormatter={(value) => (typeof value === 'number' ? formatY(value) : String(value))}
+                previousKeys={previousKeys}
               />
             }
           />
-          {keys.length > 1 && <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />}
-          {keys.map((key) => (
-            <Recharts.Area
-              key={key}
-              dataKey={key}
-              name={typeof config[key].label === 'string' ? config[key].label : key}
-              type="monotone"
-              stroke={seriesColor(key)}
-              strokeWidth={2}
-              fill={seriesColor(key)}
-              fillOpacity={0.1}
-              dot={false}
-              activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card)' }}
-              {...chartAnimation}
-            />
-          ))}
+          {(legend ?? keys.length > 1) && <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" previousKeys={previousKeys} />} />}
+          {[...keys.filter((key) => previousKeys.includes(key)), ...keys.filter((key) => !previousKeys.includes(key))].map((key) => {
+            const isPrevious = previousKeys.includes(key);
+            return (
+              <Recharts.Area
+                key={key}
+                dataKey={key}
+                name={typeof config[key].label === 'string' ? config[key].label : key}
+                type="linear"
+                stroke={seriesColor(key)}
+                strokeOpacity={isPrevious ? 0.45 : 1}
+                strokeWidth={1.5}
+                strokeLinejoin="round"
+                fill={seriesColor(key)}
+                fillOpacity={key === filledKey ? 0.05 : 0}
+                dot={false}
+                activeDot={isPrevious ? false : { r: 3, strokeWidth: 1.5, stroke: 'var(--card)' }}
+                {...chartAnimation}
+              />
+            );
+          })}
         </Recharts.AreaChart>
       </ChartContainer>
       {/* A table keeps its content width at 1px, so the visually hidden box is a wrapper. */}

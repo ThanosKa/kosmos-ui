@@ -37,7 +37,7 @@ The studied products go below the contrast floor in places. Kosmos keeps their s
 | Sidebar group labels | Dark about 1.9:1 | `muted-foreground`, uppercase caption | Same floor; the uppercase eyebrow keeps the label quieter than the items through size and case, not contrast |
 | Idle nav items | Dark grey near 4.6:1 | `muted-foreground` | Same structure (idle grey, active ink), at our own token |
 | Placeholders | Light about 2.6:1 | `muted-foreground` | Placeholder text is read as an example of the value and must pass 4.5:1 |
-| Tag text | Light-on-tint tags pass in dark; colored status text in some products | `tag-*-foreground` steps (5.2:1 and up on every fill); status text stays neutral with a dot | Tags carry a category by hue; status keeps the dot so its meaning never rides on color alone |
+| Tag text | Light-on-tint tags pass in dark; colored status text in some products | `tint-*-foreground` steps (4.5:1 or more on every fill); status text stays neutral with a dot | Tags carry a category by hue; status keeps the dot so its meaning never rides on color alone |
 | Field edge | About 1.2:1 ring, no drop | `shadow-field` in `input`, about 1.2:1 | Matches the existing Input boundary row: the label identifies the field and the focus outline passes 3:1 |
 
 ## Review output

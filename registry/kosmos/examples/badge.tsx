@@ -3,7 +3,6 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import BadgeCodes from '@/registry/kosmos/examples/badge-codes';
-import BadgeCurrent from '@/registry/kosmos/examples/badge-current';
 
 const variants = [
   'secondary',
@@ -11,20 +10,14 @@ const variants = [
   'success',
   'warning',
   'destructive',
-  'orange',
+  'gray',
   'blue',
-  'amber',
-  'magenta',
   'green',
+  'amber',
   'red',
-  'tint-gray',
-  'tint-blue',
-  'tint-green',
-  'tint-teal',
-  'tint-orange',
-  'tint-red',
+  'violet',
 ] as const;
-const codeStates = ['default', 'link', 'hover', 'focus', 'current'] as const;
+const codeStates = ['default', 'link', 'hover', 'focus'] as const;
 
 const labels: Record<(typeof variants)[number], string> = {
   secondary: 'Draft',
@@ -32,18 +25,12 @@ const labels: Record<(typeof variants)[number], string> = {
   success: 'Active',
   warning: 'Pending',
   destructive: 'Failed',
-  orange: 'Pro',
-  blue: 'Free',
-  amber: 'Insights',
-  magenta: 'Scale',
-  green: 'Ingestion',
-  red: 'Billing',
-  'tint-gray': '304',
-  'tint-blue': 'POST',
-  'tint-green': '200',
-  'tint-teal': 'EU',
-  'tint-orange': '429',
-  'tint-red': '500',
+  gray: 'Free',
+  blue: 'Pro',
+  green: '200',
+  amber: 'Trial',
+  red: '500',
+  violet: 'Scale',
 };
 
 const rows = [
@@ -60,13 +47,7 @@ export default function BadgePreview() {
           rows={variants}
           states={codeStates}
           render={(variant, state) =>
-            state === 'current' ? (
-              variant.startsWith('tint-') ? (
-                <span aria-current="page" className="flex">
-                  <Badge variant={variant}>{labels[variant]}</Badge>
-                </span>
-              ) : null
-            ) : state === 'default' ? (
+            state === 'default' ? (
               <Badge variant={variant}>{labels[variant]}</Badge>
             ) : (
               <Badge
@@ -115,9 +96,6 @@ export default function BadgePreview() {
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <PreviewSection title="Codes in a request log">
           <BadgeCodes />
-        </PreviewSection>
-        <PreviewSection title="Methods in a nav, current item filled">
-          <BadgeCurrent />
         </PreviewSection>
       </div>
 

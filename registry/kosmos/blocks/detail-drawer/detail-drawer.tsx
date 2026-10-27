@@ -111,9 +111,9 @@ const statuses: Record<DetailStatus, { label: string; dot: string }> = {
 const statusItems = Object.fromEntries(Object.entries(statuses).map(([key, value]) => [key, value.label]));
 
 const plans: Record<DetailPlan, { label: string; variant: BadgeProps['variant'] }> = {
-  free: { label: 'Free', variant: 'blue' },
-  pro: { label: 'Pro', variant: 'orange' },
-  scale: { label: 'Scale', variant: 'magenta' },
+  free: { label: 'Free', variant: 'gray' },
+  pro: { label: 'Pro', variant: 'blue' },
+  scale: { label: 'Scale', variant: 'violet' },
 };
 
 const platforms: Record<DetailPlatform, { label: string; icon: LucideIcon }> = {
