@@ -14,6 +14,22 @@ const blockSelectors: Record<TokenBlock, string> = {
   dark: '.dark',
 };
 
+/** The text of the block that opens at `open`, without its nested blocks (an `@keyframes` inside `@theme`). */
+function topLevelBody(css: string, open: number): { body: string; close: number } {
+  let body = '';
+  let depth = 0;
+  for (let index = open + 1; index < css.length; index++) {
+    const char = css[index];
+    if (char === '{') depth++;
+    else if (char === '}') {
+      if (depth === 0) return { body, close: index };
+      depth--;
+      if (depth === 0) body += ';';
+    } else if (depth === 0) body += char;
+  }
+  return { body, close: css.length };
+}
+
 /**
  * Merges every block with this selector, in file order. Component-specific tokens (chart colors, ...)
  * live in their own labelled set of blocks further down the file, so parallel changes don't touch the
@@ -24,8 +40,8 @@ function parseBlock(css: string, selector: string): Declarations {
   let start = css.indexOf(`${selector} {`);
   while (start !== -1) {
     const open = css.indexOf('{', start);
-    const close = css.indexOf('}', open);
-    for (const part of css.slice(open + 1, close).split(';')) {
+    const { body, close } = topLevelBody(css, open);
+    for (const part of body.split(';')) {
       const match = /^\s*--([\w-]+)\s*:\s*([\s\S]+?)\s*$/.exec(part);
       if (match) declarations[match[1]] = match[2].replace(/\s+/g, ' ');
     }
