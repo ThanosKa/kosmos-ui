@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { ChecklistIllustration, LayerStackIllustration, SyncIllustration } from '@/registry/kosmos/ui/illustrations';
@@ -30,7 +31,7 @@ export default function IllustrationsPreview() {
       <PreviewSection title="Scales with its container: 160px, 240px, 360px">
         <div className="flex flex-wrap items-start gap-4">
           {[160, 240, 360].map((width) => (
-            <div key={width} style={{ width }} className={tile}>
+            <div key={width} style={{ '--tile-width': `${width}px` } as CSSProperties} className={cn(tile, 'w-(--tile-width)')}>
               <LayerStackIllustration />
               <SyncIllustration />
               <ChecklistIllustration />

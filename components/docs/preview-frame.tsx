@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 /**
@@ -76,8 +76,8 @@ export function PreviewFrame({
       src={src}
       title={title}
       loading="lazy"
-      style={{ height }}
-      className={cn('block w-full rounded-lg bg-background', className)}
+      style={{ '--frame-height': `${height}px` } as CSSProperties}
+      className={cn('block h-(--frame-height) w-full rounded-lg bg-background', className)}
     />
   );
 }

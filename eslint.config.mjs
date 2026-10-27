@@ -40,6 +40,36 @@ const colorSelectors = colorPatterns.flatMap((pattern) => [
   { selector: `TemplateElement[value.raw=/${pattern}/]`, message: colorMessage },
 ]);
 
+// Transitions name their properties. A bare `transition` or `transition-all` animates whatever changes, layout included.
+// The class is matched as a whole word, so `transition-colors` and `transition-[opacity,transform]` pass.
+const transitionPattern = '(^|[\\s"\'`])transition(-all)?($|[\\s"\'`])';
+const transitionMessage = 'Name the properties a transition animates (`transition-colors`, `transition-[opacity,transform]`); no bare `transition` or `transition-all` (kosmos-style).';
+const transitionSelectors = [
+  { selector: `Literal[value=/${transitionPattern}/]`, message: transitionMessage },
+  { selector: `TemplateElement[value.raw=/${transitionPattern}/]`, message: transitionMessage },
+];
+
+// Components import `cn` from the one file that owns it, not from the libraries it wraps.
+const cnMessage = 'Import `cn` from `@/registry/kosmos/lib/cn`, not from `clsx`, `tailwind-merge` or `cn` (kosmos-style).';
+const cnSelectors = ['clsx', 'tailwind-merge', 'cn'].map((source) => ({
+  selector: `ImportDeclaration[source.value=/^${source}(\\/.*)?$/]`,
+  message: cnMessage,
+}));
+
+// An inline `style` holds CSS custom properties only; every other property is a class.
+const styleSelectors = [
+  {
+    selector: "JSXAttribute[name.name='style'] > JSXExpressionContainer > ObjectExpression > Property[key.type='Identifier']",
+    message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
+  },
+  {
+    selector: "JSXAttribute[name.name='style'] > JSXExpressionContainer > ObjectExpression > Property[key.type='Literal'][key.value!=/^--/]",
+    message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
+  },
+];
+
+const codeRules = [...transitionSelectors, ...cnSelectors, ...styleSelectors];
+
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
  * JSX is wrapped in a fragment, since a sample may list several elements side by side.
@@ -83,7 +113,16 @@ const eslintConfig = defineConfig([
     // Registry code takes every color from the tokens. The token files are the one place a color value is written.
     files: ['registry/**/*.{ts,tsx}'],
     ignores: ['registry/**/tokens.*', 'registry/kosmos/styles/**'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors] },
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...codeRules] },
+  },
+  {
+    files: ['components/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules] },
+  },
+  {
+    // The one file that wraps `clsx` and `tailwind-merge`.
+    files: ['registry/kosmos/lib/cn.ts'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...transitionSelectors, ...styleSelectors] },
   },
   globalIgnores([
     '.next/**',

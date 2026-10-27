@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { readKosmosTokens } from '@/lib/tokens';
 import { ease, duration } from '@/registry/kosmos/lib/motion';
 import { EasingDemo } from '@/components/docs/easing-demo';
@@ -141,8 +141,8 @@ export default function TokensPage() {
               className="flex items-center gap-3 rounded-2xl border border-transparent bg-card p-2 shadow-card"
             >
               <span
-                style={{ background: `var(--${name})` }}
-                className="size-10 shrink-0 rounded-lg shadow-inset"
+                style={{ '--swatch': `var(--${name})` } as CSSProperties}
+                className="size-10 shrink-0 bg-(--swatch) rounded-lg shadow-inset"
               />
               <div className="flex min-w-0 flex-col gap-0.5">
                 <code className="truncate text-body font-medium">{name}</code>
@@ -170,8 +170,8 @@ export default function TokensPage() {
               className="flex flex-col gap-3"
             >
               <span
-                style={{ boxShadow: `var(--${name})` }}
-                className={`h-20 rounded-xl border border-transparent ${
+                style={{ '--tile-shadow': `var(--${name})` } as CSSProperties}
+                className={`h-20 rounded-xl [box-shadow:var(--tile-shadow)] border border-transparent ${
                   name === 'shadow-primary'
                     ? 'bg-primary'
                     : name === 'shadow-inset'
@@ -218,8 +218,8 @@ export default function TokensPage() {
                 {value}
               </span>
               <span
-                style={{ width: `${(Number.parseFloat(value) / longestDuration) * 100}%` }}
-                className="h-2 rounded-full bg-primary"
+                style={{ '--bar-width': `${(Number.parseFloat(value) / longestDuration) * 100}%` } as CSSProperties}
+                className="h-2 w-(--bar-width) rounded-full bg-primary"
               />
             </li>
           ))}
@@ -244,13 +244,15 @@ export default function TokensPage() {
                 </span>
               </div>
               <p
-                style={{
-                  fontSize: `var(--text-${role})`,
-                  lineHeight: `var(--text-${role}--line-height)`,
-                  fontWeight: `var(--text-${role}--font-weight, 400)`,
-                  letterSpacing: `var(--text-${role}--letter-spacing, 0)`,
-                }}
-                className="min-w-0 text-pretty tabular-nums"
+                style={
+                  {
+                    '--role-size': `var(--text-${role})`,
+                    '--role-line-height': `var(--text-${role}--line-height)`,
+                    '--role-weight': `var(--text-${role}--font-weight, 400)`,
+                    '--role-tracking': `var(--text-${role}--letter-spacing, 0)`,
+                  } as CSSProperties
+                }
+                className="min-w-0 [font-size:var(--role-size)] [font-weight:var(--role-weight)] [letter-spacing:var(--role-tracking)] [line-height:var(--role-line-height)] text-pretty tabular-nums"
               >
                 Revenue grew 12.4% to $48,210 in Q3
               </p>
@@ -269,7 +271,7 @@ export default function TokensPage() {
               const px = name === 'radius-full' ? null : radiusPx(value, baseRadius ?? 0);
               return (
                 <li key={name} className="flex flex-col items-center gap-2">
-                  <span style={{ borderRadius: value }} className="size-16 border border-transparent bg-card shadow-card" />
+                  <span style={{ '--corner': value } as CSSProperties} className="size-16 rounded-(--corner) border border-transparent bg-card shadow-card" />
                   <div className="flex flex-col items-center">
                     <code className="text-small">{name.replace('radius-', 'rounded-')}</code>
                     <span className="font-mono text-caption tabular-nums text-muted-foreground">
