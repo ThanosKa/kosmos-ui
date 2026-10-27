@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- ImageResponse (Satori) renders inline styles only; it reads no stylesheet or class */
 import { ImageResponse } from 'next/og';
 import { KosmosMark } from '@/components/site/kosmos-mark';
 import { tokenColors } from '@/components/site/token-colors';

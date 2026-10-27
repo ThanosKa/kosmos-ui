@@ -216,8 +216,8 @@ function NavbarBarLinks({
                   >
                     {isMega(item) ? (
                       <div
-                        className="grid gap-x-1"
-                        style={{ gridTemplateColumns: `repeat(${item.sections.length}, minmax(0, 1fr))` }}
+                        className="grid grid-cols-(--section-columns) gap-x-1"
+                        style={{ '--section-columns': `repeat(${item.sections.length}, minmax(0, 1fr))` } as React.CSSProperties}
                       >
                         {item.sections.map((section) => (
                           <div key={section.title} className="flex flex-col gap-0.5">

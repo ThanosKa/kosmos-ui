@@ -75,7 +75,8 @@ A **round** is steps 3 to 5: shoot, review, fix every finding you accept. Start 
 pnpm registry:check <name>   # valid JSON, shadcn add in a clean app, that app builds
 pnpm types:check
 pnpm lint
-pnpm build                   # safe while the dev server runs
+pnpm test
+pnpm build                   # safe while the dev server runs; CI runs lint, types:check, test and build on the PR
 ```
 
 Then call the Skill tool with `mattpocock-skills:code-review`. Its fixed point is the branch you started from, so commit to your feature branch first; its spec is the ticket or request that started the work. Every command passes before the report.
@@ -112,7 +113,7 @@ Needs user:
 
 Checks:
 - registry:check: <pass | fail: reason>
-- types:check, lint, build: <pass | fail: reason>, <new warnings>
+- types:check, lint, test, build: <pass | fail: reason>, <new warnings>
 - review-animations: <findings, none, or no motion>
 - break-ui, mobile-native: <findings, or none>
 - code-review: <findings, or none>
