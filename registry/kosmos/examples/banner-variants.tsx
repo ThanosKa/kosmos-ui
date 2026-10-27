@@ -12,7 +12,7 @@ export default function BannerVariants() {
   return (
     <div className="flex w-full flex-col overflow-hidden rounded-xl border border-border">
       {banners.map(({ variant, text, action }) => (
-        <Banner key={variant} variant={variant} className="last:border-b-0">
+        <Banner key={variant} variant={variant}>
           <BannerText>{text}</BannerText>
           <BannerAction href="#">{action}</BannerAction>
         </Banner>

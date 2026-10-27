@@ -8,18 +8,18 @@ type BannerVariant = 'neutral' | 'info' | 'success' | 'warning' | 'destructive';
 
 const bannerVariants = cva(
   [
-    '@container/banner flex min-h-9 flex-wrap w-full min-w-0 items-center justify-center gap-x-2 gap-y-1 border-b px-4 py-1.5 text-center text-small wrap-break-word',
+    '@container/banner flex min-h-9 flex-wrap w-full min-w-0 items-center justify-center gap-x-2 gap-y-1 px-4 py-1.5 text-center text-small wrap-break-word',
     '[&_a:not([data-slot=banner-action])]:rounded-sm [&_a:not([data-slot=banner-action])]:font-medium [&_a:not([data-slot=banner-action])]:text-foreground [&_a:not([data-slot=banner-action])]:underline [&_a:not([data-slot=banner-action])]:decoration-foreground/40 [&_a:not([data-slot=banner-action])]:underline-offset-4 [&_a:not([data-slot=banner-action])]:hover:decoration-foreground',
     '[&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-ring',
   ],
   {
     variants: {
       variant: {
-        neutral: 'border-border bg-card text-card-foreground',
-        info: 'border-tint-blue-border bg-tint-blue text-tint-blue-foreground',
-        success: 'border-tint-green-border bg-tint-green text-tint-green-foreground',
-        warning: 'border-tint-amber-border bg-tint-amber text-tint-amber-foreground',
-        destructive: 'border-tint-red-border bg-tint-red text-tint-red-foreground',
+        neutral: 'border-b border-border bg-card text-card-foreground',
+        info: 'bg-tint-blue text-tint-blue-foreground',
+        success: 'bg-tint-green text-tint-green-foreground',
+        warning: 'bg-tint-amber text-tint-amber-foreground',
+        destructive: 'bg-tint-red text-tint-red-foreground',
       },
     },
     defaultVariants: { variant: 'neutral' },
