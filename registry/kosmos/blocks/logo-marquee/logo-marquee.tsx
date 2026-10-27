@@ -102,7 +102,7 @@ type LogoMarqueeProps = Omit<React.ComponentProps<'section'>, 'title'> & {
 
 /**
  * A row of logos in gray that turn to their own colors on hover or focus: still in centered rows, or as a marquee that moves toward the start, fades out at both
- * edges, eases to a stop while a pointer or keyboard focus is on it and has a button that pauses it. Under reduced
+ * edges, eases to a stop while a pointer or keyboard focus is on it and has a pause button that stays hidden until keyboard focus reaches it. Under reduced
  * motion the marquee stands still in centered rows. Lays itself out by its own width, and sets no padding around itself.
  */
 function LogoMarquee({
@@ -136,7 +136,7 @@ function LogoMarquee({
       ) : null}
       {marquee ? (
         <div className="relative w-full">
-          {/* Logos fade out before the last 2.5rem of each edge, so the pause button sits on a clear strip. */}
+          {/* Logos fade out before the last 2.5rem of each edge, so the pause button sits on a clear strip when focus shows it. */}
           <div
             ref={view}
             data-slot="logo-marquee-viewport"
@@ -173,7 +173,7 @@ function LogoMarquee({
             }}
             onPointerEnter={hold.onPointerEnter}
             onPointerLeave={hold.onPointerLeave}
-            className="absolute inset-y-0 end-2 my-auto motion-reduce:hidden"
+            className="absolute inset-y-0 end-2 my-auto not-focus-visible:pointer-events-none not-focus-visible:opacity-0 motion-reduce:hidden"
           >
             {stopped ? <Play aria-hidden /> : <Pause aria-hidden />}
           </Button>

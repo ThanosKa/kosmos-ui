@@ -34,7 +34,7 @@ type HeroProductProps = Omit<HeroProps, 'announcement'> & {
 
 /**
  * A marketing hero that shows the product: a title, one line and two actions, then a screen of the product in a flat
- * browser frame with a glow behind it that stays below the actions. The screen is cropped by the frame. The default screen is a live dashboard
+ * browser frame with a glow behind it that stays below the actions. The screen is cropped at the bottom and fades out into the page from 65% of its height, so the frame never ends on a line. The default screen is a live dashboard
  * built from App sidebar and Stats overview. Lays itself out by its own width and sets no padding around itself.
  */
 function HeroProduct({ install = null, product, url = 'acme.example/overview', headingLevel = 1, className, ...props }: HeroProductProps) {
@@ -45,7 +45,7 @@ function HeroProduct({ install = null, product, url = 'acme.example/overview', h
         <div data-slot="hero-product-glow" className="absolute -inset-x-20 -inset-y-10">
           <Glow position="center" />
         </div>
-        <BrowserFrame url={url ?? undefined} className="relative">
+        <BrowserFrame url={url ?? undefined} className="relative mask-b-from-65% mask-b-to-100%">
           <div inert className="h-96 overflow-hidden select-none @3xl:h-136">
             {product ?? <SampleDashboard />}
           </div>

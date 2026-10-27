@@ -37,7 +37,7 @@ Give each logo its `name`, and a `logo` when you have one: an `<svg>`, or an ima
 
 - **Marquee**: the logos move toward the start in one row, over and over, and fade out at both edges. The row is two copies of the list, so it never shows a gap at any width. It keeps the same speed when its width changes.
 - **First paint**: the logos move from the first paint, even before JavaScript loads. A CSS animation carries the row until the page is live. Then the drift takes over from where the animation had got to. The server cannot measure the row, so until then it moves at about the right speed.
-- **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it. It picks up speed again when it leaves. A small button at its end pauses it until you press it again, from the keyboard or a phone too. Screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
+- **Pause**: the row glides to a stop while the mouse is on it, a finger holds it or keyboard focus is inside it. It picks up speed again when it leaves. A pause button at its end stays hidden until keyboard focus reaches it, then appears in place with the focus ring and pauses the row until you press it again. Nobody else sees it. Screen readers hear it as "Pause logos" or "Play logos". The row only moves while it is on screen.
 - **Reduced motion**: when the visitor asks for less motion, nothing moves. The logos stand in centered rows, every one of them in view.
 - **Static**: `variant="static"` sets the logos in centered rows that wrap, with no motion at all.
 - **Gray**: logos take the muted text color and a grayscale filter, so a colored `<img>` or `<svg>` turns gray too and no logo outshouts the page.
