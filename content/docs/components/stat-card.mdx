@@ -30,6 +30,37 @@ Pass the value already formatted, in the user's locale and currency. Write a mil
 
 ## Examples
 
+### KPI row
+
+For the KPIs at the top of a dashboard, give each card a `StatCardHeader`. It holds a `StatCardIcon` beside two lines: a muted `StatCardEyebrow` that says where the number comes from, over the label in the foreground color. Wrap the value, the change and the sparkline in `StatCardContent` to put the sparkline beside the number, at the end of the card. Put the change in numbers, or the value it moved from, in the delta's `children`.
+
+<ComponentPreview name="stat-card-kpi" />
+
+```tsx
+<StatCard>
+  <StatCardHeader>
+    <StatCardIcon>
+      <Users />
+    </StatCardIcon>
+    <StatCardEyebrow>Web and apps</StatCardEyebrow>
+    <StatCardLabel>Active users</StatCardLabel>
+  </StatCardHeader>
+  <StatCardContent>
+    <StatCardValue>144,600</StatCardValue>
+    <StatCardDelta value={9.6}>(+12,666)</StatCardDelta>
+    <StatCardSparkline data={trend} aria-label="Active users, last 30 days, up 9.6%" />
+  </StatCardContent>
+</StatCard>
+```
+
+In a card under 240px wide, the sparkline moves under the change, so the number keeps its room.
+
+### Bar sparkline
+
+`variant="bar"` draws one thin bar per period, the latest in the first chart color (`--chart-1`, ink by default) and the rest in a lighter gray. The bars grow from zero, so their heights compare. Beside the number they show the latest 16 periods. Pick bars for counts per period (signups a week) and the line for a level over time (active users).
+
+<ComponentPreview name="stat-card-bars" />
+
 ### When falling is good
 
 `StatCardDelta` takes the change as a number, 9.6 for a 9.6% rise. It writes the change with a triangle and a sign: ▲ +9.6%, ▼ −11.1%, → 0%. A rise is green and a fall red. For a metric such as errors or latency, set `goodWhen="down"` so a fall is green. For a metric that is neither good nor bad, `goodWhen="neither"` keeps it gray. A change in a rate reads in percentage points with `unit="points"`.
@@ -47,7 +78,8 @@ The triangle and the sign carry the direction, so the change reads the same in g
 ## Accessibility
 
 - The change is text: screen readers say "+9.6%" and the words beside it. Put the comparison in `children` ("vs September"), or in a `sr-only` span when the page says it once for every card.
-- The sparkline is one image. Say what it shows, change included, in its `aria-label`.
+- The sparkline is one image, in both forms. Say what it shows, change included, in its `aria-label`.
+- Screen readers skip the icon tile. The eyebrow and the label read in order, before the value.
 - `loading` sets `aria-busy` on the card.
 
 ## API
@@ -65,6 +97,18 @@ Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/util
     },
   }}
 />
+
+### StatCardHeader
+
+Renders a `<div>` that sets an optional `StatCardIcon` beside the eyebrow and the label. Inside it, the label takes the foreground color.
+
+### StatCardIcon
+
+Renders a `<span>`: a 32px tile for a 16px icon. Screen readers skip it, since the label names the stat.
+
+### StatCardEyebrow
+
+Renders a `<span>` in muted caption text, above the label inside `StatCardHeader`.
 
 ### StatCardLabel
 
@@ -115,6 +159,10 @@ Renders a `<span>` with the change in green or red text, then its `children` in 
 
 Renders a `<p>` in muted text, for a stat with no change to show ("No earlier period").
 
+### StatCardContent
+
+Renders a `<div>` around the value, the change and the sparkline, and puts the sparkline beside them at the end of the card. In a card under 240px wide, the sparkline moves under the change.
+
 ### StatCardSparkline
 
-The [Sparkline](/docs/components/chart#sparkline) across the card under the number, 40px high, in `--chart-1`. Takes its props, and it requires `aria-label`.
+The [Sparkline](/docs/components/chart#sparkline): across the card under the number, 40px high, or beside it inside `StatCardContent`, 36px high. Takes its props, `variant` included, and it requires `aria-label`.

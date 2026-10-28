@@ -217,26 +217,24 @@ function ChartLegendContent({
 
 type Datum = Record<string, string | number | null | undefined>;
 
-/**
- * A word-sized trend line with no axes, for a stat tile or a table cell. It is an image with one
- * accessible name, so say what it shows in `aria-label` ("Revenue, last 30 days, up 12%").
- */
-function Sparkline({
-  data,
-  dataKey = 'value',
-  color = 'var(--chart-1)',
-  fill = true,
-  className,
-  ...props
-}: Omit<React.ComponentProps<'div'>, 'children' | 'color'> & {
+type SparklineProps = Omit<React.ComponentProps<'div'>, 'children' | 'color'> & {
   data: readonly Datum[];
   dataKey?: string;
-  /** Any CSS color; a chart token by default. */
+  /** `line` draws the trend; `bar` draws one thin bar per point, the latest in `color` and the rest a lighter gray. */
+  variant?: 'line' | 'bar';
+  /** Any CSS color; a chart token by default. In the bar form it colors the latest bar. */
   color?: string;
-  /** Washes the area under the line. */
+  /** Washes the area under the line. The bar form ignores it. */
   fill?: boolean;
   'aria-label': string;
-}) {
+};
+
+/**
+ * A word-sized trend with no axes, for a stat tile or a table cell: a line, or with `variant="bar"` a row of thin bars.
+ * It is an image with one accessible name, so say what it shows in `aria-label` ("Revenue, last 30 days, up 12%").
+ */
+function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--chart-1)', fill = true, className, ...props }: SparklineProps) {
+  if (variant === 'bar') return <SparklineBars data={data} dataKey={dataKey} color={color} className={className} {...props} />;
   return (
     <ChartContainer
       config={{ [dataKey]: { color } }}
@@ -261,6 +259,55 @@ function Sparkline({
         />
       </Recharts.AreaChart>
     </ChartContainer>
+  );
+}
+
+/** Each bar takes a 6px slot: a 4px bar with 1px of room on either side, so neighbours sit 2px apart. */
+const BAR_SLOT = 6;
+
+/**
+ * Bars grow from zero, so their heights compare. A bar at zero or below, or with no value, is a dot. When there are
+ * more bars than room, the oldest drop out of view, so the latest stays.
+ */
+function SparklineBars({ data, dataKey, color, className, ...props }: Omit<SparklineProps, 'variant' | 'fill'> & { dataKey: string }) {
+  const bars = data.map((datum) => {
+    const value = Number(datum[dataKey]);
+    return { [dataKey]: Number.isFinite(value) ? Math.max(value, 0) : 0 };
+  });
+  return (
+    <div
+      data-slot="sparkline"
+      role="img"
+      className={cn('flex h-9 w-fit max-w-full justify-end overflow-hidden', className)}
+      {...props}
+    >
+      <ChartContainer
+        config={{ [dataKey]: { color } }}
+        style={{ '--sparkline-width': `${bars.length * BAR_SLOT}px` } as React.CSSProperties}
+        className="aspect-auto h-full w-(--sparkline-width) shrink-0"
+      >
+        <Recharts.BarChart data={bars} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} barCategoryGap={0} accessibilityLayer={false}>
+          <Recharts.YAxis hide domain={[0, 'dataMax']} />
+          <Recharts.Bar
+            dataKey={dataKey}
+            barSize={BAR_SLOT - 2}
+            radius={2}
+            minPointSize={4}
+            shape={(bar: Recharts.BarShapeProps) => {
+              const latest = bar.index === bars.length - 1;
+              return (
+                <Recharts.Rectangle
+                  {...bar}
+                  fill={latest ? seriesColor(dataKey) : 'var(--chart-4)'}
+                  className={latest ? 'forced-colors:fill-[CanvasText]' : 'forced-colors:fill-[GrayText]'}
+                />
+              );
+            }}
+            {...chartAnimation}
+          />
+        </Recharts.BarChart>
+      </ChartContainer>
+    </div>
   );
 }
 
