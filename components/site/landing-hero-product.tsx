@@ -1,67 +1,135 @@
 'use client';
 
-import * as React from 'react';
+import type * as React from 'react';
+import { Cell, Pie, PieChart } from 'recharts';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
-import { DataTable, sampleProjects, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
+import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
+import { Badge } from '@/registry/kosmos/ui/badge';
+import { ChartContainer, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
+import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 
-/** Milliseconds after the page loads: the frame has settled by 1200, then a project signs up, then its trial converts. */
-const arrivesAt = 1900;
-const convertsAt = 5100;
+const sources = [
+  { key: 'direct', label: 'Direct', value: 48210 },
+  { key: 'search', label: 'Search', value: 31480 },
+  { key: 'referral', label: 'Referral', value: 18640 },
+  { key: 'social', label: 'Social', value: 12940 },
+  { key: 'email', label: 'Email', value: 6120 },
+] as const;
 
-const newProject: Project = {
-  id: 'lumenfield',
-  name: 'Lumenfield Health',
-  domain: 'lumenfield.example',
-  platform: 'web',
-  plan: 'pro',
-  status: 'trial',
-  users: 640,
-  events: 18200,
-  mrr: 0,
-  lastEventAt: '2026-10-11',
-};
+const sourceConfig = {
+  direct: { label: 'Direct', color: 'var(--chart-1)' },
+  search: { label: 'Search', color: 'var(--chart-2)' },
+  referral: { label: 'Referral', color: 'var(--chart-3)' },
+  social: { label: 'Social', color: 'var(--chart-4)' },
+  email: { label: 'Email', color: 'var(--chart-5)' },
+} satisfies ChartConfig;
+
+const visitors = sources.reduce((sum, source) => sum + source.value, 0);
+const number = new Intl.NumberFormat('en-US');
+
+const activity: { id: string; event: string; time: string; status: Status; label: string }[] = [
+  { id: 'lumenfield', event: 'Lumenfield Health started a trial', time: '2m ago', status: 'running', label: 'Trial' },
+  { id: 'fernhill', event: 'Fernhill Books upgraded to Pro', time: '14m ago', status: 'done', label: 'Upgraded' },
+  { id: 'saltmarsh', event: 'Quota alert on Saltmarsh Coffee', time: '38m ago', status: 'waiting', label: 'Alert' },
+  { id: 'copperline', event: 'Copperline Bank rotated an API key', time: '1h ago', status: 'done', label: 'Done' },
+  { id: 'hollow-oak', event: 'Hollow Oak Games paused ingestion', time: '3h ago', status: 'skipped', label: 'Paused' },
+];
+
+const cardClass = 'min-w-0 rounded-2xl border border-transparent bg-card p-4 shadow-card';
+
+/** Visitors by source: a donut with the total in its hole, beside a legend with each count and share. */
+function TrafficSources() {
+  return (
+    <section className={cardClass}>
+      <h4 className="text-body font-medium">Traffic sources</h4>
+      <div className="mt-3 flex items-center gap-5">
+        <div className="relative size-32 shrink-0">
+          <ChartContainer config={sourceConfig} className="aspect-square size-full">
+            <PieChart>
+              <Pie
+                data={[...sources]}
+                dataKey="value"
+                nameKey="label"
+                innerRadius="68%"
+                outerRadius="100%"
+                paddingAngle={2}
+                cornerRadius={3}
+                stroke="var(--card)"
+                strokeWidth={1}
+                startAngle={90}
+                endAngle={-270}
+                isAnimationActive={false}
+              >
+                {sources.map((source) => (
+                  <Cell key={source.key} fill={sourceConfig[source.key].color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-title tabular-nums">{number.format(visitors)}</span>
+            <span className="text-caption text-muted-foreground">Visitors</span>
+          </div>
+        </div>
+        <ul className="flex min-w-0 flex-1 flex-col gap-2">
+          {sources.map((source) => (
+            <li key={source.key} className="flex items-center gap-2 text-small">
+              <span
+                aria-hidden
+                style={{ '--series': sourceConfig[source.key].color } as React.CSSProperties}
+                className="size-2 shrink-0 rounded-sm bg-(--series)"
+              />
+              <span className="min-w-0 flex-1 truncate">{source.label}</span>
+              <span className="tabular-nums">{number.format(source.value)}</span>
+              <span className="w-9 text-end text-muted-foreground tabular-nums">{Math.round((source.value / visitors) * 100)}%</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/** The latest account events, newest first, each with its age and a status badge on a wide enough card. */
+function RecentActivity() {
+  return (
+    <section className={cardClass}>
+      <h4 className="text-body font-medium">Recent activity</h4>
+      <ul className="mt-2 divide-y divide-border">
+        {activity.map((item) => (
+          <li key={item.id} className="flex items-center gap-3 py-2 first:pt-1">
+            <span className="min-w-0 flex-1 truncate text-small">{item.event}</span>
+            <span className="shrink-0 text-caption text-muted-foreground tabular-nums">{item.time}</span>
+            <Badge variant="secondary" className="hidden shrink-0 @2xl:inline-flex">
+              <StatusDot status={item.status} className="text-caption">
+                {item.label}
+              </StatusDot>
+            </Badge>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 /**
- * The landing hero's product: the app sidebar and the Projects data table, crisp at its natural size. Once the frame has
- * settled, a new project arrives at the top as a trial and, a few seconds later, converts to Live. It happens once and
- * never loops. Under reduced motion the table opens with both already done.
+ * The landing hero's product: the app sidebar and an analytics overview. Stats overview without its top events, then
+ * traffic sources and recent activity side by side. It shows a different screen from the Projects table further down the page.
  */
 function LandingHeroProduct() {
-  const [rows, setRows] = React.useState<Project[]>(sampleProjects);
-  const [arrived, setArrived] = React.useState(false);
-  const table = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const settled = window.setTimeout(() => setRows([{ ...newProject, status: 'live', mrr: 149 }, ...sampleProjects]), 0);
-      return () => window.clearTimeout(settled);
-    }
-    const timers = [
-      window.setTimeout(() => {
-        const row = table.current?.querySelector('tbody tr');
-        if (row) table.current?.style.setProperty('--m-row-height', `${row.getBoundingClientRect().height}px`);
-        setRows([newProject, ...sampleProjects]);
-        setArrived(true);
-      }, Math.max(arrivesAt - performance.now(), 0)),
-      window.setTimeout(
-        () => setRows((current) => current.map((row) => (row.id === newProject.id ? { ...row, status: 'live', mrr: 149 } : row))),
-        Math.max(convertsAt - performance.now(), 0),
-      ),
-    ];
-    return () => timers.forEach(window.clearTimeout);
-  }, []);
-
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
-      <AppSidebar activeItem="projects" onNavigate={(_id, event) => event.preventDefault()} />
+      <AppSidebar activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
       <SidebarInset render={<div />} className="overflow-hidden">
         <header className="flex h-12 shrink-0 items-center border-b border-border px-4">
-          <h3 className="truncate text-body font-medium">Projects</h3>
+          <h3 className="truncate text-body font-medium">Overview</h3>
         </header>
-        <div ref={table} data-arrived={arrived ? '' : undefined} className="landing-rows p-4 @max-md:p-2">
-          <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-            <DataTable rows={rows} />
+        <div className="@container flex flex-col gap-4 p-4 @max-md:p-2">
+          <StatsOverview topEvents={false} />
+          <div className="grid gap-4 @xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+            <TrafficSources />
+            <RecentActivity />
           </div>
         </div>
       </SidebarInset>
