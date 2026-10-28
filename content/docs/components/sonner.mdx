@@ -1,0 +1,96 @@
+---
+title: Sonner
+description: Emil Kowalski's Sonner toasts in the Kosmos look. Call toast() from anywhere, and the toasts stack at the bottom of the screen, spread out on hover and close on their own.
+---
+
+<ComponentPreview name="sonner-demo" />
+
+## Installation
+
+<ComponentInstall name="sonner" />
+
+## Usage
+
+Render one `Toaster` near the root of your app:
+
+```tsx title="app/layout.tsx"
+import { Toaster } from '@/components/ui/sonner';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+```
+
+Then call `toast` from `sonner` anywhere, even outside React:
+
+```tsx
+import { toast } from 'sonner';
+
+toast('Invite sent', { description: 'Kai Nakamura will get an email in a minute.' });
+```
+
+A toast closes after 4 seconds. The timer pauses while the pointer is over the stack and while the tab is in the background. Swipe a toast down or to the side to close it. A quick flick is enough. Alt + T moves focus into the toasts. Up to three show at a time.
+
+Kosmos has two toasts. Sonner is the one shadcn/ui ships, with Sonner's API and motion. [Toast](/docs/components/toast) runs on Base UI, announces urgent toasts at once and keeps the stack spread out under reduced motion. Pick one per app. The `Toaster` from `sonner` shows toasts only in the first one mounted, so mounting it in a layout and a page never doubles a toast.
+
+## Examples
+
+### Types
+
+`toast.success`, `toast.info`, `toast.warning`, `toast.error` and `toast.loading` add an icon. The icon carries the color. The text stays in the regular text colors.
+
+<ComponentPreview name="sonner-types" />
+
+### Action and cancel
+
+`action` adds a button, and `cancel` a quieter one beside it. Give a toast that asks something `duration: Infinity`, so it stays until someone answers.
+
+<ComponentPreview name="sonner-action" />
+
+### Promise
+
+`toast.promise` shows a loading toast while a promise runs, then turns it into a success or an error toast.
+
+<ComponentPreview name="sonner-promise" />
+
+## Motion
+
+Sonner runs the motion. A toast slides up from the bottom edge, and the stack behind it shrinks and spreads out on hover. A toast you swipe away leaves in that direction. Under reduced motion toasts fade in and out instead.
+
+## API
+
+`Toaster` takes every [Sonner Toaster prop](https://sonner.emilkowal.ski/toaster) except `theme` and `richColors`: the Kosmos look follows your light and dark tokens, and the status tint stays on the icon. It sets these defaults:
+
+<TypeTable
+  type={{
+    gap: { description: 'The space between toasts when the stack spreads out, in px.', type: 'number', default: '8' },
+    offset: { description: 'The space between the toasts and the screen edge, in px.', type: 'number | string', default: '16' },
+    closeButton: { description: 'Shows a close button on every toast.', type: 'boolean', default: 'true' },
+    position: {
+      description: 'Where the toasts stack.',
+      type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+      default: "'bottom-right'",
+    },
+    id: {
+      description: 'Names a second Toaster. Toasts reach it with `toasterId`. A Toaster with an `id` always shows its toasts.',
+      type: 'string',
+    },
+  }}
+/>
+
+`toast` and its options come from `sonner`. See the [Sonner docs](https://sonner.emilkowal.ski/toast) for every option.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Alt` + `T` | Moves focus into the toasts. |
+| `Tab` | Moves through the toasts' buttons. |
+| `Escape` | With focus in the toasts, closes the front one. |

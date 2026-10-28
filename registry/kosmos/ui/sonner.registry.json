@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner",
+  "type": "registry:ui",
+  "title": "Sonner",
+  "description": "Emil Kowalski's Sonner toasts in the Kosmos look. The stack spreads out on hover, a swipe or a flick closes a toast, and timers pause in a hidden tab. Toasts take the popover surface, Kosmos buttons and a status tint on the icon only, and fade under reduced motion. Call toast() from sonner anywhere.",
+  "dependencies": ["sonner@^2.0.8", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "overlays" },
+  "files": [
+    { "path": "registry/kosmos/ui/sonner.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-SONNER", "type": "registry:file", "target": "~/LICENSE-SONNER" }
+  ]
+}
