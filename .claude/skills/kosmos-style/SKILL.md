@@ -1,6 +1,6 @@
 ---
 name: kosmos-style
-description: The Kosmos UI style, with the exact tokens and rules for every component, block and page. Load before writing or changing UI in this repo, and when a review skill's finding disagrees with a Kosmos value.
+description: The Kosmos UI style, with the exact tokens and rules for every component, block and page, and the files each one needs. Load before writing or changing UI in this repo, and when a review skill's finding disagrees with a Kosmos value.
 ---
 
 # Kosmos style
@@ -187,7 +187,36 @@ A marketing block (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA
 
 A block's demo and review preview wrap it in the same padding a page would give it (`px-4 py-14 sm:px-6 sm:py-20` in the demo frame).
 
+## Phones
+
+Every component and block works at 375px wide, in light and dark:
+
+- Nothing runs past its frame or scrolls the page sideways. A block sizes by its own width with container queries (`@container`, `@2xl:`); only a page's rhythm uses screen breakpoints (Marketing pages above).
+- Text that grows with the data (names, emails, titles, labels) sits in a child with `min-w-0`, then wraps, takes `truncate` or takes `line-clamp-*` (Typography above). Truncated text stays readable in full somewhere: a `title`, a tooltip or the detail view. Numbers, amounts and dates never truncate; they take `shrink-0`.
+- Full-height layouts take `svh` (`min-h-svh`, `h-svh`), as the Sidebar does, never `vh` or `h-screen`, which ignore the phone's browser bars.
+- A surface fixed to the bottom edge pads by `env(safe-area-inset-bottom)`, as the bottom-sheet Drawer does.
+- Hover styles use the `hover:` variant, which fires only on a device that can hover, so a tap never leaves a row lit.
+
+## Building a component or block
+
+Build on Base UI (`@base-ui/react`), from scratch or from MIT-licensed code restyled to this style, with the source's copyright line in a third-party notice (ADR 0010). Each file is found by its name, so adding one edits no shared file. Copy Button's files for the shape:
+
+| File | What it holds |
+| --- | --- |
+| `registry/kosmos/ui/<name>.tsx` | The component. A block lives in `registry/kosmos/blocks/<name>/` |
+| `registry/kosmos/ui/<name>.registry.json` | `dependencies`, `registryDependencies` (`@kosmos/tokens`, `@kosmos/cn`, every `@kosmos/*` it imports) and `"meta": { "group": "<group>" }`, a key of `groups` in `lib/registry.ts` |
+| `registry/kosmos/examples/<name>.tsx` | The review preview at `/view/<name>`: every variant in every state through `StateMatrix` and `previewState()`, a long-text case, and an empty case when it shows data. Overlays render open in an `OverlayStage` and add a `<name>-thumb.tsx`, pinned open, for the index |
+| `registry/kosmos/examples/<name>-demo.tsx` | The docs hero example; one more `<name>-<example>.tsx` per docs example |
+| `content/docs/components/<name>.mdx` | The docs page: preview, install, usage, examples, and every prop in `TypeTable`. A block is installed from a page in `content/docs/blocks/` with `<ComponentInstall name="<name>" />` |
+| `content/docs/changelog/YYYY-MM-DD-<slug>.mdx` | When an item is added or changes for its users. Copy the newest entry; the title starts with the action ("Added Badge", "Changed Button focus outline"). A change to an item not released since its "Added" entry goes into that entry |
+
+Sample data in every preview, demo and docs page comes from one fictional company, Acme, in [demo-world.md](demo-world.md). A value it lacks is added there in the same change.
+
+`pnpm test` fails when a component has no docs page or demo, or a block no install line.
+
 ## Before you finish
+
+Done when `pnpm lint`, `pnpm types:check` and `pnpm test` pass, plus `pnpm registry:check` when a registry item was added or its dependencies changed.
 
 Run `pnpm lint` first. It fails on these, and its message names the fix: a color literal or palette class, a bare `transition` or `transition-all`, `ease-in`, `ease-out` or `ease-in-out`, a number duration in registry code, a Tailwind or arbitrary text size, `backdrop-blur`, a press scale other than `motion-safe:not-disabled:not-data-disabled:active:scale-96`, a `<Button>` without `variant`, a raw `<button>`, and a shadcn name on a Button.
 

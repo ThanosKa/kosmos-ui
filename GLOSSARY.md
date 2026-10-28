@@ -30,16 +30,12 @@ _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 Το preview route ενός component με το όνομά του σκέτο (`/view/button`): το state matrix και ό,τι άλλο χρειάζεται για έλεγχο. Από αυτό βγαίνουν τα screenshots και αυτό δείχνει η σελίδα έγκρισης.
 _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
 
-**Round**:
-Ένας γύρος του κύκλου `build-component`: screenshots, review, διορθώσεις. Το πολύ 3 γύροι, μετά ο Claude σταματά και αναφέρει ό,τι έμεινε ανοιχτό.
-_Avoid_: iteration, pass
-
 **Group**:
 Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
 _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 
 **Lab**:
-Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια περνάνε τον κύκλο `build-component`. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.
+Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια μπαίνουν στο registry. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.
 _Avoid_: playground, sandbox, drafts
 
 **Gallery**:
