@@ -37,12 +37,62 @@ function StatCard({ className, loading = false, render, ...props }: StatCardProp
   return <StatCardContext.Provider value={context}>{element}</StatCardContext.Provider>;
 }
 
+/**
+ * The top of a KPI tile: an icon tile beside a two-line heading, the eyebrow over the label. The label turns ink here,
+ * since the eyebrow above it is the muted line.
+ */
+function StatCardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="stat-card-header"
+      className={cn(
+        'group/stat-card-header mb-3 grid min-w-0 grid-cols-[minmax(0,1fr)] items-center gap-x-2.5',
+        'has-data-[slot=stat-card-icon]:grid-cols-[auto_minmax(0,1fr)]',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+/** A 32px tile for a 16px icon, at the start of `StatCardHeader`. It is decoration: the label names the stat. */
+function StatCardIcon({ className, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-slot="stat-card-icon"
+      aria-hidden
+      className={cn(
+        'flex size-8 shrink-0 items-center justify-center rounded-lg border border-transparent bg-secondary text-muted-foreground shadow-control',
+        "[&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
+        'group-has-data-[slot=stat-card-eyebrow]/stat-card-header:row-span-2 group-has-data-[slot=stat-card-eyebrow]/stat-card-header:mt-0.5 group-has-data-[slot=stat-card-eyebrow]/stat-card-header:self-start',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+/** A muted line of context above the label ("Web and apps"), inside `StatCardHeader`. */
+function StatCardEyebrow({ className, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-slot="stat-card-eyebrow"
+      className={cn('block text-caption text-pretty wrap-break-word text-muted-foreground', className)}
+      {...props}
+    />
+  );
+}
+
 /** What the number counts. A longer label wraps. */
 function StatCardLabel({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="stat-card-label"
-      className={cn('block text-body font-medium text-pretty wrap-break-word text-muted-foreground', className)}
+      className={cn(
+        'block text-body font-medium text-pretty wrap-break-word text-muted-foreground',
+        'in-data-[slot=stat-card-header]:text-foreground',
+        className,
+      )}
       {...props}
     />
   );
@@ -117,19 +167,55 @@ function StatCardDescription({ className, ...props }: React.ComponentProps<'p'>)
   );
 }
 
-/** The trend under the number, across the card. Say what it shows in `aria-label` ("Signups, last 12 months, up 4.2%"). */
-function StatCardSparkline({ className, ...props }: React.ComponentProps<typeof Sparkline>) {
+const StatCardContentContext = React.createContext(false);
+
+/**
+ * Holds the value, the change and the sparkline, and puts the sparkline beside them at the end of the card. In a card
+ * too narrow for both, the sparkline moves under them.
+ */
+function StatCardContent({ className, children, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div data-slot="stat-card-content" className={cn('@container/stat-card-content min-w-0', className)} {...props}>
+      <div
+        className={cn(
+          'grid grid-cols-[minmax(0,1fr)] items-end gap-x-3 gap-y-1',
+          '@[13rem]/stat-card-content:has-data-[slot=stat-card-sparkline]:grid-cols-[minmax(0,1fr)_auto]',
+        )}
+      >
+        <StatCardContentContext.Provider value={true}>{children}</StatCardContentContext.Provider>
+      </div>
+    </div>
+  );
+}
+
+const besideClassName =
+  'mt-1 @[13rem]/stat-card-content:col-start-2 @[13rem]/stat-card-content:row-span-2 @[13rem]/stat-card-content:row-start-1 @[13rem]/stat-card-content:mt-0';
+
+/**
+ * The trend, under the number across the card, or beside it inside `StatCardContent`. `variant="bar"` draws thin bars,
+ * the latest in ink. Say what it shows in `aria-label` ("Signups, last 12 months, up 4.2%").
+ */
+function StatCardSparkline({ className, variant = 'line', ...props }: React.ComponentProps<typeof Sparkline>) {
   const { loading } = React.useContext(StatCardContext);
-  if (loading) return <Skeleton data-slot="stat-card-sparkline" className={cn('mt-2 h-10 w-full', className)} />;
-  return <Sparkline className={cn('mt-2 h-10 w-full', className)} {...props} />;
+  const beside = React.useContext(StatCardContentContext);
+  const width = variant === 'line' ? (beside ? 'w-18' : 'w-full') : beside && 'max-w-24';
+  const size = cn(beside ? cn(besideClassName, 'h-9') : 'mt-2 h-10', width);
+  if (loading) {
+    return <Skeleton data-slot="stat-card-sparkline" className={cn(size, variant === 'bar' && 'w-16', className)} />;
+  }
+  return <Sparkline data-slot="stat-card-sparkline" variant={variant} className={cn(size, className)} {...props} />;
 }
 
 export {
   StatCard,
+  StatCardHeader,
+  StatCardIcon,
+  StatCardEyebrow,
   StatCardLabel,
   StatCardValue,
   StatCardDelta,
   StatCardDescription,
+  StatCardContent,
   StatCardSparkline,
   type StatCardProps,
   type StatCardDeltaProps,

@@ -217,26 +217,24 @@ function ChartLegendContent({
 
 type Datum = Record<string, string | number | null | undefined>;
 
-/**
- * A word-sized trend line with no axes, for a stat tile or a table cell. It is an image with one
- * accessible name, so say what it shows in `aria-label` ("Revenue, last 30 days, up 12%").
- */
-function Sparkline({
-  data,
-  dataKey = 'value',
-  color = 'var(--chart-1)',
-  fill = true,
-  className,
-  ...props
-}: Omit<React.ComponentProps<'div'>, 'children' | 'color'> & {
+type SparklineProps = Omit<React.ComponentProps<'div'>, 'children' | 'color'> & {
   data: readonly Datum[];
   dataKey?: string;
-  /** Any CSS color; a chart token by default. */
+  /** `line` draws the trend; `bar` draws one thin bar per point, the latest in `color` and the rest a lighter gray. */
+  variant?: 'line' | 'bar';
+  /** Any CSS color; a chart token by default. In the bar form it colors the latest bar. */
   color?: string;
-  /** Washes the area under the line. */
+  /** Washes the area under the line. The bar form ignores it. */
   fill?: boolean;
   'aria-label': string;
-}) {
+};
+
+/**
+ * A word-sized trend with no axes, for a stat tile or a table cell: a line, or with `variant="bar"` a row of thin bars.
+ * It is an image with one accessible name, so say what it shows in `aria-label` ("Revenue, last 30 days, up 12%").
+ */
+function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--chart-1)', fill = true, className, ...props }: SparklineProps) {
+  if (variant === 'bar') return <SparklineBars data={data} dataKey={dataKey} color={color} className={className} {...props} />;
   return (
     <ChartContainer
       config={{ [dataKey]: { color } }}
@@ -261,6 +259,41 @@ function Sparkline({
         />
       </Recharts.AreaChart>
     </ChartContainer>
+  );
+}
+
+/**
+ * Bars grow from zero, so their heights compare. A bar at zero or below, or with no value, is a dot. When there are
+ * more bars than room, the oldest drop out of view, so the latest stays.
+ */
+function SparklineBars({ data, dataKey, color, className, ...props }: Omit<SparklineProps, 'variant' | 'fill'> & { dataKey: string }) {
+  const values = data.map((datum) => {
+    const value = Number(datum[dataKey]);
+    return Number.isFinite(value) ? Math.max(value, 0) : 0;
+  });
+  const max = Math.max(...values, 0);
+  return (
+    <div
+      data-slot="sparkline"
+      role="img"
+      style={{ '--sparkline-latest': color } as React.CSSProperties}
+      className={cn('flex h-9 w-fit max-w-full items-end justify-end gap-0.5 overflow-hidden', className)}
+      {...props}
+    >
+      {values.map((value, index) => (
+        <span
+          key={index}
+          aria-hidden
+          style={{ '--bar': max > 0 ? `${(value / max) * 100}%` : '0%' } as React.CSSProperties}
+          className={cn(
+            'h-(--bar) min-h-1 w-1 shrink-0 rounded-full',
+            index === values.length - 1
+              ? 'bg-(--sparkline-latest) forced-colors:bg-[CanvasText]'
+              : 'bg-chart-4 forced-colors:bg-[GrayText]',
+          )}
+        />
+      ))}
+    </div>
   );
 }
 

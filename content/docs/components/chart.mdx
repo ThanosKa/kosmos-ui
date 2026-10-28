@@ -37,7 +37,7 @@ Each key in `config` becomes a series. With two or more, a legend appears above 
 
 ### Sparkline
 
-A small trend line with no axes, for a stat tile or a table cell. It reads as one image, so its `aria-label` says what it shows, including the change: "Signups, last 12 months, up 4.2%".
+A small trend line with no axes, for a stat tile or a table cell. It reads as one image, so its `aria-label` says what it shows, including the change: "Signups, last 12 months, up 4.2%". `variant="bar"` draws thin bars instead, the latest in `color` and the rest in `--chart-4`, as in the [Stat card](/docs/components/stat-card#bar-sparkline).
 
 <ComponentPreview name="chart-sparkline" />
 
@@ -92,8 +92,9 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
     data: { description: 'One object per point.', type: 'Record<string, number>[]', required: true },
     'aria-label': { description: 'What the line shows, including the trend.', type: 'string', required: true },
     dataKey: { description: 'The key of the value in each object.', type: 'string', default: "'value'" },
-    color: { description: 'Any CSS color.', type: 'string', default: "'var(--chart-1)'" },
-    fill: { description: 'Washes the area under the line.', type: 'boolean', default: 'true' },
+    variant: { description: '`line` draws the trend. `bar` draws one 4px bar per point, grown from zero.', type: "'line' | 'bar'", default: "'line'" },
+    color: { description: 'Any CSS color. In the bar form, the color of the latest bar.', type: 'string', default: "'var(--chart-1)'" },
+    fill: { description: 'Washes the area under the line. The bar form ignores it.', type: 'boolean', default: 'true' },
   }}
 />
 

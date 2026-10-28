@@ -3,7 +3,7 @@
   "name": "stat-card",
   "type": "registry:ui",
   "title": "Stat card",
-  "description": "One number on a card with a label, a value, and a change shown by arrow, sign and percentage. It has an optional sparkline and a loading state.",
+  "description": "One number on a card with a label, a value, and a change shown by arrow, sign and percentage. It has an optional line or bar sparkline, a KPI header with an icon tile and an eyebrow, and a loading state.",
   "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/chart", "@kosmos/skeleton"],
   "meta": { "group": "data" },
