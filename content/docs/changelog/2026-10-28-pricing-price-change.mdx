@@ -1,7 +1,11 @@
 ---
-title: Pricing changes its prices with a slide
-description: The monthly and yearly prices slide and cross-fade, and nothing beside them jumps.
+title: Pricing changes its price digit by digit and shows the yearly saving
+description: Only the digits that change slide, and Yearly shows the monthly price struck through, the saving and a discount mark.
 date: 2026-10-28
 ---
 
-- **[Pricing](/docs/blocks/pricing)**: switching between monthly and yearly no longer drops the old price and blinks the new one in. The old price leaves the way the switch moved and the new one rises in from the other side. The price's width eases, so the period beside it slides, and the period keeps room for its longest text, so the cards keep their height. Props are unchanged. Run `shadcn add` for it again to pick this up.
+- **[Pricing](/docs/blocks/pricing)**: switching between monthly and yearly no longer drops the old price and blinks the new one in. Only the digits that change slide, up when the price rises and down when it falls, and a place the new price no longer has folds away, so nothing beside the price jumps.
+- On Yearly, a plan with a price per billing shows its monthly price struck through beside the new one.
+- New plan fields: `note`, a muted line under the price (one per billing if you like), and `saving`, shown in green on Yearly only.
+- New prop: `yearlyDiscount`, a short green mark such as `−20%` on the Yearly choice of the switch.
+- Run `shadcn add` for it again to pick this up.

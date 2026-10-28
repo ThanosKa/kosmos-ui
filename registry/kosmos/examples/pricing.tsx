@@ -55,6 +55,8 @@ const longPlans: PricingPlan[] = [
     name: 'Pro',
     price: { monthly: '$1,234,567', yearly: '$987,654' },
     period: { monthly: 'per month', yearly: 'per month, billed yearly' },
+    note: { monthly: 'Billed every month on the day you signed up', yearly: '$11,851,848 billed once a year, up front' },
+    saving: 'You save $2,962,956 a year',
     badge: <Badge variant="secondary">Most popular with growing teams</Badge>,
     features: ['Everything in Free', '10 projects'],
     action: (
@@ -67,7 +69,7 @@ const longPlans: PricingPlan[] = [
   {
     name: 'Скейл 規模',
     description: 'Для приложений с миллионами событий.',
-    price: { monthly: '$1,200', yearly: '$960' },
+    price: { monthly: 'Talk to us', yearly: '$960' },
     period: { monthly: 'per month', yearly: 'per month, billed yearly' },
     features: ['Everything in Pro', 'Unlimited projects', '8,000,000 events a month', 'EU data region', 'Priority support'],
   },
@@ -107,7 +109,9 @@ const arabicPlans: PricingPlan[] = [
     name: 'Pro',
     description: 'لفريق لديه تطبيق قيد التشغيل.',
     price: { monthly: '$49', yearly: '$39' },
-    period: { monthly: 'شهريًا', yearly: 'شهريًا، تُدفع سنويًا' },
+    period: 'شهريًا',
+    note: { monthly: 'تُدفع شهريًا', yearly: '$468 تُدفع سنويًا' },
+    saving: 'توفّر $120',
     badge: <Badge variant="secondary">الأكثر شيوعًا</Badge>,
     features: ['كل ما في المجاني', '10 مشاريع', '3,000,000 حدث شهريًا'],
     action: (
@@ -152,7 +156,8 @@ export default function PricingPreview() {
             title="Pricing that grows with every web, iOS, Android and server app your team ships this year"
             description="Every plan collects events from web, iOS, Android and server apps, keeps them as long as the plan allows, and turns them into answers. Pay yearly and save 20%."
             plans={longPlans}
-            billingLabels={{ monthly: 'Billed monthly', yearly: 'Billed yearly, save 20%' }}
+            billingLabels={{ monthly: 'Billed monthly', yearly: 'Billed yearly' }}
+            yearlyDiscount="Two months free"
           />
         </div>
       </PreviewSection>
@@ -170,6 +175,7 @@ export default function PricingPreview() {
             description={null}
             plans={arabicPlans}
             billingLabels={{ monthly: 'شهريًا', yearly: 'سنويًا' }}
+            yearlyDiscount="وفّر 20%"
           />
         </div>
       </PreviewSection>
