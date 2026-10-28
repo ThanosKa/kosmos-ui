@@ -26,7 +26,7 @@ import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration, ease } from '@/registry/kosmos/lib/motion';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { EmptyState } from '@/registry/kosmos/ui/empty';
@@ -45,7 +45,7 @@ type KanbanColumn = {
   tone?: KanbanTone;
 };
 
-type KanbanPerson = { name: string; initials: string };
+type KanbanPerson = { name: string; initials: string; avatarUrl?: string };
 
 /** A category on the card, shown as a tag in one of the Badge hues. */
 type KanbanTag = { label: string; hue: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet' };
@@ -67,10 +67,10 @@ type KanbanItem = {
 };
 
 // Sample data: replace it with your columns and records.
-const lena = { name: 'Lena Park', initials: 'LP' };
-const tomas = { name: 'Tomás Ortega', initials: 'TO' };
-const ama = { name: 'Ama Mensah', initials: 'AM' };
-const kai = { name: 'Kai Nakamura', initials: 'KN' };
+const lena = { name: 'Lena Park', initials: 'LP', avatarUrl: '/avatars/lena.jpg' };
+const tomas = { name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' };
+const ama = { name: 'Ama Mensah', initials: 'AM', avatarUrl: '/avatars/ama.jpg' };
+const kai = { name: 'Kai Nakamura', initials: 'KN', avatarUrl: '/avatars/kai.jpg' };
 
 const insights: KanbanTag = { label: 'Insights', hue: 'amber' };
 const ingestion: KanbanTag = { label: 'Ingestion', hue: 'green' };
@@ -225,6 +225,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
           ) : null}
           {item.assignee ? (
             <Avatar size="sm" title={item.assignee.name} className="ms-auto">
+              {item.assignee.avatarUrl ? <AvatarImage src={item.assignee.avatarUrl} alt="" /> : null}
               <AvatarFallback>{item.assignee.initials}</AvatarFallback>
             </Avatar>
           ) : null}

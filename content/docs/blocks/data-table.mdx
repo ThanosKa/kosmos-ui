@@ -27,7 +27,7 @@ To pair the table with the [page header](/docs/blocks/page-header), turn the too
 
 ## What it does
 
-- **Columns**: each project shows its name and domain, platform, plan as a colored tag and monthly active users. It also shows events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
+- **Columns**: each project shows its logo, name and domain, platform, plan as a colored tag and monthly active users. It also shows events in the last 30 days, the event quota, monthly revenue, a status dot and the day of its last event.
 - **Event quota**: a [meter](/docs/components/meter) of how much of its plan's monthly event allowance the project used in the last 30 days. The allowances are Free 50,000, Pro 3 million and Scale 8 million. Up to 75% is green, up to 95% amber and above that red. The bar stops at full and the number beside it does not, so a project at 112% reads as red and 112%.
 - **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value. The count is the number of rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values. Across filters it needs one of each.
 - **Column menus**: each header opens a menu that sorts its column either way. The sort labels fit the values (Low to high, A to Z, Newest first). The menu also hides any column but Project. The sorted header carries `aria-sort`, and hiding the sorted column clears the sort.
@@ -88,6 +88,7 @@ Takes every `<div>` prop, plus:
     id: { description: 'Unique. Selection and opening use it.', type: 'string', required: true },
     name: { description: 'The project name.', type: 'string', required: true },
     domain: { description: 'Shown under the name.', type: 'string', required: true },
+    logo: { description: "The URL of the project's logo, in a square avatar. Its first letter shows until it loads.", type: 'string' },
     platform: { description: 'Where the events come from.', type: "'web' | 'ios' | 'android' | 'server'", required: true },
     plan: { description: 'Shown as a tag: Free in gray, Pro in blue, Scale in violet.', type: "'free' | 'pro' | 'scale'", required: true },
     status: { description: 'Shown as a status dot and its label: live green, trial gray, paused amber.', type: "'live' | 'trial' | 'paused'", required: true },

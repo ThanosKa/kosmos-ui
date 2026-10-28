@@ -65,7 +65,7 @@ const sampleRun: Run = {
   number: 482,
   title: 'Find out why Hollow Oak Games stopped sending events',
   status: 'waiting',
-  startedBy: { name: 'Lena Park' },
+  startedBy: { name: 'Lena Park', avatarUrl: '/avatars/lena.jpg' },
   model: 'Claude Sonnet 5.5',
   startedAt: '14:02:10',
   elapsedMs: 252_000,

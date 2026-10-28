@@ -223,19 +223,19 @@ const sampleGoal: SignupGoal = {
   count: 482,
   target: 1300,
   pace: 1.6,
-  team: { label: 'Growth', people: [{ name: 'Kai Nakamura' }, { name: 'Lena Park' }, { name: 'Ama Mensah' }] },
+  team: { label: 'Growth', people: [{ name: 'Kai Nakamura', avatarUrl: '/avatars/kai.jpg' }, { name: 'Lena Park', avatarUrl: '/avatars/lena.jpg' }, { name: 'Ama Mensah', avatarUrl: '/avatars/ama.jpg' }] },
 };
 
 const sampleSignups: Signup[] = [
-  { id: 'leila', name: 'Leila Haddad', email: 'leila@ironbark.example', presence: 'online', plan: 'scale', source: 'Search', referrer: 'Google', step: 'Invited the team', activation: 92, mrr: 2900, joined: '2 min ago' },
-  { id: 'daniel', name: 'Daniel Okafor', email: 'daniel@cirrus.example', presence: 'online', plan: 'pro', source: 'Referral', referrer: 'GitHub', step: 'Sent a first event', activation: 64, mrr: 390, joined: '18 min ago' },
-  { id: 'tessa', name: 'Tessa Morgan', email: 'tessa@marigold.example', presence: 'away', plan: 'trial', source: 'Direct', referrer: 'Typed the address', step: 'Installed the SDK', activation: 41, mrr: 0, joined: '1 hour ago' },
-  { id: 'owen', name: 'Owen Fitzgerald', email: 'owen@saltmarsh.example', presence: 'offline', plan: 'pro', source: 'Email', referrer: 'Weekly digest', step: 'Built a funnel', activation: 78, mrr: 149, joined: '3 hours ago' },
-  { id: 'noor', name: 'Noor Rahman', email: 'noor@pebblepine.example', presence: 'online', plan: 'free', source: 'Social', referrer: 'Mastodon', step: 'Created a project', activation: 18, mrr: 0, joined: '5 hours ago' },
-  { id: 'sofia', name: 'Sofia Lindqvist', email: 'sofia@driftwood.example', presence: 'offline', plan: 'pro', source: 'Search', referrer: 'Google', step: 'Built a funnel', activation: 81, mrr: 290, joined: 'Yesterday' },
-  { id: 'ines', name: 'Ines Duarte', email: 'ines@fernhill.example', presence: 'away', plan: 'scale', source: 'Referral', referrer: 'Acme docs', step: 'Invited the team', activation: 95, mrr: 2400, joined: 'Yesterday' },
-  { id: 'marcus', name: 'Marcus Bell', email: 'marcus@brightloop.example', presence: 'offline', plan: 'scale', source: 'Direct', referrer: 'Typed the address', step: 'Sent a first event', activation: 58, mrr: 3600, joined: 'Oct 9' },
-  { id: 'ruth', name: 'Ruth Adeyemi', email: 'ruth@copperline.example', presence: 'offline', plan: 'scale', source: 'Email', referrer: 'Quota alert', step: 'Exported events', activation: 88, mrr: 4800, joined: 'Oct 8' },
+  { id: 'leila', name: 'Leila Haddad', avatarUrl: '/avatars/leila.jpg', email: 'leila@ironbark.example', presence: 'online', plan: 'scale', source: 'Search', referrer: 'Google', step: 'Invited the team', activation: 92, mrr: 2900, joined: '2 min ago' },
+  { id: 'daniel', name: 'Daniel Okafor', avatarUrl: '/avatars/daniel.jpg', email: 'daniel@cirrus.example', presence: 'online', plan: 'pro', source: 'Referral', referrer: 'GitHub', step: 'Sent a first event', activation: 64, mrr: 390, joined: '18 min ago' },
+  { id: 'tessa', name: 'Tessa Morgan', avatarUrl: '/avatars/tessa.jpg', email: 'tessa@marigold.example', presence: 'away', plan: 'trial', source: 'Direct', referrer: 'Typed the address', step: 'Installed the SDK', activation: 41, mrr: 0, joined: '1 hour ago' },
+  { id: 'owen', name: 'Owen Fitzgerald', avatarUrl: '/avatars/owen.jpg', email: 'owen@saltmarsh.example', presence: 'offline', plan: 'pro', source: 'Email', referrer: 'Weekly digest', step: 'Built a funnel', activation: 78, mrr: 149, joined: '3 hours ago' },
+  { id: 'noor', name: 'Noor Rahman', avatarUrl: '/avatars/noor.jpg', email: 'noor@pebblepine.example', presence: 'online', plan: 'free', source: 'Social', referrer: 'Mastodon', step: 'Created a project', activation: 18, mrr: 0, joined: '5 hours ago' },
+  { id: 'sofia', name: 'Sofia Lindqvist', avatarUrl: '/avatars/sofia.jpg', email: 'sofia@driftwood.example', presence: 'offline', plan: 'pro', source: 'Search', referrer: 'Google', step: 'Built a funnel', activation: 81, mrr: 290, joined: 'Yesterday' },
+  { id: 'ines', name: 'Ines Duarte', avatarUrl: '/avatars/ines-duarte.jpg', email: 'ines@fernhill.example', presence: 'away', plan: 'scale', source: 'Referral', referrer: 'Acme docs', step: 'Invited the team', activation: 95, mrr: 2400, joined: 'Yesterday' },
+  { id: 'marcus', name: 'Marcus Bell', avatarUrl: '/avatars/marcus.jpg', email: 'marcus@brightloop.example', presence: 'offline', plan: 'scale', source: 'Direct', referrer: 'Typed the address', step: 'Sent a first event', activation: 58, mrr: 3600, joined: 'Oct 9' },
+  { id: 'ruth', name: 'Ruth Adeyemi', avatarUrl: '/avatars/ruth.jpg', email: 'ruth@copperline.example', presence: 'offline', plan: 'scale', source: 'Email', referrer: 'Quota alert', step: 'Exported events', activation: 88, mrr: 4800, joined: 'Oct 8' },
 ];
 
 // A fixed locale, so the server and the browser render the same text.

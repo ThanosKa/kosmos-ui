@@ -26,7 +26,7 @@ const longProject: DetailProject = {
   activity: [
     {
       id: 'a1',
-      author: { name: 'Tomás Ortega', initials: 'TO' },
+      author: { name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' },
       action: 'changed the plan to Scale and raised the event rate limit for the import of three years of order history',
       time: 'Oct 11',
     },

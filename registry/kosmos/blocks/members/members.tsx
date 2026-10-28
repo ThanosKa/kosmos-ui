@@ -54,11 +54,11 @@ type Invite = {
 
 // Sample data: replace it with your members. Values are made up but stable, so server and browser match.
 const sampleMembers: Member[] = [
-  { id: 'lena', name: 'Lena Park', email: 'lena@acme.example', role: 'owner', status: 'active', lastActive: 'Just now' },
-  { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@acme.example', role: 'admin', status: 'active', lastActive: '2 hours ago' },
-  { id: 'kai', name: 'Kai Nakamura', email: 'kai@acme.example', role: 'member', status: 'active', lastActive: 'Yesterday' },
-  { id: 'ama', name: 'Ama Mensah', email: 'ama@acme.example', role: 'member', status: 'active', lastActive: 'Oct 3' },
-  { id: 'ines', name: 'Inês Carvalho', email: 'ines@acme.example', role: 'viewer', status: 'suspended', lastActive: 'Sep 12' },
+  { id: 'lena', name: 'Lena Park', email: 'lena@acme.example', avatarUrl: '/avatars/lena.jpg', role: 'owner', status: 'active', lastActive: 'Just now' },
+  { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@acme.example', avatarUrl: '/avatars/tomas.jpg', role: 'admin', status: 'active', lastActive: '2 hours ago' },
+  { id: 'kai', name: 'Kai Nakamura', email: 'kai@acme.example', avatarUrl: '/avatars/kai.jpg', role: 'member', status: 'active', lastActive: 'Yesterday' },
+  { id: 'ama', name: 'Ama Mensah', email: 'ama@acme.example', avatarUrl: '/avatars/ama.jpg', role: 'member', status: 'active', lastActive: 'Oct 3' },
+  { id: 'ines', name: 'Inês Carvalho', email: 'ines@acme.example', avatarUrl: '/avatars/ines.jpg', role: 'viewer', status: 'suspended', lastActive: 'Sep 12' },
 ];
 
 const sampleInvites: Invite[] = [

@@ -6,6 +6,12 @@ import { Button } from '@/registry/kosmos/ui/button';
 
 const sizes = ['sm', 'md', 'lg'] as const;
 const states = ['image', 'initials', 'icon'] as const;
+const team = [
+  { id: 'lena', name: 'Lena Park', initials: 'LP' },
+  { id: 'tomas', name: 'Tomás Ortega', initials: 'TO' },
+  { id: 'ama', name: 'Ama Mensah', initials: 'AM' },
+  { id: 'kai', name: 'Kai Nakamura', initials: 'KN' },
+];
 
 export default function AvatarPreview() {
   return (
@@ -16,7 +22,7 @@ export default function AvatarPreview() {
           states={states}
           render={(size, state) => (
             <Avatar size={size}>
-              {state === 'image' ? <AvatarImage src="/avatars/avatar-1.png" alt="Lena Park" /> : null}
+              {state === 'image' ? <AvatarImage src="/avatars/lena.jpg" alt="Lena Park" /> : null}
               <AvatarFallback>{state === 'icon' ? <User aria-label="Unknown user" /> : 'LP'}</AvatarFallback>
             </Avatar>
           )}
@@ -27,10 +33,10 @@ export default function AvatarPreview() {
         <div className="flex flex-col gap-4">
           {sizes.map((size) => (
             <AvatarGroup key={size}>
-              {[1, 2, 3, 4].map((n) => (
-                <Avatar key={n} size={size}>
-                  <AvatarImage src={`/avatars/avatar-${n}.png`} alt={`Teammate ${n}`} />
-                  <AvatarFallback>T{n}</AvatarFallback>
+              {team.map((person) => (
+                <Avatar key={person.id} size={size}>
+                  <AvatarImage src={`/avatars/${person.id}.jpg`} alt={person.name} />
+                  <AvatarFallback>{person.initials}</AvatarFallback>
                 </Avatar>
               ))}
               <AvatarGroupCount size={size}>
@@ -41,11 +47,24 @@ export default function AvatarPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="Logo: a square avatar">
+        <StateMatrix
+          rows={sizes}
+          states={['image', 'initial'] as const}
+          render={(size, state) => (
+            <Avatar size={size} className="rounded-md">
+              {state === 'image' ? <AvatarImage src="/logos/cirrus.svg" alt="Cirrus Weather" /> : null}
+              <AvatarFallback>C</AvatarFallback>
+            </Avatar>
+          )}
+        />
+      </PreviewSection>
+
       <PreviewSection title="With a name, and as a button">
         <div className="flex flex-wrap items-center gap-6">
           <div className="flex min-w-0 items-center gap-2.5">
             <Avatar size="lg">
-              <AvatarImage src="/avatars/avatar-2.png" alt="" />
+              <AvatarImage src="/avatars/tomas.jpg" alt="" />
               <AvatarFallback>TO</AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col">
@@ -55,7 +74,7 @@ export default function AvatarPreview() {
           </div>
           <Button variant="ghost" size="icon" aria-label="Open user menu" className="rounded-full">
             <Avatar size="sm">
-              <AvatarImage src="/avatars/avatar-3.png" alt="" />
+              <AvatarImage src="/avatars/ama.jpg" alt="" />
               <AvatarFallback>AM</AvatarFallback>
             </Avatar>
           </Button>

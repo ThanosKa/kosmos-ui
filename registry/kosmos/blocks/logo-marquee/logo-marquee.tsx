@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, BookOpen, Cloud, Coffee, Landmark, Pause, Play, Sailboat, Truck } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import * as React from 'react';
 import { useDrift } from '@/registry/kosmos/hooks/use-drift';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -17,14 +17,15 @@ type LogoMarqueeLogo = {
   href?: string;
 };
 
-/** A stand-in logo: an icon beside the name. */
-function sampleLogo(name: string, Icon: React.ElementType, color: string): LogoMarqueeLogo {
+/** A stand-in logo: its mark from `public/logos` beside the name. */
+function sampleLogo(name: string, id: string, color: string): LogoMarqueeLogo {
   return {
     name,
     color,
     logo: (
       <span className="flex items-center gap-2">
-        <Icon />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`/logos/${id}.svg`} alt="" className="rounded-sm" />
         {name}
       </span>
     ),
@@ -34,13 +35,13 @@ function sampleLogo(name: string, Icon: React.ElementType, color: string): LogoM
 // Sample data: replace it with the line and the logos of your customers or your stack.
 const sampleTitle = 'Used by the teams behind';
 const sampleLogos: LogoMarqueeLogo[] = [
-  sampleLogo('Fernhill Books', BookOpen, 'var(--tint-blue-solid)'),
-  sampleLogo('Brightloop Fitness', Activity, 'var(--tint-amber-solid)'),
-  sampleLogo('Copperline Bank', Landmark, 'var(--tint-green-solid)'),
-  sampleLogo('Saltmarsh Coffee', Coffee, 'var(--tint-red-solid)'),
-  sampleLogo('Driftwood Travel', Sailboat, 'var(--tint-violet-solid)'),
-  sampleLogo('Cirrus Weather', Cloud, 'var(--tint-blue-solid)'),
-  sampleLogo('Ironbark Logistics', Truck, 'var(--tint-amber-solid)'),
+  sampleLogo('Fernhill Books', 'fernhill', 'var(--tint-blue-solid)'),
+  sampleLogo('Brightloop Fitness', 'brightloop', 'var(--tint-amber-solid)'),
+  sampleLogo('Copperline Bank', 'copperline', 'var(--tint-green-solid)'),
+  sampleLogo('Saltmarsh Coffee', 'saltmarsh', 'var(--tint-red-solid)'),
+  sampleLogo('Driftwood Travel', 'driftwood', 'var(--tint-violet-solid)'),
+  sampleLogo('Cirrus Weather', 'cirrus', 'var(--tint-blue-solid)'),
+  sampleLogo('Ironbark Logistics', 'ironbark', 'var(--tint-amber-solid)'),
 ];
 
 /** How fast the logos move, in pixels per second. */

@@ -25,6 +25,8 @@
     {
       "path": "registry/kosmos/blocks/command-menu/command-menu.tsx",
       "type": "registry:component"
-    }
+    },
+    { "path": "public/logos/acme.svg", "type": "registry:file", "target": "~/public/logos/acme.svg" },
+    { "path": "public/logos/acme-staging.svg", "type": "registry:file", "target": "~/public/logos/acme-staging.svg" }
   ]
 }

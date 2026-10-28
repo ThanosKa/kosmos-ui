@@ -5,7 +5,7 @@ export default function AvatarSizes() {
     <div className="flex items-center gap-3">
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <Avatar key={size} size={size}>
-          <AvatarImage src="/avatars/avatar-2.png" alt="Tomás Ortega" />
+          <AvatarImage src="/avatars/tomas.jpg" alt="Tomás Ortega" />
           <AvatarFallback>TO</AvatarFallback>
         </Avatar>
       ))}

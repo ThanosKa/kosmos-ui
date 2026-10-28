@@ -77,7 +77,7 @@ Takes every `<div>` prop, plus:
     column: { description: 'The column the card sits in.', type: 'string', required: true },
     area: { description: 'The part of the product, shown as a tag in a Badge hue.', type: "{ label: string; hue: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet' }" },
     votes: { description: 'How many customers asked for it.', type: 'number' },
-    assignee: { description: 'Shown as an avatar with initials.', type: '{ name: string; initials: string }' },
+    assignee: { description: 'Shown as an avatar: the photo at `avatarUrl`, with the initials until it loads.', type: '{ name: string; initials: string; avatarUrl?: string }' },
     target: { description: 'When it should ship, such as Q4 2026.', type: 'string' },
   }}
 />

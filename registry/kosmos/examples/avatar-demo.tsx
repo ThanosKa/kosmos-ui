@@ -4,7 +4,7 @@ export default function AvatarDemo() {
   return (
     <div className="flex items-center gap-3">
       <Avatar>
-        <AvatarImage src="/avatars/avatar-1.png" alt="Lena Park" />
+        <AvatarImage src="/avatars/lena.jpg" alt="Lena Park" />
         <AvatarFallback>LP</AvatarFallback>
       </Avatar>
       <Avatar>

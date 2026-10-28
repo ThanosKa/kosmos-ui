@@ -8,7 +8,7 @@ import { EmailCodeForm } from '@/registry/kosmos/blocks/auth-forms/auth-forms';
 import { KanbanBoard, sampleRoadmapItems, type KanbanColumn } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { SettingsPanel } from '@/registry/kosmos/blocks/settings/settings';
 import { isEmail } from '@/registry/kosmos/lib/tags';
-import { Avatar, AvatarFallback, AvatarGroup } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Switch } from '@/registry/kosmos/ui/switch';
 import { TagsInput } from '@/registry/kosmos/ui/tags-input';
@@ -152,6 +152,7 @@ export const inviteTeammatesCard: GalleryItem = {
                 <AvatarGroup>
                   {tags.map((tag) => (
                     <Avatar key={tag}>
+                      <AvatarImage src={`/avatars/${tag.split('@')[0]}.jpg`} alt="" />
                       <AvatarFallback>{tag.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   ))}

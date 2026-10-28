@@ -55,10 +55,10 @@ const sampleModels = [
 ];
 
 const sampleMembers = [
-  { id: 'lena', name: 'Lena Park', share: 0.38 },
-  { id: 'tomas', name: 'Tomás Ortega', share: 0.29 },
-  { id: 'kai', name: 'Kai Nakamura', share: 0.19 },
-  { id: 'ama', name: 'Ama Mensah', share: 0.14 },
+  { id: 'lena', name: 'Lena Park', avatarUrl: '/avatars/lena.jpg', share: 0.38 },
+  { id: 'tomas', name: 'Tomás Ortega', avatarUrl: '/avatars/tomas.jpg', share: 0.29 },
+  { id: 'kai', name: 'Kai Nakamura', avatarUrl: '/avatars/kai.jpg', share: 0.19 },
+  { id: 'ama', name: 'Ama Mensah', avatarUrl: '/avatars/ama.jpg', share: 0.14 },
 ];
 
 const sampleChanges: Record<UsageRange, { tokens: number; runs: number; costUsd: number }> = {
@@ -96,6 +96,7 @@ function buildDataset(days: number, tokensPerDay: number, changePct: UsageDatase
   const members = sampleMembers.map((member) => ({
     id: member.id,
     name: member.name,
+    avatarUrl: member.avatarUrl,
     tokens: Math.round(totals.tokens * member.share),
     runs: Math.round(totals.runs * member.share),
     costUsd: totals.costUsd * member.share,

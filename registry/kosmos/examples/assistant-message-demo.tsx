@@ -12,7 +12,7 @@ export default function AssistantMessageDemo() {
     <div className="flex w-full max-w-xl flex-col gap-4">
       <AssistantMessage role="user">How many events did Acme collect in the last 30 days?</AssistantMessage>
       <AssistantMessage
-        author={{ name: 'Acme agent' }}
+        author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
         time="14:02"
         model="Claude Sonnet 5.5"
         sources={sources}

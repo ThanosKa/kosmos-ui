@@ -3,7 +3,6 @@
 import {
   Activity,
   ArrowLeftRight,
-  Building,
   CircleDashed,
   CircleDollarSign,
   FolderKanban,
@@ -19,7 +18,7 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   Command,
@@ -56,6 +55,10 @@ type CommandMenuItem = {
   dot?: string;
   /** Initials for an avatar in place of the icon. */
   initials?: string;
+  /** The URL of a photo for that avatar. The initials show until it loads. */
+  avatar?: string;
+  /** The URL of a logo in place of the icon, such as a workspace's. */
+  logo?: string;
   /** Keys your app binds to this command, shown at the end of the row. The menu doesn't bind them. */
   keys?: string[];
   /** Opens this second list instead of running. */
@@ -133,10 +136,10 @@ const samplePages: Record<string, CommandMenuPage> = {
       {
         value: 'Team',
         items: [
-          { value: 'assignee:lena', label: 'Lena Park', initials: 'LP' },
-          { value: 'assignee:tomas', label: 'Tomás Ortega', initials: 'TO' },
-          { value: 'assignee:ama', label: 'Ama Mensah', initials: 'AM' },
-          { value: 'assignee:kai', label: 'Kai Nakamura', initials: 'KN' },
+          { value: 'assignee:lena', label: 'Lena Park', initials: 'LP', avatar: '/avatars/lena.jpg' },
+          { value: 'assignee:tomas', label: 'Tomás Ortega', initials: 'TO', avatar: '/avatars/tomas.jpg' },
+          { value: 'assignee:ama', label: 'Ama Mensah', initials: 'AM', avatar: '/avatars/ama.jpg' },
+          { value: 'assignee:kai', label: 'Kai Nakamura', initials: 'KN', avatar: '/avatars/kai.jpg' },
           { value: 'assignee:none', label: 'No one', icon: CircleDashed },
         ],
       },
@@ -149,8 +152,8 @@ const samplePages: Record<string, CommandMenuPage> = {
       {
         value: 'Workspaces',
         items: [
-          { value: 'workspace:acme', label: 'Acme', hint: 'Scale plan', icon: Building },
-          { value: 'workspace:acme-staging', label: 'Acme Staging', hint: 'Free plan', icon: Building },
+          { value: 'workspace:acme', label: 'Acme', hint: 'Scale plan', logo: '/logos/acme.svg' },
+          { value: 'workspace:acme-staging', label: 'Acme Staging', hint: 'Free plan', logo: '/logos/acme-staging.svg' },
         ],
       },
     ],
@@ -175,7 +178,13 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
     <>
       {item.initials ? (
         <Avatar size="sm" className="size-5" aria-hidden>
+          {item.avatar ? <AvatarImage src={item.avatar} alt="" /> : null}
           <AvatarFallback>{item.initials}</AvatarFallback>
+        </Avatar>
+      ) : item.logo ? (
+        <Avatar size="sm" className="size-5 rounded-sm" aria-hidden>
+          <AvatarImage src={item.logo} alt="" />
+          <AvatarFallback>{item.label.charAt(0)}</AvatarFallback>
         </Avatar>
       ) : item.dot ? (
         <span aria-hidden className="flex size-4 shrink-0 items-center justify-center">

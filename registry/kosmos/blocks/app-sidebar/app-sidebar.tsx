@@ -87,12 +87,15 @@ const sampleNavFooter: NavItem[] = [
   { id: 'settings', label: 'Settings', href: '#settings', icon: Settings },
 ];
 
+// eslint-disable-next-line @next/next/no-img-element
+const workspaceLogo = (id: string) => <img src={`/logos/${id}.svg`} alt="" />;
+
 const sampleWorkspaces: SidebarWorkspace[] = [
-  { id: 'acme', name: 'Acme', description: 'Scale plan' },
-  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
+  { id: 'acme', name: 'Acme', description: 'Scale plan', logo: workspaceLogo('acme') },
+  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan', logo: workspaceLogo('acme-staging') },
 ];
 
-const sampleUser: SidebarUser = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
+const sampleUser: SidebarUser = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' };
 
 type MenuProps = Omit<React.ComponentProps<typeof DropdownMenu>, 'children'>;
 

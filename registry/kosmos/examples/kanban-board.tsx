@@ -12,7 +12,7 @@ const longItems: KanbanItem[] = [
     column: 'ideas',
     area: { label: 'Insights', hue: 'amber' },
     votes: 12480,
-    assignee: { name: 'Tomás Ortega', initials: 'TO' },
+    assignee: { name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' },
     target: 'Q1 2027',
   },
   { id: 'bare', title: 'Server-side-batching-for-every-ingestion-endpoint-and-region', column: 'ideas' },
@@ -25,7 +25,7 @@ const sample: KanbanItem = {
   column: 'in-progress',
   area: { label: 'Insights', hue: 'amber' },
   votes: 112,
-  assignee: { name: 'Ama Mensah', initials: 'AM' },
+  assignee: { name: 'Ama Mensah', initials: 'AM', avatarUrl: '/avatars/ama.jpg' },
   target: 'Q4 2026',
 };
 
