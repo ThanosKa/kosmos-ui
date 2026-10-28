@@ -13,7 +13,7 @@ type DonutChartItem = {
   value: number;
   /** Any CSS color. Defaults to the chart tokens in order, `--chart-1` for the first part to `--chart-5` for the fifth. */
   color?: string;
-  /** Identifies the part across renders. Defaults to its label. */
+  /** Keys the legend row across renders. Defaults to its position and label. */
   id?: string;
 };
 
@@ -21,10 +21,10 @@ type DonutChartItem = {
  * The ring of a Gauge of the same size: `strokeWidth` is in units of a 100-wide box, so the stroke and the cut between
  * the parts scale with the ring. `lg` holds a label over the total, `md` the total alone, `sm` neither.
  */
-const sizeStyles: Record<DonutChartSize, { box: string; strokeWidth: number; value: string | null; label: boolean }> = {
-  sm: { box: 'size-8', strokeWidth: 12, value: null, label: false },
-  md: { box: 'size-16', strokeWidth: 9, value: 'text-body font-medium', label: false },
-  lg: { box: 'size-32', strokeWidth: 7, value: 'text-title font-medium', label: true },
+const sizeStyles: Record<DonutChartSize, { box: string; strokeWidth: number; totalText: string | null; showLabel: boolean }> = {
+  sm: { box: 'size-8', strokeWidth: 12, totalText: null, showLabel: false },
+  md: { box: 'size-16', strokeWidth: 9, totalText: 'text-body font-medium', showLabel: false },
+  lg: { box: 'size-32', strokeWidth: 7, totalText: 'text-title font-medium', showLabel: true },
 };
 
 const GAP_RATIO = 0.5;
@@ -48,11 +48,12 @@ function shareText(value: number, total: number) {
 
 /**
  * The angle each cut takes, so that two round caps a `GAP_RATIO` of a stroke apart fit in it, as between the arcs of a
- * Gauge. Every part takes one, so a part too small to draw an arc still shows as a dot with a cut on each side.
+ * Gauge. Every part takes one, so a part too small to draw an arc still shows as a dot with a cut on each side. The cuts
+ * never take more than half the ring, so a ring of many parts keeps room for its arcs.
  */
-function cutAngle(strokeWidth: number) {
+function cutAngle(strokeWidth: number, parts: number) {
   const radius = 50 - strokeWidth / 2;
-  return (strokeWidth * (1 + GAP_RATIO)) / radius / RADIAN;
+  return Math.min((strokeWidth * (1 + GAP_RATIO)) / radius / RADIAN, 180 / parts);
 }
 
 const point = (cx: number, cy: number, radius: number, angle: number) => ({
@@ -130,11 +131,11 @@ function DonutChart({
   'aria-label': ariaLabel,
   ...props
 }: DonutChartProps) {
-  const { box, strokeWidth, value: valueText, label: showLabel } = sizeStyles[size];
+  const { box, strokeWidth, totalText, showLabel } = sizeStyles[size];
   const parts = data.map((item, index) => ({ ...item, value: partValue(item.value), fill: partColor(item, index) }));
   const drawn = parts.filter((part) => part.value > 0);
   const total = wholeTotal ?? parts.reduce((sum, part) => sum + part.value, 0);
-  const cut = drawn.length > 1 ? cutAngle(strokeWidth) : 0;
+  const cut = drawn.length > 1 ? cutAngle(strokeWidth, drawn.length) : 0;
   const startAngle = 90 - cut / 2;
   const innerRadius = `${100 - 2 * strokeWidth}%`;
 
@@ -207,10 +208,10 @@ function DonutChart({
         <div data-slot="donut-chart-label" className={centerClassName}>
           {children}
         </div>
-      ) : valueText ? (
+      ) : totalText ? (
         <div data-slot="donut-chart-label" className={centerClassName}>
           {showLabel && label ? <span className="max-w-full truncate text-caption text-muted-foreground">{label}</span> : null}
-          <span className={cn('whitespace-nowrap text-foreground tabular-nums', valueText)}>
+          <span className={cn('whitespace-nowrap text-foreground tabular-nums', totalText)}>
             <bdi dir="ltr">{format(total)}</bdi>
           </span>
         </div>
