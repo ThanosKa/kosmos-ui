@@ -85,21 +85,6 @@
   translate: 0 var(--m-rise);
 }
 
-/* Pricing plans: a 2px lift on hover, once the scroll reveal has finished with them. */
-@media (hover: hover) and (pointer: fine) {
-  [data-landing-section] [data-slot='pricing-plan']:not([data-reveal]) {
-    transition: translate var(--transition-duration-fast) var(--m-ease);
-  }
-  [data-landing-section] [data-slot='pricing-plan']:not([data-reveal]):hover {
-    translate: 0 -2px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-landing-section] [data-slot='pricing-plan']:hover {
-    translate: none;
-  }
-}
-
 /* Showcase tabs: a cross-fade with a small rise. The outgoing screen leaves in 150ms, the incoming one arrives in 200ms. */
 .landing-panel {
   opacity: 0;
