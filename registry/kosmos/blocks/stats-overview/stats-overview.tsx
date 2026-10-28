@@ -303,8 +303,8 @@ function TopEvents({ events, state, onRetry, rangeLabel }: { events: TopEvent[];
 type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
   /** The metrics for each range, as tabs over the chart. Four fit one row on a wide container. */
   metrics?: Record<Range, Metric[]>;
-  /** The most frequent events for each range, most frequent first. An empty list shows the empty state. */
-  topEvents?: Record<Range, TopEvent[]>;
+  /** The most frequent events for each range, most frequent first. An empty list shows the empty state, and `false` leaves the list out. */
+  topEvents?: Record<Range, TopEvent[]> | false;
   /** The range. Use with `onRangeChange`, or leave it out and pass `defaultRange`. */
   range?: Range;
   defaultRange?: Range;
@@ -323,7 +323,7 @@ type StatsOverviewProps = Omit<React.ComponentProps<'section'>, 'children'> & {
 
 /**
  * The overview of an analytics dashboard on one flat card: the headline metrics as divided cells over one chart that
- * compares the selected range with the period before it, a range switch, and the top events below. Lays itself out
+ * compares the selected range with the period before it, a range switch, and the top events below unless left out. Lays itself out
  * by its own width, not the screen's.
  */
 function StatsOverview({
@@ -346,7 +346,7 @@ function StatsOverview({
   const [metricId, setMetric] = useControlled(metricProp, defaultMetric ?? list[0]?.id ?? '', onMetricChange);
   const active = list.find((item) => item.id === metricId) ?? list[0];
   const rangeLabel = ranges[range].label;
-  const events = topEvents[range];
+  const events = topEvents ? topEvents[range] : null;
 
   const stateOf = (empty: boolean): ChartCardState => (loading ? 'loading' : error ? 'error' : empty ? 'empty' : 'ready');
   const chartState = stateOf(!active || active.points.length === 0);
@@ -417,12 +417,14 @@ function StatsOverview({
           chart
         )}
 
-        <TopEvents
-          events={events}
-          state={stateOf(events.length === 0 || (events[0]?.count ?? 0) === 0)}
-          onRetry={onRetry}
-          rangeLabel={rangeLabel}
-        />
+        {events ? (
+          <TopEvents
+            events={events}
+            state={stateOf(events.length === 0 || (events[0]?.count ?? 0) === 0)}
+            onRetry={onRetry}
+            rangeLabel={rangeLabel}
+          />
+        ) : null}
       </ChartCard>
     </section>
   );

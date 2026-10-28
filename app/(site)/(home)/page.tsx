@@ -37,7 +37,7 @@ export default function HomePage() {
           <HeroProduct
             title={<TextReveal>Dashboard UI with the details already done</TextReveal>}
             product={<LandingHeroProduct />}
-            url="acme.example/projects"
+            url="acme.example/overview"
             description="Base UI components and dashboard blocks you own, added with the shadcn CLI."
             actions={
               <>

@@ -38,17 +38,6 @@
     opacity: 0;
   }
 }
-@keyframes m-arrive {
-  from {
-    background-color: var(--accent);
-    opacity: 0;
-  }
-}
-@keyframes m-shift {
-  from {
-    translate: 0 calc(var(--m-row-height, 0px) * -1);
-  }
-}
 
 /*
  * Hero: the title enters per word on its own (TextReveal, mount). The line and the actions come in together as one
@@ -64,14 +53,6 @@
 }
 .landing-hero [data-slot='hero-product-glow'] {
   animation: m-fade var(--transition-duration-reveal) var(--m-ease) 800ms both;
-}
-
-/* The product screen: a row arrives at the top of the table once the frame has settled. */
-.landing-rows[data-arrived] tbody tr:first-child {
-  animation: m-arrive var(--transition-duration-slow) var(--m-ease) both;
-}
-.landing-rows[data-arrived] tbody tr:not(:first-child) {
-  animation: m-shift var(--transition-duration-slow) var(--m-ease) both;
 }
 
 /* Sections: each part rises once as it first scrolls into view. `data-reveal` is set by script. */

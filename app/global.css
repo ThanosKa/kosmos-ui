@@ -79,19 +79,19 @@
  * `hover:not-data-disabled:bg-brand-hover`: the primary hover lightens the fill, and white falls under 4.5:1 on a light card.
  * The light edge is a ring in the fill color, re-declared here because `--shadow-primary` resolves `--primary` on `:root`.
  */
-/* The one place the brand color colors a large area: the glow behind the landing's hero product. */
+/* The landing's hero product: a soft glow in ink behind it, and from 1024px a taller screen that fades out late, so the cards under the chart show. */
 .landing-hero [data-slot='glow'] {
-  --accent-text: var(--brand);
+  --accent-text: var(--foreground);
 }
 
-.landing-hero [data-slot='hero-product-glow']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -10;
-  pointer-events: none;
-  background: radial-gradient(ellipse 38% 100% at 50% 2.5rem, color-mix(in oklab, var(--brand) 30%, transparent), transparent);
-  mask-image: linear-gradient(to bottom, transparent, black 2.5rem);
+@media (width >= 64rem) {
+  .landing-hero [data-slot='hero-product'] [inert] {
+    height: 46rem;
+  }
+
+  .landing-hero [data-slot='browser-frame'] {
+    mask-image: linear-gradient(to bottom, black 82%, transparent);
+  }
 }
 
 @utility brand-primary {
