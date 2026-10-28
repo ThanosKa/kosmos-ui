@@ -49,7 +49,7 @@ export default function AnnouncementPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Other scripts and right to left">
+      <PreviewSection title="Other scripts">
         <div className="flex flex-col items-start gap-3">
           <Announcement href="#el" badge="Νέο">
             Περιοχή δεδομένων στην ΕΕ
@@ -57,11 +57,6 @@ export default function AnnouncementPreview() {
           <Announcement href="#ja" badge="新機能">
             EU データリージョンを公開しました
           </Announcement>
-          <div dir="rtl">
-            <Announcement href="#ar" badge="جديد">
-              منطقة بيانات الاتحاد الأوروبي متاحة الآن
-            </Announcement>
-          </div>
         </div>
       </PreviewSection>
     </PreviewStack>

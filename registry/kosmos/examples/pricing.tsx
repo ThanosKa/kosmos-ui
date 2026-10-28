@@ -92,37 +92,6 @@ const fourPlans: PricingPlan[] = [
   { name: 'Enterprise', price: 'Custom' },
 ];
 
-const arabicPlans: PricingPlan[] = [
-  {
-    name: 'مجاني',
-    description: 'لمشروع جانبي أو تطبيق أول.',
-    price: '$0',
-    period: 'للأبد',
-    features: ['مشروع واحد', '50,000 حدث شهريًا', 'سجل لمدة 30 يومًا'],
-    action: (
-      <Button variant="secondary" size="lg" href="/signup">
-        ابدأ مجانًا
-      </Button>
-    ),
-  },
-  {
-    name: 'Pro',
-    description: 'لفريق لديه تطبيق قيد التشغيل.',
-    price: { monthly: '$49', yearly: '$39' },
-    period: 'شهريًا',
-    note: { monthly: 'تُدفع شهريًا', yearly: '$468 تُدفع سنويًا' },
-    saving: 'توفّر $120',
-    badge: <Badge variant="secondary">الأكثر شيوعًا</Badge>,
-    features: ['كل ما في المجاني', '10 مشاريع', '3,000,000 حدث شهريًا'],
-    action: (
-      <Button variant="primary" size="lg" href="/signup?plan=pro">
-        ابدأ تجربة
-      </Button>
-    ),
-    featured: true,
-  },
-];
-
 export default function PricingPreview() {
   return (
     <PreviewStack>
@@ -165,18 +134,6 @@ export default function PricingPreview() {
       <PreviewSection title="Four plans, one with only a name and a price">
         <div className={frame}>
           <Pricing headingLevel={1} title="Pricing" description={null} plans={fourPlans} />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <Pricing
-            title="ابدأ مجانًا وادفع كلما كبرت"
-            description={null}
-            plans={arabicPlans}
-            billingLabels={{ monthly: 'شهريًا', yearly: 'سنويًا' }}
-            yearlyDiscount="وفّر 20%"
-          />
         </div>
       </PreviewSection>
     </PreviewStack>

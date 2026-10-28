@@ -145,35 +145,6 @@ export default function RadioGroupPreview() {
           </RadioGroup>
         </div>
       </PreviewSection>
-      <PreviewSection title="Right to left">
-        <div dir="rtl" lang="ar" className="grid gap-8 sm:grid-cols-2">
-          <Field name="rtl-summary">
-            <FieldLabel nativeLabel={false} render={<div />}>
-              إرسال الملخص
-            </FieldLabel>
-            <RadioGroup defaultValue="weekly">
-              <FieldItem>
-                <RadioGroupItem value="daily" />
-                <FieldLabel>كل يوم</FieldLabel>
-              </FieldItem>
-              <FieldItem>
-                <RadioGroupItem value="weekly" />
-                <FieldLabel>كل يوم اثنين</FieldLabel>
-              </FieldItem>
-            </RadioGroup>
-          </Field>
-          <RadioGroup aria-label="الخطة" defaultValue="pro">
-            <RadioCard value="free">
-              <RadioCardTitle>مجاني</RadioCardTitle>
-              <RadioCardDescription>حتى 50,000 حدث شهريًا.</RadioCardDescription>
-            </RadioCard>
-            <RadioCard value="pro">
-              <RadioCardTitle>احترافي</RadioCardTitle>
-              <RadioCardDescription>حتى 3 ملايين حدث شهريًا.</RadioCardDescription>
-            </RadioCard>
-          </RadioGroup>
-        </div>
-      </PreviewSection>
     </PreviewStack>
   );
 }

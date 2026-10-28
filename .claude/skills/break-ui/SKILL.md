@@ -59,6 +59,8 @@ Look up limits in the validation schema (Zod, Yup, Valibot), database migrations
 
 For each field, pick values from [CATALOG.md](CATALOG.md). Load it now. It covers text, identifiers, numbers, collections, time, media, states, and environment, each with the specific values that break things and why.
 
+Non-Latin text means left-to-right scripts such as Greek, Cyrillic, Vietnamese and Japanese. Leave out Arabic and right-to-left cases: this project does not target right-to-left languages.
+
 Assemble a single worst-case fixture next to the existing demo data, shaped exactly like it (same type, same file conventions). The first few rows of a list matter most because that's what's on screen, so spread the different failures across them instead of stacking every one into row 1.
 
 Also cover the cases that aren't one dataset:
@@ -84,7 +86,7 @@ View the worst case and look for each failure signature below. Check it:
 
 - at the component's **real container width** (a sidebar list is not a full-page list), then at **320px** and at the **widest** layout it supports;
 - with **browser zoom at 200%** (or root font size raised), because text grows and boxes don't;
-- in **dark mode** and **RTL** (`dir="rtl"` on a wrapper) if the product supports either.
+- in **dark mode** if the product supports it.
 
 If browser tooling is available, screenshot both states at each width and compare. If it isn't, reason from the CSS and say which findings you verified visually and which you inferred.
 

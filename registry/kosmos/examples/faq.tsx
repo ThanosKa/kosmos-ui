@@ -69,23 +69,6 @@ export default function FaqPreview() {
           />
         </div>
       </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <Faq
-            title="أسئلة قبل أن تبدأ"
-            items={[
-              { id: 'first', question: 'متى أرى أول حدث؟', answer: 'بعد دقيقة تقريبًا من إضافة الكود إلى موقعك.' },
-              { id: 'trial', question: 'هل أستطيع تجربة Pro قبل الدفع؟', answer: 'نعم، يبدأ كل مشروع جديد بتجربة لمدة 14 يومًا.' },
-            ]}
-            contact={
-              <>
-                لديك سؤال آخر؟ <a href="/contact">تحدث إلى الفريق</a>
-              </>
-            }
-          />
-        </div>
-      </PreviewSection>
     </PreviewStack>
   );
 }

@@ -168,19 +168,6 @@ export default function InputGroupPreview() {
             </InputGroup>
           </div>
         </PreviewSection>
-        <PreviewSection title="Right to left">
-          <div dir="rtl" className="max-w-xs">
-            <InputGroup>
-              <InputGroupAddon>
-                <Search aria-hidden />
-              </InputGroupAddon>
-              <InputGroupInput aria-label="بحث" placeholder="ابحث في المشاريع" />
-              <InputGroupAddon align="inline-end">
-                <Kbd>/</Kbd>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </PreviewSection>
       </div>
     </PreviewStack>
   );

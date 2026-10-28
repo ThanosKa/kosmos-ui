@@ -1,6 +1,5 @@
 'use client';
 
-import { DirectionProvider } from '@base-ui/react/direction-provider';
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import type { DateRange } from '@/registry/kosmos/lib/dates';
@@ -77,13 +76,6 @@ export default function CalendarPreview() {
           </Case>
           <Case label="el, long month names">
             <Live defaultMonth={day(9, 1)} defaultValue={day(9, 14)} locale="el" aria-label="Προθεσμία" />
-          </Case>
-          <Case label="ar-EG, right to left, week from Saturday">
-            <DirectionProvider direction="rtl">
-              <div dir="rtl">
-                <Live mode="range" defaultMonth={october} defaultValue={{ from: day(10, 12), to: day(10, 20) }} locale="ar-EG" aria-label="الفترة" />
-              </div>
-            </DirectionProvider>
           </Case>
         </div>
       </PreviewSection>
