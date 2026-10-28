@@ -24,7 +24,7 @@ export default function SonnerTypes() {
       </Button>
       <Button
         variant="secondary"
-        onClick={() => toast.error('Upload failed', { description: 'events-september.csv is larger than 25 MB.' })}
+        onClick={() => toast.error('Export failed', { description: 'Events export for Fernhill Books didn’t finish.' })}
       >
         Error
       </Button>

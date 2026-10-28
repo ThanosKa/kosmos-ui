@@ -10,13 +10,13 @@ export default function SonnerDemo() {
       <Button
         variant="secondary"
         onClick={() =>
-          toast('Roadmap item archived', {
-            description: 'Fix the retention chart tooltip moved to the archive.',
-            action: { label: 'Undo', onClick: () => toast.success('Roadmap item restored') },
+          toast('Roadmap item created', {
+            description: 'Fix the retention chart tooltip is on the Q4 roadmap.',
+            action: { label: 'Undo', onClick: () => toast('Roadmap item removed') },
           })
         }
       >
-        Archive item
+        New roadmap item
       </Button>
       {/* In an app, render one Toaster in the root layout instead. */}
       <Toaster />

@@ -8,7 +8,7 @@ import { buttonVariants } from '@/registry/kosmos/ui/button';
 
 // Sonner injects its CSS unlayered, so it beats Tailwind's layered utilities on the properties it sets on every toast
 // and its children (transition, outline, focus shadow). The `!` utilities win those back.
-const buttonTransition = 'transition-[background-color,scale]!';
+const buttonTransition = 'transition-[background-color,scale,opacity]!';
 
 const classNames: ToastClassnames = {
   toast: cn(
@@ -21,8 +21,9 @@ const classNames: ToastClassnames = {
     '[&:has([data-description]):has(>[data-icon]):not(:has(>[data-cancel]))>[data-action]]:ms-7',
     // Hides the content of the toasts behind the front one while the stack is collapsed.
     '[&[data-expanded=false][data-front=false]>*]:opacity-0',
-    // Sonner turns every transition off under reduced motion; Kosmos keeps the fade.
-    'motion-reduce:transition-opacity!',
+    // Sonner turns every transition off under reduced motion; Kosmos keeps the fade, slower in than out.
+    'motion-reduce:transition-opacity! motion-reduce:duration-slow! motion-reduce:data-[removed=true]:duration-fast!',
+    'motion-reduce:data-[swipe-out=true]:opacity-0',
   ),
   icon: 'relative flex h-5 w-4 shrink-0 items-center [&_svg]:size-4',
   content: 'flex min-w-0 flex-1 flex-col gap-0.5',
@@ -30,11 +31,11 @@ const classNames: ToastClassnames = {
   description: 'text-small text-pretty wrap-break-word text-muted-foreground',
   actionButton: cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'self-center', buttonTransition),
   cancelButton: cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'self-center', buttonTransition),
-  // Sonner always sets `data-disabled` on the close button, which Button's disabled look would match, so it is styled here.
+  // Sonner always sets `data-disabled` on the close button, which Button's disabled style would match, so it is styled here.
   closeButton: cn(
-    'relative order-last -me-1 inline-flex size-6 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground [&_svg]:size-3.5',
+    'relative order-last -me-1 inline-flex size-6 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground [&_svg]:size-3',
     'focus-visible:outline-2! focus-visible:outline-offset-2 focus-visible:outline-ring! after:absolute after:-inset-1.5',
-    'transition-[background-color,color]!',
+    'transition-[background-color,color,opacity]!',
   ),
 };
 
@@ -43,13 +44,15 @@ const icons: SonnerProps['icons'] = {
   error: <CircleAlert aria-hidden className="text-destructive" />,
   warning: <TriangleAlert aria-hidden className="text-warning" />,
   info: <Info aria-hidden className="text-muted-foreground" />,
-  loading: <LoaderCircle aria-hidden className="text-muted-foreground motion-safe:animate-spin" />,
+  loading: <LoaderCircle aria-hidden className="text-muted-foreground motion-safe:animate-spin motion-reduce:animate-pulse" />,
   close: <X aria-hidden />,
 };
 
 /**
  * The default Toasters in mount order. Sonner shows every toast in every Toaster, so only the first one mounted
  * without an `id` shows them: a page that mounts two by mistake, such as a layout and a page, never doubles a toast.
+ * Every Toaster renders until the layout effects run, so Sonner subscribes on its first commit and no toast fired
+ * while the page mounts is lost; the extra ones drop out before paint.
  */
 let mounted: symbol[] = [];
 const listeners = new Set<() => void>();
@@ -61,7 +64,7 @@ function subscribe(listener: () => void) {
 
 function useFirstMounted(enabled: boolean) {
   const [key] = React.useState(() => Symbol('toaster'));
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!enabled) return;
     mounted = [...mounted, key];
     listeners.forEach((listener) => listener());
@@ -72,18 +75,23 @@ function useFirstMounted(enabled: boolean) {
   }, [enabled, key]);
   return React.useSyncExternalStore(
     subscribe,
-    () => !enabled || mounted[0] === key,
-    () => !enabled,
+    () => !enabled || mounted.length === 0 || mounted[0] === key,
+    () => true,
   );
 }
 
 type ToasterProps = Omit<SonnerProps, 'theme' | 'richColors'>;
 
+function mergeClassNames(extra: ToastClassnames = {}) {
+  const keys = new Set([...Object.keys(classNames), ...Object.keys(extra)]) as Set<keyof ToastClassnames>;
+  return Object.fromEntries([...keys].map((key) => [key, cn(classNames[key], extra[key])])) as ToastClassnames;
+}
+
 /**
- * Sonner's toaster in the Kosmos look: the popover surface, status color on the icon only, Kosmos buttons, and a close
- * button on every toast. Render it once near the root, then call `toast()` from `sonner` anywhere.
+ * Sonner's toaster in the Kosmos style: the popover surface, color on the success, warning and error icons only, Kosmos
+ * buttons, and a close button on every toast. Render it once near the root, then call `toast()` from `sonner` anywhere.
  */
-function Toaster({ toastOptions, style, id, ...props }: ToasterProps) {
+function Toaster({ toastOptions, style, id, icons: iconOverrides, ...props }: ToasterProps) {
   const shown = useFirstMounted(id === undefined);
   if (!shown) return null;
   return (
@@ -93,13 +101,13 @@ function Toaster({ toastOptions, style, id, ...props }: ToasterProps) {
       offset={16}
       mobileOffset={16}
       closeButton
-      icons={icons}
+      icons={{ ...icons, ...iconOverrides }}
       style={{ '--width': '22.5rem', ...style } as React.CSSProperties}
       toastOptions={{
         unstyled: true,
         closeButtonAriaLabel: 'Close notification',
         ...toastOptions,
-        classNames: { ...classNames, ...toastOptions?.classNames },
+        classNames: mergeClassNames(toastOptions?.classNames),
       }}
       {...props}
     />

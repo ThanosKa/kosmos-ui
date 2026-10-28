@@ -8,11 +8,11 @@ import { Toaster } from '@/registry/kosmos/ui/sonner';
 function PinnedToasts() {
   useEffect(() => {
     // Ids keep a second run (React strict mode) from adding the toasts twice.
-    toast('Roadmap item archived', {
-      id: 'thumb-archived',
+    toast('Roadmap item created', {
+      id: 'thumb-created',
       toasterId: 'sonner-thumb',
       duration: Infinity,
-      description: 'Fix the retention chart tooltip moved to the archive.',
+      description: 'Fix the retention chart tooltip is on the Q4 roadmap.',
       action: { label: 'Undo', onClick: () => {} },
     });
     toast.success('Changes saved', {

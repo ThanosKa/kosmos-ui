@@ -1,6 +1,6 @@
 ---
 title: Sonner
-description: Emil Kowalski's Sonner toasts in the Kosmos look. Call toast() from anywhere, and the toasts stack at the bottom of the screen, spread out on hover and close on their own.
+description: Emil Kowalski's Sonner toasts in the Kosmos style. Call toast() from anywhere, and the toasts stack at the bottom of the screen, spread out on hover and close on their own.
 ---
 
 <ComponentPreview name="sonner-demo" />
@@ -36,7 +36,7 @@ import { toast } from 'sonner';
 toast('Invite sent', { description: 'Kai Nakamura will get an email in a minute.' });
 ```
 
-A toast closes after 4 seconds. The timer pauses while the pointer is over the stack and while the tab is in the background. Swipe a toast down or to the side to close it. A quick flick is enough. Alt + T moves focus into the toasts. Up to three show at a time.
+A toast closes after 4 seconds. The timer pauses while the pointer is over the stack and while the tab is in the background. Swipe a toast down or toward the screen edge to close it. A quick flick is enough. Alt + T moves focus into the toasts. Up to three show at a time.
 
 Kosmos has two toasts. Sonner is the one shadcn/ui ships, with Sonner's API and motion. [Toast](/docs/components/toast) runs on Base UI, announces urgent toasts at once and keeps the stack spread out under reduced motion. Pick one per app. The `Toaster` from `sonner` shows toasts only in the first one mounted, so mounting it in a layout and a page never doubles a toast.
 
@@ -66,12 +66,16 @@ Sonner runs the motion. A toast slides up from the bottom edge, and the stack be
 
 ## API
 
-`Toaster` takes every [Sonner Toaster prop](https://sonner.emilkowal.ski/toaster) except `theme` and `richColors`: the Kosmos look follows your light and dark tokens, and the status tint stays on the icon. It sets these defaults:
+`Toaster` takes every [Sonner Toaster prop](https://sonner.emilkowal.ski/toaster) except `theme` and `richColors`. The Kosmos style follows your light and dark tokens, and the success, warning and destructive colors stay on the icon. It sets these defaults:
 
 <TypeTable
   type={{
     gap: { description: 'The space between toasts when the stack spreads out, in px.', type: 'number', default: '8' },
-    offset: { description: 'The space between the toasts and the screen edge, in px.', type: 'number | string', default: '16' },
+    offset: {
+      description: 'The space between the toasts and the screen edge, in px. `mobileOffset` sets it under 600px wide.',
+      type: 'number | string | { top?, right?, bottom?, left? }',
+      default: '16',
+    },
     closeButton: { description: 'Shows a close button on every toast.', type: 'boolean', default: 'true' },
     position: {
       description: 'Where the toasts stack.',
@@ -93,4 +97,4 @@ Sonner runs the motion. A toast slides up from the bottom edge, and the stack be
 | --- | --- |
 | `Alt` + `T` | Moves focus into the toasts. |
 | `Tab` | Moves through the toasts' buttons. |
-| `Escape` | With focus in the toasts, closes the front one. |
+| `Escape` | With focus in the toasts, collapses the stack. |

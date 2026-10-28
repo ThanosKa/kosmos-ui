@@ -37,6 +37,8 @@ import { toast } from '@/components/ui/toast';
 toast.add({ title: 'Invite sent', description: 'Kai Nakamura will get an email in a minute.' });
 ```
 
+For Sonner's API, the toast shadcn/ui ships, see [Sonner](/docs/components/sonner). Use one of the two per app.
+
 A toast closes after 5 seconds. The timer pauses while the pointer is over the stack, while a toast has focus and while the window is in the background. Up to three toasts show at a time. Older ones leave as new ones arrive.
 
 Screen readers announce every new toast politely, after what they are reading. Pass `priority: 'high'` for an error that needs attention now, and screen readers announce it at once. F6 moves focus into the toasts, so keyboard users can reach their buttons.

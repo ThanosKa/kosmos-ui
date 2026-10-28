@@ -22,8 +22,8 @@ const cases: Case[] = [
     toasts: [
       {
         type: 'error',
-        title: 'Upload failed',
-        options: { description: 'events-september.csv is larger than 25 MB.', action: { label: 'Retry', onClick: () => {} } },
+        title: 'Export failed',
+        options: { description: 'Events export for Fernhill Books didn’t finish.', action: { label: 'Retry', onClick: () => {} } },
       },
     ],
   },
@@ -44,7 +44,7 @@ const cases: Case[] = [
     toasts: [
       { title: 'Invite sent' },
       { type: 'success', title: 'Changes saved' },
-      { title: 'Roadmap item archived', options: { description: 'Fix the retention chart tooltip moved to the archive.' } },
+      { title: 'Roadmap item created', options: { description: 'Fix the retention chart tooltip is on the Q4 roadmap.' } },
     ],
   },
   {
@@ -54,7 +54,7 @@ const cases: Case[] = [
     toasts: [
       { title: 'Invite sent' },
       { type: 'success', title: 'Changes saved' },
-      { title: 'Roadmap item archived', options: { description: 'Fix the retention chart tooltip moved to the archive.' } },
+      { title: 'Roadmap item created', options: { description: 'Fix the retention chart tooltip is on the Q4 roadmap.' } },
     ],
   },
   {
@@ -63,11 +63,11 @@ const cases: Case[] = [
     toasts: [
       {
         type: 'warning',
-        title: 'Acme workspace billing for the Scale plan could not be charged automatically',
+        title: 'Copperline Bank has sent more events this month than its Scale plan includes',
         options: {
           description:
-            'The card ending in 4242 was declined. Update the payment method before October 24 to keep the Scale plan and its raised event quota.',
-          action: { label: 'Update card', onClick: () => {} },
+            'It is at 109% of its October event allowance. Raise its plan or its quota so its events keep arriving in its dashboards.',
+          action: { label: 'Raise quota', onClick: () => {} },
         },
       },
     ],
