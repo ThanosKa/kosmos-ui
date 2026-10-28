@@ -233,7 +233,7 @@ const sampleSignups: Signup[] = [
   { id: 'owen', name: 'Owen Fitzgerald', email: 'owen@saltmarsh.example', presence: 'offline', plan: 'pro', source: 'Email', referrer: 'Weekly digest', step: 'Built a funnel', activation: 78, mrr: 149, joined: '3 hours ago' },
   { id: 'noor', name: 'Noor Rahman', email: 'noor@pebblepine.example', presence: 'online', plan: 'free', source: 'Social', referrer: 'Mastodon', step: 'Created a project', activation: 18, mrr: 0, joined: '5 hours ago' },
   { id: 'sofia', name: 'Sofia Lindqvist', email: 'sofia@driftwood.example', presence: 'offline', plan: 'pro', source: 'Search', referrer: 'Google', step: 'Built a funnel', activation: 81, mrr: 290, joined: 'Yesterday' },
-  { id: 'ines', name: 'Ines Duarte', email: 'ines@fernhill.example', presence: 'away', plan: 'scale', source: 'Referral', referrer: 'acme.example/docs', step: 'Invited the team', activation: 95, mrr: 2400, joined: 'Yesterday' },
+  { id: 'ines', name: 'Ines Duarte', email: 'ines@fernhill.example', presence: 'away', plan: 'scale', source: 'Referral', referrer: 'Acme docs', step: 'Invited the team', activation: 95, mrr: 2400, joined: 'Yesterday' },
   { id: 'marcus', name: 'Marcus Bell', email: 'marcus@brightloop.example', presence: 'offline', plan: 'scale', source: 'Direct', referrer: 'Typed the address', step: 'Sent a first event', activation: 58, mrr: 3600, joined: 'Oct 9' },
   { id: 'ruth', name: 'Ruth Adeyemi', email: 'ruth@copperline.example', presence: 'offline', plan: 'scale', source: 'Email', referrer: 'Quota alert', step: 'Exported events', activation: 88, mrr: 4800, joined: 'Oct 8' },
 ];
@@ -256,6 +256,9 @@ const plans: Record<Plan, { label: string; hue: 'gray' | 'blue' | 'violet' | 'am
   trial: { label: 'Trial', hue: 'amber' },
 };
 
+/** Rows a table shows before it pages; the pager shows only past it. */
+const firstPageSize = 5;
+
 const sourceColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
 
 const initials = (name: string) =>
@@ -272,10 +275,10 @@ function shareText(value: number, total: number) {
   return percent < 1 ? '<1%' : `${Math.round(percent)}%`;
 }
 
-function trendLabel(kpi: Kpi) {
-  const delta = statDelta(kpi.change, { unit: kpi.unit, goodWhen: kpi.goodWhen });
-  const direction = !delta || delta.direction === 'flat' ? 'flat' : delta.direction;
-  return `${kpi.label}, last ${kpi.trend.length} weeks, ${direction}${delta && direction !== 'flat' ? ` ${delta.text}` : ''}`;
+/** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Signups trend, up +4.2%"). */
+function trendLabel({ label, change, unit }: Pick<Kpi, 'label' | 'change' | 'unit'>) {
+  const delta = statDelta(change, { unit });
+  return !delta || delta.direction === 'flat' ? `${label} trend, flat` : `${label} trend, ${delta.direction} ${delta.text}`;
 }
 
 /** The KPIs as Stat cards on one tray: four in a row on a wide page, two on a medium one, one on a phone. */
@@ -299,35 +302,13 @@ function KpiStrip({ kpis }: { kpis: Kpi[] }) {
                 {kpi.context ? <bdi>{kpi.context}</bdi> : undefined}
               </StatCardDelta>
               {kpi.trend.length > 1 ? (
-                <StatCardSparkline data={kpi.trend.map((value) => ({ value }))} aria-label={trendLabel({ ...kpi, icon: Icon })} />
+                <StatCardSparkline data={kpi.trend.map((value) => ({ value }))} aria-label={trendLabel(kpi)} />
               ) : null}
             </StatCardContent>
           </StatCard>
         ))}
       </div>
     </Panel>
-  );
-}
-
-/** A change as a triangle and a signed number, green for good news and red for bad, with no context. */
-function Change({ value, unit, goodWhen }: { value: number; unit?: 'percent' | 'points'; goodWhen?: GoodWhen }) {
-  const delta = statDelta(value, { unit, goodWhen });
-  if (!delta) return null;
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 text-caption font-medium whitespace-nowrap text-muted-foreground tabular-nums',
-        delta.tone === 'good' && 'text-tint-green-foreground',
-        delta.tone === 'bad' && 'text-tint-red-foreground',
-      )}
-    >
-      {delta.direction === 'flat' ? null : (
-        <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
-          <path d="M4 0.5 7.5 7H0.5z" />
-        </svg>
-      )}
-      <bdi>{delta.text}</bdi>
-    </span>
   );
 }
 
@@ -364,7 +345,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
                 <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{total.label}</dt>
                 <dd className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
                   <span className="truncate text-title font-medium text-foreground tabular-nums">{total.value}</span>
-                  <Change value={total.change} unit={total.unit} goodWhen={total.goodWhen} />
+                  <StatCardDelta value={total.change} unit={total.unit} goodWhen={total.goodWhen} className="text-caption" />
                 </dd>
               </div>
             ))}
@@ -417,8 +398,9 @@ function SourcesPanel({ sources }: { sources: Source[] }) {
                     nameKey="label"
                     innerRadius="74%"
                     outerRadius="100%"
+                    paddingAngle={2}
                     stroke="var(--card)"
-                    strokeWidth={2}
+                    strokeWidth={1}
                     startAngle={90}
                     endAngle={-270}
                     isAnimationActive={false}
@@ -523,9 +505,9 @@ function GoalPanel({ goal }: { goal: SignupGoal }) {
 }
 
 const presenceDot: Record<Presence, { className: string; label: string }> = {
-  online: { className: 'bg-success', label: 'Online' },
-  away: { className: 'bg-warning', label: 'Away' },
-  offline: { className: 'bg-muted-foreground', label: 'Offline' },
+  online: { className: 'bg-tint-green-dot', label: 'Online' },
+  away: { className: 'bg-tint-amber-dot', label: 'Away' },
+  offline: { className: 'bg-tint-gray-dot', label: 'Offline' },
 };
 
 /** A value in ink with a muted line of context under it. */
@@ -573,7 +555,7 @@ function SignupsPanel({ signups, signupActions }: { signups: Signup[]; signupAct
   const [query, setQuery] = React.useState('');
   const [plan, setPlan] = React.useState<Plan | 'all'>('all');
   const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(5);
+  const [pageSize, setPageSize] = React.useState(firstPageSize);
 
   const needle = query.trim().toLowerCase();
   const rows = signups.filter(
@@ -705,7 +687,7 @@ function SignupsPanel({ signups, signupActions }: { signups: Signup[]; signupAct
           </TableBody>
         </Table>
       </PanelContent>
-      {signups.length > 5 ? (
+      {signups.length > firstPageSize ? (
         <PanelFooter>
           <Pagination
             aria-label="Pages of signups"

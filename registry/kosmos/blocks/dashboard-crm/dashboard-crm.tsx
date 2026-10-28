@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { statDelta } from '@/registry/kosmos/lib/stat-delta';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { BarList } from '@/registry/kosmos/ui/bar-list';
@@ -201,6 +202,9 @@ const grouped = new Intl.NumberFormat('en-US');
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 
+/** Rows the deals table shows before it pages; the pager shows only past it. */
+const firstPageSize = 5;
+
 const stages: Record<Stage, { label: string; hue: 'gray' | 'blue' | 'violet' | 'amber' | 'green' }> = {
   lead: { label: 'Lead', hue: 'gray' },
   qualified: { label: 'Qualified', hue: 'blue' },
@@ -216,6 +220,12 @@ const initials = (name: string) =>
     .map((part) => part[0])
     .slice(0, 2)
     .join('');
+
+/** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Won trend, up +18.6%"). */
+function trendLabel({ label, change, unit }: Pick<Kpi, 'label' | 'change' | 'unit'>) {
+  const delta = statDelta(change, { unit });
+  return !delta || delta.direction === 'flat' ? `${label} trend, flat` : `${label} trend, ${delta.direction} ${delta.text}`;
+}
 
 /** The KPIs as Stat cards on one tray, each with thin bars for its last periods: four in a row on a wide page, two on a medium one. */
 function KpiStrip({ kpis }: { kpis: Kpi[] }) {
@@ -241,7 +251,7 @@ function KpiStrip({ kpis }: { kpis: Kpi[] }) {
                 <StatCardSparkline
                   variant="bar"
                   data={kpi.trend.map((value) => ({ value }))}
-                  aria-label={`${kpi.label}, last ${kpi.trend.length} weeks`}
+                  aria-label={trendLabel(kpi)}
                 />
               ) : null}
             </StatCardContent>
@@ -299,7 +309,7 @@ function DealsPanel({
   const titleId = React.useId();
   const [query, setQuery] = React.useState('');
   const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(5);
+  const [pageSize, setPageSize] = React.useState(firstPageSize);
 
   const needle = query.trim().toLowerCase();
   const rows = deals.filter(
@@ -417,7 +427,7 @@ function DealsPanel({
           </TableBody>
         </Table>
       </PanelContent>
-      {deals.length > 5 ? (
+      {deals.length > firstPageSize ? (
         <PanelFooter>
           <Pagination
             aria-label="Pages of deals"
@@ -461,12 +471,9 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
           <ul aria-labelledby={titleId} role="list" className="flex flex-col divide-y divide-border">
             {tasks.map(({ icon: Icon, ...task }) => (
               <li key={task.id} className="flex min-w-0 items-center gap-3 px-4 py-3">
-                <span
-                  aria-hidden
-                  className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-transparent bg-secondary text-muted-foreground shadow-control"
-                >
-                  <Icon className="size-4" />
-                </span>
+                <StatCardIcon>
+                  <Icon />
+                </StatCardIcon>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <span className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
                   {task.detail ? <span className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
