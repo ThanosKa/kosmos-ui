@@ -49,6 +49,41 @@ const transitionSelectors = [
   { selector: `TemplateElement[value.raw=/${transitionPattern}/]`, message: transitionMessage },
 ];
 
+// A class is matched after a space, a quote or a variant (`hover:`), so `ease-out` is caught inside `hover:ease-out`
+// while `ease-power3-out` and `text-small` pass. A `/` is written `\x2f`, since a selector regex cannot hold one.
+const classStart = `(^|[\\s"'\`:])`;
+const classEnd = `($|[\\s"'\`]|\\x2f)`;
+const classSelectors = (pattern, message) => [
+  { selector: `Literal[value=/${pattern}/]`, message },
+  { selector: `TemplateElement[value.raw=/${pattern}/]`, message },
+];
+
+const easeSelectors = classSelectors(
+  `${classStart}ease-(in|out|in-out)${classEnd}`,
+  'Use the Kosmos curves (`ease-power3-out`, `ease-smooth-in-out`), not `ease-in`, `ease-out` or `ease-in-out` (kosmos-style).',
+);
+
+// `duration-0` stays allowed for a change that must not animate.
+const durationSelectors = classSelectors(
+  `${classStart}duration-([1-9][0-9]*|\\[[^\\]]*\\])${classEnd}`,
+  'Use a duration token (`duration-instant`, `duration-fast`, `duration-base`, `duration-slow`), not a number (kosmos-style).',
+);
+
+const textSizeSelectors = classSelectors(
+  `${classStart}text-(xs|sm|lg|[2-9]?xl|\\[[0-9.]+(px|rem|em)\\])${classEnd}`,
+  'Use a type role (`text-caption`, `text-small`, `text-body`, `text-title`), not a Tailwind or arbitrary text size (kosmos-style).',
+);
+
+const blurSelectors = classSelectors(
+  `${classStart}backdrop-blur`,
+  'Sticky chrome and overlays sit on an opaque fill (`bg-background`), with no `backdrop-blur` (kosmos-style).',
+);
+
+const pressSelectors = classSelectors(
+  `(^|[\\s"'\`])(?!motion-safe:not-disabled:not-data-disabled:active:scale-96($|[\\s"'\`]))[^\\s"'\`]*active:scale-`,
+  'The press scale is `motion-safe:not-disabled:not-data-disabled:active:scale-96` exactly (kosmos-style).',
+);
+
 // Components import `cn` from the one file that owns it, not from the libraries it wraps.
 const cnMessage = 'Import `cn` from `@/registry/kosmos/lib/cn`, not from `clsx`, `tailwind-merge` or `cn` (kosmos-style).';
 const cnSelectors = ['clsx', 'tailwind-merge', 'cn'].map((source) => ({
@@ -68,7 +103,15 @@ const styleSelectors = [
   },
 ];
 
-const codeRules = [...transitionSelectors, ...cnSelectors, ...styleSelectors];
+const codeRules = [
+  ...transitionSelectors,
+  ...easeSelectors,
+  ...textSizeSelectors,
+  ...blurSelectors,
+  ...pressSelectors,
+  ...cnSelectors,
+  ...styleSelectors,
+];
 
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
@@ -113,9 +156,10 @@ const eslintConfig = defineConfig([
     // Registry code takes every color from the tokens. The token files are the one place a color value is written.
     files: ['registry/**/*.{ts,tsx}'],
     ignores: ['registry/**/tokens.*', 'registry/kosmos/styles/**'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...codeRules] },
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules] },
   },
   {
+    // The site keeps number durations for its docs demos, such as the slow run in the easing demo.
     files: ['components/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules] },
   },
