@@ -1,29 +1,20 @@
 'use client';
 
 import type * as React from 'react';
-import { Cell, Pie, PieChart } from 'recharts';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { Badge } from '@/registry/kosmos/ui/badge';
-import { ChartContainer, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { DonutChart, type DonutChartItem } from '@/registry/kosmos/ui/donut-chart';
 import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
 import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 
-const sources = [
-  { key: 'direct', label: 'Direct', value: 48210 },
-  { key: 'search', label: 'Search', value: 31480 },
-  { key: 'referral', label: 'Referral', value: 18640 },
-  { key: 'social', label: 'Social', value: 12940 },
-  { key: 'email', label: 'Email', value: 6120 },
-] as const;
-
-const sourceConfig = {
-  direct: { label: 'Direct', color: 'var(--chart-1)' },
-  search: { label: 'Search', color: 'var(--chart-2)' },
-  referral: { label: 'Referral', color: 'var(--chart-3)' },
-  social: { label: 'Social', color: 'var(--chart-4)' },
-  email: { label: 'Email', color: 'var(--chart-5)' },
-} satisfies ChartConfig;
+const sources: DonutChartItem[] = [
+  { label: 'Direct', value: 48210 },
+  { label: 'Search', value: 31480 },
+  { label: 'Referral', value: 18640 },
+  { label: 'Social', value: 12940 },
+  { label: 'Email', value: 6120 },
+];
 
 const visitors = sources.reduce((sum, source) => sum + source.value, 0);
 const number = new Intl.NumberFormat('en-US');
@@ -44,41 +35,14 @@ function TrafficSources() {
     <section className={cardClass}>
       <h4 className="text-body font-medium">Traffic sources</h4>
       <div className="mt-3 flex items-center gap-5">
-        <div className="relative size-32 shrink-0">
-          <ChartContainer config={sourceConfig} className="aspect-square size-full">
-            <PieChart>
-              <Pie
-                data={[...sources]}
-                dataKey="value"
-                nameKey="label"
-                innerRadius="68%"
-                outerRadius="100%"
-                paddingAngle={2}
-                cornerRadius={3}
-                stroke="var(--card)"
-                strokeWidth={1}
-                startAngle={90}
-                endAngle={-270}
-                isAnimationActive={false}
-              >
-                {sources.map((source) => (
-                  <Cell key={source.key} fill={sourceConfig[source.key].color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-title tabular-nums">{number.format(visitors)}</span>
-            <span className="text-caption text-muted-foreground">Visitors</span>
-          </div>
-        </div>
-        <ul className="flex min-w-0 flex-1 flex-col gap-2">
-          {sources.map((source) => (
-            <li key={source.key} className="flex items-center gap-2 text-small">
+        <DonutChart data={sources} label="Visitors" format={number.format} aria-label={`${number.format(visitors)} visitors`} />
+        <ul aria-label="Visitors by source" className="flex min-w-0 flex-1 flex-col gap-2">
+          {sources.map((source, i) => (
+            <li key={source.label} className="flex items-center gap-2 text-small">
               <span
                 aria-hidden
-                style={{ '--series': sourceConfig[source.key].color } as React.CSSProperties}
-                className="size-2 shrink-0 rounded-sm bg-(--series)"
+                style={{ '--part': `var(--chart-${i + 1})` } as React.CSSProperties}
+                className="size-2 shrink-0 rounded-full bg-(--part)"
               />
               <span className="min-w-0 flex-1 truncate">{source.label}</span>
               <span className="tabular-nums">{number.format(source.value)}</span>

@@ -1,0 +1,134 @@
+---
+title: Donut chart
+description: Shows parts of a whole as a ring with the total in its hole, drawn like a Gauge. A legend lists each value and share. Built on Recharts.
+---
+
+<ComponentPreview name="donut-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="donut-chart" />
+
+## Usage
+
+```tsx
+import { DonutChart, DonutChartLegend } from '@/components/ui/donut-chart';
+```
+
+```tsx
+const sources = [
+  { label: 'Search', value: 15950 },
+  { label: 'Direct', value: 10510 },
+  { label: 'Referral', value: 6610 },
+];
+
+<div className="flex items-center gap-5">
+  <DonutChart data={sources} label="Visitors" aria-label="33,070 visitors" />
+  <DonutChartLegend data={sources} aria-label="Visitors by source" className="flex-1" />
+</div>
+```
+
+A donut chart is the sibling of [Gauge](/docs/components/gauge). Gauge shows one value within a range, and a donut chart shows how a whole splits into parts. Both draw the same ring: the same stroke, round caps and the same cut between neighboring arcs at every size. The parts run clockwise from the top in the order you pass them, most often largest first. Hovering a part shows its value in a tooltip.
+
+The parts take the chart colors in order, `--chart-1` for the first to `--chart-5` for the fifth. Keep to five parts and group the rest into an "Other" part. A part's `color` replaces its chart color, such as `var(--success)` for the passed tests of a run.
+
+The chart is an image with one accessible name. By default the name reads the total and every part with its value and share. A `DonutChartLegend` beside it already lists the parts. Then give the chart a short `aria-label` with the total, such as "38.9K visitors", and name the legend with `aria-label`.
+
+Built on [Recharts](https://recharts.org) inside the [Chart](/docs/components/chart) container, so it needs `@kosmos/chart`. Under the reduced motion setting the ring appears without its sweep.
+
+## Examples
+
+### Sizes
+
+`size` is `sm` (32px), `md` (64px) or `lg` (128px, the default), the sizes of Gauge. `lg` shows the `label` over the total, `md` the total alone, and `sm`, for a table cell or a list row, neither.
+
+<ComponentPreview name="donut-chart-sizes" />
+
+### Small parts
+
+Every part keeps a cut on each side, so a part too small for an arc, such as 1%, still shows as a dot. In the legend a share under 1% reads `<1%`.
+
+<ComponentPreview name="donut-chart-small-parts" />
+
+### Center content
+
+Pass `children` to replace the label and the total, for a unit or your own text. Use `total` instead when `data` holds only the largest parts of a larger whole: the center shows `total`, and `DonutChartLegend` takes the same `total` for its shares.
+
+<ComponentPreview name="donut-chart-center" />
+
+### One part and no data
+
+A single part fills the ring without a cut. When every value is zero, the ring is an empty track in the muted color and the center reads zero.
+
+<ComponentPreview name="donut-chart-empty" />
+
+## API
+
+### DonutChart
+
+Takes the props of a `<div>` as well.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The parts of the whole, each `{ label, value, color?, id? }`, drawn clockwise from the top in this order. A negative value counts as zero.',
+      type: 'DonutChartItem[]',
+    },
+    label: {
+      description: 'Names the total in the center. Shown at `lg`.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the total, the tooltip values and the accessible name.',
+      type: '(value: number) => string',
+      default: 'a compact number (38.9K)',
+    },
+    total: {
+      description: 'The number in the center, when `data` is part of a larger whole.',
+      type: 'number',
+      default: 'the sum of `data`',
+    },
+    size: {
+      description: 'The diameter of the ring.',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'lg'",
+    },
+    children: {
+      description: 'Replaces the label and the total in the center.',
+      type: 'ReactNode',
+    },
+    'aria-label': {
+      description: 'The accessible name.',
+      type: 'string',
+      default: 'the total and every part with its value and share',
+    },
+  }}
+/>
+
+### DonutChartLegend
+
+Renders a `<ul>` and takes its props. Name it with `aria-label` or `aria-labelledby`.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The same parts, in the same order, as the chart it explains.',
+      type: 'DonutChartItem[]',
+    },
+    format: {
+      description: 'Writes each value.',
+      type: '(value: number) => string',
+      default: 'a compact number (38.9K)',
+    },
+    showShare: {
+      description: "Adds a column with each part's share of the total.",
+      type: 'boolean',
+      default: 'true',
+    },
+    total: {
+      description: 'What the share is a share of.',
+      type: 'number',
+      default: 'the sum of `data`',
+    },
+  }}
+/>
