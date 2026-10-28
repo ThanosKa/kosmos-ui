@@ -14,7 +14,7 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
       className="flex-col [&_[data-slot=sidebar-inner]]:top-14 [&_[data-slot=sidebar-inner]]:h-[calc(100svh-3.5rem)]"
     >
       <SkipLink />
-      <SiteHeader fullWidth menu={<DocsMenuButton className="md:hidden" />} />
+      <SiteHeader menu={<DocsMenuButton className="md:hidden" />} />
       <div className="flex flex-1">
         <DocsSidebar nav={getDocsNav()} />
         <SidebarInset id="content" tabIndex={-1} className="outline-none">
