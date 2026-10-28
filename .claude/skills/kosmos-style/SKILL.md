@@ -252,7 +252,7 @@ Every component and block works at 375px wide, in light and dark:
 
 Done when `pnpm lint`, `pnpm types:check` and `pnpm test` pass, plus `pnpm registry:check` when a registry item was added or its dependencies changed.
 
-Run `pnpm lint` first. It fails on these, and its message names the fix: a color literal or palette class, a bare `transition` or `transition-all`, `ease-in`, `ease-out` or `ease-in-out`, a number duration in registry code, a Tailwind or arbitrary text size, `backdrop-blur`, a press scale other than `motion-safe:not-disabled:not-data-disabled:active:scale-96`, a `<Button>` without `variant`, a raw `<button>`, and a shadcn name on a Button.
+Run `pnpm lint` first. It fails on these, and its message names the fix: a color literal or palette class, a bare `transition` or `transition-all`, `ease-in`, `ease-out` or `ease-in-out`, a number duration in registry code, a Tailwind or arbitrary text size, `backdrop-blur`, a press scale other than `motion-safe:not-disabled:not-data-disabled:active:scale-96`, `text-ring`, `text-sidebar-ring` or `text-chart-*`, `h-screen` or `vh` in a component or block, a `<Button>` without `variant`, a raw `<button>`, and a shadcn name on a Button.
 
 Then search the changed files for each detection lint cannot judge:
 
@@ -267,7 +267,7 @@ Then search the changed files for each detection lint cannot judge:
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
 | A sidebar item in full ink while idle, or an active item raised in light mode | Current page in navigation |
-| `text-ring`, `text-chart-*`, or accent-colored text other than the current page in navigation | `text-foreground` or `text-muted-foreground` |
+| Accent-colored text other than the current page in navigation | `text-foreground` or `text-muted-foreground` |
 | A category label as a neutral or status Badge, or a hue other than the six | One of the six hue variants |
 | `text-heading` in an app page header | `text-title font-medium` |
 | `text-hero` or `text-lead` in an application block | The app role: `text-display` for a value, `text-title` for a title, `text-body` for text |

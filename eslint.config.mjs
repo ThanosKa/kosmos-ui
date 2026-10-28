@@ -84,6 +84,18 @@ const pressSelectors = classSelectors(
   'The press scale is `motion-safe:not-disabled:not-data-disabled:active:scale-96` exactly (kosmos-style).',
 );
 
+// Only marks take the focus and chart colors; text stays ink or muted.
+const markColorSelectors = classSelectors(
+  `${classStart}text-(ring|sidebar-ring|chart-[1-5])${classEnd}`,
+  'Text takes `text-foreground` or `text-muted-foreground`; `ring` and `chart-*` color marks, not text (kosmos-style).',
+);
+
+// `h-screen` and `vh` ignore the phone's browser bars; `svh` does not.
+const viewportSelectors = classSelectors(
+  `(${classStart}(min-|max-)?h-screen${classEnd}|[0-9]vh)`,
+  'Size full-height layouts in `svh` (`min-h-svh`, `h-svh`), not `h-screen` or `vh` (kosmos-style, Phones).',
+);
+
 // Components import `cn` from the one file that owns it, not from the libraries it wraps.
 const cnMessage = 'Import `cn` from `@/registry/kosmos/lib/cn`, not from `clsx`, `tailwind-merge` or `cn` (kosmos-style).';
 const cnSelectors = ['clsx', 'tailwind-merge', 'cn'].map((source) => ({
@@ -111,6 +123,7 @@ const codeRules = [
   ...pressSelectors,
   ...cnSelectors,
   ...styleSelectors,
+  ...markColorSelectors,
 ];
 
 /**
@@ -157,6 +170,11 @@ const eslintConfig = defineConfig([
     files: ['registry/**/*.{ts,tsx}'],
     ignores: ['registry/**/tokens.*', 'registry/kosmos/styles/**'],
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules] },
+  },
+  {
+    // Components and blocks hold at phone width. Examples may fill the screen to show a scroll.
+    files: ['registry/kosmos/ui/**/*.tsx', 'registry/kosmos/blocks/**/*.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors] },
   },
   {
     // The site keeps number durations for its docs demos, such as the slow run in the easing demo.
