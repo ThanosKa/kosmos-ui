@@ -222,7 +222,7 @@ export default function PanelPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text, a 320px panel, right to left">
+      <PreviewSection title="Long text, a 320px panel">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Panel>
             <PanelHeader>
@@ -280,23 +280,6 @@ export default function PanelPreview() {
               </PanelFooter>
             </Panel>
           </div>
-          <Panel dir="rtl">
-            <PanelHeader>
-              <PanelTitle render={<h3 />}>الأحداث الأكثر تكرارًا في جميع المشاريع</PanelTitle>
-              <PanelDescription>آخر 30 يومًا</PanelDescription>
-              <PanelAction>
-                <SearchField label="ابحث في الأحداث" />
-              </PanelAction>
-            </PanelHeader>
-            <PanelContent>
-              <EventList />
-            </PanelContent>
-            <PanelFooter>
-              <Button variant="secondary" className="w-full">
-                عرض كل الأحداث
-              </Button>
-            </PanelFooter>
-          </Panel>
         </div>
       </PreviewSection>
     </PreviewStack>

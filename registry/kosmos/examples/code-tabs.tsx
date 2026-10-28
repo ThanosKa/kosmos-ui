@@ -61,11 +61,6 @@ export default function CodeTabsPreview() {
         <PreviewSection title="One tab">
           <CodeTabs commands={{ npm: 'npm install @acme/analytics' }} />
         </PreviewSection>
-        <PreviewSection title="Right to left">
-          <div dir="rtl">
-            <CodeTabs commands={install} />
-          </div>
-        </PreviewSection>
       </div>
     </PreviewStack>
   );

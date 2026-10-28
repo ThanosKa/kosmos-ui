@@ -57,14 +57,6 @@ export default function CopyFieldPreview() {
             <CopyField aria-label="Ingest URL" label="ingest URL" value="https://ingest.acme.example/v1/projects/fernhill-books/events?batch=true" />
           </div>
         </PreviewSection>
-        <PreviewSection title="Right to left: the value stays left to right">
-          <div dir="rtl">
-            <Field>
-              <FieldLabel>مفتاح سري</FieldLabel>
-              <CopyField label="secret key" secret value={key} />
-            </Field>
-          </div>
-        </PreviewSection>
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">

@@ -18,7 +18,6 @@ Use `example.com`, `example.org`, or `.test` domains for emails and URLs, so the
 | `Ólafur Darri Ólafsson` | Leading accented capital; uppercase/sort logic, initials `ÓÓ` |
 | `Đặng Thị Ngọc Hân` | Stacked Vietnamese diacritics; clipped by tight `line-height` + `overflow: hidden` |
 | `王秀英` | CJK, no spaces; "first + last word" initials logic finds one word, and CJK breaks anywhere |
-| `نور الهدى عبد الرحمن` | RTL; punctuation and icons land on the wrong side without `dir="auto"` |
 | `Seán O'Brien-Ó Súilleabháin` | Apostrophe and accents; escaping, initials, search |
 | `María José de la Cruz y Fernández` | Lowercase particles; initials `Md` or `MF`, sorting by "last name" |
 | `dana` | All lowercase; initials should still be uppercase |
@@ -131,5 +130,4 @@ Not data, but checked the same way: flip to the worst case, then change these.
 | 2560px wide | Lines too long to read, content stranded on one side |
 | Browser zoom 200% / large text setting | Fixed heights that clip growing text |
 | Dark mode | Hardcoded colors, invisible borders and logos |
-| `dir="rtl"` | Icons, chevrons, padding, and the order of trailing actions |
 | Touch device | Hover-only actions (the ••• that appears on hover) are unreachable |

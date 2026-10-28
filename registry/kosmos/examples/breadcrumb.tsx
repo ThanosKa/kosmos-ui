@@ -181,11 +181,6 @@ export default function BreadcrumbPreview() {
             <Frame label="slash separator" className="w-full">
               <BreadcrumbTrail items={trail} separator={<Slash className="-rotate-12" />} />
             </Frame>
-            <Frame label="right to left, 300px" className="w-full max-w-[300px]">
-              <div dir="rtl">
-                <BreadcrumbTrail items={trail} />
-              </div>
-            </Frame>
             <Frame label="no crumbs" className="w-full">
               <BreadcrumbTrail items={[]} />
             </Frame>

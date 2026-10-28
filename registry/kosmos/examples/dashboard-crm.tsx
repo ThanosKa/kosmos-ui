@@ -21,7 +21,6 @@ const longDeals: Deal[] = [
     closeNote: 'in 81 days, after the board review',
   },
   { id: 'zero', name: 'Pro', customer: 'Kiln Studio', rep: 'Al', stage: 'lead', winChance: 0, value: 0, closeDate: 'Oct 12' },
-  { id: 'rtl', name: 'من Pro إلى Scale', customer: 'Cirrus Weather', rep: 'ليلى حداد', stage: 'proposal', winChance: 55, value: 14400, detail: '8M events a month', closeDate: 'Oct 26', closeNote: 'in 15 days' },
 ];
 
 function actions(deal: Deal) {
@@ -94,12 +93,6 @@ export default function DashboardCrmPreview() {
               },
             ]}
           />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <DashboardCrm onNewDeal={() => {}} dealActions={actions} tasksHref="#" />
         </div>
       </PreviewSection>
 

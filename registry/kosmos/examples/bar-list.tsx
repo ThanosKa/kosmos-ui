@@ -82,12 +82,6 @@ export default function BarListPreview() {
           <BarList aria-label="Worst case" items={worstCase} showShare className="max-w-80" />
         </PreviewSection>
 
-        <PreviewSection title="Right to left">
-          <div dir="rtl">
-            <BarList aria-label="Active users by plan" items={usersByPlan} showShare />
-          </div>
-        </PreviewSection>
-
         <PreviewSection title="A tie, then all zero">
           <div className="flex flex-col gap-6">
             <BarList aria-label="Tie" items={ties} />

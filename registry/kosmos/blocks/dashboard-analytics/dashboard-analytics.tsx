@@ -2,7 +2,6 @@
 
 import { Ellipsis, ListFilter, Percent, Search, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
-import { Cell, Pie, PieChart } from 'recharts';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { statDelta } from '@/registry/kosmos/lib/stat-delta';
@@ -10,7 +9,8 @@ import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from '@/registry/kos
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { BarList, type BarListItem } from '@/registry/kosmos/ui/bar-list';
 import { Button } from '@/registry/kosmos/ui/button';
-import { ChartContainer, GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { DonutChart, DonutChartLegend } from '@/registry/kosmos/ui/donut-chart';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -259,7 +259,8 @@ const plans: Record<Plan, { label: string; hue: 'gray' | 'blue' | 'violet' | 'am
 /** Rows a table shows before it pages; the pager shows only past it. */
 const firstPageSize = 5;
 
-const sourceColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
+/** The ring has one chart color per source, so it shows the first five. */
+const maxSources = 5;
 
 const initials = (name: string) =>
   name
@@ -268,12 +269,6 @@ const initials = (name: string) =>
     .map((part) => part[0])
     .slice(0, 2)
     .join('');
-
-function shareText(value: number, total: number) {
-  if (total <= 0 || value <= 0) return '0%';
-  const percent = (value / total) * 100;
-  return percent < 1 ? '<1%' : `${Math.round(percent)}%`;
-}
 
 /** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Signups trend, up +4.2%"). */
 function trendLabel({ label, change, unit }: Pick<Kpi, 'label' | 'change' | 'unit'>) {
@@ -377,8 +372,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
 /** Where visitors came from: a ring split by source, and the sources as a list with their visitors and share. */
 function SourcesPanel({ sources }: { sources: Source[] }) {
   const total = sources.reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
-  const shown = sources.slice(0, sourceColors.length);
-  const config = Object.fromEntries(shown.map((source, i) => [source.id, { label: source.label, color: sourceColors[i] }])) satisfies ChartConfig;
+  const shown = sources.slice(0, maxSources).map((source) => ({ id: source.id, label: source.label, value: source.visitors }));
 
   return (
     <Panel>
@@ -389,53 +383,8 @@ function SourcesPanel({ sources }: { sources: Source[] }) {
       <PanelContent className="flex flex-col items-center justify-center gap-5 p-4 @md/panel:flex-row">
         {total > 0 ? (
           <>
-            <div className="relative size-36 shrink-0">
-              <ChartContainer config={config} aria-hidden className="aspect-square size-full">
-                <PieChart>
-                  <Pie
-                    data={shown}
-                    dataKey="visitors"
-                    nameKey="label"
-                    innerRadius="74%"
-                    outerRadius="100%"
-                    paddingAngle={2}
-                    stroke="var(--card)"
-                    strokeWidth={1}
-                    startAngle={90}
-                    endAngle={-270}
-                    isAnimationActive={false}
-                  >
-                    {shown.map((source, i) => (
-                      <Cell key={source.id} fill={sourceColors[i]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
-              <div aria-hidden className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-caption text-muted-foreground">Visitors</span>
-                <span className="text-title font-medium tabular-nums">{compact.format(total)}</span>
-              </div>
-            </div>
-            <ul role="list" aria-label="Visitors by source" className="flex w-full min-w-0 flex-col divide-y divide-border">
-              {shown.map((source, i) => (
-                <li key={source.id} className="flex min-w-0 items-center gap-2 py-2 text-body first:pt-0 last:pb-0">
-                  <span
-                    aria-hidden
-                    style={{ '--series': sourceColors[i] } as React.CSSProperties}
-                    className="size-2 shrink-0 rounded-full bg-(--series) forced-colors:bg-[CanvasText]"
-                  />
-                  <span title={source.label} className="min-w-0 flex-1 truncate">
-                    {source.label}
-                  </span>
-                  <span className="tabular-nums">
-                    <bdi dir="ltr">{compact.format(source.visitors)}</bdi>
-                  </span>
-                  <span className="w-9 shrink-0 text-end text-small text-muted-foreground tabular-nums">
-                    <bdi dir="ltr">{shareText(source.visitors, total)}</bdi>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <DonutChart data={shown} total={total} label="Visitors" format={compact.format} aria-label={`${compact.format(total)} visitors`} />
+            <DonutChartLegend data={shown} total={total} format={compact.format} aria-label="Visitors by source" className="w-full" />
           </>
         ) : (
           <p role="status" className="flex min-h-36 items-center text-small text-muted-foreground">

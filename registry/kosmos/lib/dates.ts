@@ -214,7 +214,7 @@ function monthLabel(month: Date, locale: string) {
 
 /**
  * The seven weekday names from `weekStartsOn`: `short` ("Mon") heads a column, `long` ("Monday") names it. Where the
- * short names are whole words, as in Arabic, the heads take the narrow ones, so every column stays one day wide.
+ * short names are whole words, as in Swahili, the heads take the narrow ones, so every column stays one day wide.
  */
 function weekdayLabels(locale: string, weekStartsOn: Weekday) {
   const format = (weekday: 'short' | 'narrow' | 'long') => dateFormat(locale, { weekday });
@@ -225,7 +225,7 @@ function weekdayLabels(locale: string, weekStartsOn: Weekday) {
   return days.map((date, i) => ({ short: heads[i], long: format('long').format(date) }));
 }
 
-/** The day of the month in the digits of `locale`: "25", or "٢٥" in Arabic. */
+/** The day of the month in the digits of `locale`: "25", or "२५" in Marathi. */
 function dayNumber(date: Date, locale: string) {
   return dateFormat(locale, { day: 'numeric' }).format(date);
 }
