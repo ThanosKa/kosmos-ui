@@ -1,0 +1,11 @@
+---
+title: Changed menus to a lighter weight and tighter corners
+description: Menu items are regular weight with 6px corners. Menus open in a 10px popup with a thin edge in dark mode.
+date: 2026-10-28
+---
+
+- **[Dropdown menu](/docs/components/dropdown-menu)**, **[Select](/docs/components/select)** and **[Combobox](/docs/components/combobox)**: the popup takes 10px corners (`rounded-lg`) instead of 14px. Its items take 6px corners, concentric with it, at the regular weight, with the same height, padding and text size. Run `shadcn add` for them again to pick this up.
+- **[Command](/docs/components/command)**: items take the same 6px corners and regular weight. The palette keeps its corners.
+- **[Sidebar](/docs/components/sidebar)**: nav items take 6px corners and the regular weight, and group labels are regular weight with wider letter spacing (0.08em). In dark mode the current item sits on a raised `bg-muted` fill with the control shadow; in light mode it stays flat. The submenu popover takes the menu's 10px corners. Run `shadcn add` for it again to pick this up.
+- **[Data table](/docs/blocks/data-table)**: the options in a filter take the same 6px corners.
+- `@kosmos/tokens`: in dark mode `shadow-popover` draws a thin line in the `input` gray inside its dark ring, with no light top rim. Popovers, menus, tooltips, toasts and chart tooltips share it. Run `shadcn add @kosmos/tokens` again to get it.

@@ -259,7 +259,7 @@ Takes every [Button](/docs/components/button) prop except `variant` and `size`, 
 <TypeTable
   type={{
     isActive: {
-      description: 'Marks the current page: a flat highlight, the label and icon in `accent-text`, and `aria-current="page"` on a link.',
+      description: 'Marks the current page: a highlight, flat in light mode and raised in dark, the label and icon in `accent-text`, and `aria-current="page"` on a link.',
       type: 'boolean',
       default: 'false',
     },
@@ -397,7 +397,7 @@ Each part is a styled element you can rearrange. `useSidebar()` reads and sets t
 | `SidebarGroupLabel` | The small uppercase heading of a group. `render={<h2 />}` makes it a heading. |
 | `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
 | `SidebarMenuItem` | One item. Renders `<li>`. |
-| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Idle items take a muted tone, and the active one sits on the flat hover fill with its label and icon in `accent-text`, ink by default. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Idle items take a muted tone, and the active one takes its label and icon in `accent-text`, ink by default. It sits on the flat hover fill in light mode and on a raised `muted` fill in dark. Put the label in a `<span>` so it truncates. |
 | `SidebarMenuBadge` | A count at the end of an item, in a small pill. |
 | `SidebarSubmenu` | An item that holds a level of pages: a panel under its trigger, a popover in icon mode. |
 | `SidebarSubmenuTrigger` | The row that opens the submenu, with a chevron that turns as the panel opens. |

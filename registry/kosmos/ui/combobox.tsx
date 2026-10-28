@@ -184,7 +184,7 @@ function ComboboxContent({
         <ComboboxPrimitive.Popup
           data-slot="combobox-content"
           className={cn(
-            'flex max-h-[min(var(--available-height),20rem)] w-(--anchor-width) max-w-(--available-width) min-w-44 origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover dark:scheme-dark',
+            'flex max-h-[min(var(--available-height),20rem)] w-(--anchor-width) max-w-(--available-width) min-w-44 origin-(--transform-origin) flex-col overflow-hidden rounded-lg border border-transparent bg-popover text-body text-popover-foreground shadow-popover dark:scheme-dark',
             'transition-[opacity,scale] duration-base',
             'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
             'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
@@ -226,7 +226,7 @@ function ComboboxItem({ className, children, ...props }: ComboboxItemProps) {
     <ComboboxPrimitive.Item
       data-slot="combobox-item"
       className={cn(
-        'relative flex min-h-7.5 cursor-default scroll-my-1 items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body font-medium outline-none select-none',
+        'relative flex min-h-7.5 cursor-default scroll-my-1 items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",

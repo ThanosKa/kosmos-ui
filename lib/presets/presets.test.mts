@@ -211,7 +211,7 @@ const checks: Check[] = [
     ...pageSurfaces.map((surface) => text(role, surface)),
     ...hoverFills.map(([fill, surface]) => text(role, fill, surface)),
   ]),
-  ...(['background', 'card', 'popover', 'secondary'] as const).map((surface) => text('accent-text', surface)),
+  ...(['background', 'card', 'popover', 'secondary', 'muted'] as const).map((surface) => text('accent-text', surface)),
   ...hoverFills.map(([fill, surface]) => text('accent-text', fill, surface)),
   ...(['sidebar-foreground', 'muted-foreground', 'accent-text'] as const).map((role) => text(role, 'sidebar')),
   ...(['sidebar-foreground', 'accent-text'] as const).map((role) => text(role, 'sidebar-accent', 'sidebar')),

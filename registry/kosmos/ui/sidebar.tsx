@@ -692,7 +692,7 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
     props: mergeProps<'div'>(
       {
         className: cn(
-          'flex h-6 shrink-0 items-center truncate px-2 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase',
+          'flex h-6 shrink-0 items-center truncate px-2 text-caption tracking-[0.08em] text-muted-foreground uppercase',
           // In icon mode the label fades but keeps its row, so the icons below it never move. On expand it waits
           // for the column to widen, so it never shows as a cut-off stub.
           'transition-[opacity] group-data-[collapsible=icon]/sidebar:opacity-0 group-data-snapping/sidebar-wrapper:transition-none',
@@ -719,7 +719,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 type SidebarMenuButtonProps = DistributiveOmit<ButtonProps, 'variant' | 'size'> & {
-  /** Marks the current page: `aria-current="page"` on a link, a flat highlight and the label and icon in `accent-text`. */
+  /** Marks the current page: `aria-current="page"` on a link, a highlight (flat in light, raised in dark) and the label and icon in `accent-text`. */
   isActive?: boolean;
   /** The item's name, shown in a tooltip beside the icon while the sidebar is collapsed to icons. */
   tooltip?: React.ReactNode;
@@ -750,9 +750,10 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
       className={cn(
         // `relative` keeps an `sr-only` count label inside the clip, so it never widens the sidebar.
-        'relative h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden px-2 text-muted-foreground',
-        'transition-[background-color,color] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
+        'relative h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden rounded-[calc(var(--radius-lg)-4px)] px-2 font-normal text-muted-foreground',
+        'transition-[background-color,color,box-shadow] hover:not-data-disabled:bg-sidebar-accent hover:not-data-disabled:text-sidebar-foreground',
         'data-active:bg-sidebar-accent data-active:text-accent-text hover:data-active:not-data-disabled:bg-sidebar-accent hover:data-active:not-data-disabled:text-accent-text',
+        'dark:data-active:bg-muted dark:data-active:shadow-control dark:hover:data-active:not-data-disabled:bg-muted',
         '[&>span]:min-w-0 [&>span]:truncate [&_svg]:text-muted-foreground data-active:[&_svg]:text-accent-text',
         // In icon mode the first child (an icon, a mark or an avatar) stays and the label and count after it fade.
         // On expand they wait for the column to widen, so they never show as cut-off stubs.
@@ -969,7 +970,7 @@ function SidebarSubmenuContent({ className, children, container, id, ...props }:
           <PopoverPrimitive.Popup
             data-slot="sidebar-submenu-popup"
             className={cn(
-              'flex max-h-(--available-height) w-max max-w-[min(16rem,var(--available-width))] min-w-44 origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover dark:scheme-dark',
+              'flex max-h-(--available-height) w-max max-w-[min(16rem,var(--available-width))] min-w-44 origin-(--transform-origin) flex-col overflow-hidden rounded-lg border border-transparent bg-popover text-body text-popover-foreground shadow-popover dark:scheme-dark',
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
               'transition-[opacity,scale] duration-base',
               'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
@@ -1025,7 +1026,7 @@ function SidebarSubmenuButton({ className, ...props }: SidebarSubmenuButtonProps
         'focus-visible:-outline-offset-2',
         // The popover has no resize handle, so a long label wraps there instead of truncating.
         inPopup &&
-          'h-auto min-h-7.5 py-1 text-start [&>span]:whitespace-normal hover:not-data-disabled:bg-accent hover:not-data-disabled:text-popover-foreground data-active:bg-accent hover:data-active:not-data-disabled:bg-accent',
+          'h-auto min-h-7.5 py-1 text-start [&>span]:whitespace-normal hover:not-data-disabled:bg-accent hover:not-data-disabled:text-popover-foreground data-active:bg-accent hover:data-active:not-data-disabled:bg-accent dark:data-active:bg-accent dark:data-active:shadow-none dark:hover:data-active:not-data-disabled:bg-accent',
         className,
       )}
       {...props}
