@@ -27,9 +27,12 @@ import {
   SidebarWorkspaceSwitcher,
 } from '@/registry/kosmos/ui/sidebar';
 
+// eslint-disable-next-line @next/next/no-img-element
+const workspaceLogo = (id: string) => <img src={`/logos/${id}.svg`} alt="" />;
+
 const workspaces = [
-  { id: 'acme', name: 'Acme', description: 'Scale plan' },
-  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
+  { id: 'acme', name: 'Acme', description: 'Scale plan', logo: workspaceLogo('acme') },
+  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan', logo: workspaceLogo('acme-staging') },
 ];
 
 const pages = [
@@ -119,7 +122,7 @@ export default function SidebarDemo() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <SidebarUserMenu user={{ name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' }}>
+          <SidebarUserMenu user={{ name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' }}>
             <DropdownMenuItem>
               <UserRound />
               Profile

@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 ```tsx
 <Avatar>
-  <AvatarImage src="/avatars/lena.png" alt="Lena Park" />
+  <AvatarImage src="/avatars/lena.jpg" alt="Lena Park" />
   <AvatarFallback>LP</AvatarFallback>
 </Avatar>
 ```
@@ -38,6 +38,12 @@ The fallback shows until the image loads, and stays when the image fails or ther
 `AvatarGroup` overlaps the avatars and rings each one in the page color. End it with `AvatarGroupCount` for the people you leave out, and give that count the same `size` as the avatars. On a surface other than the page, such as a card, match the ring to it with `className="*:ring-card"`.
 
 <ComponentPreview name="avatar-group" />
+
+### Logo
+
+For a company, a project or a workspace, round the avatar less with `className="rounded-md"`. The image follows the avatar's corners, and the fallback is the name's first letter.
+
+<ComponentPreview name="avatar-logo" />
 
 ### Alt text
 

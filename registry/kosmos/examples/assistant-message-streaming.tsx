@@ -22,7 +22,7 @@ export default function AssistantMessageStreaming() {
     <div className="w-full max-w-xl">
       <AssistantMessage
         status={status}
-        author={{ name: 'Acme agent' }}
+        author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
         time="14:03"
         model="Claude Haiku 5.5"
         onRetry={() => setCount(0)}

@@ -64,7 +64,7 @@ export default function TestimonialsPreview() {
               },
               { quote: 'Short.', name: 'Noor' },
               { quote: '霧島ウェザーのチーム全員が、同じ数字を見ています。', name: '霧島 さくら', role: 'プロダクト, Cirrus Weather' },
-              { quote: 'Our funnels finally match our invoices.', name: 'Tessa Morgan', avatar: '/avatars/avatar-1.png' },
+              { quote: 'Our funnels finally match our invoices.', name: 'Tessa Morgan', avatar: '/avatars/tessa.jpg' },
               { quote: 'Сводка за неделю приходит в понедельник утром.', name: 'Ольга Смирнова', role: 'Аналитик, Driftwood Travel' },
             ]}
           />

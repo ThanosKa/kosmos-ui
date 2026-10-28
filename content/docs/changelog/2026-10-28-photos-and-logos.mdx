@@ -1,0 +1,12 @@
+---
+title: Added photos and logos to the sample data
+description: Sample people have photos and sample projects and workspaces have logos, with initials as the fallback.
+date: 2026-10-28
+---
+
+- **[Avatar](/docs/components/avatar)**: the image follows the avatar's corners, so `className="rounded-md"` makes a square logo avatar. A new example shows it. Run `shadcn add` for it again to pick this up.
+- **[Data table](/docs/blocks/data-table)**: a project takes an optional `logo` URL, shown in its square avatar. The sample projects' logos install to `public/logos`.
+- **[Command menu](/docs/blocks/command-menu)**: an item takes `avatar`, a photo for its initials, or `logo`, a square logo in place of the icon. The workspaces show the Acme logos.
+- **[Kanban board](/docs/blocks/kanban-board)**, **[Detail drawer](/docs/blocks/detail-drawer)** and **[New item dialog](/docs/blocks/new-item-dialog)**: a person takes an optional `avatarUrl`, with the initials as the fallback.
+- **[Logo marquee](/docs/blocks/logo-marquee)** and **[App sidebar](/docs/blocks/app-sidebar)**: the sample logos are images that install to `public/logos`.
+- **[Members](/docs/blocks/members)**, **[Testimonials](/docs/blocks/testimonials)**, **[Usage overview](/docs/blocks/usage-overview)** and **[Run timeline](/docs/blocks/run-timeline)**: the sample people have photos. Photos do not install with a block, so they show their initials until your app passes its own.

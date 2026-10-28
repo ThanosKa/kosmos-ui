@@ -3,7 +3,7 @@
 import { Copy, Globe, Hash, MoreHorizontal, Server, Smartphone, Trash2, XIcon, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Sparkline } from '@/registry/kosmos/ui/chart';
@@ -25,7 +25,7 @@ import { Textarea } from '@/registry/kosmos/ui/textarea';
 type DetailStatus = 'live' | 'trial' | 'paused';
 type DetailPlan = 'free' | 'pro' | 'scale';
 type DetailPlatform = 'web' | 'ios' | 'android' | 'server';
-type DetailPerson = { name: string; initials: string };
+type DetailPerson = { name: string; initials: string; avatarUrl?: string };
 type DetailAction = 'copy-link' | 'copy-id' | 'delete';
 
 type DetailActivity = {
@@ -65,9 +65,9 @@ type DetailProject = {
 };
 
 // Sample data: replace it with the record your page opens.
-const lena: DetailPerson = { name: 'Lena Park', initials: 'LP' };
-const tomas: DetailPerson = { name: 'Tomás Ortega', initials: 'TO' };
-const kai: DetailPerson = { name: 'Kai Nakamura', initials: 'KN' };
+const lena: DetailPerson = { name: 'Lena Park', initials: 'LP', avatarUrl: '/avatars/lena.jpg' };
+const tomas: DetailPerson = { name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' };
+const kai: DetailPerson = { name: 'Kai Nakamura', initials: 'KN', avatarUrl: '/avatars/kai.jpg' };
 /** Signs the notes the drawer keeps when you leave out `onNote`. */
 const signedInUser = lena;
 
@@ -139,6 +139,7 @@ function PersonAvatar({ person }: { person: DetailPerson }) {
   return (
     // The name is always beside it, so the initials stay out of the accessibility tree.
     <Avatar size="sm" aria-hidden>
+      {person.avatarUrl ? <AvatarImage src={person.avatarUrl} alt="" /> : null}
       <AvatarFallback>{person.initials}</AvatarFallback>
     </Avatar>
   );

@@ -31,6 +31,18 @@
     {
       "path": "registry/kosmos/blocks/data-table/data-table.tsx",
       "type": "registry:component"
-    }
+    },
+    { "path": "public/logos/fernhill.svg", "type": "registry:file", "target": "~/public/logos/fernhill.svg" },
+    { "path": "public/logos/brightloop.svg", "type": "registry:file", "target": "~/public/logos/brightloop.svg" },
+    { "path": "public/logos/copperline.svg", "type": "registry:file", "target": "~/public/logos/copperline.svg" },
+    { "path": "public/logos/saltmarsh.svg", "type": "registry:file", "target": "~/public/logos/saltmarsh.svg" },
+    { "path": "public/logos/driftwood.svg", "type": "registry:file", "target": "~/public/logos/driftwood.svg" },
+    { "path": "public/logos/hollowoak.svg", "type": "registry:file", "target": "~/public/logos/hollowoak.svg" },
+    { "path": "public/logos/cirrus.svg", "type": "registry:file", "target": "~/public/logos/cirrus.svg" },
+    { "path": "public/logos/pebblepine.svg", "type": "registry:file", "target": "~/public/logos/pebblepine.svg" },
+    { "path": "public/logos/marigold.svg", "type": "registry:file", "target": "~/public/logos/marigold.svg" },
+    { "path": "public/logos/kiln.svg", "type": "registry:file", "target": "~/public/logos/kiln.svg" },
+    { "path": "public/logos/tidepool.svg", "type": "registry:file", "target": "~/public/logos/tidepool.svg" },
+    { "path": "public/logos/ironbark.svg", "type": "registry:file", "target": "~/public/logos/ironbark.svg" }
   ]
 }

@@ -3,7 +3,7 @@
 import { CalendarDays, Circle, CircleCheck, CircleDashed, CircleDot, Plus, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
@@ -23,7 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/registry/kosmos/ui/switch';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
 
-type NewItemPerson = { id: string; name: string; initials: string };
+type NewItemPerson = { id: string; name: string; initials: string; avatarUrl?: string };
 
 /** A stage of the roadmap: a column of the board the item lands in. */
 type NewItemStage = {
@@ -70,10 +70,10 @@ const sampleAreas: NewItemArea[] = [
 const sampleTargets = ['Q4 2026', 'Q1 2027', 'Q2 2027', 'Q3 2027'];
 
 const samplePeople: NewItemPerson[] = [
-  { id: 'lena', name: 'Lena Park', initials: 'LP' },
-  { id: 'tomas', name: 'Tomás Ortega', initials: 'TO' },
-  { id: 'ama', name: 'Ama Mensah', initials: 'AM' },
-  { id: 'kai', name: 'Kai Nakamura', initials: 'KN' },
+  { id: 'lena', name: 'Lena Park', initials: 'LP', avatarUrl: '/avatars/lena.jpg' },
+  { id: 'tomas', name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' },
+  { id: 'ama', name: 'Ama Mensah', initials: 'AM', avatarUrl: '/avatars/ama.jpg' },
+  { id: 'kai', name: 'Kai Nakamura', initials: 'KN', avatarUrl: '/avatars/kai.jpg' },
 ];
 
 const toneText = {
@@ -127,6 +127,7 @@ function PersonLabel({ person }: { person: NewItemPerson | undefined }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
       <Avatar size="sm" className="size-5" aria-hidden>
+        {person.avatarUrl ? <AvatarImage src={person.avatarUrl} alt="" /> : null}
         <AvatarFallback>{person.initials}</AvatarFallback>
       </Avatar>
       <span className="truncate">{person.name}</span>

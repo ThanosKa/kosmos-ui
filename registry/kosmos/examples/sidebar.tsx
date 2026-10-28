@@ -41,12 +41,15 @@ const reports = ['Revenue', 'Retention', 'Funnels', 'Signups by first event, pla
 
 const projects = ['Q3 Roadmap', 'Billing revamp', 'Reconcile September payouts with the bank export'];
 
+// eslint-disable-next-line @next/next/no-img-element
+const workspaceLogo = (id: string) => <img src={`/logos/${id}.svg`} alt="" />;
+
 const workspaces: SidebarWorkspace[] = [
-  { id: 'acme', name: 'Acme', description: 'Scale plan' },
-  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
+  { id: 'acme', name: 'Acme', description: 'Scale plan', logo: workspaceLogo('acme') },
+  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan', logo: workspaceLogo('acme-staging') },
 ];
 
-const user = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' };
+const user = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' };
 
 type Pinned = 'submenu' | 'workspace' | 'user';
 

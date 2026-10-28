@@ -82,7 +82,7 @@ The drawer slides in over 300ms and out in 150ms, and the events line draws in o
     notes: { description: 'The notes section.', type: 'string' },
     activity: {
       description: 'Changes and notes, oldest first. An entry with `action` reads as "Kai Nakamura changed the plan to Pro". One with `body` shows a note.',
-      type: '{ id: string; author: { name: string; initials: string }; action?: string; body?: string; time: string }[]',
+      type: '{ id: string; author: { name: string; initials: string; avatarUrl?: string }; action?: string; body?: string; time: string }[]',
     },
   }}
 />

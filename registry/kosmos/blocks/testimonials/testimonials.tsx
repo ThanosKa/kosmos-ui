@@ -27,52 +27,62 @@ const sampleFeatured: Testimonial = {
     'Acme is the one place where product, design and engineering read the same numbers. When a storm doubled our traffic for three days, the dashboards kept up and so did we.',
   name: 'Grace Whitfield',
   role: 'VP of product, Cirrus Weather',
+  avatar: '/avatars/grace.jpg',
 };
 const sampleTestimonials: Testimonial[] = [
   {
     quote: 'We used to wait a week for a funnel report. Now the whole team opens the same dashboard on Monday and argues about the numbers, not about where they came from.',
     name: 'Ines Duarte',
     role: 'Head of growth, Fernhill Books',
+    avatar: '/avatars/ines-duarte.jpg',
   },
   {
     quote: 'The iOS SDK took an afternoon. The first workout events showed up before the build finished uploading.',
     name: 'Marcus Bell',
     role: 'iOS lead, Brightloop Fitness',
+    avatar: '/avatars/marcus.jpg',
   },
   {
     quote: 'We send close to nine million server events a month. Acme told us we had passed our quota before finance did.',
     name: 'Ruth Adeyemi',
     role: 'Data engineer, Copperline Bank',
+    avatar: '/avatars/ruth.jpg',
   },
   {
     quote: 'I am not an analyst. I can still see which page sells the most beans, and that is all I wanted.',
     name: 'Owen Fitzgerald',
     role: 'Founder, Saltmarsh Coffee',
+    avatar: '/avatars/owen.jpg',
   },
   {
     quote: 'A funnel showed us that half our Android users stopped at the date picker. We fixed it in a week and bookings went up the week after.',
     name: 'Sofia Lindqvist',
     role: 'Product manager, Driftwood Travel',
+    avatar: '/avatars/sofia.jpg',
   },
   {
     quote: 'Our events have names anyone can read, so nobody on the team has to ask what a chart is counting.',
     name: 'Daniel Okafor',
     role: 'Mobile engineer, Cirrus Weather',
+    avatar: '/avatars/daniel.jpg',
   },
   {
     quote: 'We started on the free plan with one small site. The dashboards we built then are the ones we still read.',
     name: 'Noor Rahman',
     role: 'Developer, Pebble & Pine',
+    avatar: '/avatars/noor.jpg',
   },
   {
     quote: 'Two weeks into the trial we knew which recipes people saved and never cooked.',
     name: 'Tessa Morgan',
     role: 'Editor, Marigold Recipes',
+    avatar: '/avatars/tessa.jpg',
   },
   {
     quote: 'Every scan in the warehouse lands as an event. The weekly summary is the first email I open on Monday.',
     name: 'Leila Haddad',
     role: 'Operations lead, Ironbark Logistics',
+    avatar: '/avatars/leila.jpg',
   },
 ];
 

@@ -83,7 +83,7 @@ function Shell({
 
 const longNames: Pick<AppSidebarProps, 'workspaces' | 'user' | 'navViews'> = {
   workspaces: [{ id: 'acme-eu', name: 'Acme Europe Data Region Workspace', description: 'Scale plan, billed yearly in euros' }],
-  user: { name: 'Tomás Ortega Villanueva de la Fuente', email: 'tomas.ortega.villanueva@acme.example', initials: 'TO' },
+  user: { name: 'Tomás Ortega Villanueva de la Fuente', email: 'tomas.ortega.villanueva@acme.example', initials: 'TO', avatar: '/avatars/tomas.jpg' },
   navViews: [
     { id: 'view-scale-ios', label: 'Scale plan projects on iOS with more than 10,000 users', href: '#view-scale-ios', icon: Layers },
     { id: 'view-trials', label: 'Trials', href: '#view-trials', icon: Layers, badge: 1280, badgeLabel: 'projects' },

@@ -44,10 +44,10 @@ const roadmapAreas: Record<string, KanbanTag> = {
   platform: { label: 'Platform', hue: 'blue' },
 };
 const roadmapTeam: Record<string, KanbanPerson> = {
-  lena: { name: 'Lena Park', initials: 'LP' },
-  tomas: { name: 'Tomás Ortega', initials: 'TO' },
-  ama: { name: 'Ama Mensah', initials: 'AM' },
-  kai: { name: 'Kai Nakamura', initials: 'KN' },
+  lena: { name: 'Lena Park', initials: 'LP', avatarUrl: '/avatars/lena.jpg' },
+  tomas: { name: 'Tomás Ortega', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' },
+  ama: { name: 'Ama Mensah', initials: 'AM', avatarUrl: '/avatars/ama.jpg' },
+  kai: { name: 'Kai Nakamura', initials: 'KN', avatarUrl: '/avatars/kai.jpg' },
 };
 
 const statusDot: Record<ProjectStatus, string> = {

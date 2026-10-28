@@ -12,7 +12,7 @@ export default function AssistantMessageError() {
         <AssistantMessage
           status="error"
           error="The events export timed out."
-          author={{ name: 'Acme agent' }}
+          author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
           time="14:04"
           model="Claude Sonnet 5.5"
           onRetry={() => setFailed(false)}
@@ -21,7 +21,7 @@ export default function AssistantMessageError() {
         </AssistantMessage>
       ) : (
         <AssistantMessage
-          author={{ name: 'Acme agent' }}
+          author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
           time="14:05"
           model="Claude Sonnet 5.5"
           onRetry={() => setFailed(true)}

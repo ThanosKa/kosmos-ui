@@ -25,7 +25,7 @@ export default function AssistantMessagePreview() {
       <PreviewSection title="Prompt and reply, actions always shown">
         <div className={`${card} flex flex-col gap-4`}>
           <AssistantMessage role="user">How many events did Acme collect in the last 30 days?</AssistantMessage>
-          <AssistantMessage author={{ name: 'Acme agent' }} time="14:02" model="Claude Sonnet 5.5" onRetry={retry}>
+          <AssistantMessage author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }} time="14:02" model="Claude Sonnet 5.5" onRetry={retry}>
             {answer}
           </AssistantMessage>
         </div>
@@ -35,7 +35,7 @@ export default function AssistantMessagePreview() {
         <PreviewSection title="Sources open, follow-ups, Good answer pressed">
           <div className={card}>
             <AssistantMessage
-              author={{ name: 'Acme agent' }}
+              author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
               time="14:02"
               model="Claude Sonnet 5.5"
               sources={sources}
@@ -52,7 +52,7 @@ export default function AssistantMessagePreview() {
         <PreviewSection title="actionsVisibility hover, not hovered">
           <div className={card}>
             <AssistantMessage
-              author={{ name: 'Acme agent' }}
+              author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
               time="14:01"
               model="Claude Sonnet 5.5"
               sources={sources}
@@ -70,7 +70,7 @@ export default function AssistantMessagePreview() {
           <div className={card}>
             <AssistantMessage
               status="streaming"
-              author={{ name: 'Acme agent' }}
+              author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
               time="14:03"
               model="Claude Sonnet 5.5"
               sources={sources}
@@ -86,7 +86,7 @@ export default function AssistantMessagePreview() {
             <AssistantMessage
               status="error"
               error="The events export timed out."
-              author={{ name: 'Acme agent' }}
+              author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }}
               time="14:04"
               model="Claude Haiku 5.5"
               onRetry={retry}
@@ -99,7 +99,7 @@ export default function AssistantMessagePreview() {
 
       <PreviewSection title="Long answer with a list">
         <div className={card}>
-          <AssistantMessage author={{ name: 'Acme agent' }} time="14:06" model="Claude Opus 5.5" sources={sources}>
+          <AssistantMessage author={{ name: 'Acme agent', avatarUrl: '/logos/acme.svg' }} time="14:06" model="Claude Opus 5.5" sources={sources}>
             <p>
               Events grew 14.2% in the last 30 days, faster than the 6.8% growth in revenue, so more projects are close to
               their allowance<Citation n={1} source={sources[0]} />. Lena asked for a short list of the projects worth

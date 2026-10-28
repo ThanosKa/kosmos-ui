@@ -4,6 +4,7 @@ import type * as React from 'react';
 import { Cell, Pie, PieChart } from 'recharts';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { ChartContainer, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
@@ -28,12 +29,12 @@ const sourceConfig = {
 const visitors = sources.reduce((sum, source) => sum + source.value, 0);
 const number = new Intl.NumberFormat('en-US');
 
-const activity: { id: string; event: string; time: string; status: Status; label: string }[] = [
-  { id: 'lumenfield', event: 'Lumenfield Health started a trial', time: '2m ago', status: 'running', label: 'Trial' },
-  { id: 'fernhill', event: 'Fernhill Books upgraded to Pro', time: '14m ago', status: 'done', label: 'Upgraded' },
-  { id: 'saltmarsh', event: 'Quota alert on Saltmarsh Coffee', time: '38m ago', status: 'waiting', label: 'Alert' },
-  { id: 'copperline', event: 'Copperline Bank rotated an API key', time: '1h ago', status: 'done', label: 'Done' },
-  { id: 'hollow-oak', event: 'Hollow Oak Games paused ingestion', time: '3h ago', status: 'skipped', label: 'Paused' },
+const activity: { id: string; name: string; event: string; time: string; status: Status; label: string }[] = [
+  { id: 'lumenfield', name: 'Lumenfield Health', event: 'Lumenfield Health started a trial', time: '2m ago', status: 'running', label: 'Trial' },
+  { id: 'fernhill', name: 'Fernhill Books', event: 'Fernhill Books upgraded to Pro', time: '14m ago', status: 'done', label: 'Upgraded' },
+  { id: 'saltmarsh', name: 'Saltmarsh Coffee', event: 'Quota alert on Saltmarsh Coffee', time: '38m ago', status: 'waiting', label: 'Alert' },
+  { id: 'copperline', name: 'Copperline Bank', event: 'Copperline Bank rotated an API key', time: '1h ago', status: 'done', label: 'Done' },
+  { id: 'hollowoak', name: 'Hollow Oak Games', event: 'Hollow Oak Games paused ingestion', time: '3h ago', status: 'skipped', label: 'Paused' },
 ];
 
 const cardClass = 'min-w-0 rounded-2xl border border-transparent bg-card p-4 shadow-card';
@@ -99,6 +100,10 @@ function RecentActivity() {
       <ul className="mt-2 divide-y divide-border">
         {activity.map((item) => (
           <li key={item.id} className="flex items-center gap-3 py-2 first:pt-1">
+            <Avatar size="sm" aria-hidden className="rounded-md">
+              <AvatarImage src={`/logos/${item.id}.svg`} alt="" />
+              <AvatarFallback>{item.name.charAt(0)}</AvatarFallback>
+            </Avatar>
             <span className="min-w-0 flex-1 truncate text-small">{item.event}</span>
             <span className="shrink-0 text-caption text-muted-foreground tabular-nums">{item.time}</span>
             <Badge variant="secondary" className="hidden shrink-0 @2xl:inline-flex">

@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/registry/kosmos/ui/avatar';
 
 const team = [
-  { name: 'Lena Park', initials: 'LP', src: '/avatars/avatar-1.png' },
-  { name: 'Tomás Ortega', initials: 'TO', src: '/avatars/avatar-2.png' },
-  { name: 'Ama Mensah', initials: 'AM', src: '/avatars/avatar-3.png' },
+  { name: 'Lena Park', initials: 'LP', src: '/avatars/lena.jpg' },
+  { name: 'Tomás Ortega', initials: 'TO', src: '/avatars/tomas.jpg' },
+  { name: 'Ama Mensah', initials: 'AM', src: '/avatars/ama.jpg' },
 ];
 
 export default function AvatarGroupExample() {

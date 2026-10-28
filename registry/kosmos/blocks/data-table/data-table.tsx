@@ -30,7 +30,7 @@ import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { facetCounts, matchesFacets, type Facet } from '@/registry/kosmos/lib/facets';
 import { clampPage, pageCount, pageRows } from '@/registry/kosmos/lib/paging';
-import { Avatar, AvatarFallback } from '@/registry/kosmos/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Checkbox } from '@/registry/kosmos/ui/checkbox';
@@ -64,6 +64,8 @@ type Project = {
   id: string;
   name: string;
   domain: string;
+  /** The URL of the project's logo. Its first letter shows until it loads. */
+  logo?: string;
   platform: ProjectPlatform;
   plan: ProjectPlan;
   status: ProjectStatus;
@@ -79,18 +81,18 @@ type Project = {
 
 // Sample data: replace it with your rows.
 const sampleProjects: Project[] = [
-  { id: 'fernhill', name: 'Fernhill Books', domain: 'fernhill.example', platform: 'web', plan: 'scale', status: 'live', users: 48210, events: 3912400, mrr: 2400, lastEventAt: '2026-10-11' },
-  { id: 'brightloop', name: 'Brightloop Fitness', domain: 'brightloop.example', platform: 'ios', plan: 'scale', status: 'live', users: 31480, events: 5204800, mrr: 3600, lastEventAt: '2026-10-11' },
-  { id: 'copperline', name: 'Copperline Bank', domain: 'copperline.example', platform: 'server', plan: 'scale', status: 'live', users: 12940, events: 8730100, mrr: 4800, lastEventAt: '2026-10-11' },
-  { id: 'saltmarsh', name: 'Saltmarsh Coffee', domain: 'saltmarsh.example', platform: 'web', plan: 'pro', status: 'live', users: 6120, events: 412300, mrr: 149, lastEventAt: '2026-10-10' },
-  { id: 'driftwood', name: 'Driftwood Travel', domain: 'driftwood.example', platform: 'android', plan: 'pro', status: 'live', users: 9870, events: 1108600, mrr: 290, lastEventAt: '2026-10-11' },
-  { id: 'hollowoak', name: 'Hollow Oak Games', domain: 'hollowoak.example', platform: 'android', plan: 'pro', status: 'paused', users: 2310, events: 96200, mrr: 99, lastEventAt: '2026-09-18' },
-  { id: 'cirrus', name: 'Cirrus Weather', domain: 'cirrus.example', platform: 'ios', plan: 'pro', status: 'live', users: 22560, events: 2391700, mrr: 390, lastEventAt: '2026-10-11' },
-  { id: 'pebblepine', name: 'Pebble & Pine', domain: 'pebblepine.example', platform: 'web', plan: 'free', status: 'live', users: 840, events: 31200, mrr: 0, lastEventAt: '2026-10-09' },
-  { id: 'marigold', name: 'Marigold Recipes', domain: 'marigold.example', platform: 'web', plan: 'pro', status: 'trial', users: 1920, events: 74500, mrr: 0, lastEventAt: '2026-10-11' },
-  { id: 'kiln', name: 'Kiln Studio', domain: 'kiln.example', platform: 'web', plan: 'free', status: 'paused', users: 120, events: 2400, mrr: 0, lastEventAt: '2026-08-30' },
-  { id: 'tidepool', name: 'Tidepool Notes', domain: 'tidepool.example', platform: 'ios', plan: 'pro', status: 'trial', users: 3450, events: 188100, mrr: 0, lastEventAt: '2026-10-10' },
-  { id: 'ironbark', name: 'Ironbark Logistics', domain: 'ironbark.example', platform: 'server', plan: 'scale', status: 'live', users: 4780, events: 6342900, mrr: 2900, lastEventAt: '2026-10-11' },
+  { id: 'fernhill', name: 'Fernhill Books', domain: 'fernhill.example', logo: '/logos/fernhill.svg', platform: 'web', plan: 'scale', status: 'live', users: 48210, events: 3912400, mrr: 2400, lastEventAt: '2026-10-11' },
+  { id: 'brightloop', name: 'Brightloop Fitness', domain: 'brightloop.example', logo: '/logos/brightloop.svg', platform: 'ios', plan: 'scale', status: 'live', users: 31480, events: 5204800, mrr: 3600, lastEventAt: '2026-10-11' },
+  { id: 'copperline', name: 'Copperline Bank', domain: 'copperline.example', logo: '/logos/copperline.svg', platform: 'server', plan: 'scale', status: 'live', users: 12940, events: 8730100, mrr: 4800, lastEventAt: '2026-10-11' },
+  { id: 'saltmarsh', name: 'Saltmarsh Coffee', domain: 'saltmarsh.example', logo: '/logos/saltmarsh.svg', platform: 'web', plan: 'pro', status: 'live', users: 6120, events: 412300, mrr: 149, lastEventAt: '2026-10-10' },
+  { id: 'driftwood', name: 'Driftwood Travel', domain: 'driftwood.example', logo: '/logos/driftwood.svg', platform: 'android', plan: 'pro', status: 'live', users: 9870, events: 1108600, mrr: 290, lastEventAt: '2026-10-11' },
+  { id: 'hollowoak', name: 'Hollow Oak Games', domain: 'hollowoak.example', logo: '/logos/hollowoak.svg', platform: 'android', plan: 'pro', status: 'paused', users: 2310, events: 96200, mrr: 99, lastEventAt: '2026-09-18' },
+  { id: 'cirrus', name: 'Cirrus Weather', domain: 'cirrus.example', logo: '/logos/cirrus.svg', platform: 'ios', plan: 'pro', status: 'live', users: 22560, events: 2391700, mrr: 390, lastEventAt: '2026-10-11' },
+  { id: 'pebblepine', name: 'Pebble & Pine', domain: 'pebblepine.example', logo: '/logos/pebblepine.svg', platform: 'web', plan: 'free', status: 'live', users: 840, events: 31200, mrr: 0, lastEventAt: '2026-10-09' },
+  { id: 'marigold', name: 'Marigold Recipes', domain: 'marigold.example', logo: '/logos/marigold.svg', platform: 'web', plan: 'pro', status: 'trial', users: 1920, events: 74500, mrr: 0, lastEventAt: '2026-10-11' },
+  { id: 'kiln', name: 'Kiln Studio', domain: 'kiln.example', logo: '/logos/kiln.svg', platform: 'web', plan: 'free', status: 'paused', users: 120, events: 2400, mrr: 0, lastEventAt: '2026-08-30' },
+  { id: 'tidepool', name: 'Tidepool Notes', domain: 'tidepool.example', logo: '/logos/tidepool.svg', platform: 'ios', plan: 'pro', status: 'trial', users: 3450, events: 188100, mrr: 0, lastEventAt: '2026-10-10' },
+  { id: 'ironbark', name: 'Ironbark Logistics', domain: 'ironbark.example', logo: '/logos/ironbark.svg', platform: 'server', plan: 'scale', status: 'live', users: 4780, events: 6342900, mrr: 2900, lastEventAt: '2026-10-11' },
 ];
 
 const platforms: Record<ProjectPlatform, { label: string; icon: LucideIcon }> = {
@@ -789,6 +791,7 @@ function DataTable({
                     <TableCell className="w-64 max-w-72 @max-lg:w-auto">
                       <div className="flex min-w-0 items-center gap-2.5 @max-md:w-28">
                         <Avatar size="sm" aria-hidden className="rounded-md">
+                          {row.logo ? <AvatarImage src={row.logo} alt="" /> : null}
                           <AvatarFallback>{row.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div className="flex min-w-0 flex-1 flex-col items-start">

@@ -6,10 +6,10 @@
 export type Person = { id: string; name: string; email: string; initials: string; avatar?: string };
 
 export const people = {
-  lena: { id: 'lena', name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/avatar-1.png' },
-  tomas: { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@acme.example', initials: 'TO', avatar: '/avatars/avatar-2.png' },
-  ama: { id: 'ama', name: 'Ama Mensah', email: 'ama@acme.example', initials: 'AM', avatar: '/avatars/avatar-3.png' },
-  kai: { id: 'kai', name: 'Kai Nakamura', email: 'kai@acme.example', initials: 'KN' },
+  lena: { id: 'lena', name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' },
+  tomas: { id: 'tomas', name: 'Tomás Ortega', email: 'tomas@acme.example', initials: 'TO', avatar: '/avatars/tomas.jpg' },
+  ama: { id: 'ama', name: 'Ama Mensah', email: 'ama@acme.example', initials: 'AM', avatar: '/avatars/ama.jpg' },
+  kai: { id: 'kai', name: 'Kai Nakamura', email: 'kai@acme.example', initials: 'KN', avatar: '/avatars/kai.jpg' },
 } satisfies Record<string, Person>;
 
 export type MemberStatus = 'active' | 'invited' | 'suspended';

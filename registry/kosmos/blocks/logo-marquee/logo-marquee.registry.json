@@ -12,6 +12,13 @@
     {
       "path": "registry/kosmos/blocks/logo-marquee/logo-marquee.tsx",
       "type": "registry:component"
-    }
+    },
+    { "path": "public/logos/fernhill.svg", "type": "registry:file", "target": "~/public/logos/fernhill.svg" },
+    { "path": "public/logos/brightloop.svg", "type": "registry:file", "target": "~/public/logos/brightloop.svg" },
+    { "path": "public/logos/copperline.svg", "type": "registry:file", "target": "~/public/logos/copperline.svg" },
+    { "path": "public/logos/saltmarsh.svg", "type": "registry:file", "target": "~/public/logos/saltmarsh.svg" },
+    { "path": "public/logos/driftwood.svg", "type": "registry:file", "target": "~/public/logos/driftwood.svg" },
+    { "path": "public/logos/cirrus.svg", "type": "registry:file", "target": "~/public/logos/cirrus.svg" },
+    { "path": "public/logos/ironbark.svg", "type": "registry:file", "target": "~/public/logos/ironbark.svg" }
   ]
 }

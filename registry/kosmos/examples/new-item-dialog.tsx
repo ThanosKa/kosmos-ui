@@ -54,7 +54,7 @@ export default function NewItemDialogPreview() {
                 container={container}
                 initialFocus={false}
                 trigger={null}
-                people={[{ id: 'tomas', name: 'Tomás Ortega Villanueva de la Fuente', initials: 'TO' }]}
+                people={[{ id: 'tomas', name: 'Tomás Ortega Villanueva de la Fuente', initials: 'TO', avatarUrl: '/avatars/tomas.jpg' }]}
                 areas={[{ value: 'ingestion', label: 'Ingestion and event collection', hue: 'green' }]}
                 defaultValues={{
                   title: 'Server-side batching for every ingestion endpoint, with retries and a dead letter queue per region',

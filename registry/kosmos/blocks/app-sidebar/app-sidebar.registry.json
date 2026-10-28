@@ -18,6 +18,8 @@
     {
       "path": "registry/kosmos/blocks/app-sidebar/app-sidebar.tsx",
       "type": "registry:component"
-    }
+    },
+    { "path": "public/logos/acme.svg", "type": "registry:file", "target": "~/public/logos/acme.svg" },
+    { "path": "public/logos/acme-staging.svg", "type": "registry:file", "target": "~/public/logos/acme-staging.svg" }
   ]
 }

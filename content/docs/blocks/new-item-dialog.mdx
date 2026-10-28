@@ -71,7 +71,7 @@ The dialog grows from 95% while it fades in over 250ms, and leaves in 150ms. Wit
     stages: { description: 'The stages, in board order. The first is the default.', type: "{ value: string; label: string; icon?: LucideIcon; tone?: 'muted' | 'success' | 'warning' | 'destructive' }[]", default: 'Ideas, Planned, In progress, Shipped' },
     areas: { description: 'The areas an item can belong to, each with a Badge hue.', type: "{ value: string; label: string; hue: 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet' }[]", default: 'Insights, Ingestion, Billing, Platform' },
     targets: { description: 'The quarters an item can target.', type: 'string[]', default: 'Q4 2026 to Q3 2027' },
-    people: { description: 'The people who can be assigned.', type: '{ id: string; name: string; initials: string }[]', default: 'sample team' },
+    people: { description: 'The people who can be assigned.', type: '{ id: string; name: string; initials: string; avatarUrl?: string }[]', default: 'sample team' },
     defaultValues: { description: 'Values to start the form with each time it opens.', type: 'Partial<NewItemValues>' },
     values: { description: 'The form as it stands, controlled. Use with `onValuesChange`.', type: 'NewItemValues' },
     onValuesChange: { description: 'Called with the whole form each time a field changes.', type: '(values: NewItemValues) => void' },
