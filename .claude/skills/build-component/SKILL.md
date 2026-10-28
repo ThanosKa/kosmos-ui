@@ -33,6 +33,8 @@ Done when `/view/<name>` renders every row of the matrix with no console error.
 
 ## 3. Shoot
 
+Run `pnpm lint` before you shoot: it catches the token and class rules for free, and a screenshot is the costly check. Shoot only when the change shows at rest: a new component or block, or a change to color, type, spacing, size, layout or a state's look. A change only to motion, keyboard, focus, ARIA, docs or sample data skips this step; check it in step 4 with `agent-browser` and write `Final screenshots: none, <reason>` in the report.
+
 Use the dev server on the port you were given, starting it with `pnpm dev --port <N>` if none runs (the script rebuilds the registry first; bare `next dev` does not). Then:
 
 ```bash
@@ -45,7 +47,7 @@ Read all four PNGs it prints (light and dark, 375 and 1280 wide). A page error m
 
 ## 4. Review
 
-Call the Skill tool with `emil-design-eng` and review the review preview, its four screenshots and its source files, as a screen review. The review leads to fixes in step 5. Write findings in the format at the end of the kosmos-style [conflicts.md](../kosmos-style/conflicts.md). Then go through the kosmos-style **Before you finish** table line by line.
+Call the Skill tool with `emil-design-eng` and review the review preview, its screenshots when step 3 took them, and its source files, as a screen review. The review leads to fixes in step 5. Write findings in the format at the end of the kosmos-style [conflicts.md](../kosmos-style/conflicts.md). Then go through the kosmos-style **Before you finish** table line by line.
 
 Then explore what a screenshot cannot show with `agent-browser` on `/view/<name>?theme=light` and `?theme=dark` (`agent-browser --help` lists every command; give `screenshot` an absolute path). Cover one control of each kind (each variant, each size, the link form, the disabled-but-focusable case), not every cell:
 
@@ -64,7 +66,7 @@ A finding that contradicts a value in kosmos-style keeps the Kosmos value and is
 
 ## 5. Fix, in rounds
 
-A **round** is steps 3 to 5: shoot, review, fix every finding you accept. Start the next round on the fixed code.
+A **round** is steps 3 to 5: shoot when step 3 applies, review, fix every finding you accept. Start the next round on the fixed code.
 
 - Stop when a round's review leaves only `Kosmos style` and `Needs decision` findings.
 - Stop after round 3 regardless. Every finding still standing goes to **Open** in the report, with the reason it stayed open. A fourth round needs the user.
@@ -96,7 +98,7 @@ End with this report, one per component or block:
 
 Rounds: <n> of 3
 
-Final screenshots:
+Final screenshots (or `none, <reason>`):
 - .screenshots/<name>-light-375.png
 - .screenshots/<name>-light-1280.png
 - .screenshots/<name>-dark-375.png

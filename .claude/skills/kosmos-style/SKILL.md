@@ -187,25 +187,18 @@ A block's demo and review preview wrap it in the same padding a page would give 
 
 ## Before you finish
 
-Search the changed files for each detection. Size classes need a pattern that stops at the class name, because a plain `text-sm` also matches the valid `text-small`:
+Run `pnpm lint` first. It fails on these, and its message names the fix: a color literal or palette class, a bare `transition` or `transition-all`, `ease-in`, `ease-out` or `ease-in-out`, a number duration in registry code, a Tailwind or arbitrary text size, `backdrop-blur`, a press scale other than `motion-safe:not-disabled:not-data-disabled:active:scale-96`, a `<Button>` without `variant`, a raw `<button>`, and a shadcn name on a Button.
 
-```bash
-grep -nE "text-(xs|sm|lg|[2-9]?xl)([^a-z0-9-]|$)|text-\[[0-9.]+(px|rem|em)\]" <files>
-```
+Then search the changed files for each detection lint cannot judge:
 
 | Detection | Fix |
 | --- | --- |
-| `#`, `rgb(`, `hsl(` or `oklch(` in a `.tsx` file | The role token; add one in `tokens.css` if the role is new |
 | A token in `tokens.css` that no component, block or page uses | Delete it, or use it in this change |
 | `border` used for depth on a card, button, input or overlay | Its shadow token from the surface table plus `border-transparent` |
 | A `shadow-*` ring without `border border-transparent` | Add it |
-| `backdrop-blur`, or a translucent `bg-background/*` on sticky chrome | `bg-background` |
-| `transition-all`, bare `transition`, `ease-out`, `ease-in-out`, `ease-in`, `duration-150` | Named properties, `ease-power3-out` or `ease-smooth-in-out`, `duration-fast` |
-| `translate`, `scale`, `blur` or a `motion.*` animation with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
-| `active:scale-*` other than `scale-96`, or without `motion-safe:not-disabled:not-data-disabled:` | `motion-safe:not-disabled:not-data-disabled:active:scale-96` |
-| `<Button>` without `variant`, or a raw `<button>` outside `Button` | Pass `variant`; use `Button` |
-| A shadcn name on a Button (`variant` `default`, `outline`, `link`; `size` `default`, `xs`, `icon-xs`) | The Kosmos name it renders as |
-| A Tailwind size class or an arbitrary text size (`text-xs`, `text-sm`, `text-lg`, `text-[13px]`); `text-base` only on inputs | The matching type role |
+| A translucent `bg-background/*` on sticky chrome | `bg-background` |
+| A `translate`, `scale` or `blur` transition, or a `motion.*` animation, with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
+| `text-base` outside an input | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |
 | `focus-visible:ring-*` or `outline-none` with no replacement, outside a text field | The focus outline above |
 | A sidebar item in full ink while idle, or an active item with a raised surface | `text-muted-foreground` idle; flat `bg-accent` (`bg-sidebar-accent` in the sidebar), no shadow, and `text-accent-text` (label and icon) when active |
