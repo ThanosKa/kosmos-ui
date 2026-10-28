@@ -1,0 +1,104 @@
+---
+title: Bar list
+description: Shows ranked values, such as top pages or countries, as rows whose fill is the bar. The value and an optional share sit at the end.
+---
+
+<ComponentPreview name="bar-list-demo" />
+
+## Installation
+
+<ComponentInstall name="bar-list" />
+
+## Usage
+
+```tsx
+import { BarList } from '@/components/ui/bar-list';
+```
+
+```tsx
+<BarList
+  aria-label="Top pages"
+  items={[
+    { label: '/pricing', value: 18420 },
+    { label: '/docs/install', value: 15310 },
+    { label: '/changelog', value: 4980 },
+  ]}
+/>
+```
+
+Each row's fill is its bar, as wide as its value against the largest one. A small value keeps a short bar, so it never reads as a stray line, and a zero draws none. The label sits on the bar and the value at the end. The largest value's bar is a step stronger than the rest, so the leader stands out without a color. On a tie, the first of them leads. Pass the rows in the order to show them, most often largest first. Pass only the top few, since the list does not scroll.
+
+Screen readers read a list with one item per row: the label, the meta and the value as text. The bar is decoration and stays hidden from them. Name the list with `aria-label`, or point `aria-labelledby` at the title above it.
+
+## Examples
+
+### Meta and share
+
+`meta` adds muted text after the label, such as a count or a country code. `showShare` adds a column with each row's share of the total. A share under 1% reads `<1%`.
+
+<ComponentPreview name="bar-list-share" />
+
+### Top rows of a larger total
+
+When the list shows only the top rows, pass the whole as `total`. Each share is then a share of everything, not of the rows shown.
+
+<ComponentPreview name="bar-list-total" />
+
+### Format the value
+
+`format` writes each value. By default it groups the digits (18,420). Pass a compact or currency formatter for large numbers and money. A long label truncates and a value never does. Write values of a million and up compact (8.7M).
+
+<ComponentPreview name="bar-list-format" />
+
+### Empty
+
+With no items, the list shows `empty` in its place. Say what is missing, such as "No events in this range".
+
+<ComponentPreview name="bar-list-empty" />
+
+## API
+
+### BarList
+
+Renders a `<ul>` and takes its props. With no items it renders `empty` in a status `<div>` with the same props. It also takes:
+
+<TypeTable
+  type={{
+    items: {
+      description: 'The rows, in the order to show them.',
+      type: 'BarListItem[]',
+      required: true,
+    },
+    format: {
+      description: 'Writes each value.',
+      type: '(value: number) => string',
+      default: 'a grouped number (18,420)',
+    },
+    showShare: {
+      description: "Adds a column with each row's share of the total.",
+      type: 'boolean',
+      default: 'false',
+    },
+    total: {
+      description: 'What the share is a share of, when the list shows only the top rows.',
+      type: 'number',
+      default: 'the sum of items',
+    },
+    empty: {
+      description: 'What shows in place of the list when items is empty.',
+      type: 'ReactNode',
+      default: "'No data yet'",
+    },
+  }}
+/>
+
+### BarListItem
+
+<TypeTable
+  type={{
+    label: { description: 'What the row counts. A long label truncates.', type: 'ReactNode', required: true },
+    value: { description: 'The number, written by `format` as given. A negative value draws no bar.', type: 'number', required: true },
+    meta: { description: 'Muted text after the label.', type: 'ReactNode' },
+    id: { description: 'Identifies the row across renders.', type: 'Key', default: 'its position' },
+  }}
+/>
