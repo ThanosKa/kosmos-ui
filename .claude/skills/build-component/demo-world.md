@@ -6,7 +6,7 @@ Every block's sample data, review preview, demo and docs page uses this world an
 
 A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
 
-Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status.
+Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status. The one exception is the CRM dashboard, which is about deals: it uses pipeline, deals and stages as written under Sales below, and nothing else on the list.
 
 ## Workspace, domains, dates
 
@@ -192,6 +192,8 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | CTA | The close of the Acme website: a two-line title and "Start for free" (Marketing site below). |
 | Feature section | One feature of the Acme website, dashboards: a live Active users panel beside the points that explain it (Marketing site below). |
 | Testimonials | What people at Acme's customer projects say about it on the Acme website (Marketing site below). |
+| Analytics dashboard | Acme's own website and signups (Website and signups below): four KPIs, traffic against the period before (7, 30 or 90 days), sources, top pages, countries, the October signup goal and the newest signups. |
+| CRM dashboard | Acme's sales of plan upgrades to its customer projects (Sales below): four KPIs, the deals, today's next steps, the pipeline by stage, quota and the team's activity. |
 
 ## Marketing site
 
@@ -209,6 +211,27 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 - Feature section: title "Dashboards your whole team reads", one line "Pin the numbers you check every morning. Acme keeps them current, a minute behind your events." The visual is a panel of Active users with a 7d, 30d and 90d range, showing the overview metrics' Active users and its chart points (30d first). The card beside it: "One view for everyone", "Build a dashboard once and every teammate opens the same numbers, with the same filters, at the same time.", the points "Share it with a link" (`/docs/dashboards/share`), "Send a Monday digest" (`/docs/dashboards/digest`) and "Export any chart" (`/docs/dashboards/export`), and the action "Read the dashboards guide" (secondary, to `/docs/dashboards`).
 - Testimonials: the title "Teams that know what happens next" with the line "Product, engineering and growth teams on what changed once their events landed in Acme." The featured quote is Grace Whitfield, VP of product at Cirrus Weather (the case study Lena Park asked for), on the storm of October 2. The wall, in project table order: Ines Duarte (Head of growth, Fernhill Books), Marcus Bell (iOS lead, Brightloop Fitness), Ruth Adeyemi (Data engineer, Copperline Bank, on passing the event quota), Owen Fitzgerald (Founder, Saltmarsh Coffee), Sofia Lindqvist (Product manager, Driftwood Travel), Daniel Okafor (Mobile engineer, Cirrus Weather), Noor Rahman (Developer, Pebble & Pine), Tessa Morgan (Editor, Marigold Recipes) and Leila Haddad (Operations lead, Ironbark Logistics). They are customers, never the Acme team, and show their initials, not photos.
 - Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
+
+## Website and signups
+
+The analytics dashboard shows `acme.example` itself over the 30 days to 11 October, against the 30 before. Its KPIs are the product metrics above (Signups, Conversion, Median session) with the visitors they imply: 1,284 signups at 3.3% is 38,910 visitors, down 8.4% (−3,573) from 42,483 at 2.9%.
+
+- Traffic: Visitors 38,910 (−8.4%), Page views 126,400 (−5.1%), Bounce rate 38.2% (−2.1 pts, falling is good). 7 days: 9,180 (+1.8%), 29,800 (+2.6%), 37.6% (−0.8 pts). 90 days: 121,400 (+6.3%), 391,200 (+7.9%), 39.0% (−1.2 pts). About 1,300 visitors a day, a little lower at weekends.
+- Sources: Search 15,950, Direct 10,510, Referral 6,610, Social 3,890, Email 1,950 (they add up to the visitors).
+- Top pages: `/pricing` 9,840, `/docs/install` 8,170, `/` 7,410, `/docs/events` 5,150, `/changelog` 2,660.
+- Countries: United States 15,180, Germany 5,470, United Kingdom 4,550, France 3,330, Greece 2,470.
+- Signup goal: October target 1,300 signups, 482 so far (37%), 1.6 pts ahead of pace; owned by Growth (Kai Nakamura, Lena Park, Ama Mensah).
+- Recent signups are people at the customer projects from the Testimonials cast, each on their project's plan (a trial shows as Trial) with its monthly revenue, at `<first name>@<project domain>`: Leila Haddad, Daniel Okafor, Tessa Morgan, Owen Fitzgerald, Noor Rahman, Sofia Lindqvist, Ines Duarte, Marcus Bell and Ruth Adeyemi. Referrers are named, never a real domain ("Google", "GitHub", "Weekly digest").
+
+## Sales
+
+The CRM dashboard is Acme's own sales: plan upgrades and yearly billing sold to its customer projects. A deal's value is a year of the plan it sells. The sales team: Rosa Delgado (RD) and Felix Brandt (FB) sell Scale plans, Mina Sato (MS) Pro plans, with Kai Nakamura from Growth.
+
+- KPIs: Pipeline $184.6K (23 open deals, +9.2%), Won $31.7K this quarter (+18.6%), Win rate 28% over 90 days (+2.4 pts from 25.6%), Sales cycle 34 days from trial to won (−10.5%, −4 days, falling is good).
+- Stages, with their tag hue: Lead (gray) $20.6K in 9 deals, Qualified (blue) $29.6K in 6, Proposal (violet) $38.4K in 5, Negotiation (amber) $96K in 3, Won (green) $31.7K in 5. Lead to won 9.8%, average deal $8K, 3 stalled.
+- Deals, by close date: Annual Pro, Saltmarsh Coffee, Mina Sato, Won, $1,430 (Oct 11); More events, Copperline Bank (16M events a month, past its quota), Rosa Delgado, Negotiation 80%, $86,400 (Oct 18); Pro to Scale, Cirrus Weather, Felix Brandt, Proposal 55%, $14,400 (Oct 26); Annual billing, Ironbark Logistics, Rosa Delgado, Qualified 35%, $27,840 (Nov 13); Pro to Scale, Driftwood Travel, Felix Brandt, Proposal 45%, $14,400 (Nov 20); Trial to Pro, Marigold Recipes, Mina Sato, Lead 15%, $588 (Nov 28); Trial to Pro, Tidepool Notes, Kai Nakamura, Lead 20%, $588 (Dec 2).
+- Quota this quarter: Rosa Delgado $14.8K of $16K, Felix Brandt $9.6K of $12K, Mina Sato $4.9K of $8K, Kai Nakamura $2.4K of $4.4K (they add up to Won).
+- Next steps today: call Copperline Bank, send the Cirrus Weather proposal, follow up with Ironbark Logistics, book a demo with Marigold Recipes (its trial ends Oct 22), answer Tidepool Notes in chat.
 
 ## AI agents
 

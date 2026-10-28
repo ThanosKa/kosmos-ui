@@ -1,0 +1,820 @@
+'use client';
+
+import { Ellipsis, ListFilter, Percent, Search, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import * as React from 'react';
+import { Cell, Pie, PieChart } from 'recharts';
+import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
+import { cn } from '@/registry/kosmos/lib/cn';
+import { statDelta } from '@/registry/kosmos/lib/stat-delta';
+import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from '@/registry/kosmos/ui/avatar';
+import { Badge } from '@/registry/kosmos/ui/badge';
+import { BarList, type BarListItem } from '@/registry/kosmos/ui/bar-list';
+import { Button } from '@/registry/kosmos/ui/button';
+import { ChartContainer, GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/registry/kosmos/ui/dropdown-menu';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/kosmos/ui/input-group';
+import { Meter, MeterBar, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
+import {
+  Pagination,
+  PaginationNext,
+  PaginationPageSize,
+  PaginationPages,
+  PaginationPrevious,
+  PaginationStatus,
+} from '@/registry/kosmos/ui/pagination';
+import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
+import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import {
+  StatCard,
+  StatCardContent,
+  StatCardDelta,
+  StatCardEyebrow,
+  StatCardHeader,
+  StatCardIcon,
+  StatCardLabel,
+  StatCardSparkline,
+  StatCardValue,
+} from '@/registry/kosmos/ui/stat-card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
+
+type Range = '7d' | '30d' | '90d';
+type Plan = 'free' | 'pro' | 'scale' | 'trial';
+type GoodWhen = 'up' | 'down' | 'neither';
+
+type Kpi = {
+  id: string;
+  icon: LucideIcon;
+  /** A muted line of context above the label ("Visit to signup"). */
+  eyebrow?: string;
+  label: string;
+  /** The value, already formatted ("3.3%", "4m 12s"). */
+  value: string;
+  /** The change against the period before, in percent, or in points with `unit: 'points'`. */
+  change: number;
+  unit?: 'percent' | 'points';
+  goodWhen?: GoodWhen;
+  /** Muted text after the change ("(+52)", "from 2.9%"). */
+  context?: string;
+  /** The values behind the sparkline, oldest first. */
+  trend: number[];
+};
+
+type TrafficTotal = { label: string; value: string; change: number; unit?: 'percent' | 'points'; goodWhen?: GoodWhen };
+type TrafficPoint = { label: string; current: number; previous: number };
+type Traffic = { totals: TrafficTotal[]; points: TrafficPoint[] };
+
+type Source = { id: string; label: string; visitors: number };
+
+type SignupGoal = {
+  /** What the goal covers, under the title ("October target: 1,300 signups"). */
+  description: string;
+  count: number;
+  target: number;
+  /** How far ahead (+) or behind (−) of an even pace the count is, in percentage points. */
+  pace: number;
+  /** The team that owns the goal, as avatars beside its name. */
+  team: { label: string; people: { name: string; avatarUrl?: string }[] };
+};
+
+type Presence = 'online' | 'away' | 'offline';
+
+type Signup = {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  presence?: Presence;
+  plan: Plan;
+  source: string;
+  /** Where the visit came from within its source ("Google", "Weekly digest"). */
+  referrer: string;
+  /** The last onboarding step done, and how far along onboarding is, 0 to 100. */
+  step: string;
+  activation: number;
+  /** The monthly revenue of the signup's project, in USD. 0 on Free and on a trial. */
+  mrr: number;
+  /** When they signed up, already written ("2 min ago"). */
+  joined: string;
+};
+
+// Sample data: Acme's own website and signups, over the 30 days to 11 October 2026. Replace it with yours.
+const dayLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const dayBefore = (daysAgo: number) => dayLabel.format(Date.UTC(2026, 9, 11) - daysAgo * 86_400_000);
+
+/** A calm line: small steps around a trend from `start` to `end`, with weekends lower. */
+const wave = (length: number, start: number, end: number, phase: number, weekly: boolean) =>
+  Array.from({ length }, (_, i) => {
+    const trend = start + ((end - start) * i) / Math.max(1, length - 1);
+    const weekend = weekly && (i + phase) % 7 >= 5 ? -0.05 : 0;
+    return Math.round(trend * (1 + weekend + 0.015 * Math.sin(i * 0.8 + phase)));
+  });
+
+function samplePoints(length: number, step: number, currentEnds: [number, number], previousEnds: [number, number], weekly: boolean) {
+  const current = wave(length, ...currentEnds, 2, weekly);
+  const previous = wave(length, ...previousEnds, 4, weekly);
+  return current.map((value, i) => ({ label: dayBefore((length - 1 - i) * step), current: value, previous: previous[i] }));
+}
+
+const sampleTraffic: Record<Range, Traffic> = {
+  '7d': {
+    totals: [
+      { label: 'Visitors', value: '9,180', change: 1.8 },
+      { label: 'Page views', value: '29,800', change: 2.6 },
+      { label: 'Bounce rate', value: '37.6%', change: -0.8, unit: 'points', goodWhen: 'down' },
+    ],
+    points: samplePoints(7, 1, [1280, 1350], [1270, 1300], true),
+  },
+  '30d': {
+    totals: [
+      { label: 'Visitors', value: '38,910', change: -8.4 },
+      { label: 'Page views', value: '126,400', change: -5.1 },
+      { label: 'Bounce rate', value: '38.2%', change: -2.1, unit: 'points', goodWhen: 'down' },
+    ],
+    points: samplePoints(30, 1, [1240, 1350], [1460, 1370], true),
+  },
+  '90d': {
+    totals: [
+      { label: 'Visitors', value: '121,400', change: 6.3 },
+      { label: 'Page views', value: '391,200', change: 7.9 },
+      { label: 'Bounce rate', value: '39.0%', change: -1.2, unit: 'points', goodWhen: 'down' },
+    ],
+    points: samplePoints(13, 7, [8600, 9300], [8200, 8700], false),
+  },
+};
+
+const sampleKpis: Kpi[] = [
+  {
+    id: 'visitors',
+    icon: Users,
+    eyebrow: 'acme.example',
+    label: 'Visitors',
+    value: '38,910',
+    change: -8.4,
+    context: '(−3,573)',
+    trend: [10120, 10040, 9890, 9760, 9820, 9640, 9580, 9610, 9470, 9390, 9420, 9180],
+  },
+  {
+    id: 'signups',
+    icon: UserPlus,
+    eyebrow: 'Free and trial',
+    label: 'Signups',
+    value: '1,284',
+    change: 4.2,
+    context: '(+52)',
+    trend: [96, 104, 99, 108, 112, 106, 115, 118, 112, 121, 117, 121],
+  },
+  {
+    id: 'conversion',
+    icon: Percent,
+    eyebrow: 'Visit to signup',
+    label: 'Conversion',
+    value: '3.3%',
+    change: 0.4,
+    unit: 'points',
+    context: 'from 2.9%',
+    trend: [2.9, 3.0, 2.9, 3.1, 3.0, 3.1, 3.2, 3.1, 3.2, 3.3, 3.2, 3.3],
+  },
+  {
+    id: 'session',
+    icon: Timer,
+    eyebrow: 'Per visit',
+    label: 'Median session',
+    value: '4m 12s',
+    change: -3.2,
+    context: '(−8s)',
+    trend: [262, 266, 259, 264, 258, 261, 255, 257, 254, 256, 253, 252],
+  },
+];
+
+const sampleSources: Source[] = [
+  { id: 'search', label: 'Search', visitors: 15950 },
+  { id: 'direct', label: 'Direct', visitors: 10510 },
+  { id: 'referral', label: 'Referral', visitors: 6610 },
+  { id: 'social', label: 'Social', visitors: 3890 },
+  { id: 'email', label: 'Email', visitors: 1950 },
+];
+
+const sampleTopPages: BarListItem[] = [
+  { id: 'pricing', label: '/pricing', value: 9840 },
+  { id: 'install', label: '/docs/install', value: 8170 },
+  { id: 'home', label: '/', value: 7410 },
+  { id: 'events', label: '/docs/events', value: 5150 },
+  { id: 'changelog', label: '/changelog', value: 2660 },
+];
+
+const sampleCountries: BarListItem[] = [
+  { id: 'us', label: 'United States', meta: 'US', value: 15180 },
+  { id: 'de', label: 'Germany', meta: 'DE', value: 5470 },
+  { id: 'gb', label: 'United Kingdom', meta: 'GB', value: 4550 },
+  { id: 'fr', label: 'France', meta: 'FR', value: 3330 },
+  { id: 'gr', label: 'Greece', meta: 'GR', value: 2470 },
+];
+
+const sampleGoal: SignupGoal = {
+  description: 'October target: 1,300 signups',
+  count: 482,
+  target: 1300,
+  pace: 1.6,
+  team: { label: 'Growth', people: [{ name: 'Kai Nakamura' }, { name: 'Lena Park' }, { name: 'Ama Mensah' }] },
+};
+
+const sampleSignups: Signup[] = [
+  { id: 'leila', name: 'Leila Haddad', email: 'leila@ironbark.example', presence: 'online', plan: 'scale', source: 'Search', referrer: 'Google', step: 'Invited the team', activation: 92, mrr: 2900, joined: '2 min ago' },
+  { id: 'daniel', name: 'Daniel Okafor', email: 'daniel@cirrus.example', presence: 'online', plan: 'pro', source: 'Referral', referrer: 'GitHub', step: 'Sent a first event', activation: 64, mrr: 390, joined: '18 min ago' },
+  { id: 'tessa', name: 'Tessa Morgan', email: 'tessa@marigold.example', presence: 'away', plan: 'trial', source: 'Direct', referrer: 'Typed the address', step: 'Installed the SDK', activation: 41, mrr: 0, joined: '1 hour ago' },
+  { id: 'owen', name: 'Owen Fitzgerald', email: 'owen@saltmarsh.example', presence: 'offline', plan: 'pro', source: 'Email', referrer: 'Weekly digest', step: 'Built a funnel', activation: 78, mrr: 149, joined: '3 hours ago' },
+  { id: 'noor', name: 'Noor Rahman', email: 'noor@pebblepine.example', presence: 'online', plan: 'free', source: 'Social', referrer: 'Mastodon', step: 'Created a project', activation: 18, mrr: 0, joined: '5 hours ago' },
+  { id: 'sofia', name: 'Sofia Lindqvist', email: 'sofia@driftwood.example', presence: 'offline', plan: 'pro', source: 'Search', referrer: 'Google', step: 'Built a funnel', activation: 81, mrr: 290, joined: 'Yesterday' },
+  { id: 'ines', name: 'Ines Duarte', email: 'ines@fernhill.example', presence: 'away', plan: 'scale', source: 'Referral', referrer: 'acme.example/docs', step: 'Invited the team', activation: 95, mrr: 2400, joined: 'Yesterday' },
+  { id: 'marcus', name: 'Marcus Bell', email: 'marcus@brightloop.example', presence: 'offline', plan: 'scale', source: 'Direct', referrer: 'Typed the address', step: 'Sent a first event', activation: 58, mrr: 3600, joined: 'Oct 9' },
+  { id: 'ruth', name: 'Ruth Adeyemi', email: 'ruth@copperline.example', presence: 'offline', plan: 'scale', source: 'Email', referrer: 'Quota alert', step: 'Exported events', activation: 88, mrr: 4800, joined: 'Oct 8' },
+];
+
+// A fixed locale, so the server and the browser render the same text.
+const grouped = new Intl.NumberFormat('en-US');
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+const ranges: Record<Range, { label: string; xLabel: string }> = {
+  '7d': { label: '7 days', xLabel: 'Day' },
+  '30d': { label: '30 days', xLabel: 'Day' },
+  '90d': { label: '90 days', xLabel: 'Week of' },
+};
+
+const plans: Record<Plan, { label: string; hue: 'gray' | 'blue' | 'violet' | 'amber' }> = {
+  free: { label: 'Free', hue: 'gray' },
+  pro: { label: 'Pro', hue: 'blue' },
+  scale: { label: 'Scale', hue: 'violet' },
+  trial: { label: 'Trial', hue: 'amber' },
+};
+
+const sourceColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('');
+
+function shareText(value: number, total: number) {
+  if (total <= 0 || value <= 0) return '0%';
+  const percent = (value / total) * 100;
+  return percent < 1 ? '<1%' : `${Math.round(percent)}%`;
+}
+
+function trendLabel(kpi: Kpi) {
+  const delta = statDelta(kpi.change, { unit: kpi.unit, goodWhen: kpi.goodWhen });
+  const direction = !delta || delta.direction === 'flat' ? 'flat' : delta.direction;
+  return `${kpi.label}, last ${kpi.trend.length} weeks, ${direction}${delta && direction !== 'flat' ? ` ${delta.text}` : ''}`;
+}
+
+/** The KPIs as Stat cards on one tray: four in a row on a wide page, two on a medium one, one on a phone. */
+function KpiStrip({ kpis }: { kpis: Kpi[] }) {
+  if (kpis.length === 0) return null;
+  return (
+    <Panel role="group" aria-label="Key metrics">
+      <div className="grid gap-1 @lg/panel:grid-cols-2 @5xl/panel:grid-cols-4">
+        {kpis.map(({ icon: Icon, ...kpi }) => (
+          <StatCard key={kpi.id} className="rounded-[calc(var(--radius-2xl)-4px)]">
+            <StatCardHeader>
+              <StatCardIcon>
+                <Icon />
+              </StatCardIcon>
+              {kpi.eyebrow ? <StatCardEyebrow>{kpi.eyebrow}</StatCardEyebrow> : null}
+              <StatCardLabel>{kpi.label}</StatCardLabel>
+            </StatCardHeader>
+            <StatCardContent>
+              <StatCardValue>{kpi.value}</StatCardValue>
+              <StatCardDelta value={kpi.change} unit={kpi.unit} goodWhen={kpi.goodWhen}>
+                {kpi.context ? <bdi>{kpi.context}</bdi> : undefined}
+              </StatCardDelta>
+              {kpi.trend.length > 1 ? (
+                <StatCardSparkline data={kpi.trend.map((value) => ({ value }))} aria-label={trendLabel({ ...kpi, icon: Icon })} />
+              ) : null}
+            </StatCardContent>
+          </StatCard>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+/** A change as a triangle and a signed number, green for good news and red for bad, with no context. */
+function Change({ value, unit, goodWhen }: { value: number; unit?: 'percent' | 'points'; goodWhen?: GoodWhen }) {
+  const delta = statDelta(value, { unit, goodWhen });
+  if (!delta) return null;
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 text-caption font-medium whitespace-nowrap text-muted-foreground tabular-nums',
+        delta.tone === 'good' && 'text-tint-green-foreground',
+        delta.tone === 'bad' && 'text-tint-red-foreground',
+      )}
+    >
+      {delta.direction === 'flat' ? null : (
+        <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
+          <path d="M4 0.5 7.5 7H0.5z" />
+        </svg>
+      )}
+      <bdi>{delta.text}</bdi>
+    </span>
+  );
+}
+
+function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range, Traffic>; range: Range; onRangeChange: (range: Range) => void }) {
+  const { totals, points } = traffic[range];
+  const rangeLabel = ranges[range].label;
+  const config = {
+    current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
+    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-1)' },
+  } satisfies ChartConfig;
+
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle>Traffic</PanelTitle>
+        <PanelDescription>
+          Visitors a {range === '90d' ? 'week' : 'day'} against the {rangeLabel} before
+        </PanelDescription>
+        <PanelAction>
+          <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => onRangeChange(value as Range)}>
+            {(Object.keys(ranges) as Range[]).map((key) => (
+              <SegmentedControlItem key={key} value={key}>
+                {key}
+              </SegmentedControlItem>
+            ))}
+          </SegmentedControl>
+        </PanelAction>
+      </PanelHeader>
+      <PanelContent className="flex flex-col">
+        {totals.length > 0 ? (
+          <dl className="grid auto-cols-fr grid-flow-col divide-x divide-border border-b border-border">
+            {totals.map((total) => (
+              <div key={total.label} className="flex min-w-0 flex-col gap-1 px-4 py-3">
+                <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{total.label}</dt>
+                <dd className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+                  <span className="truncate text-title font-medium text-foreground tabular-nums">{total.value}</span>
+                  <Change value={total.change} unit={total.unit} goodWhen={total.goodWhen} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+        <div className="flex flex-1 flex-col justify-center px-4 pt-3 pb-4">
+          {points.length > 0 ? (
+            <GrowthChart
+              key={range}
+              title={`Visitors, last ${rangeLabel} against the ${rangeLabel} before`}
+              data={points}
+              config={config}
+              xKey="label"
+              xLabel={ranges[range].xLabel}
+              previousKeys={['previous']}
+              grid
+            />
+          ) : (
+            <p role="status" className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
+              No visits in this range yet
+            </p>
+          )}
+        </div>
+      </PanelContent>
+    </Panel>
+  );
+}
+
+/** Where visitors came from: a ring split by source, and the sources as a list with their visitors and share. */
+function SourcesPanel({ sources }: { sources: Source[] }) {
+  const total = sources.reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
+  const shown = sources.slice(0, sourceColors.length);
+  const config = Object.fromEntries(shown.map((source, i) => [source.id, { label: source.label, color: sourceColors[i] }])) satisfies ChartConfig;
+
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle>Sources</PanelTitle>
+        <PanelDescription>Where visitors came from</PanelDescription>
+      </PanelHeader>
+      <PanelContent className="flex flex-col items-center justify-center gap-5 p-4 @md/panel:flex-row">
+        {total > 0 ? (
+          <>
+            <div className="relative size-36 shrink-0">
+              <ChartContainer config={config} aria-hidden className="aspect-square size-full">
+                <PieChart>
+                  <Pie
+                    data={shown}
+                    dataKey="visitors"
+                    nameKey="label"
+                    innerRadius="74%"
+                    outerRadius="100%"
+                    stroke="var(--card)"
+                    strokeWidth={2}
+                    startAngle={90}
+                    endAngle={-270}
+                    isAnimationActive={false}
+                  >
+                    {shown.map((source, i) => (
+                      <Cell key={source.id} fill={sourceColors[i]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+              <div aria-hidden className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-caption text-muted-foreground">Visitors</span>
+                <span className="text-title font-medium tabular-nums">{compact.format(total)}</span>
+              </div>
+            </div>
+            <ul role="list" aria-label="Visitors by source" className="flex w-full min-w-0 flex-col divide-y divide-border">
+              {shown.map((source, i) => (
+                <li key={source.id} className="flex min-w-0 items-center gap-2 py-2 text-body first:pt-0 last:pb-0">
+                  <span
+                    aria-hidden
+                    style={{ '--series': sourceColors[i] } as React.CSSProperties}
+                    className="size-2 shrink-0 rounded-full bg-(--series) forced-colors:bg-[CanvasText]"
+                  />
+                  <span title={source.label} className="min-w-0 flex-1 truncate">
+                    {source.label}
+                  </span>
+                  <span className="tabular-nums">
+                    <bdi dir="ltr">{compact.format(source.visitors)}</bdi>
+                  </span>
+                  <span className="w-9 shrink-0 text-end text-small text-muted-foreground tabular-nums">
+                    <bdi dir="ltr">{shareText(source.visitors, total)}</bdi>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p role="status" className="flex min-h-36 items-center text-small text-muted-foreground">
+            No visitors yet
+          </p>
+        )}
+      </PanelContent>
+    </Panel>
+  );
+}
+
+function RankedPanel({ title, description, items, showShare, total }: { title: string; description: string; items: BarListItem[]; showShare?: boolean; total?: number }) {
+  const titleId = React.useId();
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>{title}</PanelTitle>
+        <PanelDescription>{description}</PanelDescription>
+      </PanelHeader>
+      <PanelContent className="p-3">
+        <BarList aria-labelledby={titleId} items={items} format={compact.format} showShare={showShare} total={total} empty="No visitors yet" />
+      </PanelContent>
+    </Panel>
+  );
+}
+
+function GoalPanel({ goal }: { goal: SignupGoal }) {
+  const percent = goal.target > 0 ? Math.round((goal.count / goal.target) * 100) : 0;
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle>Signup goal</PanelTitle>
+        <PanelDescription>{goal.description}</PanelDescription>
+      </PanelHeader>
+      <PanelContent className="flex flex-col justify-between gap-5 p-4">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="text-display text-foreground tabular-nums">{percent}%</span>
+          <StatCardDelta value={goal.pace} unit="points" className="text-caption">
+            {goal.pace < 0 ? 'behind pace' : 'ahead of pace'}
+          </StatCardDelta>
+        </div>
+        <Meter value={goal.count} max={Math.max(1, goal.target)} aria-label="Signups against the target" className="items-center">
+          <MeterSegments count={48} className="h-9 gap-0.75 *:rounded-full" />
+        </Meter>
+        <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <p className="text-small text-muted-foreground">
+            <span className="font-medium text-foreground tabular-nums">{grouped.format(goal.count)}</span> of{' '}
+            <span className="tabular-nums">{grouped.format(goal.target)}</span> signups
+          </p>
+          {goal.team.people.length > 0 ? (
+            <div className="flex min-w-0 items-center gap-2">
+              <AvatarGroup>
+                {goal.team.people.slice(0, 3).map((person) => (
+                  <Avatar key={person.name} size="sm" className="ring-card">
+                    {person.avatarUrl ? <AvatarImage src={person.avatarUrl} alt="" /> : null}
+                    <AvatarFallback>{initials(person.name)}</AvatarFallback>
+                  </Avatar>
+                ))}
+              </AvatarGroup>
+              <span className="truncate text-small text-muted-foreground">{goal.team.label}</span>
+            </div>
+          ) : null}
+        </div>
+      </PanelContent>
+    </Panel>
+  );
+}
+
+const presenceDot: Record<Presence, { className: string; label: string }> = {
+  online: { className: 'bg-success', label: 'Online' },
+  away: { className: 'bg-warning', label: 'Away' },
+  offline: { className: 'bg-muted-foreground', label: 'Offline' },
+};
+
+/** A value in ink with a muted line of context under it. */
+function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn('flex min-w-0 flex-col', className)}>
+      <span className="truncate text-body text-foreground">{primary}</span>
+      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    </div>
+  );
+}
+
+/** A person: the avatar with a presence dot, the name and their email under it. */
+function PersonCell({ signup }: { signup: Signup }) {
+  const presence = signup.presence ? presenceDot[signup.presence] : null;
+  return (
+    <div className="flex max-w-64 min-w-0 items-center gap-2.5">
+      <span className="relative shrink-0">
+        <Avatar>
+          {signup.avatarUrl ? <AvatarImage src={signup.avatarUrl} alt="" /> : null}
+          <AvatarFallback>{initials(signup.name)}</AvatarFallback>
+        </Avatar>
+        {presence ? (
+          <span
+            aria-hidden
+            className={cn('absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full ring-2 ring-card forced-colors:bg-[CanvasText]', presence.className)}
+          />
+        ) : null}
+      </span>
+      <TwoLine
+        primary={
+          <>
+            <span title={signup.name}>{signup.name}</span>
+            {presence ? <span className="sr-only">, {presence.label}</span> : null}
+          </>
+        }
+        secondary={<span title={signup.email}>{signup.email}</span>}
+      />
+    </div>
+  );
+}
+
+function SignupsPanel({ signups, signupActions }: { signups: Signup[]; signupActions?: (signup: Signup) => React.ReactNode }) {
+  const titleId = React.useId();
+  const [query, setQuery] = React.useState('');
+  const [plan, setPlan] = React.useState<Plan | 'all'>('all');
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(5);
+
+  const needle = query.trim().toLowerCase();
+  const rows = signups.filter(
+    (signup) =>
+      (plan === 'all' || signup.plan === plan) &&
+      (!needle || signup.name.toLowerCase().includes(needle) || signup.email.toLowerCase().includes(needle)),
+  );
+  const visible = rows.slice((page - 1) * pageSize, page * pageSize);
+  const columns = signupActions ? 7 : 6;
+
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Recent signups</PanelTitle>
+        <PanelDescription>Newest first</PanelDescription>
+        <PanelAction>
+          <InputGroup className="h-7.5 w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1">
+            <InputGroupAddon align="inline-start">
+              <Search aria-hidden />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              aria-label="Search signups"
+              placeholder="Search signups"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+            />
+          </InputGroup>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="secondary" />}>
+              <ListFilter data-icon="inline-start" aria-hidden />
+              {plan === 'all' ? 'Plan' : plans[plan].label}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Plan</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={plan}
+                  onValueChange={(value) => {
+                    setPlan(value as Plan | 'all');
+                    setPage(1);
+                  }}
+                >
+                  <DropdownMenuRadioItem value="all" closeOnClick>
+                    All plans
+                  </DropdownMenuRadioItem>
+                  {(Object.keys(plans) as Plan[]).map((key) => (
+                    <DropdownMenuRadioItem key={key} value={key} closeOnClick>
+                      {plans[key].label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </PanelAction>
+      </PanelHeader>
+      <PanelContent>
+        <Table aria-labelledby={titleId}>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="ps-4">Name</TableHead>
+              <TableHead>Plan</TableHead>
+              <TableHead>Source</TableHead>
+              <TableHead className="min-w-44">Activation</TableHead>
+              <TableHead className="text-end">MRR</TableHead>
+              <TableHead className={cn(!signupActions && 'pe-4')}>Joined</TableHead>
+              {signupActions ? (
+                <TableHead className="w-12 pe-4">
+                  <span className="sr-only">Actions</span>
+                </TableHead>
+              ) : null}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visible.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={columns} className="h-24 text-center text-small whitespace-normal text-muted-foreground">
+                  {signups.length === 0 ? 'No signups yet' : 'No signups match. Try another name or plan.'}
+                </TableCell>
+              </TableRow>
+            ) : (
+              visible.map((signup) => (
+                <TableRow key={signup.id}>
+                  <TableCell className="h-15 ps-4">
+                    <PersonCell signup={signup} />
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={plans[signup.plan].hue}>{plans[signup.plan].label}</Badge>
+                  </TableCell>
+                  <TableCell className="max-w-48">
+                    <TwoLine primary={signup.source} secondary={<span title={signup.referrer}>{signup.referrer}</span>} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex min-w-40 flex-col gap-1">
+                      <span className="truncate text-body">{signup.step}</span>
+                      <Meter value={signup.activation} aria-label={`${signup.name}, onboarding`} className="items-center gap-y-0">
+                        <MeterBar className="col-span-1 row-start-1" />
+                        <MeterValue className="row-start-1 w-9 text-caption" />
+                      </Meter>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-end">
+                    <TwoLine
+                      primary={signup.mrr > 0 ? usd.format(signup.mrr) : '—'}
+                      secondary={signup.mrr > 0 ? 'per month' : 'no charge'}
+                      className="items-end tabular-nums"
+                    />
+                  </TableCell>
+                  <TableCell className={cn('text-muted-foreground', !signupActions && 'pe-4')}>{signup.joined}</TableCell>
+                  {signupActions ? (
+                    <TableCell className="pe-4 text-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${signup.name}`} className="text-muted-foreground" />}
+                        >
+                          <Ellipsis aria-hidden />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">{signupActions(signup)}</DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </PanelContent>
+      {signups.length > 5 ? (
+        <PanelFooter>
+          <Pagination
+            aria-label="Pages of signups"
+            total={rows.length}
+            page={page}
+            onPageChange={setPage}
+            pageSize={pageSize}
+            onPageSizeChange={setPageSize}
+            className="w-full justify-between gap-x-3"
+          >
+            <PaginationPageSize options={[5, 10, 20]} className="@max-lg/panel:hidden" />
+            <div className="ms-auto flex flex-wrap items-center gap-x-3 gap-y-2">
+              <PaginationStatus>{({ from, to, total = 0 }) => `${from}–${to} of ${grouped.format(total)}`}</PaginationStatus>
+              <div className="flex items-center gap-1">
+                <PaginationPrevious />
+                <PaginationPages />
+                <PaginationNext />
+              </div>
+            </div>
+          </Pagination>
+        </PanelFooter>
+      ) : null}
+    </Panel>
+  );
+}
+
+type DashboardAnalyticsProps = Omit<React.ComponentProps<'section'>, 'children'> & {
+  /** The KPIs across the top, four in a row on a wide container. */
+  kpis?: Kpi[];
+  /** The traffic chart and its totals for each range. */
+  traffic?: Record<Range, Traffic>;
+  /** Visitors by source; the first five make the ring. */
+  sources?: Source[];
+  /** The most visited pages, most visited first. */
+  topPages?: BarListItem[];
+  /** Visitors by country, most first. Each row's share is against all visitors in `sources`. */
+  countries?: BarListItem[];
+  /** The signup goal of the month. */
+  goal?: SignupGoal;
+  /** The newest signups, newest first. */
+  signups?: Signup[];
+  /** The range of the traffic chart. Use with `onRangeChange`, or leave it out and pass `defaultRange`. */
+  range?: Range;
+  defaultRange?: Range;
+  onRangeChange?: (range: Range) => void;
+  /** The items of each signup's actions menu, as `DropdownMenuItem`s. Leave it out for no menu. */
+  signupActions?: (signup: Signup) => React.ReactNode;
+};
+
+/**
+ * A product analytics dashboard: the KPIs, traffic against the period before, sources, top pages, countries, the
+ * signup goal and the newest signups, each section on its own Panel. Lays itself out by its own width, not the screen's.
+ */
+function DashboardAnalytics({
+  kpis = sampleKpis,
+  traffic = sampleTraffic,
+  sources = sampleSources,
+  topPages = sampleTopPages,
+  countries = sampleCountries,
+  goal = sampleGoal,
+  signups = sampleSignups,
+  range: rangeProp,
+  defaultRange = '30d',
+  onRangeChange,
+  signupActions,
+  className,
+  ...props
+}: DashboardAnalyticsProps) {
+  const [range, setRange] = useControlled(rangeProp, defaultRange, onRangeChange);
+  const visitors = sources.reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
+
+  return (
+    <section
+      data-slot="dashboard-analytics"
+      aria-label="Analytics"
+      className={cn('@container flex min-w-0 flex-col gap-3', className)}
+      {...props}
+    >
+      <KpiStrip kpis={kpis} />
+      <div className="grid min-w-0 gap-3 @5xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <TrafficPanel traffic={traffic} range={range} onRangeChange={setRange} />
+        <SourcesPanel sources={sources} />
+      </div>
+      <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @6xl:grid-cols-3">
+        <RankedPanel title="Top pages" description="By visitors, last 30 days" items={topPages} />
+        <RankedPanel
+          title="Countries"
+          description="By visitors, last 30 days"
+          items={countries}
+          showShare
+          total={visitors > 0 ? visitors : undefined}
+        />
+        <GoalPanel goal={goal} />
+      </div>
+      <SignupsPanel signups={signups} signupActions={signupActions} />
+    </section>
+  );
+}
+
+export {
+  DashboardAnalytics,
+  type DashboardAnalyticsProps,
+  type Kpi as AnalyticsKpi,
+  type Traffic,
+  type TrafficTotal,
+  type TrafficPoint,
+  type Source as TrafficSource,
+  type SignupGoal,
+  type Signup,
+  type Plan as SignupPlan,
+  type Range as AnalyticsRange,
+};

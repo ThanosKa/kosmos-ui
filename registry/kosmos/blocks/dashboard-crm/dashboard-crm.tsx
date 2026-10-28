@@ -1,0 +1,688 @@
+'use client';
+
+import {
+  Briefcase,
+  CalendarCheck,
+  CalendarDays,
+  Check,
+  Clock,
+  Ellipsis,
+  FileSignature,
+  Mail,
+  MessageSquare,
+  Phone,
+  Plus,
+  Search,
+  Target,
+  Trophy,
+  type LucideIcon,
+} from 'lucide-react';
+import * as React from 'react';
+import { cn } from '@/registry/kosmos/lib/cn';
+import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
+import { Badge } from '@/registry/kosmos/ui/badge';
+import { BarList } from '@/registry/kosmos/ui/bar-list';
+import { Button } from '@/registry/kosmos/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
+import { Gauge } from '@/registry/kosmos/ui/gauge';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/kosmos/ui/input-group';
+import { Meter, MeterBar } from '@/registry/kosmos/ui/meter';
+import {
+  Pagination,
+  PaginationNext,
+  PaginationPageSize,
+  PaginationPages,
+  PaginationPrevious,
+  PaginationStatus,
+} from '@/registry/kosmos/ui/pagination';
+import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
+import {
+  StatCard,
+  StatCardContent,
+  StatCardDelta,
+  StatCardEyebrow,
+  StatCardHeader,
+  StatCardIcon,
+  StatCardLabel,
+  StatCardSparkline,
+  StatCardValue,
+} from '@/registry/kosmos/ui/stat-card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
+
+type Stage = 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won';
+
+type Kpi = {
+  id: string;
+  icon: LucideIcon;
+  /** A muted line of context above the label ("23 open deals"). */
+  eyebrow?: string;
+  label: string;
+  /** The value, already formatted ("$184.6K", "34 days"). */
+  value: string;
+  /** The change against the period before, in percent, or in points with `unit: 'points'`. */
+  change: number;
+  unit?: 'percent' | 'points';
+  goodWhen?: 'up' | 'down' | 'neither';
+  /** Muted text after the change ("(+$15.6K)", "from 25.6%"). */
+  context?: string;
+  /** The values behind the bars, oldest first. */
+  trend: number[];
+};
+
+type Deal = {
+  id: string;
+  /** What is being sold ("Pro to Scale"). */
+  name: string;
+  /** Who it is sold to. */
+  customer: string;
+  /** Who on the team works it. */
+  rep: string;
+  stage: Stage;
+  /** How likely it is to close, 0 to 100. */
+  winChance: number;
+  /** The value of the deal a year, in USD. */
+  value: number;
+  /** A muted line under the value ("8M events a month"). */
+  detail?: string;
+  /** The close date and how far off it is, already written ("Oct 18", "in 7 days"). */
+  closeDate: string;
+  closeNote?: string;
+};
+
+type StageTotal = { stage: Stage; value: number; deals: number };
+type StageStat = { label: string; value: string };
+
+type Task = {
+  id: string;
+  icon: LucideIcon;
+  title: string;
+  detail?: string;
+  /** The label of the task's button ("Call", "Send"). */
+  action: string;
+};
+
+type QuotaRow = { id: string; name: string; team: string; avatarUrl?: string; won: number; target: number };
+type ActivityItem = { id: string; who: string; avatarUrl?: string; what: string; when: string };
+
+// Sample data: Acme's own sales of plan upgrades to its customers, on 11 October 2026. Replace it with yours.
+const sampleKpis: Kpi[] = [
+  {
+    id: 'pipeline',
+    icon: Briefcase,
+    eyebrow: '23 open deals',
+    label: 'Pipeline',
+    value: '$184.6K',
+    change: 9.2,
+    context: '(+$15.6K)',
+    trend: [138, 142, 141, 149, 156, 153, 162, 169, 177, 185],
+  },
+  {
+    id: 'won',
+    icon: Trophy,
+    eyebrow: 'This quarter',
+    label: 'Won',
+    value: '$31.7K',
+    change: 18.6,
+    context: '(+$5K)',
+    trend: [18, 22, 19, 24, 21, 26, 24, 27, 29, 32],
+  },
+  {
+    id: 'win-rate',
+    icon: Target,
+    eyebrow: 'Last 90 days',
+    label: 'Win rate',
+    value: '28%',
+    change: 2.4,
+    unit: 'points',
+    context: 'from 25.6%',
+    trend: [22, 24, 23, 25, 24, 26, 25, 27, 26, 28],
+  },
+  {
+    id: 'cycle',
+    icon: Clock,
+    eyebrow: 'Trial to won',
+    label: 'Sales cycle',
+    value: '34 days',
+    change: -10.5,
+    goodWhen: 'down',
+    context: '(−4 days)',
+    trend: [42, 41, 40, 39, 39, 38, 37, 36, 35, 34],
+  },
+];
+
+const sampleDeals: Deal[] = [
+  { id: 'saltmarsh-annual', name: 'Annual Pro', customer: 'Saltmarsh Coffee', rep: 'Mina Sato', stage: 'won', winChance: 100, value: 1430, detail: 'Pro, billed yearly', closeDate: 'Oct 11', closeNote: 'signed today' },
+  { id: 'copperline-events', name: 'More events', customer: 'Copperline Bank', rep: 'Rosa Delgado', stage: 'negotiation', winChance: 80, value: 86400, detail: '16M events a month', closeDate: 'Oct 18', closeNote: 'in 7 days' },
+  { id: 'cirrus-scale', name: 'Pro to Scale', customer: 'Cirrus Weather', rep: 'Felix Brandt', stage: 'proposal', winChance: 55, value: 14400, detail: '8M events a month', closeDate: 'Oct 26', closeNote: 'in 15 days' },
+  { id: 'ironbark-annual', name: 'Annual billing', customer: 'Ironbark Logistics', rep: 'Rosa Delgado', stage: 'qualified', winChance: 35, value: 27840, detail: 'Scale, billed yearly', closeDate: 'Nov 13', closeNote: 'in 33 days' },
+  { id: 'driftwood-scale', name: 'Pro to Scale', customer: 'Driftwood Travel', rep: 'Felix Brandt', stage: 'proposal', winChance: 45, value: 14400, detail: '8M events a month', closeDate: 'Nov 20', closeNote: 'in 40 days' },
+  { id: 'marigold-pro', name: 'Trial to Pro', customer: 'Marigold Recipes', rep: 'Mina Sato', stage: 'lead', winChance: 15, value: 588, detail: '3M events a month', closeDate: 'Nov 28', closeNote: 'in 48 days' },
+  { id: 'tidepool-pro', name: 'Trial to Pro', customer: 'Tidepool Notes', rep: 'Kai Nakamura', stage: 'lead', winChance: 20, value: 588, detail: '3M events a month', closeDate: 'Dec 2', closeNote: 'in 52 days' },
+];
+
+const sampleStages: StageTotal[] = [
+  { stage: 'lead', value: 20600, deals: 9 },
+  { stage: 'qualified', value: 29600, deals: 6 },
+  { stage: 'proposal', value: 38400, deals: 5 },
+  { stage: 'negotiation', value: 96000, deals: 3 },
+  { stage: 'won', value: 31700, deals: 5 },
+];
+
+const sampleStageStats: StageStat[] = [
+  { label: 'Lead to won', value: '9.8%' },
+  { label: 'Average deal', value: '$8K' },
+  { label: 'Stalled', value: '3 deals' },
+];
+
+const sampleTasks: Task[] = [
+  { id: 'call-copperline', icon: Phone, title: 'Call Copperline Bank', detail: 'About more events · 11:00', action: 'Call' },
+  { id: 'send-cirrus', icon: FileSignature, title: 'Send the Cirrus Weather proposal', detail: 'Draft ready · due today', action: 'Send' },
+  { id: 'email-ironbark', icon: Mail, title: 'Follow up with Ironbark Logistics', detail: 'No reply for 6 days', action: 'Email' },
+  { id: 'book-marigold', icon: CalendarCheck, title: 'Book a demo with Marigold Recipes', detail: 'Trial ends Oct 22', action: 'Book' },
+  { id: 'reply-tidepool', icon: MessageSquare, title: 'Answer Tidepool Notes in chat', detail: 'A question about the SDK', action: 'Reply' },
+];
+
+const sampleQuota: QuotaRow[] = [
+  { id: 'rosa', name: 'Rosa Delgado', team: 'Scale plans', won: 14800, target: 16000 },
+  { id: 'felix', name: 'Felix Brandt', team: 'Scale plans', won: 9600, target: 12000 },
+  { id: 'mina', name: 'Mina Sato', team: 'Pro plans', won: 4900, target: 8000 },
+  { id: 'kai', name: 'Kai Nakamura', team: 'Growth', won: 2400, target: 4400 },
+];
+
+const sampleActivity: ActivityItem[] = [
+  { id: '1', who: 'Rosa Delgado', what: 'moved More events with Copperline Bank to Negotiation', when: '12m' },
+  { id: '2', who: 'Mina Sato', what: 'won Annual Pro with Saltmarsh Coffee, $1,430', when: '1h' },
+  { id: '3', who: 'Felix Brandt', what: 'logged a call with Cirrus Weather', when: '3h' },
+  { id: '4', who: 'Kai Nakamura', what: 'added 2 contacts at Ironbark Logistics', when: '5h' },
+];
+
+// A fixed locale, so the server and the browser render the same text.
+const grouped = new Intl.NumberFormat('en-US');
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
+
+const stages: Record<Stage, { label: string; hue: 'gray' | 'blue' | 'violet' | 'amber' | 'green' }> = {
+  lead: { label: 'Lead', hue: 'gray' },
+  qualified: { label: 'Qualified', hue: 'blue' },
+  proposal: { label: 'Proposal', hue: 'violet' },
+  negotiation: { label: 'Negotiation', hue: 'amber' },
+  won: { label: 'Won', hue: 'green' },
+};
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('');
+
+/** The KPIs as Stat cards on one tray, each with thin bars for its last periods: four in a row on a wide page, two on a medium one. */
+function KpiStrip({ kpis }: { kpis: Kpi[] }) {
+  if (kpis.length === 0) return null;
+  return (
+    <Panel role="group" aria-label="Key metrics">
+      <div className="grid gap-1 @lg/panel:grid-cols-2 @5xl/panel:grid-cols-4">
+        {kpis.map(({ icon: Icon, ...kpi }) => (
+          <StatCard key={kpi.id} className="rounded-[calc(var(--radius-2xl)-4px)]">
+            <StatCardHeader>
+              <StatCardIcon>
+                <Icon />
+              </StatCardIcon>
+              {kpi.eyebrow ? <StatCardEyebrow>{kpi.eyebrow}</StatCardEyebrow> : null}
+              <StatCardLabel>{kpi.label}</StatCardLabel>
+            </StatCardHeader>
+            <StatCardContent>
+              <StatCardValue>{kpi.value}</StatCardValue>
+              <StatCardDelta value={kpi.change} unit={kpi.unit} goodWhen={kpi.goodWhen}>
+                {kpi.context ? <bdi>{kpi.context}</bdi> : undefined}
+              </StatCardDelta>
+              {kpi.trend.length > 1 ? (
+                <StatCardSparkline
+                  variant="bar"
+                  data={kpi.trend.map((value) => ({ value }))}
+                  aria-label={`${kpi.label}, last ${kpi.trend.length} weeks`}
+                />
+              ) : null}
+            </StatCardContent>
+          </StatCard>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+/** A value in ink with a muted line of context under it. */
+function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn('flex min-w-0 flex-col', className)}>
+      <span className="truncate text-body text-foreground">{primary}</span>
+      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    </div>
+  );
+}
+
+function PersonAvatar({ name, avatarUrl, size }: { name: string; avatarUrl?: string; size?: 'sm' | 'md' }) {
+  return (
+    <Avatar size={size}>
+      {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+      <AvatarFallback>{initials(name)}</AvatarFallback>
+    </Avatar>
+  );
+}
+
+/** How likely a deal is to close, as a ring with the percentage in it; a won deal shows a check. */
+function WinChance({ deal }: { deal: Deal }) {
+  const won = deal.stage === 'won' || deal.winChance >= 100;
+  return (
+    <Gauge
+      value={won ? 100 : deal.winChance}
+      size="sm"
+      tone={won ? 'success' : 'primary'}
+      showValue={!won}
+      aria-label={won ? 'Won' : `${deal.winChance}% likely to close`}
+    >
+      {won ? <Check aria-hidden className="size-3.5 text-success" /> : undefined}
+    </Gauge>
+  );
+}
+
+function DealsPanel({
+  deals,
+  onNewDeal,
+  dealActions,
+}: {
+  deals: Deal[];
+  onNewDeal?: () => void;
+  dealActions?: (deal: Deal) => React.ReactNode;
+}) {
+  const titleId = React.useId();
+  const [query, setQuery] = React.useState('');
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(5);
+
+  const needle = query.trim().toLowerCase();
+  const rows = deals.filter(
+    (deal) => !needle || [deal.name, deal.customer, deal.rep].some((text) => text.toLowerCase().includes(needle)),
+  );
+  const visible = rows.slice((page - 1) * pageSize, page * pageSize);
+  const columns = dealActions ? 5 : 4;
+
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Deals</PanelTitle>
+        <PanelDescription>By close date</PanelDescription>
+        <PanelAction>
+          <InputGroup className="h-7.5 w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1">
+            <InputGroupAddon align="inline-start">
+              <Search aria-hidden />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              aria-label="Search deals"
+              placeholder="Search deals"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+            />
+          </InputGroup>
+          {onNewDeal ? (
+            <Button variant="secondary" onClick={onNewDeal}>
+              <Plus data-icon="inline-start" aria-hidden />
+              Deal
+            </Button>
+          ) : null}
+        </PanelAction>
+      </PanelHeader>
+      <PanelContent>
+        <Table aria-labelledby={titleId}>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="ps-4">Deal</TableHead>
+              <TableHead>Stage</TableHead>
+              <TableHead className="text-end">Value</TableHead>
+              <TableHead className={cn(!dealActions && 'pe-4')}>Close</TableHead>
+              {dealActions ? (
+                <TableHead className="w-12 pe-4">
+                  <span className="sr-only">Actions</span>
+                </TableHead>
+              ) : null}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visible.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={columns} className="h-24 text-center text-small whitespace-normal text-muted-foreground">
+                  {deals.length === 0 ? 'No deals yet' : 'No deals match. Try another name.'}
+                </TableCell>
+              </TableRow>
+            ) : (
+              visible.map((deal) => (
+                <TableRow key={deal.id}>
+                  <TableCell className="h-15 ps-4">
+                    <div className="flex max-w-72 min-w-0 items-center gap-3">
+                      <WinChance deal={deal} />
+                      <TwoLine
+                        primary={<span title={deal.name}>{deal.name}</span>}
+                        secondary={
+                          <span title={`${deal.customer} · ${deal.rep}`}>
+                            {deal.customer}
+                            <span aria-hidden className="px-1">
+                              ·
+                            </span>
+                            <span className="sr-only">, </span>
+                            {deal.rep}
+                          </span>
+                        }
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={stages[deal.stage].hue}>{stages[deal.stage].label}</Badge>
+                  </TableCell>
+                  <TableCell className="text-end">
+                    <TwoLine primary={usd.format(deal.value)} secondary={deal.detail} className="items-end tabular-nums" />
+                  </TableCell>
+                  <TableCell className={cn(!dealActions && 'pe-4')}>
+                    <TwoLine
+                      primary={deal.closeDate}
+                      secondary={
+                        deal.closeNote ? (
+                          <span className="inline-flex items-center gap-1">
+                            <CalendarDays aria-hidden className="size-3 shrink-0" />
+                            {deal.closeNote}
+                          </span>
+                        ) : undefined
+                      }
+                    />
+                  </TableCell>
+                  {dealActions ? (
+                    <TableCell className="pe-4 text-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${deal.name}, ${deal.customer}`} className="text-muted-foreground" />}
+                        >
+                          <Ellipsis aria-hidden />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">{dealActions(deal)}</DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </PanelContent>
+      {deals.length > 5 ? (
+        <PanelFooter>
+          <Pagination
+            aria-label="Pages of deals"
+            total={rows.length}
+            page={page}
+            onPageChange={setPage}
+            pageSize={pageSize}
+            onPageSizeChange={setPageSize}
+            className="w-full justify-between gap-x-3"
+          >
+            <PaginationPageSize options={[5, 10, 20]} className="@max-lg/panel:hidden" />
+            <div className="ms-auto flex flex-wrap items-center gap-x-3 gap-y-2">
+              <PaginationStatus>{({ from, to, total = 0 }) => `${from}–${to} of ${grouped.format(total)}`}</PaginationStatus>
+              <div className="flex items-center gap-1">
+                <PaginationPrevious />
+                <PaginationPages />
+                <PaginationNext />
+              </div>
+            </div>
+          </Pagination>
+        </PanelFooter>
+      ) : null}
+    </Panel>
+  );
+}
+
+function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskAction?: (task: Task) => void; tasksHref?: string }) {
+  const titleId = React.useId();
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Next steps</PanelTitle>
+        <PanelDescription>{tasks.length === 0 ? 'Nothing due today' : `${tasks.length} due today`}</PanelDescription>
+      </PanelHeader>
+      <PanelContent>
+        {tasks.length === 0 ? (
+          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+            You are all caught up
+          </p>
+        ) : (
+          <ul aria-labelledby={titleId} role="list" className="flex flex-col divide-y divide-border">
+            {tasks.map(({ icon: Icon, ...task }) => (
+              <li key={task.id} className="flex min-w-0 items-center gap-3 px-4 py-3">
+                <span
+                  aria-hidden
+                  className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-transparent bg-secondary text-muted-foreground shadow-control"
+                >
+                  <Icon className="size-4" />
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <span className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
+                  {task.detail ? <span className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
+                </div>
+                <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction?.({ icon: Icon, ...task })}>
+                  {task.action}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </PanelContent>
+      {tasksHref ? (
+        <PanelFooter>
+          <Button variant="secondary" href={tasksHref} className="w-full">
+            View all tasks
+          </Button>
+        </PanelFooter>
+      ) : null}
+    </Panel>
+  );
+}
+
+function StagesPanel({ stageTotals, stats }: { stageTotals: StageTotal[]; stats: StageStat[] }) {
+  const titleId = React.useId();
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Pipeline by stage</PanelTitle>
+        <PanelDescription>Value of open deals, and won this quarter</PanelDescription>
+      </PanelHeader>
+      <PanelContent className="flex flex-col">
+        <BarList
+          aria-labelledby={titleId}
+          className="p-3"
+          items={stageTotals.map((row) => ({
+            id: row.stage,
+            label: stages[row.stage].label,
+            meta: `${grouped.format(row.deals)} ${row.deals === 1 ? 'deal' : 'deals'}`,
+            value: row.value,
+          }))}
+          format={usdCompact.format}
+          empty="No deals yet"
+        />
+        {stats.length > 0 ? (
+          <dl className="mt-auto grid auto-cols-fr grid-flow-col divide-x divide-border border-t border-border">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex min-w-0 flex-col gap-0.5 px-4 py-3">
+                <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{stat.label}</dt>
+                <dd className="truncate text-title font-medium text-foreground tabular-nums">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </PanelContent>
+    </Panel>
+  );
+}
+
+function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
+  const titleId = React.useId();
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Quota</PanelTitle>
+        <PanelDescription>Won this quarter against target</PanelDescription>
+      </PanelHeader>
+      <PanelContent>
+        {quota.length === 0 ? (
+          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+            No targets set for this quarter
+          </p>
+        ) : (
+          <ul aria-labelledby={titleId} role="list" className="flex flex-col divide-y divide-border">
+            {quota.map((row) => {
+              const percent = row.target > 0 ? (row.won / row.target) * 100 : 0;
+              return (
+                <li key={row.id} className="flex min-w-0 flex-col gap-2.5 px-4 py-3">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <PersonAvatar name={row.name} avatarUrl={row.avatarUrl} size="sm" />
+                      <TwoLine primary={<span title={row.name}>{row.name}</span>} secondary={row.team} />
+                    </div>
+                    <TwoLine
+                      primary={usdCompact.format(row.won)}
+                      secondary={`of ${usdCompact.format(row.target)}`}
+                      className="shrink-0 items-end tabular-nums"
+                    />
+                  </div>
+                  <Meter
+                    value={row.won}
+                    max={Math.max(1, row.target)}
+                    tone={percent >= 90 ? 'success' : 'primary'}
+                    aria-label={`${row.name}, quota`}
+                    getAriaValueText={() => `${Math.round(percent)}%`}
+                    className="items-center gap-y-0"
+                  >
+                    <MeterBar className="col-span-1 row-start-1" />
+                    <span aria-hidden className="col-start-2 row-start-1 min-w-9 text-end text-caption text-muted-foreground tabular-nums">
+                      {grouped.format(Math.round(percent))}%
+                    </span>
+                  </Meter>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </PanelContent>
+    </Panel>
+  );
+}
+
+function ActivityPanel({ activity }: { activity: ActivityItem[] }) {
+  const titleId = React.useId();
+  return (
+    <Panel>
+      <PanelHeader>
+        <PanelTitle id={titleId}>Activity</PanelTitle>
+        <PanelDescription>Your team, today</PanelDescription>
+      </PanelHeader>
+      <PanelContent className="p-4">
+        {activity.length === 0 ? (
+          <p role="status" className="flex min-h-28 items-center justify-center text-center text-small text-muted-foreground">
+            Nothing yet today
+          </p>
+        ) : (
+          <ol aria-labelledby={titleId} className="flex flex-col">
+            {activity.map((item, index) => (
+              <li key={item.id} className="relative flex min-w-0 gap-3 pb-4 last:pb-0">
+                {index < activity.length - 1 ? <span aria-hidden className="absolute start-3 top-7 bottom-1 w-px bg-border" /> : null}
+                <PersonAvatar name={item.who} avatarUrl={item.avatarUrl} size="sm" />
+                <p className="min-w-0 flex-1 pt-0.5 text-small wrap-break-word text-muted-foreground">
+                  <span className="font-medium text-foreground">{item.who}</span> {item.what}
+                </p>
+                <span className="shrink-0 pt-0.5 text-caption text-muted-foreground tabular-nums">
+                  {item.when}
+                  <span className="sr-only"> ago</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </PanelContent>
+    </Panel>
+  );
+}
+
+type DashboardCrmProps = Omit<React.ComponentProps<'section'>, 'children'> & {
+  /** The KPIs across the top, four in a row on a wide container. */
+  kpis?: Kpi[];
+  /** The deals in the table, in the order to show them. */
+  deals?: Deal[];
+  /** The value and count of deals at each stage, in stage order. */
+  stageTotals?: StageTotal[];
+  /** The figures under the stages ("Lead to won", "Average deal"). */
+  stageStats?: StageStat[];
+  /** What the team has to do today. */
+  tasks?: Task[];
+  /** Each rep's won value against their target. */
+  quota?: QuotaRow[];
+  /** What the team did today, newest first. */
+  activity?: ActivityItem[];
+  /** Shows a Deal button beside the search, which calls this. */
+  onNewDeal?: () => void;
+  /** The items of each deal's actions menu, as `DropdownMenuItem`s. Leave it out for no menu. */
+  dealActions?: (deal: Deal) => React.ReactNode;
+  /** Called with the task whose button was pressed. */
+  onTaskAction?: (task: Task) => void;
+  /** Where the View all tasks button goes. Leave it out for no button. */
+  tasksHref?: string;
+};
+
+/**
+ * A sales dashboard: the KPIs, the deals with their win chance, today's next steps, the pipeline by stage, each rep's
+ * quota and the team's activity, each section on its own Panel. Lays itself out by its own width, not the screen's.
+ */
+function DashboardCrm({
+  kpis = sampleKpis,
+  deals = sampleDeals,
+  stageTotals = sampleStages,
+  stageStats = sampleStageStats,
+  tasks = sampleTasks,
+  quota = sampleQuota,
+  activity = sampleActivity,
+  onNewDeal,
+  dealActions,
+  onTaskAction,
+  tasksHref,
+  className,
+  ...props
+}: DashboardCrmProps) {
+  return (
+    <section data-slot="dashboard-crm" aria-label="Sales" className={cn('@container flex min-w-0 flex-col gap-3', className)} {...props}>
+      <KpiStrip kpis={kpis} />
+      <div className="grid min-w-0 gap-3 @6xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <DealsPanel deals={deals} onNewDeal={onNewDeal} dealActions={dealActions} />
+        <TasksPanel tasks={tasks} onTaskAction={onTaskAction} tasksHref={tasksHref} />
+      </div>
+      <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @6xl:grid-cols-3">
+        <StagesPanel stageTotals={stageTotals} stats={stageStats} />
+        <QuotaPanel quota={quota} />
+        <ActivityPanel activity={activity} />
+      </div>
+    </section>
+  );
+}
+
+export {
+  DashboardCrm,
+  type DashboardCrmProps,
+  type Kpi as CrmKpi,
+  type Deal,
+  type Stage as DealStage,
+  type StageTotal,
+  type StageStat,
+  type Task as CrmTask,
+  type QuotaRow,
+  type ActivityItem,
+};
