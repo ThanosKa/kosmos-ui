@@ -90,7 +90,7 @@ function BarList({
                 aria-hidden
                 style={{ '--bar': `${(values[index] / max) * 100}%` } as React.CSSProperties}
                 className={cn(
-                  'absolute inset-y-0 start-0 w-(--bar) rounded-lg border border-transparent',
+                  'absolute inset-y-0 start-0 w-(--bar) min-w-4 rounded-lg border border-transparent',
                   index === leader ? 'bg-chart-1/15' : 'bg-muted',
                 )}
               />
