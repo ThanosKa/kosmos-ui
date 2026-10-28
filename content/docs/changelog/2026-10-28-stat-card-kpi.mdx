@@ -5,4 +5,4 @@ date: 2026-10-28
 ---
 
 - **[Stat card](/docs/components/stat-card)**: new parts for the KPIs at the top of a dashboard. `StatCardHeader` sets a `StatCardIcon` tile beside a muted `StatCardEyebrow` over the label. `StatCardContent` puts the sparkline beside the value and the change, and moves it under them in a narrow card. `StatCardSparkline` takes `variant="bar"`. Cards without the new parts look as before. Run `shadcn add` for it again to pick this up.
-- **[Chart](/docs/components/chart)**: `Sparkline` takes `variant="bar"`, one thin bar per point, the latest in ink and the rest in `--chart-4`. When the bars outgrow their room, the oldest drop out of view.
+- **[Chart](/docs/components/chart)**: `Sparkline` takes `variant="bar"`, one thin bar per point, the latest in the first chart color (`--chart-1`) and the rest in `--chart-4`. When the bars outgrow their room, the oldest drop out of view.

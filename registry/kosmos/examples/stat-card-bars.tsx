@@ -24,7 +24,7 @@ export default function StatCardBars() {
             <StatCardIcon>
               <UserPlus />
             </StatCardIcon>
-            <StatCardEyebrow>New accounts</StatCardEyebrow>
+            <StatCardEyebrow>Every platform</StatCardEyebrow>
             <StatCardLabel>Signups</StatCardLabel>
           </StatCardHeader>
           <StatCardContent>

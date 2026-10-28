@@ -32,7 +32,7 @@ Pass the value already formatted, in the user's locale and currency. Write a mil
 
 ### KPI row
 
-For the KPIs at the top of a dashboard, give each card a `StatCardHeader`. It holds a `StatCardIcon` beside two lines: a muted `StatCardEyebrow` that says where the number comes from, over the label in ink. Wrap the value, the change and the sparkline in `StatCardContent` to put the sparkline beside the number, at the end of the card. Put the change in numbers, or the value it moved from, in the delta's `children`.
+For the KPIs at the top of a dashboard, give each card a `StatCardHeader`. It holds a `StatCardIcon` beside two lines: a muted `StatCardEyebrow` that says where the number comes from, over the label in the foreground color. Wrap the value, the change and the sparkline in `StatCardContent` to put the sparkline beside the number, at the end of the card. Put the change in numbers, or the value it moved from, in the delta's `children`.
 
 <ComponentPreview name="stat-card-kpi" />
 
@@ -57,7 +57,7 @@ In a card under 240px wide, the sparkline moves under the change, so the number 
 
 ### Bar sparkline
 
-`variant="bar"` draws one thin bar per period, the latest in ink and the rest in a lighter gray. The bars grow from zero, so their heights compare. Beside the number they show the latest 16 periods. Pick bars for counts per period (signups a week) and the line for a level over time (active users).
+`variant="bar"` draws one thin bar per period, the latest in the first chart color (`--chart-1`, ink by default) and the rest in a lighter gray. The bars grow from zero, so their heights compare. Beside the number they show the latest 16 periods. Pick bars for counts per period (signups a week) and the line for a level over time (active users).
 
 <ComponentPreview name="stat-card-bars" />
 
@@ -100,7 +100,7 @@ Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/util
 
 ### StatCardHeader
 
-Renders a `<div>` that sets an optional `StatCardIcon` beside the eyebrow and the label. Inside it, the label is in ink.
+Renders a `<div>` that sets an optional `StatCardIcon` beside the eyebrow and the label. Inside it, the label takes the foreground color.
 
 ### StatCardIcon
 

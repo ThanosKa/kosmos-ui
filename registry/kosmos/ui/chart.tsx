@@ -262,37 +262,51 @@ function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--c
   );
 }
 
+/** Each bar takes a 6px slot: a 4px bar with 1px of room on either side, so neighbours sit 2px apart. */
+const BAR_SLOT = 6;
+
 /**
  * Bars grow from zero, so their heights compare. A bar at zero or below, or with no value, is a dot. When there are
  * more bars than room, the oldest drop out of view, so the latest stays.
  */
 function SparklineBars({ data, dataKey, color, className, ...props }: Omit<SparklineProps, 'variant' | 'fill'> & { dataKey: string }) {
-  const values = data.map((datum) => {
+  const bars = data.map((datum) => {
     const value = Number(datum[dataKey]);
-    return Number.isFinite(value) ? Math.max(value, 0) : 0;
+    return { [dataKey]: Number.isFinite(value) ? Math.max(value, 0) : 0 };
   });
-  const max = Math.max(...values, 0);
   return (
     <div
       data-slot="sparkline"
       role="img"
-      style={{ '--sparkline-latest': color } as React.CSSProperties}
-      className={cn('flex h-9 w-fit max-w-full items-end justify-end gap-0.5 overflow-hidden', className)}
+      className={cn('flex h-9 w-fit max-w-full justify-end overflow-hidden', className)}
       {...props}
     >
-      {values.map((value, index) => (
-        <span
-          key={index}
-          aria-hidden
-          style={{ '--bar': max > 0 ? `${(value / max) * 100}%` : '0%' } as React.CSSProperties}
-          className={cn(
-            'h-(--bar) min-h-1 w-1 shrink-0 rounded-full',
-            index === values.length - 1
-              ? 'bg-(--sparkline-latest) forced-colors:bg-[CanvasText]'
-              : 'bg-chart-4 forced-colors:bg-[GrayText]',
-          )}
-        />
-      ))}
+      <ChartContainer
+        config={{ [dataKey]: { color } }}
+        style={{ '--sparkline-width': `${bars.length * BAR_SLOT}px` } as React.CSSProperties}
+        className="aspect-auto h-full w-(--sparkline-width) shrink-0"
+      >
+        <Recharts.BarChart data={bars} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} barCategoryGap={0} accessibilityLayer={false}>
+          <Recharts.YAxis hide domain={[0, 'dataMax']} />
+          <Recharts.Bar
+            dataKey={dataKey}
+            barSize={BAR_SLOT - 2}
+            radius={2}
+            minPointSize={4}
+            shape={(bar: Recharts.BarShapeProps) => {
+              const latest = bar.index === bars.length - 1;
+              return (
+                <Recharts.Rectangle
+                  {...bar}
+                  fill={latest ? seriesColor(dataKey) : 'var(--chart-4)'}
+                  className={latest ? 'forced-colors:fill-[CanvasText]' : 'forced-colors:fill-[GrayText]'}
+                />
+              );
+            }}
+            {...chartAnimation}
+          />
+        </Recharts.BarChart>
+      </ChartContainer>
     </div>
   );
 }

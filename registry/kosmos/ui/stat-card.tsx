@@ -193,7 +193,7 @@ const besideClassName =
 
 /**
  * The trend, under the number across the card, or beside it inside `StatCardContent`. `variant="bar"` draws thin bars,
- * the latest in ink. Say what it shows in `aria-label` ("Signups, last 12 months, up 4.2%").
+ * the latest in `--chart-1`. Say what it shows in `aria-label` ("Signups, last 12 months, up 4.2%").
  */
 function StatCardSparkline({ className, variant = 'line', ...props }: React.ComponentProps<typeof Sparkline>) {
   const { loading } = React.useContext(StatCardContext);

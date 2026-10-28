@@ -123,6 +123,15 @@ The four numbers an Acme dashboard leads with, for the last 30 days against the 
 | Monthly revenue | 14628 | +6.8% | currency |
 | Live projects | 8 | −11.1% (Hollow Oak Games paused on 18 September) | number |
 
+Product metrics, for a second row of KPIs (last 30 days against the 30 before):
+
+| Metric | Value | Change | Context |
+| --- | --- | --- | --- |
+| Signups | 1284 | +4.2% | (+52); weekly about 96 to 121 |
+| Conversion (visit to signup) | 3.3% | +0.4 pts | from 2.9% |
+| Median session | 4m 12s | −3.2% | (−8s) |
+| Error events (share of all events) | 1.4% | −0.5 pts, falling is good | from 1.9% |
+
 The other ranges, each against the same span before it:
 
 | Metric | 7 days | 90 days |

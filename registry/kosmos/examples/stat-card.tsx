@@ -67,7 +67,7 @@ export default function StatCardPreview() {
         <StatCardKpi />
       </PreviewSection>
 
-      <PreviewSection title="KPI tiles: bar sparkline, the latest bar in ink">
+      <PreviewSection title="KPI tiles: bar sparkline, the latest bar in chart-1">
         <StatCardBars />
       </PreviewSection>
 
@@ -197,7 +197,7 @@ export default function StatCardPreview() {
               <StatCardIcon>
                 <Users />
               </StatCardIcon>
-              <StatCardEyebrow>New accounts</StatCardEyebrow>
+              <StatCardEyebrow>Every platform</StatCardEyebrow>
               <StatCardLabel>Signups</StatCardLabel>
             </StatCardHeader>
             <StatCardContent>
