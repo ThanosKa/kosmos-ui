@@ -1,0 +1,207 @@
+---
+title: Notification inbox
+description: The notification bell in your header and the inbox it opens. The bell swings when something new arrives, and the inbox opens as a popover under it or as a sheet from the edge.
+baseUi: https://base-ui.com/react/components/popover
+---
+
+<ComponentPreview name="notification-inbox-demo" />
+
+## Installation
+
+<ComponentInstall name="notification-inbox" />
+
+## Usage
+
+```tsx
+import { AtSign } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  NotificationInbox,
+  NotificationInboxBody,
+  NotificationInboxContent,
+  NotificationInboxGroup,
+  NotificationInboxHeader,
+  NotificationInboxTitle,
+  NotificationInboxTrigger,
+  NotificationItem,
+  NotificationItemAside,
+  NotificationItemContent,
+  NotificationItemMedia,
+  NotificationItemTime,
+  NotificationItemTitle,
+} from '@/components/ui/notification-inbox';
+```
+
+```tsx
+<NotificationInbox>
+  <NotificationInboxTrigger count={1} />
+  <NotificationInboxContent>
+    <NotificationInboxHeader>
+      <NotificationInboxTitle>Notifications</NotificationInboxTitle>
+    </NotificationInboxHeader>
+    <NotificationInboxBody>
+      <NotificationInboxGroup label="Today">
+        <NotificationItem unread>
+          <NotificationItemMedia icon={<AtSign />}>
+            <Avatar>
+              <AvatarImage src="/avatars/tomas.jpg" alt="" />
+              <AvatarFallback>TO</AvatarFallback>
+            </Avatar>
+          </NotificationItemMedia>
+          <NotificationItemContent>
+            <NotificationItemTitle href="/roadmap/q4">
+              <strong>Tomás Ortega</strong> mentioned you in <strong>Q4 roadmap</strong>
+            </NotificationItemTitle>
+          </NotificationItemContent>
+          <NotificationItemAside>
+            <NotificationItemTime dateTime="2026-10-11T11:56Z">4m</NotificationItemTime>
+          </NotificationItemAside>
+        </NotificationItem>
+      </NotificationInboxGroup>
+    </NotificationInboxBody>
+  </NotificationInboxContent>
+</NotificationInbox>
+```
+
+The inbox holds no data of its own. You pass the rows, the unread count and what each button does, so it works with your own API or with a notification service. Each row is a link. A click anywhere on the row opens it, and the buttons inside the row still work. Mark a notification as read when it's opened, and keep "Mark all as read" in the header.
+
+## Examples
+
+### Sheet
+
+`variant="sheet"` opens the inbox as a full-height panel from the end edge instead of a popover. Use it when people work through their notifications one by one, with a reply or a decision on most of them. This one runs as an inbox to clear, with Inbox and Done tabs.
+
+<ComponentPreview name="notification-inbox-sheet" />
+
+### Bell
+
+`NotificationBell` is the bell on its own, for a header where the bell links to a notifications page. It takes the Button props. Counts above `max` show as "9+".
+
+<ComponentPreview name="notification-inbox-bell" />
+
+### New while open
+
+A notification that arrives while the inbox is open shouldn't go straight to the top of the list. It would push rows down under the pointer. Hold it back and show `NotificationInboxNewItems` in the body's `overlay`. Clicking it lists the new ones and scrolls back to the top. Here a mention arrives 2 seconds after you open the inbox.
+
+<ComponentPreview name="notification-inbox-new-items" />
+
+## Motion
+
+- **Bell:** swings only when `count` goes up, so the motion always means something new arrived. It doesn't swing on page load, on hover or when the count goes down.
+- **Badge:** pops in the first time from 70% size. After that, the number rolls up or down whenever it changes.
+- **Popover:** grows from the bell like any Popover, over 200ms.
+- **Sheet:** slides in like a Drawer.
+- **Reduced motion:** the bell stays still, and the badge and the number only fade.
+
+## Accessibility
+
+- The bell's name includes the count, such as "Notifications, 3 unread".
+- An unread row tells screen readers "Unread" next to its dot.
+- `NotificationItemTime` is a `<time>`. Give it the full date in `dateTime`.
+- The quick actions show when the pointer is over a row or the row holds focus, so Tab reaches them. On a touch screen they stay visible under the time.
+
+## API
+
+### NotificationInbox
+
+Holds the open state. With `variant="popover"` it is a Base UI `Popover.Root`; with `variant="sheet"` it is a [Drawer](/docs/components/drawer).
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'A popover under the bell, or a full-height sheet from the end edge.',
+      type: "'popover' | 'sheet'",
+      default: "'popover'",
+    },
+    open: { description: 'Whether the inbox is open, when you control it.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the inbox starts open.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the inbox opens or closes.', type: '(open: boolean) => void' },
+    modal: {
+      description: 'Traps focus and blocks the page while open.',
+      type: 'boolean',
+      default: "false for the popover, true for the sheet",
+    },
+  }}
+/>
+
+### NotificationInboxTrigger and NotificationBell
+
+`NotificationInboxTrigger` is the bell that opens the inbox. `NotificationBell` is the same bell on its own. Both take every Button prop except `variant` and `size`, plus:
+
+<TypeTable
+  type={{
+    count: { description: 'Unread notifications. 0 hides the badge.', type: 'number', default: '0' },
+    max: { description: 'Counts above this show as "9+".', type: 'number', default: '9' },
+  }}
+/>
+
+### NotificationInboxContent
+
+<TypeTable
+  type={{
+    align: {
+      description: 'Which edge of the bell the popover lines up with.',
+      type: "'start' | 'center' | 'end'",
+      default: "'end'",
+    },
+    container: {
+      description: 'The element the inbox renders into.',
+      type: 'HTMLElement | null',
+      default: 'document.body',
+    },
+    initialFocus: { description: 'Where focus goes on open. `false` leaves it on the bell.', type: 'boolean' },
+  }}
+/>
+
+### NotificationInboxBody
+
+Takes every [Scroll area](/docs/components/scroll-area) prop, such as `viewportRef`, plus:
+
+<TypeTable
+  type={{
+    overlay: {
+      description: 'Shown over the top of the list, such as `NotificationInboxNewItems`. It stays put while the list scrolls.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### NotificationItem
+
+<TypeTable
+  type={{
+    unread: { description: 'Shows the unread dot and tells screen readers "Unread".', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `NotificationInboxHeader` | The title row. |
+| `NotificationInboxTitle` | Names the inbox. |
+| `NotificationInboxActions` | Buttons at the end of the header, such as "Mark all as read" and settings. |
+| `NotificationInboxTabs`, `NotificationInboxTabsList`, `NotificationInboxTab` | [Tabs](/docs/components/tabs) laid out for the inbox. Put the body inside `NotificationInboxTabs`, after the list. |
+| `NotificationInboxBody` | The list area. It fills the space between the header and the footer and scrolls on its own. |
+| `NotificationInboxNewItems` | The "2 new" pill over the list. Takes `count`, and renders nothing when it's 0. |
+| `NotificationInboxGroup` | Rows under one heading, such as "Today". Takes `label`. |
+| `NotificationInboxFooter` | A row of buttons across the bottom edge. Use `variant="item"` Buttons. |
+| `NotificationItemMedia` | Who or what sent the notification, such as an Avatar. `icon` adds a small icon on its corner that shows the kind, such as a mention. |
+| `NotificationItemContent` | The text column. |
+| `NotificationItemTitle` | The sentence, and the link that opens the notification. Wrap names in `<strong>`. `render` swaps in your router's link. |
+| `NotificationItemDescription` | A quote from the comment or message, two lines at most. |
+| `NotificationItemMeta` | Where it happened, such as the project. |
+| `NotificationItemActions` | Buttons for a decision made from the row, such as Approve and Decline. |
+| `NotificationItemAside` | The end column with the time and the unread dot. |
+| `NotificationItemTime` | When it happened, as a short relative time. |
+| `NotificationItemQuickActions` | Up to two icon buttons that replace the time on hover. |
+| `NotificationItemQuickAction` | One quick action. Takes `label`, which names the button and shows as its tooltip. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the bell: opens or closes the inbox. |
+| `Tab` | Moves through the tabs, the rows and their buttons. |
+| Arrow keys | On the tabs: move between them. |
+| `Escape` | Closes the inbox and puts focus back on the bell. |

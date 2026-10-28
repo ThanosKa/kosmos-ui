@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "notification-inbox",
+  "type": "registry:ui",
+  "title": "Notification inbox",
+  "description": "The header's notification bell and the inbox it opens, as a popover under the bell or a sheet from the edge. The bell swings when something new arrives and its count rolls. Rows group by day, keep their decisions in view, and swap the time for quick actions on hover. New items wait behind a pill while the inbox is open.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/motion",
+    "@kosmos/button",
+    "@kosmos/drawer",
+    "@kosmos/popover",
+    "@kosmos/scroll-area",
+    "@kosmos/tabs"
+  ],
+  "meta": { "group": "overlays" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/notification-inbox.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

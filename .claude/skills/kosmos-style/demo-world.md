@@ -250,6 +250,23 @@ The AI components and the run timeline and usage overview blocks show the **Acme
 - Tools are dotted lowercase names: `events.query`, `events.compare`, `events.export`, `events.delete`, `projects.update_plan`, `email.send`, `dashboards.export`, `billing.revenue_by_plan`. Revenue by plan is Scale $13,700, Pro $928 and Free $0 a month.
 - Files people attach: `cirrus-events-30d.csv`, `events-dashboard.png`, `weekly-summary-brief.pdf`.
 
+## Notifications
+
+The notification inbox is Lena Park's, at 12:00 UTC on 11 October. Newest first:
+
+| When | From | Kind | Text | Unread |
+| --- | --- | --- | --- | --- |
+| 4m | Tomás Ortega | mention | mentioned you in **Q4 roadmap**: "@Lena can you check the activation funnel numbers before the Friday review?" | yes |
+| 18m | Kai Nakamura | request | asked for access to **Copperline Bank** (Approve / Decline) | yes |
+| 1h | Cirrus Weather (logo) | quota | **Cirrus Weather** has used 80% of its October event allowance | yes |
+| 2h | Ama Mensah and 3 others | comment | commented on **Onboarding checklist**: "Moved the invite step after the first event, so new teams see data sooner." | no |
+| 3h | Ironbark Logistics (logo) | billing | **Ironbark Logistics** moved to the Scale plan | no |
+| Yesterday | Fernhill Books (logo) | export | **Events export for Fernhill Books** is ready to download (Download CSV) | no |
+| Yesterday | Marigold Recipes (logo) | trial | **Marigold Recipes** ends its trial in 3 days | no |
+| Oct 9 | Tomás Ortega | assign | assigned you **Fix the retention chart tooltip** | no |
+
+A notification that arrives in a demo is Kai Nakamura mentioning Lena in **Pricing page test**: "@Lena the yearly toggle lifted upgrades by 6%. Ship it?". Kind icons (lucide): mention `AtSign`, comment `MessageSquare`, request `UserPlus`, assign `CircleDot`, quota `Gauge`, billing `CreditCard`, export `Download`, trial `Clock`.
+
 ## Creating things
 
 The Acme team runs the product; its customers add their own projects. So the one thing a block creates is a roadmap item: the command menu and the landing dashboard offer "New roadmap item", which opens the new item dialog. The page header's "New project" is the primary action of a Projects page in an app that does let people add projects; it shows only when the app passes `onNew`, so the landing dashboard's Projects page has no primary action.
