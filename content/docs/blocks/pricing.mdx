@@ -56,6 +56,7 @@ Write each price as it should read, such as `'$49'`, so the block never guesses 
 ## What it does
 
 - **Billing**: when any plan has a price per billing, a switch above the plans picks monthly or yearly. Every price and period changes with it. Plans with one price keep it. With no price per billing, there is no switch.
+- **Price change**: the old price leaves the way the switch moved and the new one rises in from the other side, with a slight blur. The price's width eases to the new one, so the period beside it slides instead of jumping. The period keeps room for its longest text, so a plan never rewraps and the cards keep their height. A second click mid-change reverses it from where it is. Under reduced motion the prices cross-fade in place.
 - **Screen readers**: after the billing changes, from the switch or from your own state through `billing`, they hear it once. The announcement lists each plan's new price, such as "Yearly. Free: $0 forever. Pro: $39 per month, billed yearly."
 - **Featured plan**: one plan stands on a raised card while the others sit recessed beside it. It stands out by depth rather than by color.
 - **Lined up**: names, prices, feature lists and links line up across the plans. Each link sits at the foot of its plan, however long the text above it runs.

@@ -100,12 +100,81 @@ const columnsByPlanCount: Record<number, string> = {
   4: '@xl:grid-cols-2 @5xl:grid-cols-4',
 };
 
+const billings: PricingBilling[] = ['monthly', 'yearly'];
+
+/**
+ * Text that differs by billing. Every billing's text sits in the same spot and only the shown one is visible, so a
+ * change is a transition that reverses mid-flight: the old text leaves the way the switch moved and the new one rises
+ * in from the other side. `fit="shown"` sizes it to the shown text and eases the width, so the words after it slide;
+ * `fit="widest"` reserves the widest text, so a line never rewraps. Under reduced motion the texts cross-fade in place.
+ */
+function BillingText({
+  value,
+  billing,
+  fit,
+  className,
+}: {
+  value: Record<PricingBilling, string>;
+  billing: PricingBilling;
+  fit: 'shown' | 'widest';
+  className?: string;
+}) {
+  const box = React.useRef<HTMLSpanElement>(null);
+  const texts = React.useRef<Partial<Record<PricingBilling, HTMLSpanElement | null>>>({});
+  const previous = React.useRef(billing);
+  const shownIndex = billings.indexOf(billing);
+
+  React.useLayoutEffect(() => {
+    const from = texts.current[previous.current];
+    const to = texts.current[billing];
+    previous.current = billing;
+    const element = box.current;
+    if (fit !== 'shown' || !element || !from || !to || from === to) return;
+    // Start from the width on screen, so a change mid-flight eases on from where it is.
+    const start = element.style.getPropertyValue('--billing-text-width') ? element.getBoundingClientRect().width : from.offsetWidth;
+    element.style.setProperty('--billing-text-width', `${start}px`);
+    void element.offsetWidth;
+    element.style.setProperty('--billing-text-width', `${to.offsetWidth}px`);
+  }, [billing, fit]);
+
+  return (
+    <span
+      ref={box}
+      className={cn(
+        'relative inline-grid max-w-full',
+        fit === 'shown' && 'w-(--billing-text-width) motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
+        className,
+      )}
+    >
+      {billings.map((item, index) => {
+        const shown = index === shownIndex;
+        return (
+          <span
+            key={item}
+            ref={(element) => {
+              texts.current[item] = element;
+            }}
+            aria-hidden={shown ? undefined : true}
+            className={cn(
+              'col-start-1 row-start-1 justify-self-start transition-[opacity,translate,filter]',
+              fit === 'shown' && 'whitespace-nowrap',
+              shown ? 'duration-slow' : 'pointer-events-none opacity-0 duration-fast motion-safe:blur-[2px]',
+              !shown && fit === 'shown' && 'absolute start-0 top-0',
+              index < shownIndex && 'motion-safe:-translate-y-[0.4em]',
+              index > shownIndex && 'motion-safe:translate-y-[0.4em]',
+            )}
+          >
+            {value[item]}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
 function PricingPlanCard({ plan, billing, headingLevel }: { plan: PricingPlan; billing: PricingBilling; headingLevel: 2 | 3 }) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const period = forBilling(plan.period, billing);
-  // A price or period that differs by billing mounts again on a change, so it fades in from `starting:opacity-0`.
-  const priceKey = isPerBilling(plan.price) ? `price-${billing}` : 'price';
-  const periodKey = isPerBilling(plan.period) ? `period-${billing}` : 'period';
   const action = typeof plan.action === 'function' ? plan.action(billing) : plan.action;
   return (
     <li
@@ -125,16 +194,15 @@ function PricingPlanCard({ plan, billing, headingLevel }: { plan: PricingPlan; b
         {plan.description ? <p className="text-small text-pretty text-muted-foreground">{plan.description}</p> : null}
       </div>
       <p data-slot="pricing-price" className="mt-5 flex min-w-0 flex-wrap items-baseline gap-x-1.5">
-        <span
-          key={priceKey}
-          className="min-w-0 text-display wrap-break-word text-foreground tabular-nums transition-[opacity] duration-fast starting:opacity-0"
-        >
-          {forBilling(plan.price, billing)}
-        </span>
-        {period ? (
-          <span key={periodKey} className="text-small text-muted-foreground transition-[opacity] duration-fast starting:opacity-0">
-            {period}
-          </span>
+        {isPerBilling(plan.price) ? (
+          <BillingText value={plan.price} billing={billing} fit="shown" className="text-display text-foreground tabular-nums" />
+        ) : (
+          <span className="min-w-0 text-display wrap-break-word text-foreground tabular-nums">{plan.price}</span>
+        )}
+        {isPerBilling(plan.period) ? (
+          <BillingText value={plan.period} billing={billing} fit="widest" className="text-small text-muted-foreground" />
+        ) : period ? (
+          <span className="text-small text-muted-foreground">{period}</span>
         ) : null}
       </p>
       {plan.features?.length ? (
