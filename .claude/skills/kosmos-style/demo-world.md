@@ -6,18 +6,18 @@ Every block's sample data, review preview, demo and docs page uses this world an
 
 A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
 
-Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the old people (Maya Chen, Jonas Weber, Priya Raman). A person is never a project's "owner"; projects are filtered by plan, platform and status. The one exception is the CRM dashboard, which is about deals: it uses pipeline, deals and stages as written under Sales below, and nothing else on the list.
+Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the names Maya Chen, Jonas Weber and Priya Raman. A person is never a project's "owner"; projects are filtered by plan, platform and status. The one exception is the CRM dashboard, which is about deals: it uses pipeline, deals and stages as written under Sales below, and nothing else on the list.
 
 ## Workspace, domains, dates
 
 - Workspaces (the switcher): **Acme** on the Scale plan, and **Acme Staging** on the Free plan. Their logos are `public/logos/acme.svg` and `acme-staging.svg` (the same mark in gray); the Acme agent's avatar is the Acme logo.
+- Every domain ends in `.example` (reserved, never a real site). Acme itself is `acme.example`; mail is `<first name>@acme.example`.
+- "Today" in every sample is **11 October 2026**. Write dates through a fixed `en-US` formatter with `timeZone: 'UTC'`, so server and browser match.
+- Money is USD, formatted with `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })`.
 
 ## Logos
 
 Each project, Acme, Acme Staging and Lumenfield Health (a new trial on the landing page) has a logo at `public/logos/<id>.svg`: a 64px square in the project's own color with a white mark, drawn for this world. It shows in a square avatar (`className="rounded-md"`), with the name's first letter as the fallback. The SVGs are text, so each block that shows them ships them as `registry:file` items targeting `~/public/logos/`. Never use a real company's logo for a customer.
-- Every domain ends in `.example` (reserved, never a real site). Acme itself is `acme.example`; mail is `<first name>@acme.example`.
-- "Today" in every sample is **11 October 2026**. Write dates through a fixed `en-US` formatter with `timeZone: 'UTC'`, so server and browser match.
-- Money is USD, formatted with `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })`.
 
 ## People: the Acme team
 
@@ -36,11 +36,11 @@ Every person in the samples has a photo at `public/avatars/<first name>.jpg` (`l
 
 | Plan | Price | Badge hue |
 | --- | --- | --- |
-| Free | $0 | `blue` |
-| Pro | from $49 / month | `orange` |
-| Scale | from $1,200 / month | `magenta` |
+| Free | $0 | `gray` |
+| Pro | from $49 / month | `blue` |
+| Scale | from $1,200 / month | `violet` |
 
-A plan is a category, so it is a tag (Badge hue variant) and keeps its hue everywhere: Free `gray`, Pro `blue`, Scale `violet`, Trial `amber`.
+A plan is a category, so it is a hue Badge and keeps its hue everywhere; a trial shows `amber`.
 
 ## Projects
 

@@ -52,7 +52,7 @@ In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges 
 
 ## Tints
 
-In their own labelled blocks after the chart colors, the same under every preset. They color every Badge hue (categories, plans, codes), the `StatusDot`, and the Alert, Banner and Callout tones. The fill, `-foreground` and `-dot` are the OKLCH values of the badge palette study ("one subtle family"); the rest are derived in the same style. The old `tag-*` family and `tint-teal`, `tint-orange`, `tag-orange` and `tag-magenta` are gone, and with them the Radix Colors values and their notice.
+In their own labelled blocks after the chart colors, the same under every preset. They color every Badge hue (categories, plans, codes), the `StatusDot`, and the Alert, Banner and Callout tones. The fill, `-foreground` and `-dot` are the OKLCH values of the badge palette study ("one subtle family"); the rest are derived in the same style.
 
 | Token | Role | Source |
 | --- | --- | --- |
@@ -68,11 +68,11 @@ Shadows are style, not palette: they are written once in `tokens.css`, and no pr
 
 | Token | Surface | Structure |
 | --- | --- | --- |
-| `shadow-control` | Secondary button, segmented group | Light: 1px ring at foreground 10% + 1px drop. Dark: dark ring + top rim + inner rim |
+| `shadow-control` | Secondary button, segmented group, unticked checkbox and radio, radio card, the active sidebar item in dark | Light: 1px ring at foreground 10% + 1px drop. Dark: dark ring + top rim + inner rim |
 | `shadow-field` | Input, textarea, select trigger | One 1px ring in `input`, no drop, in both modes |
 | `shadow-primary` | Primary button | Light: 1px rim in `primary` mixed 78% toward black, small drop, inner top highlight (white 28%) and bottom shade (black 10%). Hover (`shadow-primary-hover`, with `primary-hover`, the fill one lightness step 0.04 darker at the same chroma and hue, so Warm's orange stays orange): darker rim, deeper drop, stronger highlight. Dark (hover unchanged, `primary-hover` is the fill at 90%): dark ring + drop + top highlight + inner rim + bottom inner shade |
 | `shadow-card` | Cards, tiles | Light: 1px ring at foreground 7% + short drop + soft drop. Dark: dark ring + drop + rim |
-| `shadow-popover` | Popover, menu, tooltip, toast, command palette | Light: ring + stacked drops. Dark: a 1px inner line in `input` inside a dark outer ring + one deep drop, with no top rim, so the edge reads as a thin line on a dark page (as the menus of the reference app sales-crm) |
+| `shadow-popover` | Popover, menu, select list, tooltip, toast, command palette | Light: ring + stacked drops. Dark: a 1px inner line in `input` inside a dark outer ring + one deep drop, with no top rim, so the edge reads as a thin line on a dark page (as the menus of the reference app sales-crm) |
 | `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim (inner ring at white 10% and a top rim) |
 | `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
 | `shadow-lift` | Card while dragged | Double `ring` ring (ink by default, the accent in a preset with one) + deep drop |
@@ -80,7 +80,7 @@ Shadows are style, not palette: they are written once in `tokens.css`, and no pr
 
 ## Radius
 
-`--radius` is 10px. The ladder: `sm` 4 (checkbox, kbd), `md` 8 (segmented items), `lg` 10 (controls, items, tooltips), `xl` 14 (overlays), `2xl` 16 (cards), `3xl` 20 (sheet top), plus `rounded-full` for pills. The offsets in `@theme inline` keep `sm`, `2xl` and `3xl` at those sizes while `--radius` sets the control radius.
+`--radius` is 10px. The ladder is `sm` 4, `md` 8, `lg` 10, `xl` 14, `2xl` 16 and `3xl` 20, plus `rounded-full`; which element takes which step is the Radius table in SKILL.md. The offsets in `@theme inline` keep `sm`, `2xl` and `3xl` at those sizes while `--radius` sets the control radius.
 
 ## Motion
 
