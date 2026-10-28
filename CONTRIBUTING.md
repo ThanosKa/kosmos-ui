@@ -14,12 +14,10 @@ Use pnpm only. `package.json` pins the version.
 
 ### Screenshots
 
-You review each component and block in four screenshots. On a new machine, install both browsers once. The comments below say what each command does:
+`pnpm screenshots` shoots a component or block in four screenshots, light and dark at 375px and 1280px. On a new machine, install its browser once:
 
 ```bash
-pnpm exec playwright install chromium   # the browser `pnpm screenshots` drives
-npm install -g agent-browser            # or run: brew install agent-browser
-agent-browser install                   # downloads the browser agent-browser drives
+pnpm exec playwright install chromium
 ```
 
 With `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs to `.screenshots/`.

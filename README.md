@@ -20,7 +20,7 @@ pnpm dev
 
 The dev server runs at http://localhost:3000.
 
-To take the review screenshots with `pnpm screenshots <name>`, first install the Playwright browser once with `pnpm exec playwright install chromium`. [Screenshots and browser checks](CONTRIBUTING.md#screenshots-and-browser-checks) in CONTRIBUTING.md also covers `agent-browser`.
+To take the review screenshots with `pnpm screenshots <name>`, first install the Playwright browser once with `pnpm exec playwright install chromium`.
 
 Before you open a pull request, run these three commands:
 
