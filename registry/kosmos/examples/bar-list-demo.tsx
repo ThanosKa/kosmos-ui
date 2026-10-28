@@ -15,7 +15,7 @@ export default function BarListDemo() {
     <BarList
       aria-label="Top events, last 30 days"
       items={events.map((event) => ({ id: event.name, label: <span className="font-mono">{event.name}</span>, value: event.count }))}
-      format={(value) => compact.format(value)}
+      format={compact.format}
       className="w-full max-w-sm"
     />
   );

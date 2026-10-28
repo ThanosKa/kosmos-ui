@@ -35,7 +35,7 @@ const topProjects = [
 ];
 
 const worstCase = [
-  { label: 'Monthly active users across every workspace in the organization', meta: 'Scale plan, 4 projects', value: 1284903772 },
+  { label: 'Copperline Bank server events from the EU data region', meta: 'Scale plan, 4 projects', value: 1284903772 },
   { label: '/docs/dashboards/share/links/with-a-very-long-unbreakable-path-segment', value: 48210 },
   { label: 'Ιστότοπος καφέ Saltmarsh 🌊', meta: 'ΕΛ', value: 6120 },
   { label: 'K', value: 1 },
@@ -57,7 +57,7 @@ export default function BarListPreview() {
     <PreviewStack>
       <div className="grid gap-10 md:grid-cols-2">
         <PreviewSection title="Default format, mono labels">
-          <BarList aria-label="Top events" items={topEvents} format={(value) => compact.format(value)} />
+          <BarList aria-label="Top events" items={topEvents} format={compact.format} />
         </PreviewSection>
 
         <PreviewSection title="Meta and share">
@@ -65,14 +65,14 @@ export default function BarListPreview() {
         </PreviewSection>
 
         <PreviewSection title="Currency, with a zero value">
-          <BarList aria-label="Monthly revenue by plan" items={revenueByPlan} format={(value) => usd.format(value)} />
+          <BarList aria-label="Monthly revenue by plan" items={revenueByPlan} format={usd.format} />
         </PreviewSection>
 
         <PreviewSection title="Top 5 of a larger total">
           <BarList
             aria-label="Top projects by events"
             items={topProjects}
-            format={(value) => compact.format(value)}
+            format={compact.format}
             showShare
             total={28495200}
           />
@@ -108,7 +108,7 @@ export default function BarListPreview() {
           <h3 id="bar-list-card-title" className="px-1 pt-1 text-title">
             Top events
           </h3>
-          <BarList aria-labelledby="bar-list-card-title" items={topEvents.slice(0, 5)} format={(value) => compact.format(value)} />
+          <BarList aria-labelledby="bar-list-card-title" items={topEvents.slice(0, 5)} format={compact.format} />
         </div>
       </PreviewSection>
     </PreviewStack>

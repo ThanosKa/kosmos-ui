@@ -26,7 +26,7 @@ import { BarList } from '@/components/ui/bar-list';
 />
 ```
 
-Each row's fill is its bar, as wide as its value against the largest one. The label sits on the bar and the value at the end. The largest value's bar is a step stronger than the rest, so the leader stands out without a color. Pass the rows in the order to show them, most often largest first. Pass only the top few, since the list does not scroll.
+Each row's fill is its bar, as wide as its value against the largest one. The label sits on the bar and the value at the end. The largest value's bar is a step stronger than the rest, so the leader stands out without a color. On a tie, the first of them leads. Pass the rows in the order to show them, most often largest first. Pass only the top few, since the list does not scroll.
 
 Screen readers read a list with one item per row: the label, the meta and the value as text. The bar is decoration and stays hidden from them. Name the list with `aria-label`, or point `aria-labelledby` at the title above it.
 
@@ -60,7 +60,7 @@ With no items, the list shows `empty` in its place. Say what is missing, such as
 
 ### BarList
 
-Renders a `<ul>` and takes its props, plus:
+Renders a `<ul>` and takes its props. With no items it renders `empty` in a status `<div>` with the same props. It also takes:
 
 <TypeTable
   type={{
@@ -97,7 +97,7 @@ Renders a `<ul>` and takes its props, plus:
 <TypeTable
   type={{
     label: { description: 'What the row counts. A long label truncates.', type: 'ReactNode', required: true },
-    value: { description: 'The number. A negative value draws no bar.', type: 'number', required: true },
+    value: { description: 'The number, written by `format` as given. A negative value draws no bar.', type: 'number', required: true },
     meta: { description: 'Muted text after the label.', type: 'ReactNode' },
     id: { description: 'Identifies the row across renders.', type: 'Key', default: 'its position' },
   }}

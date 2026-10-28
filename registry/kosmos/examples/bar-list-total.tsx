@@ -15,7 +15,7 @@ export default function BarListTotalExample() {
     <BarList
       aria-label="Top projects by events, last 30 days"
       items={topProjects}
-      format={(value) => compact.format(value)}
+      format={compact.format}
       showShare
       total={28495200}
       className="w-full max-w-sm"

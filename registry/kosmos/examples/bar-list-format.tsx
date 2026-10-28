@@ -13,7 +13,7 @@ export default function BarListFormatExample() {
     <BarList
       aria-label="Monthly revenue by plan"
       items={revenue}
-      format={(value) => usd.format(value)}
+      format={usd.format}
       className="w-full max-w-sm"
     />
   );

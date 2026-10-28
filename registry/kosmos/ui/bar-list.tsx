@@ -35,7 +35,8 @@ function shareText(value: number, total: number) {
 /**
  * Ranked values as rows whose fill is the bar: the label sits on the bar, the value and an optional share at the end.
  * The largest value's bar is the chart ink at low strength and the rest are muted, so the leader stands out without a
- * hue. Renders a `<ul>`; name it with `aria-label` or `aria-labelledby`.
+ * hue; on a tie, the first of them leads. Renders a `<ul>`, or a status `<div>` with `empty` when there are no items;
+ * name it with `aria-label` or `aria-labelledby`.
  */
 function BarList({
   items,
@@ -49,9 +50,11 @@ function BarList({
   if (items.length === 0) {
     return (
       <div
+        role="status"
         data-slot="bar-list"
         data-empty=""
         className={cn('flex min-h-20 items-center justify-center p-4 text-center text-small text-muted-foreground', className)}
+        {...(props as React.ComponentProps<'div'>)}
       >
         {empty}
       </div>
@@ -97,7 +100,7 @@ function BarList({
                 {item.label}
               </span>
               {item.meta === undefined || item.meta === null ? null : (
-                <span className="max-w-1/2 shrink-0 truncate text-small text-muted-foreground">{item.meta}</span>
+                <span className="max-w-1/2 shrink-0 truncate text-caption text-muted-foreground">{item.meta}</span>
               )}
             </span>
           </div>
