@@ -21,6 +21,7 @@ export function PricingSection() {
     <Pricing
       title="Start free, pay as you grow"
       description="Pay yearly and save 20%."
+      yearlyDiscount="−20%"
       plans={[
         {
           name: 'Free',
@@ -36,7 +37,9 @@ export function PricingSection() {
         {
           name: 'Pro',
           price: { monthly: '$49', yearly: '$39' },
-          period: { monthly: 'per month', yearly: 'per month, billed yearly' },
+          period: 'per month',
+          note: { monthly: 'Billed monthly', yearly: '$468 billed yearly' },
+          saving: 'You save $120',
           features: ['Everything in Free', '10 projects', '3,000,000 events a month'],
           action: (billing) => (
             <Link href={`/signup?plan=pro&billing=${billing}`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
@@ -56,6 +59,8 @@ Write each price as it should read, such as `'$49'`, so the block never guesses 
 ## What it does
 
 - **Billing**: when any plan has a price per billing, a switch above the plans picks monthly or yearly. Every price and period changes with it. Plans with one price keep it. With no price per billing, there is no switch.
+- **Price change**: only the digits that change move. Each one leaves the way the price went, up when it rises and down when it falls, and the new one comes in from the other side with a slight blur. A place the new price no longer has, such as the `1,` of `$1,200` on the way to `$960`, folds its width away, so the words beside the price slide instead of jumping. A period or note that differs by billing keeps room for its longest text, so the cards keep their height. A second click mid-change reverses it from where it is. A price without digits, such as `Custom`, or in another currency fades in instead. Under reduced motion the digits cross-fade in place.
+- **Yearly saving**: on Yearly, a plan whose yearly price is lower than its monthly one shows the monthly price struck through beside it, and its `saving` in green after the note. `yearlyDiscount` puts a short green mark, such as `−20%`, on the Yearly choice of the switch.
 - **Screen readers**: after the billing changes, from the switch or from your own state through `billing`, they hear it once. The announcement lists each plan's new price, such as "Yearly. Free: $0 forever. Pro: $39 per month, billed yearly."
 - **Featured plan**: one plan stands on a raised card while the others sit recessed beside it. It stands out by depth rather than by color.
 - **Lined up**: names, prices, feature lists and links line up across the plans. Each link sits at the foot of its plan, however long the text above it runs.
@@ -78,6 +83,7 @@ Takes every `<section>` prop, plus:
     onBillingChange: { description: 'Called with the billing picked on the switch.', type: '(billing: PricingBilling) => void' },
     billingLabels: { description: 'The words on the switch, also read out when the billing changes.', type: '{ monthly: string; yearly: string }', default: "{ monthly: 'Monthly', yearly: 'Yearly' }" },
     billingLabel: { description: 'The name of the switch for screen readers.', type: 'string', default: "'Billing'" },
+    yearlyDiscount: { description: 'A short mark in green on the Yearly choice, such as `−20%`. The sample plans bring one; your own plans do not.', type: 'string' },
     footnote: { description: 'A line under the plans, such as a note on taxes or a link to your license.', type: 'ReactNode' },
     headingLevel: { description: 'The title is an `<h2>` and plan names `<h3>`. Pass 1 when the block opens a pricing page, for an `<h1>` and `<h2>`s.', type: '1 | 2', default: '2' },
   }}
@@ -91,6 +97,8 @@ Takes every `<section>` prop, plus:
     description: { description: 'One line under the name: who the plan is for.', type: 'ReactNode' },
     price: { description: 'The price as it reads: one for both billings, or one per billing.', type: 'string | { monthly: string; yearly: string }', required: true },
     period: { description: 'The muted words after the price, such as `per month`.', type: 'string | { monthly: string; yearly: string }' },
+    note: { description: 'One muted line under the price, such as `No card needed`, or one per billing.', type: 'string | { monthly: string; yearly: string }' },
+    saving: { description: 'What a year costs less on yearly billing, such as `You save $120`. Shown in green on Yearly only.', type: 'string' },
     badge: { description: 'A badge beside the name, such as "Most popular".', type: 'ReactNode' },
     features: { description: 'What the plan includes, each beside a check mark.', type: 'ReactNode[]' },
     action: { description: 'The link at the foot of the plan. A function gets the billing shown.', type: 'ReactNode | ((billing: PricingBilling) => ReactNode)' },
