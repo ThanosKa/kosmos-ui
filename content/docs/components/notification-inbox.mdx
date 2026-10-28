@@ -69,7 +69,7 @@ The inbox holds no data of its own. You pass the rows, the unread count and what
 
 ### Sheet
 
-`variant="sheet"` opens the inbox as a full-height panel from the end edge instead of a popover. Use it when people work through their notifications one by one, with a reply or a decision on most of them. This one runs as an inbox to clear, with Inbox and Done tabs.
+`variant="sheet"` opens the inbox as a full-height panel from the right edge instead of a popover. Use it when people work through their notifications one by one, with a reply or a decision on most of them. This one runs as an inbox to clear, with Inbox and Done tabs.
 
 <ComponentPreview name="notification-inbox-sheet" />
 
@@ -81,14 +81,14 @@ The inbox holds no data of its own. You pass the rows, the unread count and what
 
 ### New while open
 
-A notification that arrives while the inbox is open shouldn't go straight to the top of the list. It would push rows down under the pointer. Hold it back and show `NotificationInboxNewItems` in the body's `overlay`. Clicking it lists the new ones and scrolls back to the top. Here a mention arrives 2 seconds after you open the inbox.
+A notification that arrives while the inbox is open shouldn't go straight to the top of the list. It would push rows down under the pointer. Hold it back and show `NotificationInboxNewItems` in the body's `notice`. Clicking it lists the new ones and scrolls back to the top. Here a mention arrives 2 seconds after you open the inbox.
 
 <ComponentPreview name="notification-inbox-new-items" />
 
 ## Motion
 
 - **Bell:** swings only when `count` goes up, so the motion always means something new arrived. It doesn't swing on page load, on hover or when the count goes down.
-- **Badge:** pops in the first time from 70% size. After that, the number rolls up or down whenever it changes.
+- **Badge:** pops in from 70% size when the count goes up from 0. After that, the number rolls up or down whenever it changes.
 - **Popover:** grows from the bell like any Popover, over 200ms.
 - **Sheet:** slides in like a Drawer.
 - **Reduced motion:** the bell stays still, and the badge and the number only fade.
@@ -96,9 +96,10 @@ A notification that arrives while the inbox is open shouldn't go straight to the
 ## Accessibility
 
 - The bell's name includes the count, such as "Notifications, 3 unread".
-- An unread row tells screen readers "Unread" next to its dot.
+- An unread row's link starts with "Unread:" for screen readers, so they hear it before the sentence.
+- The "2 new" pill is a status message, so screen readers announce it when it appears.
 - `NotificationItemTime` is a `<time>`. Give it the full date in `dateTime`.
-- The quick actions show when the pointer is over a row or the row holds focus, so Tab reaches them. On a touch screen they stay visible under the time.
+- The quick actions show when the pointer is over a row or the row holds focus, so Tab reaches them. On a touch screen they stay visible under the unread dot.
 
 ## API
 
@@ -109,7 +110,7 @@ Holds the open state. With `variant="popover"` it is a Base UI `Popover.Root`; w
 <TypeTable
   type={{
     variant: {
-      description: 'A popover under the bell, or a full-height sheet from the end edge.',
+      description: 'A popover under the bell, or a full-height sheet from the right edge.',
       type: "'popover' | 'sheet'",
       default: "'popover'",
     },
@@ -126,7 +127,7 @@ Holds the open state. With `variant="popover"` it is a Base UI `Popover.Root`; w
 
 ### NotificationInboxTrigger and NotificationBell
 
-`NotificationInboxTrigger` is the bell that opens the inbox. `NotificationBell` is the same bell on its own. Both take every Button prop except `variant` and `size`, plus:
+`NotificationInboxTrigger` is the bell that opens the inbox. `NotificationBell` is the same bell on its own. Both take every Button prop except `variant`, `size`, `children` and `href`, plus:
 
 <TypeTable
   type={{
@@ -159,7 +160,7 @@ Takes every [Scroll area](/docs/components/scroll-area) prop, such as `viewportR
 
 <TypeTable
   type={{
-    overlay: {
+    notice: {
       description: 'Shown over the top of the list, such as `NotificationInboxNewItems`. It stays put while the list scrolls.',
       type: 'ReactNode',
     },
@@ -183,7 +184,7 @@ Takes every [Scroll area](/docs/components/scroll-area) prop, such as `viewportR
 | `NotificationInboxActions` | Buttons at the end of the header, such as "Mark all as read" and settings. |
 | `NotificationInboxTabs`, `NotificationInboxTabsList`, `NotificationInboxTab` | [Tabs](/docs/components/tabs) laid out for the inbox. Put the body inside `NotificationInboxTabs`, after the list. |
 | `NotificationInboxBody` | The list area. It fills the space between the header and the footer and scrolls on its own. |
-| `NotificationInboxNewItems` | The "2 new" pill over the list. Takes `count`, and renders nothing when it's 0. |
+| `NotificationInboxNewItems` | The "2 new" pill over the list. Takes `count`, renders nothing when it's 0, and screen readers announce it as a status. |
 | `NotificationInboxGroup` | Rows under one heading, such as "Today". Takes `label`. |
 | `NotificationInboxFooter` | A row of buttons across the bottom edge. Use `variant="item"` Buttons. |
 | `NotificationItemMedia` | Who or what sent the notification, such as an Avatar. `icon` adds a small icon on its corner that shows the kind, such as a mention. |
@@ -194,7 +195,7 @@ Takes every [Scroll area](/docs/components/scroll-area) prop, such as `viewportR
 | `NotificationItemActions` | Buttons for a decision made from the row, such as Approve and Decline. |
 | `NotificationItemAside` | The end column with the time and the unread dot. |
 | `NotificationItemTime` | When it happened, as a short relative time. |
-| `NotificationItemQuickActions` | Up to two icon buttons that replace the time on hover. |
+| `NotificationItemQuickActions` | Up to two icon buttons that replace the time on hover. A third doesn't show. |
 | `NotificationItemQuickAction` | One quick action. Takes `label`, which names the button and shows as its tooltip. |
 
 ## Keyboard

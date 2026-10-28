@@ -5,3 +5,4 @@ date: 2026-10-28
 ---
 
 - **[Notification inbox](/docs/components/notification-inbox)**: the bell swings when something new arrives, and its unread count rolls. The inbox opens as a 380px popover, or as a sheet with `variant="sheet"`. The inbox groups rows by day. Rows keep decisions such as Approve and Decline in view, and show quick actions in place of the time on hover. Notifications that arrive while the inbox is open wait behind a "new" pill. You pass the data, so it works with your own API or a notification service. `NotificationBell` is the bell on its own.
+- **[Popover](/docs/components/popover)**: `PopoverPopup` takes `body={false}`, which leaves out its scroll area and padding, for content that lays itself out. Popovers without it look as before.

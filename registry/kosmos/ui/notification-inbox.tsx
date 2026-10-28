@@ -1,7 +1,6 @@
 'use client';
 
 import { mergeProps } from '@base-ui/react/merge-props';
-import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
 import { useRender } from '@base-ui/react/use-render';
 import { Bell } from 'lucide-react';
 import * as React from 'react';
@@ -9,7 +8,14 @@ import { cn } from '@/registry/kosmos/lib/cn';
 import { duration, ease } from '@/registry/kosmos/lib/motion';
 import { Button, type ButtonProps } from '@/registry/kosmos/ui/button';
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
-import { PopoverPortal, PopoverPositioner } from '@/registry/kosmos/ui/popover';
+import {
+  Popover,
+  PopoverPopup,
+  PopoverPortal,
+  PopoverPositioner,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/registry/kosmos/ui/popover';
 import { ScrollArea, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
@@ -18,10 +24,8 @@ type NotificationInboxVariant = 'popover' | 'sheet';
 const InboxVariant = React.createContext<NotificationInboxVariant>('popover');
 
 const power3Out = `cubic-bezier(${ease.power3Out.join(',')})`;
-const sineInOut = 'cubic-bezier(0.37, 0, 0.63, 1)';
-/** One ring of the bell: a swing that settles over 0.8s. */
-const swingDegrees = [0, 16, -13, 9, -6, 3, 0];
-const swingDuration = 800;
+/** One ring of the bell: a swing that dies down, decelerating over the reveal duration. */
+const swingDegrees = [0, 14, -11, 7, -4, 2, 0];
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -33,8 +37,8 @@ function countLabel(count: number, max: number) {
 
 /**
  * The bell icon and its unread badge. The bell swings when `count` goes up, so the motion always means something new
- * arrived; the badge pops in the first time and its number rolls on every change. Under reduced motion only the
- * badge fades.
+ * arrived; the badge pops in when the count leaves 0 and its number rolls on every change. Under reduced motion only
+ * the badge fades.
  */
 function BellGlyph({ count, max }: { count: number; max: number }) {
   const icon = React.useRef<SVGSVGElement>(null);
@@ -51,8 +55,8 @@ function BellGlyph({ count, max }: { count: number; max: number }) {
 
     if (count > before && !reduce && icon.current?.getAnimations().length === 0) {
       icon.current.animate(
-        swingDegrees.map((deg) => ({ rotate: `${deg}deg`, easing: sineInOut })),
-        { duration: swingDuration },
+        swingDegrees.map((deg) => ({ rotate: `${deg}deg` })),
+        { duration: duration.reveal * 1000, easing: power3Out },
       );
     }
 
@@ -62,7 +66,6 @@ function BellGlyph({ count, max }: { count: number; max: number }) {
           ? [{ opacity: 0 }, { opacity: 1 }]
           : [
               { opacity: 0, scale: 0.7 },
-              { opacity: 1, scale: 1.08, offset: 0.6 },
               { opacity: 1, scale: 1 },
             ],
         { duration: duration.slow * 1000, easing: power3Out },
@@ -144,7 +147,7 @@ function NotificationBell({ count = 0, max = 9, className, ...props }: Notificat
 }
 
 type NotificationInboxProps = {
-  /** `popover` opens under the bell; `sheet` slides in from the end edge, for a busier inbox. */
+  /** `popover` opens under the bell; `sheet` slides in from the right edge, for a busier inbox. */
   variant?: NotificationInboxVariant;
   open?: boolean;
   defaultOpen?: boolean;
@@ -156,18 +159,12 @@ type NotificationInboxProps = {
 
 /** Holds the open state, as a Base UI Popover or, with `variant="sheet"`, a Drawer. */
 function NotificationInbox({ variant = 'popover', onOpenChange, modal, ...props }: NotificationInboxProps) {
-  const handleOpenChange = onOpenChange ? (open: boolean) => onOpenChange(open) : undefined;
   return (
     <InboxVariant value={variant}>
       {variant === 'sheet' ? (
-        <Drawer data-slot="notification-inbox" modal={modal ?? true} onOpenChange={handleOpenChange} {...props} />
+        <Drawer modal={modal ?? true} onOpenChange={onOpenChange} {...props} />
       ) : (
-        <PopoverPrimitive.Root
-          data-slot="notification-inbox"
-          modal={modal ?? false}
-          onOpenChange={handleOpenChange}
-          {...props}
-        />
+        <Popover modal={modal ?? false} onOpenChange={onOpenChange} {...props} />
       )}
     </InboxVariant>
   );
@@ -185,9 +182,9 @@ function NotificationInboxTrigger({ count = 0, max = 9, className, ...props }: N
       {glyph}
     </DrawerTrigger>
   ) : (
-    <PopoverPrimitive.Trigger data-slot="notification-inbox-trigger" render={button}>
+    <PopoverTrigger data-slot="notification-inbox-trigger" render={button}>
       {glyph}
-    </PopoverPrimitive.Trigger>
+    </PopoverTrigger>
   );
 }
 
@@ -204,7 +201,7 @@ type NotificationInboxContentProps = {
 
 /**
  * The inbox surface: a 380px popover under the bell that keeps one height as its tabs change, or a full-height sheet
- * on the end edge. Lay it out top to bottom with a header, optional tabs, the body and a footer.
+ * on the right edge. Lay it out top to bottom with a header, optional tabs, the body and a footer.
  */
 function NotificationInboxContent({ className, children, align = 'end', container, initialFocus }: NotificationInboxContentProps) {
   const variant = React.use(InboxVariant);
@@ -223,20 +220,14 @@ function NotificationInboxContent({ className, children, align = 'end', containe
   return (
     <PopoverPortal container={container}>
       <PopoverPositioner align={align}>
-        <PopoverPrimitive.Popup
+        <PopoverPopup
           data-slot="notification-inbox-content"
+          body={false}
           initialFocus={initialFocus}
-          className={cn(
-            'flex h-[min(35rem,var(--available-height))] w-95 max-w-(--available-width) origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-            'transition-[opacity,scale] duration-base',
-            'data-starting-style:opacity-0 data-ending-style:opacity-0 data-ending-style:duration-fast',
-            'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
-            className,
-          )}
+          className={cn('h-[min(35rem,var(--available-height))] max-h-none w-95', className)}
         >
           {children}
-        </PopoverPrimitive.Popup>
+        </PopoverPopup>
       </PopoverPositioner>
     </PopoverPortal>
   );
@@ -264,7 +255,7 @@ function NotificationInboxTitle({ className, ...props }: React.ComponentProps<'h
     return <DrawerTitle data-slot="notification-inbox-title" className={className} {...props} />;
   }
   return (
-    <PopoverPrimitive.Title data-slot="notification-inbox-title" className={cn('text-title', className)} {...props} />
+    <PopoverTitle data-slot="notification-inbox-title" className={cn('text-title font-semibold', className)} {...props} />
   );
 }
 
@@ -294,14 +285,14 @@ const NotificationInboxTab = TabsTrigger;
 type NotificationInboxBodyProps = Omit<ScrollAreaProps, 'children'> & {
   children?: React.ReactNode;
   /** Shown over the top of the list, such as `NotificationInboxNewItems`; it stays put while the list scrolls. */
-  overlay?: React.ReactNode;
+  notice?: React.ReactNode;
 };
 
 /** The list area. Fills the room between header and footer and scrolls on its own, with the edge fade. */
-function NotificationInboxBody({ className, children, overlay, viewportClassName, ...props }: NotificationInboxBodyProps) {
+function NotificationInboxBody({ className, children, notice, viewportClassName, ...props }: NotificationInboxBodyProps) {
   return (
     <div data-slot="notification-inbox-body" className="relative flex min-h-0 flex-1 flex-col">
-      {overlay}
+      {notice}
       <ScrollArea
         className={cn('min-h-0 flex-1 rounded-none has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2', className)}
         viewportClassName={cn('overscroll-contain', viewportClassName)}
@@ -325,7 +316,7 @@ function NotificationInboxNewItems({
 }: Omit<PlainButtonProps, 'variant' | 'size'> & { count: number }) {
   if (count === 0) return null;
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
+    <div role="status" className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
       <Button
         data-slot="notification-inbox-new-items"
         variant="secondary"
@@ -441,7 +432,8 @@ function NotificationItemContent({ className, ...props }: React.ComponentProps<'
  * The sentence, and the link that opens the notification: it stretches over the whole row. Wrap names and the object
  * in `<strong>`. Renders an `<a>`; `render` swaps in a router link.
  */
-function NotificationItemTitle({ className, render, ...props }: useRender.ComponentProps<'a'>) {
+function NotificationItemTitle({ className, render, children, ...props }: useRender.ComponentProps<'a'>) {
+  const unread = React.use(ItemUnread);
   return useRender({
     defaultTagName: 'a',
     render,
@@ -453,7 +445,15 @@ function NotificationItemTitle({ className, render, ...props }: useRender.Compon
           className,
         ),
       },
-      props,
+      {
+        ...props,
+        children: (
+          <>
+            {unread ? <span className="sr-only">Unread: </span> : null}
+            {children}
+          </>
+        ),
+      },
     ),
     state: { slot: 'notification-item-title' },
   });
@@ -487,28 +487,31 @@ function NotificationItemActions({ className, ...props }: React.ComponentProps<'
 function NotificationItemAside({ className, children, ...props }: React.ComponentProps<'div'>) {
   const unread = React.use(ItemUnread);
   return (
-    <div data-slot="notification-item-aside" className={cn('relative flex w-14 shrink-0 flex-col items-end gap-2', className)} {...props}>
+    <div
+      data-slot="notification-item-aside"
+      className={cn('pointer-events-none relative flex w-14 shrink-0 flex-col items-end gap-2', className)}
+      {...props}
+    >
       {children}
       <span
         aria-hidden
         className={cn(
-          'me-0.5 size-2 rounded-full bg-primary transition-[opacity,scale] [@media(hover:hover)]:group-focus-within/notification:opacity-0 [@media(hover:hover)]:group-hover/notification:opacity-0',
+          'me-0.5 size-2 rounded-full bg-primary transition-[opacity,scale] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
           !unread && 'scale-50 opacity-0',
         )}
       />
-      {unread ? <span className="sr-only">Unread</span> : null}
     </div>
   );
 }
 
-/** When it happened, as a short relative time ("4m"). Give the full date to `dateTime` and, for screen readers, a `title`. */
+/** When it happened, as a short relative time ("4m"). Give the full date to `dateTime`. */
 function NotificationItemTime({ className, ...props }: React.ComponentProps<'time'>) {
   return (
     <time
       data-slot="notification-item-time"
       className={cn(
         'pt-0.5 text-caption whitespace-nowrap text-muted-foreground tabular-nums transition-[opacity]',
-        '[@media(hover:hover)]:group-focus-within/notification:opacity-0 [@media(hover:hover)]:group-hover/notification:opacity-0',
+        'group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
         className,
       )}
       {...props}
@@ -522,10 +525,10 @@ function NotificationItemQuickActions({ className, ...props }: React.ComponentPr
     <div
       data-slot="notification-item-quick-actions"
       className={cn(
-        'relative z-10 order-last flex gap-0.5',
+        'pointer-events-auto relative z-10 order-last flex gap-0.5 [&>:nth-child(n+3)]:hidden',
         '[@media(hover:hover)]:pointer-events-none [@media(hover:hover)]:absolute [@media(hover:hover)]:end-0 [@media(hover:hover)]:top-0 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:transition-[opacity]',
+        'group-hover/notification:pointer-events-auto group-hover/notification:opacity-100',
         '[@media(hover:hover)]:group-focus-within/notification:pointer-events-auto [@media(hover:hover)]:group-focus-within/notification:opacity-100',
-        '[@media(hover:hover)]:group-hover/notification:pointer-events-auto [@media(hover:hover)]:group-hover/notification:opacity-100',
         className,
       )}
       {...props}

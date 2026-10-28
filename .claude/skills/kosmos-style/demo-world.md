@@ -262,10 +262,10 @@ The notification inbox is Lena Park's, at 12:00 UTC on 11 October. Newest first:
 | 2h | Ama Mensah and 3 others | comment | commented on **Onboarding checklist**: "Moved the invite step after the first event, so new teams see data sooner." | no |
 | 3h | Ironbark Logistics (logo) | billing | **Ironbark Logistics** moved to the Scale plan | no |
 | Yesterday | Fernhill Books (logo) | export | **Events export for Fernhill Books** is ready to download (Download CSV) | no |
-| Yesterday | Marigold Recipes (logo) | trial | **Marigold Recipes** ends its trial in 3 days | no |
+| Yesterday | Marigold Recipes (logo) | trial | **Marigold Recipes** ends its trial in 11 days | no |
 | Oct 9 | Tomás Ortega | assign | assigned you **Fix the retention chart tooltip** | no |
 
-A notification that arrives in a demo is Kai Nakamura mentioning Lena in **Pricing page test**: "@Lena the yearly toggle lifted upgrades by 6%. Ship it?". Kind icons (lucide): mention `AtSign`, comment `MessageSquare`, request `UserPlus`, assign `CircleDot`, quota `Gauge`, billing `CreditCard`, export `Download`, trial `Clock`.
+Notifications that arrive in a demo, in turn: Kai Nakamura mentioning Lena in **Pricing page test**: "@Lena the yearly toggle lifted upgrades by 6%. Ship it?", then Ama Mensah replying to Lena's comment on **Empty states**: "Agreed, the first-run copy should explain what shows up here.". Kind icons (lucide): mention `AtSign`, comment `MessageSquare`, request `UserPlus`, assign `CircleDot`, quota `Gauge`, billing `CreditCard`, export `Download`, trial `Clock`.
 
 ## Creating things
 

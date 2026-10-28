@@ -21,7 +21,16 @@ import {
   NotificationItemTitle,
 } from '@/registry/kosmos/ui/notification-inbox';
 
-type Mention = { id: number; name: string; initials: string; avatar: string; page: string; quote: string; time: string };
+type Mention = {
+  id: number;
+  name: string;
+  initials: string;
+  avatar: string;
+  page: string;
+  quote: string;
+  time: string;
+  unread: boolean;
+};
 
 const arriving: Mention = {
   id: 0,
@@ -31,6 +40,7 @@ const arriving: Mention = {
   page: 'Pricing page test',
   quote: '@Lena the yearly toggle lifted upgrades by 6%. Ship it?',
   time: 'Now',
+  unread: true,
 };
 
 const initial: Mention[] = [
@@ -42,6 +52,7 @@ const initial: Mention[] = [
     page: 'Q4 roadmap',
     quote: '@Lena can you check the activation funnel numbers before the Friday review?',
     time: '4m',
+    unread: true,
   },
   {
     id: 2,
@@ -51,6 +62,7 @@ const initial: Mention[] = [
     page: 'Onboarding checklist',
     quote: 'Moved the invite step after the first event, so new teams see data sooner.',
     time: '2h',
+    unread: false,
   },
 ];
 
@@ -70,14 +82,14 @@ export default function NotificationInboxNewItemsExample() {
 
   return (
     <NotificationInbox open={open} onOpenChange={setOpen}>
-      <NotificationInboxTrigger count={fresh.length + 1} />
+      <NotificationInboxTrigger count={items.filter((item) => item.unread).length} />
       <NotificationInboxContent>
         <NotificationInboxHeader>
           <NotificationInboxTitle>Mentions</NotificationInboxTitle>
         </NotificationInboxHeader>
         <NotificationInboxBody
           viewportRef={viewport}
-          overlay={
+          notice={
             <NotificationInboxNewItems
               count={fresh.length}
               onClick={() => {
@@ -94,7 +106,7 @@ export default function NotificationInboxNewItemsExample() {
             {items
               .filter((item) => listed.has(item.id))
               .map((item) => (
-                <NotificationItem key={item.id} unread={item.time === 'Now'}>
+                <NotificationItem key={item.id} unread={item.unread}>
                   <NotificationItemMedia icon={<AtSign />}>
                     <Avatar>
                       <AvatarImage src={item.avatar} alt="" />

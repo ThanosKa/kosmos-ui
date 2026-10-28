@@ -1,6 +1,6 @@
 'use client';
 
-import { Archive, AtSign, BellOff, Check, Gauge, MessageSquare, UserPlus } from 'lucide-react';
+import { Archive, AtSign, BellOff, Check, Download, Gauge, MessageSquare, UserPlus } from 'lucide-react';
 import type * as React from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
@@ -117,7 +117,7 @@ const longRow: Row = {
   avatar: '/logos/fernhill.svg',
   fallback: 'F',
   square: true,
-  icon: <Archive />,
+  icon: <Download />,
   title: (
     <>
       <strong>Events export for Fernhill Books, every event from 1 January to 30 September 2026</strong> is ready to
@@ -130,9 +130,9 @@ const longRow: Row = {
   unread: true,
 };
 
-function NotificationRow({ row, hovered }: { row: Row; hovered?: boolean }) {
+function NotificationRow({ row }: { row: Row }) {
   return (
-    <NotificationItem unread={row.unread} className={hovered ? 'bg-accent' : undefined}>
+    <NotificationItem unread={row.unread}>
       <NotificationItemMedia icon={row.icon}>
         <Avatar className={row.square ? 'rounded-md' : undefined}>
           <AvatarImage src={row.avatar} alt="" />
@@ -155,10 +155,8 @@ function NotificationRow({ row, hovered }: { row: Row; hovered?: boolean }) {
         {row.meta ? <NotificationItemMeta>{row.meta}</NotificationItemMeta> : null}
       </NotificationItemContent>
       <NotificationItemAside>
-        <NotificationItemTime dateTime="2026-10-11" className={hovered ? '[@media(hover:hover)]:opacity-0' : undefined}>
-          {row.time}
-        </NotificationItemTime>
-        <NotificationItemQuickActions className={hovered ? '[@media(hover:hover)]:pointer-events-auto [@media(hover:hover)]:opacity-100' : undefined}>
+        <NotificationItemTime dateTime="2026-10-11">{row.time}</NotificationItemTime>
+        <NotificationItemQuickActions>
           <NotificationItemQuickAction label="Mark as read">
             <Check />
           </NotificationItemQuickAction>
@@ -175,13 +173,13 @@ function Inbox({
   container,
   variant = 'popover',
   children,
-  overlay,
+  notice,
   unread = 3,
 }: {
   container: HTMLElement;
   variant?: 'popover' | 'sheet';
   children: React.ReactNode;
-  overlay?: React.ReactNode;
+  notice?: React.ReactNode;
   unread?: number;
 }) {
   return (
@@ -205,7 +203,7 @@ function Inbox({
               <NotificationInboxTab value="unread">Unread</NotificationInboxTab>
               <NotificationInboxTab value="archive">Archive</NotificationInboxTab>
             </NotificationInboxTabsList>
-            <NotificationInboxBody overlay={overlay}>{children}</NotificationInboxBody>
+            <NotificationInboxBody notice={notice}>{children}</NotificationInboxBody>
           </NotificationInboxTabs>
           <NotificationInboxFooter>
             <Button variant="item">View all notifications</Button>
@@ -232,12 +230,12 @@ export default function NotificationInboxPreview() {
 
       <PreviewSection title="Popover">
         <OverlayStageGrid>
-          <OverlayStage label="open, second row hovered" className={stageClass}>
+          <OverlayStage label="open" className={stageClass}>
             {(container) => (
               <Inbox container={container}>
                 <NotificationInboxGroup label="Today">
-                  {rows.map((row, index) => (
-                    <NotificationRow key={row.id} row={row} hovered={index === 1} />
+                  {rows.map((row) => (
+                    <NotificationRow key={row.id} row={row} />
                   ))}
                 </NotificationInboxGroup>
               </Inbox>
@@ -247,7 +245,7 @@ export default function NotificationInboxPreview() {
             {(container) => (
               <Inbox
                 container={container}
-                overlay={<NotificationInboxNewItems count={2}>2 new</NotificationInboxNewItems>}
+                notice={<NotificationInboxNewItems count={2}>2 new</NotificationInboxNewItems>}
               >
                 <NotificationInboxGroup label="Yesterday">
                   <NotificationRow row={longRow} />
