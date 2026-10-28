@@ -148,6 +148,10 @@ _Avoid_: mini sidebar, rail
 Μια έτοιμη περίοδος με όνομα δίπλα στο calendar του Date range picker, π.χ. «Last 7 days». Ένα κλικ τη διαλέγει, και το πεδίο δείχνει το όνομά της όσο η τιμή ταιριάζει.
 _Avoid_: preset (είναι το σετ τιμών του palette), shortcut (είναι συνδυασμός πλήκτρων)
 
+**Panel**:
+Το component για ένα κομμάτι ενός dashboard. Έξω είναι το **tray**, μια χαμηλωμένη θήκη (`bg-muted`, `shadow-inset`): ο τίτλος, η περιγραφή και τα actions κάθονται πάνω του. Μέσα του είναι μια ανυψωμένη κάρτα με το περιεχόμενο (πίνακας, λίστα ή γράφημα), και κάτω από την κάρτα ένα προαιρετικό footer (pagination ή κουμπί). Η λέξη «tray» ονομάζει μόνο το εξωτερικό μέρος, ποτέ ολόκληρο το Panel.
+_Avoid_: «tray» για ολόκληρο το Panel, frame, section card, widget
+
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
 _Avoid_: theme, starter
