@@ -35,9 +35,16 @@ const sampleItems: NavbarItem[] = [
       { label: 'Alerts', href: '/features/alerts', description: 'A message when a number leaves its usual range.' },
     ],
   },
+  {
+    label: 'Resources',
+    links: [
+      { label: 'Guides', href: '/guides', description: 'Set up tracking in an afternoon.' },
+      { label: 'Blog', href: '/blog', description: 'News and updates from the team.' },
+      { label: 'Customers', href: '/customers', description: 'How teams use Acme to ship.' },
+    ],
+  },
   { label: 'Docs', href: '/docs' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Changelog', href: '/changelog' },
 ];
 const sampleActions = (
   <>
@@ -210,7 +217,10 @@ function NavbarBarLinks({
                   <NavigationMenuPrimitive.Content
                     keepMounted
                     className={cn(
-                      'max-w-(--available-width) p-1 transition-[opacity] duration-base data-ending-style:opacity-0 data-ending-style:duration-fast data-starting-style:opacity-0',
+                      'max-w-(--available-width) p-1 transition-[opacity,translate] duration-slow ease-smooth-in-out data-starting-style:opacity-0 data-ending-style:opacity-0',
+                      // Moving to another dropdown slides its content in from that side and the old content out the other.
+                      'motion-safe:data-starting-style:data-[activation-direction=right]:translate-x-1/4 motion-safe:data-starting-style:data-[activation-direction=left]:-translate-x-1/4',
+                      'motion-safe:data-ending-style:data-[activation-direction=right]:-translate-x-1/4 motion-safe:data-ending-style:data-[activation-direction=left]:translate-x-1/4',
                       isMega(item) ? 'w-176' : 'w-80',
                     )}
                   >

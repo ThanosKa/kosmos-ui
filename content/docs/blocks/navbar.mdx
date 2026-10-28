@@ -115,7 +115,7 @@ function SiteHeader() {
 
 - **Landmark**: the bar is a `<header>`. Placed outside `<main>`, `<article>` and `<section>`, it becomes the page's banner landmark, and its links sit in a navigation named by `navLabel`.
 - **Sticky**: the bar stays at the top of the window on an opaque fill. The text in it keeps its contrast over whatever scrolls under it. Its bottom edge shows once the page has scrolled.
-- **Dropdowns**: a group of links opens a panel under its label on hover, on click, and with Enter, Space or the arrow keys. Each link can carry a line that says where it goes. Escape closes the panel and returns focus to its label.
+- **Dropdowns**: a group of links opens a panel under its label on hover, on click, and with Enter, Space or the arrow keys. Each link can carry a line that says where it goes. Escape closes the panel and returns focus to its label. Moving to another label resizes the panel to its links and slides them in from that side; with reduced motion they fade.
 - **Current page**: the link whose `href` is `current` takes the current-page color and `aria-current="page"`, with a check mark in the dropdown and the sheet. The label of the group that holds it takes the color too.
 - **Actions**: buttons at the end of the bar, at every width. Hide one below the wide layout with `@max-3xl:hidden`, and repeat it in `sheetActions`.
 - **Sheet**: below 768px the links move into a sheet that opens from the start edge. It keeps focus inside while it is open, closes with Escape, a tap outside or a swipe, and closes when you follow a link. Pass `menu` to put your own button there instead, such as one that opens your docs sidebar.
