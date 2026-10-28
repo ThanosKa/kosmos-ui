@@ -231,7 +231,7 @@ The analytics dashboard shows `acme.example` itself over the 30 days to 11 Octob
 
 ## Sales
 
-The CRM dashboard is Acme's own sales: plan upgrades and yearly billing sold to its customer projects. A deal's value is a year of the plan it sells. The sales team: Rosa Delgado (RD) and Felix Brandt (FB) sell Scale plans, Mina Sato (MS) Pro plans, with Kai Nakamura from Growth.
+The CRM dashboard is Acme's own sales: plan upgrades and yearly billing sold to its customer projects. A deal's value is a year of the plan it sells. The sales team: Rosa Delgado (RD) and Felix Brandt (FB) sell Scale plans, Mina Sato (MS) Pro plans, with Kai Nakamura from Growth. Each has a photo (`rosa`, `felix`, `mina`, `kai`).
 
 - KPIs: Pipeline $184.6K (23 open deals, +9.2%), Won $31.7K this quarter (+18.6%), Win rate 28% over 90 days (+2.4 pts from 25.6%), Sales cycle 34 days from trial to won (−10.5%, −4 days, falling is good).
 - Stages, with their tag hue: Lead (gray) $20.6K in 9 deals, Qualified (blue) $29.6K in 6, Proposal (violet) $38.4K in 5, Negotiation (amber) $96K in 3, Won (green) $31.7K in 5. Lead to won 9.8%, average deal $8K, 3 stalled.

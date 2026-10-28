@@ -184,17 +184,17 @@ const sampleTasks: Task[] = [
 ];
 
 const sampleQuota: QuotaRow[] = [
-  { id: 'rosa', name: 'Rosa Delgado', team: 'Scale plans', won: 14800, target: 16000 },
-  { id: 'felix', name: 'Felix Brandt', team: 'Scale plans', won: 9600, target: 12000 },
-  { id: 'mina', name: 'Mina Sato', team: 'Pro plans', won: 4900, target: 8000 },
-  { id: 'kai', name: 'Kai Nakamura', team: 'Growth', won: 2400, target: 4400 },
+  { id: 'rosa', name: 'Rosa Delgado', team: 'Scale plans', avatarUrl: '/avatars/rosa.jpg', won: 14800, target: 16000 },
+  { id: 'felix', name: 'Felix Brandt', team: 'Scale plans', avatarUrl: '/avatars/felix.jpg', won: 9600, target: 12000 },
+  { id: 'mina', name: 'Mina Sato', team: 'Pro plans', avatarUrl: '/avatars/mina.jpg', won: 4900, target: 8000 },
+  { id: 'kai', name: 'Kai Nakamura', team: 'Growth', avatarUrl: '/avatars/kai.jpg', won: 2400, target: 4400 },
 ];
 
 const sampleActivity: ActivityItem[] = [
-  { id: '1', who: 'Rosa Delgado', what: 'moved More events with Copperline Bank to Negotiation', when: '12m' },
-  { id: '2', who: 'Mina Sato', what: 'won Annual Pro with Saltmarsh Coffee, $1,430', when: '1h' },
-  { id: '3', who: 'Felix Brandt', what: 'logged a call with Cirrus Weather', when: '3h' },
-  { id: '4', who: 'Kai Nakamura', what: 'added 2 contacts at Ironbark Logistics', when: '5h' },
+  { id: '1', who: 'Rosa Delgado', avatarUrl: '/avatars/rosa.jpg', what: 'moved More events with Copperline Bank to Negotiation', when: '12m' },
+  { id: '2', who: 'Mina Sato', avatarUrl: '/avatars/mina.jpg', what: 'won Annual Pro with Saltmarsh Coffee, $1,430', when: '1h' },
+  { id: '3', who: 'Felix Brandt', avatarUrl: '/avatars/felix.jpg', what: 'logged a call with Cirrus Weather', when: '3h' },
+  { id: '4', who: 'Kai Nakamura', avatarUrl: '/avatars/kai.jpg', what: 'added 2 contacts at Ironbark Logistics', when: '5h' },
 ];
 
 // A fixed locale, so the server and the browser render the same text.
