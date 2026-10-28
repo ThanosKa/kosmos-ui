@@ -50,9 +50,15 @@ function PopoverPositioner({
 /**
  * The popover surface. Grows out of its trigger (`scale-[0.97]` plus a fade), or only fades under reduced motion.
  * The content stacks 12px apart and scrolls in a `ScrollArea` when it is taller than the room it has: the edge with
- * content hidden past it fades out.
+ * content hidden past it fades out. `body={false}` leaves out the scroll area and its padding, for content that lays
+ * itself out, such as a header, a list that scrolls on its own and a footer.
  */
-function PopoverPopup({ className, children, ...props }: PopoverPrimitive.Popup.Props) {
+function PopoverPopup({
+  className,
+  children,
+  body = true,
+  ...props
+}: PopoverPrimitive.Popup.Props & { body?: boolean }) {
   return (
     <PopoverPrimitive.Popup
       data-slot="popover-popup"
@@ -66,20 +72,24 @@ function PopoverPopup({ className, children, ...props }: PopoverPrimitive.Popup.
       )}
       {...props}
     >
-      <ScrollArea
-        data-slot="popover-scroll-area"
-        className={cn(
-          'rounded-[inherit]',
-          // The popup clips anything outside it, so the scrolling content draws its focus outline inside.
-          'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
-        )}
-        // The 16px padding already clears the scrollbar. `min-w-0!` beats the content's inline `min-width: fit-content`, so text wraps to the popup's width.
-        viewportClassName="overscroll-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
-      >
-        <div data-slot="popover-body" className="flex flex-col gap-3 p-4">
-          {children}
-        </div>
-      </ScrollArea>
+      {body ? (
+        <ScrollArea
+          data-slot="popover-scroll-area"
+          className={cn(
+            'rounded-[inherit]',
+            // The popup clips anything outside it, so the scrolling content draws its focus outline inside.
+            'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
+          )}
+          // The 16px padding already clears the scrollbar. `min-w-0!` beats the content's inline `min-width: fit-content`, so text wraps to the popup's width.
+          viewportClassName="overscroll-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
+        >
+          <div data-slot="popover-body" className="flex flex-col gap-3 p-4">
+            {children}
+          </div>
+        </ScrollArea>
+      ) : (
+        children
+      )}
     </PopoverPrimitive.Popup>
   );
 }
