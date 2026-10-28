@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bar-list",
+  "type": "registry:ui",
+  "title": "Bar list",
+  "description": "Ranked values as rows whose fill is the bar, such as top pages or countries. The label sits on the bar, the formatted value and an optional share at the end.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/bar-list.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
