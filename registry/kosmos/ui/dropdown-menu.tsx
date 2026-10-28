@@ -54,7 +54,7 @@ function DropdownMenuPopup({ className, children, ...props }: MenuPrimitive.Popu
     <MenuPrimitive.Popup
       data-slot="dropdown-menu-popup"
       className={cn(
-        'flex max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) flex-col overflow-hidden rounded-xl border border-transparent bg-popover text-body text-popover-foreground shadow-popover sm:min-w-44 dark:scheme-dark',
+        'flex max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) flex-col overflow-hidden rounded-lg border border-transparent bg-popover text-body text-popover-foreground shadow-popover sm:min-w-44 dark:scheme-dark',
         // The popup holds focus only as the container of its items; the highlighted item is the focus indicator.
         'outline-none',
         'transition-[opacity,scale] duration-base',
@@ -114,7 +114,7 @@ function DropdownMenuContent({
 }
 
 const itemClass = cn(
-  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg px-2 py-1.5 text-body font-medium outline-none select-none',
+  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none',
   'transition-[background-color] duration-instant',
   'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
   'data-inset:ps-8',

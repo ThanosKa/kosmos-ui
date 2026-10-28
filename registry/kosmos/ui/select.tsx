@@ -81,7 +81,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
-            'relative max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) overflow-hidden rounded-xl border border-transparent bg-popover text-popover-foreground shadow-popover dark:scheme-dark',
+            'relative max-h-(--available-height) max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) overflow-hidden rounded-lg border border-transparent bg-popover text-popover-foreground shadow-popover dark:scheme-dark',
             'transition-[opacity,scale] duration-base data-ending-style:duration-fast',
             'data-starting-style:opacity-0 data-ending-style:opacity-0',
             'motion-safe:data-starting-style:scale-[0.97] motion-safe:data-ending-style:scale-[0.97]',
@@ -112,7 +112,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-lg py-1.5 ps-2 pe-8 text-body font-medium outline-none select-none',
+        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",

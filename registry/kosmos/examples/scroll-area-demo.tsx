@@ -6,7 +6,7 @@ export default function ScrollAreaDemo() {
   return (
     <div className="w-56 rounded-2xl border border-transparent bg-card p-1 shadow-card">
       <ScrollArea className="h-64 rounded-xl">
-        <p className="px-3 pt-2 pb-1 text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase">
+        <p className="px-3 pt-2 pb-1 text-caption tracking-[0.08em] text-muted-foreground uppercase">
           Releases
         </p>
         <ul className="divide-y divide-border">
