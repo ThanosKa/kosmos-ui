@@ -70,21 +70,6 @@ export default function TestimonialsPreview() {
           />
         </div>
       </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <Testimonials
-            title="ما يقوله عملاؤنا"
-            description={null}
-            featured={null}
-            testimonials={[
-              { quote: 'يرى الفريق كله الأرقام نفسها كل صباح.', name: 'ليلى حداد', role: 'مديرة العمليات' },
-              { quote: 'استغرق إعداد الأداة بعد الظهر فقط.', name: 'مروان بيل', role: 'مهندس iOS' },
-              { quote: 'نعرف الآن أين يتوقف المستخدمون.', name: 'صوفيا لينكفيست', role: 'مديرة المنتج' },
-            ]}
-          />
-        </div>
-      </PreviewSection>
     </PreviewStack>
   );
 }

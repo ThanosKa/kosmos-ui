@@ -64,25 +64,6 @@ export default function CtaPreview() {
           <Cta title={null} />
         </div>
       </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <Cta
-            title={
-              <>
-                أضف مشروعك الأول،
-                <br />
-                وشاهد الأحداث خلال دقيقة
-              </>
-            }
-            action={
-              <Button variant="primary" size="lg" href="/signup">
-                ابدأ مجانًا
-              </Button>
-            }
-          />
-        </div>
-      </PreviewSection>
     </PreviewStack>
   );
 }

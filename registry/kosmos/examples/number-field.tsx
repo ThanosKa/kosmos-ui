@@ -102,15 +102,6 @@ export default function NumberFieldPreview() {
           </Field>
         </div>
       </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" lang="ar">
-          <Field>
-            <FieldLabel>الطلبات في الثانية</FieldLabel>
-            <NumberField defaultValue={1250} min={0} step={50} locale="ar-EG" />
-          </Field>
-        </div>
-      </PreviewSection>
     </PreviewStack>
   );
 }

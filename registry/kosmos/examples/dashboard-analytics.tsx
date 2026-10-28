@@ -37,7 +37,6 @@ const longSignups: Signup[] = [
     joined: 'Just now',
   },
   { id: 'short', name: 'Al', email: 'al@kiln.example', plan: 'free', source: 'Direct', referrer: '—', step: 'Signed up', activation: 0, mrr: 0, joined: 'Oct 1' },
-  { id: 'rtl', name: 'ليلى حداد', email: 'leila@ironbark.example', presence: 'away', plan: 'trial', source: 'Search', referrer: 'Google', step: 'Installed the SDK', activation: 41, mrr: 0, joined: '1 hour ago' },
 ];
 
 function actions(signup: Signup) {
@@ -101,12 +100,6 @@ export default function DashboardAnalyticsPreview() {
             signups={longSignups}
             signupActions={actions}
           />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <DashboardAnalytics signupActions={actions} />
         </div>
       </PreviewSection>
 

@@ -57,12 +57,6 @@ export default function LogoMarqueePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Right to left">
-        <div dir="rtl" className={frame}>
-          <LogoMarquee title="يستخدمه فريق كل منتج" logos={stack} />
-        </div>
-      </PreviewSection>
-
       <PreviewSection title="Long line and long names">
         <div className={frame}>
           <LogoMarquee

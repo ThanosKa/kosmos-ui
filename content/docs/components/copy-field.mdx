@@ -29,7 +29,7 @@ The button at the end copies `value`. Once the value is on the clipboard, the ic
 
 With `secret`, the field shows 12 dots and the last four characters, so people can tell two keys apart without seeing them. Every secret takes the same 12 dots, so the field gives away nothing of its length. A secret shorter than 16 characters shows only the dots. The eye button shows the value and hides it again. The copy button copies the value even with the dots showing. With the dots showing, the page holds only the dots.
 
-Keys and URLs read left to right on a right-to-left page too. A value too long for the field ends in an ellipsis. The full value is what the button copies.
+A value too long for the field ends in an ellipsis. The full value is what the button copies.
 
 The hiding and the copying come from `@kosmos/secret` and `@kosmos/use-copy`, which install with it as `lib/secret.ts` and `hooks/use-copy.ts`. You can use them in your own code too. `maskSecret(secret)` returns the dots and the last four characters. `useCopy(text, { onFailure })` returns the result (`'idle' | 'copied' | 'failed'`) and a function that copies.
 
