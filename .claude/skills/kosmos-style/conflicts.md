@@ -11,10 +11,10 @@ Reviewers: `emil-design-eng`, `review-animations`, `animate`, `break-ui` and `mo
 | Press scale | Emil `0.97` (range 0.95–0.98) | `0.96`, 150ms, `power3-out`, every enabled standalone Button, its link form included | Inside Emil's range |
 | Easing curves | Emil: his own `--ease-out` `(0.23, 1, 0.32, 1)`; `ease` for hover | `power3-out` `(0.25, 1, 0.5, 1)` for enter, exit, hover and icon swaps; `smooth-in-out` for size and position | One curve family shared by Tailwind and Motion |
 | Exit curve | Emil: never ease-in | `power3-out`, same as enter | Agrees with the reviewers; the studied overlay exits used `power3-in`, which Kosmos drops |
-| Accordion close | Emil: exits shorter than enters, as the Kosmos exit row says | Accordion height closes in 300ms on `smooth-in-out`, as it opens | A swap moves two heights at once; a faster close makes the total dip and the page bounce |
+| Accordion close | Emil: exits shorter than enters, as the Kosmos exit row says | Accordion height and chevron close in 300ms on `smooth-in-out`, as they open | A swap moves two heights at once; a faster close makes the total dip and the page bounce. CSS cannot tell a swap from a lone close, so every close takes the slow timing |
 | Overlay start scale | Emil: from 0.9–0.97 | Popover/menu `0.97`, dialog `0.95` | Inside Emil's range; matches the studied overlays |
 | Spring bounce | Emil: 0.1–0.3 when used | `bounce: 0`, `duration: 0.3` | Calm motion |
-| Stagger | Emil: 30–80ms between items | No stagger in components. Blocks and the landing page: 100ms between chunks (title, text, actions), 40ms between repeated items, 300ms total cap | Repeated items sit inside Emil's range; chunks are slower so a block reads in order |
+| Stagger | Emil: 30–80ms between items | No stagger in components except Text reveal: 120ms between words, the spread capped at 900ms. Landing sections: 100ms from the title to the content and between pricing plans | Slower steps so a title or a section reads in order, one chunk at a time |
 | Durations | Emil: UI under 300ms, drawers 200–500ms | Fixed set 100/150/200/250/300ms, drawer 300ms | The studied drawer ran 350ms; 300ms satisfies both rules |
 | Hover gating | Emil: `(hover: hover) and (pointer: fine)` | Tailwind 4 `hover:` as is (`(hover: hover)`) | One mechanism |
 
@@ -22,8 +22,8 @@ Reviewers: `emil-design-eng`, `review-animations`, `animate`, `break-ui` and `mo
 
 | Point | Reviewer says | Kosmos value (wins) | Why |
 | --- | --- | --- | --- |
-| Input boundary | `better-accessibility`: inputs keep a border with 3:1 contrast | `shadow-control` ring at the `secondary` fill, below 3:1; labels identify fields; the focus outline passes 3:1 | Same choice as shadcn and most design systems; report as `LOW` at most |
-| Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a 1px `ring` line (a ring offset) plus a 3px `ring/20` halo, with a transparent outline for forced colors | Survives forced colors and leaves shadow stacks intact. On a field the 1px `ring` line passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most |
+| Input boundary | `better-accessibility`: inputs keep a border with 3:1 contrast | `shadow-field`, a 1px ring in `input` with no drop, about 1.2:1; labels identify fields; the focus line passes 3:1 | Same choice as shadcn and most design systems; report as `LOW` at most |
+| Focus indicator | Any visible ring with 3:1; `better-accessibility` prefers a 2px indicator | 2px `outline-ring` offset 2px; text fields a 1px `ring` line (a ring offset) plus a 3px `ring/20` halo, with a transparent outline for forced colors | Survives forced colors and leaves shadow stacks intact. On a field the 1px `ring` line passes 3:1 against the page and the halo widens it; report a field finding as `LOW` at most. A flush 1px `outline-ring` would snap to full color on the first frame while only the halo fades; as a ring offset the line fades with it |
 | Focus color | `better-accessibility`: a solid, saturated focus color | `ring`: ink at 55% in the default (3.8:1 or more in light, 5.2:1 or more in dark on every surface), the accent in a preset that has one | Black and white keeps color for status (ADR 0009). The 2px offset leaves a page-color gap, so the outline reads around an ink button too; report as `Kosmos style` |
 | Chart series | `dataviz`: categorical series need distinct hues | A mono ramp, ink then four greys, each 3:1 or more on `card` and `background`; touching segments split by a 1px line in the surface color; every series named in the legend and tooltip | Color stays for meaning (ADR 0009); lightness steps read in grayscale and for color-blind readers. A preset may bring hues |
 
@@ -38,7 +38,7 @@ The studied products go below the contrast floor in places. Kosmos keeps their s
 | Idle nav items | Dark grey near 4.6:1 | `muted-foreground` | Same structure (idle grey, active ink), at our own token |
 | Placeholders | Light about 2.6:1 | `muted-foreground` | Placeholder text is read as an example of the value and must pass 4.5:1 |
 | Tag text | Light-on-tint tags pass in dark; colored status text in some products | `tint-*-foreground` steps (4.5:1 or more on every fill); status text stays neutral with a dot | Tags carry a category by hue; status keeps the dot so its meaning never rides on color alone |
-| Field edge | About 1.2:1 ring, no drop | `shadow-field` in `input`, about 1.2:1 | Matches the existing Input boundary row: the label identifies the field and the focus outline passes 3:1 |
+| Sticky chrome | A translucent fill over a `backdrop-blur` | Opaque `bg-background` | At `bg-background/80`, dark content scrolling under the bar drops the muted nav labels to 3.2:1 in light and 3.6:1 in dark, and a fill opaque enough to pass hides what the blur would show |
 
 ## Review output
 
