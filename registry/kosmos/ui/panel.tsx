@@ -82,8 +82,7 @@ function PanelContent({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="panel-content"
       className={cn(
-        // Concentric with the tray: its radius less the 1px border and the 4px padding.
-        'min-w-0 flex-1 rounded-[calc(var(--radius-2xl)-5px)] border border-transparent bg-card text-card-foreground shadow-card',
+        'min-w-0 flex-1 rounded-[calc(var(--radius-2xl)-4px)] border border-transparent bg-card text-card-foreground shadow-card',
         className,
       )}
       {...props}

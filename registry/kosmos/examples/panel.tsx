@@ -27,8 +27,8 @@ const projects = [
   { name: 'Hollow Oak Games', domain: 'hollowoak.example', plan: 'Pro', status: 'paused', users: 2310, mrr: 99 },
 ] as const;
 
-const planHue = { Scale: 'violet', Pro: 'blue', Free: 'gray' } as const;
-const statusOf: Record<string, { status: Status; label: string }> = {
+const planHue = { Scale: 'violet', Pro: 'blue' } as const;
+const statusOf: Record<(typeof projects)[number]['status'], { status: Status; label: string }> = {
   live: { status: 'done', label: 'Live' },
   paused: { status: 'waiting', label: 'Paused' },
 };
@@ -40,8 +40,10 @@ const events = [
   { name: 'signed_up', count: '389K' },
 ];
 
-const users = [26800, 27100, 26900, 27600, 27400, 28100, 28300, 28000, 28700, 29100, 28900, 29400].map((value, i) => ({
-  day: `Sep ${30 - 11 + i}`,
+const dayLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const today = Date.UTC(2026, 9, 11);
+const users = [26800, 27100, 26900, 27600, 27400, 28100, 28300, 28000, 28700, 29100, 28900, 29400].map((value, i, all) => ({
+  day: dayLabel.format(today - (all.length - 1 - i) * 86_400_000),
   current: value,
 }));
 const usersConfig = { current: { label: 'Active users', color: 'var(--chart-1)' } } satisfies ChartConfig;
@@ -49,9 +51,9 @@ const usersConfig = { current: { label: 'Active users', color: 'var(--chart-1)' 
 const count = new Intl.NumberFormat('en-US');
 const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
-function SearchField({ label, className }: { label: string; className?: string }) {
+function SearchField({ label }: { label: string }) {
   return (
-    <InputGroup className={className ?? 'h-7.5 w-48 @max-md/panel:flex-1'}>
+    <InputGroup className="h-7.5 w-48 @max-md/panel:flex-1">
       <InputGroupAddon align="inline-start">
         <Search aria-hidden />
       </InputGroupAddon>
@@ -165,7 +167,7 @@ export default function PanelPreview() {
           <Panel>
             <PanelHeader>
               <PanelTitle render={<h3 />}>Active users</PanelTitle>
-              <PanelDescription>Daily, last 30 days</PanelDescription>
+              <PanelDescription>Daily, last 12 days</PanelDescription>
               <PanelAction>
                 <RangeSwitch />
               </PanelAction>

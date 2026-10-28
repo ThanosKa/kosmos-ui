@@ -10,11 +10,11 @@ import { StatusDot } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 const projects = [
-  { name: 'Fernhill Books', domain: 'fernhill.example', plan: 'Scale', status: 'live', users: 48210 },
-  { name: 'Brightloop Fitness', domain: 'brightloop.example', plan: 'Scale', status: 'live', users: 31480 },
-  { name: 'Copperline Bank', domain: 'copperline.example', plan: 'Scale', status: 'live', users: 12940 },
-  { name: 'Saltmarsh Coffee', domain: 'saltmarsh.example', plan: 'Pro', status: 'live', users: 6120 },
-  { name: 'Driftwood Travel', domain: 'driftwood.example', plan: 'Pro', status: 'live', users: 9870 },
+  { name: 'Fernhill Books', domain: 'fernhill.example', plan: 'Scale', users: 48210 },
+  { name: 'Brightloop Fitness', domain: 'brightloop.example', plan: 'Scale', users: 31480 },
+  { name: 'Copperline Bank', domain: 'copperline.example', plan: 'Scale', users: 12940 },
+  { name: 'Saltmarsh Coffee', domain: 'saltmarsh.example', plan: 'Pro', users: 6120 },
+  { name: 'Driftwood Travel', domain: 'driftwood.example', plan: 'Pro', users: 9870 },
 ] as const;
 
 const planHue = { Scale: 'violet', Pro: 'blue' } as const;

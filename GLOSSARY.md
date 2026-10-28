@@ -149,8 +149,8 @@ _Avoid_: mini sidebar, rail
 _Avoid_: preset (είναι το σετ τιμών του palette), shortcut (είναι συνδυασμός πλήκτρων)
 
 **Panel**:
-Μια χαμηλωμένη θήκη (`bg-muted`, `shadow-inset`) για ένα κομμάτι ενός dashboard: ο τίτλος, η περιγραφή και τα actions κάθονται πάνω στη θήκη, το περιεχόμενο (πίνακας, λίστα ή γράφημα) σε μια ανυψωμένη κάρτα μέσα της, και ένα προαιρετικό footer (pagination ή κουμπί) κάτω από την κάρτα.
-_Avoid_: tray, frame, section card, widget
+Το component για ένα κομμάτι ενός dashboard. Έξω είναι το **tray**, μια χαμηλωμένη θήκη (`bg-muted`, `shadow-inset`): ο τίτλος, η περιγραφή και τα actions κάθονται πάνω του. Μέσα του είναι μια ανυψωμένη κάρτα με το περιεχόμενο (πίνακας, λίστα ή γράφημα), και κάτω από την κάρτα ένα προαιρετικό footer (pagination ή κουμπί). Η λέξη «tray» ονομάζει μόνο το εξωτερικό μέρος, ποτέ ολόκληρο το Panel.
+_Avoid_: «tray» για ολόκληρο το Panel, frame, section card, widget
 
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
