@@ -4,7 +4,7 @@
   "type": "registry:block",
   "title": "Analytics dashboard",
   "description": "A product analytics dashboard, each section on a Panel. It shows KPIs with sparklines, traffic against the period before, sources, top pages and countries. A signup goal and a searchable table of the newest signups close it. It lays itself out by its own width, not the screen's.",
-  "dependencies": ["lucide-react@^1.50.0", "recharts@^3.10.1"],
+  "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
@@ -14,6 +14,7 @@
     "@kosmos/bar-list",
     "@kosmos/button",
     "@kosmos/chart",
+    "@kosmos/donut-chart",
     "@kosmos/dropdown-menu",
     "@kosmos/input-group",
     "@kosmos/meter",

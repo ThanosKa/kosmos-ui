@@ -18,7 +18,7 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 - [x] **Example dashboards.** Done: the Analytics and CRM dashboard blocks (#58), with Panel, Bar list and the Stat card KPI header (#55–#57).
 - [ ] **Analytics app template.** The dashboard blocks inside the AppSidebar and a header, with more pages (Overview, Users, Revenue, Settings) the sidebar switches between. A natural Pro candidate (ADR 0003).
 - [ ] **Dashboards on the landing page.** A section that shows the two dashboards in a browser frame, like the hero.
-- [ ] **Donut chart.** A Kosmos component for the ring with a total in its hole and a legend; the Analytics dashboard and the landing hero draw it with a bare Recharts Pie today.
+- [x] **Donut chart.** Done: Donut chart and its legend, drawn like Gauge; the Analytics dashboard and the landing hero use it.
 - [ ] **Right-to-left fixes.** `StatCardDelta` text, the Pagination status and GrowthChart's end labels flip or overflow on a right-to-left page.
 - [ ] **Pricing variants.** More pricing layouts next to the current block. Research first (in `.scratch/`), then prototype: a monthly/yearly toggle where the prices change with motion, and other layouts worth having. The maintainer picks from the prototype.
 - [ ] **AI product components.** Thinking loader, tool call card, message actions, change summary and the like from the reference, merged with what Kosmos already has (tool-call, tool-approval, run-timeline, prompt composer) into one coherent set, plus new blocks built from them.
