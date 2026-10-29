@@ -288,3 +288,20 @@ export function motionTokens() {
     ...names.filter((name) => name.startsWith('default-transition-')).map((name) => row(name, `--${name}`)),
   ];
 }
+
+/** The tokens the Presets page's Tokens screen shows, as plain data for its client document. */
+export function tokenOverview() {
+  return {
+    colorGroups: Object.entries(colorGroups).map(([id, label]) => ({ id: id as ColorGroup, label })),
+    colors: colorTokens().map(({ name, className, group }) => ({ name, className, group })),
+    shadows: shadowTokens().map(({ name, fill, surface }) => ({ name, fill, surface })),
+    radii: radiusScale().map(({ name, className, use, value }) => ({ name, className, use, value })),
+    typeRoles: typeRoles().map(({ role, className, use, sizePx, lineHeightPx, weight }) => ({ role, className, use, spec: `${sizePx} / ${lineHeightPx} / ${weight}` })),
+    durations: motionTokens()
+      .filter((token) => token.name.startsWith('transition-duration-'))
+      .map(({ className, value, use }) => ({ className, value, use })),
+    easings: easings().map(({ name, bezier }) => ({ name, bezier })),
+  };
+}
+
+export type TokenOverview = ReturnType<typeof tokenOverview>;

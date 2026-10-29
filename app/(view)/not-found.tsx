@@ -21,11 +21,11 @@ export default function ViewNotFound() {
               <FileQuestion />
             </EmptyMedia>
             <EmptyTitle render={<h1 />}>Preview not found</EmptyTitle>
-            <EmptyDescription>No component, block or group goes by that name. Check the address, or find it in the gallery.</EmptyDescription>
+            <EmptyDescription>No component, block or group goes by that name. Check the address, or find it in the docs.</EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button variant="secondary" href="/gallery">
-              Open the gallery
+            <Button variant="secondary" href="/docs/components">
+              Browse components
             </Button>
           </EmptyContent>
         </Empty>

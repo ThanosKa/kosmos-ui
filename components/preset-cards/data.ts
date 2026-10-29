@@ -1,5 +1,5 @@
 /*
- * Sample data for the gallery: the Acme workspace with its team, revenue and activity. Every name and
+ * Sample data for the Presets preview: the Acme workspace with its team, revenue and activity. Every name and
  * domain is invented; domains use the reserved `.example` suffix.
  */
 

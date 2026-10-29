@@ -6,7 +6,7 @@ import { siteOpenGraph } from '@/lib/shared';
 import { sharedPresetScript } from '@/lib/site-preset';
 
 const description =
-  'Pick a Kosmos preset, its accent, radius and theme, see components, a dashboard and forms take it, and get its CSS, registry command and DESIGN.md.';
+  'Pick a Kosmos preset, its accent, radius and theme, see components, a dashboard, forms, overlays and every token take it, and get its CSS, registry command and DESIGN.md.';
 
 export const metadata: Metadata = {
   title: 'Presets',

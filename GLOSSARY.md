@@ -38,12 +38,8 @@ _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια μπαίνουν στο registry. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.
 _Avoid_: playground, sandbox, drafts
 
-**Gallery**:
-Μία σελίδα (`/gallery`) που δείχνει όλα τα components μαζί σε ρεαλιστικές κάρτες, ώστε μια αλλαγή στο στυλ να φαίνεται αμέσως παντού.
-_Avoid_: kitchen sink, showcase (showcase είναι το dashboard της landing page)
-
 **Presets page**:
-Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει τα components και μερικά blocks να αλλάζουν live και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
+Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει σε tabs τα components, το dashboard, φόρμες, overlays ανοιχτά και όλα τα **tokens** να αλλάζουν live, και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
 _Avoid_: theme builder, customizer, playground
 
 ### Στυλ
@@ -78,7 +74,7 @@ _Avoid_: design variable, μεταβλητή χρώματος
 
 **Foundations**:
 Η ενότητα των docs που δείχνει στον χρήστη τα **tokens** του Kosmos (Color, Typography, Shadows, Motion), με τις τιμές τους σε light και dark και το πότε μπαίνει το καθένα. Οι τιμές βγαίνουν από τα ίδια τα tokens, όχι γραμμένες με το χέρι.
-_Avoid_: «tokens page» (είναι η εσωτερική σελίδα ελέγχου `/tokens`), design language, guidelines
+_Avoid_: «tokens page» (τα tokens live είναι το tab Tokens της **Presets page**), design language, guidelines
 
 **Type role**:
 Ένα μέγεθος κειμένου με δικό του όνομα (`text-caption`, `text-body`, `text-title` κ.λπ.) που ορίζει μαζί μέγεθος, line-height και βάρος.
