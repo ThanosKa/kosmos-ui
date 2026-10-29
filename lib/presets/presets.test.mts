@@ -27,11 +27,12 @@ const accentTokens = {
 } as const;
 const accentTokenList: string[] = Object.values(accentTokens).flat();
 
-test('Warm has the orange as its accent, an orange fill under dark ink in light and dark', () => {
-  assert.deepEqual(warm.accent?.light.ring, 'oklch(0.652 0.214 38)');
+test('Warm has the orange as its accent, under white in light and dark ink in dark', () => {
+  assert.deepEqual(warm.accent?.light.ring, 'oklch(0.62 0.2 38)');
   assert.deepEqual(warm.accent?.dark.ring, 'oklch(0.7 0.18 42)');
   assert.equal(warm.accent?.light.text, 'oklch(0.53 0.17 38)');
-  for (const mode of ['light', 'dark'] as Mode[]) assert.equal(contrastRatio(warm.accent![mode].onPrimary, warm.accent![mode].primary) > 4.5, true);
+  assert.equal(contrastRatio(warm.accent!.light.onPrimary, warm.accent!.light.primary) > 3, true);
+  assert.equal(contrastRatio(warm.accent!.dark.onPrimary, warm.accent!.dark.primary) > 4.5, true);
 });
 
 test('Default has no accent, and Soft, Console and Night take the accents of their designs', () => {
@@ -85,6 +86,15 @@ for (const preset of presets.filter((candidate) => candidate.accent)) {
   });
 }
 
+/**
+ * Pairs a preset misses on purpose: Warm light keeps white on its bright orange by the maintainer's choice (ADR 0011),
+ * held to 3:1 at rest and 2.8:1 under the 90% hover instead of 4.5:1. Each one fails the test once it passes, so it is removed instead of left behind.
+ */
+const knownShortfalls = new Set([
+  'Warm light: primary-foreground text on primary',
+  'Warm light: sidebar-primary-foreground text on sidebar-primary over sidebar',
+]);
+
 /** A fill at 90%, which is how a primary button, checkbox, radio and switch look under the pointer. */
 function atNinetyPercent(color: string) {
   const { r, g, b } = parseColor(color);
@@ -97,11 +107,12 @@ for (const { label, preset } of presets.flatMap((candidate) => [{ label: candida
     test(`${label} ${mode}: primary-foreground is 4.5:1 on primary and on its 90% hover, and the fill is a 3:1 mark on the page and cards`, () => {
       const palette = cssPalette(preset, mode);
       const misses: string[] = [];
+      const shortfall = knownShortfalls.has(`${label} ${mode}: primary-foreground text on primary`);
       const rest = contrastRatio(palette['primary-foreground'], palette.primary);
-      if (rest < 4.5) misses.push(`rest ${rest.toFixed(2)}:1`);
+      if (rest < (shortfall ? 3 : 4.5)) misses.push(`rest ${rest.toFixed(2)}:1`);
       for (const surface of ['background', 'card', 'popover', 'secondary', 'muted'] as const) {
         const hover = contrastRatio(palette['primary-foreground'], atNinetyPercent(palette.primary), palette[surface]);
-        if (hover < 4.5) misses.push(`hover over ${surface} ${hover.toFixed(2)}:1`);
+        if (hover < (shortfall ? 2.8 : 4.5)) misses.push(`hover over ${surface} ${hover.toFixed(2)}:1`);
       }
       for (const surface of ['background', 'card'] as const) {
         const mark = contrastRatio(palette.primary, palette[surface]);
@@ -228,12 +239,6 @@ const checks: Check[] = [
     (['background', 'card'] as const).map((surface) => mark('chart mark', series, surface)),
   ),
 ];
-
-/**
- * Pairs a preset is known to miss, kept because the preset reproduces values that shipped before the check
- * existed. Each one fails the test once it passes, so it is removed instead of left behind.
- */
-const knownShortfalls = new Set(['Warm light: ring focus on muted']);
 
 const ratio = (palette: Palette, check: Check) =>
   contrastRatio(palette[check.foreground], palette[check.background], check.over && palette[check.over]);
