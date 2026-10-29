@@ -1,13 +1,15 @@
 ---
 title: Error page
-description: The page people see when a link leads nowhere (404) or something fails on your side (500). It shows the code large over a flickering grid, with a title and a way back.
+description: The page people see when a link leads nowhere (404), something fails on your side (500) or the app is down for maintenance. Each sits over a flickering grid.
 ---
 
 ## Installation
 
 <ComponentInstall name="error-page" />
 
-The block brings [Flickering grid](/docs/components/flickering-grid) and [Button](/docs/components/button) with it, and lands in `components/error-page.tsx`.
+<ComponentInstall name="maintenance-page" />
+
+Both blocks bring [Flickering grid](/docs/components/flickering-grid) and [Button](/docs/components/button) with them. The maintenance page also brings [Field](/docs/components/field), [Input](/docs/components/input) and [Status](/docs/components/status). They land in `components/error-page.tsx` and `components/maintenance-page.tsx`.
 
 ## Usage
 
@@ -71,6 +73,20 @@ The block takes a `5xx` code too. Pass a Try again button that calls `retry`:
 
 <ComponentPreview name="error-page-500" />
 
+## Maintenance
+
+While the app is down, render the maintenance page in place of every route, such as from a flag in the root layout. Pass when the app is back as `backAt`, and `onNotify` to collect emails:
+
+```tsx
+import { MaintenancePage } from '@/components/maintenance-page';
+
+<MaintenancePage backAt="2026-10-11T16:00:00Z" steps={steps} onNotify={(email) => subscribe(email)} />;
+```
+
+- **Countdown**: hours, minutes and seconds until `backAt`, which stops at zero. Screen readers hear it as one sentence, such as "Back in 1 hour, 42 minutes, 18 seconds", only when they reach it. `backAt={null}` leaves it out.
+- **Steps**: what the upgrade does, each a [Status](/docs/components/status) dot beside its label and a muted note, on one card.
+- **Email field**: with `onNotify`, a field and a Notify me button. Once `onNotify` resolves, the field gives way to a line that names the address.
+
 ## API
 
 ### ErrorPage
@@ -84,6 +100,23 @@ Takes every `<section>` prop, plus:
     title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'This page doesn’t exist'" },
     description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
     actions: { description: 'One `primary` and one `secondary` Button at `size="lg"`. A long label wraps inside its button. `null` leaves them out.', type: 'ReactNode', default: 'Go to projects and Back to overview' },
+    grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
+  }}
+/>
+
+### MaintenancePage
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    media: { description: 'A logo or icon above the title. Left out by default.', type: 'ReactNode' },
+    title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'Down for maintenance'" },
+    description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
+    backAt: { description: 'When the app is back, for the countdown. `null` leaves the countdown out.', type: 'Date | string | number | null' },
+    steps: { description: 'What the upgrade does, each with its state. An empty list leaves it out.', type: "{ id: string; label: string; status: 'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped'; note?: string }[]" },
+    onNotify: { description: 'Shows the email field and gets the address. Left out, there is no field.', type: '(email: string) => void | Promise<void>' },
+    actions: { description: 'Links under the form, such as the status page. `null` leaves them out.', type: 'ReactNode', default: 'Check the status page' },
     grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
   }}
 />
