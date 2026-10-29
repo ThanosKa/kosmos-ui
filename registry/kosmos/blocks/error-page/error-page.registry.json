@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "error-page",
+  "type": "registry:block",
+  "title": "Error page",
+  "description": "A 404 or 500 page: a large status code, a title, a line and two actions, centered over a flickering grid. It fills its parent and lays itself out by its own width, not the screen's.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/flickering-grid"],
+  "categories": ["error-page"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/error-page/error-page.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deal
 ## Workspace, domains, dates
 
 - Workspaces (the switcher): **Acme** on the Scale plan, and **Acme Staging** on the Free plan. Their logos are `public/logos/acme.svg` and `acme-staging.svg` (the same mark in gray); the Acme agent's avatar is the Acme logo.
-- Every domain ends in `.example` (reserved, never a real site). Acme itself is `acme.example`; mail is `<first name>@acme.example`.
+- Every domain ends in `.example` (reserved, never a real site). Acme itself is `acme.example`; mail is `<first name>@acme.example`. The status page is `status.acme.example`.
 - "Today" in every sample is **11 October 2026**. Write dates through a fixed `en-US` formatter with `timeZone: 'UTC'`, so server and browser match.
 - Money is USD, formatted with `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })`.
 

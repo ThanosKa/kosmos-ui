@@ -1,0 +1,122 @@
+---
+title: Error page
+description: The page people see when a link leads nowhere (404), something fails on your side (500) or the app is down for maintenance. Each sits over a flickering grid.
+---
+
+## Installation
+
+<ComponentInstall name="error-page" />
+
+<ComponentInstall name="maintenance-page" />
+
+Both blocks bring [Flickering grid](/docs/components/flickering-grid) and [Button](/docs/components/button) with them. The maintenance page also brings [Field](/docs/components/field), [Input](/docs/components/input) and [Status](/docs/components/status). They land in `components/error-page.tsx` and `components/maintenance-page.tsx`.
+
+## Usage
+
+In Next.js, render it from `app/not-found.tsx` for a 404, and from `app/error.tsx` for a 500. The error file gets a `retry` function that renders the page again:
+
+```tsx title="app/not-found.tsx"
+import { ErrorPage } from '@/components/error-page';
+
+export default function NotFound() {
+  return (
+    <main className="flex min-h-svh flex-col">
+      <ErrorPage />
+    </main>
+  );
+}
+```
+
+```tsx title="app/error.tsx"
+'use client';
+
+import { ErrorPage } from '@/components/error-page';
+import { Button } from '@/components/ui/button';
+
+export default function Error({ retry }: { error: Error & { digest?: string }; retry: () => void }) {
+  return (
+    <main className="flex min-h-svh flex-col">
+      <ErrorPage
+        code="500"
+        title="Something went wrong on our side"
+        description="We couldn’t load this page. Try again in a moment, or check the status page."
+        actions={
+          <>
+            <Button variant="primary" size="lg" onClick={() => retry()}>
+              Try again
+            </Button>
+            <Button variant="secondary" size="lg" href="https://status.acme.example">
+              Status page
+            </Button>
+          </>
+        }
+      />
+    </main>
+  );
+}
+```
+
+Without props, it shows a sample 404, whose copy and links sit at the top of the file. A `Button` with `href` renders a plain link, which loads the whole page. For links inside a Next.js app, pass `Link` styled with `buttonVariants` as `actions`.
+
+## What it does
+
+- **Height**: the block fills its parent and centers its content in it. Give the parent the height of the page area, such as `flex min-h-svh flex-col` on its own, or `flex-1` under your header.
+- **Code**: the code is the first thing people read. It grows from 32px to 56px from a 672px-wide container.
+- **Title**: the title is the page's `<h1>`. It balances its lines, and a long word breaks instead of running past the page.
+- **Grid**: the content sits over a [Flickering grid](/docs/components/flickering-grid) that fades out toward the edges. It pauses off screen, keeps still under reduced motion, and `grid={false}` turns it off.
+- **Actions**: one primary action and one secondary at most, side by side, wrapping under each other when they don't fit.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
+
+## 500
+
+The block takes a `5xx` code too. Pass a Try again button that calls `retry`:
+
+<ComponentPreview name="error-page-500" />
+
+## Maintenance
+
+While the app is down, render the maintenance page in place of every route, such as from a flag in the root layout. Pass when the app is back as `backAt`, and `onNotify` to collect emails:
+
+```tsx
+import { MaintenancePage } from '@/components/maintenance-page';
+
+<MaintenancePage backAt="2026-10-11T16:00:00Z" steps={steps} onNotify={(email) => subscribe(email)} />;
+```
+
+- **Countdown**: hours, minutes and seconds until `backAt`, which stops at zero. Screen readers hear it as one sentence, such as "Back in 1 hour, 42 minutes, 18 seconds", only when they reach it. `backAt={null}` leaves it out.
+- **Steps**: what the upgrade does. The page shows one line under the countdown, the first step not yet done with its [Status](/docs/components/status) dot, such as "Step 2 of 4 · Moving the query engine", or "All 4 steps done".
+- **Email field**: with `onNotify`, a field and a Notify me button. Once `onNotify` resolves, the field gives way to a line that names the address; if it throws, the field shows an error and keeps the address.
+
+## API
+
+### ErrorPage
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    code: { description: 'The status code, shown large above the title.', type: 'ReactNode', default: "'404'" },
+    media: { description: 'A logo or icon above the code. Left out by default.', type: 'ReactNode' },
+    title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'This page doesn’t exist'" },
+    description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
+    actions: { description: 'One `primary` and one `secondary` Button at `size="lg"`. A long label wraps inside its button. `null` leaves them out.', type: 'ReactNode', default: 'Go to projects and Back to overview' },
+    grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
+  }}
+/>
+
+### MaintenancePage
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    media: { description: 'A logo or icon above the title. Left out by default.', type: 'ReactNode' },
+    title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'Down for maintenance'" },
+    description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
+    backAt: { description: 'When the app is back, for the countdown. `null` leaves the countdown out.', type: 'Date | string | number | null' },
+    steps: { description: 'What the upgrade does, each with its state. The page shows the first step not yet done. An empty list leaves it out.', type: "{ id: string; label: string; status: 'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped' }[]" },
+    onNotify: { description: 'Shows the email field and gets the address. Left out, there is no field.', type: '(email: string) => void | Promise<void>' },
+    actions: { description: 'Links under the form, such as the status page. `null` leaves them out.', type: 'ReactNode', default: 'Check the status page' },
+    grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
+  }}
+/>
