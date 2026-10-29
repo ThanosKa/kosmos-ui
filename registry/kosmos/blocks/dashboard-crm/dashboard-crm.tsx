@@ -18,6 +18,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import * as React from 'react';
+import { AppSidebar, type AppSidebarProps } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { statDelta } from '@/registry/kosmos/lib/stat-delta';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
@@ -48,6 +49,8 @@ import {
   StatCardSparkline,
   StatCardValue,
 } from '@/registry/kosmos/ui/stat-card';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type Stage = 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won';
@@ -681,8 +684,43 @@ function DashboardCrm({
   );
 }
 
+type DashboardCrmPageProps = DashboardCrmProps & {
+  /** The page title in the header. */
+  title?: string;
+  /** The App sidebar's props: your pages, the current one, the workspaces and the signed-in user. */
+  sidebar?: AppSidebarProps;
+  /** The page frame's props, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame. */
+  frame?: Omit<React.ComponentProps<typeof SidebarProvider>, 'children'>;
+};
+
+/**
+ * The sales dashboard as a whole page: the App sidebar beside a header with the title, and the dashboard under it,
+ * scrolling while the sidebar and header stay put. Use `DashboardCrm` alone inside an app frame you already have.
+ */
+function DashboardCrmPage({ title = 'Sales', sidebar, frame, ...props }: DashboardCrmPageProps) {
+  return (
+    <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
+      <AppSidebar activeItem="overview" {...sidebar} />
+      <SidebarResizeHandle />
+      <SidebarInset className="min-h-0">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
+          <SidebarTrigger />
+          <h1 className="truncate text-title font-medium">{title}</h1>
+        </header>
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="p-3 sm:p-4">
+            <DashboardCrm {...props} />
+          </div>
+        </ScrollArea>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
 export {
   DashboardCrm,
+  DashboardCrmPage,
+  type DashboardCrmPageProps,
   type DashboardCrmProps,
   type Kpi as CrmKpi,
   type Deal,

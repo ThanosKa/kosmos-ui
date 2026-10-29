@@ -1,6 +1,6 @@
 ---
 title: Dashboard
-description: A whole dashboard page, each section on its own Panel. Analytics shows traffic, sources and the newest signups. CRM shows deals, next steps and quota.
+description: A whole dashboard page beside the App sidebar, each section on its own Panel. Analytics shows traffic, sources and the newest signups. CRM shows deals, next steps and quota.
 ---
 
 ## Installation
@@ -9,17 +9,18 @@ description: A whole dashboard page, each section on its own Panel. Analytics sh
 
 <ComponentInstall name="dashboard-crm" />
 
-Each block brings [Panel](/docs/components/panel), [Stat card](/docs/components/stat-card), [Bar list](/docs/components/bar-list), [Table](/docs/components/table), [Pagination](/docs/components/pagination), [Meter](/docs/components/meter), [Input group](/docs/components/input-group), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge) and [Button](/docs/components/button) with it. Analytics also brings [Chart](/docs/components/chart), [Donut chart](/docs/components/donut-chart) and [Segmented control](/docs/components/segmented-control), and CRM brings [Gauge](/docs/components/gauge). They land in `components/dashboard-analytics.tsx` and `components/dashboard-crm.tsx`.
+Each block brings [Panel](/docs/components/panel), [Stat card](/docs/components/stat-card), [Bar list](/docs/components/bar-list), [Table](/docs/components/table), [Pagination](/docs/components/pagination), [Meter](/docs/components/meter), [Input group](/docs/components/input-group), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge) and [Button](/docs/components/button) with it, plus the [App sidebar](/docs/blocks/app-sidebar), [Sidebar](/docs/components/sidebar) and [Scroll area](/docs/components/scroll-area) for the page around it. Analytics also brings [Chart](/docs/components/chart), [Donut chart](/docs/components/donut-chart) and [Segmented control](/docs/components/segmented-control), and CRM brings [Gauge](/docs/components/gauge). They land in `components/dashboard-analytics.tsx` and `components/dashboard-crm.tsx`.
 
 ## Usage
 
-A dashboard is the content of a page. Put it inside your app frame, under the page's header, such as the [App sidebar](/docs/blocks/app-sidebar) and the [Page header](/docs/blocks/page-header):
+Each block is a whole page: the [App sidebar](/docs/blocks/app-sidebar) beside a header with the title, and the dashboard under it. The page fills the screen, and the dashboard scrolls while the sidebar and header stay put. Pass your pages, the current one and the signed-in user in `sidebar`:
 
 ```tsx
-import { DashboardAnalytics } from '@/components/dashboard-analytics';
+import { DashboardAnalyticsPage } from '@/components/dashboard-analytics';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
-<DashboardAnalytics
+<DashboardAnalyticsPage
+  sidebar={{ navMain, activeItem: 'analytics', user }}
   kpis={kpis}
   traffic={traffic}
   signups={signups}
@@ -28,15 +29,32 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 ```
 
 ```tsx
+import { DashboardCrmPage } from '@/components/dashboard-crm';
+
+<DashboardCrmPage
+  title="Sales"
+  sidebar={{ navMain, activeItem: 'sales', user }}
+  deals={deals}
+  quota={quota}
+  onNewDeal={openNewDeal}
+  onTaskAction={runTask}
+  tasksHref="/tasks"
+/>;
+```
+
+Already have an app frame with a sidebar? Use the content alone, `DashboardAnalytics` or `DashboardCrm`, under your page's header, such as the [Page header](/docs/blocks/page-header). It takes the same props without `title`, `sidebar` and `frame`:
+
+```tsx
 import { DashboardCrm } from '@/components/dashboard-crm';
 
-<DashboardCrm deals={deals} quota={quota} onNewDeal={openNewDeal} onTaskAction={runTask} tasksHref="/tasks" />;
+<DashboardCrm deals={deals} quota={quota} onNewDeal={openNewDeal} tasksHref="/tasks" />;
 ```
 
 Without props, both show sample data, which sits at the top of each file. Every section takes its own prop, so you can fill them from different requests. A section with no data shows a quiet empty state in place of its content.
 
 ## What it does
 
+- **Page**: the App sidebar sits on the left, collapses to icons with the button beside the title, and resizes from its edge. The header holds that button and the page title. Below it, the dashboard scrolls on its own.
 - **Panels**: each section is a [Panel](/docs/components/panel). Its title, description and controls sit on the recessed tray, and its content on the raised card inside. Pagination and full-width buttons sit on the tray under the card.
 - **KPIs**: four [Stat cards](/docs/components/stat-card) on one tray, each with an icon tile, an eyebrow over the label, the value, its change and a sparkline. Analytics draws a line and CRM draws thin bars. The change is green for good news and red for bad. Set `goodWhen: 'down'` for a value where falling is good, like a sales cycle.
 - **Tables**: the newest signups and the deals are tables you can search. Search signups by name or email, and deals by deal, customer or rep. Signups also filter by plan. Rows page five at a time. A table wider than its card scrolls on its own. Each row gets an actions menu when you pass `signupActions` or `dealActions`.
@@ -47,6 +65,18 @@ Without props, both show sample data, which sits at the top of each file. Every 
 - **Width**: each block lays itself out by its own width, with container queries, not by the screen's. The KPIs sit four in a row on a wide container, two from 512px and one below that. Sections sit side by side on a wide container and stack on a narrow one.
 
 ## API
+
+### DashboardAnalyticsPage and DashboardCrmPage
+
+Take every prop of `DashboardAnalytics` or `DashboardCrm`, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The page title in the header.', type: 'string', default: "'Analytics' or 'Sales'" },
+    sidebar: { description: "The App sidebar's props: your pages, the current one, the workspaces and the signed-in user.", type: 'AppSidebarProps', default: "{ activeItem: 'overview' }" },
+    frame: { description: 'The props of the page frame, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame.', type: 'SidebarProviderProps' },
+  }}
+/>
 
 ### DashboardAnalytics
 

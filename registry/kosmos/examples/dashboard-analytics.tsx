@@ -4,6 +4,7 @@ import { Copy, UserRound } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import {
   DashboardAnalytics,
+  DashboardAnalyticsPage,
   type AnalyticsRange,
   type Signup,
   type Traffic,
@@ -57,6 +58,13 @@ function actions(signup: Signup) {
 export default function DashboardAnalyticsPreview() {
   return (
     <PreviewStack>
+      <PreviewSection title="As a page, beside the App sidebar">
+        <DashboardAnalyticsPage
+          frame={{ storageKey: false, className: 'h-[48rem] w-full overflow-hidden rounded-xl border border-transparent shadow-card' }}
+          sidebar={{ onNavigate: (_id, event) => event.preventDefault() }}
+          signupActions={actions}
+        />
+      </PreviewSection>
       <PreviewSection title="Full, 30 days">
         <div className={frame}>
           <DashboardAnalytics signupActions={actions} />
