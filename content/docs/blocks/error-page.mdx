@@ -1,0 +1,89 @@
+---
+title: Error page
+description: The page people see when a link leads nowhere (404) or something fails on your side (500). It shows the code large over a flickering grid, with a title and a way back.
+---
+
+## Installation
+
+<ComponentInstall name="error-page" />
+
+The block brings [Flickering grid](/docs/components/flickering-grid) and [Button](/docs/components/button) with it, and lands in `components/error-page.tsx`.
+
+## Usage
+
+In Next.js, render it from `app/not-found.tsx` for a 404, and from `app/error.tsx` for a 500. The error file gets a `retry` function that renders the page again:
+
+```tsx title="app/not-found.tsx"
+import { ErrorPage } from '@/components/error-page';
+
+export default function NotFound() {
+  return (
+    <main className="flex min-h-svh flex-col">
+      <ErrorPage />
+    </main>
+  );
+}
+```
+
+```tsx title="app/error.tsx"
+'use client';
+
+import { ErrorPage } from '@/components/error-page';
+import { Button } from '@/components/ui/button';
+
+export default function Error({ retry }: { error: Error & { digest?: string }; retry: () => void }) {
+  return (
+    <main className="flex min-h-svh flex-col">
+      <ErrorPage
+        code="500"
+        title="Something went wrong on our side"
+        description="We couldn’t load this page. Try again in a moment, or check the status page."
+        actions={
+          <>
+            <Button variant="primary" size="lg" onClick={() => retry()}>
+              Try again
+            </Button>
+            <Button variant="secondary" size="lg" href="https://status.acme.example">
+              Status page
+            </Button>
+          </>
+        }
+      />
+    </main>
+  );
+}
+```
+
+Without props, it shows a sample 404, whose copy and links sit at the top of the file. A `Button` with `href` renders a plain link, which loads the whole page. For links inside a Next.js app, pass `Link` styled with `buttonVariants` as `actions`.
+
+## What it does
+
+- **Height**: the block fills its parent and centers its content in it. Give the parent the height of the page area, such as `flex min-h-svh flex-col` on its own, or `flex-1` under your header.
+- **Code**: the code is the first thing people read. It grows from 32px to 56px from a 672px-wide container.
+- **Title**: the title is the page's `<h1>`. It balances its lines, and a long word breaks instead of running past the page.
+- **Grid**: the content sits over a [Flickering grid](/docs/components/flickering-grid) that fades out toward the edges. It pauses off screen, keeps still under reduced motion, and `grid={false}` turns it off.
+- **Actions**: one primary action and one secondary at most, side by side, wrapping under each other when they don't fit.
+- **Width**: the block lays itself out by its own width, with container queries, not by the screen's.
+
+## 500
+
+The block takes a `5xx` code too. Pass a Try again button that calls `retry`:
+
+<ComponentPreview name="error-page-500" />
+
+## API
+
+### ErrorPage
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    code: { description: 'The status code, shown large above the title.', type: 'ReactNode', default: "'404'" },
+    media: { description: 'A logo or icon above the code. Left out by default.', type: 'ReactNode' },
+    title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'This page doesn’t exist'" },
+    description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
+    actions: { description: 'One `primary` and one `secondary` Button at `size="lg"`. A long label wraps inside its button. `null` leaves them out.', type: 'ReactNode', default: 'Go to projects and Back to overview' },
+    grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
+  }}
+/>
