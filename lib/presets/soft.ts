@@ -12,7 +12,7 @@ export const soft: Preset = {
   radius: '1rem',
   accent: {
     light: { primary: 'oklch(0.537 0.232 261.9)', onPrimary: '#ffffff', ring: '#1f6bff', text: 'oklch(0.537 0.232 261.9)' },
-    dark: { primary: '#6ea1ff', onPrimary: '#121418', ring: '#6ea1ff', text: '#6ea1ff' },
+    dark: { primary: 'oklch(0.55 0.2 262)', onPrimary: '#ffffff', ring: '#6ea1ff', text: '#6ea1ff' },
   },
   light: {
     background: '#f5f6f8',

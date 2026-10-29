@@ -12,7 +12,7 @@ export const consolePreset: Preset = {
   radius: '0.375rem',
   accent: {
     light: { primary: 'oklch(0.52 0.22 287)', onPrimary: '#ffffff', ring: 'oklch(0.55 0.22 287)', text: 'oklch(0.54 0.22 287)' },
-    dark: { primary: '#9b7dff', onPrimary: '#0c0c0f', ring: '#8b68ff', text: '#9b7dff' },
+    dark: { primary: 'oklch(0.55 0.21 288)', onPrimary: '#ffffff', ring: '#8b68ff', text: '#9b7dff' },
   },
   light: {
     background: '#f4f4f6',
