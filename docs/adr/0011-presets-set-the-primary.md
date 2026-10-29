@@ -8,12 +8,14 @@ Developers expect it. shadcn themes and tweakcn presets all color `primary`, and
 
 Text on a primary fill (`primary-foreground`) is at least 4.5:1 on the fill in both modes. It stays 4.5:1 under the fill's 90% hover. A Button, checkbox, radio and switch hover to `bg-primary/90`, which moves the fill toward the surface. The fill itself is a 3:1 mark against `background` and `card`. `pnpm test` checks both for every preset, with its accent on and off.
 
-Pick the foreground per preset and mode. White in light, where the fill sits a step deeper than the ring: Soft, Console, Night and Warm. Dark ink in dark, where the fill is the lighter accent. Warm first took dark ink on its bright light orange, since white on it is 3.5:1. The reference apps never put dark ink on a saturated fill, so its light fill now sits deep enough for white, also under the 90% hover. A preset may move the primary a lightness step away from the ring step to reach the rule, so `primary` and `ring` can differ a little in lightness while sharing a hue. The Meter's `primary` tone stays on `accent-text`, so it never shares a lightness with `warning` in Warm.
+Pick the foreground per preset and mode. White in light, where the fill sits a step deeper than the ring: Soft, Console and Night. Dark ink in dark, where the fill is the lighter accent.
+
+Warm light is the one exception. It keeps its bright orange and puts white on it at 3.1:1, below the 4.5:1 rule. Dark ink passed but read wrong, since the reference apps never put dark ink on a saturated fill. An orange deep enough for white read too strong. The maintainer chose the bright orange with white over both, and the test holds that pair to 3:1 at rest and 2.8:1 under the 90% hover. A preset may move the primary a lightness step away from the ring step to reach the rule, so `primary` and `ring` can differ a little in lightness while sharing a hue. The Meter's `primary` tone stays on `accent-text`, so it never shares a lightness with `warning` in Warm.
 
 ## Considered options
 
 - **Keep the primary ink under every preset (ADR 0009).** Rejected: the maintainer wants a preset to change how the controls look, not only the focus ring and one nav item.
-- **Always white text, deepening each accent until it passes.** Rejected for dark mode, whose accents are light by nature. In light every preset now does this.
+- **Always white text, deepening each accent until it passes.** Rejected: Warm's orange turns brown and heavy at the lightness white needs, and dark mode accents are light by nature.
 - **A preset-wide `primary-foreground` token chosen by script.** Rejected: a preset states its own pair, so a designer sees and edits it, and the test proves it.
 
 ## Consequences
