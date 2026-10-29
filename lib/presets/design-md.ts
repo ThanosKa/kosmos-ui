@@ -58,7 +58,7 @@ function accentSection({ accent }: Preset) {
 | Step | Light | Dark | Use |
 | --- | --- | --- | --- |
 | Primary | \`${accent.light.primary}\` | \`${accent.dark.primary}\` | \`primary\` and \`sidebar-primary\`: a fill under \`primary-foreground\`. |
-| On primary | \`${accent.light.onPrimary}\` | \`${accent.dark.onPrimary}\` | \`primary-foreground\`: 4.5:1 on the fill and under its 90% hover. White where it passes, dark ink where it does not. |
+| On primary | \`${accent.light.onPrimary}\` | \`${accent.dark.onPrimary}\` | \`primary-foreground\`: 4.5:1 on the fill and under its 90% hover. White in both modes: in dark the fill is a deep step of the accent. |
 | Ring | \`${accent.light.ring}\` | \`${accent.dark.ring}\` | Focus and \`chart-1\`: a mark, 3:1 on every surface. |
 | Text | \`${accent.light.text}\` | \`${accent.dark.text}\` | \`accent-text\`: 4.5:1 on every surface a nav item sits on. |`;
 }

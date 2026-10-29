@@ -27,7 +27,7 @@ const accentTokens = {
 } as const;
 const accentTokenList: string[] = Object.values(accentTokens).flat();
 
-test('Warm has the orange as its accent, under white in light and dark ink in dark', () => {
+test('Warm has the orange as its accent, under white in light and dark', () => {
   assert.deepEqual(warm.accent?.light.ring, 'oklch(0.62 0.2 38)');
   assert.deepEqual(warm.accent?.dark.ring, 'oklch(0.7 0.18 42)');
   assert.equal(warm.accent?.light.text, 'oklch(0.53 0.17 38)');

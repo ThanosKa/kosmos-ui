@@ -16,7 +16,7 @@ export const warm: Preset = {
   // In light white text on the bright orange is 3.1:1, below 4.5:1, kept by the maintainer's choice (ADR 0011). The text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
   accent: {
     light: { primary: 'oklch(0.67 0.2 40)', onPrimary: 'oklch(0.985 0.003 106.5)', ring: 'oklch(0.62 0.2 38)', text: 'oklch(0.53 0.17 38)' },
-    dark: { primary: 'oklch(0.7 0.18 42)', onPrimary: 'oklch(0.2 0.006 95)', ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
+    dark: { primary: 'oklch(0.57 0.17 41)', onPrimary: 'oklch(0.985 0.003 106.5)', ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
   },
   light: {
     background: 'oklch(0.975 0.004 106.5)',
