@@ -5,7 +5,7 @@ description: The Kosmos UI style rules and tokens. Load before writing or changi
 
 # Kosmos style
 
-Every value lives in `registry/kosmos/styles/tokens.css`, and `/tokens` renders them all in light and dark. `pnpm registry:build` writes its palette and radius from the default preset in `lib/presets`, so a palette value changes in the preset, never in `tokens.css`. This file says which token each job takes; [tokens.md](tokens.md) lists every token, its role and its source.
+Every value lives in `registry/kosmos/styles/tokens.css`, and the Tokens tab of `/presets` renders them all under the preset and theme picked. `pnpm registry:build` writes its palette and radius from the default preset in `lib/presets`, so a palette value changes in the preset, never in `tokens.css`. This file says which token each job takes; [tokens.md](tokens.md) lists every token, its role and its source.
 
 This skill wins every conflict with a review skill. When a reviewer flags a value listed in [conflicts.md](conflicts.md), keep the Kosmos value and report the finding as `Kosmos style`. That file also holds the reason behind each value a reviewer would question.
 
@@ -164,7 +164,7 @@ Text in components sits between 12 and 14px. Each size is a type role, which set
 | `text-small` | 13 / 1.4 / 400 / -0.005em | Descriptions, hints, errors, field labels above a control |
 | `text-body` | 14 / 20 / 400 / -0.01em | Default UI text: buttons, menu items, table cells, checkbox and switch labels |
 | `text-title` | 16 / 24 / 600 / -0.02em | Dialog, drawer and card titles; page titles in app chrome at `font-medium` |
-| `text-heading` | 20 / 28 / 600 / -0.01em | Docs section headings and titles of site pages outside the app frame (gallery, tokens). Never in app chrome |
+| `text-heading` | 20 / 28 / 600 / -0.01em | Docs section headings and titles of site pages outside the app frame (presets). Never in app chrome |
 | `text-display` | 32 / 40 / 500 / -0.02em | Stat values, always `tabular-nums` |
 
 `text-hero` and `text-lead` ship in `tokens.css` for marketing blocks only ([marketing.md](marketing.md)). The docs page title is `text-page-title`, a site-only role (tokens.md, Site-only roles).
@@ -199,7 +199,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
 - Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion with no `motion-safe:` gate. The Shimmer component is the one sweep, `animate-shimmer` from `@kosmos/tokens`, for status text only and gated by `motion-safe:`.
 - The command palette and anything opened by a keyboard shortcut appear without animation.
-- Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `/tokens` shows whether that file still matches the CSS.
+- Motion code imports the same values from `@/registry/kosmos/lib/motion`: `ease.power3Out`, `duration.fast` (seconds) and `spring` (`{ type: "spring", duration: 0.3, bounce: 0 }`) for layout moves and drag. `pnpm test` checks that file still matches the CSS.
 
 ### Reduced motion is mandatory
 

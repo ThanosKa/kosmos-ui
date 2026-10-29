@@ -1,14 +1,13 @@
 'use client';
 
-import { AtSign, Download, Link2, MessageSquare, Receipt, Upload } from 'lucide-react';
-import { GalleryCard } from '@/components/gallery/gallery-card';
-import { activity } from '@/components/gallery/data';
+import { AtSign, Download, Link2, MessageSquare } from 'lucide-react';
+import { PresetCard } from '@/components/preset-cards/preset-card';
+import { activity } from '@/components/preset-cards/data';
 import { Asset, AssetImage } from '@/registry/kosmos/ui/asset';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/registry/kosmos/ui/tooltip';
@@ -16,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/regi
 /** Asset, Badge, Tooltip pinned open on an icon button. */
 export function ReleaseCard() {
   return (
-    <GalleryCard title="What’s new" description="Release notes for October." bodyClassName="gap-3">
+    <PresetCard title="What’s new" description="Release notes for October." bodyClassName="gap-3">
       <Asset ratio={16 / 9} className="rounded-xl">
         {/* Eager, so a full-page screenshot never catches the placeholder. */}
         <AssetImage src="/media/landscape.webp" alt="Abstract gradient cover for the release notes" loading="eager" />
@@ -59,7 +58,7 @@ export function ReleaseCard() {
           </div>
         </div>
       </TooltipProvider>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -91,7 +90,7 @@ export function ActivityCard() {
   const mentions = activity.filter((item) => item.kind === 'mention').length;
   const comments = activity.filter((item) => item.kind === 'comment').length;
   return (
-    <GalleryCard title="Activity" description="What changed in your workspace today." bodyClassName="pt-2">
+    <PresetCard title="Activity" description="What changed in your workspace today." bodyClassName="pt-2">
       <Tabs defaultValue="all">
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
@@ -116,32 +115,6 @@ export function ActivityCard() {
           <ActivityList kind="comment" />
         </TabsContent>
       </Tabs>
-    </GalleryCard>
-  );
-}
-
-/** Empty: an icon on a small card, title, description and the next steps. */
-export function EmptyCard() {
-  return (
-    <section className="flex min-w-0 rounded-2xl border border-transparent bg-card shadow-card">
-      <Empty className="py-10">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Receipt />
-          </EmptyMedia>
-          <EmptyTitle render={<h3 />}>No invoices yet</EmptyTitle>
-          <EmptyDescription>
-            Invoices you send from Acme show up here. Import past ones to see them in reports.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button variant="secondary">
-            <Upload data-icon="inline-start" />
-            Import CSV
-          </Button>
-          <Button variant="primary">Create invoice</Button>
-        </EmptyContent>
-      </Empty>
-    </section>
+    </PresetCard>
   );
 }

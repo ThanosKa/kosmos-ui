@@ -185,7 +185,6 @@ const suggestions: readonly Suggestion[] = [
 
 const sitePages = [
   { url: '/presets', title: 'Presets', crumb: 'Try a preset on the whole site and copy its code', icon: SwatchBook },
-  { url: '/tokens', title: 'Tokens', crumb: 'Every color, shadow and radius, in light and dark', icon: Palette },
 ];
 
 type PalettePage = 'presets' | null;

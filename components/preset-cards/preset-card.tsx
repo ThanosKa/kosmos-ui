@@ -3,7 +3,7 @@
 import { useId, useState, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
-type GalleryCardProps = {
+type PresetCardProps = {
   title: string;
   description?: string;
   /** Sits at the end of the header row: a button, a segmented control, an avatar group. */
@@ -13,8 +13,8 @@ type GalleryCardProps = {
   children: ReactNode;
 };
 
-/** One card on the gallery: a title, an optional description and action, then the composition. */
-export function GalleryCard({ title, description, action, className, bodyClassName, children }: GalleryCardProps) {
+/** One card on the Presets preview: a title, an optional description and action, then the composition. */
+export function PresetCard({ title, description, action, className, bodyClassName, children }: PresetCardProps) {
   const id = useId();
   return (
     <section
@@ -35,7 +35,7 @@ export function GalleryCard({ title, description, action, className, bodyClassNa
   );
 }
 
-type GalleryStageProps = Omit<GalleryCardProps, 'children' | 'bodyClassName'> & {
+type PresetStageProps = Omit<PresetCardProps, 'children' | 'bodyClassName'> & {
   /** The stage height, such as `h-80`. */
   stageClassName?: string;
   /** Renders the scene; portal the pinned overlay into `container`. */
@@ -48,11 +48,11 @@ type GalleryStageProps = Omit<GalleryCardProps, 'children' | 'bodyClassName'> & 
  * into it fills the stage instead of the page. Pin the overlay with controlled `open`, `modal={false}`
  * and `initialFocus={false}`, as on the review previews.
  */
-export function GalleryStage({ stageClassName, children, ...card }: GalleryStageProps) {
+export function PresetStage({ stageClassName, children, ...card }: PresetStageProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     // The card's 16px corner is the stage's 12px corner plus the 4px gap around it.
-    <GalleryCard {...card} bodyClassName="p-1 pt-4">
+    <PresetCard {...card} bodyClassName="p-1 pt-4">
       <div
         ref={setContainer}
         className={cn(
@@ -62,7 +62,7 @@ export function GalleryStage({ stageClassName, children, ...card }: GalleryStage
       >
         {container ? children(container) : null}
       </div>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 

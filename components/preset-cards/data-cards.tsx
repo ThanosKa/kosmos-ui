@@ -2,8 +2,8 @@
 
 import { Ellipsis, Mail, ShieldCheck, Trash2, UserPlus } from 'lucide-react';
 import { useState } from 'react';
-import { GalleryCard } from '@/components/gallery/gallery-card';
-import { members, memberStatus, revenue, revenueSummary, type RevenueRange } from '@/components/gallery/data';
+import { PresetCard } from '@/components/preset-cards/preset-card';
+import { members, memberStatus, revenue, revenueSummary, type RevenueRange } from '@/components/preset-cards/data';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -15,9 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
-import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
-import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 import { StatCard, StatCardDelta, StatCardLabel, StatCardSparkline, StatCardValue } from '@/registry/kosmos/ui/stat-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
@@ -34,7 +32,7 @@ export function RevenueCard() {
   const [range, setRange] = useState<RevenueRange>('30d');
   const summary = revenueSummary[range];
   return (
-    <GalleryCard
+    <PresetCard
       title="Monthly revenue"
       description="All plans, against the period before"
       action={
@@ -65,7 +63,7 @@ export function RevenueCard() {
         xLabel="Date"
         valueFormatter={(value) => usd.format(value)}
       />
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -101,7 +99,7 @@ export function KpiCard() {
 /** Table, Avatar, AvatarGroup, Badge, DropdownMenu (closed). */
 export function MembersCard() {
   return (
-    <GalleryCard
+    <PresetCard
       title="Members"
       description="4 people in Acme"
       action={
@@ -181,58 +179,6 @@ export function MembersCard() {
           ))}
         </TableBody>
       </Table>
-    </GalleryCard>
-  );
-}
-
-/** Meter: bar, auto tone, segments. */
-export function UsageCard() {
-  return (
-    <GalleryCard
-      title="Usage"
-      description="Pro plan · next invoice on November 1"
-      action={<Badge variant="blue">Pro</Badge>}
-    >
-      <Meter value={18} max={25}>
-        <MeterLabel>Seats</MeterLabel>
-        <MeterValue>{(_, value) => `${value} of 25`}</MeterValue>
-        <MeterBar />
-      </Meter>
-      <Meter value={4.4} max={5} optimum={0} tone="auto" format={{ maximumFractionDigits: 1 }}>
-        <MeterLabel>Events this month</MeterLabel>
-        <MeterValue>{(formatted) => `${formatted}M of 5M`}</MeterValue>
-        <MeterBar />
-      </Meter>
-      <Meter value={62} tone="success">
-        <MeterLabel>API requests this month</MeterLabel>
-        <MeterValue />
-        <MeterSegments />
-      </Meter>
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <p className="text-small text-muted-foreground">Events are close to this month’s quota.</p>
-        <Button variant="primary">Upgrade plan</Button>
-      </div>
-    </GalleryCard>
-  );
-}
-
-/** Skeleton: a list loading. */
-export function LoadingCard() {
-  return (
-    <GalleryCard title="Recent invoices" description="Loading the last 30 days">
-      <div aria-busy="true" className="flex flex-col divide-y divide-border">
-        <span className="sr-only">Loading invoices</span>
-        {[0, 1, 2].map((row) => (
-          <div key={row} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-            <Skeleton className="size-8 rounded-full" />
-            <div className="flex flex-1 flex-col gap-2">
-              <Skeleton className="h-3 w-2/5" />
-              <Skeleton className="h-3 w-3/5" />
-            </div>
-            <Skeleton className="h-3 w-12" />
-          </div>
-        ))}
-      </div>
-    </GalleryCard>
+    </PresetCard>
   );
 }

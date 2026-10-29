@@ -2,10 +2,10 @@
 
 import { ArrowUpRight } from 'lucide-react';
 import * as React from 'react';
-import { ActivityCard } from '@/components/gallery/content-cards';
-import { KpiCard, MembersCard, RevenueCard } from '@/components/gallery/data-cards';
-import { NotificationsCard } from '@/components/gallery/form-cards';
-import { GalleryCard } from '@/components/gallery/gallery-card';
+import { ActivityCard, ReleaseCard } from '@/components/preset-cards/content-cards';
+import { KpiCard, MembersCard, RevenueCard } from '@/components/preset-cards/data-cards';
+import { NotificationsCard } from '@/components/preset-cards/form-cards';
+import { PresetCard } from '@/components/preset-cards/preset-card';
 import { AssistantMessage } from '@/registry/kosmos/ui/assistant-message';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -26,7 +26,7 @@ const regions = [
 /** Field, Input, Select, RadioCard, primary Button. */
 function NewProjectCard() {
   return (
-    <GalleryCard title="New project" description="Events start counting as soon as it exists.">
+    <PresetCard title="New project" description="Events start counting as soon as it exists.">
       <Field name="name">
         <FieldLabel>Name</FieldLabel>
         <Input defaultValue="Lumenfield Health" />
@@ -65,7 +65,7 @@ function NewProjectCard() {
         <Button variant="secondary">Cancel</Button>
         <Button variant="primary">Create project</Button>
       </div>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -78,7 +78,7 @@ const quotas = [
 /** Meter with automatic tone, Badge, secondary Button. */
 function QuotaCard() {
   return (
-    <GalleryCard title="This month" description="Usage against the Pro allowance" action={<Badge variant="blue">Pro</Badge>}>
+    <PresetCard title="This month" description="Usage against the Pro allowance" action={<Badge variant="blue">Pro</Badge>}>
       {quotas.map((quota) => (
         <Meter key={quota.label} value={quota.value} tone="auto" optimum={0}>
           <MeterLabel>{quota.label}</MeterLabel>
@@ -90,7 +90,7 @@ function QuotaCard() {
         Raise the allowance
         <ArrowUpRight aria-hidden data-icon="inline-end" />
       </Button>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -98,7 +98,7 @@ function QuotaCard() {
 function ReportPeriodCard() {
   const [period, setPeriod] = React.useState<{ from: Date; to?: Date } | null>({ from: new Date(2026, 9, 6), to: new Date(2026, 9, 17) });
   return (
-    <GalleryCard title="Report period" description="Oct 6 to Oct 17" bodyClassName="items-center">
+    <PresetCard title="Report period" description="Oct 6 to Oct 17" bodyClassName="items-center">
       <Calendar mode="range" defaultMonth={new Date(2026, 9, 1)} value={period} onValueChange={setPeriod} aria-label="Report period" />
       <div className="flex w-full justify-end gap-2">
         <Button variant="ghost" onClick={() => setPeriod(null)}>
@@ -106,7 +106,7 @@ function ReportPeriodCard() {
         </Button>
         <Button variant="primary">Apply</Button>
       </div>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -114,13 +114,13 @@ function ReportPeriodCard() {
 function AssistantCard() {
   const [draft, setDraft] = React.useState('');
   return (
-    <GalleryCard title="Ask Acme" description="Answers from your own events">
+    <PresetCard title="Ask Acme" description="Answers from your own events">
       <AssistantMessage role="user">Why did signups drop last Tuesday?</AssistantMessage>
       <AssistantMessage>
         Signups fell 18% on Tuesday. Almost all of it came from the Android build, which stopped sending the signup event.
       </AssistantMessage>
       <PromptComposer value={draft} onValueChange={setDraft} onSubmit={() => setDraft('')} placeholder="Ask a follow-up" />
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -131,6 +131,7 @@ export function PresetComponents() {
       <div className="flex min-w-0 flex-col gap-4">
         <RevenueCard />
         <NewProjectCard />
+        <ReleaseCard />
       </div>
       <div className="flex min-w-0 flex-col gap-4">
         <KpiCard />

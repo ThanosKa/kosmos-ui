@@ -20,7 +20,7 @@ type PresetsViewProps = {
 };
 
 /**
- * The Presets page: the site's preset picker beside a preview of components, a dashboard and forms in an iframe. The
+ * The Presets page: the site's preset picker beside a preview of components, a dashboard, forms, overlays and the tokens in an iframe. The
  * preset applies to the whole site; the address names it, so a link shares it, and Get code gives it as CSS, a
  * registry command and a DESIGN.md. On a phone the picker opens in a bottom sheet.
  */
@@ -47,7 +47,7 @@ export function PresetsView({ sharedChoice, runners, registryAdd }: PresetsViewP
           <h1 className="text-heading">Presets</h1>
           <p className="text-small text-pretty text-muted-foreground">
             Ready palettes and radii for the Kosmos tokens. Pick one and the whole site takes it, with the components,
-            dashboard and forms below. Then get its code.
+            dashboard, forms, overlays and tokens below. Then get its code.
           </p>
         </div>
         <div className="flex gap-2">

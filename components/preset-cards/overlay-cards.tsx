@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { GalleryCard, GalleryStage, StageBackdropRows } from '@/components/gallery/gallery-card';
+import { PresetCard, PresetStage, StageBackdropRows } from '@/components/preset-cards/preset-card';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Checkbox } from '@/registry/kosmos/ui/checkbox';
 import {
@@ -111,7 +111,7 @@ const commandGroups: CommandSection[] = [
 /** Command inline, CommandShortcut with Kbd, CommandFooter. */
 export function CommandCard() {
   return (
-    <GalleryCard title="Command" description="Search inline; the same parts make the ⌘K palette.">
+    <PresetCard title="Command" description="Search inline; the same parts make the ⌘K palette.">
       <Command items={commandGroups}>
         <CommandInput placeholder="Search for a command…" aria-label="Search for a command" />
         <CommandEmpty>No results found.</CommandEmpty>
@@ -139,7 +139,7 @@ export function CommandCard() {
         </CommandList>
         <CommandFooter />
       </Command>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -147,7 +147,7 @@ export function CommandCard() {
 export function MenuStage() {
   const [pinned, setPinned] = useState(true);
   return (
-    <GalleryStage title="Menu" description="Actions for a saved view." stageClassName="h-[21.5rem]">
+    <PresetStage title="Menu" description="Actions for a saved view." stageClassName="h-[21.5rem]">
       {(container) => (
         <DropdownMenu open modal={false}>
           <DropdownMenuTrigger render={<Button variant="secondary" />}>
@@ -206,7 +206,7 @@ export function MenuStage() {
           </DropdownMenuPortal>
         </DropdownMenu>
       )}
-    </GalleryStage>
+    </PresetStage>
   );
 }
 
@@ -215,7 +215,7 @@ const access = { view: 'Anyone with the link can view', comment: 'Anyone with th
 /** Popover pinned open, with an Input and a Select inside. */
 export function ShareStage() {
   return (
-    <GalleryStage title="Popover" description="Share a report without leaving the page." stageClassName="h-[18rem]">
+    <PresetStage title="Popover" description="Share a report without leaving the page." stageClassName="h-[18rem]">
       {(container) => (
         <div className="flex justify-end">
           <Popover open>
@@ -254,7 +254,7 @@ export function ShareStage() {
           </Popover>
         </div>
       )}
-    </GalleryStage>
+    </PresetStage>
   );
 }
 
@@ -270,7 +270,7 @@ function PinnedToasts({ container }: { container: HTMLElement }) {
   const [manager] = useState(() => createToastManager());
   useEffect(() => {
     // Ids keep a second run (React strict mode) from adding the toasts twice.
-    pinnedToasts.forEach((options, index) => manager.add({ id: `gallery-toast-${index}`, timeout: 0, ...options }));
+    pinnedToasts.forEach((options, index) => manager.add({ id: `preset-toast-${index}`, timeout: 0, ...options }));
   }, [manager]);
   return <Toaster toastManager={manager} container={container} />;
 }
@@ -278,7 +278,7 @@ function PinnedToasts({ container }: { container: HTMLElement }) {
 /** Toast stack pinned open, and a button that adds a live toast to the page's Toaster. */
 export function ToastStage() {
   return (
-    <GalleryStage
+    <PresetStage
       title="Toasts"
       description="Stacked in the corner; hover to spread them."
       stageClassName="h-[21rem]"
@@ -293,14 +293,14 @@ export function ToastStage() {
       }
     >
       {(container) => <PinnedToasts container={container} />}
-    </GalleryStage>
+    </PresetStage>
   );
 }
 
 /** Dialog pinned open over a scrim: a confirmation with a destructive action. */
 export function DialogStage() {
   return (
-    <GalleryStage title="Dialog" description="A confirmation before a change that cannot be undone." stageClassName="h-[20rem]">
+    <PresetStage title="Dialog" description="A confirmation before a change that cannot be undone." stageClassName="h-[20rem]">
       {(container) => (
         <>
           <StageBackdropRows rows={['Lena Park · Admin', 'Tomás Ortega · Admin', 'Ama Mensah · Editor', 'Kai Nakamura · Viewer']} />
@@ -321,7 +321,7 @@ export function DialogStage() {
           </Dialog>
         </>
       )}
-    </GalleryStage>
+    </PresetStage>
   );
 }
 
@@ -335,7 +335,7 @@ const platformFilters = [
 /** Drawer as a bottom sheet, pinned open, with a group of checkboxes. */
 export function DrawerStage() {
   return (
-    <GalleryStage title="Drawer" description="A bottom sheet with filters, as on a phone." stageClassName="h-[26.5rem]">
+    <PresetStage title="Drawer" description="A bottom sheet with filters, as on a phone." stageClassName="h-[26.5rem]">
       {(container) => (
         <>
           <StageBackdropRows rows={['Fernhill Books', 'Brightloop Fitness', 'Copperline Bank', 'Saltmarsh Coffee', 'Driftwood Travel']} />
@@ -369,6 +369,6 @@ export function DrawerStage() {
           </Drawer>
         </>
       )}
-    </GalleryStage>
+    </PresetStage>
   );
 }

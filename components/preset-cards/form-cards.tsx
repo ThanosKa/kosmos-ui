@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { GalleryCard } from '@/components/gallery/gallery-card';
-import { plans, timezones } from '@/components/gallery/data';
+import { PresetCard } from '@/components/preset-cards/preset-card';
+import { plans, timezones } from '@/components/preset-cards/data';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -19,7 +19,7 @@ import { Textarea } from '@/registry/kosmos/ui/textarea';
 /** Field, Input (valid and invalid), Select, Textarea, Checkbox, Separator, Button. */
 export function ProfileCard() {
   return (
-    <GalleryCard title="Profile" description="How other members of Acme see you.">
+    <PresetCard title="Profile" description="How other members of Acme see you.">
       <form className="flex flex-col gap-4" onSubmit={(event) => event.preventDefault()}>
         <Field name="name">
           <FieldLabel>Full name</FieldLabel>
@@ -77,7 +77,7 @@ export function ProfileCard() {
           </Button>
         </div>
       </form>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -91,7 +91,7 @@ const notificationRows = [
 /** Switch rows, Slider, Separator. */
 export function NotificationsCard() {
   return (
-    <GalleryCard title="Notifications" description="Choose what reaches your inbox.">
+    <PresetCard title="Notifications" description="Choose what reaches your inbox.">
       <div className="flex flex-col divide-y divide-border">
         {notificationRows.map((row) => (
           <Field
@@ -117,7 +117,7 @@ export function NotificationsCard() {
         </div>
       </Slider>
       <p className="-mt-2 text-small text-muted-foreground">Email the admins when any quota passes this share.</p>
-    </GalleryCard>
+    </PresetCard>
   );
 }
 
@@ -127,7 +127,7 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',
 export function PlansCard() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('yearly');
   return (
-    <GalleryCard
+    <PresetCard
       title="Plan"
       description="Prices per workspace."
       action={
@@ -174,6 +174,6 @@ export function PlansCard() {
           <AccordionContent>Upgrades apply right away and are prorated. Downgrades apply at the end of the billing period.</AccordionContent>
         </AccordionItem>
       </Accordion>
-    </GalleryCard>
+    </PresetCard>
   );
 }
