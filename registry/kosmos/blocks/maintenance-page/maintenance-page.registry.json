@@ -3,7 +3,7 @@
   "name": "maintenance-page",
   "type": "registry:block",
   "title": "Maintenance page",
-  "description": "The page an app shows while it is down for maintenance. A countdown to when it is back, the steps of the upgrade and an optional email field sit centered over a flickering grid. It lays itself out by its own width, not the screen's.",
+  "description": "The page an app shows while it is down for maintenance. A countdown to when it is back, the current step of the upgrade and an optional email field sit centered over a flickering grid. It lays itself out by its own width, not the screen's.",
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": [
     "@kosmos/tokens",

@@ -26,7 +26,7 @@ export default function MaintenancePagePreview() {
           <MaintenancePage
             title="Acme is moving every project of the Copperline Bank International Holdings and Partners workspace to the EU data region"
             steps={[
-              { id: 'long', label: 'Copying 1,200,000,000 events from the US data region to the EU data region', status: 'running', note: '48% done' },
+              { id: 'long', label: 'Copying 1,200,000,000 events from the US data region to the EU data region', status: 'running' },
               { id: 'bare', label: 'API', status: 'pending' },
             ]}
             onNotify={() => {}}

@@ -55,7 +55,7 @@ function ErrorPage({
       <div className="@container flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
         {media ? <div className="mb-6 flex shrink-0 [&_svg:not([class*='size-'])]:size-10">{media}</div> : null}
         <p className="text-display font-semibold tabular-nums @2xl:text-hero">{code}</p>
-        <h1 className="mt-3 max-w-[24em] text-title text-balance wrap-break-word">{title}</h1>
+        <h1 className="mt-3 max-w-[20em] text-heading font-semibold text-balance wrap-break-word @2xl:text-display">{title}</h1>
         {description ? (
           <p className="mt-2 max-w-[32em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">{description}</p>
         ) : null}

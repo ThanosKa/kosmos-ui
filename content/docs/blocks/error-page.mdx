@@ -84,8 +84,8 @@ import { MaintenancePage } from '@/components/maintenance-page';
 ```
 
 - **Countdown**: hours, minutes and seconds until `backAt`, which stops at zero. Screen readers hear it as one sentence, such as "Back in 1 hour, 42 minutes, 18 seconds", only when they reach it. `backAt={null}` leaves it out.
-- **Steps**: what the upgrade does, each a [Status](/docs/components/status) dot beside its label and a muted note, on one card.
-- **Email field**: with `onNotify`, a field and a Notify me button. Once `onNotify` resolves, the field gives way to a line that names the address.
+- **Steps**: what the upgrade does. The page shows one line under the countdown, the first step not yet done with its [Status](/docs/components/status) dot, such as "Step 2 of 4 · Moving the query engine", or "All 4 steps done".
+- **Email field**: with `onNotify`, a field and a Notify me button. Once `onNotify` resolves, the field gives way to a line that names the address; if it throws, the field shows an error and keeps the address.
 
 ## API
 
@@ -114,7 +114,7 @@ Takes every `<section>` prop, plus:
     title: { description: "The page's `<h1>`.", type: 'ReactNode', default: "'Down for maintenance'" },
     description: { description: 'One or two lines under the title. `null` leaves it out.', type: 'ReactNode' },
     backAt: { description: 'When the app is back, for the countdown. `null` leaves the countdown out.', type: 'Date | string | number | null' },
-    steps: { description: 'What the upgrade does, each with its state. An empty list leaves it out.', type: "{ id: string; label: string; status: 'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped'; note?: string }[]" },
+    steps: { description: 'What the upgrade does, each with its state. The page shows the first step not yet done. An empty list leaves it out.', type: "{ id: string; label: string; status: 'pending' | 'running' | 'waiting' | 'done' | 'error' | 'skipped' }[]" },
     onNotify: { description: 'Shows the email field and gets the address. Left out, there is no field.', type: '(email: string) => void | Promise<void>' },
     actions: { description: 'Links under the form, such as the status page. `null` leaves them out.', type: 'ReactNode', default: 'Check the status page' },
     grid: { description: 'The flickering grid behind the content.', type: 'boolean', default: 'true' },
