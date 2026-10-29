@@ -13,9 +13,9 @@ export const warm: Preset = {
   description:
     'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
   radius: '0.625rem',
-  // In light the orange fill carries dark ink, as white on it is 3.5:1. The text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
+  // In light the fill is deeper than the ring, so white text on it reaches 4.5:1, also under its 90% hover. The text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
   accent: {
-    light: { primary: 'oklch(0.67 0.2 40)', onPrimary: 'oklch(0.22 0.013 100.5)', ring: 'oklch(0.652 0.214 38)', text: 'oklch(0.53 0.17 38)' },
+    light: { primary: 'oklch(0.545 0.2 38)', onPrimary: 'oklch(0.985 0.003 106.5)', ring: 'oklch(0.62 0.2 38)', text: 'oklch(0.53 0.17 38)' },
     dark: { primary: 'oklch(0.7 0.18 42)', onPrimary: 'oklch(0.2 0.006 95)', ring: 'oklch(0.7 0.18 42)', text: 'oklch(0.7 0.18 42)' },
   },
   light: {

@@ -27,8 +27,8 @@ const accentTokens = {
 } as const;
 const accentTokenList: string[] = Object.values(accentTokens).flat();
 
-test('Warm has the orange as its accent, an orange fill under dark ink in light and dark', () => {
-  assert.deepEqual(warm.accent?.light.ring, 'oklch(0.652 0.214 38)');
+test('Warm has the orange as its accent, an orange fill under white in light and dark ink in dark', () => {
+  assert.deepEqual(warm.accent?.light.ring, 'oklch(0.62 0.2 38)');
   assert.deepEqual(warm.accent?.dark.ring, 'oklch(0.7 0.18 42)');
   assert.equal(warm.accent?.light.text, 'oklch(0.53 0.17 38)');
   for (const mode of ['light', 'dark'] as Mode[]) assert.equal(contrastRatio(warm.accent![mode].onPrimary, warm.accent![mode].primary) > 4.5, true);
@@ -233,7 +233,7 @@ const checks: Check[] = [
  * Pairs a preset is known to miss, kept because the preset reproduces values that shipped before the check
  * existed. Each one fails the test once it passes, so it is removed instead of left behind.
  */
-const knownShortfalls = new Set(['Warm light: ring focus on muted']);
+const knownShortfalls = new Set<string>();
 
 const ratio = (palette: Palette, check: Check) =>
   contrastRatio(palette[check.foreground], palette[check.background], check.over && palette[check.over]);
