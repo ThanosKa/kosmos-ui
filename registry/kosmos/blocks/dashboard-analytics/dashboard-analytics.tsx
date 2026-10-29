@@ -2,6 +2,7 @@
 
 import { Ellipsis, ListFilter, Percent, Search, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
+import { AppSidebar, type AppSidebarProps } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { statDelta } from '@/registry/kosmos/lib/stat-delta';
@@ -43,6 +44,8 @@ import {
   StatCardSparkline,
   StatCardValue,
 } from '@/registry/kosmos/ui/stat-card';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type Range = '7d' | '30d' | '90d';
@@ -736,8 +739,43 @@ function DashboardAnalytics({
   );
 }
 
+type DashboardAnalyticsPageProps = DashboardAnalyticsProps & {
+  /** The page title in the header. */
+  title?: string;
+  /** The App sidebar's props: your pages, the current one, the workspaces and the signed-in user. */
+  sidebar?: AppSidebarProps;
+  /** The page frame's props, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame. */
+  frame?: Omit<React.ComponentProps<typeof SidebarProvider>, 'children'>;
+};
+
+/**
+ * The analytics dashboard as a whole page: the App sidebar beside a header with the title, and the dashboard under it,
+ * scrolling while the sidebar and header stay put. Use `DashboardAnalytics` alone inside an app frame you already have.
+ */
+function DashboardAnalyticsPage({ title = 'Analytics', sidebar, frame, ...props }: DashboardAnalyticsPageProps) {
+  return (
+    <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
+      <AppSidebar activeItem="overview" {...sidebar} />
+      <SidebarResizeHandle />
+      <SidebarInset className="min-h-0">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
+          <SidebarTrigger />
+          <h1 className="truncate text-title font-medium">{title}</h1>
+        </header>
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="p-3 sm:p-4">
+            <DashboardAnalytics {...props} />
+          </div>
+        </ScrollArea>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
 export {
   DashboardAnalytics,
+  DashboardAnalyticsPage,
+  type DashboardAnalyticsPageProps,
   type DashboardAnalyticsProps,
   type Kpi as AnalyticsKpi,
   type Traffic,

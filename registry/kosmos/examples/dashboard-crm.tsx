@@ -2,7 +2,7 @@
 
 import { ExternalLink, Trophy } from 'lucide-react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { DashboardCrm, type Deal } from '@/registry/kosmos/blocks/dashboard-crm/dashboard-crm';
+import { DashboardCrm, DashboardCrmPage, type Deal } from '@/registry/kosmos/blocks/dashboard-crm/dashboard-crm';
 import { DropdownMenuItem } from '@/registry/kosmos/ui/dropdown-menu';
 
 const frame = 'w-full rounded-xl border border-transparent bg-background p-4 shadow-card';
@@ -43,6 +43,13 @@ function actions(deal: Deal) {
 export default function DashboardCrmPreview() {
   return (
     <PreviewStack>
+      <PreviewSection title="As a page, beside the App sidebar">
+        <DashboardCrmPage
+          frame={{ storageKey: false, className: 'h-[48rem] w-full overflow-hidden rounded-xl border border-transparent shadow-card' }}
+          sidebar={{ onNavigate: (_id, event) => event.preventDefault() }}
+          onNewDeal={() => {}} dealActions={actions} tasksHref="#"
+        />
+      </PreviewSection>
       <PreviewSection title="Full, with a Deal button, row actions and View all tasks">
         <div className={frame}>
           <DashboardCrm onNewDeal={() => {}} dealActions={actions} tasksHref="#" />
