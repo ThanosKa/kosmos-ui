@@ -180,7 +180,7 @@ type Suggestion = { group: string; urls: readonly string[]; icon: LucideIcon };
 const suggestions: readonly Suggestion[] = [
   { group: 'Get started', icon: BookOpen, urls: ['/docs', '/docs/installation', '/docs/foundations/color'] },
   { group: 'Components', icon: Component, urls: ['/docs/components/button', '/docs/components/dialog', '/docs/components/select', '/docs/components/command'] },
-  { group: 'Blocks', icon: LayoutPanelTop, urls: ['/docs/blocks/data-table', '/docs/blocks/app-sidebar', '/docs/blocks/kanban-board', '/docs/blocks/command-menu'] },
+  { group: 'Blocks', icon: LayoutPanelTop, urls: ['/docs/blocks/projects-table', '/docs/blocks/app-sidebar', '/docs/blocks/kanban-board', '/docs/blocks/command-menu'] },
 ];
 
 const sitePages = [

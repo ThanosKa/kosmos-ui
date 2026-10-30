@@ -220,7 +220,7 @@ type Datum = Record<string, string | number | null | undefined>;
 type SparklineProps = Omit<React.ComponentProps<'div'>, 'children' | 'color'> & {
   data: readonly Datum[];
   dataKey?: string;
-  /** `line` draws the trend; `bar` draws one thin bar per point, the latest in `color` and the rest a lighter gray. */
+  /** `line` draws the trend; `bar` draws one thin bar per point, the latest in `color` and the rest in `color` at 25%. */
   variant?: 'line' | 'bar';
   /** Any CSS color; a chart token by default. In the bar form it colors the latest bar. */
   color?: string;
@@ -266,8 +266,9 @@ function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--c
 const BAR_SLOT = 6;
 
 /**
- * Bars grow from zero, so their heights compare. A bar at zero or below, or with no value, is a dot. When there are
- * more bars than room, the oldest drop out of view, so the latest stays.
+ * Bars grow from zero, so their heights compare. The latest bar is the current period in full color; the ones before it
+ * are the same color at 25%, so a row of near-equal bars stays quiet. A bar at zero or below, or with no value, is a
+ * dot. When there are more bars than room, the oldest drop out of view, so the latest stays.
  */
 function SparklineBars({ data, dataKey, color, className, ...props }: Omit<SparklineProps, 'variant' | 'fill'> & { dataKey: string }) {
   const bars = data.map((datum) => {
@@ -298,7 +299,8 @@ function SparklineBars({ data, dataKey, color, className, ...props }: Omit<Spark
               return (
                 <Recharts.Rectangle
                   {...bar}
-                  fill={latest ? seriesColor(dataKey) : 'var(--chart-4)'}
+                  fill={seriesColor(dataKey)}
+                  fillOpacity={latest ? 1 : 0.25}
                   className={latest ? 'forced-colors:fill-[CanvasText]' : 'forced-colors:fill-[GrayText]'}
                 />
               );
