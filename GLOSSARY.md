@@ -144,6 +144,10 @@ _Avoid_: preset (είναι το σετ τιμών του palette), shortcut (ε
 Το component για ένα κομμάτι ενός dashboard. Έξω είναι το **tray**, μια χαμηλωμένη θήκη (`bg-muted`, `shadow-inset`): ο τίτλος, η περιγραφή και τα actions κάθονται πάνω του. Μέσα του είναι μια ανυψωμένη κάρτα με το περιεχόμενο (πίνακας, λίστα ή γράφημα), και κάτω από την κάρτα ένα προαιρετικό footer (pagination ή κουμπί). Η λέξη «tray» ονομάζει μόνο το εξωτερικό μέρος, ποτέ ολόκληρο το Panel.
 _Avoid_: «tray» για ολόκληρο το Panel, frame, section card, widget
 
+**Data table**:
+Το component με τα κομμάτια για έναν πίνακα εγγραφών πάνω στο TanStack Table: μενού στηλών για ταξινόμηση και απόκρυψη, φίλτρα με μετρήσεις, αναζήτηση, επιλογή γραμμών και footer με σελίδες. Δεν έχει δικά του δεδομένα ούτε στήλες. Το block **Projects table** είναι ένας έτοιμος πίνακας έργων φτιαγμένος από αυτά.
+_Avoid_: data grid (υπονοεί επεξεργασία κελιών), «data table» για το block Projects table
+
 **Template**:
 Μια ολόκληρη σελίδα ή app (π.χ. dashboard) φτιαγμένη από blocks και components.
 _Avoid_: theme, starter

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
-import { DataTable, sampleProjects } from '@/registry/kosmos/blocks/data-table/data-table';
+import { ProjectsTable, sampleProjects } from '@/registry/kosmos/blocks/projects-table/projects-table';
 import { KanbanBoard } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { StatsOverview, type StatsRange } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
@@ -36,14 +36,14 @@ export const projectsCard: GalleryItem = {
   id: 'projects',
   title: 'Projects',
   description: 'The sidebar, a page bar and the data table with everything on.',
-  href: '/docs/blocks/data-table',
+  href: '/docs/blocks/projects-table',
   stage: (
     <Stage base={640} interval={1100} staticTick={1}>
       {(tick) => (
         <AppScreen active="projects" title="Projects">
           <div className="flex-1 p-4">
             <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-              <DataTable rows={projectsAt(tick)} />
+              <ProjectsTable rows={projectsAt(tick)} />
             </div>
           </div>
         </AppScreen>

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table",
+  "type": "registry:ui",
+  "title": "Data table",
+  "description": "Parts for a table of records on TanStack Table. Column menus sort and hide columns, and faceted filters count their values. It also has a search, row selection with a bulk bar, and a footer with the rows in view and pages.",
+  "dependencies": ["@base-ui/react@^1.9.0", "@tanstack/react-table@^9.3.1", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/table", "@kosmos/button", "@kosmos/checkbox", "@kosmos/dropdown-menu", "@kosmos/input", "@kosmos/pagination", "@kosmos/popover", "@kosmos/skeleton"],
+  "meta": { "group": "data" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/data-table.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
