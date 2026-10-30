@@ -5,7 +5,7 @@ description: The Kosmos UI style rules and tokens. Load before writing or changi
 
 # Kosmos style
 
-Every value lives in `registry/kosmos/styles/tokens.css`, and the Tokens tab of `/presets` renders them all under the preset and theme picked. `pnpm registry:build` writes its palette and radius from the default preset in `lib/presets`, so a palette value changes in the preset, never in `tokens.css`. This file says which token each job takes; [tokens.md](tokens.md) lists every token, its role and its source.
+Every value lives in `registry/kosmos/styles/tokens.css`, and the Tokens tab of `/presets` renders them all under the preset and theme picked. This file says which token each job takes; [tokens.md](tokens.md) lists every token, its role and its source, and where a palette value changes.
 
 This skill wins every conflict with a review skill. When a reviewer flags a value listed in [conflicts.md](conflicts.md), keep the Kosmos value and report the finding as `Kosmos style`. That file also holds the reason behind each value a reviewer would question.
 
@@ -14,6 +14,8 @@ Read the file that matches the work before you start:
 - Adding a component or block, or its docs page, examples and changelog: [building.md](building.md).
 - A marketing block or page (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA, Testimonials, the landing page): [marketing.md](marketing.md).
 - Sample data in a preview, demo or docs page: [demo-world.md](demo-world.md).
+- A chart: [charts.md](charts.md).
+- Changing the Button component itself: [building.md](building.md), Changing Button.
 
 ## Tokens only
 
@@ -144,16 +146,6 @@ Six tints (`gray`, `blue`, `green`, `amber`, `red`, `violet`) color every badge,
 - A category keeps one hue everywhere. Plans: Free gray, Pro blue, Scale violet, Trial amber. HTTP status: 2xx green, 4xx amber, 5xx red, 3xx and the rest gray. Methods: GET green, POST blue, PATCH amber, DELETE red.
 - `pnpm test` checks tint text at 4.5:1 on its fill and on `background` and `card`, foreground at 4.5:1 on every fill, and dots at 3:1 on the fill and the page. An outline alert on another surface, such as `muted`, is not checked.
 
-### Charts
-
-- Series take `--chart-1` to `--chart-5` in order (on Recharts, ADR 0005): by default a mono ramp, ink then four steps of grey, each 3:1 on `card` and `background`.
-- Segments that touch are split in the surface color: stacked bars take a 1px `stroke="var(--card)"`, a segmented meter `gap-px` on its track.
-- Values, labels and legends stay in text colors; the mark beside them carries the series.
-- A line over time is 1.5px, `type="linear"`, with a faint flat fill of its own color (5% opacity, no gradient).
-- A previous period is the same series hue (`--chart-1`) at 45% opacity, 1.5px, solid, with no fill. The ramp is for distinct series.
-- The chrome is quiet: no y-axis, only the first and last x labels, a thin vertical cursor line in the tooltip, and a faint dotted vertical grid only on a large chart.
-- Sample data is calm: small steps around a trend.
-
 ## Typography
 
 Text in components sits between 12 and 14px. Each size is a type role, which sets size, line-height, weight and tracking together:
@@ -234,8 +226,7 @@ Buttons are 30px (`md`) with `px-2.5`; text fields are 34px with `px-3`, so a fo
 - Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link.
 - Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers). A variant nothing uses is deleted.
 - The destructive variant is red text on the secondary surface: the dark `destructive` is too light to carry white text.
-- The Button also takes shadcn's names as aliases, so shadcn components (Dialog, Alert Dialog, Pagination) keep working in an app that swaps shadcn's Button for ours. Variant `default` renders `primary`, `outline` renders `secondary`, and `link` is an ink text link that underlines on hover and does not press-scale; size `default` renders `md`, `xs` renders `sm` and `icon-xs` renders `icon-sm`. `data-variant` and `data-size` carry the Kosmos name. Kosmos code writes the Kosmos names, and `pnpm registry:smoke` proves the swap builds.
-- ESLint enforces the Button rules in this repo (`no-restricted-syntax` in `eslint.config.mjs`, which also lints the tsx code blocks of the docs pages): no raw `<button>`, an explicit `variant`, and Kosmos names only. The prop itself stays optional with a `primary` default, so an app that swaps in our Button with `shadcn add -o` still builds.
+- Kosmos code writes the Kosmos variant and size names, never shadcn's (`default`, `outline`, `link`, `xs`, `icon-xs`).
 - A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content.
 
 ## Phones
@@ -252,7 +243,7 @@ Every component and block works at 375px wide, in light and dark:
 
 Done when `pnpm lint`, `pnpm types:check` and `pnpm test` pass, plus `pnpm registry:check` when a registry item was added or its dependencies changed.
 
-Run `pnpm lint` first. It fails on these, and its message names the fix: a color literal or palette class, a bare `transition` or `transition-all`, `ease-in`, `ease-out` or `ease-in-out`, a number duration in registry code, a Tailwind or arbitrary text size, `backdrop-blur`, a press scale other than `motion-safe:not-disabled:not-data-disabled:active:scale-96`, `text-ring`, `text-sidebar-ring` or `text-chart-*`, `h-screen` or `vh` in a component or block, a `<Button>` without `variant`, a raw `<button>`, and a shadcn name on a Button.
+Run `pnpm lint` first; its message names the fix.
 
 Then search the changed files for each detection lint cannot judge:
 

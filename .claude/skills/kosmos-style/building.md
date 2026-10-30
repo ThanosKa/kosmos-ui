@@ -14,3 +14,8 @@ Build on Base UI (`@base-ui/react`), from scratch or from MIT-licensed code rest
 Sample data in every preview, demo and docs page comes from one fictional company, Acme, in [demo-world.md](demo-world.md). A value it lacks is added there in the same change.
 
 `pnpm test` fails when a component has no docs page or demo, or a block no install line. The rest of the done check is SKILL.md, Before you finish.
+
+## Changing Button
+
+- The Button also takes shadcn's names as aliases, so shadcn components (Dialog, Alert Dialog, Pagination) keep working in an app that swaps shadcn's Button for ours. Variant `default` renders `primary`, `outline` renders `secondary`, and `link` is an ink text link that underlines on hover and does not press-scale; size `default` renders `md`, `xs` renders `sm` and `icon-xs` renders `icon-sm`. `data-variant` and `data-size` carry the Kosmos name. `pnpm registry:smoke` proves the swap builds.
+- ESLint enforces the Button rules in this repo (`no-restricted-syntax` in `eslint.config.mjs`, which also lints the tsx code blocks of the docs pages): no raw `<button>`, an explicit `variant`, and Kosmos names only. The prop itself stays optional with a `primary` default, so an app that swaps in our Button with `shadcn add -o` still builds.
