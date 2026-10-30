@@ -2,7 +2,7 @@
 
 import { IntegrationBeam } from './beam';
 import { assistantMessageCard, planChecklistCard, promptComposerCard, reasoningCard, runTimelineCard, toolApprovalCard, toolCallCard, usageMeterCard } from './cards/ai';
-import { authCodeCard, dataTableCard, detailDrawerCard, inviteTeammatesCard, kanbanBoardCard, settingsPanelCard } from './cards/blocks';
+import { authCodeCard, projectsTableCard, detailDrawerCard, inviteTeammatesCard, kanbanBoardCard, settingsPanelCard } from './cards/blocks';
 import { dropdownMenuCard, numberTickerCard, toastCard } from './cards/components';
 import { overviewCard, projectsCard, roadmapCard } from './cards/screens';
 import { Gallery, type GalleryItem, type GalleryTab } from './gallery';
@@ -27,7 +27,7 @@ const stackCard: GalleryItem = {
 const tabs: GalleryTab[] = [
   { id: 'components', label: 'Components', items: [stackCard, promptComposerCard, toastCard, toolApprovalCard, dropdownMenuCard, numberTickerCard], href: '/docs/components' },
   { id: 'ai', label: 'AI', items: [assistantMessageCard, reasoningCard, toolCallCard, planChecklistCard, runTimelineCard, usageMeterCard], href: '/docs/components' },
-  { id: 'blocks', label: 'Blocks', items: [dataTableCard, kanbanBoardCard, detailDrawerCard, inviteTeammatesCard, authCodeCard, settingsPanelCard], href: '/docs/blocks' },
+  { id: 'blocks', label: 'Blocks', items: [projectsTableCard, kanbanBoardCard, detailDrawerCard, inviteTeammatesCard, authCodeCard, settingsPanelCard], href: '/docs/blocks' },
   { id: 'screens', label: 'Screens', items: [projectsCard, roadmapCard, overviewCard], href: '/docs/blocks' },
 ];
 
