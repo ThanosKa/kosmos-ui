@@ -1,13 +1,16 @@
 'use client';
 
 import {
+  AtSign,
   Briefcase,
   CalendarCheck,
   CalendarDays,
   Check,
+  CheckCheck,
   Clock,
   Ellipsis,
   FileSignature,
+  Gauge as GaugeIcon,
   Mail,
   MessageSquare,
   Phone,
@@ -38,6 +41,25 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
 import { Gauge } from '@/registry/kosmos/ui/gauge';
 import { Meter, MeterBar } from '@/registry/kosmos/ui/meter';
+import {
+  NotificationInbox,
+  NotificationInboxActions,
+  NotificationInboxBody,
+  NotificationInboxContent,
+  NotificationInboxGroup,
+  NotificationInboxHeader,
+  NotificationInboxTitle,
+  NotificationInboxTrigger,
+  NotificationItem,
+  NotificationItemAside,
+  NotificationItemContent,
+  NotificationItemDescription,
+  NotificationItemMedia,
+  NotificationItemQuickAction,
+  NotificationItemQuickActions,
+  NotificationItemTime,
+  NotificationItemTitle,
+} from '@/registry/kosmos/ui/notification-inbox';
 import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
 import {
   StatCard,
@@ -699,9 +721,191 @@ function DashboardCrm({
   );
 }
 
+
+// Sample data: the sales news in Lena Park's inbox at noon on 11 October. Replace it with yours.
+const sampleNotifications: DashboardNotification[] = [
+  {
+    id: 'stage',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Rosa Delgado</strong> moved <strong>More events</strong> with Copperline Bank to Negotiation
+      </>
+    ),
+    time: '12m',
+    dateTime: '2026-10-11T11:48:00Z',
+    avatar: { src: '/avatars/rosa.jpg', fallback: 'RD' },
+    icon: <Briefcase />,
+    unread: true,
+  },
+  {
+    id: 'won',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Mina Sato</strong> won <strong>Annual Pro</strong> with Saltmarsh Coffee
+      </>
+    ),
+    description: '$1,430 a year, signed today.',
+    time: '1h',
+    dateTime: '2026-10-11T11:00:00Z',
+    avatar: { src: '/avatars/mina.jpg', fallback: 'MS' },
+    icon: <Trophy />,
+    unread: true,
+  },
+  {
+    id: 'mention',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Felix Brandt</strong> mentioned you in <strong>Pro to Scale</strong> with Cirrus Weather
+      </>
+    ),
+    description: '@Lena can we let them try Scale for a month before they sign?',
+    time: '2h',
+    dateTime: '2026-10-11T10:05:00Z',
+    avatar: { src: '/avatars/felix.jpg', fallback: 'FB' },
+    icon: <AtSign />,
+    unread: true,
+  },
+  {
+    id: 'quota',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Copperline Bank</strong> has used 109% of its October event allowance
+      </>
+    ),
+    time: '3h',
+    dateTime: '2026-10-11T09:12:00Z',
+    avatar: { src: '/logos/copperline.svg', fallback: 'C', square: true },
+    icon: <GaugeIcon />,
+  },
+  {
+    id: 'trial',
+    day: 'Yesterday',
+    title: (
+      <>
+        <strong>Marigold Recipes</strong> ends its trial on Oct 22
+      </>
+    ),
+    time: 'Yesterday',
+    dateTime: '2026-10-10T15:10:00Z',
+    avatar: { src: '/logos/marigold.svg', fallback: 'M', square: true },
+    icon: <Clock />,
+  },
+];
+
+type DashboardNotification = {
+  id: string;
+  /** The group it sits under, such as "Today" or "Yesterday". */
+  day: string;
+  /** The sentence. Wrap names and the object in `<strong>`. */
+  title: React.ReactNode;
+  /** A quote or a line of detail under it. */
+  description?: string;
+  /** When it arrived, already written ("4m", "Yesterday"), and as an ISO date and time. */
+  time: string;
+  dateTime: string;
+  /** A person's photo, or a project's logo with `square`. The fallback shows until it loads. */
+  avatar: { src?: string; fallback: string; square?: boolean };
+  /** The kind, as a small icon on the avatar: a mention, a quota, a won deal. */
+  icon?: React.ReactNode;
+  unread?: boolean;
+};
+
+/** The bell in the page header and its inbox. It keeps what is read itself, starting from each notification's `unread`. */
+function HeaderInbox({
+  notifications,
+  onNotificationOpen,
+}: {
+  notifications: DashboardNotification[];
+  onNotificationOpen?: (notification: DashboardNotification) => void;
+}) {
+  const [read, setRead] = React.useState(() => new Set(notifications.filter((item) => !item.unread).map((item) => item.id)));
+  const unread = notifications.filter((item) => !read.has(item.id)).length;
+  const days = [...new Set(notifications.map((item) => item.day))];
+  const toggle = (id: string) =>
+    setRead((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  return (
+    <NotificationInbox>
+      <NotificationInboxTrigger count={unread} />
+      <NotificationInboxContent>
+        <NotificationInboxHeader>
+          <NotificationInboxTitle>Notifications</NotificationInboxTitle>
+          {unread > 0 ? (
+            <NotificationInboxActions>
+              <Button variant="ghost" size="sm" onClick={() => setRead(new Set(notifications.map((item) => item.id)))}>
+                <CheckCheck data-icon="inline-start" aria-hidden />
+                Mark all as read
+              </Button>
+            </NotificationInboxActions>
+          ) : null}
+        </NotificationInboxHeader>
+        <NotificationInboxBody>
+          {notifications.length === 0 ? (
+            <p className="px-4 py-10 text-center text-small text-muted-foreground">You’re all caught up</p>
+          ) : (
+            days.map((day) => (
+              <NotificationInboxGroup key={day} label={day}>
+                {notifications
+                  .filter((item) => item.day === day)
+                  .map((item) => (
+                    <NotificationItem key={item.id} unread={!read.has(item.id)}>
+                      <NotificationItemMedia icon={item.icon}>
+                        <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
+                          {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
+                          <AvatarFallback className={item.avatar.square ? 'rounded-md' : undefined}>{item.avatar.fallback}</AvatarFallback>
+                        </Avatar>
+                      </NotificationItemMedia>
+                      <NotificationItemContent>
+                        <NotificationItemTitle
+                          href={`#${item.id}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (!read.has(item.id)) toggle(item.id);
+                            onNotificationOpen?.(item);
+                          }}
+                        >
+                          {item.title}
+                        </NotificationItemTitle>
+                        {item.description ? <NotificationItemDescription>{item.description}</NotificationItemDescription> : null}
+                      </NotificationItemContent>
+                      <NotificationItemAside>
+                        <NotificationItemTime dateTime={item.dateTime}>{item.time}</NotificationItemTime>
+                        <NotificationItemQuickActions>
+                          <NotificationItemQuickAction
+                            label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
+                            onClick={() => toggle(item.id)}
+                          >
+                            {read.has(item.id) ? <Mail /> : <Check />}
+                          </NotificationItemQuickAction>
+                        </NotificationItemQuickActions>
+                      </NotificationItemAside>
+                    </NotificationItem>
+                  ))}
+              </NotificationInboxGroup>
+            ))
+          )}
+        </NotificationInboxBody>
+      </NotificationInboxContent>
+    </NotificationInbox>
+  );
+}
+
 type DashboardCrmPageProps = DashboardCrmProps & {
   /** The page title in the header. */
   title?: string;
+  /** The notifications in the header's inbox, newest first. `null` leaves the bell out. */
+  notifications?: DashboardNotification[] | null;
+  /** Called when a notification is opened from the inbox. */
+  onNotificationOpen?: (notification: DashboardNotification) => void;
   /** The App sidebar's props: your pages, the current one, the workspaces and the signed-in user. */
   sidebar?: AppSidebarProps;
   /** The page frame's props, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame. */
@@ -712,7 +916,14 @@ type DashboardCrmPageProps = DashboardCrmProps & {
  * The sales dashboard as a whole page: the App sidebar beside a header with the title, and the dashboard under it,
  * scrolling while the sidebar and header stay put. Use `DashboardCrm` alone inside an app frame you already have.
  */
-function DashboardCrmPage({ title = 'Sales', sidebar, frame, ...props }: DashboardCrmPageProps) {
+function DashboardCrmPage({
+  title = 'Sales',
+  sidebar,
+  frame,
+  notifications = sampleNotifications,
+  onNotificationOpen,
+  ...props
+}: DashboardCrmPageProps) {
   return (
     <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
       <AppSidebar activeItem="overview" {...sidebar} />
@@ -720,7 +931,8 @@ function DashboardCrmPage({ title = 'Sales', sidebar, frame, ...props }: Dashboa
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="truncate text-title font-medium">{title}</h1>
+          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} /> : null}
         </header>
         <ScrollArea className="min-h-0 flex-1">
           <div className="p-3 sm:p-4">
@@ -733,6 +945,7 @@ function DashboardCrmPage({ title = 'Sales', sidebar, frame, ...props }: Dashboa
 }
 
 export {
+  type DashboardNotification as CrmNotification,
   DashboardCrm,
   DashboardCrmPage,
   type DashboardCrmPageProps,
