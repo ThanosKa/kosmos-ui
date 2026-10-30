@@ -11,7 +11,6 @@ import { Badge } from '@/registry/kosmos/ui/badge';
 import { BarList, type BarListItem } from '@/registry/kosmos/ui/bar-list';
 import { Button } from '@/registry/kosmos/ui/button';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
-import { DonutChart, DonutChartLegend } from '@/registry/kosmos/ui/donut-chart';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -259,10 +258,15 @@ const plans: Record<Plan, { label: string; hue: 'gray' | 'blue' | 'violet' | 'am
   trial: { label: 'Trial', hue: 'amber' },
 };
 
+const trafficConfig = {
+  current: { label: 'Current', color: 'var(--chart-1)' },
+  previous: { label: 'Previous', color: 'var(--chart-1)' },
+} satisfies ChartConfig;
+
 /** Rows a table shows before it pages; the pager shows only past it. */
 const firstPageSize = 5;
 
-/** The ring has one chart color per source, so it shows the first five. */
+/** Sources shows the first five; their shares are of all visitors. */
 const maxSources = 5;
 
 const initials = (name: string) =>
@@ -313,10 +317,6 @@ function KpiStrip({ kpis }: { kpis: Kpi[] }) {
 function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range, Traffic>; range: Range; onRangeChange: (range: Range) => void }) {
   const { totals, points } = traffic[range];
   const rangeLabel = ranges[range].label;
-  const config = {
-    current: { label: `Last ${rangeLabel}`, color: 'var(--chart-1)' },
-    previous: { label: `Previous ${rangeLabel}`, color: 'var(--chart-1)' },
-  } satisfies ChartConfig;
 
   return (
     <Panel>
@@ -325,7 +325,20 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
         <PanelDescription>
           Visitors a {range === '90d' ? 'week' : 'day'} against the {rangeLabel} before
         </PanelDescription>
-        <PanelAction>
+        <PanelAction className="gap-x-4">
+          {points.length > 0 ? (
+            <ul aria-label="Legend" className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-muted-foreground">
+              {(['current', 'previous'] as const).map((key) => (
+                <li key={key} className="flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className={cn('size-2 shrink-0 rounded-sm bg-chart-1 forced-colors:bg-[CanvasText]', key === 'previous' && 'opacity-45')}
+                  />
+                  {trafficConfig[key].label}
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => onRangeChange(value as Range)}>
             {(Object.keys(ranges) as Range[]).map((key) => (
               <SegmentedControlItem key={key} value={key}>
@@ -355,11 +368,13 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
               key={range}
               title={`Visitors, last ${rangeLabel} against the ${rangeLabel} before`}
               data={points}
-              config={config}
+              config={trafficConfig}
               xKey="label"
               xLabel={ranges[range].xLabel}
               previousKeys={['previous']}
+              legend={false}
               grid
+              className="flex-1 *:data-[slot=chart]:h-auto *:data-[slot=chart]:min-h-60 *:data-[slot=chart]:flex-1"
             />
           ) : (
             <p role="status" className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
@@ -367,33 +382,6 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
             </p>
           )}
         </div>
-      </PanelContent>
-    </Panel>
-  );
-}
-
-/** Where visitors came from: a ring split by source, and the sources as a list with their visitors and share. */
-function SourcesPanel({ sources }: { sources: Source[] }) {
-  const total = sources.reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
-  const shown = sources.slice(0, maxSources).map((source) => ({ id: source.id, label: source.label, value: source.visitors }));
-
-  return (
-    <Panel>
-      <PanelHeader>
-        <PanelTitle>Sources</PanelTitle>
-        <PanelDescription>Where visitors came from</PanelDescription>
-      </PanelHeader>
-      <PanelContent className="flex flex-col items-center justify-center gap-5 p-4 @md/panel:flex-row">
-        {total > 0 ? (
-          <>
-            <DonutChart data={shown} total={total} label="Visitors" format={compact.format} aria-label={`${compact.format(total)} visitors`} />
-            <DonutChartLegend data={shown} total={total} format={compact.format} aria-label="Visitors by source" className="w-full" />
-          </>
-        ) : (
-          <p role="status" className="flex min-h-36 items-center text-small text-muted-foreground">
-            No visitors yet
-          </p>
-        )}
       </PanelContent>
     </Panel>
   );
@@ -671,7 +659,7 @@ type DashboardAnalyticsProps = Omit<React.ComponentProps<'section'>, 'children'>
   kpis?: Kpi[];
   /** The traffic chart and its totals for each range. */
   traffic?: Record<Range, Traffic>;
-  /** Visitors by source; the first five make the ring. */
+  /** Visitors by source, most first; the list shows the first five, each with its share of all visitors. */
   sources?: Source[];
   /** The most visited pages, most visited first. */
   topPages?: BarListItem[];
@@ -690,8 +678,8 @@ type DashboardAnalyticsProps = Omit<React.ComponentProps<'section'>, 'children'>
 };
 
 /**
- * A product analytics dashboard: the KPIs, traffic against the period before, sources, top pages, countries, the
- * signup goal and the newest signups, each section on its own Panel. Lays itself out by its own width, not the screen's.
+ * A product analytics dashboard: the KPIs, traffic against the period before, the signup goal, sources, top pages,
+ * countries and the newest signups, each section on its own Panel. Lays itself out by its own width, not the screen's.
  */
 function DashboardAnalytics({
   kpis = sampleKpis,
@@ -721,9 +709,18 @@ function DashboardAnalytics({
       <KpiStrip kpis={kpis} />
       <div className="grid min-w-0 gap-3 @5xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <TrafficPanel traffic={traffic} range={range} onRangeChange={setRange} />
-        <SourcesPanel sources={sources} />
+        <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @5xl:grid-cols-1">
+          <GoalPanel goal={goal} />
+          <RankedPanel
+            title="Sources"
+            description="Where visitors came from"
+            items={sources.slice(0, maxSources).map((source) => ({ id: source.id, label: source.label, value: source.visitors }))}
+            showShare
+            total={visitors > 0 ? visitors : undefined}
+          />
+        </div>
       </div>
-      <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @6xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 @3xl:grid-cols-2">
         <RankedPanel title="Top pages" description="By visitors, last 30 days" items={topPages} />
         <RankedPanel
           title="Countries"
@@ -732,7 +729,6 @@ function DashboardAnalytics({
           showShare
           total={visitors > 0 ? visitors : undefined}
         />
-        <GoalPanel goal={goal} />
       </div>
       <SignupsPanel signups={signups} signupActions={signupActions} />
     </section>

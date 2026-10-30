@@ -198,6 +198,8 @@ const sampleActivity: ActivityItem[] = [
   { id: '2', who: 'Mina Sato', avatarUrl: '/avatars/mina.jpg', what: 'won Annual Pro with Saltmarsh Coffee, $1,430', when: '1h' },
   { id: '3', who: 'Felix Brandt', avatarUrl: '/avatars/felix.jpg', what: 'logged a call with Cirrus Weather', when: '3h' },
   { id: '4', who: 'Kai Nakamura', avatarUrl: '/avatars/kai.jpg', what: 'added 2 contacts at Ironbark Logistics', when: '5h' },
+  { id: '5', who: 'Felix Brandt', avatarUrl: '/avatars/felix.jpg', what: 'sent a proposal to Driftwood Travel', when: '6h' },
+  { id: '6', who: 'Kai Nakamura', avatarUrl: '/avatars/kai.jpg', what: 'added Tidepool Notes as a lead', when: '7h' },
 ];
 
 // A fixed locale, so the server and the browser render the same text.
@@ -511,7 +513,7 @@ function StagesPanel({ stageTotals, stats }: { stageTotals: StageTotal[]; stats:
       <PanelContent className="flex flex-col">
         <BarList
           aria-labelledby={titleId}
-          className="p-3"
+          className="flex-1 content-between p-3"
           items={stageTotals.map((row) => ({
             id: row.stage,
             label: stages[row.stage].label,
@@ -589,23 +591,23 @@ function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
   );
 }
 
-function ActivityPanel({ activity }: { activity: ActivityItem[] }) {
+function ActivityPanel({ activity, className }: { activity: ActivityItem[]; className?: string }) {
   const titleId = React.useId();
   return (
-    <Panel>
+    <Panel className={className}>
       <PanelHeader>
         <PanelTitle id={titleId}>Activity</PanelTitle>
         <PanelDescription>Your team, today</PanelDescription>
       </PanelHeader>
-      <PanelContent className="p-4">
+      <PanelContent className="flex flex-col p-4">
         {activity.length === 0 ? (
-          <p role="status" className="flex min-h-28 items-center justify-center text-center text-small text-muted-foreground">
+          <p role="status" className="flex min-h-28 flex-1 items-center justify-center text-center text-small text-muted-foreground">
             Nothing yet today
           </p>
         ) : (
-          <ol aria-labelledby={titleId} className="flex flex-col">
+          <ol aria-labelledby={titleId} className="flex flex-1 flex-col">
             {activity.map((item, index) => (
-              <li key={item.id} className="relative flex min-w-0 gap-3 pb-4 last:pb-0">
+              <li key={item.id} className="relative flex min-w-0 gap-3 pb-4 not-last:flex-1 last:pb-0">
                 {index < activity.length - 1 ? <span aria-hidden className="absolute start-3 top-7 bottom-1 w-px bg-border" /> : null}
                 <PersonAvatar name={item.who} avatarUrl={item.avatarUrl} size="sm" />
                 <p className="min-w-0 flex-1 pt-0.5 text-small wrap-break-word text-muted-foreground">
@@ -678,7 +680,7 @@ function DashboardCrm({
       <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @6xl:grid-cols-3">
         <StagesPanel stageTotals={stageTotals} stats={stageStats} />
         <QuotaPanel quota={quota} />
-        <ActivityPanel activity={activity} />
+        <ActivityPanel activity={activity} className="@3xl:col-span-2 @6xl:col-span-1" />
       </div>
     </section>
   );
