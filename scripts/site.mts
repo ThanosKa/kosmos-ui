@@ -23,9 +23,20 @@ type OpenOptions = {
   reducedMotion?: ReducedMotion;
 };
 
+/** A dev server message that applies a changed file to the open page: server components, or client modules. */
+function isHotUpdate(message: string) {
+  if (!message.startsWith('{')) return false;
+  try {
+    const { type, action } = JSON.parse(message) as { type?: string; action?: string };
+    return ['serverComponentChanges', 'turbopack-message'].includes(type ?? action ?? '');
+  } catch {
+    return false;
+  }
+}
+
 /**
- * Opens `path` on the server at `base`, pinned to `theme`, with reduced motion (unless `reducedMotion` says otherwise)
- * and the dev indicator hidden. Throws when the page does not answer 200. Page errors and console errors land in `errors`; close `context` when done.
+ * Opens `path` on the server at `base`, pinned to `theme`, with reduced motion (unless `reducedMotion` says otherwise),
+ * the dev indicator hidden and hot updates dropped. Throws when the page does not answer 200. Page errors and console errors land in `errors`; close `context` when done.
  */
 export async function openSitePage(
   browser: Browser,
@@ -42,6 +53,17 @@ export async function openSitePage(
       document.head.append(Object.assign(document.createElement('style'), { textContent: 'nextjs-portal { display: none !important; }' }));
     });
   }, theme);
+  // Each check opens a fresh page, so it drops the dev server's hot updates. Left in, a file changing in the served
+  // checkout (another session's edit, pull or branch switch) reaches a page still hydrating, and Next updates its router
+  // before it has mounted ("Can't perform a React state update on a component that hasn't mounted yet"); steady changes
+  // keep the page refetching, so it never goes network-idle. The socket stays: Next also sends hydration data over it.
+  await context.routeWebSocket(/\/_next\/(webpack-)?hmr/, (socket) => {
+    const server = socket.connectToServer();
+    server.onMessage((message) => {
+      if (typeof message === 'string' && isHotUpdate(message)) return;
+      socket.send(message);
+    });
+  });
   const page = await context.newPage();
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
