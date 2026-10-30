@@ -6,7 +6,7 @@
   "description": "A soft glow of the accent color behind a section, in ink when the preset sets no accent. It clips itself, takes no space, and hides from assistive technology.",
   "dependencies": ["class-variance-authority@^0.7.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
-  "meta": { "group": "misc" },
+  "meta": { "group": "effects" },
   "files": [
     { "path": "registry/kosmos/ui/glow.tsx", "type": "registry:ui" },
     { "path": "registry/kosmos/ui/LICENSE-LAUNCH-UI", "type": "registry:file", "target": "~/LICENSE-LAUNCH-UI" }

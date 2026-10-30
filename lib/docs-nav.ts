@@ -12,6 +12,7 @@ import {
   Shapes,
   Sparkles,
   TextCursorInput,
+  WandSparkles,
   type LucideIcon,
 } from 'lucide-react';
 import { changelogFolder, getChangelogEntries, getNewItemUrls } from './changelog';
@@ -83,8 +84,9 @@ const groupIcons: Record<ComponentGroup, LucideIcon> = {
   overlays: Layers2,
   navigation: Compass,
   data: ChartColumn,
-  misc: Puzzle,
   ai: Bot,
+  effects: WandSparkles,
+  misc: Puzzle,
 };
 
 const blockSectionIcons: Record<BlockSection, LucideIcon> = {

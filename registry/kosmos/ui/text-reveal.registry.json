@@ -5,7 +5,7 @@
   "title": "Text reveal",
   "description": "Text that rises out of a soft blur word by word over about a second, once. It plays on first paint or on first scroll into view, or follows the scroll. It fades plainly under reduced motion.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
-  "meta": { "group": "misc" },
+  "meta": { "group": "effects" },
   "files": [
     { "path": "registry/kosmos/ui/text-reveal.tsx", "type": "registry:ui" },
     { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }

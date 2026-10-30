@@ -50,8 +50,9 @@ export const groups = {
   overlays: 'Overlays',
   navigation: 'Navigation',
   data: 'Data',
-  misc: 'Misc',
   ai: 'AI',
+  effects: 'Effects',
+  misc: 'Misc',
   blocks: 'Blocks',
 } as const;
 export type Group = keyof typeof groups;
