@@ -19,7 +19,7 @@
     "@kosmos/skeleton",
     "@kosmos/status"
   ],
-  "categories": ["data-table"],
+  "categories": ["projects-table"],
   "meta": { "group": "blocks", "section": "application", "tier": "free" },
   "files": [
     {
