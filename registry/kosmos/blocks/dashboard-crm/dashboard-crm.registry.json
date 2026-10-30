@@ -14,15 +14,13 @@
     "@kosmos/button",
     "@kosmos/dropdown-menu",
     "@kosmos/gauge",
-    "@kosmos/input-group",
     "@kosmos/meter",
-    "@kosmos/pagination",
     "@kosmos/panel",
     "@kosmos/stat-card",
     "@kosmos/scroll-area",
     "@kosmos/sidebar",
     "@kosmos/app-sidebar",
-    "@kosmos/table"
+    "@kosmos/data-table"
   ],
   "categories": ["dashboard"],
   "meta": { "group": "blocks", "section": "application", "tier": "free" },
