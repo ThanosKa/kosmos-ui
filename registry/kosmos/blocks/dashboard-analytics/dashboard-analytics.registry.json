@@ -22,7 +22,10 @@
     "@kosmos/scroll-area",
     "@kosmos/sidebar",
     "@kosmos/app-sidebar",
-    "@kosmos/data-table"
+    "@kosmos/data-table",
+    "@kosmos/dates",
+    "@kosmos/date-picker",
+    "@kosmos/notification-inbox"
   ],
   "categories": ["dashboard"],
   "meta": { "group": "blocks", "section": "application", "tier": "free" },

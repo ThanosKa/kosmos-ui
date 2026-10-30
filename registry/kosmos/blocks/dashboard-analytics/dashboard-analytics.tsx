@@ -1,10 +1,26 @@
 'use client';
 
-import { Ellipsis, Percent, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import {
+  AtSign,
+  Check,
+  CheckCheck,
+  Clock,
+  CreditCard,
+  Ellipsis,
+  Gauge,
+  Mail,
+  MessageSquare,
+  Percent,
+  Timer,
+  UserPlus,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
 import * as React from 'react';
 import { AppSidebar, type AppSidebarProps } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { isSameDay, lastDays, rangeLength } from '@/registry/kosmos/lib/dates';
 import { statDelta } from '@/registry/kosmos/lib/stat-delta';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
@@ -22,8 +38,28 @@ import {
   type DataTableFacetOption,
   type DataTableOptions,
 } from '@/registry/kosmos/ui/data-table';
+import { DateRangePicker, type DateRangeValue } from '@/registry/kosmos/ui/date-picker';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
 import { Meter, MeterBar, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
+import {
+  NotificationInbox,
+  NotificationInboxActions,
+  NotificationInboxBody,
+  NotificationInboxContent,
+  NotificationInboxGroup,
+  NotificationInboxHeader,
+  NotificationInboxTitle,
+  NotificationInboxTrigger,
+  NotificationItem,
+  NotificationItemAside,
+  NotificationItemContent,
+  NotificationItemDescription,
+  NotificationItemMedia,
+  NotificationItemQuickAction,
+  NotificationItemQuickActions,
+  NotificationItemTime,
+  NotificationItemTitle,
+} from '@/registry/kosmos/ui/notification-inbox';
 import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import {
@@ -718,9 +754,203 @@ function DashboardAnalytics({
   );
 }
 
+
+// Sample data: Lena Park's notifications at noon on 11 October. Replace it with yours.
+const sampleNotifications: DashboardNotification[] = [
+  {
+    id: 'mention',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Tomás Ortega</strong> mentioned you in <strong>Q4 roadmap</strong>
+      </>
+    ),
+    description: '@Lena can you check the activation funnel numbers before the Friday review?',
+    time: '4m',
+    dateTime: '2026-10-11T11:56:00Z',
+    avatar: { src: '/avatars/tomas.jpg', fallback: 'TO' },
+    icon: <AtSign />,
+    unread: true,
+  },
+  {
+    id: 'quota',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Cirrus Weather</strong> has used 80% of its October event allowance
+      </>
+    ),
+    time: '1h',
+    dateTime: '2026-10-11T10:58:00Z',
+    avatar: { src: '/logos/cirrus.svg', fallback: 'C', square: true },
+    icon: <Gauge />,
+    unread: true,
+  },
+  {
+    id: 'comment',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Ama Mensah</strong> and <strong>3 others</strong> commented on <strong>Onboarding checklist</strong>
+      </>
+    ),
+    description: 'Moved the invite step after the first event, so new teams see data sooner.',
+    time: '2h',
+    dateTime: '2026-10-11T09:40:00Z',
+    avatar: { src: '/avatars/ama.jpg', fallback: 'AM' },
+    icon: <MessageSquare />,
+  },
+  {
+    id: 'billing',
+    day: 'Today',
+    title: (
+      <>
+        <strong>Ironbark Logistics</strong> moved to the Scale plan
+      </>
+    ),
+    time: '3h',
+    dateTime: '2026-10-11T09:02:00Z',
+    avatar: { src: '/logos/ironbark.svg', fallback: 'I', square: true },
+    icon: <CreditCard />,
+  },
+  {
+    id: 'trial',
+    day: 'Yesterday',
+    title: (
+      <>
+        <strong>Marigold Recipes</strong> ends its trial in 11 days
+      </>
+    ),
+    time: 'Yesterday',
+    dateTime: '2026-10-10T15:10:00Z',
+    avatar: { src: '/logos/marigold.svg', fallback: 'M', square: true },
+    icon: <Clock />,
+  },
+];
+
+/** The sample's today, so the quick ranges end on the last day of the sample data. */
+const sampleToday = new Date(2026, 9, 11);
+const rangeDays: Record<Range, number> = { '7d': 7, '30d': 30, '90d': 90 };
+const periods = (today: Date) =>
+  (Object.keys(rangeDays) as Range[]).map((range) => ({ range, label: `Last ${rangeDays[range]} days`, ...lastDays(rangeDays[range], today) }));
+/** The range whose data stands in for a period you pick by hand: the shortest one that covers it. */
+const rangeFor = (days: number): Range => (days <= 7 ? '7d' : days <= 30 ? '30d' : '90d');
+
+type DashboardNotification = {
+  id: string;
+  /** The group it sits under, such as "Today" or "Yesterday". */
+  day: string;
+  /** The sentence. Wrap names and the object in `<strong>`. */
+  title: React.ReactNode;
+  /** A quote or a line of detail under it. */
+  description?: string;
+  /** When it arrived, already written ("4m", "Yesterday"), and as an ISO date and time. */
+  time: string;
+  dateTime: string;
+  /** A person's photo, or a project's logo with `square`. The fallback shows until it loads. */
+  avatar: { src?: string; fallback: string; square?: boolean };
+  /** The kind, as a small icon on the avatar: a mention, a quota, a won deal. */
+  icon?: React.ReactNode;
+  unread?: boolean;
+};
+
+/** The bell in the page header and its inbox. It keeps what is read itself, starting from each notification's `unread`. */
+function HeaderInbox({
+  notifications,
+  onNotificationOpen,
+}: {
+  notifications: DashboardNotification[];
+  onNotificationOpen?: (notification: DashboardNotification) => void;
+}) {
+  const [read, setRead] = React.useState(() => new Set(notifications.filter((item) => !item.unread).map((item) => item.id)));
+  const unread = notifications.filter((item) => !read.has(item.id)).length;
+  const days = [...new Set(notifications.map((item) => item.day))];
+  const toggle = (id: string) =>
+    setRead((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  return (
+    <NotificationInbox>
+      <NotificationInboxTrigger count={unread} />
+      <NotificationInboxContent>
+        <NotificationInboxHeader>
+          <NotificationInboxTitle>Notifications</NotificationInboxTitle>
+          {unread > 0 ? (
+            <NotificationInboxActions>
+              <Button variant="ghost" size="sm" onClick={() => setRead(new Set(notifications.map((item) => item.id)))}>
+                <CheckCheck data-icon="inline-start" aria-hidden />
+                Mark all as read
+              </Button>
+            </NotificationInboxActions>
+          ) : null}
+        </NotificationInboxHeader>
+        <NotificationInboxBody>
+          {notifications.length === 0 ? (
+            <p className="px-4 py-10 text-center text-small text-muted-foreground">You’re all caught up</p>
+          ) : (
+            days.map((day) => (
+              <NotificationInboxGroup key={day} label={day}>
+                {notifications
+                  .filter((item) => item.day === day)
+                  .map((item) => (
+                    <NotificationItem key={item.id} unread={!read.has(item.id)}>
+                      <NotificationItemMedia icon={item.icon}>
+                        <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
+                          {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
+                          <AvatarFallback className={item.avatar.square ? 'rounded-md' : undefined}>{item.avatar.fallback}</AvatarFallback>
+                        </Avatar>
+                      </NotificationItemMedia>
+                      <NotificationItemContent>
+                        <NotificationItemTitle
+                          href={`#${item.id}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (!read.has(item.id)) toggle(item.id);
+                            onNotificationOpen?.(item);
+                          }}
+                        >
+                          {item.title}
+                        </NotificationItemTitle>
+                        {item.description ? <NotificationItemDescription>{item.description}</NotificationItemDescription> : null}
+                      </NotificationItemContent>
+                      <NotificationItemAside>
+                        <NotificationItemTime dateTime={item.dateTime}>{item.time}</NotificationItemTime>
+                        <NotificationItemQuickActions>
+                          <NotificationItemQuickAction
+                            label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
+                            onClick={() => toggle(item.id)}
+                          >
+                            {read.has(item.id) ? <Mail /> : <Check />}
+                          </NotificationItemQuickAction>
+                        </NotificationItemQuickActions>
+                      </NotificationItemAside>
+                    </NotificationItem>
+                  ))}
+              </NotificationInboxGroup>
+            ))
+          )}
+        </NotificationInboxBody>
+      </NotificationInboxContent>
+    </NotificationInbox>
+  );
+}
+
 type DashboardAnalyticsPageProps = DashboardAnalyticsProps & {
   /** The page title in the header. */
   title?: string;
+  /** The notifications in the header's inbox, newest first. `null` leaves the bell out. */
+  notifications?: DashboardNotification[] | null;
+  /** Called when a notification is opened from the inbox. */
+  onNotificationOpen?: (notification: DashboardNotification) => void;
+  /**
+   * The last day of the header's period picker, whose quick ranges are the last 7, 30 and 90 days. It sets `range`,
+   * as the traffic panel's switch does. A period picked by hand shows the shortest range that covers it.
+   */
+  today?: Date;
   /** The App sidebar's props: your pages, the current one, the workspaces and the signed-in user. */
   sidebar?: AppSidebarProps;
   /** The page frame's props, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame. */
@@ -731,7 +961,28 @@ type DashboardAnalyticsPageProps = DashboardAnalyticsProps & {
  * The analytics dashboard as a whole page: the App sidebar beside a header with the title, and the dashboard under it,
  * scrolling while the sidebar and header stay put. Use `DashboardAnalytics` alone inside an app frame you already have.
  */
-function DashboardAnalyticsPage({ title = 'Analytics', sidebar, frame, ...props }: DashboardAnalyticsPageProps) {
+function DashboardAnalyticsPage({
+  title = 'Analytics',
+  sidebar,
+  frame,
+  notifications = sampleNotifications,
+  onNotificationOpen,
+  today = sampleToday,
+  range: rangeProp,
+  defaultRange = '30d',
+  onRangeChange,
+  ...props
+}: DashboardAnalyticsPageProps) {
+  const [range, setRange] = useControlled(rangeProp, defaultRange, onRangeChange);
+  const [picked, setPicked] = React.useState<DateRangeValue | null>(null);
+  const ranges = React.useMemo(() => periods(today), [today]);
+  const current = ranges.find((period) => period.range === range) ?? ranges[1];
+  const pickPeriod = (period: DateRangeValue) => {
+    const quick = ranges.find((item) => isSameDay(item.from, period.from) && isSameDay(item.to, period.to));
+    setPicked(quick ? null : period);
+    setRange(quick?.range ?? rangeFor(rangeLength(period)));
+  };
+
   return (
     <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
       <AppSidebar activeItem="overview" {...sidebar} />
@@ -739,11 +990,28 @@ function DashboardAnalyticsPage({ title = 'Analytics', sidebar, frame, ...props 
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="truncate text-title font-medium">{title}</h1>
+          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          <DateRangePicker
+            aria-label="Period"
+            value={picked ?? current}
+            onValueChange={pickPeriod}
+            ranges={ranges}
+            max={today}
+            align="end"
+            className="h-7.5 shrink-0"
+          />
+          {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} /> : null}
         </header>
         <ScrollArea className="min-h-0 flex-1">
           <div className="p-3 sm:p-4">
-            <DashboardAnalytics {...props} />
+            <DashboardAnalytics
+              {...props}
+              range={range}
+              onRangeChange={(next) => {
+                setPicked(null);
+                setRange(next);
+              }}
+            />
           </div>
         </ScrollArea>
       </SidebarInset>
@@ -752,6 +1020,7 @@ function DashboardAnalyticsPage({ title = 'Analytics', sidebar, frame, ...props 
 }
 
 export {
+  type DashboardNotification as AnalyticsNotification,
   DashboardAnalytics,
   DashboardAnalyticsPage,
   type DashboardAnalyticsPageProps,
