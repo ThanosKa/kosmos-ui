@@ -36,6 +36,15 @@ The chart is an image with one accessible name. By default the name reads the to
 
 Built on [Recharts](https://recharts.org) inside the [Chart](/docs/components/chart) container, so it needs `@kosmos/chart`. Under the reduced motion setting the ring appears without its sweep.
 
+## When to pick which
+
+Meter, Gauge, Donut chart and Usage meter all show an amount against a whole. Pick by what the amount is.
+
+- [Meter](/docs/components/meter) shows one value in a known range as a bar, with a label and the number beside it. Use it in a list, a form or a table cell.
+- [Gauge](/docs/components/gauge) shows one value in a known range as a ring, with the number in the center. Use it in a stat card, or where a bar would be too wide.
+- **Donut chart** shows how a whole splits into parts, up to five, with the total in the center. Put a legend beside it.
+- [Usage meter](/docs/components/usage-meter) shows how full a token limit is and which categories fill it, such as an agent's context window.
+
 ## Examples
 
 ### Sizes

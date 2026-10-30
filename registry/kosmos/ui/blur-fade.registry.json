@@ -5,7 +5,7 @@
   "title": "Blur fade",
   "description": "Content that rises out of a blur and fades in once, the first time it scrolls into view. It is visible without JavaScript, never shifts the layout, and fades plainly under reduced motion.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
-  "meta": { "group": "misc" },
+  "meta": { "group": "effects" },
   "files": [
     { "path": "registry/kosmos/ui/blur-fade.tsx", "type": "registry:ui" },
     { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }

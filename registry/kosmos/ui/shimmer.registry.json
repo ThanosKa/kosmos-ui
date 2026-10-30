@@ -5,6 +5,6 @@
   "title": "Shimmer",
   "description": "A soft light that sweeps across text while a state is still working, such as Thinking or Generating. Plain, still text under reduced motion.",
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
-  "meta": { "group": "misc" },
+  "meta": { "group": "ai" },
   "files": [{ "path": "registry/kosmos/ui/shimmer.tsx", "type": "registry:ui" }]
 }

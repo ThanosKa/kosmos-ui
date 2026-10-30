@@ -31,7 +31,7 @@ _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
 
 **Group**:
-Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
+Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, AI, Effects, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
 _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 
 **Lab**:
