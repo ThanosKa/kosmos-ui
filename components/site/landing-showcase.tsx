@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { AppSidebar } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { AuthForms } from '@/registry/kosmos/blocks/auth-forms/auth-forms';
-import { DataTable, sampleProjects, type DataTableAction, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
+import { ProjectsTable, sampleProjects, type ProjectsTableAction, type Project } from '@/registry/kosmos/blocks/projects-table/projects-table';
 import { KanbanBoard } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { SettingsPage } from '@/registry/kosmos/blocks/settings/settings';
 import type { ShowcaseScreen } from '@/registry/kosmos/blocks/showcase/showcase';
@@ -35,7 +35,7 @@ function ProjectsScreen() {
   const [rows, setRows] = React.useState<Project[]>(sampleProjects);
   const [selection, setSelection] = React.useState<string[]>(['saltmarsh', 'driftwood']);
 
-  const run = (action: DataTableAction, affected: Project[]) => {
+  const run = (action: ProjectsTableAction, affected: Project[]) => {
     const ids = new Set(affected.map((row) => row.id));
     if (action === 'delete') {
       setRows((current) => current.filter((row) => !ids.has(row.id)));
@@ -50,7 +50,7 @@ function ProjectsScreen() {
     <AppScreen active="projects" title="Projects">
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-          <DataTable rows={rows} selection={selection} onSelectionChange={setSelection} onAction={run} />
+          <ProjectsTable rows={rows} selection={selection} onSelectionChange={setSelection} onAction={run} />
         </div>
       </div>
     </AppScreen>

@@ -2,7 +2,7 @@
 
 import { Circle, CircleDot } from 'lucide-react';
 import { useEffect } from 'react';
-import { DataTable, sampleProjects, type Project } from '@/registry/kosmos/blocks/data-table/data-table';
+import { ProjectsTable, sampleProjects, type Project } from '@/registry/kosmos/blocks/projects-table/projects-table';
 import { DetailDrawer, sampleProject, type DetailStatus } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { EmailCodeForm } from '@/registry/kosmos/blocks/auth-forms/auth-forms';
 import { KanbanBoard, sampleRoadmapItems, type KanbanColumn } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
@@ -240,17 +240,17 @@ function projectsAt(tick: number): Project[] {
   return [arrived, ...base.slice(0, tableRows - 1)];
 }
 
-export const dataTableCard: GalleryItem = {
-  id: 'data-table',
-  title: 'Data table',
+export const projectsTableCard: GalleryItem = {
+  id: 'projects-table',
+  title: 'Projects table',
   description: 'Sort, filter and page through projects. New ones arrive and trials convert.',
-  href: '/docs/blocks/data-table',
+  href: '/docs/blocks/projects-table',
   stage: (
     <Stage base={600} interval={1400} staticTick={7}>
       {(tick) => (
         <div className="flex h-full items-center p-3">
           <div className="w-full overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-            <DataTable rows={projectsAt(tick)} />
+            <ProjectsTable rows={projectsAt(tick)} />
           </div>
         </div>
       )}

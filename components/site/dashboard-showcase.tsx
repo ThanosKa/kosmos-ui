@@ -4,7 +4,7 @@ import { Activity, CircleDollarSign, FolderKanban, Layers, LayoutDashboard, Mile
 import * as React from 'react';
 import { AppSidebar, type AppSidebarNavItem } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { CommandMenu, type CommandMenuGroup } from '@/registry/kosmos/blocks/command-menu/command-menu';
-import { DataTable, sampleProjects, type Project, type ProjectStatus } from '@/registry/kosmos/blocks/data-table/data-table';
+import { ProjectsTable, sampleProjects, type Project, type ProjectStatus } from '@/registry/kosmos/blocks/projects-table/projects-table';
 import { DetailDrawer, sampleProject, type DetailProject } from '@/registry/kosmos/blocks/detail-drawer/detail-drawer';
 import { KanbanBoard, sampleRoadmapItems, type KanbanPerson, type KanbanTag } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { NewItemDialog, type NewItemValues } from '@/registry/kosmos/blocks/new-item-dialog/new-item-dialog';
@@ -253,7 +253,7 @@ export function DashboardShowcase({
           >
             <div className="p-4">
               <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-                <DataTable
+                <ProjectsTable
                   toolbar={false}
                   rows={projects}
                   query={query}
