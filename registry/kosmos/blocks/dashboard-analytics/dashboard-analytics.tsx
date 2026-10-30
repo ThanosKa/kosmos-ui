@@ -1,6 +1,6 @@
 'use client';
 
-import { Ellipsis, ListFilter, Percent, Search, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { Ellipsis, Percent, Timer, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { AppSidebar, type AppSidebarProps } from '@/registry/kosmos/blocks/app-sidebar/app-sidebar';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
@@ -13,24 +13,18 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import { DonutChart, DonutChartLegend } from '@/registry/kosmos/ui/donut-chart';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from '@/registry/kosmos/ui/dropdown-menu';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/kosmos/ui/input-group';
+  createDataTableColumnHelper,
+  DataTableColumnHeader,
+  DataTableContent,
+  DataTableFacetFilter,
+  DataTableFooter,
+  DataTableSearch,
+  useDataTable,
+  type DataTableFacetOption,
+  type DataTableOptions,
+} from '@/registry/kosmos/ui/data-table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
 import { Meter, MeterBar, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
-import {
-  Pagination,
-  PaginationNext,
-  PaginationPageSize,
-  PaginationPages,
-  PaginationPrevious,
-  PaginationStatus,
-} from '@/registry/kosmos/ui/pagination';
 import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import {
@@ -46,7 +40,6 @@ import {
 } from '@/registry/kosmos/ui/stat-card';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type Range = '7d' | '30d' | '90d';
 type Plan = 'free' | 'pro' | 'scale' | 'trial';
@@ -502,167 +495,157 @@ function PersonCell({ signup }: { signup: Signup }) {
   );
 }
 
+const planOrder = Object.keys(plans) as Plan[];
+const planOptions: DataTableFacetOption[] = planOrder.map((plan) => ({
+  value: plan,
+  label: plans[plan].label,
+  render: <Badge variant={plans[plan].hue}>{plans[plan].label}</Badge>,
+}));
+
+/** The signup actions menu, from the dashboard's props, so the columns stay the same between renders. */
+const SignupActionsContext = React.createContext<((signup: Signup) => React.ReactNode) | undefined>(undefined);
+
+function SignupActions({ signup }: { signup: Signup }) {
+  const signupActions = React.useContext(SignupActionsContext);
+  if (!signupActions) return null;
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${signup.name}`} className="text-muted-foreground" />}
+      >
+        <Ellipsis aria-hidden />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">{signupActions(signup)}</DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const signupColumn = createDataTableColumnHelper<Signup>();
+const signupColumns = signupColumn.columns([
+  signupColumn.accessor('name', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => <PersonCell signup={row.original} />,
+    sortFn: 'text',
+    enableHiding: false,
+    meta: { label: 'Name', sortLabels: ['A to Z', 'Z to A'], className: 'ps-4', cellClassName: 'h-15' },
+  }),
+  signupColumn.accessor('plan', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => <Badge variant={plans[row.original.plan].hue}>{plans[row.original.plan].label}</Badge>,
+    sortFn: (a, b, id) => planOrder.indexOf(a.getValue(id)) - planOrder.indexOf(b.getValue(id)),
+    filterFn: 'arrHas',
+    enableHiding: false,
+    meta: { label: 'Plan', sortLabels: ['Free to Trial', 'Trial to Free'] },
+  }),
+  signupColumn.accessor('source', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => (
+      <TwoLine primary={row.original.source} secondary={<span title={row.original.referrer}>{row.original.referrer}</span>} />
+    ),
+    sortFn: 'text',
+    enableHiding: false,
+    meta: { label: 'Source', sortLabels: ['A to Z', 'Z to A'], cellClassName: 'max-w-48' },
+  }),
+  signupColumn.accessor('activation', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row: { original: signup } }) => (
+      <div className="flex min-w-40 flex-col gap-1">
+        <span className="truncate text-body">{signup.step}</span>
+        <Meter value={signup.activation} aria-label={`${signup.name}, onboarding`} className="items-center gap-y-0">
+          <MeterBar className="col-span-1 row-start-1" />
+          <MeterValue className="row-start-1 w-9 text-caption" />
+        </Meter>
+      </div>
+    ),
+    sortFn: 'basic',
+    enableHiding: false,
+    meta: { label: 'Activation', sortLabels: ['Low to high', 'High to low'], headerClassName: 'min-w-44' },
+  }),
+  signupColumn.accessor('mrr', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row: { original: signup } }) => (
+      <TwoLine
+        primary={signup.mrr > 0 ? usd.format(signup.mrr) : '—'}
+        secondary={signup.mrr > 0 ? 'per month' : 'no charge'}
+        className="items-end tabular-nums"
+      />
+    ),
+    sortFn: 'basic',
+    enableHiding: false,
+    meta: { label: 'MRR', align: 'end', sortLabels: ['Low to high', 'High to low'] },
+  }),
+  signupColumn.accessor('joined', {
+    header: 'Joined',
+    enableSorting: false,
+    enableHiding: false,
+    meta: { className: 'last:pe-4', cellClassName: 'text-muted-foreground' },
+  }),
+  signupColumn.display({
+    id: 'actions',
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => <SignupActions signup={row.original} />,
+    enableHiding: false,
+    meta: { className: 'pe-4 text-end', headerClassName: 'w-12', skeleton: null },
+  }),
+]);
+
+/** The search matches the name or the email, once per row. */
+const searchSignups: Pick<DataTableOptions<Signup>, 'globalFilterFn' | 'getColumnCanGlobalFilter'> = {
+  getColumnCanGlobalFilter: (column) => column.id === 'name',
+  globalFilterFn: (row, _columnId, query: string) => {
+    const needle = query.trim().toLowerCase();
+    return !needle || [row.original.name, row.original.email].some((text) => text.toLowerCase().includes(needle));
+  },
+};
+
 function SignupsPanel({ signups, signupActions }: { signups: Signup[]; signupActions?: (signup: Signup) => React.ReactNode }) {
   const titleId = React.useId();
-  const [query, setQuery] = React.useState('');
-  const [plan, setPlan] = React.useState<Plan | 'all'>('all');
-  const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(firstPageSize);
-
-  const needle = query.trim().toLowerCase();
-  const rows = signups.filter(
-    (signup) =>
-      (plan === 'all' || signup.plan === plan) &&
-      (!needle || signup.name.toLowerCase().includes(needle) || signup.email.toLowerCase().includes(needle)),
-  );
-  const visible = rows.slice((page - 1) * pageSize, page * pageSize);
-  const columns = signupActions ? 7 : 6;
+  const columnVisibility = React.useMemo(() => ({ actions: Boolean(signupActions) }), [signupActions]);
+  const table = useDataTable({
+    data: signups,
+    columns: signupColumns,
+    getRowId: (signup) => signup.id,
+    ...searchSignups,
+    initialState: { pagination: { pageIndex: 0, pageSize: firstPageSize } },
+    state: { columnVisibility },
+  });
+  const filtered = Boolean(table.atoms.globalFilter.get()) || table.atoms.columnFilters.get().length > 0;
 
   return (
-    <Panel>
-      <PanelHeader>
-        <PanelTitle id={titleId}>Recent signups</PanelTitle>
-        <PanelDescription>Newest first</PanelDescription>
-        <PanelAction>
-          <InputGroup className="h-7.5 w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1">
-            <InputGroupAddon align="inline-start">
-              <Search aria-hidden />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              aria-label="Search signups"
+    <SignupActionsContext.Provider value={signupActions}>
+      <Panel>
+        <PanelHeader>
+          <PanelTitle id={titleId}>Recent signups</PanelTitle>
+          <PanelDescription>Newest first</PanelDescription>
+          <PanelAction>
+            <DataTableSearch
+              table={table}
+              label="Search signups"
               placeholder="Search signups"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setPage(1);
-              }}
+              className="w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1"
             />
-          </InputGroup>
-          <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="secondary" />}>
-              <ListFilter data-icon="inline-start" aria-hidden />
-              {plan === 'all' ? 'Plan' : plans[plan].label}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Plan</DropdownMenuLabel>
-                <DropdownMenuRadioGroup
-                  value={plan}
-                  onValueChange={(value) => {
-                    setPlan(value as Plan | 'all');
-                    setPage(1);
-                  }}
-                >
-                  <DropdownMenuRadioItem value="all" closeOnClick>
-                    All plans
-                  </DropdownMenuRadioItem>
-                  {(Object.keys(plans) as Plan[]).map((key) => (
-                    <DropdownMenuRadioItem key={key} value={key} closeOnClick>
-                      {plans[key].label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </PanelAction>
-      </PanelHeader>
-      <PanelContent>
-        <Table aria-labelledby={titleId}>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="ps-4">Name</TableHead>
-              <TableHead>Plan</TableHead>
-              <TableHead>Source</TableHead>
-              <TableHead className="min-w-44">Activation</TableHead>
-              <TableHead className="text-end">MRR</TableHead>
-              <TableHead className={cn(!signupActions && 'pe-4')}>Joined</TableHead>
-              {signupActions ? (
-                <TableHead className="w-12 pe-4">
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              ) : null}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {visible.length === 0 ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={columns} className="h-24 text-center text-small whitespace-normal text-muted-foreground">
-                  {signups.length === 0 ? 'No signups yet' : 'No signups match. Try another name or plan.'}
-                </TableCell>
-              </TableRow>
-            ) : (
-              visible.map((signup) => (
-                <TableRow key={signup.id}>
-                  <TableCell className="h-15 ps-4">
-                    <PersonCell signup={signup} />
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={plans[signup.plan].hue}>{plans[signup.plan].label}</Badge>
-                  </TableCell>
-                  <TableCell className="max-w-48">
-                    <TwoLine primary={signup.source} secondary={<span title={signup.referrer}>{signup.referrer}</span>} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex min-w-40 flex-col gap-1">
-                      <span className="truncate text-body">{signup.step}</span>
-                      <Meter value={signup.activation} aria-label={`${signup.name}, onboarding`} className="items-center gap-y-0">
-                        <MeterBar className="col-span-1 row-start-1" />
-                        <MeterValue className="row-start-1 w-9 text-caption" />
-                      </Meter>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-end">
-                    <TwoLine
-                      primary={signup.mrr > 0 ? usd.format(signup.mrr) : '—'}
-                      secondary={signup.mrr > 0 ? 'per month' : 'no charge'}
-                      className="items-end tabular-nums"
-                    />
-                  </TableCell>
-                  <TableCell className={cn('text-muted-foreground', !signupActions && 'pe-4')}>{signup.joined}</TableCell>
-                  {signupActions ? (
-                    <TableCell className="pe-4 text-end">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${signup.name}`} className="text-muted-foreground" />}
-                        >
-                          <Ellipsis aria-hidden />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">{signupActions(signup)}</DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  ) : null}
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </PanelContent>
-      {signups.length > firstPageSize ? (
-        <PanelFooter>
-          <Pagination
-            aria-label="Pages of signups"
-            total={rows.length}
-            page={page}
-            onPageChange={setPage}
-            pageSize={pageSize}
-            onPageSizeChange={setPageSize}
-            className="w-full justify-between gap-x-3"
-          >
-            <PaginationPageSize options={[5, 10, 20]} className="@max-lg/panel:hidden" />
-            <div className="ms-auto flex flex-wrap items-center gap-x-3 gap-y-2">
-              <PaginationStatus>{({ from, to, total = 0 }) => `${from}–${to} of ${grouped.format(total)}`}</PaginationStatus>
-              <div className="flex items-center gap-1">
-                <PaginationPrevious />
-                <PaginationPages />
-                <PaginationNext />
-              </div>
-            </div>
-          </Pagination>
-        </PanelFooter>
-      ) : null}
-    </Panel>
+            <DataTableFacetFilter column={table.getColumn('plan')!} options={planOptions} noun="plans" rowNoun="signup" />
+          </PanelAction>
+        </PanelHeader>
+        <PanelContent>
+          <DataTableContent
+            table={table}
+            aria-labelledby={titleId}
+            className="min-w-0"
+            empty={
+              <p className="flex h-24 items-center justify-center px-4 text-center text-small text-muted-foreground">
+                {filtered ? 'No signups match. Try another name or plan.' : 'No signups yet'}
+              </p>
+            }
+          />
+        </PanelContent>
+        {signups.length > firstPageSize ? (
+          <PanelFooter>
+            <DataTableFooter table={table} noun="signup" pageSizes={[5, 10, 20]} pages className="min-h-0 w-full border-t-0 p-0" />
+          </PanelFooter>
+        ) : null}
+      </Panel>
+    </SignupActionsContext.Provider>
   );
 }
 

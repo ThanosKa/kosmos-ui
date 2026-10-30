@@ -16,16 +16,14 @@
     "@kosmos/chart",
     "@kosmos/donut-chart",
     "@kosmos/dropdown-menu",
-    "@kosmos/input-group",
     "@kosmos/meter",
-    "@kosmos/pagination",
     "@kosmos/panel",
     "@kosmos/segmented-control",
     "@kosmos/stat-card",
     "@kosmos/scroll-area",
     "@kosmos/sidebar",
     "@kosmos/app-sidebar",
-    "@kosmos/table"
+    "@kosmos/data-table"
   ],
   "categories": ["dashboard"],
   "meta": { "group": "blocks", "section": "application", "tier": "free" },
