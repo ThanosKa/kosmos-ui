@@ -12,7 +12,6 @@ import {
   MessageSquare,
   Phone,
   Plus,
-  Search,
   Target,
   Trophy,
   type LucideIcon,
@@ -25,18 +24,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { BarList } from '@/registry/kosmos/ui/bar-list';
 import { Button } from '@/registry/kosmos/ui/button';
+import {
+  createDataTableColumnHelper,
+  DataTableColumnHeader,
+  DataTableContent,
+  DataTableFacetFilter,
+  DataTableFooter,
+  DataTableSearch,
+  useDataTable,
+  type DataTableFacetOption,
+  type DataTableOptions,
+} from '@/registry/kosmos/ui/data-table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
 import { Gauge } from '@/registry/kosmos/ui/gauge';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/kosmos/ui/input-group';
 import { Meter, MeterBar } from '@/registry/kosmos/ui/meter';
-import {
-  Pagination,
-  PaginationNext,
-  PaginationPageSize,
-  PaginationPages,
-  PaginationPrevious,
-  PaginationStatus,
-} from '@/registry/kosmos/ui/pagination';
 import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelHeader, PanelTitle } from '@/registry/kosmos/ui/panel';
 import {
   StatCard,
@@ -51,7 +52,6 @@ import {
 } from '@/registry/kosmos/ui/stat-card';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type Stage = 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won';
 
@@ -302,6 +302,111 @@ function WinChance({ deal }: { deal: Deal }) {
   );
 }
 
+const stageOrder = Object.keys(stages) as Stage[];
+const stageOptions: DataTableFacetOption[] = stageOrder.map((stage) => ({
+  value: stage,
+  label: stages[stage].label,
+  render: <Badge variant={stages[stage].hue}>{stages[stage].label}</Badge>,
+}));
+
+/** The deal actions menu, from the dashboard's props, so the columns stay the same between renders. */
+const DealActionsContext = React.createContext<((deal: Deal) => React.ReactNode) | undefined>(undefined);
+
+function DealActions({ deal }: { deal: Deal }) {
+  const dealActions = React.useContext(DealActionsContext);
+  if (!dealActions) return null;
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${deal.name}, ${deal.customer}`} className="text-muted-foreground" />}
+      >
+        <Ellipsis aria-hidden />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">{dealActions(deal)}</DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const dealColumn = createDataTableColumnHelper<Deal>();
+const dealColumns = dealColumn.columns([
+  dealColumn.accessor('name', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row: { original: deal } }) => (
+      <div className="flex max-w-72 min-w-0 items-center gap-3">
+        <WinChance deal={deal} />
+        <TwoLine
+          primary={<span title={deal.name}>{deal.name}</span>}
+          secondary={
+            <span title={`${deal.customer} · ${deal.rep}`}>
+              {deal.customer}
+              <span aria-hidden className="px-1">
+                ·
+              </span>
+              <span className="sr-only">, </span>
+              {deal.rep}
+            </span>
+          }
+        />
+      </div>
+    ),
+    sortFn: 'text',
+    enableHiding: false,
+    meta: { label: 'Deal', sortLabels: ['A to Z', 'Z to A'], className: 'ps-4', cellClassName: 'h-15' },
+  }),
+  dealColumn.accessor('stage', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => <Badge variant={stages[row.original.stage].hue}>{stages[row.original.stage].label}</Badge>,
+    sortFn: (a, b, id) => stageOrder.indexOf(a.getValue(id)) - stageOrder.indexOf(b.getValue(id)),
+    filterFn: 'arrHas',
+    enableHiding: false,
+    meta: { label: 'Stage', sortLabels: ['Lead to Won', 'Won to Lead'] },
+  }),
+  dealColumn.accessor('value', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => (
+      <TwoLine primary={usd.format(row.original.value)} secondary={row.original.detail} className="items-end tabular-nums" />
+    ),
+    sortFn: 'basic',
+    enableHiding: false,
+    meta: { label: 'Value', align: 'end', sortLabels: ['Low to high', 'High to low'] },
+  }),
+  dealColumn.accessor('closeDate', {
+    header: 'Close',
+    cell: ({ row: { original: deal } }) => (
+      <TwoLine
+        primary={deal.closeDate}
+        secondary={
+          deal.closeNote ? (
+            <span className="inline-flex items-center gap-1">
+              <CalendarDays aria-hidden className="size-3 shrink-0" />
+              {deal.closeNote}
+            </span>
+          ) : undefined
+        }
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    meta: { className: 'last:pe-4' },
+  }),
+  dealColumn.display({
+    id: 'actions',
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => <DealActions deal={row.original} />,
+    enableHiding: false,
+    meta: { className: 'pe-4 text-end', headerClassName: 'w-12', skeleton: null },
+  }),
+]);
+
+/** The search matches the deal, the customer or the rep, once per row. */
+const searchDeals: Pick<DataTableOptions<Deal>, 'globalFilterFn' | 'getColumnCanGlobalFilter'> = {
+  getColumnCanGlobalFilter: (column) => column.id === 'name',
+  globalFilterFn: (row, _columnId, query: string) => {
+    const needle = query.trim().toLowerCase();
+    return !needle || [row.original.name, row.original.customer, row.original.rep].some((text) => text.toLowerCase().includes(needle));
+  },
+};
+
 function DealsPanel({
   deals,
   onNewDeal,
@@ -312,150 +417,58 @@ function DealsPanel({
   dealActions?: (deal: Deal) => React.ReactNode;
 }) {
   const titleId = React.useId();
-  const [query, setQuery] = React.useState('');
-  const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(firstPageSize);
-
-  const needle = query.trim().toLowerCase();
-  const rows = deals.filter(
-    (deal) => !needle || [deal.name, deal.customer, deal.rep].some((text) => text.toLowerCase().includes(needle)),
-  );
-  const visible = rows.slice((page - 1) * pageSize, page * pageSize);
-  const columns = dealActions ? 5 : 4;
+  const columnVisibility = React.useMemo(() => ({ actions: Boolean(dealActions) }), [dealActions]);
+  const table = useDataTable({
+    data: deals,
+    columns: dealColumns,
+    getRowId: (deal) => deal.id,
+    ...searchDeals,
+    initialState: { pagination: { pageIndex: 0, pageSize: firstPageSize } },
+    state: { columnVisibility },
+  });
+  const filtered = Boolean(table.atoms.globalFilter.get()) || table.atoms.columnFilters.get().length > 0;
 
   return (
-    <Panel>
-      <PanelHeader>
-        <PanelTitle id={titleId}>Deals</PanelTitle>
-        <PanelDescription>By close date</PanelDescription>
-        <PanelAction>
-          <InputGroup className="h-7.5 w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1">
-            <InputGroupAddon align="inline-start">
-              <Search aria-hidden />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              aria-label="Search deals"
+    <DealActionsContext.Provider value={dealActions}>
+      <Panel>
+        <PanelHeader>
+          <PanelTitle id={titleId}>Deals</PanelTitle>
+          <PanelDescription>By close date</PanelDescription>
+          <PanelAction>
+            <DataTableSearch
+              table={table}
+              label="Search deals"
               placeholder="Search deals"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setPage(1);
-              }}
+              className="w-56 @max-md/panel:min-w-0 @max-md/panel:flex-1"
             />
-          </InputGroup>
-          {onNewDeal ? (
-            <Button variant="secondary" onClick={onNewDeal}>
-              <Plus data-icon="inline-start" aria-hidden />
-              Deal
-            </Button>
-          ) : null}
-        </PanelAction>
-      </PanelHeader>
-      <PanelContent>
-        <Table aria-labelledby={titleId}>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="ps-4">Deal</TableHead>
-              <TableHead>Stage</TableHead>
-              <TableHead className="text-end">Value</TableHead>
-              <TableHead className={cn(!dealActions && 'pe-4')}>Close</TableHead>
-              {dealActions ? (
-                <TableHead className="w-12 pe-4">
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              ) : null}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {visible.length === 0 ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={columns} className="h-24 text-center text-small whitespace-normal text-muted-foreground">
-                  {deals.length === 0 ? 'No deals yet' : 'No deals match. Try another name.'}
-                </TableCell>
-              </TableRow>
-            ) : (
-              visible.map((deal) => (
-                <TableRow key={deal.id}>
-                  <TableCell className="h-15 ps-4">
-                    <div className="flex max-w-72 min-w-0 items-center gap-3">
-                      <WinChance deal={deal} />
-                      <TwoLine
-                        primary={<span title={deal.name}>{deal.name}</span>}
-                        secondary={
-                          <span title={`${deal.customer} · ${deal.rep}`}>
-                            {deal.customer}
-                            <span aria-hidden className="px-1">
-                              ·
-                            </span>
-                            <span className="sr-only">, </span>
-                            {deal.rep}
-                          </span>
-                        }
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={stages[deal.stage].hue}>{stages[deal.stage].label}</Badge>
-                  </TableCell>
-                  <TableCell className="text-end">
-                    <TwoLine primary={usd.format(deal.value)} secondary={deal.detail} className="items-end tabular-nums" />
-                  </TableCell>
-                  <TableCell className={cn(!dealActions && 'pe-4')}>
-                    <TwoLine
-                      primary={deal.closeDate}
-                      secondary={
-                        deal.closeNote ? (
-                          <span className="inline-flex items-center gap-1">
-                            <CalendarDays aria-hidden className="size-3 shrink-0" />
-                            {deal.closeNote}
-                          </span>
-                        ) : undefined
-                      }
-                    />
-                  </TableCell>
-                  {dealActions ? (
-                    <TableCell className="pe-4 text-end">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          render={<Button variant="item" size="icon-sm" aria-label={`Actions for ${deal.name}, ${deal.customer}`} className="text-muted-foreground" />}
-                        >
-                          <Ellipsis aria-hidden />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">{dealActions(deal)}</DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  ) : null}
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </PanelContent>
-      {deals.length > firstPageSize ? (
-        <PanelFooter>
-          <Pagination
-            aria-label="Pages of deals"
-            total={rows.length}
-            page={page}
-            onPageChange={setPage}
-            pageSize={pageSize}
-            onPageSizeChange={setPageSize}
-            className="w-full justify-between gap-x-3"
-          >
-            <PaginationPageSize options={[5, 10, 20]} className="@max-lg/panel:hidden" />
-            <div className="ms-auto flex flex-wrap items-center gap-x-3 gap-y-2">
-              <PaginationStatus>{({ from, to, total = 0 }) => `${from}–${to} of ${grouped.format(total)}`}</PaginationStatus>
-              <div className="flex items-center gap-1">
-                <PaginationPrevious />
-                <PaginationPages />
-                <PaginationNext />
-              </div>
-            </div>
-          </Pagination>
-        </PanelFooter>
-      ) : null}
-    </Panel>
+            <DataTableFacetFilter column={table.getColumn('stage')!} options={stageOptions} noun="stages" rowNoun="deal" />
+            {onNewDeal ? (
+              <Button variant="secondary" onClick={onNewDeal}>
+                <Plus data-icon="inline-start" aria-hidden />
+                Deal
+              </Button>
+            ) : null}
+          </PanelAction>
+        </PanelHeader>
+        <PanelContent>
+          <DataTableContent
+            table={table}
+            aria-labelledby={titleId}
+            className="min-w-0"
+            empty={
+              <p className="flex h-24 items-center justify-center px-4 text-center text-small text-muted-foreground">
+                {filtered ? 'No deals match. Try another name or stage.' : 'No deals yet'}
+              </p>
+            }
+          />
+        </PanelContent>
+        {deals.length > firstPageSize ? (
+          <PanelFooter>
+            <DataTableFooter table={table} noun="deal" pageSizes={[5, 10, 20]} pages className="min-h-0 w-full border-t-0 p-0" />
+          </PanelFooter>
+        ) : null}
+      </Panel>
+    </DealActionsContext.Provider>
   );
 }
 

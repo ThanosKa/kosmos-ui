@@ -1,20 +1,20 @@
 ---
-title: Data table
+title: Projects table
 description: A table of projects with search, faceted filters, column menus, row selection, and bulk actions. It also has pages, plan tags, status dots, totals, and loading and empty states.
 ---
 
 ## Installation
 
-<ComponentInstall name="data-table" />
+<ComponentInstall name="projects-table" />
 
-The block brings [Table](/docs/components/table), [Checkbox](/docs/components/checkbox), [Badge](/docs/components/badge), [Status](/docs/components/status) and [Avatar](/docs/components/avatar) with it. It also brings [Input](/docs/components/input), [Popover](/docs/components/popover), [Dropdown menu](/docs/components/dropdown-menu), [Pagination](/docs/components/pagination), [Empty state](/docs/components/empty), [Meter](/docs/components/meter), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button), plus the `facets` and `paging` helpers that do the counting. Everything lands in `components/data-table.tsx`.
+The block is built from the [Data table](/docs/components/data-table) parts, which bring TanStack Table to sort, filter, count and page the rows. It also brings [Badge](/docs/components/badge), [Status](/docs/components/status), [Avatar](/docs/components/avatar), [Dropdown menu](/docs/components/dropdown-menu), [Empty state](/docs/components/empty), [Meter](/docs/components/meter), [Skeleton](/docs/components/skeleton) and [Button](/docs/components/button). The block lands in `components/projects-table.tsx`.
 
 ## Usage
 
 ```tsx
-import { DataTable } from '@/components/data-table';
+import { ProjectsTable } from '@/components/projects-table';
 
-<DataTable rows={projects} onOpen={(project) => setOpen(project)} />;
+<ProjectsTable rows={projects} onOpen={(project) => setOpen(project)} />;
 ```
 
 The `Project` type, the columns, the filters and the sample rows live in the file: change them to fit your records. On its own the table keeps its search, filters, sort, hidden columns and page. Pass `query`, `filters`, `sort`, `hiddenColumns` or `page` with its `on…Change` to hold one yourself, for example in the URL.
@@ -22,7 +22,7 @@ The `Project` type, the columns, the filters and the sample rows live in the fil
 To pair the table with the [page header](/docs/blocks/page-header), turn the toolbar off and pass the header's `query`, tab and filters straight through. Its tabs are `all`, `live`, `trial` and `paused`, the values of `status`. Its filter values are the plans and platforms that `filters` reads.
 
 ```tsx
-<DataTable toolbar={false} query={query} status={tab} filters={filters} onClearFilters={clearHeader} />
+<ProjectsTable toolbar={false} query={query} status={tab} filters={filters} onClearFilters={clearHeader} />
 ```
 
 ## What it does
@@ -32,7 +32,7 @@ To pair the table with the [page header](/docs/blocks/page-header), turn the too
 - **Toolbar**: a search over the name and the domain, a filter each for Plan, Platform and Status, and Reset while any of them is on. Each filter opens a list you can search, with a checkbox and a count per value. The count is the number of rows that value would show with the other filters applied. The button names the values that are on. Within one filter a row needs any of its values. Across filters it needs one of each.
 - **Column menus**: each header opens a menu that sorts its column either way. The sort labels fit the values (Low to high, A to Z, Newest first). The menu also hides any column but Project. The sorted header carries `aria-sort`, and hiding the sorted column clears the sort.
 - **Showing columns**: the button at the end of the header row shows and hides columns. It also marks a column that is on but has no room at the current width.
-- **Selection**: a checkbox per row and one for every row on the page, which shows a mixed state when you select some rows. With a selection, the footer swaps the totals for the bulk bar. The bar holds the count and Clear selection. It adds Select all when you select the whole page and more rows match. It also adds Export, Pause (Resume when you select only paused projects) and Delete when you pass `onAction`. In a narrow table those buttons show only their icon. Screen readers hear the count change.
+- **Selection**: a checkbox per row and one for every row on the page, which shows a mixed state when you select some rows. Shift-click ticks every row between two clicks. With a selection, the footer swaps the totals for the bulk bar. The bar holds the count and Clear selection. It adds Select all when you select the whole page and more rows match. It also adds Export, Pause (Resume when you select only paused projects) and Delete when you pass `onAction`. In a narrow table those buttons show only their icon. Screen readers hear the count change.
 - **Pages**: ten rows to a page (`pageSize`), with the rows in view and previous and next in the footer. A new search, filter or sort goes back to the first page.
 - **Totals**: the footer adds up the users, events and revenue of every row that matches, on every page.
 - **Opening a row**: with `onOpen`, the project name becomes a button and a click anywhere on the row opens the project. You can open it in the [detail drawer](/docs/blocks/detail-drawer), for example. Clicks on the checkbox and the actions menu do not.
@@ -44,9 +44,9 @@ The Delete actions are placeholders. Wire them to a confirmation dialog or an un
 
 ## API
 
-`DataTableColumn` is `'platform' | 'plan' | 'users' | 'events' | 'quota' | 'mrr' | 'status' | 'lastEventAt'`. `DataTableSort` is `{ key: 'name' | DataTableColumn; direction: 'ascending' | 'descending' }`.
+`ProjectsTableColumn` is `'platform' | 'plan' | 'users' | 'events' | 'quota' | 'mrr' | 'status' | 'lastEventAt'`. `ProjectsTableSort` is `{ key: 'name' | ProjectsTableColumn; direction: 'ascending' | 'descending' }`.
 
-### DataTable
+### ProjectsTable
 
 Takes every `<div>` prop, plus:
 
@@ -68,12 +68,12 @@ Takes every `<div>` prop, plus:
     selection: { description: 'The ids of the selected rows. Use with `onSelectionChange`.', type: 'string[]' },
     defaultSelection: { description: 'The ids selected at first, when the table keeps its own state.', type: 'string[]', default: '[]' },
     onSelectionChange: { description: 'Called with the ids of the selected rows.', type: '(ids: string[]) => void' },
-    sort: { description: 'The sort. Use with `onSortChange`. `null` keeps the rows in their own order.', type: 'DataTableSort | null' },
-    defaultSort: { description: 'The sort at first, when the table keeps its own state.', type: 'DataTableSort' },
-    onSortChange: { description: 'Called with the new sort when a header menu sorts a column, or with `null` when the sorted column is hidden.', type: '(sort: DataTableSort | null) => void' },
-    hiddenColumns: { description: 'The columns hidden from the header menus and the Columns menu. Use with `onHiddenColumnsChange`.', type: 'DataTableColumn[]' },
-    defaultHiddenColumns: { description: 'The columns hidden at first, when the table keeps its own state.', type: 'DataTableColumn[]', default: '[]' },
-    onHiddenColumnsChange: { description: 'Called with the hidden columns.', type: '(columns: DataTableColumn[]) => void' },
+    sort: { description: 'The sort. Use with `onSortChange`. `null` keeps the rows in their own order.', type: 'ProjectsTableSort | null' },
+    defaultSort: { description: 'The sort at first, when the table keeps its own state.', type: 'ProjectsTableSort' },
+    onSortChange: { description: 'Called with the new sort when a header menu sorts a column, or with `null` when the sorted column is hidden.', type: '(sort: ProjectsTableSort | null) => void' },
+    hiddenColumns: { description: 'The columns hidden from the header menus and the Columns menu. Use with `onHiddenColumnsChange`.', type: 'ProjectsTableColumn[]' },
+    defaultHiddenColumns: { description: 'The columns hidden at first, when the table keeps its own state.', type: 'ProjectsTableColumn[]', default: '[]' },
+    onHiddenColumnsChange: { description: 'Called with the hidden columns.', type: '(columns: ProjectsTableColumn[]) => void' },
     page: { description: 'The page, from 1. Use with `onPageChange`.', type: 'number' },
     defaultPage: { description: 'The page at first, when the table keeps its own state.', type: 'number', default: '1' },
     onPageChange: { description: 'Called with the new page, including the return to page 1 after a new search, filter or sort.', type: '(page: number) => void' },
