@@ -66,6 +66,8 @@ type PageHeaderProps = Omit<React.ComponentProps<'div'>, 'title' | 'children'> &
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Goes before the title, usually a `SidebarTrigger`. */
   leading?: React.ReactNode;
+  /** Goes last in the title row, after the actions, such as a notification bell. */
+  trailing?: React.ReactNode;
   /** The views the tabs switch between, each with an optional count. */
   tabs?: PageTab[];
   /** The selected tab. Use with `onTabChange`, or leave it out and pass `defaultTab`. */
@@ -107,6 +109,7 @@ function PageHeader({
   description = 'Every site and app that sends events to Acme.',
   headingLevel = 1,
   leading,
+  trailing,
   tabs = sampleTabs,
   tab: tabProp,
   defaultTab,
@@ -199,6 +202,7 @@ function PageHeader({
               <span className="@max-md:hidden">{newLabel}</span>
             </Button>
           ) : null}
+          {trailing}
         </div>
 
         <div className="flex flex-col gap-2 @3xl:flex-row @3xl:items-center @3xl:justify-between @3xl:gap-4">

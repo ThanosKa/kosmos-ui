@@ -97,6 +97,7 @@ A notification that arrives while the inbox is open shouldn't go straight to the
 
 - The bell's name includes the count, such as "Notifications, 3 unread".
 - An unread row's link starts with "Unread:" for screen readers, so they hear it before the sentence.
+- An unread row takes a tint as well as a blue dot, the same blue under every preset. The tint keeps it unread under the pointer, where the dot gives way to the quick actions. Hover deepens the row: in light the tint is the hover fill and hover takes `muted`, in dark the tint is half the hover fill. Its text keeps 4.5:1 under every preset.
 - The "2 new" pill is a status message, so screen readers announce it when it appears.
 - `NotificationItemTime` is a `<time>`. Give it the full date in `dateTime`.
 - The quick actions show when the pointer is over a row or the row holds focus, so Tab reaches them. On a touch screen they stay visible under the unread dot.
@@ -171,7 +172,7 @@ Takes every [Scroll area](/docs/components/scroll-area) prop, such as `viewportR
 
 <TypeTable
   type={{
-    unread: { description: 'Shows the unread dot and tells screen readers "Unread".', type: 'boolean', default: 'false' },
+    unread: { description: 'Tints the row, shows the blue unread dot and tells screen readers "Unread".', type: 'boolean', default: 'false' },
   }}
 />
 

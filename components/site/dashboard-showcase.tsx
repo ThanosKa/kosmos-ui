@@ -13,6 +13,7 @@ import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-ove
 import { Button } from '@/registry/kosmos/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/registry/kosmos/ui/empty';
 import { SidebarProvider, SidebarResizeHandle, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
+import { initialInboxState, ShowcaseInbox } from './showcase-inbox';
 
 /*
  * The live dashboard of the Presets page preview, composed from the free blocks. It renders as a whole app in the
@@ -69,6 +70,7 @@ const pageTitles: Record<string, string> = {
   alerts: 'Alerts',
   users: 'Users',
   revenue: 'Revenue',
+  notifications: 'Notifications',
   help: 'Help and feedback',
   settings: 'Settings',
 };
@@ -89,13 +91,14 @@ const slug = (name: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'item';
 
-/** The bar on top of a page that has no page header: the sidebar toggle, the page title and an optional action. */
-function PageBar({ title, children }: { title: string; children?: React.ReactNode }) {
+/** The bar on top of a page that has no page header: the sidebar toggle, the page title, an optional action and the bell. */
+function PageBar({ title, inbox, children }: { title: string; inbox: React.ReactNode; children?: React.ReactNode }) {
   return (
     <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
       <SidebarTrigger />
       <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
       {children}
+      {inbox}
     </div>
   );
 }
@@ -129,6 +132,7 @@ export function DashboardShowcase({
   const [roadmap, setRoadmap] = React.useState(sampleRoadmapItems);
   const [newStage, setNewStage] = React.useState('ideas');
   const [commandOpen, setCommandOpen] = React.useState(false);
+  const [inboxState, setInboxState] = React.useState(initialInboxState);
 
   const showPage = (id: string) => {
     setPage(id);
@@ -152,6 +156,8 @@ export function DashboardShowcase({
     event.preventDefault();
     showPage(id);
   };
+
+  const inbox = <ShowcaseInbox state={inboxState} onStateChange={setInboxState} onViewAll={() => showPage('notifications')} />;
 
   const openProject = (id: string) => {
     setOpenId(id);
@@ -233,7 +239,7 @@ export function DashboardShowcase({
       <main className="relative flex min-w-0 flex-1 flex-col bg-background">
         {page === 'overview' ? (
           <>
-            <PageBar title="Overview" />
+            <PageBar title="Overview" inbox={inbox} />
             <div className="p-4">
               <StatsOverview />
             </div>
@@ -243,6 +249,7 @@ export function DashboardShowcase({
             title={listPage.title}
             description=""
             leading={<SidebarTrigger />}
+            trailing={inbox}
             tabs={tabs}
             tab={tab}
             onTabChange={(value) => setTab(value as TabValue)}
@@ -271,7 +278,7 @@ export function DashboardShowcase({
           </PageHeader>
         ) : page === 'roadmap' ? (
           <>
-            <PageBar title="Roadmap">
+            <PageBar title="Roadmap" inbox={inbox}>
               <Button variant="primary" onClick={() => openNew('ideas')}>
                 <Plus aria-hidden data-icon="inline-start" />
                 New roadmap item
@@ -284,7 +291,7 @@ export function DashboardShowcase({
           </>
         ) : (
           <>
-            <PageBar title={pageTitles[page]} />
+            <PageBar title={pageTitles[page]} inbox={inbox} />
             <Empty className="flex-1 py-16">
               <EmptyHeader>
                 <EmptyMedia variant="icon">

@@ -376,7 +376,7 @@ function NotificationInboxFooter({ className, ...props }: React.ComponentProps<'
 const ItemUnread = React.createContext(false);
 
 type NotificationItemProps = React.ComponentProps<'li'> & {
-  /** Shows the unread dot, and says "Unread" to screen readers. */
+  /** Tints the row, shows the blue unread dot, and says "Unread" to screen readers. */
   unread?: boolean;
 };
 
@@ -392,7 +392,7 @@ function NotificationItem({ unread = false, className, ...props }: NotificationI
         data-slot="notification-item"
         data-unread={unread ? '' : undefined}
         className={cn(
-          'group/notification relative flex gap-3 py-3 transition-[background-color] duration-instant hover:bg-accent',
+          'group/notification relative flex gap-3 py-3 transition-[background-color] duration-instant hover:bg-accent data-unread:bg-accent data-unread:hover:bg-muted dark:data-unread:bg-accent/50 dark:data-unread:hover:bg-accent',
           variant === 'sheet' ? 'px-5' : 'px-4',
           className,
         )}
@@ -496,7 +496,7 @@ function NotificationItemAside({ className, children, ...props }: React.Componen
       <span
         aria-hidden
         className={cn(
-          'me-0.5 size-2 rounded-full bg-primary transition-[opacity,scale] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
+          'me-0.5 size-2 rounded-full bg-tint-blue-dot transition-[opacity,scale] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
           !unread && 'scale-50 opacity-0',
         )}
       />

@@ -78,6 +78,7 @@ Takes every `<div>` prop, plus:
     description: { description: 'One line under the title that says what the page lists. Pass an empty string to leave it out.', type: 'string' },
     headingLevel: { description: 'The heading level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
     leading: { description: 'Goes before the title, usually a `SidebarTrigger`.', type: 'ReactNode' },
+    trailing: { description: 'Goes last in the title row, after the actions, such as a notification bell.', type: 'ReactNode' },
     tabs: { description: 'The views the tabs switch between, each with an optional count.', type: '{ value: string; label: string; count?: number }[]' },
     tab: { description: 'The selected tab. Use with `onTabChange`.', type: 'string' },
     defaultTab: { description: 'The tab selected at first, when the header keeps its own state.', type: 'string', default: 'the first tab' },
