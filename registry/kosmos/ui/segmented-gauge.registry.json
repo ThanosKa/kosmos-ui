@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-gauge",
+  "type": "registry:ui",
+  "title": "Segmented gauge",
+  "description": "A share of a limit as a half ring of segments with the value in the middle, for a quota or an allowance. The segments light along the arc when the value changes, and turn warning near the limit and destructive past it. The entrance plays once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion"],
+  "meta": { "group": "chart-ring" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/segmented-gauge.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

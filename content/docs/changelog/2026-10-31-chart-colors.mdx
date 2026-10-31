@@ -1,0 +1,10 @@
+---
+title: Changed chart colors and added a Bar list entrance
+description: Charts take five colors, the same under every preset, in place of the gray ramp. Bar list grows its bars in.
+date: 2026-10-31
+---
+
+- **Chart colors**: `--chart-1` to `--chart-5` are now blue, orange, green, purple and yellow, in light and dark, under every preset. A preset's accent no longer colors the first series. Each color keeps 3:1 against the page and cards, and neighbors in the order stay apart for color-blind readers. Run `shadcn add @kosmos/tokens`, or copy your preset again from [Presets](/presets), to pick this up.
+- **Segmented gauge**: with no `tone`, the lit segments take `chart-1`, like the other charts, before they turn `warning` and `destructive`.
+- **Bar list entrance**: [Bar list](/docs/components/bar-list) grows its bars in as it scrolls into view, with the same `entrance` setting as the charts. Run `shadcn add` for it again to pick this up.
+- **`ChartEntranceContext`**: sets the entrance for every chart inside that sets none of its own, such as `always` on a showcase page. It ships in `@kosmos/use-chart-motion`.

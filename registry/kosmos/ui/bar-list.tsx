@@ -1,5 +1,7 @@
 import type * as React from 'react';
+import type { ChartEntrance } from '@/registry/kosmos/hooks/use-chart-motion';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { BarListEntrance } from '@/registry/kosmos/ui/bar-list-entrance';
 
 type BarListItem = {
   /** What the row counts: a page, a country, an event. A long label truncates. */
@@ -21,7 +23,12 @@ type BarListProps = Omit<React.ComponentProps<'ul'>, 'children'> & {
   total?: number;
   /** What shows in place of the list when `items` is empty. */
   empty?: React.ReactNode;
+  /** When the bars grow in: the first time in the browser tab (`session`, the default), every time, or never. */
+  entrance?: ChartEntrance;
 };
+
+/** The bars start one after another within this span, so a long list takes no longer than a short one. */
+const SPREAD_MS = 240;
 
 const grouped = new Intl.NumberFormat('en-US');
 const formatGrouped = (value: number) => grouped.format(value);
@@ -35,8 +42,9 @@ function shareText(value: number, total: number) {
 /**
  * Ranked values as rows whose fill is the bar: the label sits on the bar, the value and an optional share at the end.
  * The largest value's bar is the chart ink at low strength and the rest are muted, so the leader stands out without a
- * hue; on a tie, the first of them leads. Renders a `<ul>`, or a status `<div>` with `empty` when there are no items;
- * name it with `aria-label` or `aria-labelledby`.
+ * hue; on a tie, the first of them leads. On entrance the bars grow from the start edge one after another; under
+ * reduced motion they fade in. Renders a `<ul>`, or a status `<div>` with `empty` when there are no items; name it with
+ * `aria-label` or `aria-labelledby`.
  */
 function BarList({
   items,
@@ -44,6 +52,7 @@ function BarList({
   showShare = false,
   total,
   empty = 'No data yet',
+  entrance,
   className,
   ...props
 }: BarListProps) {
@@ -67,11 +76,12 @@ function BarList({
   const leader = max > 0 ? values.indexOf(max) : -1;
 
   return (
-    <ul
+    <BarListEntrance
+      entrance={entrance}
       role="list"
       data-slot="bar-list"
       className={cn(
-        'grid min-w-0 gap-x-3 gap-y-1',
+        'grid min-w-0 gap-x-3 gap-y-1 data-instant:**:transition-none',
         showShare ? 'grid-cols-[minmax(0,1fr)_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
         className,
       )}
@@ -88,9 +98,16 @@ function BarList({
             {values[index] > 0 ? (
               <span
                 aria-hidden
-                style={{ '--bar': `${(values[index] / max) * 100}%` } as React.CSSProperties}
+                style={
+                  {
+                    '--bar': `${(values[index] / max) * 100}%`,
+                    '--delay': `${index * (SPREAD_MS / items.length)}ms`,
+                  } as React.CSSProperties
+                }
                 className={cn(
-                  'absolute inset-y-0 start-0 w-(--bar) min-w-4 rounded-lg border border-transparent',
+                  'absolute inset-y-0 start-0 w-(--bar) min-w-4 rounded-lg border border-transparent ltr:origin-left rtl:origin-right',
+                  'transition-[opacity] delay-(--delay) duration-reveal ease-power3-out motion-safe:transition-[scale,opacity,width]',
+                  'in-data-waiting:opacity-0 motion-safe:in-data-waiting:scale-x-0',
                   index === leader ? 'bg-chart-1/15' : 'bg-muted',
                 )}
               />
@@ -114,7 +131,7 @@ function BarList({
           ) : null}
         </li>
       ))}
-    </ul>
+    </BarListEntrance>
   );
 }
 

@@ -30,8 +30,8 @@ test('a page outside every link has no current link', () => {
 
 test('the site links start with the docs tabs, in their order', () => {
   assert.deepEqual(
-    siteLinks.slice(0, 3).map((link) => link.label),
-    ['Docs', 'Components', 'Blocks'],
+    siteLinks.slice(0, 4).map((link) => link.label),
+    ['Docs', 'Components', 'Charts', 'Blocks'],
   );
 });
 

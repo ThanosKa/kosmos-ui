@@ -5,6 +5,7 @@ import { docsRoute } from './shared.ts';
 export const docsTabs = [
   { id: 'docs', href: docsRoute, label: 'Docs' },
   { id: 'components', href: `${docsRoute}/components`, label: 'Components' },
+  { id: 'charts', href: `${docsRoute}/charts`, label: 'Charts' },
   { id: 'blocks', href: `${docsRoute}/blocks`, label: 'Blocks' },
 ] as const;
 

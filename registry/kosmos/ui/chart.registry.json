@@ -5,8 +5,8 @@
   "title": "Chart",
   "description": "Charts on Recharts, themed with Kosmos tokens. It has a container with tooltip and legend parts, a Sparkline for tiles and cells, and a GrowthChart for a value over time.",
   "dependencies": ["recharts@^3.10.1", "react-is@^19.3.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/motion"],
-  "meta": { "group": "data" },
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/motion", "@kosmos/use-chart-motion"],
+  "meta": { "group": "charts" },
   "files": [
     {
       "path": "registry/kosmos/ui/chart.tsx",

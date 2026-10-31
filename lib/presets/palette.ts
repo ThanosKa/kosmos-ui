@@ -43,10 +43,34 @@ export type PaletteToken = (typeof paletteSections)[keyof typeof paletteSections
 export type Palette = Record<PaletteToken, string>;
 export type Mode = 'light' | 'dark';
 
+type ChartToken = (typeof paletteSections.chart)[number];
+
+/**
+ * The five chart series, the same under every preset (ADR 0016): blue, orange, green, purple, yellow. Dark takes the
+ * maintainer's colors as given; light keeps their blue and purple and darkens the orange, green and yellow to 3:1 on
+ * every preset's page and card. The order keeps neighbors apart for color-blind readers.
+ */
+export const chartColors: Record<Mode, Record<ChartToken, string>> = {
+  light: {
+    'chart-1': 'oklch(0.602 0.201 255.8)',
+    'chart-2': 'oklch(0.65 0.188 47)',
+    'chart-3': 'oklch(0.62 0.17 149)',
+    'chart-4': 'oklch(0.588 0.28 303.8)',
+    'chart-5': 'oklch(0.63 0.135 81)',
+  },
+  dark: {
+    'chart-1': 'oklch(0.668 0.167 252.2)',
+    'chart-2': 'oklch(0.708 0.188 47)',
+    'chart-3': 'oklch(0.646 0.177 149.1)',
+    'chart-4': 'oklch(0.648 0.241 306.1)',
+    'chart-5': 'oklch(0.834 0.153 81.1)',
+  },
+};
+
 /**
  * The one color a preset brings, per mode (ADR 0011): `primary` fills every filled control and `onPrimary` is the text
- * on it (4.5:1, also under the 90% hover fill), `ring` is focus, the sidebar's focus and the first chart series (3:1
- * marks), `text` is the current page in navigation and the Meter's primary tone (4.5:1 on every nav surface).
+ * on it (4.5:1, also under the 90% hover fill), `ring` is focus and the sidebar's focus (3:1 marks), `text` is the
+ * current page in navigation and the Meter's primary tone (4.5:1 on every nav surface).
  */
 export type Accent = Record<Mode, { primary: string; onPrimary: string; ring: string; text: string }>;
 
@@ -99,7 +123,6 @@ export function presetPalette(preset: Preset, mode: Mode): Palette {
     'sidebar-primary-foreground': accent.onPrimary,
     ring: accent.ring,
     'sidebar-ring': accent.ring,
-    'chart-1': accent.ring,
     'accent-text': accent.text,
   };
 }

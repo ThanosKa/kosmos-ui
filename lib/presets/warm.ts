@@ -1,4 +1,4 @@
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 
 const ink = 'oklch(0.263 0.013 100.5)';
 const paper = 'oklch(0.99 0.002 106.5)';
@@ -11,7 +11,7 @@ export const warm: Preset = {
   id: 'warm',
   name: 'Warm',
   description:
-    'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series. In light the text on the orange is white at 3.1:1, below the 4.5:1 of the other presets, by choice.',
+    'A cream page, near-white cards, warm grays and a warm near-black ink, with one saturated orange that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation and meters. In light the text on the orange is white at 3.1:1, below the 4.5:1 of the other presets, by choice.',
   radius: '0.625rem',
   // In light white text on the bright orange is 3.1:1, below 4.5:1, kept by the maintainer's choice (ADR 0011). The text step is deeper than the ring, so a primary Meter never shares a lightness with `warning`.
   accent: {
@@ -51,11 +51,7 @@ export const warm: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': 'oklch(0.915 0.006 97)',
     'sidebar-ring': inkRing,
-    'chart-1': ink,
-    'chart-2': 'oklch(0.4 0.012 100)',
-    'chart-3': 'oklch(0.49 0.012 100)',
-    'chart-4': 'oklch(0.57 0.012 100)',
-    'chart-5': 'oklch(0.63 0.012 100)',
+    ...chartColors.light,
   },
   dark: {
     background: 'oklch(0.2 0.006 95)',
@@ -90,10 +86,6 @@ export const warm: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': 'oklch(0.26 0.006 95)',
     'sidebar-ring': lightInkRing,
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0.008 100)',
-    'chart-3': 'oklch(0.71 0.008 100)',
-    'chart-4': 'oklch(0.62 0.008 100)',
-    'chart-5': 'oklch(0.54 0.008 100)',
+    ...chartColors.dark,
   },
 };

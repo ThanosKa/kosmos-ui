@@ -1,4 +1,4 @@
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 
 const ink = 'oklch(0.205 0 0)';
 const paper = 'oklch(1 0 0)';
@@ -10,7 +10,7 @@ export const defaultPreset: Preset = {
   id: 'default',
   name: 'Default',
   description:
-    'White cards on a near-white page, true grays and a near-black ink, with no accent: buttons and every checked control, focus, the current page in navigation, meters and charts are ink and gray, so color is left to status and destructive.',
+    'White cards on a near-white page, true grays and a near-black ink, with no accent: buttons and every checked control, focus, the current page in navigation and meters are ink and gray, so color is left to status, destructive and the chart series.',
   radius: '0.625rem',
   light: {
     background: page,
@@ -45,11 +45,7 @@ export const defaultPreset: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': 'oklch(0.922 0 0)',
     'sidebar-ring': 'oklch(0.205 0 0 / 0.55)',
-    'chart-1': ink,
-    'chart-2': 'oklch(0.35 0 0)',
-    'chart-3': 'oklch(0.46 0 0)',
-    'chart-4': 'oklch(0.55 0 0)',
-    'chart-5': 'oklch(0.63 0 0)',
+    ...chartColors.light,
   },
   dark: {
     background: 'oklch(0.19 0 0)',
@@ -84,10 +80,6 @@ export const defaultPreset: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': 'oklch(0.25 0 0)',
     'sidebar-ring': 'oklch(0.97 0 0 / 0.55)',
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0 0)',
-    'chart-3': 'oklch(0.71 0 0)',
-    'chart-4': 'oklch(0.62 0 0)',
-    'chart-5': 'oklch(0.54 0 0)',
+    ...chartColors.dark,
   },
 };

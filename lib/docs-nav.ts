@@ -2,7 +2,11 @@ import { createElement, type ReactNode } from 'react';
 import { flattenTree } from 'fumadocs-core/page-tree';
 import {
   Bot,
+  Boxes,
+  ChartCandlestick,
   ChartColumn,
+  ChartPie,
+  ChartSpline,
   Compass,
   Layers2,
   LayoutDashboard,
@@ -11,6 +15,7 @@ import {
   Puzzle,
   Shapes,
   Sparkles,
+  Table2,
   TextCursorInput,
   WandSparkles,
   type LucideIcon,
@@ -21,6 +26,7 @@ import {
   blockSections,
   groups,
   isBlockSection,
+  isChartGroup,
   isGroup,
   readBlockCategories,
   readRegistryItems,
@@ -32,7 +38,12 @@ import {
 import { docsRoute } from './shared';
 import { source } from './source';
 
-export type DocsNavSectionId = 'get-started' | 'foundations' | 'components' | 'blocks' | BlockSection;
+export type DocsNavSectionId = 'get-started' | 'foundations' | 'components' | 'charts' | 'blocks' | BlockSection;
+
+/** The sections that list registry components by group: their index pages show a card per component. */
+type ComponentSection = 'components' | 'charts';
+
+const isComponentSection = (section: DocsNavSectionId): section is ComponentSection => section === 'components' || section === 'charts';
 
 export type DocsNavItem = {
   title: string;
@@ -64,6 +75,7 @@ const sectionLabels: Record<DocsNavSectionId, string> = {
   'get-started': 'Get started',
   foundations: 'Foundations',
   components: 'Components',
+  charts: 'Charts',
   blocks: 'Blocks',
   ...blockSections,
 };
@@ -72,6 +84,7 @@ const sectionTabs: Record<DocsNavSectionId, DocsTabId> = {
   'get-started': 'docs',
   foundations: 'docs',
   components: 'components',
+  charts: 'charts',
   blocks: 'blocks',
   application: 'blocks',
   marketing: 'blocks',
@@ -83,7 +96,12 @@ const groupIcons: Record<ComponentGroup, LucideIcon> = {
   forms: TextCursorInput,
   overlays: Layers2,
   navigation: Compass,
-  data: ChartColumn,
+  data: Table2,
+  charts: Boxes,
+  'chart-bar': ChartColumn,
+  'chart-line': ChartSpline,
+  'chart-ring': ChartPie,
+  'chart-other': ChartCandlestick,
   ai: Bot,
   effects: WandSparkles,
   misc: Puzzle,
@@ -95,19 +113,22 @@ const blockSectionIcons: Record<BlockSection, LucideIcon> = {
   ai: Sparkles,
 };
 
+/** Closes the Charts group of Components, which holds the parts a chart is built from, with the way to the charts. */
+const allChartsLink: DocsNavItem = { title: 'All charts', url: `${docsRoute}/charts` };
+
 /** The element id of a heading on the components or blocks index: a component group or a block section. */
 const indexAnchor = (id: ComponentGroup | BlockSection) => (isBlockSection(id) ? `section-${id}` : `group-${id}`);
 
 function sectionOf(slugs: string[]): DocsNavSectionId {
   const [folder] = slugs;
-  return folder === 'foundations' || folder === 'components' || folder === 'blocks' ? folder : 'get-started';
+  return folder === 'foundations' || folder === 'components' || folder === 'charts' || folder === 'blocks' ? folder : 'get-started';
 }
 
 /**
  * Every docs sidebar section, top to bottom, each with the header tab that shows it. Server only (reads the registry
  * from disk): pass the result to client components. Sections come from slug prefixes, so moving a page into `foundations/` moves it in the nav. Get started and
- * Foundations keep the page tree order of `meta.json`; Components and Blocks start with an Overview item. Components
- * follow with one group per registry `meta.group` in `groups` order, each A–Z by title. Blocks follow with one section
+ * Foundations keep the page tree order of `meta.json`; Components, Charts and Blocks start with an Overview item. Components
+ * and Charts follow with one group per registry `meta.group` in `groups` order (the chart groups in Charts), each A–Z by title. Blocks follow with one section
  * per block section that has a category, in `blockSections` order, each category A–Z by title with its variant count.
  */
 export function getDocsNav(): DocsNav {
@@ -115,6 +136,7 @@ export function getDocsNav(): DocsNav {
     'get-started': [],
     foundations: [],
     components: [],
+    charts: [],
     blocks: [],
     application: [],
     marketing: [],
@@ -136,7 +158,7 @@ export function getDocsNav(): DocsNav {
   const newUrls = getNewItemUrls();
   for (const page of source.getPages()) {
     const section = sectionOf(page.slugs);
-    if (section !== 'components' && section !== 'blocks') continue;
+    if (!isComponentSection(section) && section !== 'blocks') continue;
     if (page.slugs.length === 1) {
       items[section].push({ title: 'Overview', url: page.url, icon: createElement(Library) });
     } else if (section === 'blocks') {
@@ -144,7 +166,7 @@ export function getDocsNav(): DocsNav {
       documented.add(category.name);
       items[category.section].push({ title: page.data.title, url: page.url, variants: category.variants.length, isNew: newUrls.has(page.url) });
     } else {
-      const group = registryGroup(page.slugs, registryItems);
+      const group = registryGroup(page.slugs, registryItems, section);
       grouped.set(group, [...(grouped.get(group) ?? []), { title: page.data.title, url: page.url, isNew: newUrls.has(page.url) }]);
     }
   }
@@ -156,12 +178,15 @@ export function getDocsNav(): DocsNav {
 
   const groupsOf = (section: DocsNavSectionId): DocsNavGroup[] =>
     (Object.keys(groups) as Group[])
-      .filter((id): id is ComponentGroup => section === 'components' && id !== 'blocks' && grouped.has(id))
+      .filter(
+        (id): id is ComponentGroup =>
+          isComponentSection(section) && id !== 'blocks' && isChartGroup(id) === (section === 'charts') && grouped.has(id),
+      )
       .map((id) => ({
         id,
         label: groups[id],
         icon: createElement(groupIcons[id]),
-        items: grouped.get(id)!.sort((a, b) => a.title.localeCompare(b.title, 'en')),
+        items: [...grouped.get(id)!.sort((a, b) => a.title.localeCompare(b.title, 'en')), ...(id === 'charts' ? [allChartsLink] : [])],
       }));
 
   const sections = (Object.keys(sectionLabels) as DocsNavSectionId[]).map((id) => ({
@@ -174,14 +199,17 @@ export function getDocsNav(): DocsNav {
   return { sections: sections.filter((section) => section.items.length > 0 || section.groups.length > 0) };
 }
 
-/** The registry group of a page under `components/`; throws so no page silently leaves the nav. */
-function registryGroup(slugs: string[], registryItems: RegistryItem[]): ComponentGroup {
+/**
+ * The registry group of a page under `components/` or `charts/`; throws so no page silently leaves the nav, and so a
+ * chart never sits under `components/` or another component under `charts/`.
+ */
+function registryGroup(slugs: string[], registryItems: RegistryItem[], section: ComponentSection): ComponentGroup {
   const [, name, ...rest] = slugs;
   const item = registryItems.find((candidate) => candidate.name === name);
   const group = item?.meta?.group;
-  if (rest.length > 0 || !isGroup(group) || group === 'blocks') {
+  if (rest.length > 0 || !isGroup(group) || group === 'blocks' || isChartGroup(group) !== (section === 'charts')) {
     throw new Error(
-      `content/docs/${slugs.join('/')}.mdx: expected a registry component named "${name}" with a component group in meta.group, ` +
+      `content/docs/${slugs.join('/')}.mdx: expected a registry component named "${name}" with a ${section === 'charts' ? 'chart' : 'component'} group in meta.group, ` +
         `got ${item ? JSON.stringify(group) : 'no registry item'}`,
     );
   }
@@ -233,8 +261,9 @@ export function neighboursOf(url: string): DocsNeighbours | undefined {
 
 /** The registry group of a component page; `undefined` for every other page. */
 export function groupOfPage(page: { slugs: string[] }): ComponentGroup | undefined {
-  if (sectionOf(page.slugs) !== 'components' || page.slugs.length === 1) return undefined;
-  return registryGroup(page.slugs, readRegistryItems());
+  const section = sectionOf(page.slugs);
+  if (!isComponentSection(section) || page.slugs.length === 1) return undefined;
+  return registryGroup(page.slugs, readRegistryItems(), section);
 }
 
 /** The block category of a block category page, with its variants; `undefined` for every other page. */
@@ -249,8 +278,8 @@ export type DocsIndexItem = DocsNavItem & { name: string; description?: string }
 /** A heading of an index page: a registry group of components, or a block section. `anchor` is its element id. */
 export type DocsIndexGroup = { id: string; anchor: string; label: string; icon: ReactNode; items: DocsIndexItem[] };
 
-/** The headings of the components or blocks index in sidebar order, each item with its thumbnail name and page description. */
-export function getDocsIndex(folder: 'components' | 'blocks'): DocsIndexGroup[] {
+/** The headings of the components, charts or blocks index in sidebar order, each item with its thumbnail name and page description. */
+export function getDocsIndex(folder: ComponentSection | 'blocks'): DocsIndexGroup[] {
   const pages = new Map(source.getPages().map((page) => [page.url, page]));
   const categories = new Map(readBlockCategories().map((category) => [category.name, category]));
   const indexItem = (item: DocsNavItem): DocsIndexItem => {
@@ -259,11 +288,11 @@ export function getDocsIndex(folder: 'components' | 'blocks'): DocsIndexGroup[] 
     return { ...item, name, description: page.data.description };
   };
   const { sections } = getDocsNav();
-  if (folder === 'components') {
-    return (sections.find((section) => section.id === 'components')?.groups ?? []).map((group) => ({
+  if (folder !== 'blocks') {
+    return (sections.find((section) => section.id === folder)?.groups ?? []).map((group) => ({
       ...group,
       anchor: indexAnchor(group.id),
-      items: group.items.map(indexItem),
+      items: group.items.filter((item) => pages.get(item.url)?.slugs[0] === folder).map(indexItem),
     }));
   }
   return sections.flatMap((section) =>
@@ -291,11 +320,11 @@ export type DocsEyebrowPart = { label: string; url?: string };
 export function eyebrowOf(page: { slugs: string[] }): DocsEyebrowPart[] {
   if (page.slugs[0] === changelogFolder && page.slugs.length === 2) return [{ label: 'Changelog', url: `${docsRoute}/${changelogFolder}` }];
   const section = sectionOf(page.slugs);
-  if (section !== 'components' && section !== 'blocks') return [{ label: sectionLabels[section] }];
+  if (!isComponentSection(section) && section !== 'blocks') return [{ label: sectionLabels[section] }];
   const sectionPart = { label: sectionLabels[section], url: `${docsRoute}/${section}` };
   const category = blockCategoryOfPage(page);
   if (category) return [sectionPart, { label: blockSections[category.section], url: `${docsRoute}/blocks#${indexAnchor(category.section)}` }];
   const group = groupOfPage(page);
   if (!group) return [sectionPart];
-  return [sectionPart, { label: groups[group], url: `${docsRoute}/components#${indexAnchor(group)}` }];
+  return [sectionPart, { label: groups[group], url: `${docsRoute}/${section}#${indexAnchor(group)}` }];
 }

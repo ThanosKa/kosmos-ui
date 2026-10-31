@@ -47,13 +47,17 @@ A small trend line with no axes, for a stat tile or a table cell. It reads as on
 
 <ComponentPreview name="chart-custom" />
 
-Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
+Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. Spread `useChartAnimation(entrance, data)` on each series, so your chart follows the same entrance setting as the Kosmos charts. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
 
 ## Accessibility
 
 - `title` names the growth chart, and keyboard users can focus it and step through the points with the arrow keys.
 - It also renders its data as a visually hidden table, so screen reader users get every value.
 - Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
+
+## Entrance
+
+By default (`entrance="session"`) a chart draws in the first time a chart shows in the browser tab. After that, it appears drawn at once, so a dashboard that someone reloads all day stays still. When its data changes, such as a new range, it moves again. `entrance="always"` draws it in on every load, for a landing page, and `entrance="none"` never does. `GrowthChart`, `Sparkline` and [Donut chart](/docs/charts/donut-chart) take the prop.
 
 ## API
 
@@ -82,6 +86,7 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
     grid: { description: 'Draws a faint dotted vertical grid. For a large chart only.', type: 'boolean', default: 'false' },
     legend: { description: 'Draws the legend. By default it shows for two or more series.', type: 'boolean' },
     defaultIndex: { description: 'Shows the tooltip at this point without hovering.', type: 'number' },
+    entrance: { description: 'When the lines draw in: the first time a chart shows in the tab, on every load, or never.', type: "'session' | 'always' | 'none'", default: "'session'" },
   }}
 />
 
@@ -95,6 +100,7 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
     variant: { description: '`line` draws the trend. `bar` draws one 4px bar per point, grown from zero.', type: "'line' | 'bar'", default: "'line'" },
     color: { description: 'Any CSS color. In the bar form, the color of the latest bar.', type: 'string', default: "'var(--chart-1)'" },
     fill: { description: 'Washes the area under the line. The bar form ignores it.', type: 'boolean', default: 'true' },
+    entrance: { description: 'When the line draws in or the bars grow: the first time a chart shows in the tab, on every load, or never.', type: "'session' | 'always' | 'none'", default: "'session'" },
   }}
 />
 

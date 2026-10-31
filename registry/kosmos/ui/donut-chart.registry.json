@@ -6,7 +6,7 @@
   "description": "Parts of a whole as a ring with the total in its hole. It draws like a Gauge, with round caps and a cut between the parts. It has a tooltip, three sizes and a legend with each value and share. Built on Recharts inside the Chart container.",
   "dependencies": ["recharts@^3.10.1"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/chart"],
-  "meta": { "group": "data" },
+  "meta": { "group": "chart-ring" },
   "files": [
     {
       "path": "registry/kosmos/ui/donut-chart.tsx",

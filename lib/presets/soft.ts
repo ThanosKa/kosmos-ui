@@ -1,4 +1,4 @@
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 import { softStyle } from './soft-style.ts';
 
 const ink = '#1c1f24';
@@ -9,7 +9,7 @@ export const soft: Preset = {
   id: 'soft',
   name: 'Soft',
   description:
-    'A cool gray page and white cards that float on deep, soft shadows under a 16px radius, with pill segments, tags and navigation, so each surface reads as a soft cushion on a paper desk, and a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
+    'A cool gray page and white cards that float on deep, soft shadows under a 16px radius, with pill segments, tags and navigation, so each surface reads as a soft cushion on a paper desk, and a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation and meters.',
   radius: '1rem',
   style: softStyle,
   accent: {
@@ -49,11 +49,7 @@ export const soft: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': 'transparent',
     'sidebar-ring': 'oklch(0.238 0.011 260.7 / 0.5)',
-    'chart-1': ink,
-    'chart-2': 'oklch(0.4 0.012 261)',
-    'chart-3': 'oklch(0.49 0.012 261)',
-    'chart-4': 'oklch(0.57 0.012 261)',
-    'chart-5': 'oklch(0.63 0.012 261)',
+    ...chartColors.light,
   },
   dark: {
     background: '#15171c',
@@ -88,10 +84,6 @@ export const soft: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': 'transparent',
     'sidebar-ring': 'oklch(0.949 0.006 264.5 / 0.5)',
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0.012 264)',
-    'chart-3': 'oklch(0.71 0.012 264)',
-    'chart-4': 'oklch(0.62 0.012 264)',
-    'chart-5': 'oklch(0.54 0.012 264)',
+    ...chartColors.dark,
   },
 };

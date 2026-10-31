@@ -11,7 +11,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type Page } from 'playwright';
-import { readRegistryItems } from '../lib/registry.ts';
+import { componentDocsFolder, readRegistryItems } from '../lib/registry.ts';
 import { openSitePage, serverBase, serverOptions, type Theme } from './site.mts';
 
 const { positionals: names, values } = parseArgs({
@@ -49,7 +49,7 @@ async function openPage(browser: Browser, path: string, theme: Theme, viewport: 
 
 /** The example a component page opens with (its first `<ComponentPreview>`), usually `<name>-demo`. */
 function heroExample(name: string) {
-  const file = `content/docs/components/${name}.mdx`;
+  const file = ['components', 'charts'].map((folder) => `content/docs/${folder}/${name}.mdx`).find((path) => existsSync(path)) ?? `content/docs/components/${name}.mdx`;
   const hero = existsSync(file) ? /<ComponentPreview\s+name="([^"]+)"/.exec(readFileSync(file, 'utf8'))?.[1] : undefined;
   if (!hero) throw new Error(`${file}: expected a docs page that opens with <ComponentPreview name="…" />`);
   return hero;
@@ -76,12 +76,15 @@ function thumbnailTargets() {
     .filter((item) => names.length === 0 || names.includes(item.name))
     .map((item) => {
       const isBlock = item.type === 'registry:block';
+      // A wide chart card is taller than a component's 350px frame, so it gets a larger one at the same image size. A
+      // ring is compact and keeps the component frame.
+      const isChart = componentDocsFolder(item) === 'charts' && item.meta?.group !== 'chart-ring';
       return {
         name: item.name,
         example: thumbnailExample(isBlock, item.name),
-        viewport: isBlock ? { width: 960, height: 600 } : { width: 560, height: 350 },
+        viewport: isBlock ? { width: 960, height: 600 } : isChart ? { width: 720, height: 450 } : { width: 560, height: 350 },
         minWidth: isBlock ? 480 : 320,
-        deviceScaleFactor: isBlock ? 1.5 : 2,
+        deviceScaleFactor: isBlock ? 1.5 : isChart ? 1.6 : 2,
       };
     });
 }

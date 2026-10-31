@@ -6,7 +6,8 @@ import { test } from 'node:test';
 import { contrastRatio, parseColor } from '../contrast.ts';
 import { parseKosmosTokens, readKosmosTokens } from '../tokens.ts';
 import { cssDeclarations } from './css.ts';
-import { defaultPreset, presetCss, presetDesignMd, presets, type Mode, type Palette, type PaletteToken, type Preset } from './index.ts';
+import { chartColors, paletteSections } from './palette.ts';
+import { defaultPreset, presetCss, presetDesignMd, presetPalette, presets, type Mode, type Palette, type PaletteToken, type Preset } from './index.ts';
 
 const byId = (id: string) => presets.find((preset) => preset.id === id)!;
 const warm = byId('warm');
@@ -37,7 +38,7 @@ const withoutAccent = (preset: Preset): Preset => ({ ...preset, accent: undefine
 const accentTokens = {
   primary: ['primary', 'sidebar-primary'],
   onPrimary: ['primary-foreground', 'sidebar-primary-foreground'],
-  ring: ['ring', 'sidebar-ring', 'chart-1'],
+  ring: ['ring', 'sidebar-ring'],
   text: ['accent-text'],
 } as const;
 const accentTokenList: string[] = Object.values(accentTokens).flat();
@@ -62,7 +63,7 @@ test('Default has no accent, and Soft, Console and Night take the accents of the
 
 for (const preset of presets.filter((candidate) => candidate.accent)) {
   for (const mode of ['light', 'dark'] as Mode[]) {
-    test(`${preset.name} ${mode}: the accent fills primary and colors focus, the current nav item, the meter and chart-1, nothing else`, () => {
+    test(`${preset.name} ${mode}: the accent fills primary and colors focus, the current nav item and the meter, nothing else`, () => {
       const withAccent = cssPalette(preset, mode);
       const bare = cssPalette(withoutAccent(preset), mode);
       const accent = preset.accent![mode];
@@ -142,7 +143,7 @@ test('each description says what the color drives, or that there is none', () =>
   assert.match(defaultPreset.description, /no accent/);
   assert.match(defaultPreset.description, /buttons/);
   for (const preset of presets.filter((candidate) => candidate.accent)) {
-    for (const part of [/fills buttons/, /switches/, /checkboxes/, /radios/, /sliders/, /tabs indicator/, /focus/, /current page in navigation/, /meters/, /first chart series/]) {
+    for (const part of [/fills buttons/, /switches/, /checkboxes/, /radios/, /sliders/, /tabs indicator/, /focus/, /current page in navigation/, /meters/]) {
       assert.match(preset.description, part, preset.name);
     }
   }
@@ -167,13 +168,11 @@ test('a preset may set only these tokens, and nothing else', () => {
   }
 });
 
-test('a preset brings one accent: the same four steps per mode, and chart-2 to chart-5 are a mono ramp in every preset', () => {
+test('a preset brings one accent: the same four steps per mode, and the chart series are the same in every preset', () => {
   for (const preset of presets) {
     if (preset.accent) for (const mode of ['light', 'dark'] as Mode[]) assert.deepEqual(Object.keys(preset.accent[mode]).sort(), ['onPrimary', 'primary', 'ring', 'text']);
     for (const mode of ['light', 'dark'] as Mode[]) {
-      for (const token of ['chart-2', 'chart-3', 'chart-4', 'chart-5'] as const) {
-        assert.ok(rgbSpread(preset[mode][token]) < 0.05, `${preset.name} ${mode} ${token}: ${preset[mode][token]}`);
-      }
+      for (const token of paletteSections.chart) assert.equal(presetPalette(preset, mode)[token], chartColors[mode][token], `${preset.name} ${mode} ${token}`);
     }
   }
 });

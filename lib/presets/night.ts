@@ -1,5 +1,5 @@
 import { nightStyle } from './night-style.ts';
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 
 const ink = '#121418';
 const lightInk = '#f3f5f9';
@@ -9,7 +9,7 @@ export const night: Preset = {
   id: 'night',
   name: 'Night',
   description:
-    'Made for dark mode, an instrument panel: a near-black page, cards and popovers each one step lighter and lit by a 1px rim, a darker sidebar, an 8px radius and a mint accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series. Focus glows, the current page is a raised key, and it has a cool daylight version for light mode.',
+    'Made for dark mode, an instrument panel: a near-black page, cards and popovers each one step lighter and lit by a 1px rim, a darker sidebar, an 8px radius and a mint accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation and meters. Focus glows, the current page is a raised key, and it has a cool daylight version for light mode.',
   radius: '0.5rem',
   style: nightStyle,
   accent: {
@@ -49,11 +49,7 @@ export const night: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': '#dadde2',
     'sidebar-ring': 'oklch(0.191 0.009 264.3 / 0.5)',
-    'chart-1': ink,
-    'chart-2': 'oklch(0.4 0.012 264)',
-    'chart-3': 'oklch(0.49 0.012 264)',
-    'chart-4': 'oklch(0.57 0.012 264)',
-    'chart-5': 'oklch(0.63 0.012 264)',
+    ...chartColors.light,
   },
   dark: {
     background: '#0d0e10',
@@ -88,10 +84,6 @@ export const night: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': '#1b1d21',
     'sidebar-ring': 'oklch(0.97 0.006 264.5 / 0.5)',
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0.012 264)',
-    'chart-3': 'oklch(0.71 0.012 264)',
-    'chart-4': 'oklch(0.62 0.012 264)',
-    'chart-5': 'oklch(0.54 0.012 264)',
+    ...chartColors.dark,
   },
 };

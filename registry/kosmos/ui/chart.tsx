@@ -3,6 +3,7 @@
 import * as React from 'react';
 import * as Recharts from 'recharts';
 import type { LegendPayload, TooltipContentProps, TooltipValueType } from 'recharts';
+import { type ChartEntrance, useEntranceAnimation } from '@/registry/kosmos/hooks/use-chart-motion';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration, ease } from '@/registry/kosmos/lib/motion';
 
@@ -21,12 +22,24 @@ function useChart() {
   return context;
 }
 
-/** Recharts draws with the power3-out curve over the slow duration; it skips the animation under reduced motion. */
+/**
+ * Recharts draws with the power3-out curve over the slow duration; it skips the animation under reduced motion. This
+ * plays the entrance on every mount; `useChartAnimation` follows an `entrance` setting.
+ */
 const chartAnimation = {
   isAnimationActive: 'auto' as const,
   animationDuration: duration.slow * 1000,
   animationEasing: `cubic-bezier(${ease.power3Out.join(',')})` as `cubic-bezier(${number},${number},${number},${number})`,
 };
+
+/**
+ * `chartAnimation` with the entrance setting of the Kosmos charts: by default (`session`) the entrance plays the first
+ * time a chart shows in the browser tab, and after that the chart draws at once until `data` changes. Spread it on each
+ * Recharts series.
+ */
+function useChartAnimation(entrance?: ChartEntrance, data?: unknown) {
+  return { ...chartAnimation, isAnimationActive: useEntranceAnimation(entrance, data) };
+}
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
 
@@ -226,6 +239,8 @@ type SparklineProps = Omit<React.ComponentProps<'div'>, 'children' | 'color'> & 
   color?: string;
   /** Washes the area under the line. The bar form ignores it. */
   fill?: boolean;
+  /** When the line draws in or the bars grow. See `ChartEntrance`. */
+  entrance?: ChartEntrance;
   'aria-label': string;
 };
 
@@ -233,8 +248,18 @@ type SparklineProps = Omit<React.ComponentProps<'div'>, 'children' | 'color'> & 
  * A word-sized trend with no axes, for a stat tile or a table cell: a line, or with `variant="bar"` a row of thin bars.
  * It is an image with one accessible name, so say what it shows in `aria-label` ("Revenue, last 30 days, up 12%").
  */
-function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--chart-1)', fill = true, className, ...props }: SparklineProps) {
-  if (variant === 'bar') return <SparklineBars data={data} dataKey={dataKey} color={color} className={className} {...props} />;
+function Sparkline({
+  data,
+  dataKey = 'value',
+  variant = 'line',
+  color = 'var(--chart-1)',
+  fill = true,
+  entrance,
+  className,
+  ...props
+}: SparklineProps) {
+  const animation = useChartAnimation(entrance, data);
+  if (variant === 'bar') return <SparklineBars data={data} dataKey={dataKey} color={color} animation={animation} className={className} {...props} />;
   return (
     <ChartContainer
       config={{ [dataKey]: { color } }}
@@ -255,7 +280,7 @@ function Sparkline({ data, dataKey = 'value', variant = 'line', color = 'var(--c
           dot={false}
           activeDot={false}
           baseValue="dataMin"
-          {...chartAnimation}
+          {...animation}
         />
       </Recharts.AreaChart>
     </ChartContainer>
@@ -270,7 +295,14 @@ const BAR_SLOT = 6;
  * are the same color at 25%, so a row of near-equal bars stays quiet. A bar at zero or below, or with no value, is a
  * dot. When there are more bars than room, the oldest drop out of view, so the latest stays.
  */
-function SparklineBars({ data, dataKey, color, className, ...props }: Omit<SparklineProps, 'variant' | 'fill'> & { dataKey: string }) {
+function SparklineBars({
+  data,
+  dataKey,
+  color,
+  animation,
+  className,
+  ...props
+}: Omit<SparklineProps, 'variant' | 'fill' | 'entrance'> & { dataKey: string; animation: ReturnType<typeof useChartAnimation> }) {
   const bars = data.map((datum) => {
     const value = Number(datum[dataKey]);
     return { [dataKey]: Number.isFinite(value) ? Math.max(value, 0) : 0 };
@@ -305,7 +337,7 @@ function SparklineBars({ data, dataKey, color, className, ...props }: Omit<Spark
                 />
               );
             }}
-            {...chartAnimation}
+            {...animation}
           />
         </Recharts.BarChart>
       </ChartContainer>
@@ -347,6 +379,7 @@ function GrowthChart({
   grid = false,
   legend,
   defaultIndex,
+  entrance,
   className,
   ...props
 }: Omit<React.ComponentProps<'div'>, 'children' | 'title'> & {
@@ -370,7 +403,10 @@ function GrowthChart({
   legend?: boolean;
   /** Shows the tooltip at this index without hovering, for a pinned state. */
   defaultIndex?: number;
+  /** When the lines draw in. See `ChartEntrance`. */
+  entrance?: ChartEntrance;
 }) {
+  const animation = useChartAnimation(entrance, data);
   const keys = Object.keys(config);
   const formatX = (value: unknown) => (xFormatter ? xFormatter(String(value)) : String(value));
   const formatY = (value: number) => (valueFormatter ? valueFormatter(value) : defaultNumber.format(value));
@@ -428,7 +464,7 @@ function GrowthChart({
                 fillOpacity={key === filledKey ? 0.05 : 0}
                 dot={false}
                 activeDot={isPrevious ? false : { r: 3, strokeWidth: 1.5, stroke: 'var(--card)' }}
-                {...chartAnimation}
+                {...animation}
               />
             );
           })}
@@ -467,7 +503,9 @@ function GrowthChart({
 export {
   ChartContainer,
   chartAnimation,
+  useChartAnimation,
   type ChartConfig,
+  type ChartEntrance,
   ChartTooltip,
   ChartTooltipContent,
   ChartLegend,

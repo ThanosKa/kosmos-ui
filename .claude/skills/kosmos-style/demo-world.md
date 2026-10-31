@@ -149,6 +149,20 @@ The other ranges, each against the same span before it:
 
 A chart over a range plots one point per day (7 and 30 days) or per week (90 days), so its points are daily or weekly figures, not the headline: about 29,400 active users and 1,012,000 events a day at the end of the range, and 74,800 users and 7,040,000 events a week. Monthly revenue is $14,628 on the last day of every range, and Live projects steps from 9 to 8 on 18 September.
 
+## Chart data
+
+The figures the charts on `/docs/charts` plot. Each adds up to the metrics above.
+
+- **Events a day, Sep 12 to Oct 11** (30 days, 28,495,200): 896600, 881200, 901500, 896700, 917100, 901300, 915500, 926100, 910100, 930900, 925800, 946700, 930300, 944800, 955600, 939000, 960300, 954900, 976400, 959300, 974100, 985200, 967800, 989700, 984000, 1006000, 988300, 1003400, 1014600, 1012000. The last 7 (Oct 5 to 11) add up to 6,838,800, so a 7-day chart uses 962400, 978100, 991500, 953800, 969700, 971300, 1012000.
+- **Events a week, 13 weeks from Jul 13** (88,335,100): 6409100, 6391700, 6541700, 6568300, 6707100, 6773200, 6750800, 6905100, 6929200, 7071600, 7137400, 7109900, 7040000.
+- **The periods before**: 6,678,500 events in the 7 days before Oct 5, and 24,951,100 in the 30 days before Sep 12 (Aug 13 to Sep 11).
+- **Events a minute**: about 703 at the end of a range (1,012,000 / 1,440). A day's events spread over eight 3-hour UTC blocks as 11, 10, 12, 13, 14, 14, 13 and 13%.
+- **Fernhill Books events a day, Sep 12 to Oct 11**: 132400, 137900, 117800, 122000, 117700, 123100, 126100, 135200, 140800, 120300, 124500, 120300, 125600, 128700, 138100, 143800, 122900, 127100, 122800, 128200, 131300, 141000, 146500, 125400, 129700, 125400, 130800, 133800, 143800, 149400. The 30 days before: Fernhill 3,598,100 (+8.7%), Cirrus Weather 2,131,500 (+12.2%).
+- **By platform**: Web, iOS, Server and Android, in that order, take `--chart-1` to `--chart-4` in every chart. Events in the last 30 days: Web 4,432,800, iOS 7,784,600, Server 15,073,000, Android 1,204,800 (the project table). Users: Web 57,210, iOS 57,490, Server 17,720, Android 12,180. A year before (Oct 2025): events 2,940,000 / 4,520,000 / 8,960,000 / 760,000 and users 38,900 / 34,100 / 11,400 / 8,200. Two years before (Oct 2024): events 1,630,000 / 2,210,000 / 4,180,000 / 390,000 and users 21,800 / 15,200 / 5,300 / 4,100.
+- **Events by platform a day, Sep 28 to Oct 11** (`{ web, ios, server, android }`; the last 7 add up to 6,838,800, iOS follows Cirrus Weather's storm): {142200, 247500, 484400, 38200}, {141400, 251900, 481300, 41200}, {141100, 254200, 480400, 42700}, {143000, 292700, 486900, 39400}, {142200, 332400, 484200, 42100}, {144400, 329800, 491800, 38500}, {143100, 293500, 487100, 40900}, {153100, 249800, 521300, 38200}, {155000, 254100, 527800, 41200}, {157200, 256500, 535100, 42700}, {150300, 252400, 511700, 39400}, {152400, 256300, 518900, 42100}, {152700, 260100, 520000, 38500}, {160600, 263600, 546900, 40900}.
+- **Signups by source and plan, last 30 days** (1,284; Free / Pro / Scale): Search 392 / 84 / 6, Direct 284 / 80 / 7, Referral 176 / 69 / 3, Social 86 / 11 / 0, Email 64 / 20 / 2. Plan totals: Free 1,002, Pro 264, Scale 18. The last 7 days (112): Search 34 / 7 / 1, Direct 25 / 8 / 0, Referral 15 / 6 / 0, Social 8 / 1 / 0, Email 5 / 2 / 0.
+- **Quotas on a gauge**: Fernhill Books 49%, Cirrus Weather 80%, Copperline Bank 109%.
+
 ## API
 
 Acme's public API, for codes and methods (Badge `tint-*`). Paths start with `/v1`: `GET /v1/projects` (List projects), `GET /v1/projects/{id}`, `POST /v1/events` (Send events), `PATCH /v1/projects/{id}` (Change a plan) and `DELETE /v1/events/{name}` (Delete events, such as `debug_ping` on Tidepool Notes). A request log shows `202` for accepted events, `200`, `304`, `429` when a project sends past its rate limit, and `500`.

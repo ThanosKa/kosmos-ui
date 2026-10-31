@@ -34,10 +34,6 @@ _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<nam
 Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, AI, Effects, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
 _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 
-**Lab**:
-Η σελίδα `/lab` με τα υποψήφια components και blocks, φτιαγμένα στο στυλ μας πριν μπουν στο registry, ώστε ο χρήστης να διαλέξει με το μάτι ποια μπαίνουν στο registry. Κάθε κομμάτι φεύγει από το lab όταν μπει στο registry ή απορριφθεί.
-_Avoid_: playground, sandbox, drafts
-
 **Presets page**:
 Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει σε tabs τα components, το dashboard, φόρμες, overlays ανοιχτά και όλα τα **tokens** να αλλάζουν live, και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
 _Avoid_: theme builder, customizer, playground

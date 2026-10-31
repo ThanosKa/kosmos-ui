@@ -4,7 +4,7 @@ import { getDocsIndex, type DocsIndexGroup, type DocsIndexItem } from '@/lib/doc
 import { cn } from '@/registry/kosmos/lib/cn';
 import { eyebrowClass } from './classes';
 
-type Folder = 'components' | 'blocks';
+type Folder = 'components' | 'charts' | 'blocks';
 
 /** Cards in the first row, at the widest grid: their thumbnails load eagerly, since one is the page's largest paint. */
 const firstRow = 3;

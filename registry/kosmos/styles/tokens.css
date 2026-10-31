@@ -180,11 +180,11 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.205 0 0 / 0.55);
 
-  --chart-1: oklch(0.205 0 0);
-  --chart-2: oklch(0.35 0 0);
-  --chart-3: oklch(0.46 0 0);
-  --chart-4: oklch(0.55 0 0);
-  --chart-5: oklch(0.63 0 0);
+  --chart-1: oklch(0.602 0.201 255.8);
+  --chart-2: oklch(0.65 0.188 47);
+  --chart-3: oklch(0.62 0.17 149);
+  --chart-4: oklch(0.588 0.28 303.8);
+  --chart-5: oklch(0.63 0.135 81);
 }
 
 .dark {
@@ -222,11 +222,11 @@
   --sidebar-border: oklch(0.25 0 0);
   --sidebar-ring: oklch(0.97 0 0 / 0.55);
 
-  --chart-1: oklch(0.97 0 0);
-  --chart-2: oklch(0.82 0 0);
-  --chart-3: oklch(0.71 0 0);
-  --chart-4: oklch(0.62 0 0);
-  --chart-5: oklch(0.54 0 0);
+  --chart-1: oklch(0.668 0.167 252.2);
+  --chart-2: oklch(0.708 0.188 47);
+  --chart-3: oklch(0.646 0.177 149.1);
+  --chart-4: oklch(0.648 0.241 306.1);
+  --chart-5: oklch(0.834 0.153 81.1);
 }
 
 /* Shadows, the same under every preset: a preset never sets them, they follow its foreground (ADR 0009). */

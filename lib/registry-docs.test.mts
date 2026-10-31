@@ -14,8 +14,8 @@ const components = readdirSync(ui)
   .map((file) => file.replace('.registry.json', ''));
 
 test('every component has a docs page', () => {
-  const missing = components.filter((name) => !existsSync(join(root, 'content/docs/components', `${name}.mdx`)));
-  assert.deepEqual(missing, [], `no content/docs/components/<name>.mdx for: ${missing.join(', ')}`);
+  const missing = components.filter((name) => !['components', 'charts'].some((folder) => existsSync(join(root, 'content/docs', folder, `${name}.mdx`))));
+  assert.deepEqual(missing, [], `no content/docs/components/<name>.mdx (or charts/ for a chart) for: ${missing.join(', ')}`);
 });
 
 test('every component has a docs demo', () => {

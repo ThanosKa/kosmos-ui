@@ -52,15 +52,15 @@ const table = (preset: Preset, tokens: readonly PaletteToken[]) => {
 
 function accentSection({ accent }: Preset) {
   if (!accent) {
-    return 'This preset has no accent: buttons and every checked control, focus, the current page in navigation, meters and the first chart series are ink, so color is left to status and destructive.';
+    return 'This preset has no accent: buttons and every checked control, focus, the current page in navigation and meters are ink, so color is left to status, destructive and the chart series.';
   }
-  return `This preset's one accent fills every primary control (\`primary\`, \`sidebar-primary\`): the primary button, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator and a done step. It also colors focus (\`ring\`, \`sidebar-ring\`), the first chart series (\`chart-1\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: links and every other text stay ink or gray.
+  return `This preset's one accent fills every primary control (\`primary\`, \`sidebar-primary\`): the primary button, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator and a done step. It also colors focus (\`ring\`, \`sidebar-ring\`), the current page in navigation and the Meter's primary tone (\`accent-text\`). Nothing else takes it: links and every other text stay ink or gray.
 
 | Step | Light | Dark | Use |
 | --- | --- | --- | --- |
 | Primary | \`${accent.light.primary}\` | \`${accent.dark.primary}\` | \`primary\` and \`sidebar-primary\`: a fill under \`primary-foreground\`. |
 | On primary | \`${accent.light.onPrimary}\` | \`${accent.dark.onPrimary}\` | \`primary-foreground\`: 4.5:1 on the fill and under its 90% hover. White in both modes: in dark the fill is a deep step of the accent. |
-| Ring | \`${accent.light.ring}\` | \`${accent.dark.ring}\` | Focus and \`chart-1\`: a mark, 3:1 on every surface. |
+| Ring | \`${accent.light.ring}\` | \`${accent.dark.ring}\` | Focus: a mark, 3:1 on every surface. |
 | Text | \`${accent.light.text}\` | \`${accent.dark.text}\` | \`accent-text\`: 4.5:1 on every surface a nav item sits on. |`;
 }
 
@@ -126,7 +126,7 @@ Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the
 - Mark the current page in navigation with \`accent-text\`, on the flat \`accent\` hover fill.
 - Highlight hovered items with \`accent\`, the see-through fill that works on every surface.
 - Pair \`success\`, \`warning\` and \`destructive\` with a label or an icon, so the meaning never rides on color alone.
-- Use \`chart-1\` to \`chart-5\` in order, and fold a sixth series and beyond into "Other".
+- Use \`chart-1\` to \`chart-5\` in order, and fold a sixth series and beyond into "Other". They are the same five colors under every preset.
 - Draw a surface's edge with its Kosmos shadow token and the line between items with \`border\`.
 
 ## Don't

@@ -1,3 +1,7 @@
+---
+status: partly superseded by ADR 0016, which gives charts one palette under every preset, so the accent no longer takes `chart-1`
+---
+
 # A preset's color sets the primary
 
 A preset that brings a color now sets `primary` and `primary-foreground` (and `sidebar-primary` with its foreground) with it, in light and dark. With Console picked, the primary button, a checked checkbox or radio, a switch that is on, the slider range, the tabs indicator and a done step are violet; with Warm they are orange. Default keeps its ink: it has no color to bring. This supersedes the part of ADR 0009 that kept `primary` ink under every preset, and the reason ADR 0007 gave for it. Everything else in ADR 0009 stands: true grays by default, the brand color on the site only, shadows and density the same under every preset.

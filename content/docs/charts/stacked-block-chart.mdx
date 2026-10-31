@@ -1,0 +1,74 @@
+---
+title: Stacked block chart
+description: Shows the parts of a whole across a few periods, as columns of rounded blocks joined by faint bands. Hover or the arrow keys lift one series, and new data moves every block to its new place.
+---
+
+<ComponentPreview name="stacked-block-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="stacked-block-chart" />
+
+## Usage
+
+```tsx
+import { StackedBlockChart } from '@/components/ui/stacked-block-chart';
+```
+
+```tsx
+const platforms = [
+  { key: 'web', label: 'Web' },
+  { key: 'ios', label: 'iOS' },
+  { key: 'server', label: 'Server' },
+];
+
+const years = [
+  { label: 'Oct 2025', values: { web: 38900, ios: 34100, server: 11400 } },
+  { label: 'Oct 2026', values: { web: 57210, ios: 57490, server: 17720 } },
+];
+
+<StackedBlockChart data={years} series={platforms} label="Users by platform, 2025 and 2026" />
+```
+
+Each period is a column of blocks, one per series, from the first series at the bottom, and each series takes the next chart color. A faint band joins each series from one column to the next, so a growing part reads as a widening band. The total sits above each column, the latest in full ink. A part too small to see still shows as a thin block.
+
+Hovering a block lifts its series and fades the rest. With the chart focused, the arrow keys move through the series, `Home` and `End` jump to the first and last, and `Escape` lets go. The chart takes no legend of its own, so put it in a [Chart card](/docs/components/chart-card) with a legend, as above. When the data changes, every block and band moves to its new place and the totals count to the new values.
+
+The chart is a group that screen readers name with `label`. Lifting a series announces its amount in every period, and a hidden table lists every amount. Under the reduced motion setting the blocks fade in instead of growing, and new data fades them in again.
+
+## Entrance
+
+The blocks build up one after another, bottom to top and column after column. Each band flows across once the column to its right is up, the lowest first. By default this plays the first time a chart shows in the browser tab. The [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the three settings.
+
+## API
+
+### StackedBlockChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The periods, oldest first, each `{ label, values, name? }`. `label` sits under the column, `name` is what screen readers hear, and `values` holds one amount per series key. A missing or negative amount counts as zero.',
+      type: 'StackedBlockChartItem[]',
+    },
+    series: {
+      description: 'The parts of each column, from the bottom up, each `{ key, label, color? }`. `color` defaults to the chart colors in order.',
+      type: 'StackedBlockChartSeries[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the total above each column.',
+      type: '(value: number) => string',
+      default: 'a compact number (144.6K)',
+    },
+    entrance: {
+      description: 'When the blocks build up: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

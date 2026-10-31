@@ -13,8 +13,8 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-  chartAnimation,
   type ChartConfig,
+  useChartAnimation,
 } from '@/registry/kosmos/ui/chart';
 import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
@@ -282,6 +282,7 @@ function UsageOverview({
   };
 
   const data = usage[range];
+  const barAnimation = useChartAnimation(undefined, data.daily);
   const { totals } = data;
   const empty = !loading && totals.runs === 0;
   const costPerRun = totals.runs > 0 ? totals.costUsd / totals.runs : 0;
@@ -392,7 +393,7 @@ function UsageOverview({
                         fill={`var(--color-${model.id})`}
                         {...stackSeparator}
                         maxBarSize={24}
-                        {...chartAnimation}
+                        {...barAnimation}
                       />
                     ))}
                   </Recharts.BarChart>

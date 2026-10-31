@@ -3,12 +3,16 @@
   "name": "bar-list",
   "type": "registry:ui",
   "title": "Bar list",
-  "description": "Ranked values as rows whose fill is the bar, such as top pages or countries. The label sits on the bar, the formatted value and an optional share at the end.",
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "description": "Ranked values as rows whose fill is the bar, such as top pages or countries. The label sits on the bar, the formatted value and an optional share at the end. The bars grow in once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion"],
   "meta": { "group": "data" },
   "files": [
     {
       "path": "registry/kosmos/ui/bar-list.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/kosmos/ui/bar-list-entrance.tsx",
       "type": "registry:ui"
     }
   ]
