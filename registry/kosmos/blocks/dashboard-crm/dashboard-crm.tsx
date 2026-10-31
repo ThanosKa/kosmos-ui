@@ -1,6 +1,8 @@
 'use client';
 
 import {
+  Archive,
+  ArchiveRestore,
   AtSign,
   Briefcase,
   CalendarCheck,
@@ -46,8 +48,12 @@ import {
   NotificationInboxActions,
   NotificationInboxBody,
   NotificationInboxContent,
+  NotificationInboxFooter,
   NotificationInboxGroup,
   NotificationInboxHeader,
+  NotificationInboxTab,
+  NotificationInboxTabs,
+  NotificationInboxTabsList,
   NotificationInboxTitle,
   NotificationInboxTrigger,
   NotificationItem,
@@ -814,27 +820,44 @@ type DashboardNotification = {
   unread?: boolean;
 };
 
-/** The bell in the page header and its inbox. It keeps what is read itself, starting from each notification's `unread`. */
+type InboxTab = 'all' | 'unread' | 'archive';
+
+const emptyInbox: Record<InboxTab, string> = {
+  all: 'You’re all caught up',
+  unread: 'You’re all caught up',
+  archive: 'Notifications you archive show up here',
+};
+
+/**
+ * The bell in the page header and its inbox: All, Unread and Archive tabs, and View all notifications at its foot.
+ * It keeps what is read and archived itself, starting from each notification's `unread`.
+ */
 function HeaderInbox({
   notifications,
   onNotificationOpen,
+  onViewAll,
 }: {
   notifications: DashboardNotification[];
   onNotificationOpen?: (notification: DashboardNotification) => void;
+  onViewAll?: () => void;
 }) {
+  const [open, setOpen] = React.useState(false);
+  const [tab, setTab] = React.useState<InboxTab>('all');
   const [read, setRead] = React.useState(() => new Set(notifications.filter((item) => !item.unread).map((item) => item.id)));
-  const unread = notifications.filter((item) => !read.has(item.id)).length;
-  const days = [...new Set(notifications.map((item) => item.day))];
-  const toggle = (id: string) =>
-    setRead((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  const [archived, setArchived] = React.useState<Set<string>>(() => new Set());
+  const inbox = notifications.filter((item) => !archived.has(item.id));
+  const unread = inbox.filter((item) => !read.has(item.id)).length;
+  const shown = tab === 'archive' ? notifications.filter((item) => archived.has(item.id)) : tab === 'unread' ? inbox.filter((item) => !read.has(item.id)) : inbox;
+  const days = [...new Set(shown.map((item) => item.day))];
+  const toggle = (set: Set<string>, id: string) => {
+    const next = new Set(set);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  };
 
   return (
-    <NotificationInbox>
+    <NotificationInbox open={open} onOpenChange={setOpen}>
       <NotificationInboxTrigger count={unread} />
       <NotificationInboxContent>
         <NotificationInboxHeader>
@@ -848,52 +871,81 @@ function HeaderInbox({
             </NotificationInboxActions>
           ) : null}
         </NotificationInboxHeader>
-        <NotificationInboxBody>
-          {notifications.length === 0 ? (
-            <p className="px-4 py-10 text-center text-small text-muted-foreground">You’re all caught up</p>
-          ) : (
-            days.map((day) => (
-              <NotificationInboxGroup key={day} label={day}>
-                {notifications
-                  .filter((item) => item.day === day)
-                  .map((item) => (
-                    <NotificationItem key={item.id} unread={!read.has(item.id)}>
-                      <NotificationItemMedia icon={item.icon}>
-                        <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
-                          {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
-                          <AvatarFallback className={item.avatar.square ? 'rounded-md' : undefined}>{item.avatar.fallback}</AvatarFallback>
-                        </Avatar>
-                      </NotificationItemMedia>
-                      <NotificationItemContent>
-                        <NotificationItemTitle
-                          href={`#${item.id}`}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            if (!read.has(item.id)) toggle(item.id);
-                            onNotificationOpen?.(item);
-                          }}
-                        >
-                          {item.title}
-                        </NotificationItemTitle>
-                        {item.description ? <NotificationItemDescription>{item.description}</NotificationItemDescription> : null}
-                      </NotificationItemContent>
-                      <NotificationItemAside>
-                        <NotificationItemTime dateTime={item.dateTime}>{item.time}</NotificationItemTime>
-                        <NotificationItemQuickActions>
-                          <NotificationItemQuickAction
-                            label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
-                            onClick={() => toggle(item.id)}
+        <NotificationInboxTabs value={tab} onValueChange={(value) => setTab(value as InboxTab)}>
+          <NotificationInboxTabsList>
+            <NotificationInboxTab value="all">All</NotificationInboxTab>
+            <NotificationInboxTab value="unread">Unread {unread > 0 ? <Badge>{unread}</Badge> : null}</NotificationInboxTab>
+            <NotificationInboxTab value="archive">Archive</NotificationInboxTab>
+          </NotificationInboxTabsList>
+          <NotificationInboxBody>
+            {shown.length === 0 ? (
+              <p className="px-4 py-10 text-center text-small text-muted-foreground">{emptyInbox[tab]}</p>
+            ) : (
+              days.map((day) => (
+                <NotificationInboxGroup key={day} label={day}>
+                  {shown
+                    .filter((item) => item.day === day)
+                    .map((item) => (
+                      <NotificationItem key={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
+                        <NotificationItemMedia icon={item.icon}>
+                          <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
+                            {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
+                            <AvatarFallback className={item.avatar.square ? 'rounded-md' : undefined}>{item.avatar.fallback}</AvatarFallback>
+                          </Avatar>
+                        </NotificationItemMedia>
+                        <NotificationItemContent>
+                          <NotificationItemTitle
+                            href={`#${item.id}`}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              if (!read.has(item.id)) setRead(toggle(read, item.id));
+                              onNotificationOpen?.(item);
+                            }}
                           >
-                            {read.has(item.id) ? <Mail /> : <Check />}
-                          </NotificationItemQuickAction>
-                        </NotificationItemQuickActions>
-                      </NotificationItemAside>
-                    </NotificationItem>
-                  ))}
-              </NotificationInboxGroup>
-            ))
-          )}
-        </NotificationInboxBody>
+                            {item.title}
+                          </NotificationItemTitle>
+                          {item.description ? <NotificationItemDescription>{item.description}</NotificationItemDescription> : null}
+                        </NotificationItemContent>
+                        <NotificationItemAside>
+                          <NotificationItemTime dateTime={item.dateTime}>{item.time}</NotificationItemTime>
+                          <NotificationItemQuickActions>
+                            {archived.has(item.id) ? null : (
+                              <NotificationItemQuickAction
+                                label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
+                                onClick={() => setRead(toggle(read, item.id))}
+                              >
+                                {read.has(item.id) ? <Mail /> : <Check />}
+                              </NotificationItemQuickAction>
+                            )}
+                            <NotificationItemQuickAction
+                              label={archived.has(item.id) ? 'Move to inbox' : 'Archive'}
+                              onClick={() => {
+                                setArchived(toggle(archived, item.id));
+                                setRead((current) => new Set(current).add(item.id));
+                              }}
+                            >
+                              {archived.has(item.id) ? <ArchiveRestore /> : <Archive />}
+                            </NotificationItemQuickAction>
+                          </NotificationItemQuickActions>
+                        </NotificationItemAside>
+                      </NotificationItem>
+                    ))}
+                </NotificationInboxGroup>
+              ))
+            )}
+          </NotificationInboxBody>
+        </NotificationInboxTabs>
+        <NotificationInboxFooter>
+          <Button
+            variant="item"
+            onClick={() => {
+              setOpen(false);
+              onViewAll?.();
+            }}
+          >
+            View all notifications
+          </Button>
+        </NotificationInboxFooter>
       </NotificationInboxContent>
     </NotificationInbox>
   );
@@ -906,6 +958,8 @@ type DashboardCrmPageProps = DashboardCrmProps & {
   notifications?: DashboardNotification[] | null;
   /** Called when a notification is opened from the inbox. */
   onNotificationOpen?: (notification: DashboardNotification) => void;
+  /** Called by View all notifications at the foot of the inbox, usually to open your notifications page. */
+  onViewAllNotifications?: () => void;
   /** The App sidebar's props: your pages, the current one, the workspaces and the signed-in user. */
   sidebar?: AppSidebarProps;
   /** The page frame's props, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame. */
@@ -922,6 +976,7 @@ function DashboardCrmPage({
   frame,
   notifications = sampleNotifications,
   onNotificationOpen,
+  onViewAllNotifications,
   ...props
 }: DashboardCrmPageProps) {
   return (
@@ -932,7 +987,7 @@ function DashboardCrmPage({
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
           <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
-          {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} /> : null}
+          {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} onViewAll={onViewAllNotifications} /> : null}
         </header>
         <ScrollArea className="min-h-0 flex-1">
           <div className="p-3 sm:p-4">
