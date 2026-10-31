@@ -4,7 +4,7 @@ const cards = ':is([data-slot="stat-card"], [data-slot="chart-card"], [data-slot
 
 export const nightStyle: PresetStyle = {
   summary:
-    'An instrument panel: quicker motion, with every surface lit by a 1px rim and cards catching a faint top light in dark mode. Focus glows around the outline of tabs, navigation items and links. The current page in navigation is a raised key, the tabs indicator is a lit line, table heads are uppercase and tracked over tabular figures, and badges take 6px corners.',
+    'An instrument panel: quicker motion, with every surface lit by a 1px rim and cards catching a faint top light in dark mode. Focus glows around the outline of navigation items and links. The current page in navigation is a raised key, table heads are uppercase and tracked over tabular figures, and badges take 6px corners.',
   theme: {
     'text-caption--letter-spacing': '0.01em',
     'text-title--letter-spacing': '-0.015em',
@@ -41,7 +41,7 @@ export const nightStyle: PresetStyle = {
     [`.dark ${cards}`]: {
       'background-image': 'linear-gradient(180deg, oklch(1 0 0 / 0.025), transparent 120px)',
     },
-    ':is([data-slot="tabs-trigger"], [data-slot="sidebar-menu-button"], a:not([data-slot="button"])):focus-visible': {
+    ':is([data-slot="sidebar-menu-button"], a:not([data-slot="button"])):focus-visible': {
       filter: 'drop-shadow(0 0 6px color-mix(in oklab, var(--ring) 55%, transparent))',
     },
     '[data-slot="sidebar-menu-button"][data-active]': {
@@ -50,15 +50,6 @@ export const nightStyle: PresetStyle = {
     },
     ':root:not(.dark) [data-slot="sidebar-menu-button"][data-active]': {
       'background-color': 'var(--card)',
-    },
-    '[data-slot="tabs-indicator"], [data-slot="tabs-trigger"]::after': {
-      'background-color': 'var(--accent-text)',
-    },
-    '[data-slot="tabs-indicator"]': {
-      'box-shadow': '0 0 10px 0 color-mix(in oklab, var(--accent-text) 70%, transparent)',
-    },
-    ':root:not(.dark) [data-slot="tabs-indicator"]': {
-      'box-shadow': 'none',
     },
     '[data-slot="table-head"]': {
       'text-transform': 'uppercase',

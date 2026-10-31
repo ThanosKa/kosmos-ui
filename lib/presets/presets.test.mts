@@ -204,9 +204,9 @@ const kosmosSlots = new Set(
     .flatMap((entry) => [...readFileSync(join(entry.parentPath, entry.name), 'utf8').matchAll(/(?:data-slot['"]?\s*[=:]\s*\{?|\bslot:)\s*["'`]([a-z][a-z0-9-]*)/g)].map((match) => match[1])),
 );
 
-/** Buttons and fields look the same under every preset (ADR 0014): no rule reaches them, except in a `:not()`, but for type. */
+/** Buttons, fields and tabs look the same under every preset (ADR 0014): no rule reaches them, except in a `:not()`, but for type. */
 const kosmosControls =
-  /data-slot="(button|input|textarea|input-group|select-trigger|date-picker-trigger|combobox-input-group|combobox-chips|number-field-(group|decrement|increment)|otp-field-input)"/;
+  /data-slot="(button|tabs-list|tabs-trigger|tabs-indicator|input|textarea|input-group|select-trigger|date-picker-trigger|combobox-input-group|combobox-chips|number-field-(group|decrement|increment)|otp-field-input)"/;
 const kosmosControlTokens = ['shadow-control', 'shadow-primary', 'shadow-primary-hover', 'primary-hover', 'shadow-field'];
 const typeProperties = ['font-family', 'font-weight', 'letter-spacing', 'text-transform'];
 const notClause = /:not\((?:[^()]|\([^()]*\))*\)/g;
@@ -245,7 +245,7 @@ for (const preset of presets.filter((candidate) => candidate.style)) {
     assert.deepEqual(fonts, []);
   });
 
-  test(`${preset.name}: buttons and fields keep the Kosmos shape, bevel, press and focus; only their type may change`, () => {
+  test(`${preset.name}: buttons, fields and tabs keep the Kosmos shape, bevel, press and focus; only their type may change`, () => {
     const tokens = [...Object.keys(style.light ?? {}), ...Object.keys(style.dark ?? {})];
     assert.deepEqual([...new Set(tokens.filter((token) => kosmosControlTokens.includes(token)))], []);
     const reshaped = declarations.filter(
@@ -264,6 +264,17 @@ for (const preset of presets.filter((candidate) => candidate.style)) {
         /^((min|max)-)?(height|width)$|^padding|^gap$|^font-size$|^line-height$|^margin/.test(property) && !within.some((rule) => decoration.test(rule)),
     );
     assert.deepEqual(sizing, []);
+  });
+
+  test(`${preset.name}: every corner its rules round follows the visitor's radius, so radius 0 squares them all`, () => {
+    const ownVariables = new Map(declarations.filter(({ property }) => property.startsWith('--')).map(({ property, value }) => [property, value]));
+    const followsRadius = (value: string): boolean =>
+      value.includes('var(--radius') ||
+      [...value.matchAll(/var\((--[\w-]+)\)/g)].some(([, name]) => ownVariables.has(name) && followsRadius(ownVariables.get(name)!));
+    // A square edge, and the 1px that softens the ends of a meter segment, stay the same at every radius.
+    const fixedShapes = ['0', '1px'];
+    const fixed = declarations.filter(({ property, value }) => /radius$/.test(property) && !fixedShapes.includes(value) && !followsRadius(value));
+    assert.deepEqual(fixed, []);
   });
 }
 
