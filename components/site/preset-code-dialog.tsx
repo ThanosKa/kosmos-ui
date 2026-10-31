@@ -9,10 +9,10 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/registry/kosmos/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
-type ChosenCodeProps = { code: string; lang: string; title?: string; embedded?: boolean };
+type ChosenCodeProps = { code: string; lang: string; title?: string; embedded?: boolean; copy?: boolean };
 
 /** Code in a Kosmos code block, highlighted in the browser as the visitor's choice changes; plain until the first highlight is ready. */
-function ChosenCode({ code, lang, title, embedded }: ChosenCodeProps) {
+function ChosenCode({ code, lang, title, embedded, copy }: ChosenCodeProps) {
   const className = embedded ? undefined : 'my-0';
   return (
     <LiveHighlightedCode
@@ -20,9 +20,10 @@ function ChosenCode({ code, lang, title, embedded }: ChosenCodeProps) {
       lang={lang}
       title={title}
       embedded={embedded}
+      copy={copy}
       className={className}
       fallback={
-        <CodeBlock title={title} embedded={embedded} className={className}>
+        <CodeBlock title={title} embedded={embedded} copy={copy} className={className}>
           <Pre>
             <code>
               {code
@@ -81,7 +82,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
                 panels={Object.fromEntries(
                   managers.map((manager) => [
                     manager,
-                    <ChosenCode key={manager} embedded lang="bash" code={`${runners[manager]} ${registryAdd}\n${runners[manager]} add @kosmos/${item}`} />,
+                    <ChosenCode key={manager} embedded copy={false} lang="bash" code={`${runners[manager]} ${registryAdd}\n${runners[manager]} add @kosmos/${item}`} />,
                   ]),
                 )}
               />
