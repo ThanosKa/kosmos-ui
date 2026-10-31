@@ -4,6 +4,7 @@ import { Radio as RadioPrimitive } from '@base-ui/react/radio';
 import { RadioGroup as RadioGroupPrimitive } from '@base-ui/react/radio-group';
 import { cva } from 'class-variance-authority';
 import * as React from 'react';
+import { flushSync } from 'react-dom';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 type SegmentedControlSize = 'sm' | 'md';
@@ -28,33 +29,56 @@ type SegmentedControlProps = Omit<RadioGroupPrimitive.Props<string>, 'value' | '
  */
 function SegmentedControl({ className, size = 'md', ref, children, ...props }: SegmentedControlProps) {
   const groupRef = React.useRef<HTMLDivElement | null>(null);
-  const [thumb, setThumb] = React.useState<{ left: number; top: number; width: number; height: number } | null>(null);
+  const thumbRef = React.useRef<HTMLSpanElement | null>(null);
+  const [thumb, setThumb] = React.useState<{ left: number; top: number; width: number; height: number; sliding: boolean } | null>(null);
 
   // Place the raised surface behind the checked item. It only exists once measured, so it never slides in from nowhere.
+  // It slides only to a newly checked item; when the items resize, it follows them in the same frame.
   React.useLayoutEffect(() => {
     const group = groupRef.current;
     if (!group) return;
+    let checked: HTMLElement | null = null;
     const measure = () => {
       const item = group.querySelector<HTMLElement>('[data-slot="segmented-control-item"][data-checked]');
+      const moved = checked !== null && item !== checked;
+      checked = item;
       if (!item) return setThumb(null);
       const next = { left: item.offsetLeft - 1, top: item.offsetTop - 1, width: item.offsetWidth + 2, height: item.offsetHeight + 2 };
-      setThumb((current) =>
-        current && current.left === next.left && current.top === next.top && current.width === next.width && current.height === next.height
+      setThumb((current) => {
+        const sliding = moved || (current?.sliding ?? false);
+        return current &&
+          current.left === next.left &&
+          current.top === next.top &&
+          current.width === next.width &&
+          current.height === next.height &&
+          current.sliding === sliding
           ? current
-          : next,
-      );
+          : { ...next, sliding };
+      });
     };
+    // React would otherwise paint one frame with the thumb where the item was.
+    const measureNow = () => flushSync(measure);
     measure();
-    const resize = new ResizeObserver(measure);
+    const resize = new ResizeObserver(measureNow);
     resize.observe(group);
     group.querySelectorAll('[data-slot="segmented-control-item"]').forEach((item) => resize.observe(item));
-    const mutation = new MutationObserver(measure);
+    const mutation = new MutationObserver(measureNow);
     mutation.observe(group, { attributes: true, attributeFilter: ['data-checked'], subtree: true });
     return () => {
       resize.disconnect();
       mutation.disconnect();
     };
   }, []);
+
+  // Stop sliding once no slide runs, and when a move started none, as when the item changed before the thumb painted.
+  // `getAnimations` flushes styles first, so it sees a slide this commit just started.
+  const settle = React.useCallback(() => {
+    if (thumbRef.current?.getAnimations().length) return;
+    setThumb((current) => (current?.sliding ? { ...current, sliding: false } : current));
+  }, []);
+  React.useLayoutEffect(() => {
+    if (thumb?.sliding) settle();
+  }, [thumb, settle]);
 
   return (
     <SegmentedControlContext.Provider value={size}>
@@ -77,6 +101,10 @@ function SegmentedControl({ className, size = 'md', ref, children, ...props }: S
           <span
             aria-hidden
             data-slot="segmented-control-thumb"
+            ref={thumbRef}
+            data-sliding={thumb.sliding ? '' : undefined}
+            onTransitionEnd={settle}
+            onTransitionCancel={settle}
             style={
               {
                 '--thumb-x': `${thumb.left}px`,
@@ -85,7 +113,7 @@ function SegmentedControl({ className, size = 'md', ref, children, ...props }: S
                 '--thumb-height': `${thumb.height}px`,
               } as React.CSSProperties
             }
-            className="pointer-events-none absolute top-0 left-0 h-(--thumb-height) w-(--thumb-width) translate-x-(--thumb-x) translate-y-(--thumb-y) rounded-md border border-transparent bg-secondary shadow-control transition-[translate,width,height] duration-slow ease-smooth-in-out motion-reduce:hidden"
+            className="pointer-events-none absolute top-0 left-0 h-(--thumb-height) w-(--thumb-width) translate-x-(--thumb-x) translate-y-(--thumb-y) rounded-md border border-transparent bg-secondary shadow-control data-sliding:transition-[translate,width,height] data-sliding:duration-slow data-sliding:ease-smooth-in-out motion-reduce:hidden"
           />
         )}
         {children}

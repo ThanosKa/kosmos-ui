@@ -25,7 +25,8 @@ export function SitePresetMenu() {
           {preset.name}
         </span>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72">
+      {/* A fixed width, not `w-72`: in spacing units the popup would resize and jump each time the Size changes. */}
+      <PopoverContent align="end" className="w-[18rem]">
         <PresetPicker layout="panel" />
         <Link
           href="/presets"
