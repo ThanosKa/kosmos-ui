@@ -94,9 +94,6 @@ export const consoleStyle: PresetStyle = {
       'background-image': 'var(--console-raise)',
     },
     [`${currentNavItem.join(', ')}, [data-slot="navbar-nav"] :is([aria-current="page"], [data-current])`]: raised,
-    '[data-slot="tabs-indicator"], [data-slot="tabs-trigger"]::after': {
-      'background-color': 'var(--ring)',
-    },
     '@media screen and (width >= 48rem)': {
       '[data-slot="sidebar-inset"]': {
         margin: '0.375rem 0.375rem 0.375rem 0',

@@ -7,11 +7,6 @@ const rim = (alpha: number) => `inset 0 1px 0 0 oklch(1 0 0 / ${alpha})`;
 
 const pill = { 'border-radius': 'var(--soft-pill)' };
 const raisedItem = { 'box-shadow': 'var(--shadow-control)' };
-const tabPill = {
-  'z-index': '-1',
-  'border-radius': 'var(--soft-pill)',
-  'background-color': 'var(--soft-tab-pill)',
-};
 
 const pills = [
   'badge',
@@ -22,16 +17,14 @@ const pills = [
   'sidebar-menu-button',
   'sidebar-submenu-trigger',
   'sidebar-submenu-button',
-  'tabs-trigger',
 ];
 
 const slots = (names: string[]) => `:is(${names.map((name) => `[data-slot="${name}"]`).join(', ')})`;
-const horizontalTabs = '[data-slot="tabs-list"][data-orientation="horizontal"]';
 
 /** Cushions on a cool paper desk: deep soft shadows instead of hairline rings, and pill segments, tags and navigation. */
 export const softStyle: PresetStyle = {
   summary:
-    'Surfaces float on deep, diffuse shadows tinted the cool gray of the page instead of hairline rings, and every segment, badge, key and navigation item is a pill. Titles and display type are lighter. The current item in the sidebar is a raised white pill, and a tinted pill slides under the active tab. Motion is a little slower, on a softer ease out.',
+    'Surfaces float on deep, diffuse shadows tinted the cool gray of the page instead of hairline rings, and every segment, badge, key and navigation item is a pill. Titles and display type are lighter. The current item in the sidebar is a raised white pill. Motion is a little slower, on a softer ease out.',
   theme: {
     'text-title--font-weight': '550',
     'text-heading--font-weight': '550',
@@ -66,18 +59,13 @@ export const softStyle: PresetStyle = {
   css: {
     ':root': {
       '--soft-pill': 'min(var(--radius) * 99, var(--spacing) * 5)',
-      '--soft-tab-pill': 'color-mix(in oklab, var(--primary) 10%, transparent)',
     },
-    '.dark': { '--soft-tab-pill': 'color-mix(in oklab, var(--primary) 22%, transparent)' },
     [slots(pills)]: pill,
     '[data-slot="checkbox"]': { 'border-radius': 'calc(var(--radius) * 0.375)' },
     ':is([data-slot="dialog-popup"], [data-slot="dialog-content"], [data-slot="drawer-popup"], [data-slot="drawer-content"]):not([data-swipe-direction="up"], [data-swipe-direction="down"])':
       { 'border-radius': 'calc(var(--radius) + min(var(--radius), 12px))' },
     [`${slots(['sidebar-menu-button', 'sidebar-submenu-trigger'])}[data-active]`]: raisedItem,
     [`:root:not(.dark) ${slots(['sidebar-menu-button', 'sidebar-submenu-trigger'])}[data-active]`]: { 'background-color': 'var(--card)' },
-    [horizontalTabs]: { isolation: 'isolate' },
-    [`[data-slot="tabs-indicator"][data-orientation="horizontal"]`]: { ...tabPill, height: 'calc(100% - 10px)', bottom: '5px' },
-    [`${horizontalTabs} [data-slot="tabs-trigger"]::after`]: { ...tabPill, inset: '5px 0', height: 'auto' },
     '[data-slot="table-head"]': { 'font-weight': '500' },
   },
 };

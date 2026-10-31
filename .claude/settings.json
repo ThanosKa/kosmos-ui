@@ -1,14 +1,15 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledPlugins": {
+    "mattpocock-skills@mattpocock": true
+  },
   "extraKnownMarketplaces": {
     "mattpocock": {
       "source": {
         "source": "github",
         "repo": "mattpocock/skills"
-      }
+      },
+      "autoUpdate": true
     }
-  },
-  "enabledPlugins": {
-    "mattpocock-skills@mattpocock": true
   }
 }

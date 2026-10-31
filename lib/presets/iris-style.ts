@@ -2,14 +2,12 @@ import type { PresetStyle } from './palette.ts';
 
 const navItem = ':is([data-slot="sidebar-menu-button"], [data-slot="sidebar-submenu-trigger"], [data-slot="sidebar-submenu-button"])';
 const valid = ':not([data-invalid], [aria-invalid="true"])';
-const underlineTabs = '[data-slot="tabs-list"][data-orientation="horizontal"]:not([class*="indicator]:hidden"])';
-const trackTabs = '[data-slot="tabs-list"][class*="indicator]:hidden"]';
 const sideSheet = '[data-slot="drawer-content"]:is([data-swipe-direction="right"], [data-swipe-direction="left"])';
 
 /** Pill controls, a raised key for the current place and tinted bordered tags. */
 export const irisStyle: PresetStyle = {
   summary:
-    'The current page in the sidebar, the selected segment and the selected view are a raised key, white in light; idle items are grey with fainter icons, and hover only darkens the text. Tags and statuses are tinted pills with a matching border, tabs are a 1px underline, and side drawers are flush full-height sheets over a blurred page.',
+    'The current page in the sidebar and the selected segment are a raised key, white in light; idle items are grey with fainter icons, and hover only darkens the text. Tags and statuses are tinted pills with a matching border, and side drawers are flush full-height sheets over a blurred page.',
   theme: {
     'text-body--letter-spacing': '0em',
     'text-small--letter-spacing': '0em',
@@ -162,19 +160,6 @@ export const irisStyle: PresetStyle = {
       'background-color': 'var(--iris-key)',
       color: 'var(--foreground)',
       'box-shadow': 'var(--iris-shadow-key)',
-    },
-
-    [`${underlineTabs} > [data-slot="tabs-trigger"]`]: { 'font-weight': '400' },
-    [`${underlineTabs} > [data-slot="tabs-trigger"][data-active]`]: { color: 'var(--foreground)', 'font-weight': '500' },
-    [`${underlineTabs} > [data-slot="tabs-trigger"]::after`]: { height: '1px', 'background-color': 'var(--primary)' },
-    '[data-slot="tabs-indicator"][data-orientation="horizontal"]': { height: '1px', 'background-color': 'var(--primary)' },
-
-    [`${trackTabs}`]: { 'background-color': 'var(--iris-segment)', 'box-shadow': 'none' },
-    [`${trackTabs} > [data-slot="tabs-trigger"]:hover:not([data-active])`]: { 'background-color': 'transparent' },
-    [`${trackTabs} > [data-slot="tabs-trigger"][data-active]`]: {
-      'background-color': 'var(--iris-key)',
-      'box-shadow': 'var(--iris-shadow-key)',
-      color: 'var(--foreground)',
     },
 
     '[data-slot="segmented-control"]': {
