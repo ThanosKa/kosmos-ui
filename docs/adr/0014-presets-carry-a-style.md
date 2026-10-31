@@ -1,8 +1,14 @@
 # A preset carries its own style
 
-A preset may now bring a style as well as a palette: its own shadows, type weights and tracking, motion, and rules that reshape components by their `data-slot`. Such rules make pill buttons, a raised current nav item, a pill tabs indicator or mono table heads. Soft, Console, Night and Iris each take the full design their prototype was built as. Default and Warm keep the Kosmos style and set a palette only. This supersedes the part of ADR 0009 that kept shadows and motion the same under every preset. Fonts and sizes stay the Kosmos ones under every preset.
+A preset may now bring a style as well as a palette: its own shadows, type weights and tracking, motion, and rules that reshape components by their `data-slot`. Such rules make pill segments, a raised current nav item, a pill tabs indicator or mono table heads. Soft, Console, Night and Iris each take the design of their prototype, except for buttons and fields, which stay Kosmos under every preset. Default and Warm keep the Kosmos style and set a palette only. This supersedes the part of ADR 0009 that kept shadows and motion the same under every preset. Fonts and sizes stay the Kosmos ones under every preset.
 
 The maintainer compared the presets with their prototypes and found that color alone did not carry them: the look of each design came mostly from its shapes. Without them, two presets with a violet accent read as the same preset.
+
+## Buttons and fields stay Kosmos
+
+Under every preset, buttons and fields keep the Kosmos look. That covers their shape, the bevel and hover of the primary button, the 0.96 press, the control and field shadows, and the focus ring. A style never sets `shadow-control`, `shadow-primary`, `shadow-primary-hover`, `primary-hover` or `shadow-field`. Its rules reach a button or a field only to change its type (font, weight, tracking, case), as in a mono table head.
+
+The maintainer compared the light themes with the Kosmos style and the Kargul reference apps. The presets' pill buttons, flat or glowing primaries and missing press broke both. A button is also the part a project copies most, so it should look the same whichever preset the project took. Fields follow buttons, so a toolbar never pairs a pill field with a 10px button.
 
 ## How a style is built
 
@@ -21,6 +27,7 @@ The maintainer compared the presets with their prototypes and found that color a
 
 ## Consequences
 
+- `pnpm test` fails when a style sets a control token or a rule reshapes a button or a field.
 - `data-slot` and the `data-variant`, `data-size` and state attributes are now a public surface. Renaming one breaks a preset's rules. `pnpm test` fails when a preset names a slot no component has.
 - Rules win over utility classes on the properties they set, so a class a user adds for the same property loses under that preset. The DESIGN.md says so.
 - A rule that moves, scales or blurs sits inside `prefers-reduced-motion: no-preference`, a rule sets no font but `font-sans` or `font-mono`, and a style sets no spacing, text size, line height, height, padding or gap. `pnpm test` checks all three, and the contrast tests still cover every palette.

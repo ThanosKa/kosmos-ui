@@ -9,7 +9,7 @@ export const iris: Preset = {
   id: 'iris',
   name: 'Iris',
   description:
-    'Neutral grays on a white page with a light gray sidebar, a soft black page in dark, and a deep blue-violet accent that fills buttons, radios and sliders and colors focus and the first chart series; under this style, switches, checkboxes, radio cards, meters and the tabs indicator stay ink, and the current page in navigation is a raised key. Buttons, tags and segments are pills, cards round to 10px, and side drawers are flush full-height sheets.',
+    'Neutral grays on a white page with a light gray sidebar, a soft black page in dark, and a deep blue-violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, meters and the first chart series. The current page in navigation is a raised key in ink. Tags and segments are pills, cards round to 10px, and side drawers are flush full-height sheets.',
   radius: '0.625rem',
   // In dark the violet steps lighter than in light, so the fill still reads 3:1 on the soft black page and cards.
   accent: {

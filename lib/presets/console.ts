@@ -9,7 +9,7 @@ export const consolePreset: Preset = {
   id: 'console',
   name: 'Console',
   description:
-    'Violet-tinted grays on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series, for dense tools that live in dark mode. Its shape is precise: hairline rings, raised buttons over recessed fields, square tags and uppercase mono labels.',
+    'Violet-tinted grays on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series, for dense tools that live in dark mode. Its shape is precise: hairline rings, square tags and uppercase mono labels.',
   radius: '0.375rem',
   style: consoleStyle,
   accent: {

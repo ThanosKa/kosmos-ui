@@ -39,8 +39,13 @@ function toNumber(operand: string) {
   return Number(match[1]) * (match[2] === 'rem' ? rootFontSize : 1);
 }
 
-/** A length in px, or a plain number: `0.75rem`, `1.4`, `calc(16 / 12)`, `calc(0.625rem - 6px)`. */
+/** A length in px, or a plain number: `0.75rem`, `1.4`, `calc(16 / 12)`, `calc(0.625rem - 6px)`, `min(0.625rem, 4px)`. */
 function evaluate(value: string): number {
+  const extreme = /^(min|max)\((.+),(.+)\)$/.exec(value.trim());
+  if (extreme) {
+    const [, fn, a, b] = extreme;
+    return Math[fn as 'min' | 'max'](evaluate(a), evaluate(b));
+  }
   const calc = /^calc\((.+)\s([-+*/])\s(.+)\)$/.exec(value.trim());
   if (!calc) return toNumber(value);
   const [, a, operator, b] = calc;
