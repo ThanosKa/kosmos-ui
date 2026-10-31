@@ -36,7 +36,7 @@ test('the site links start with the docs tabs, in their order', () => {
 });
 
 test('the Presets page and the changelog have links of their own after the docs tabs', () => {
-  assert.deepEqual(siteLinks.slice(3), [
+  assert.deepEqual(siteLinks.slice(4), [
     { href: '/presets', label: 'Presets' },
     { href: '/docs/changelog', label: 'Changelog' },
   ]);
