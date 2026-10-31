@@ -204,6 +204,13 @@ const kosmosSlots = new Set(
     .flatMap((entry) => [...readFileSync(join(entry.parentPath, entry.name), 'utf8').matchAll(/(?:data-slot['"]?\s*[=:]\s*\{?|\bslot:)\s*["'`]([a-z][a-z0-9-]*)/g)].map((match) => match[1])),
 );
 
+/** Buttons and fields look the same under every preset (ADR 0014): no rule reaches them, except in a `:not()`, but for type. */
+const kosmosControls =
+  /data-slot="(button|input|textarea|input-group|select-trigger|date-picker-trigger|combobox-input-group|combobox-chips|number-field-(group|decrement|increment)|otp-field-input)"/;
+const kosmosControlTokens = ['shadow-control', 'shadow-primary', 'shadow-primary-hover', 'primary-hover', 'shadow-field'];
+const typeProperties = ['font-family', 'font-weight', 'letter-spacing', 'text-transform'];
+const notClause = /:not\((?:[^()]|\([^()]*\))*\)/g;
+
 for (const preset of presets.filter((candidate) => candidate.style)) {
   const style = preset.style!;
   const declarations = cssDeclarations(style.css ?? {});
@@ -236,6 +243,15 @@ for (const preset of presets.filter((candidate) => candidate.style)) {
     assert.deepEqual(moving.filter(({ within }) => !within.some((rule) => rule.includes('prefers-reduced-motion: no-preference'))), []);
     const fonts = declarations.filter(({ property, value }) => property === 'font-family' && !/^var\(--font-(sans|mono)\)$/.test(value));
     assert.deepEqual(fonts, []);
+  });
+
+  test(`${preset.name}: buttons and fields keep the Kosmos shape, bevel, press and focus; only their type may change`, () => {
+    const tokens = [...Object.keys(style.light ?? {}), ...Object.keys(style.dark ?? {})];
+    assert.deepEqual([...new Set(tokens.filter((token) => kosmosControlTokens.includes(token)))], []);
+    const reshaped = declarations.filter(
+      ({ within, property }) => within.some((rule) => kosmosControls.test(rule.replace(notClause, ''))) && !typeProperties.includes(property),
+    );
+    assert.deepEqual(reshaped, []);
   });
 
   test(`${preset.name}: its style sizes nothing, so the size stays the visitor's choice`, () => {

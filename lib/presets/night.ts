@@ -9,7 +9,7 @@ export const night: Preset = {
   id: 'night',
   name: 'Night',
   description:
-    'Made for dark mode, an instrument panel: a near-black page, cards and popovers each one step lighter and lit by a 1px rim, a darker sidebar, an 8px radius and a mint accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series. The primary button is bevelled and glows, focus glows, the current page is a raised key, and it has a cool daylight version for light mode.',
+    'Made for dark mode, an instrument panel: a near-black page, cards and popovers each one step lighter and lit by a 1px rim, a darker sidebar, an 8px radius and a mint accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series. Focus glows, the current page is a raised key, and it has a cool daylight version for light mode.',
   radius: '0.5rem',
   style: nightStyle,
   accent: {

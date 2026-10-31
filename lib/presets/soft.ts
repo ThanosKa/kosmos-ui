@@ -9,7 +9,7 @@ export const soft: Preset = {
   id: 'soft',
   name: 'Soft',
   description:
-    'A cool gray page and white cards that float on deep, soft shadows under a 16px radius, with every control a pill, so each surface reads as a soft cushion on a paper desk, and a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
+    'A cool gray page and white cards that float on deep, soft shadows under a 16px radius, with pill segments, tags and navigation, so each surface reads as a soft cushion on a paper desk, and a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
   radius: '1rem',
   style: softStyle,
   accent: {
