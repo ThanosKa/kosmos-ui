@@ -50,9 +50,29 @@ export type Mode = 'light' | 'dark';
  */
 export type Accent = Record<Mode, { primary: string; onPrimary: string; ring: string; text: string }>;
 
+/** CSS rules as shadcn's registry `css` field writes them: a selector or at-rule, then declarations or nested rules. */
+export type CssRules = { [selector: string]: { [property: string]: string } | CssRules };
+
 /**
- * A ready set of palette and radius values. It never changes fonts, density or shadows (ADR 0009). The palette holds
- * the preset without its accent, ink where the accent would go (primary included), so the accent can be turned off.
+ * How a preset changes the components beyond color (ADR 0014). `theme` holds Kosmos tokens equal in both modes (type
+ * weights and tracking, durations, easings), `light` and `dark` the mode tokens (shadows), and `css` the rules that
+ * reshape components by their `data-slot`. A style never sizes anything: spacing, text sizes, line heights, heights,
+ * padding and gaps stay the Kosmos ones, and the size is the visitor's choice. A variable only a preset's rules read is
+ * declared in `css`, on `:root` and `.dark`, and named after the preset (`--console-raise`).
+ */
+export type PresetStyle = {
+  /** What the style changes, in a few sentences, for the Presets page and the DESIGN.md. */
+  summary: string;
+  theme?: Record<string, string>;
+  light?: Record<string, string>;
+  dark?: Record<string, string>;
+  css?: CssRules;
+};
+
+/**
+ * A ready set of palette and radius values, and for a preset with a `style`, its own shadows, type weights, motion and
+ * component shapes (ADR 0014). Fonts stay Geist under every preset. The palette holds the preset without its accent,
+ * ink where the accent would go (primary included), so the accent can be turned off.
  */
 export type Preset = {
   id: string;
@@ -61,7 +81,10 @@ export type Preset = {
   description: string;
   /** `--radius`, the base of the radius scale. */
   radius: string;
+  /** `--spacing`, the unit of every height, padding and gap, when the chosen size is not the Kosmos 0.25rem. */
+  spacing?: string;
   accent?: Accent;
+  style?: PresetStyle;
 } & Record<Mode, Palette>;
 
 /** The palette of one mode with the preset's accent in place, as its CSS writes it. */
@@ -79,4 +102,9 @@ export function presetPalette(preset: Preset, mode: Mode): Palette {
     'chart-1': accent.ring,
     'accent-text': accent.text,
   };
+}
+
+/** The tokens a preset sets equal in both modes: the chosen size's spacing, then its style's. */
+export function presetThemeTokens(preset: Preset): Record<string, string> {
+  return { ...(preset.spacing ? { spacing: preset.spacing } : {}), ...preset.style?.theme };
 }

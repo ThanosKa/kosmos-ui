@@ -4,7 +4,17 @@ import { Moon, RotateCcw, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
 import { cn } from '@/lib/cn';
-import { defaultChoice, presetById, presetPalette, presetRadii, presets, type Mode, type Preset } from '@/lib/presets';
+import {
+  defaultChoice,
+  presetById,
+  presetPalette,
+  presetRadii,
+  presets,
+  presetSizes,
+  type Mode,
+  type Preset,
+  type PresetSize,
+} from '@/lib/presets';
 import { Button } from '@/registry/kosmos/ui/button';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Switch } from '@/registry/kosmos/ui/switch';
@@ -24,6 +34,12 @@ export function PresetSwatch({ preset }: { preset: Preset }) {
 
 const noSubscription = () => () => {};
 
+const sizeNames: Record<PresetSize, { name: string; short: string }> = {
+  compact: { name: 'Compact', short: 'S' },
+  default: { name: 'Default', short: 'M' },
+  comfortable: { name: 'Comfortable', short: 'L' },
+};
+
 type PresetPickerProps = {
   /** `row` for a toolbar over a preview or a phone sheet, `panel` for a column or a popover. */
   layout?: 'row' | 'panel';
@@ -31,9 +47,9 @@ type PresetPickerProps = {
 };
 
 /**
- * The site's preset picker: preset, accent, radius, theme and Reset, for the whole site and every preview on it.
- * Picking a preset starts from it as it ships, its accent on and its own radius; the accent and radius then change
- * it. Reset brings back the Default and leaves the theme.
+ * The site's preset picker: preset, accent, radius, size, theme and Reset, for the whole site and every preview on
+ * it. Picking a preset starts from it as it ships, its accent on, its own radius and the default size; the accent,
+ * radius and size then change it. Reset brings back the Default and leaves the theme.
  */
 export function PresetPicker({ layout = 'row', className }: PresetPickerProps) {
   const [choice, onChoiceChange] = useSitePreset();
@@ -108,6 +124,21 @@ export function PresetPicker({ layout = 'row', className }: PresetPickerProps) {
           {presetRadii.map((value) => (
             <SegmentedControlItem key={value} value={value} aria-label={`${value}px`} className="tabular-nums">
               {value}
+            </SegmentedControlItem>
+          ))}
+        </SegmentedControl>
+      </div>
+      <div className={control}>
+        {label('size', 'Size')}
+        <SegmentedControl
+          aria-labelledby={`${id}-size`}
+          value={choice.size}
+          onValueChange={(size) => onChoiceChange({ ...choice, size: size as PresetSize })}
+          className={cn(panel && 'w-full')}
+        >
+          {(Object.keys(presetSizes) as PresetSize[]).map((size) => (
+            <SegmentedControlItem key={size} value={size} aria-label={panel ? undefined : sizeNames[size].name}>
+              {panel ? sizeNames[size].name : sizeNames[size].short}
             </SegmentedControlItem>
           ))}
         </SegmentedControl>

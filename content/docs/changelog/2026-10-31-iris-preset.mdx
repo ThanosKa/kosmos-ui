@@ -1,0 +1,12 @@
+---
+title: Presets bring their own style, and the Iris preset
+description: Soft, Console, Night and the new Iris change shadows, type, motion and the shape of the components, not only their colors, and a new Size option scales every component.
+date: 2026-10-31
+---
+
+- **Presets with a style**: Soft, Console, Night and Iris now change more than color. Each sets its own shadows, type weights and motion, and keeps the Kosmos sizes. Its CSS rules also reshape the components through their `data-slot`. Default and Warm keep the Kosmos style. Fonts stay Geist under every preset. To pick it up, take the preset's CSS or run `shadcn add` for it again: the registry item now writes the rules into your stylesheet.
+  - **Soft**: every control is a pill. Surfaces float on deep, soft shadows. The current sidebar item is a raised white pill, and the tabs indicator is a sliding pill.
+  - **Console**: a tight radius. Tags and checkboxes are square. Table heads and group labels are mono and uppercase. Buttons look raised and fields recessed. The current sidebar item is raised. The work area is a framed panel.
+  - **Night**: a dark instrument panel with a lit rim on each surface. The primary button is bevelled, and focus glows. The current sidebar item is a raised key, and table heads are uppercase.
+- **Iris**: a new preset. It has neutral grays on a white page, a soft black page in dark and a deep blue-violet primary. Its buttons, tags and segments are pills, and tags are tinted with a border. The current sidebar item is a raised key, and checked marks are ink. Install it with `shadcn add @kosmos/preset-iris`.
+- **Size**: a new choice beside the radius on the Presets page. Compact, Default and Comfortable set `--spacing` to 88%, 100% and 112%, so every height, padding and gap follows; text sizes stay. It works with every preset, and its registry item ends in the size, such as `preset-iris-compact`.

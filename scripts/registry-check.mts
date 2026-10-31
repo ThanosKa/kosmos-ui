@@ -149,6 +149,9 @@ function checkInstall(app: string, tree: RegistryItem[]) {
     for (const key of Object.keys(item.cssVars?.theme ?? {})) {
       if (!new RegExp(`--${key}:`).test(block('@theme inline'))) problems.push(`${item.name}: --${key} missing from @theme inline`);
     }
+    for (const selector of Object.keys(item.css ?? {})) {
+      if (!css.includes(`${selector} {`)) problems.push(`${item.name}: the rule ${selector} was not written`);
+    }
   }
   return problems;
 }

@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { chosenPreset, defaultChoice, presetCss } from './presets/index.ts';
+import { parseKosmosTokens } from './tokens.ts';
 import { readStoredChoice, sharedPresetScript, sitePresetCss, sitePresetKey, sitePresetScript, storedPreset } from './site-preset.ts';
 
-const soft = { preset: 'soft', accent: false, radius: '6' };
+const soft = { preset: 'soft', accent: false, radius: '6', size: 'compact' } as const;
 
 /** Runs the head script in a document whose localStorage holds `stored`, and returns the style it adds, if any. */
 function runScript(stored: string | null) {
@@ -31,11 +32,16 @@ test('the head script adds nothing for the Default, an empty store or a broken v
   assert.deepEqual(runScript('{not json'), []);
 });
 
-test('the site applies exactly the CSS Get code gives, only on selectors that win over the tokens', () => {
+test('the site applies the values Get code gives, on selectors that win over the tokens', () => {
   const applied = sitePresetCss(soft);
   assert.match(applied, /^html:root \{/);
   assert.match(applied, /^html\.dark \{/m);
-  assert.equal(applied.replace('html:root {', ':root {').replace('html.dark {', '.dark {'), presetCss(chosenPreset(soft)));
+  const site = parseKosmosTokens(applied.replace('html:root {', ':root {').replace('html.dark {', '.dark {'));
+  const pasted = parseKosmosTokens(presetCss(chosenPreset(soft)));
+  assert.deepEqual(site.light, { ...pasted.light, ...pasted.themeInline });
+  assert.deepEqual(site.dark, pasted.dark);
+  const rules = (css: string) => css.slice(css.indexOf('}', css.indexOf('.dark {')) + 1).trim();
+  assert.equal(rules(applied.replace('html.dark {', '.dark {')), rules(presetCss(chosenPreset(soft))));
 });
 
 test('a stored choice reads back as the choice, and an unreadable one as the Default', () => {

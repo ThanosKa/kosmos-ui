@@ -1,3 +1,4 @@
+import { cssRulesText } from './css.ts';
 import { paletteSections, presetPalette, type PaletteToken, type Preset } from './palette.ts';
 
 const uses: Record<PaletteToken, string> = {
@@ -63,13 +64,33 @@ function accentSection({ accent }: Preset) {
 | Text | \`${accent.light.text}\` | \`${accent.dark.text}\` | \`accent-text\`: 4.5:1 on every surface a nav item sits on. |`;
 }
 
-/** The preset as a DESIGN.md for an agent: every value, the radius, the focus rule and what to do and avoid. */
+const tokenTable = (values: Record<string, string>) =>
+  ['| Token | Value |', '| --- | --- |', ...Object.entries(values).map(([token, value]) => `| \`${token}\` | \`${value}\` |`)].join('\n');
+
+function styleSection({ style }: Preset) {
+  if (!style) return '';
+  const modes = (['light', 'dark'] as const).filter((mode) => style[mode] && Object.keys(style[mode]).length);
+  return `
+## Style
+
+${style.summary}
+${style.theme ? `\nThe same in light and dark, set in \`@theme inline\`:\n\n${tokenTable(style.theme)}\n` : ''}${modes.map((mode) => `\n${mode === 'light' ? 'Light' : 'Dark'}, on \`${mode === 'light' ? ':root' : '.dark'}\`:\n\n${tokenTable(style[mode]!)}\n`).join('')}${
+    style.css
+      ? `\nThe components take these rules by their \`data-slot\`. Keep them after the tokens and outside any \`@layer\`: they hold the preset's shapes, and outside a layer they win over the Tailwind classes in the components.\n\n\`\`\`css\n${cssRulesText(style.css)}\n\`\`\`\n`
+      : ''
+  }`;
+}
+
+/** The preset as a DESIGN.md for an agent: every value, the radius, the style, the focus rule and what to do and avoid. */
 export function presetDesignMd(preset: Preset): string {
+  const scope = preset.style
+    ? 'It sets the palette, the radius and its own style: shadows, type weights, motion and the shape of the components. Fonts, text sizes and the size of every component stay the Kosmos ones.'
+    : 'It sets the palette and the radius only: fonts, sizes, shadows and motion belong to the Kosmos style and stay the same under every preset.';
   return `# ${preset.name} preset
 
 ${preset.description}
 
-This is a Kosmos UI preset. It sets the palette and the radius only: fonts, density, shadows and motion belong to the Kosmos style and stay the same under every preset. Every color is a CSS variable with its shadcn name, light on \`:root\` and dark on \`.dark\`, and components reach it through its Tailwind class (\`bg-card\`, \`text-muted-foreground\`, \`outline-ring\`), never a literal.
+This is a Kosmos UI preset. ${scope} Every color is a CSS variable with its shadcn name, light on \`:root\` and dark on \`.dark\`, and components reach it through its Tailwind class (\`bg-card\`, \`text-muted-foreground\`, \`outline-ring\`), never a literal.
 
 ## Palette
 
@@ -87,12 +108,13 @@ ${table(preset, paletteSections.chart)}
 
 ${accentSection(preset)}
 
-## Radius
+## Radius and size
 
 | Token | Value | Use |
 | --- | --- | --- |
 | \`radius\` | \`${preset.radius}\` | The base of the radius scale. Controls take \`rounded-lg\` (the radius), overlays \`rounded-xl\` (4px more), cards \`rounded-2xl\` (6px more), menu items inside a popup \`rounded-lg\`, and the 16px checkbox \`rounded-sm\` (6px less). |
-
+| \`spacing\` | \`${preset.spacing ?? '0.25rem'}\` | The unit of every height, padding and gap: a button is 7.5 units tall, a text field 8.5. Text sizes do not follow it. |
+${styleSection(preset)}
 ## Focus
 
 Every focusable element shows a 2px \`outline-ring\` outline, offset 2px, so the shadow of its surface stays intact. Text fields light their own edge instead: a 1px \`ring\` line with a 3px \`ring\` halo at 20%. \`ring\` keeps 3:1 against the page, cards, popovers and secondary surfaces in both modes, and \`sidebar-ring\` does the same on the sidebar.

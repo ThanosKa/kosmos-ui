@@ -33,6 +33,8 @@ export type RegistryItem = {
   registryDependencies?: string[];
   files?: RegistryFile[];
   cssVars?: Record<string, Record<string, string>>;
+  /** CSS rules the CLI writes into the project's stylesheet, as a preset with a style ships them. */
+  css?: Record<string, unknown>;
   /** On a block, its one block category. */
   categories?: string[];
   meta?: Record<string, unknown>;

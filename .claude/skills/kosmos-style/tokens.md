@@ -64,7 +64,7 @@ In their own labelled blocks after the chart colors, the same under every preset
 
 ## Shadows
 
-Shadows are style, not palette: they are written once in `tokens.css`, and no preset sets them (ADR 0009). Light shadows are tinted from the preset's own `--foreground` through `color-mix`, so none is ever warm on a cool preset; dark ones stay black.
+Shadows are style, not palette: they are written once in `tokens.css`. Default and Warm keep them; a preset with a style sets its own (ADR 0014). Light shadows are tinted from the preset's own `--foreground` through `color-mix`, so none is ever warm on a cool preset; dark ones stay black.
 
 | Token | Surface | Structure |
 | --- | --- | --- |
