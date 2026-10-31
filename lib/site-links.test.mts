@@ -35,6 +35,14 @@ test('the site links start with the docs tabs, in their order', () => {
   );
 });
 
-test('the Presets page has a link of its own after the docs tabs', () => {
-  assert.deepEqual(siteLinks.at(-1), { href: '/presets', label: 'Presets' });
+test('the Presets page and the changelog have links of their own after the docs tabs', () => {
+  assert.deepEqual(siteLinks.slice(3), [
+    { href: '/presets', label: 'Presets' },
+    { href: '/docs/changelog', label: 'Changelog' },
+  ]);
+});
+
+test('the changelog is its own current link, not the Docs tab', () => {
+  assert.equal(currentLinkHref(siteLinks, '/docs/changelog'), '/docs/changelog');
+  assert.equal(currentLinkHref(siteLinks, '/docs/installation'), '/docs');
 });
