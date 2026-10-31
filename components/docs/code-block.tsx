@@ -10,7 +10,6 @@ import {
   type ComponentProps,
   type CSSProperties,
   type ReactNode,
-  type RefObject,
 } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -30,6 +29,8 @@ type CodeBlockProps = Omit<ComponentProps<'figure'>, 'title'> & {
   embedded?: boolean;
   /** Fills the height of a flex column and scrolls inside it, with no collapse (the Code tab of a preview shell). */
   fill?: boolean;
+  /** Draws its own copy button. Off when the surface around it carries one (package manager tabs). */
+  copy?: boolean;
 };
 
 /**
@@ -42,6 +43,7 @@ export function CodeBlock({
   collapse = 'file',
   embedded,
   fill,
+  copy = true,
   className,
   style,
   children,
@@ -76,6 +78,7 @@ export function CodeBlock({
   }, [expanded, fill]);
 
   const collapsed = overflows && !expanded;
+  const copyText = () => viewportRef.current?.querySelector('pre')?.textContent ?? '';
 
   // Under reduced motion the new height fades in from transparent, like a Base UI panel's starting style.
   const toggle = () => {
@@ -103,12 +106,14 @@ export function CodeBlock({
       {title ? (
         <div className="flex h-10 items-center gap-2 border-b border-border ps-4 pe-2">
           <figcaption className="min-w-0 flex-1 truncate font-mono text-caption text-muted-foreground">{title}</figcaption>
-          <CopyButton viewportRef={viewportRef} />
+          {copy && <CopyButton text={copyText} />}
         </div>
       ) : (
-        <div className="absolute end-2.5 top-2.5 z-10">
-          <CopyButton viewportRef={viewportRef} />
-        </div>
+        copy && (
+          <div className="absolute end-2.5 top-2.5 z-10">
+            <CopyButton text={copyText} />
+          </div>
+        )
       )}
       <div
         ref={viewportRef}
@@ -123,7 +128,7 @@ export function CodeBlock({
           'duration-fast ease-power3-out data-expanded:duration-slow',
           'motion-safe:transition-[max-height] motion-safe:ease-smooth-in-out',
           'motion-reduce:transition-[opacity] motion-reduce:data-starting-style:opacity-0 motion-reduce:data-starting-style:transition-none',
-          !title && '[--padding-right:--spacing(10)]',
+          !title && copy && '[--padding-right:--spacing(10)]',
           lineNumbers && '[counter-set:line_0]',
           !fill && (expanded ? 'max-h-[min(var(--code-height),75svh)] pb-12' : mode.height),
         )}
@@ -157,10 +162,9 @@ export function CodeBlock({
   );
 }
 
-function CopyButton({ viewportRef }: { viewportRef: RefObject<HTMLDivElement | null> }) {
-  const [copied, copy] = useCopyButton(() =>
-    navigator.clipboard.writeText(viewportRef.current?.querySelector('pre')?.textContent ?? ''),
-  );
+/** Copies what `text` returns when pressed, and says "Copied" to screen readers. */
+export function CopyButton({ text }: { text: () => string }) {
+  const [copied, copy] = useCopyButton(() => navigator.clipboard.writeText(text()));
 
   return (
     <>

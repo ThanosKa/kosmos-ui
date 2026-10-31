@@ -14,17 +14,17 @@ type LiveHighlightedCodeProps = Parameters<typeof highlightCode>[0] & {
  */
 export function LiveHighlightedCode({ fallback, ...props }: LiveHighlightedCodeProps) {
   const [highlighted, setHighlighted] = useState<ReactNode>(null);
-  const { code, lang, title, embedded, className } = props;
+  const { code, lang, title, embedded, copy, className } = props;
 
   useEffect(() => {
     let stale = false;
-    void highlightCode({ code, lang, title, embedded, className }).then((node) => {
+    void highlightCode({ code, lang, title, embedded, copy, className }).then((node) => {
       if (!stale) setHighlighted(node);
     });
     return () => {
       stale = true;
     };
-  }, [code, lang, title, embedded, className]);
+  }, [code, lang, title, embedded, copy, className]);
 
   return highlighted ?? fallback;
 }

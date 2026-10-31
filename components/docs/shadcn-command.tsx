@@ -19,7 +19,7 @@ export function PackageManagerCode({ code }: { code: (runner: Runner, manager: M
         Object.fromEntries(
           managers.map((manager) => [
             manager,
-            <HighlightedCode key={manager} code={code(packageRunners[manager], manager)} lang="bash" embedded />,
+            <HighlightedCode key={manager} code={code(packageRunners[manager], manager)} lang="bash" embedded copy={false} />,
           ]),
         ) as Record<Manager, ReactNode>
       }

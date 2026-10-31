@@ -1,7 +1,8 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+import { CopyButton } from './code-block';
 import { usePackageManager } from './use-package-manager';
 
 export type DocsTab = { label: string; content: ReactNode };
@@ -27,18 +28,25 @@ export function DocsTabs({ tabs }: { tabs: DocsTab[] }) {
 }
 
 /**
- * One code panel per package manager on a code card, with the tabs in the card's header. The choice is shared
- * with every other install tab and the install chip, and remembered on later visits.
+ * One code panel per package manager on a code card, with the tabs and the copy button in the card's header.
+ * Each panel is a code block drawn with `copy={false}`. The choice is shared with every other install tab and
+ * the install chip, and remembered on later visits.
  */
 export function PackageManagerTabs<T extends string>({ managers, panels }: { managers: readonly T[]; panels: Record<T, ReactNode> }) {
   const [manager, setManager] = usePackageManager(managers);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const activeCode = () => tabsRef.current?.querySelector('[data-slot="tabs-content"]:not([hidden]) pre')?.textContent ?? '';
   return (
     <Tabs
+      ref={tabsRef}
       value={manager}
       onValueChange={(value) => setManager(value as T)}
-      className="not-prose min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card"
+      className="not-prose relative min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card"
     >
-      <TabsList aria-label="Package manager" className="px-2">
+      <div className="absolute end-2 top-1.5 z-10">
+        <CopyButton text={activeCode} />
+      </div>
+      <TabsList aria-label="Package manager" className="ps-2 pe-10">
         {managers.map((item) => (
           <TabsTrigger key={item} value={item}>
             {item}
