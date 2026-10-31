@@ -96,6 +96,7 @@ function useOpenGroups(nav: DocsNav, pathname: string) {
 
 const countNoun: Partial<Record<DocsNavSectionId, [string, string]>> = {
   components: ['component', 'components'],
+  charts: ['chart', 'charts'],
 };
 
 /**

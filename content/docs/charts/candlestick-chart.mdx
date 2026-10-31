@@ -1,0 +1,77 @@
+---
+title: Candlestick chart
+description: Shows a value over time as candles, each with its open, close, high and low, and faint volume bars along the bottom. Hover, a drag or the arrow keys read a candle in a tooltip.
+---
+
+<ComponentPreview name="candlestick-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="candlestick-chart" />
+
+## Usage
+
+```tsx
+import { CandlestickChart } from '@/components/ui/candlestick-chart';
+```
+
+```tsx
+const days = [
+  { label: 'Fri', name: 'Fri, Oct 9', open: 662, high: 690, low: 648, close: 673, volume: 969700 },
+  { label: 'Sat', name: 'Sat, Oct 10', open: 673, high: 699, low: 660, close: 675, volume: 971300 },
+  { label: 'Sun', name: 'Sun, Oct 11', open: 675, high: 731, low: 668, close: 703, volume: 1012000 },
+];
+
+<CandlestickChart data={days} label="Events a minute, last 3 days" volumeLabel="Events" />
+```
+
+Each candle covers one period, oldest first. Its body runs from the open to the close, and its wick from the low to the high. A candle is green when the value closed higher than it opened and red when it closed lower. Volume bars run along the bottom when the candles have a `volume`. Put the chart in a [Chart card](/docs/components/chart-card) with a range switch, as above. When the data changes, every candle moves from the old one at the same place to its new shape.
+
+Labels on the right mark the value, and labels under the plot mark the time. Candles in a row with the same `group` share one label, such as a weekday over its 3-hour candles. The chart drops labels that would crowd.
+
+Hovering the plot, or dragging across it on a touch screen, inspects the candle under the pointer. The other candles dim, a dashed line marks it, and a tooltip reads its time, change, open, high, low, close and volume. The arrow keys step through the candles, `Page Up` and `Page Down` move ten at a time, `Home` and `End` jump to the ends, and `Escape` closes the tooltip.
+
+Screen readers hear a slider named by `label` that reads each candle in full, and a hidden table lists every candle. Under the reduced motion setting the candles fade in instead of growing, and new data fades them in place.
+
+## Entrance
+
+The axis labels fade in, then each candle grows out of its open one after another as the chart scrolls into view. By default this plays the first time a chart shows in the browser tab. [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the other settings.
+
+## API
+
+### CandlestickChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The candles, oldest first, each `{ label, open, high, low, close, volume?, name?, group? }`. `name` is the full time in the tooltip and for screen readers, and `group` joins candles under one label.',
+      type: 'CandlestickChartItem[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the open, high, low and close, and the value labels on the right.',
+      type: '(value: number) => string',
+      default: 'a number with separators (1,012)',
+    },
+    formatVolume: {
+      description: 'Writes the volume in the tooltip.',
+      type: '(value: number) => string',
+      default: 'a compact number (1M)',
+    },
+    volumeLabel: {
+      description: 'What the volume is called in the tooltip and the hidden table.',
+      type: 'string',
+      default: "'Volume'",
+    },
+    entrance: {
+      description: 'When the candles grow in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

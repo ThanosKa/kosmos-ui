@@ -3,7 +3,7 @@
 import type * as React from 'react';
 import * as Recharts from 'recharts';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, chartAnimation } from '@/registry/kosmos/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartEntrance, useChartAnimation } from '@/registry/kosmos/ui/chart';
 
 type DonutChartSize = 'sm' | 'md' | 'lg';
 
@@ -113,6 +113,8 @@ type DonutChartProps = Omit<React.ComponentProps<'div'>, 'children'> & {
   size?: DonutChartSize;
   /** Replaces the total and the label in the center. */
   children?: React.ReactNode;
+  /** When the ring sweeps in. See `ChartEntrance`. */
+  entrance?: ChartEntrance;
 };
 
 /**
@@ -126,11 +128,13 @@ function DonutChart({
   format = formatCompact,
   total: wholeTotal,
   size = 'lg',
+  entrance,
   className,
   children,
   'aria-label': ariaLabel,
   ...props
 }: DonutChartProps) {
+  const animation = useChartAnimation(entrance, data);
   const { box, strokeWidth, totalText, showLabel } = sizeStyles[size];
   const parts = data.map((item, index) => ({ ...item, value: partValue(item.value), fill: partColor(item, index) }));
   const drawn = parts.filter((part) => part.value > 0);
@@ -187,7 +191,7 @@ function DonutChart({
               stroke="none"
               rootTabIndex={-1}
               shape={Segment}
-              {...chartAnimation}
+              {...animation}
             />
           </Recharts.PieChart>
         </ChartContainer>

@@ -113,8 +113,8 @@ Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover,
 ### Roles
 
 - One filled `bg-primary` action per view. Its peers take the secondary or ghost look.
-- The default palette is true greys and ink (ADR 0009): chroma 0 everywhere except `destructive`, `success` and `warning`. A preset in `lib/presets` may bring an accent and other greys, so a component reaches roles only and never assumes ink or a hue. `pnpm test` checks every preset in both modes.
-- A preset's accent (ADR 0011) fills only `primary`, `primary-foreground`, `sidebar-primary`, `sidebar-primary-foreground`, `ring`, `sidebar-ring`, `chart-1` and `accent-text` (tokens.md has its steps). A preset without one keeps all of them ink.
+- The default palette is true greys and ink (ADR 0009): chroma 0 everywhere except `destructive`, `success`, `warning` and the chart series (ADR 0016). A preset in `lib/presets` may bring an accent and other greys, so a component reaches roles only and never assumes ink or a hue. `pnpm test` checks every preset in both modes.
+- A preset's accent (ADR 0011) fills only `primary`, `primary-foreground`, `sidebar-primary`, `sidebar-primary-foreground`, `ring`, `sidebar-ring` and `accent-text` (tokens.md has its steps). A preset without one keeps all of them ink.
 - Controls read `primary` (Tabs indicator included), never `foreground`, for a filled or checked state.
 - `ring` is the focus color: ink at 55% in the default, the accent in a preset that has one. `shadow-lift` follows it. It is made for 3:1 marks, so it never fills a button or a large surface and never colors text.
 - The ring color means focus, so hover never takes it: a hover line or halo is neutral (the sidebar resize handle shows `sidebar-foreground/20`, a slider thumb a `foreground/10` halo).

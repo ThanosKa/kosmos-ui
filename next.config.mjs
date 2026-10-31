@@ -16,6 +16,10 @@ const config = {
       { source: '/docs/foundations', destination: '/docs/foundations/color', permanent: false },
       { source: '/docs/motion', destination: '/docs/foundations/motion', permanent: true },
       { source: '/docs/motion.md', destination: '/docs/foundations/motion.md', permanent: true },
+      ...['donut-chart'].flatMap((name) => [
+        { source: `/docs/components/${name}`, destination: `/docs/charts/${name}`, permanent: true },
+        { source: `/docs/components/${name}.md`, destination: `/docs/charts/${name}.md`, permanent: true },
+      ]),
     ];
   },
 };

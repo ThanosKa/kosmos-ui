@@ -1,5 +1,5 @@
 import { irisStyle } from './iris-style.ts';
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 
 const ink = '#121212';
 const lightInk = '#f9fbff';
@@ -9,7 +9,7 @@ export const iris: Preset = {
   id: 'iris',
   name: 'Iris',
   description:
-    'Neutral grays on a white page with a light gray sidebar, a soft black page in dark, and a deep blue-violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, meters and the first chart series. The current page in navigation is a raised key in ink. Tags and segments are pills, cards round to 10px, and side drawers are flush full-height sheets.',
+    'Neutral grays on a white page with a light gray sidebar, a soft black page in dark, and a deep blue-violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus and meters. The current page in navigation is a raised key in ink. Tags and segments are pills, cards round to 10px, and side drawers are flush full-height sheets.',
   radius: '0.625rem',
   // In dark the violet steps lighter than in light, so the fill still reads 3:1 on the soft black page and cards.
   accent: {
@@ -50,11 +50,7 @@ export const iris: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': '#ededed',
     'sidebar-ring': '#1212128c',
-    'chart-1': ink,
-    'chart-2': 'oklch(0.35 0 0)',
-    'chart-3': 'oklch(0.46 0 0)',
-    'chart-4': 'oklch(0.55 0 0)',
-    'chart-5': 'oklch(0.63 0 0)',
+    ...chartColors.light,
   },
   dark: {
     background: '#161616',
@@ -89,10 +85,6 @@ export const iris: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': '#232323',
     'sidebar-ring': '#f9fbff8c',
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0 0)',
-    'chart-3': 'oklch(0.71 0 0)',
-    'chart-4': 'oklch(0.62 0 0)',
-    'chart-5': 'oklch(0.54 0 0)',
+    ...chartColors.dark,
   },
 };

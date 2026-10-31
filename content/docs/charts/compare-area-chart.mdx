@@ -1,0 +1,79 @@
+---
+title: Compare area chart
+description: Draws this period as a line with a faint wash over the period before at 45%. The tooltip shows both days and the gap between them.
+---
+
+<ComponentPreview name="compare-area-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="compare-area-chart" />
+
+## Usage
+
+```tsx
+import { CompareAreaChart } from '@/components/ui/compare-area-chart';
+```
+
+```tsx
+const week = [
+  { label: 'Oct 9', name: 'Fri, Oct 9', current: 969700, previous: 952100 },
+  { label: 'Oct 10', name: 'Sat, Oct 10', current: 971300, previous: 948600 },
+  { label: 'Oct 11', name: 'Sun, Oct 11', current: 1012000, previous: 972600 },
+];
+
+<CompareAreaChart data={week} label="Events per day, last 7 days against the 7 days before" currentLabel="Last 7 days" previousLabel="7 days before" />
+```
+
+Each day of this period sits beside the same day of the period before. This period is a line in the first chart color with a faint wash under it. The period before is the same color at 45% with no wash. The values start at zero, so a dip reads as its true size. Only the first and last labels show under the chart.
+
+Hovering the chart shows a dashed line at the day, a dot on each line and a tooltip with both values. A green ▲ or a red ▼ with a sign marks the gap, so it never relies on color alone. Put the chart in a [Chart card](/docs/components/chart-card) with a switch, as above. When the data changes, every point moves to its new place.
+
+The chart takes focus, and the arrow keys move the tooltip from day to day. Screen readers hear `label`, and a hidden table lists every day with both values. Under the reduced motion setting the chart fades in instead of drawing, and new data fades it in again.
+
+## Examples
+
+### Entrance
+
+Both lines draw across together as the chart scrolls into view, and the end labels fade in halfway. By default (`entrance="session"`) this plays the first time a chart shows in the browser tab, and every chart after that draws at once. Changes, such as another project, always move. [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the three settings.
+
+<ComponentPreview name="compare-area-chart-entrance" />
+
+## API
+
+### CompareAreaChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The days of this period, oldest first, each `{ label, current, previous, name? }`. `label` sits under the chart, and `name` heads the tooltip and the hidden table.',
+      type: 'CompareAreaChartItem[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    currentLabel: {
+      description: 'Names this period in the tooltip and the hidden table.',
+      type: 'string',
+      default: "'This period'",
+    },
+    previousLabel: {
+      description: 'Names the period before in the tooltip and the hidden table.',
+      type: 'string',
+      default: "'Period before'",
+    },
+    format: {
+      description: 'Writes the values and the gap in the tooltip and the hidden table.',
+      type: '(value: number) => string',
+      default: 'a whole number (1,012,000)',
+    },
+    entrance: {
+      description: 'When the lines draw in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

@@ -1,5 +1,5 @@
 import { consoleStyle } from './console-style.ts';
-import type { Preset } from './palette.ts';
+import { chartColors, type Preset } from './palette.ts';
 
 const ink = '#18181d';
 const lightInk = '#ededf2';
@@ -9,7 +9,7 @@ export const consolePreset: Preset = {
   id: 'console',
   name: 'Console',
   description:
-    'Violet-tinted grays on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series, for dense tools that live in dark mode. Its shape is precise: hairline rings, square tags and uppercase mono labels.',
+    'Violet-tinted grays on a near-black desk in dark and a cool white one in light, under a tight 6px radius and a violet accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation and meters, for dense tools that live in dark mode. Its shape is precise: hairline rings, square tags and uppercase mono labels.',
   radius: '0.375rem',
   style: consoleStyle,
   accent: {
@@ -49,11 +49,7 @@ export const consolePreset: Preset = {
     'sidebar-accent-foreground': ink,
     'sidebar-border': '#e5e5ea',
     'sidebar-ring': 'oklch(0.211 0.01 285.5 / 0.5)',
-    'chart-1': ink,
-    'chart-2': 'oklch(0.4 0.012 286)',
-    'chart-3': 'oklch(0.49 0.012 286)',
-    'chart-4': 'oklch(0.57 0.012 286)',
-    'chart-5': 'oklch(0.63 0.012 286)',
+    ...chartColors.light,
   },
   dark: {
     background: '#0c0c0f',
@@ -88,10 +84,6 @@ export const consolePreset: Preset = {
     'sidebar-accent-foreground': lightInk,
     'sidebar-border': '#1c1c22',
     'sidebar-ring': 'oklch(0.948 0.007 286.3 / 0.5)',
-    'chart-1': lightInk,
-    'chart-2': 'oklch(0.82 0.012 286)',
-    'chart-3': 'oklch(0.71 0.012 286)',
-    'chart-4': 'oklch(0.62 0.012 286)',
-    'chart-5': 'oklch(0.54 0.012 286)',
+    ...chartColors.dark,
   },
 };

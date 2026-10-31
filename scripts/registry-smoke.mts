@@ -193,7 +193,7 @@ const pascal = (name: string) => name.replace(/(^|-)([a-z0-9])/g, (_, __, c: str
 
 /** The example the item's docs page previews first (`<ComponentPreview name="..." />`), else `<name>-demo`. */
 function docsPreview(name: string) {
-  for (const section of ['components', 'blocks']) {
+  for (const section of ['components', 'charts', 'blocks']) {
     const mdx = join(repo, 'content/docs', section, `${name}.mdx`);
     const preview = existsSync(mdx) && /<ComponentPreview\s+name="([^"]+)"/.exec(readFileSync(mdx, 'utf8'))?.[1];
     if (preview) return preview;

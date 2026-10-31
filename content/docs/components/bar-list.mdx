@@ -56,6 +56,10 @@ With no items, the list shows `empty` in its place. Say what is missing, such as
 
 <ComponentPreview name="bar-list-empty" />
 
+### Entrance
+
+The bars grow from the start edge one after another as the list scrolls into view. By default (`entrance="session"`) this plays the first time a chart shows in the browser tab, and every list after that draws at once. Use `entrance="always"` on a landing page and `entrance="none"` to never play it. Under reduced motion the bars fade in.
+
 ## API
 
 ### BarList
@@ -78,6 +82,11 @@ Renders a `<ul>` and takes its props. With no items it renders `empty` in a stat
       description: "Adds a column with each row's share of the total.",
       type: 'boolean',
       default: 'false',
+    },
+    entrance: {
+      description: 'When the bars grow in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
     },
     total: {
       description: 'What the share is a share of, when the list shows only the top rows.',

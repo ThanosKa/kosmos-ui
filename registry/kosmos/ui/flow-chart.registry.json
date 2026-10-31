@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "flow-chart",
+  "type": "registry:ui",
+  "title": "Flow chart",
+  "description": "Two columns of rounded bars, such as sources and the plans they lead to, joined by bands as thick as the amount between them. Hover, a click or the arrow keys read a band, and the legend hides a source or target.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/motion", "@kosmos/use-chart-motion", "@kosmos/button"],
+  "meta": { "group": "chart-other" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/flow-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

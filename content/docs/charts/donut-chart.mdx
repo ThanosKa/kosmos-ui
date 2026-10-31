@@ -34,7 +34,7 @@ The parts take the chart colors in order, `--chart-1` for the first to `--chart-
 
 The chart is an image with one accessible name. By default the name reads the total and every part with its value and share. A `DonutChartLegend` beside it already lists the parts. Then give the chart a short `aria-label` with the total, such as "38.9K visitors", and name the legend with `aria-label`.
 
-Built on [Recharts](https://recharts.org) inside the [Chart](/docs/components/chart) container, so it needs `@kosmos/chart`. Under the reduced motion setting the ring appears without its sweep.
+Built on [Recharts](https://recharts.org) inside the [Chart](/docs/components/chart) container, so it needs `@kosmos/chart`. The ring sweeps in the first time a chart shows in the browser tab and appears drawn at once after that; `entrance` changes this, as on [Chart](/docs/components/chart#entrance). Under the reduced motion setting the ring appears without its sweep.
 
 ## When to pick which
 
@@ -105,6 +105,11 @@ Takes the props of a `<div>` as well.
     children: {
       description: 'Replaces the label and the total in the center.',
       type: 'ReactNode',
+    },
+    entrance: {
+      description: 'When the ring sweeps in: the first time a chart shows in the tab, on every load, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
     },
     'aria-label': {
       description: 'The accessible name.',

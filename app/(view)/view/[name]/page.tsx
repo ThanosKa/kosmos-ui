@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { StayInPreview } from '@/components/preview/stay-in-preview';
 import { loadExample } from '@/lib/examples';
+import { ChartEntranceContext } from '@/registry/kosmos/hooks/use-chart-motion';
 
 const themes = ['light', 'dark'] as const;
 
@@ -14,7 +15,8 @@ export async function generateMetadata(props: PageProps<'/view/[name]'>): Promis
 /**
  * `/view/<name>` renders `registry/kosmos/examples/<name>.tsx` alone. `?theme=light|dark`
  * forces the theme (screenshots); without it the page follows the stored theme, so a docs
- * iframe switches along with the docs toggle.
+ * iframe switches along with the docs toggle. Its charts play their entrance on every load, as on the site, so a chart
+ * opened large from the docs draws in again.
  */
 export default async function ViewPage(props: PageProps<'/view/[name]'>) {
   const [{ name }, { theme }] = await Promise.all([props.params, props.searchParams]);
@@ -30,7 +32,9 @@ export default async function ViewPage(props: PageProps<'/view/[name]'>) {
           the width the frame's Desktop, Tablet or Phone button promises. */}
       <div data-preview-root={name} className="flex min-h-dvh items-center justify-center p-6 data-in-frame:p-4 data-in-frame:not-data-centered:items-start sm:p-10">
         <div data-preview-content className="flex w-full justify-center">
-          <Example />
+          <ChartEntranceContext value="always">
+            <Example />
+          </ChartEntranceContext>
         </div>
       </div>
       <StayInPreview />

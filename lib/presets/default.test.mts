@@ -5,7 +5,7 @@ import { contrastRatio } from '../contrast.ts';
 import { defaultPreset, presets, type Mode, type PaletteToken } from './index.ts';
 
 const modes: Mode[] = ['light', 'dark'];
-const colored = new Set<PaletteToken>(['destructive', 'success', 'warning']);
+const colored = new Set<PaletteToken>(['destructive', 'success', 'warning', 'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5']);
 const surfaces = ['background', 'card', 'popover', 'secondary', 'muted', 'sidebar'] as const;
 const series = ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'] as const;
 
@@ -25,7 +25,7 @@ test('Default is the first preset, and Warm stays available', () => {
 for (const mode of modes) {
   const palette = defaultPreset[mode];
 
-  test(`Default ${mode}: every color is a true grey, except destructive, success and warning`, () => {
+  test(`Default ${mode}: every color is a true grey, except destructive, success, warning and the chart series`, () => {
     const tinted = (Object.keys(palette) as PaletteToken[]).filter(
       (token) => !colored.has(token) && oklch(palette[token]).chroma !== 0,
     );
@@ -54,13 +54,7 @@ for (const mode of modes) {
     assert.ok(onHover >= 3, `sidebar-ring on a hovered sidebar item: ${onHover.toFixed(2)}:1`);
   });
 
-  test(`Default ${mode}: the five chart series are a mono ramp from ink`, () => {
-    assert.equal(palette['chart-1'], palette.foreground);
-    const steps = series.map((token) => oklch(palette[token]).lightness);
-    const awayFromInk = mode === 'light' ? 1 : -1;
-    for (let index = 1; index < steps.length; index++) {
-      assert.ok((steps[index] - steps[index - 1]) * awayFromInk > 0, `${series[index]} steps away from ink`);
-    }
+  test(`Default ${mode}: the five chart series are colors, each 3:1 on the page and on cards`, () => {
     for (const token of series) {
       for (const surface of ['background', 'card'] as const) {
         const ratio = contrastRatio(palette[token], palette[surface]);

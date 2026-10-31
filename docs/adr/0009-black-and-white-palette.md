@@ -1,5 +1,5 @@
 ---
-status: partly superseded by ADR 0011, which lets a preset's color set the primary, and ADR 0014, which lets a preset carry its own style
+status: partly superseded by ADR 0011, which lets a preset's color set the primary, ADR 0014, which lets a preset carry its own style, and ADR 0016, which colors the charts
 ---
 
 # Black and white palette, with color from presets

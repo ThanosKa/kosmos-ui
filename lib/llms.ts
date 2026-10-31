@@ -5,6 +5,7 @@ import type { ApiProp } from '../components/docs/api-table';
 import { readExampleSource } from './examples';
 import { getChangelogEntries } from './changelog';
 import { blockCategoryOfPage, getDocsIndex, getDocsNav, groupOfPage, type DocsIndexItem } from './docs-nav';
+import { docsTabOf } from './docs-tabs';
 import { colorTokens, modeLabels, motionTokens, radiusScale, shadowTokens, typeRoles, type ColorGroup } from './foundations';
 import {
   blockTiers,
@@ -101,7 +102,7 @@ const placeholders = {
       .map(({ page, displayDate }) => `- ${displayDate}: [${page.data.title}](${page.url})${page.data.description ? `. ${page.data.description}` : ''}`)
       .join('\n'),
   DocsIndex: ({ attributes }: PlaceholderData) => {
-    const folder = String(attributes.folder) as 'components' | 'blocks';
+    const folder = String(attributes.folder) as 'components' | 'charts' | 'blocks';
     const list = (items: DocsIndexItem[]) =>
       items.map((item) => `- [${item.title}](${item.url})${item.description ? `: ${item.description}` : ''}`).join('\n');
     return getDocsIndex(folder)
@@ -214,8 +215,10 @@ export async function pageMarkdown(page: DocsPage): Promise<string> {
 /** Every page in sidebar order, section by section, then the changelog entries, which sit outside the sidebar. */
 function pagesInOrder(): { label: string; pages: DocsPage[] }[] {
   const byUrl = new Map(source.getPages().map((page) => [page.url, page]));
-  const pagesOf = (items: { url: string }[]) => items.map((item) => byUrl.get(item.url)!);
+  const pagesAt = (items: { url: string }[]) => items.map((item) => byUrl.get(item.url)!);
   const sections = getDocsNav().sections.flatMap((section) => {
+    // A link into another tab, such as All charts under Components, lists that page in its own tab only.
+    const pagesOf = (items: { url: string }[]) => pagesAt(items.filter((item) => docsTabOf(item.url) === section.tab));
     const ownGroups = section.groups.filter((group) => group.label === section.label);
     const subGroups = section.groups.filter((group) => group.label !== section.label);
     const label = section.tab === 'blocks' && section.id !== 'blocks' ? `Blocks: ${section.label}` : section.label;

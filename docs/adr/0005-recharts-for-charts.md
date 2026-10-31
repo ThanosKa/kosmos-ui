@@ -2,7 +2,7 @@
 
 The Chart component builds on Recharts 3 rather than hand-drawn SVG or another library. shadcn's Chart declares `recharts@3` in both its Radix and Base UI styles, and so do the chart layers of most React design systems. A project that installs `@kosmos/chart` often has Recharts already. shadcn chart examples carry over with the same part names (`ChartContainer`, `ChartTooltipContent`, `ChartLegendContent`). Recharts also gives a keyboard layer, responsive sizing, and reduced-motion handling (`isAnimationActive: 'auto'`). A hand-drawn sparkline and growth chart would have to rebuild all three.
 
-_Decided without the user (2026-10-11), pending confirmation._
+_Decided without the user (2026-10-11), pending confirmation. ADR 0015 adds hand-drawn charts beside Recharts._
 
 ## Consequences
 

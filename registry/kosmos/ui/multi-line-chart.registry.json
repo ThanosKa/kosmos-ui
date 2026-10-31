@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "multi-line-chart",
+  "type": "registry:ui",
+  "title": "Multi-line chart",
+  "description": "Up to five series as lines across a long range. A dashed cursor, a marker on each line and a tooltip ride along as you scrub or use the arrow keys. A legend shows or hides each series, and the scale moves to fit the lines that stay.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion", "@kosmos/motion", "@kosmos/button"],
+  "meta": { "group": "chart-line" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/multi-line-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

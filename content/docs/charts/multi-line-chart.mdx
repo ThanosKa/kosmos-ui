@@ -1,0 +1,125 @@
+---
+title: Multi-line chart
+description: Draws up to five series as lines across a long range. A cursor, a marker on each line and a tooltip follow the pointer or the arrow keys, and a legend hides a series.
+---
+
+<ComponentPreview name="multi-line-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="multi-line-chart" />
+
+## Usage
+
+```tsx
+import { MultiLineChart, MultiLineChartLegend } from '@/components/ui/multi-line-chart';
+```
+
+```tsx
+const series = [
+  { id: 'fernhill', name: 'Fernhill Books', values: [143800, 149400] },
+  { id: 'cirrus', name: 'Cirrus Weather', values: [82100, 82400] },
+];
+const points = [{ label: 'Sat, Oct 10' }, { label: 'Sun, Oct 11', tick: 'Oct 11' }];
+
+function EventsByProject() {
+  const [hidden, setHidden] = React.useState<string[]>([]);
+  const [emphasized, setEmphasized] = React.useState<string | null>(null);
+  return (
+    <>
+      <MultiLineChartLegend series={series} hiddenSeries={hidden} onHiddenSeriesChange={setHidden} onEmphasizedChange={setEmphasized} />
+      <MultiLineChart series={series} points={points} hiddenSeries={hidden} emphasized={emphasized} label="Events per day by project" />
+    </>
+  );
+}
+```
+
+Each series is a line in the next chart color, and the first draws on top. A point's `tick` names it on the x axis, such as the month on its first day. Ticks that would crowd drop out, and with no ticks the first and last labels show. The values start at zero, and the scale on the left fits the series that show.
+
+A dashed cursor sits on the last point, with a marker on each line and a tooltip beside it. Hovering or dragging moves the cursor, and letting go keeps it there. The cursor, the markers and the tooltip ride to the new point, the markers along their curves.
+
+The legend is a row of toggles. Pressing one hides its series, and the other lines move to the new scale. The last series that shows stays. Hovering or focusing an item brings its line forward and fades the others. Put both in a [Chart card](/docs/components/chart-card), as above.
+
+The plot is a slider. The arrow keys move one point, `Page Up` and `Page Down` a twelfth of the range, and `Home` and `End` jump to the ends. Screen readers hear the point and each value. A hidden table lists the points that have a tick, or every point when none has one. Under the reduced motion setting every change fades instead of moving.
+
+## Examples
+
+### Entrance
+
+As the chart scrolls into view, the scale fades in and the lines draw across one after another. Then the cursor grows down and the tooltip rises in. By default (`entrance="session"`) this plays the first time a chart shows in the browser tab, and every chart after that draws at once. Changes, such as a hidden series, always move. [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the three settings.
+
+<ComponentPreview name="multi-line-chart-entrance" />
+
+## API
+
+### MultiLineChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    series: {
+      description: 'Up to five series, each `{ id, name, values, short? }`, with one value per point. `short` names it in the tooltip. A missing or negative value counts as zero.',
+      type: 'MultiLineChartSeries[]',
+    },
+    points: {
+      description: 'The points every series runs across, oldest first, each `{ label, tick? }`. `label` heads the tooltip, and `tick` names the point on the x axis.',
+      type: 'MultiLineChartPoint[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the values in the tooltip, the screen reader text and the hidden table.',
+      type: '(value: number) => string',
+      default: 'a whole number (1,012,000)',
+    },
+    hiddenSeries: {
+      description: 'The ids of the series to leave out. The scale fits the rest.',
+      type: 'string[]',
+      default: '[]',
+    },
+    emphasized: {
+      description: 'The id of a series to bring forward while the others fade.',
+      type: 'string | null',
+      default: 'null',
+    },
+    entrance: {
+      description: 'When the lines draw in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>
+
+### MultiLineChartLegend
+
+Renders a `<ul>` and takes its props. Pass the same `series` as the chart, in the same order, so each item takes its line's color.
+
+<TypeTable
+  type={{
+    series: {
+      description: 'The series of the chart, each `{ id, name }`.',
+      type: 'MultiLineChartSeries[]',
+    },
+    hiddenSeries: {
+      description: 'The ids of the series left out of the chart.',
+      type: 'string[]',
+      default: '[]',
+    },
+    onHiddenSeriesChange: {
+      description: 'Called with the new hidden ids when an item is pressed.',
+      type: '(hiddenSeries: string[]) => void',
+    },
+    onEmphasizedChange: {
+      description: 'Called with the id of the item under the pointer or focus, and `null` as it leaves.',
+      type: '(id: string | null) => void',
+    },
+    entrance: {
+      description: 'When the items rise in.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

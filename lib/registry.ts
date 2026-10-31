@@ -52,6 +52,11 @@ export const groups = {
   overlays: 'Overlays',
   navigation: 'Navigation',
   data: 'Data',
+  charts: 'Charts',
+  'chart-bar': 'Bar',
+  'chart-line': 'Line & area',
+  'chart-ring': 'Ring',
+  'chart-other': 'Other',
   ai: 'AI',
   effects: 'Effects',
   misc: 'Misc',
@@ -62,6 +67,20 @@ const groupedTypes = ['registry:ui', 'registry:block'];
 
 export function isGroup(value: unknown): value is Group {
   return typeof value === 'string' && Object.hasOwn(groups, value);
+}
+
+/**
+ * The groups the Charts tab lists, ready-made charts by kind; every other component group is in the Components tab,
+ * `charts` too, which holds the parts you build a chart from.
+ */
+export function isChartGroup(group: Group): boolean {
+  return group.startsWith('chart-');
+}
+
+/** The docs folder of a component's page: `charts` for a chart group, else `components`. */
+export function componentDocsFolder(item: RegistryItem): 'components' | 'charts' {
+  const group = item.meta?.group;
+  return isGroup(group) && isChartGroup(group) ? 'charts' : 'components';
 }
 
 /** The items of one approval group, sorted by name. */
