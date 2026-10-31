@@ -60,7 +60,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Get the {preset.name} preset</DialogTitle>
-          <DialogDescription>The palette and radius you picked, in light and dark.</DialogDescription>
+          <DialogDescription>The palette, radius and size you picked, in light and dark.</DialogDescription>
         </DialogHeader>
         <DialogBody className="pb-5">
           {/* Inline-size containment keeps the widest line of code from widening the dialog: the code scrolls instead. */}

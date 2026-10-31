@@ -1,18 +1,33 @@
 // Usage: node --test lib/presets/presets.test.mts
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import { contrastRatio, parseColor } from '../contrast.ts';
-import { parseKosmosTokens } from '../tokens.ts';
+import { parseKosmosTokens, readKosmosTokens } from '../tokens.ts';
+import { cssDeclarations } from './css.ts';
 import { defaultPreset, presetCss, presetDesignMd, presets, type Mode, type Palette, type PaletteToken, type Preset } from './index.ts';
 
 const byId = (id: string) => presets.find((preset) => preset.id === id)!;
 const warm = byId('warm');
 
+/** The variables a preset's style adds in one mode: its mode tokens and the variables its rules declare. */
+function styleKeys(preset: Preset, mode: Mode): string[] {
+  const declared = preset.style?.css?.[mode === 'light' ? ':root' : '.dark'] ?? {};
+  return [...Object.keys(preset.style?.[mode] ?? {}), ...Object.keys(declared).map((name) => name.replace(/^--/, ''))];
+}
+
+/** The CSS of one mode, without what the preset's style adds. */
+function cssWithoutStyle(preset: Preset, mode: Mode): Record<string, string> {
+  const parsed = parseKosmosTokens(presetCss(preset))[mode];
+  const style = new Set(styleKeys(preset, mode));
+  return Object.fromEntries(Object.entries(parsed).filter(([token]) => !style.has(token)));
+}
+
 /** The palette a project gets from the preset's CSS, in one mode. */
 function cssPalette(preset: Preset, mode: Mode): Palette {
-  const { light, dark } = parseKosmosTokens(presetCss(preset));
-  const { radius: _radius, ...palette } = mode === 'light' ? light : { ...light, ...dark };
+  const light = cssWithoutStyle(preset, 'light');
+  const { radius: _radius, ...palette } = mode === 'light' ? light : { ...light, ...cssWithoutStyle(preset, 'dark') };
   return palette as Palette;
 }
 
@@ -144,7 +159,7 @@ test('a preset may set only these tokens, and nothing else', () => {
     'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5',
   ].sort();
   for (const preset of presets) {
-    const { light, dark } = parseKosmosTokens(presetCss(preset));
+    const [light, dark] = [cssWithoutStyle(preset, 'light'), cssWithoutStyle(preset, 'dark')];
     const { radius, ...lightPalette } = light;
     assert.ok(radius, `${preset.name}: radius`);
     assert.deepEqual(Object.keys(lightPalette).sort(), allowed, `${preset.name} light`);
@@ -170,9 +185,8 @@ test('the shipped tokens.css carries the CSS of the default preset', () => {
 
 for (const preset of presets.map(withoutAccent)) {
   test(`${preset.name}: its CSS without an accent reads back as its palette`, () => {
-    const { light, dark } = parseKosmosTokens(presetCss(preset));
-    assert.deepEqual(light, { radius: preset.radius, ...preset.light });
-    assert.deepEqual(dark, preset.dark);
+    assert.deepEqual(cssWithoutStyle(preset, 'light'), { radius: preset.radius, ...preset.light });
+    assert.deepEqual(cssWithoutStyle(preset, 'dark'), preset.dark);
   });
 }
 
@@ -183,13 +197,128 @@ test('Soft, Console and Night take the radius of their designs', () => {
   assert.equal(radius('night'), '0.5rem');
 });
 
-for (const preset of presets) {
-  test(`${preset.name}: its CSS never sets a font, density, shadow or motion token`, () => {
-    const { light, dark } = parseKosmosTokens(presetCss(preset));
-    const styleTokens = [...Object.keys(light), ...Object.keys(dark)].filter((name) =>
-      /^(font|text|spacing|shadow|ease|duration|leading|tracking)(-|$)/.test(name),
+const kosmosTokens = readKosmosTokens();
+const kosmosSlots = new Set(
+  readdirSync(new URL('../../registry/kosmos', import.meta.url), { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.tsx'))
+    .flatMap((entry) => [...readFileSync(join(entry.parentPath, entry.name), 'utf8').matchAll(/(?:data-slot['"]?\s*[=:]\s*\{?|\bslot:)\s*["'`]([a-z][a-z0-9-]*)/g)].map((match) => match[1])),
+);
+
+for (const preset of presets.filter((candidate) => candidate.style)) {
+  const style = preset.style!;
+  const declarations = cssDeclarations(style.css ?? {});
+
+  test(`${preset.name}: its style sets only Kosmos tokens, each in the block it lives in`, () => {
+    const themeTokens = new Set(Object.keys(kosmosTokens.theme));
+    const modeTokens = new Set([...Object.keys(kosmosTokens.light), ...Object.keys(kosmosTokens.dark)].filter((token) => !(token in preset.light)));
+    assert.deepEqual(Object.keys(style.theme ?? {}).filter((token) => !themeTokens.has(token)), [], 'theme');
+    for (const mode of ['light', 'dark'] as Mode[]) assert.deepEqual(Object.keys(style[mode] ?? {}).filter((token) => !modeTokens.has(token)), [], mode);
+  });
+
+  test(`${preset.name}: a mode token its style sets in light it also sets in dark, so the site's raised light block never reaches dark`, () => {
+    assert.deepEqual(Object.keys(style.light ?? {}).filter((token) => !(token in (style.dark ?? {}))), []);
+  });
+
+  test(`${preset.name}: a variable its rules declare is named after the preset`, () => {
+    const own = declarations.filter(({ property }) => property.startsWith('--')).map(({ property }) => property);
+    assert.deepEqual(own.filter((property) => !property.startsWith(`--${preset.id}-`)), []);
+  });
+
+  test(`${preset.name}: its rules reach components by a data-slot Kosmos has`, () => {
+    const named = declarations.flatMap(({ within }) => within.flatMap((selector) => [...selector.matchAll(/data-slot="([^"]+)"/g)].map((match) => match[1])));
+    assert.deepEqual([...new Set(named)].filter((slot) => !kosmosSlots.has(slot)), []);
+  });
+
+  test(`${preset.name}: its rules move, scale and blur only when motion is allowed, and keep the Kosmos fonts`, () => {
+    const moving = declarations.filter(
+      ({ property, value }) => ['scale', 'translate', 'transform'].includes(property) || (property === 'filter' && value.includes('blur')),
     );
-    assert.deepEqual(styleTokens, []);
+    assert.deepEqual(moving.filter(({ within }) => !within.some((rule) => rule.includes('prefers-reduced-motion: no-preference'))), []);
+    const fonts = declarations.filter(({ property, value }) => property === 'font-family' && !/^var\(--font-(sans|mono)\)$/.test(value));
+    assert.deepEqual(fonts, []);
+  });
+
+  test(`${preset.name}: its style sizes nothing, so the size stays the visitor's choice`, () => {
+    const sizingTokens = Object.keys(style.theme ?? {}).filter((token) => token === 'spacing' || /^text-[a-z]+(--line-height)?$/.test(token));
+    assert.deepEqual(sizingTokens, []);
+    // A line under a tab, an indicator's inset and the frame around the work area draw a shape; they size no control.
+    const decoration = /::(before|after)|tabs-indicator|sidebar-inset/;
+    const sizing = declarations.filter(
+      ({ within, property }) =>
+        /^((min|max)-)?(height|width)$|^padding|^gap$|^font-size$|^line-height$|^margin/.test(property) && !within.some((rule) => decoration.test(rule)),
+    );
+    assert.deepEqual(sizing, []);
+  });
+}
+
+/** The shadows a project ends up with under a preset in one mode: the preset's own, else the Kosmos ones. */
+function presetShadows(preset: Preset, mode: Mode): Record<string, string> {
+  return { ...kosmosTokens[mode], ...parseKosmosTokens(presetCss(preset))[mode] };
+}
+
+type ShadowLayer = { inset: boolean; lengths: number[]; color: string };
+
+/** A box-shadow split into its layers, each with its offsets, blur and spread in pixels, and its color. */
+function shadowLayers(shadow: string): ShadowLayer[] {
+  const layers: string[] = [];
+  let depth = 0;
+  let start = 0;
+  [...shadow].forEach((char, index) => {
+    if (char === '(') depth++;
+    else if (char === ')') depth--;
+    else if (char === ',' && depth === 0) {
+      layers.push(shadow.slice(start, index));
+      start = index + 1;
+    }
+  });
+  layers.push(shadow.slice(start));
+  return layers.map((layer) => {
+    const words = layer.trim().split(/\s+/);
+    const inset = words[0] === 'inset';
+    const rest = inset ? words.slice(1) : words;
+    const colorAt = rest.findIndex((word) => !/^-?[\d.]+(px)?$/.test(word));
+    const end = colorAt === -1 ? rest.length : colorAt;
+    return { inset, lengths: rest.slice(0, end).map(Number.parseFloat), color: rest.slice(end).join(' ') };
+  });
+}
+
+const isLayer = (layer: ShadowLayer, inset: boolean, lengths: number[]) =>
+  layer.inset === inset && layer.lengths.join(' ') === lengths.join(' ');
+const outerRing = (layer: ShadowLayer) => isLayer(layer, false, [0, 0, 0, 1]);
+const innerRim = (layer: ShadowLayer) => isLayer(layer, true, [0, 1, 0, 0]);
+const innerLine = (layer: ShadowLayer) => isLayer(layer, true, [0, 0, 0, 1]);
+const isWhite = (color: string) => /^(oklch\(1 0 0|rgb\(255 255 255|#fff\b|#ffffff|white)/.test(color);
+const lightFromAbove = (layer: ShadowLayer) => layer.inset && layer.lengths[1] > 0 && isWhite(layer.color);
+
+for (const preset of presets) {
+  test(`${preset.name} dark: every surface has a dark outer ring and a 1px rim of light inside, a popover its inner line`, () => {
+    const shadows = presetShadows(preset, 'dark');
+    const unlit = ['shadow-control', 'shadow-card', 'shadow-modal'].filter((token) => {
+      const layers = shadowLayers(shadows[token]);
+      return !layers.some(outerRing) || !layers.some(innerRim);
+    });
+    const popover = shadowLayers(shadows['shadow-popover']);
+    if (!popover.some(outerRing) || !popover.some((layer) => innerRim(layer) || innerLine(layer))) unlit.push('shadow-popover');
+    assert.deepEqual(unlit, []);
+  });
+
+  test(`${preset.name} dark: the primary button is bevelled, lit from above inside`, () => {
+    assert.ok(shadowLayers(presetShadows(preset, 'dark')['shadow-primary']).some(lightFromAbove));
+  });
+
+  for (const mode of ['light', 'dark'] as Mode[]) {
+    test(`${preset.name} ${mode}: a popover sits at least as high as a card, and a dialog higher than both`, () => {
+      const shadows = presetShadows(preset, mode);
+      const depth = (token: string) => Math.max(0, ...shadowLayers(shadows[token]).filter((layer) => !layer.inset).map((layer) => layer.lengths[2] ?? 0));
+      const [card, popover, modal] = [depth('shadow-card'), depth('shadow-popover'), depth('shadow-modal')];
+      assert.ok(card <= popover && popover < modal, `blur: card ${card}px, popover ${popover}px, dialog ${modal}px`);
+    });
+  }
+
+  test(`${preset.name} light: every surface has a 1px hairline ring`, () => {
+    const shadows = presetShadows(preset, 'light');
+    const unringed = ['shadow-control', 'shadow-card', 'shadow-popover', 'shadow-modal'].filter((token) => !shadowLayers(shadows[token]).some(outerRing));
+    assert.deepEqual(unringed, []);
   });
 }
 

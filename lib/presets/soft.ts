@@ -1,15 +1,17 @@
 import type { Preset } from './palette.ts';
+import { softStyle } from './soft-style.ts';
 
 const ink = '#1c1f24';
 const lightInk = '#eceef2';
 
-/** Cool paper grays and a large radius, for interfaces that read as soft cushions on a desk. */
+/** Cool paper grays, deep soft shadows and pill controls, for interfaces that read as soft cushions on a desk. */
 export const soft: Preset = {
   id: 'soft',
   name: 'Soft',
   description:
-    'A cool gray page, white cards and blue-tinted grays under a 16px radius, so every surface reads as a soft cushion on a paper desk, with a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
+    'A cool gray page and white cards that float on deep, soft shadows under a 16px radius, with every control a pill, so each surface reads as a soft cushion on a paper desk, and a blue accent that fills buttons, switches, checkboxes, radios, sliders and the tabs indicator and colors focus, the current page in navigation, meters and the first chart series.',
   radius: '1rem',
+  style: softStyle,
   accent: {
     light: { primary: 'oklch(0.537 0.232 261.9)', onPrimary: '#ffffff', ring: '#1f6bff', text: 'oklch(0.537 0.232 261.9)' },
     dark: { primary: 'oklch(0.55 0.2 262)', onPrimary: '#ffffff', ring: '#6ea1ff', text: '#6ea1ff' },
@@ -45,7 +47,7 @@ export const soft: Preset = {
     'sidebar-primary-foreground': '#ffffff',
     'sidebar-accent': '#ffffff',
     'sidebar-accent-foreground': ink,
-    'sidebar-border': '#e8eaee',
+    'sidebar-border': 'transparent',
     'sidebar-ring': 'oklch(0.238 0.011 260.7 / 0.5)',
     'chart-1': ink,
     'chart-2': 'oklch(0.4 0.012 261)',
@@ -84,7 +86,7 @@ export const soft: Preset = {
     'sidebar-primary-foreground': '#15171c',
     'sidebar-accent': '#23272f',
     'sidebar-accent-foreground': lightInk,
-    'sidebar-border': '#2a2e37',
+    'sidebar-border': 'transparent',
     'sidebar-ring': 'oklch(0.949 0.006 264.5 / 0.5)',
     'chart-1': lightInk,
     'chart-2': 'oklch(0.82 0.012 264)',

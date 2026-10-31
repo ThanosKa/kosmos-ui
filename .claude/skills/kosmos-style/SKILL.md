@@ -27,6 +27,15 @@ A missing role gets a new token in `tokens.css` (a palette token in `lib/presets
 
 Dark mode is the `.dark` class on `<html>`, set by next-themes. Tokens switch on that class only, so components rarely need a `dark:` variant.
 
+## Presets with a style
+
+This skill describes the Kosmos style, which Default and Warm keep. Soft, Console, Night and Iris also carry a style of their own (ADR 0014): shadows, type weights and tracking, motion, and CSS rules that reshape components through their `data-slot`, `data-variant`, `data-size` and state attributes. Build to this skill; a preset's rules restyle the result.
+
+- Give every part of a component its own `data-slot`, and expose its variant, size and state as data attributes, so a preset can reach it. Keep the names stable: a preset's rules name them, and `pnpm test` fails when a rule names a slot no component has.
+- A preset's style lives in `lib/presets/<id>-style.ts`, never in a component. A component never branches on the preset.
+- A style sizes nothing: no `spacing`, text size, line height, height, padding or gap. Size is the visitor's own choice (Compact, Default, Comfortable), which sets `--spacing` alone, so size every part of a component in spacing units (`h-7.5`, `px-2.5`), never in pixels.
+- A pill radius that can land on a tall element (a vertical segmented control, an input group around a textarea) is capped at half a control's height (`calc(var(--spacing) * 5)`), not `9999px`, or the tall element turns into an oval.
+
 ## Surfaces: shadows, not borders
 
 Surfaces draw their edge and depth with one layered shadow token, never a depth border. In dark mode each shadow carries a dark outer ring and a 1px inner rim of light, which is the Kosmos signature. The popover shadow is the one exception: in dark its inner line is the `input` grey with no top rim, so a menu reads as a thin line inside a dark ring.

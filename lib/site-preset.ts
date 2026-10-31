@@ -1,4 +1,4 @@
-import { choiceFromParams, choiceParams, chosenPreset, presetCss, type PresetChoice } from './presets/index.ts';
+import { choiceFromParams, choiceParams, chosenPreset, presetRuntimeCss, type PresetChoice } from './presets/index.ts';
 
 /*
  * The preset a visitor picks applies to the whole site: every page and every preview iframe on it. The choice is kept
@@ -12,13 +12,10 @@ export const sitePresetStyleId = 'site-preset';
 /** What localStorage holds: the choice as its search params, and the CSS it makes. */
 export type StoredPreset = { choice: string; css: string };
 
-/**
- * The CSS the site applies for a choice: the preset's CSS, its selectors raised to `html:root` and `html.dark` so it
- * wins over the tokens wherever the stylesheets land in the head. The Default as it ships needs none: it is the tokens.
- */
+/** The CSS the site applies for a choice. The Default as it ships needs none: it is the tokens. */
 export function sitePresetCss(choice: PresetChoice): string {
   if (choiceParams(choice).size === 0) return '';
-  return presetCss(chosenPreset(choice)).replace(/^:root \{/m, 'html:root {').replace(/^\.dark \{/m, 'html.dark {');
+  return presetRuntimeCss(chosenPreset(choice));
 }
 
 export function storedPreset(choice: PresetChoice): StoredPreset {

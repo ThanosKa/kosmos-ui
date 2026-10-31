@@ -53,8 +53,12 @@ _Avoid_: theme, look, «τα χρώματα του Kosmos»
 _Avoid_: theme, style
 
 **Preset**:
-Ένα έτοιμο σετ τιμών για **palette** και radius που διαλέγει ο χρήστης, βλέπει όλα τα components με αυτό και το παίρνει στο project του. Αλλάζει μόνο τιμές tokens, ποτέ το **style**.
+Ένα έτοιμο σετ τιμών για **palette** και radius που διαλέγει ο χρήστης, βλέπει όλα τα components με αυτό και το παίρνει στο project του. Ένα preset μπορεί να φέρει και δικό του **style**: σκιές, βάρη γραμμάτων, κίνηση και κανόνες που αλλάζουν το σχήμα των components μέσω του `data-slot` (ADR 0014). Τα fonts και τα μεγέθη μένουν ίδια σε κάθε preset· το μέγεθος (Compact, Default, Comfortable) το διαλέγει ο χρήστης χωριστά, όπως το radius.
 _Avoid_: theme, skin, variant
+
+**Size**:
+Η επιλογή δίπλα στο radius (Compact, Default, Comfortable) που κάνει όλα τα components μικρότερα ή μεγαλύτερα. Ορίζει μόνο το `--spacing`, οπότε αλλάζουν ύψη, padding και κενά· τα μεγέθη κειμένου μένουν. Δουλεύει με κάθε **preset**, και κανένα preset δεν την αλλάζει.
+_Avoid_: density, scale, zoom
 
 **Accent**:
 Το ένα χρώμα που δίνει ένα **preset** στο primary (κουμπιά, checkbox, radio, switch, slider, tabs indicator), στο focus, στο τρέχον item της πλοήγησης, στο meter και στο πρώτο chart series. Το default preset δεν έχει accent: όλα μένουν ink.
