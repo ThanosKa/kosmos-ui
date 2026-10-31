@@ -26,7 +26,8 @@ function Tabs({ className, orientation = 'horizontal', ...props }: TabsPrimitive
 
 /**
  * The row of tabs, drawn on a 1px divider, with an indicator that slides to the active tab. The indicator
- * sits just inside the divider, because the scrolling row clips anything drawn over its border.
+ * sits along the active tab's bottom edge, just inside the divider, because the scrolling row clips anything
+ * drawn over its border. Tabs laid out in more than one row get the indicator under their own row.
  * Under reduced motion the indicator cross-fades between tabs instead of sliding.
  * A horizontal row scrolls sideways in a `ScrollArea` when the tabs do not fit: the edge with tabs hidden past it
  * fades out. `className` styles the row inside it.
@@ -52,7 +53,7 @@ function TabsList({ className, children, activateOnFocus = true, ...props }: Tab
         className={cn(
           'pointer-events-none absolute bg-primary motion-reduce:hidden',
           'transition-[translate,width,height] duration-slow ease-smooth-in-out',
-          'data-[orientation=horizontal]:bottom-0 data-[orientation=horizontal]:left-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:w-(--active-tab-width) data-[orientation=horizontal]:translate-x-(--active-tab-left)',
+          'data-[orientation=horizontal]:top-0 data-[orientation=horizontal]:left-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:w-(--active-tab-width) data-[orientation=horizontal]:translate-x-(--active-tab-left) data-[orientation=horizontal]:translate-y-[calc(var(--active-tab-top)+var(--active-tab-height)-100%)]',
           'data-[orientation=vertical]:top-0 data-[orientation=vertical]:-start-px data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:h-(--active-tab-height) data-[orientation=vertical]:translate-y-(--active-tab-top)',
         )}
       />
