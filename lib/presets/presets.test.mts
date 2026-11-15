@@ -426,21 +426,26 @@ test('every known shortfall still falls short', () => {
   }
 });
 
+const tokensForDesign = readKosmosTokens();
+
 for (const preset of presets) {
   test(`${preset.name}: its DESIGN.md holds every value, light and dark on the token's own line`, () => {
-    const lines = presetDesignMd(preset).split('\n');
+    const designMd = presetDesignMd(preset, tokensForDesign);
+    const lines = designMd.split('\n');
     const row = (token: string) => lines.find((line) => line.startsWith(`| \`${token}\` |`));
     const [light, dark] = [cssPalette(preset, 'light'), cssPalette(preset, 'dark')];
     for (const token of Object.keys(light) as PaletteToken[]) {
       const line = row(token);
       assert.ok(line?.includes(light[token]) && line.includes(dark[token]), `${token}: ${line}`);
+      assert.ok(lines.includes(`  ${token}: "${light[token]}"`), `${token} in the token block`);
+      assert.ok(lines.includes(`  ${token}-dark: "${dark[token]}"`), `${token}-dark in the token block`);
     }
-    assert.ok(row('radius')?.includes(preset.radius), 'radius');
+    assert.ok(designMd.includes(`\`--radius\`, is \`${preset.radius}\``), 'radius');
   });
 }
 
 test('a DESIGN.md says what the accent colors, or that the preset has none', () => {
-  const accentSection = (preset: Preset) => /## Accent\n\n([\s\S]+?)\n## /.exec(presetDesignMd(preset))?.[1] ?? '';
+  const accentSection = (preset: Preset) => /### Accent\n\n([\s\S]+?)\n### /.exec(presetDesignMd(preset, tokensForDesign))?.[1] ?? '';
   assert.match(accentSection(defaultPreset), /no accent/);
   for (const preset of presets.filter((candidate) => candidate.accent)) {
     const section = accentSection(preset);
