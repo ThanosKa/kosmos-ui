@@ -1,0 +1,21 @@
+extends: existence
+message: "'%s' is marketing or vague. Say what it does or measure it."
+ignorecase: true
+level: error
+tokens:
+  - robust
+  - seamless
+  - seamlessly
+  - powerful
+  - blazing
+  - effortless
+  - effortlessly
+  - beautiful
+  - beautifully
+  - stunning
+  - world-class
+  - best-in-class
+  - cutting-edge
+  - state-of-the-art
+  - out of the box
+  - at a glance

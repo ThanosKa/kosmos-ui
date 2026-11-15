@@ -1,0 +1,11 @@
+---
+title: Renamed the current nav item and meter colors to accent-text
+description: One token, accent-text, now colors the current page in navigation and the Meter's primary tone, and a preset's accent sets it.
+date: 2026-10-24
+---
+
+A preset can now bring one accent. It colors focus, the first chart series, the current page in navigation and the Meter's `primary` tone, and nothing else. The default has none, so all four stay ink. To pick it up, run `shadcn add` again for each item below. Nothing changes on screen.
+
+- **[Tokens](/docs/foundations/color)**: `active-foreground` and `meter-primary` are now one token, `accent-text`. They always held the same value. If your own code uses `text-active-foreground` or `bg-meter-primary`, change it to `text-accent-text` or `bg-accent-text`. shadcn's `accent` is still the hover fill.
+- **[Sidebar](/docs/components/sidebar)**: the active item's label and icon take `accent-text`.
+- **[Meter](/docs/components/meter)**: the `primary` tone takes `accent-text`.

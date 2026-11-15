@@ -1,0 +1,46 @@
+---
+title: Number ticker
+description: A number that counts up to its value the first time it scrolls into view.
+---
+
+<ComponentPreview name="number-ticker-demo" />
+
+## Installation
+
+<ComponentInstall name="number-ticker" />
+
+## Usage
+
+```tsx
+import { NumberTicker } from '@/components/ui/number-ticker';
+```
+
+```tsx
+<p>
+  <NumberTicker value={60} /> components
+</p>
+```
+
+The final number is in the markup, so it shows without JavaScript and holds the width. Counting up shifts nothing, and the digits keep one width (`tabular-nums`). A number already on screen at load does not count. A number further down counts when it scrolls into view.
+
+## Examples
+
+### Grouped digits and in a sentence
+
+<ComponentPreview name="number-ticker" />
+
+## Accessibility
+
+Screen readers hear the final number once. They skip the counting digits. Under reduced motion the number never counts.
+
+## API
+
+NumberTicker is a `<span>` and accepts all its props. It wraps no Base UI part.
+
+<TypeTable
+  type={{
+    value: { description: 'The number it counts up to.', type: 'number', required: true },
+    duration: { description: 'How long the count takes, in milliseconds.', type: 'number', default: '1200' },
+    locale: { description: 'The locale the digits are grouped for.', type: 'string', default: "'en-US'" },
+  }}
+/>

@@ -3,6 +3,11 @@
 
 # generated content
 .source
+# registry: composed from registry/**/*.registry.json and built by `pnpm registry:build`
+/registry.json
+/public/r/
+# review screenshots from `pnpm screenshots`
+/.screenshots/
 
 # test & build
 /coverage
@@ -24,5 +29,10 @@ yarn-error.log*
 .env*.local
 .vercel
 next-env.d.ts
+
 # local planning notes (not public)
 .scratch/
+
+# claude code: personal settings and agent worktrees
+.claude/settings.local.json
+.claude/worktrees/

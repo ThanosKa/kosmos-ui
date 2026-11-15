@@ -1,0 +1,53 @@
+---
+title: Color
+description: Every Kosmos color token in light and dark, the Tailwind class it goes by, and when to use it.
+icon: Palette
+---
+
+The colors are true grays and ink, with no accent. Kosmos leaves color to status and destructive. A preset with an accent also colors `primary`, so its buttons and checked controls take that color. They use shadcn's names, so components you install from other shadcn registries pick them up too. `shadcn add @kosmos/tokens` adds them to your global CSS. For other grays, an accent or another radius, pick a preset on the [Presets page](/presets) and take its CSS or registry command.
+
+Each swatch shows the light value on the left and the dark value on the right. Click a swatch to copy its class. This page reads every value below from the tokens file, so it always matches what you install.
+
+## Surfaces
+
+<ColorTokens group="surfaces" />
+
+## Text
+
+Gray carries the hierarchy. Values stay in `text-foreground`, and idle chrome steps back to `text-muted-foreground`. The current page in navigation takes `text-accent-text`, ink on the flat hover fill. That covers the active sidebar item, the current header tab, the current item in a nav menu and the current page in Pagination. A Meter in its primary tone takes it too. A preset with an accent colors these, focus and the first chart series with it. It also fills `primary`: buttons, checked checkboxes and radios, switches that are on, the slider range and the tabs indicator.
+
+<ColorTokens group="text" />
+
+## Actions
+
+Use one `bg-primary` action per view. Its peers take the secondary or ghost look.
+
+<ColorTokens group="actions" />
+
+## Status
+
+Status colors fill dots, icons and meter segments. The text beside them stays `text-foreground` or `text-muted-foreground`, with a label or icon that carries the meaning too.
+
+<ColorTokens group="status" />
+
+## Lines
+
+<ColorTokens group="lines" />
+
+## Sidebar
+
+<ColorTokens group="sidebar" />
+
+## Chart
+
+Chart series take `chart-1` to `chart-5` in order: a mono ramp from ink through four steps of gray. A 1px line in the card color splits stacked segments, so adjacent grays stay apart. Labels and legends stay in text colors.
+
+<ColorTokens group="chart" />
+
+## Tints
+
+Six hues color every badge, state dot and alert: `gray`, `blue`, `green`, `amber`, `red` and `violet`. None of them changes with a preset. A category, a plan or a code is a [Badge](/docs/components/badge#tags) in the fill and `-foreground`, with no edge. A state is a `tint-*-dot` beside its word, through [StatusDot](/docs/components/status#dots). An [Alert](/docs/components/alert) or a [Banner](/docs/components/banner) takes the fill, `-border`, `-foreground` and `-link`. Text and links pass 4.5:1 on their fill, dots 3:1, in both themes.
+
+The fill, `-foreground` and `-dot` are OKLCH values; `-border`, `-link` and `-solid` (the logo marquee's sample colors) are derived from them in the same style.
+
+<ColorTokens group="tints" />

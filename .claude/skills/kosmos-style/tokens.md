@@ -1,0 +1,120 @@
+# Kosmos tokens
+
+Every token in `registry/kosmos/styles/tokens.css`, its job, and where its value came from. Values are in that file only; this table names roles. The Tokens tab of `/presets` renders them live. The palette and radius in it are the CSS of the default preset in `lib/presets`, written by `pnpm registry:build`, so a palette value changes in the preset, never in `tokens.css`. `pnpm test` checks every preset's text (4.5:1), focus and chart marks (3:1) in both modes.
+
+Colors are the default preset, true greys and ink with no accent (ADR 0009); the warm neutrals and orange of ADR 0007 live on as the Warm preset. A preset with an accent also sets `primary` (ADR 0011). The values below are the default's. "Light study" and "dark study" are the two studied products whose validated token sets supplied the shadows and the structure of the color roles. "Adjusted" marks a value changed for contrast, with the reason.
+
+## How the file maps to the registry
+
+| Block in `tokens.css` | shadcn `cssVars` key | Holds |
+| --- | --- | --- |
+| `@theme inline` | `theme` | Tailwind names pointing at a mode variable (`--color-primary: var(--primary)`, `--shadow-card: var(--shadow-card)`), the radius ladder, font families |
+| `@theme static` | `theme` | Values equal in both modes: easings, durations, type roles |
+| `:root` | `light` | Light values and `--radius` |
+| `.dark` | `dark` | Dark values |
+
+Name new mode-dependent keys inside a Tailwind namespace (`shadow-*`, `color` names without prefix), because the shadcn CLI maps each `light`/`dark` key into `@theme inline` by that name. `lib/tokens.ts` parses the four blocks and is the place to build the registry item from.
+
+## Colors
+
+shadcn names, so components installed with `shadcn add` from any registry pick them up.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `background`, `foreground` | Page surface and its text: a near-white page and near-black ink in light, near-black and off-white in dark | ADR 0009 |
+| `card`, `card-foreground` | Cards, tiles: white on the near-white page in light, a step lighter than the page in dark | ADR 0009 |
+| `popover`, `popover-foreground` | Overlays: popover, menu, dialog, drawer, toast | ADR 0009 |
+| `primary`, `primary-foreground` | The one filled action per view; also checked checkbox and radio, switch on, slider range, Tabs indicator, done step. Ink with light text in light; the light ink with dark text in dark. In a preset with an accent, the accent's primary step under its own `primary-foreground` | ADR 0009: ink, the same value as `foreground`. ADR 0011: a preset's accent sets it, and `primary-foreground` is 4.5:1 on it and under its 90% hover (white in both modes; in dark the fill is a deep step of the accent so white passes. Warm light holds white at 3:1 by choice), the fill 3:1 on `background` and `card`. Also `sidebar-primary` |
+| `secondary`, `secondary-foreground` | Secondary button and input fill | ADR 0009 |
+| `muted` | Track and quiet fills | ADR 0009 |
+| `muted-foreground` | Secondary text | Set in both modes to pass 4.5:1 on `background`, `card`, `muted` and `sidebar` |
+| `accent`, `accent-foreground` | Translucent hover/highlight overlay for ghost, nav, menu items and rows | Hover overlays of both studies (ink 5% light, white 6% dark) |
+| `destructive` | Destructive actions, errors | Adjusted in light to pass 4.5:1 on white and on `muted` (the destructive button's hover); dark study |
+| `success`, `warning` | Status dots, icons, meter segments | Adjusted in light to reach 3:1 as graphics on the page; dark study. With `destructive`, the only chroma in the default |
+| `border` | Dividers between items | ADR 0009 |
+| `input` | The field edge: `shadow-field` draws it as a ring, and the sidebar count pill as a border. Also the hover fill of an off switch track, one step from `muted`, and `border-input` in components installed from shadcn | ADR 0009 |
+| `ring` | Focus outline and `shadow-lift`; in a preset with an accent, the accent's ring step, which also takes `sidebar-ring` | ADR 0009: ink at 55%, so focus reads without color; 3.8:1 or more in light and 5.2:1 or more in dark on `background`, `card`, `popover`, `secondary`, `muted` and `sidebar`. Never text |
+| `accent-text` | The label and icon of the current page in navigation (the active sidebar item, the current header tab, the current item in a nav menu, the current page in Pagination), the Meter's `primary` tone and decorative tints (Glow, Flickering grid) | ADR 0009: ink, against idle items in `muted-foreground`. A preset with an accent sets the accent's text step here, at 4.5:1 or more on `background`, `secondary`, `sidebar`, `card`, `popover` and the `accent` hovers in both modes. In Warm a step deeper than `ring` in light, so a primary Meter never shares a lightness with `warning` (about 1.7:1 apart). The name keeps clear of shadcn's `accent`, the hover fill |
+| `scrim` | Backdrop behind dialogs and drawers | Light study (ink 40%) / dark study (black 60%) |
+| `thumb` | Switch and slider thumbs: near-white in both modes, so a thumb reads on the muted track. A checked switch thumb takes `primary-foreground` instead, which contrasts with the `primary` track in each mode and each preset, so a preset sets no `thumb` of its own | ADR 0007, kept by ADR 0009 (the dark `primary-foreground` is ink, too dark for a thumb on the muted track) |
+| `scrollbar-thumb` | The ScrollArea thumb: a grey lighter than `muted-foreground`, so the scrollbar is never the heaviest mark on the screen | Set in both modes at about 3.3:1 against the `muted` track, just above the 3:1 non-text floor |
+| `sidebar-*` | Sidebar surface, text, hover, border, focus, and `sidebar-primary` for a filled mark such as the workspace initial; also themes the docs sidebar | ADR 0009; a step darker than the page in light, focus = `ring` |
+
+Two foregrounds stay although no Kosmos component reads them: `accent-foreground` and `sidebar-accent-foreground`. Components installed from shadcn's registry use them (`hover:text-accent-foreground`, `text-sidebar-accent-foreground`), and without them those classes would compile to nothing. They are the one exception to "a token nothing uses is deleted": shadcn compatibility is their use.
+
+## Chart colors
+
+In their own labelled blocks at the end of `tokens.css` (`lib/tokens.ts` merges repeated blocks), so component-specific tokens don't edit the core blocks.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `chart-1` … `chart-5` | Categorical series colors, used in order and never cycled; more than five series fold into "Other" | One palette under every preset, never the accent (ADR 0016): blue, orange, green, purple, yellow, set once in `chartColors` (`lib/presets/palette.ts`). Each is 3:1 or more against every preset's `card` and `background` in both modes, and neighbors in the order stay apart for color-blind readers (the `dataviz` validator, adjacent pairs). A legend or label carries each series too; touching segments are split by a 1px line in the surface color |
+
+## Tints
+
+In their own labelled blocks after the chart colors, the same under every preset. They color every Badge hue (categories, plans, codes), the `StatusDot`, and the Alert, Banner and Callout tones. The fill, `-foreground` and `-dot` are the OKLCH values of the badge palette study ("one subtle family"); the rest are derived in the same style.
+
+| Token | Role | Source |
+| --- | --- | --- |
+| `tint-<hue>` (`gray`, `blue`, `green`, `amber`, `red`, `violet`) | The fill of a Badge hue and of a tinted Alert (filled by default), a Banner and a Callout | Light: L 0.96 to 0.97, chroma 0.03 to 0.04 (pale, clearly tinted). Dark: L 0.24, chroma 0.055 to 0.077 (deep, saturated); gray chroma 0 |
+| `tint-<hue>-foreground` | Text on the fill, and on `background` and `card` in an outline Alert, and the icon | Light: L 0.5 to 0.52, chroma 0.14 to 0.2 (vivid, darker). Dark: L 0.65 to 0.72, chroma 0.15 to 0.2 (amber 0.721 0.17 60, red 0.651 0.198 22, blue 0.668 0.148 250, green 0.72 0.18 146, violet 0.7 0.15 300); the amber, red and blue fills and texts are the maintainer's reference colors |
+| `tint-<hue>-dot` | The dot of `StatusDot` | Light L 0.62, chroma 0.16 to 0.2; dark the same as `-foreground`; 3:1 on the fill and on `background` (`pnpm test`) |
+| `tint-<hue>-border` | The edge of an outline Alert and the Banner's bottom divider; a linked Badge's hover fill | Derived: light L 0.84 to 0.85, chroma 0.07 to 0.09; dark L 0.4 to 0.42, chroma 0.1 to 0.12 (a dark-mid step). A decorative edge, not held to 3:1 |
+| `tint-<hue>-solid` (`blue`, `green`, `amber`, `red`, `violet`) | The logo marquee's sample colors | Derived: L 0.5 in both modes, chroma 0.17 (amber 0.12, hue 58) |
+
+## Shadows
+
+Shadows are style, not palette: they are written once in `tokens.css`. Default and Warm keep them; a preset with a style sets its own (ADR 0014). Light shadows are tinted from the preset's own `--foreground` through `color-mix`, so none is ever warm on a cool preset; dark ones stay black.
+
+| Token | Surface | Structure |
+| --- | --- | --- |
+| `shadow-control` | Secondary button, segmented group, unticked checkbox and radio, radio card, the active sidebar item in dark | Light: 1px ring at foreground 10% + 1px drop. Dark: dark ring + top rim + inner rim |
+| `shadow-field` | Input, textarea, select trigger | One 1px ring in `input`, no drop, in both modes |
+| `shadow-primary` | Primary button | Light: 1px rim in `primary` mixed 78% toward black, small drop, inner top highlight (white 28%) and bottom shade (black 10%). Hover (`shadow-primary-hover`, with `primary-hover`, the fill one lightness step 0.04 darker at the same chroma and hue, so Warm's orange stays orange): darker rim, deeper drop, stronger highlight. Dark (hover unchanged, `primary-hover` is the fill at 90%): dark ring + drop + top highlight + inner rim + bottom inner shade |
+| `shadow-card` | Cards, tiles | Light: 1px ring at foreground 7% + short drop + soft drop. Dark: dark ring + drop + rim |
+| `shadow-popover` | Popover, menu, select list, tooltip, toast, command palette | Light: ring + stacked drops. Dark: a 1px inner line in `input` inside a dark outer ring + one deep drop, with no top rim, so the edge reads as a thin line on a dark page (as the menus of the reference app sales-crm) |
+| `shadow-modal` | Dialog, drawer | Ring + two deep drops; dark adds the rim (inner ring at white 10% and a top rim) |
+| `shadow-inset` | Tracks: segmented, switch, meter | Sunken inner shadow |
+| `shadow-lift` | Card while dragged | Double `ring` ring (ink by default, the accent in a preset with one) + deep drop |
+| `shadow-thumb` | Switch thumb, slider thumb | Ring + two short drops, so a near-white knob stands off a white page; dark uses the study's thumb ring and drop |
+
+## Radius
+
+`--radius` is 10px. The ladder is `sm` 4, `md` 8, `lg` 10, `xl` 14, `2xl` 16 and `3xl` 20, plus `rounded-full`; which element takes which step is the Radius table in SKILL.md. The offsets in `@theme inline` keep `sm`, `2xl` and `3xl` at those sizes while `--radius` sets the control radius.
+
+## Motion
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `ease-power3-out` | `cubic-bezier(0.25, 1, 0.5, 1)` | Default for everything; also the theme's default transition curve |
+| `ease-smooth-in-out` | `cubic-bezier(0.7, 0, 0, 1)` | Size and position: sidebar width, indicators, switch thumb, accordion height |
+| `duration-instant` / `fast` / `base` / `overlay` / `slow` / `reveal` | 100 / 150 / 200 / 250 / 300 / 500ms | See the motion table in SKILL.md |
+| `reveal` keyframes, `animate-reveal-fade` | One word of a Text reveal rising out of a blur (the `reveal` keyframes at `duration-reveal`, `animate-[reveal_…]`), and its plain fade under reduced motion (150ms) | The mount entrance of Text reveal; a keyframe animation, so a theme or preset change that drops transitions cannot cut it short |
+| `animate-shimmer` | `shimmer 2s linear infinite` (background-position sweep) | The light across text in Shimmer |
+
+The same values are in `registry/kosmos/lib/motion.ts` for Motion (`ease.power3Out`, `ease.smoothInOut`, `duration.*` in seconds, `spring`).
+
+Only the curves components use are defined. The rest of the GSAP power family, for a component that needs one, in the same naming:
+
+| Curve | in | out | in-out |
+| --- | --- | --- | --- |
+| power1 | `0.11, 0, 0.5, 0` | `0.5, 1, 0.89, 1` | `0.45, 0, 0.55, 1` |
+| power2 | `0.32, 0, 0.67, 0` | `0.33, 1, 0.68, 1` | `0.65, 0, 0.35, 1` |
+| power3 | `0.5, 0, 0.75, 0` | `0.25, 1, 0.5, 1` | `0.76, 0, 0.24, 1` |
+| power4 | `0.64, 0, 0.78, 0` | `0.22, 1, 0.36, 1` | `0.83, 0, 0.17, 1` |
+
+## Type roles
+
+`text-caption`, `text-small`, `text-body`, `text-title`, `text-heading`, `text-display`, and for marketing blocks `text-hero` and `text-lead`; sizes in the SKILL.md table. Each sets size, line-height, letter-spacing and, where it differs from 400, weight. Sizes are in `rem`, line-heights unitless. Tracking tightens as size grows (caption 0, small -0.005em, body -0.01em, title and display -0.02em); caption declares its 0 so it resets the tracking it would inherit from body text.
+
+### Site-only roles
+
+`text-page-title` exists only for the title of a docs page: 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks (a media query in `app/global.css` raises the variable). It is declared in `app/global.css`, not in `tokens.css`, so it never ships in `@kosmos/tokens`, and no component or block uses it. Use it as a plain class, not through `cn`, which does not know it.
+
+The brand colour (`--brand`, Peony, the same in light and dark) and its roles live in `app/global.css` too: `brand-hover`, `brand-foreground` (white, 4.5:1 on both) and `brand-selection`, the site's text selection (the brand at `--brand-selection-strength`, mixed opaque into the page background, under `foreground` text). It marks only the logo's ring, the Pro marks and text selection. A Pro mark is a primary Badge or Button with the `brand-primary` utility, which fills it with the brand; the Button adds `hover:not-data-disabled:bg-brand-hover`. The apple icon and the social image take it as hex through `components/site/token-colors.ts`; the static `app/icon.svg` writes it out, and `pnpm test` checks that it matches. No registry item may hold it: `pnpm registry:build` and `pnpm test` fail when one does (`lib/brand.ts`).
+
+## Left out on purpose
+
+- Section padding and max-width tokens, and a marketing heading scale beyond `hero` and `lead`: the studies declared them and never used them in app UI. A marketing block that needs another size adds its role then.
+- A press-scale token: press feedback is the `scale-96` utility.
+- A fainter text role below `muted-foreground` (for meta, placeholders, eyebrows): it would fall under 4.5:1 in light mode, where `muted-foreground` already sits near the floor. See conflicts.md, Accessibility floor.

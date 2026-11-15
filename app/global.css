@@ -1,12 +1,112 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/shadcn.css';
 @import 'fumadocs-ui/css/preset.css';
+@import 'shadcn/tailwind.css';
+@import '../registry/kosmos/styles/tokens.css';
+
+/* The variants and base styles a shadcn project gives the components, so the site renders them the way user apps do. */
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/*
+ * State pinning for preview routes (/view/[name]): `data-preview="hover focus"`
+ * on an element triggers the same styles as the real interaction, so one
+ * screenshot can show every state. Adapted from shadcn's design-system skill
+ * (MIT). Site-only: registry items never ship these variants.
+ */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+  &[data-preview~='hover'] {
+    @slot;
+  }
+}
+@custom-variant focus-visible (&:focus-visible, &[data-preview~='focus']);
+@custom-variant active (&:active, &[data-preview~='active']);
+
+/*
+ * Site-only type role: the title of a docs page. Components stay between 12 and 14px (kosmos-style), so it never
+ * ships in @kosmos/tokens (kosmos-style tokens.md, "Site-only roles"). Use it as a plain class, not through `cn`,
+ * which doesn't know it.
+ */
+@theme {
+  --text-page-title: 1.75rem;
+  --text-page-title--line-height: 1.25;
+  --text-page-title--font-weight: 600;
+  --text-page-title--letter-spacing: -0.02em;
+}
+
+/* The page title is 28px on phones and 32px from the `md` breakpoint, where the docs sidebar docks. */
+@media (width >= 48rem) {
+  :root {
+    --text-page-title: 2rem;
+  }
+}
+
+/*
+ * The brand color of the Kosmos site: the logo's ring, the Pro marks and text selection. The same in light and dark,
+ * and white text passes 4.5:1 on it and on its hover step (lib/brand.test.mts). Site-only: no registry item may hold it, which
+ * `pnpm registry:build` and `pnpm test` check (lib/brand.ts). `apple-icon`, the social image and `app/icon.svg` take it too.
+ */
+:root {
+  --brand: oklch(0.56 0.2 350);
+  --brand-hover: oklch(0.52 0.2 350);
+  --brand-foreground: oklch(1 0 0);
+  --brand-selection-strength: 28%;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-foreground: var(--brand-foreground);
+  /*
+   * Opaque, so the fill doesn't darken where the line boxes of a tight heading overlap, and so selected text can take
+   * `foreground` on it: muted text would fall under 4.5:1 on any fill, and white text on a primary button would vanish.
+   */
+  --color-brand-selection: color-mix(in srgb, var(--brand) var(--brand-selection-strength), var(--background));
+}
+
+/*
+ * A Pro mark: a primary Button or Badge filled with the brand instead of ink, keeping its edge. A Button adds
+ * `hover:not-data-disabled:bg-brand-hover`: the primary hover lightens the fill, and white falls under 4.5:1 on a light card.
+ * The light edge is a ring in the fill color, re-declared here because `--shadow-primary` resolves `--primary` on `:root`.
+ */
+/* The landing's hero product: a soft glow in ink behind it, and from 1024px a taller screen that fades out late, so the cards under the chart show. */
+.landing-hero [data-slot='glow'] {
+  --accent-text: var(--foreground);
+}
+
+@media (width >= 64rem) {
+  .landing-hero [data-slot='hero-product'] [inert] {
+    height: 46rem;
+  }
+
+  .landing-hero [data-slot='browser-frame'] {
+    mask-image: linear-gradient(to bottom, black 82%, transparent);
+  }
+}
+
+@utility brand-primary {
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  &:not(:is(.dark *)) {
+    --shadow-primary: 0 0 0 1px var(--brand);
+  }
+}
 
 html {
   scrollbar-gutter: stable;
 }
 
-html > body[data-scroll-locked] {
-  margin-right: 0px !important;
-  --removed-body-scroll-bar-size: 0px !important;
+/* The landing page's sticky header (3.5rem): focused and anchored elements stop below it. */
+html:has(#site-header) {
+  scroll-padding-top: 4.5rem;
 }

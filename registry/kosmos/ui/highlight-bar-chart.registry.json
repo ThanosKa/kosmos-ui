@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "highlight-bar-chart",
+  "type": "registry:ui",
+  "title": "Highlight bar chart",
+  "description": "Bars that compare periods with one lit and its value in a pill on a dashed line. Hover previews a bar, a click or the arrow keys pin it, and new data moves every bar to its new height. The entrance plays once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion"],
+  "meta": { "group": "chart-bar" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/highlight-bar-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

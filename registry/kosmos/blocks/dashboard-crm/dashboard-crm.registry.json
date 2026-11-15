@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dashboard-crm",
+  "type": "registry:block",
+  "title": "CRM dashboard",
+  "description": "A sales dashboard, each section on a Panel, as a whole page beside the App sidebar or as the content alone. It shows KPIs with bar sparklines and a searchable table of deals with their win chance. Today's next steps, the pipeline by stage, each rep's quota and the team's activity follow. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/bar-list",
+    "@kosmos/button",
+    "@kosmos/dropdown-menu",
+    "@kosmos/gauge",
+    "@kosmos/meter",
+    "@kosmos/panel",
+    "@kosmos/stat-card",
+    "@kosmos/scroll-area",
+    "@kosmos/sidebar",
+    "@kosmos/app-sidebar",
+    "@kosmos/data-table",
+    "@kosmos/notification-inbox"
+  ],
+  "categories": ["dashboard"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/dashboard-crm/dashboard-crm.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-field",
+  "type": "registry:ui",
+  "title": "Copy Field",
+  "description": "A read-only field that shows a value, such as an API key or a webhook URL, with a button that copies it. As a secret it hides the value behind dots until shown.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/use-copy", "@kosmos/secret", "@kosmos/input-group"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/copy-field.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stats-overview",
+  "type": "registry:block",
+  "title": "Stats overview",
+  "description": "The overview of an analytics dashboard: headline metrics as divided cells over one chart that compares the range with the period before. It has a 7, 30 or 90 day switch, top events, and loading, empty and error states. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["recharts@^3.10.1", "lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/use-controlled",
+    "@kosmos/chart",
+    "@kosmos/chart-card",
+    "@kosmos/segmented-control",
+    "@kosmos/skeleton",
+    "@kosmos/stat-card",
+    "@kosmos/tabs"
+  ],
+  "categories": ["stats-overview"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/stats-overview/stats-overview.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

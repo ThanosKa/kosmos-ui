@@ -1,0 +1,129 @@
+---
+title: Dashboard
+description: A whole dashboard page beside the App sidebar, each section on its own Panel. Analytics shows traffic, sources and the newest signups. CRM shows deals, next steps and quota.
+---
+
+## Installation
+
+<ComponentInstall name="dashboard-analytics" />
+
+<ComponentInstall name="dashboard-crm" />
+
+Each block brings [Panel](/docs/components/panel), [Stat card](/docs/components/stat-card), [Bar list](/docs/components/bar-list), [Data table](/docs/components/data-table), [Meter](/docs/components/meter), [Dropdown menu](/docs/components/dropdown-menu), [Avatar](/docs/components/avatar), [Badge](/docs/components/badge) and [Button](/docs/components/button) with it, plus the [App sidebar](/docs/blocks/app-sidebar), [Sidebar](/docs/components/sidebar), [Scroll area](/docs/components/scroll-area) and [Notification inbox](/docs/components/notification-inbox) for the page around it. Analytics also brings [Chart](/docs/components/chart), [Segmented control](/docs/components/segmented-control) and [Date picker](/docs/components/date-picker), and CRM brings [Gauge](/docs/components/gauge). They land in `components/dashboard-analytics.tsx` and `components/dashboard-crm.tsx`.
+
+## Usage
+
+Each block is a whole page: the [App sidebar](/docs/blocks/app-sidebar) beside a header with the title, and the dashboard under it. The page fills the screen, and the dashboard scrolls while the sidebar and header stay put. Pass your pages, the current one and the signed-in user in `sidebar`:
+
+```tsx
+import { DashboardAnalyticsPage } from '@/components/dashboard-analytics';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+
+<DashboardAnalyticsPage
+  sidebar={{ navMain, activeItem: 'analytics', user }}
+  kpis={kpis}
+  traffic={traffic}
+  signups={signups}
+  signupActions={(signup) => <DropdownMenuItem onClick={() => openProfile(signup.id)}>View profile</DropdownMenuItem>}
+/>;
+```
+
+```tsx
+import { DashboardCrmPage } from '@/components/dashboard-crm';
+
+<DashboardCrmPage
+  title="Sales"
+  sidebar={{ navMain, activeItem: 'sales', user }}
+  deals={deals}
+  quota={quota}
+  onNewDeal={openNewDeal}
+  onTaskAction={runTask}
+  tasksHref="/tasks"
+/>;
+```
+
+Already have an app frame with a sidebar? Use the content alone, `DashboardAnalytics` or `DashboardCrm`, under your page's header, such as the [Page header](/docs/blocks/page-header). It takes the same props without `title`, `sidebar` and `frame`:
+
+```tsx
+import { DashboardCrm } from '@/components/dashboard-crm';
+
+<DashboardCrm deals={deals} quota={quota} onNewDeal={openNewDeal} tasksHref="/tasks" />;
+```
+
+Without props, both show sample data, which sits at the top of each file. Every section takes its own prop, so you can fill them from different requests. A section with no data shows a quiet empty state in place of its content.
+
+## What it does
+
+- **Page**: the App sidebar sits on the left, collapses to icons with the button beside the title, and resizes from its edge. The header holds that button, the page title and the bell of a [notification inbox](/docs/components/notification-inbox), with All, Unread and Archive tabs and View all notifications at its foot. Analytics adds a [period picker](/docs/components/date-picker) with the last 7, 30 and 90 days, which sets the traffic chart's range as its switch does. Below the header, the dashboard scrolls on its own.
+- **Panels**: each section is a [Panel](/docs/components/panel). Its title, description and controls sit on the recessed tray, and its content on the raised card inside. Pagination and full-width buttons sit on the tray under the card.
+- **KPIs**: four [Stat cards](/docs/components/stat-card) on one tray, each with an icon tile, an eyebrow over the label, the value, its change and a sparkline. Analytics draws a line and CRM draws thin bars. The change is green for good news and red for bad. Set `goodWhen: 'down'` for a value where falling is good, like a sales cycle.
+- **Tables**: the newest signups and the deals are [Data tables](/docs/components/data-table) you can search, filter and sort. Search signups by name or email, and deals by deal, customer or rep. Signups filter by plan and deals by stage, each filter with a count per value. A header menu sorts by name, plan, source, activation or MRR, and deals by deal, stage or value. Rows page five at a time. A table wider than its card scrolls on its own. Each row gets an actions menu when you pass `signupActions` or `dealActions`.
+- **Cells**: a person shows their avatar with a presence dot, the dot read out as Online, Away or Offline. Values sit over a muted line of context. Plans are tags: Free gray, Pro blue, Scale violet, Trial amber. Stages are tags too: Lead gray, Qualified blue, Proposal violet, Negotiation amber, Won green.
+- **Ranked rows**: top pages, countries and the pipeline by stage are [Bar lists](/docs/components/bar-list). The largest row's bar is a step stronger than the rest.
+- **Analytics charts**: traffic is a line against the period before, with a 7, 30 or 90 day switch and the legend beside it. The totals of the range sit above it. Sources, top pages and countries are Bar lists, each source with its share of all visitors. The signup goal is a row of [Meter](/docs/components/meter) segments, with how far ahead of or behind an even pace the count is.
+- **CRM**: each deal shows its chance to close as a [Gauge](/docs/components/gauge), and a check once you win it. Next steps lists today's tasks, each with a button that calls `onTaskAction`. Quota shows each rep's won value against their target as a meter, which turns green from 90%. Activity is a short timeline of what the team did today.
+- **Width**: each block lays itself out by its own width, with container queries, not by the screen's. The KPIs sit four in a row on a wide container, two from 512px and one below that. Sections sit side by side on a wide container and stack on a narrow one.
+
+## API
+
+### DashboardAnalyticsPage and DashboardCrmPage
+
+Take every prop of `DashboardAnalytics` or `DashboardCrm`, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The page title in the header.', type: 'string', default: "'Analytics' or 'Sales'" },
+    sidebar: { description: "The App sidebar's props: your pages, the current one, the workspaces and the signed-in user.", type: 'AppSidebarProps', default: "{ activeItem: 'overview' }" },
+    frame: { description: 'The props of the page frame, a `SidebarProvider`. It fills the screen; give it a height to place the page in a smaller frame.', type: 'SidebarProviderProps' },
+    notifications: { description: "The notifications in the header's inbox, newest first. The inbox keeps which are read and archived. `null` leaves the bell out.", type: 'DashboardNotification[] | null', default: 'sample notifications' },
+    onNotificationOpen: { description: 'Called when a notification is opened from the inbox.', type: '(notification: DashboardNotification) => void' },
+    onViewAllNotifications: { description: 'Called by View all notifications at the foot of the inbox, usually to open your notifications page. The inbox closes first.', type: '() => void' },
+    today: { description: "Analytics only: the last day of the period picker's quick ranges. A period picked by hand shows the shortest of 7, 30 or 90 days that covers it.", type: 'Date', default: '11 October 2026, the last day of the sample' },
+  }}
+/>
+
+`DashboardNotification` is `{ id: string; day: string; title: ReactNode; description?: string; time: string; dateTime: string; avatar: { src?: string; fallback: string; square?: boolean }; icon?: ReactNode; unread?: boolean }`. `day` names the group it sits under, such as "Today". Wrap the names in `title` in `<strong>`. Each block exports it, as `AnalyticsNotification` and `CrmNotification`.
+
+### DashboardAnalytics
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    kpis: { description: 'The KPIs across the top.', type: '{ id: string; icon: LucideIcon; eyebrow?: string; label: string; value: string; change: number; unit?: "percent" | "points"; goodWhen?: "up" | "down" | "neither"; context?: string; trend: number[] }[]' },
+    traffic: { description: 'The totals and chart points of each range. A point holds the value of a day, or a week for 90 days, and of the same point in the period before.', type: "Record<'7d' | '30d' | '90d', { totals: { label: string; value: string; change: number; unit?: 'percent' | 'points'; goodWhen?: 'up' | 'down' | 'neither' }[]; points: { label: string; current: number; previous: number }[] }>" },
+    sources: { description: 'Visitors by source, most first. The list shows the first five, each with its share of all visitors.', type: '{ id: string; label: string; visitors: number }[]' },
+    topPages: { description: 'The most visited pages, most first.', type: 'BarListItem[]' },
+    countries: { description: "Visitors by country, most first. Each row's share is against the visitors in `sources`.", type: 'BarListItem[]' },
+    goal: { description: 'The signup goal. `pace` is how far ahead (+) or behind (−) of an even pace the count is, in percentage points.', type: '{ description: string; count: number; target: number; pace: number; team: { label: string; people: { name: string; avatarUrl?: string }[] } }' },
+    signups: { description: 'The newest signups, newest first.', type: 'Signup[]' },
+    range: { description: 'The range of the traffic chart. Use with `onRangeChange`.', type: "'7d' | '30d' | '90d'" },
+    defaultRange: { description: 'The range shown at first, when the block keeps its own state.', type: "'7d' | '30d' | '90d'", default: "'30d'" },
+    onRangeChange: { description: 'Called with the newly selected range.', type: "(range: '7d' | '30d' | '90d') => void" },
+    signupActions: { description: "The items of each signup's actions menu, as `DropdownMenuItem`s. Leave it out for no menu.", type: '(signup: Signup) => ReactNode' },
+  }}
+/>
+
+`Signup` is `{ id: string; name: string; email: string; avatarUrl?: string; presence?: 'online' | 'away' | 'offline'; plan: 'free' | 'pro' | 'scale' | 'trial'; source: string; referrer: string; step: string; activation: number; mrr: number; joined: string }`. `activation` runs from 0 to 100, and `mrr` is in USD, 0 for no charge.
+
+### DashboardCrm
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    kpis: { description: 'The KPIs across the top, the same shape as on DashboardAnalytics. `trend` draws thin bars.', type: 'CrmKpi[]' },
+    deals: { description: 'The deals in the table, in the order to show them.', type: 'Deal[]' },
+    stageTotals: { description: 'The value and count of deals at each stage, in stage order.', type: "{ stage: 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won'; value: number; deals: number }[]" },
+    stageStats: { description: 'The figures under the stages.', type: '{ label: string; value: string }[]' },
+    tasks: { description: 'What the team has to do today.', type: '{ id: string; icon: LucideIcon; title: string; detail?: string; action: string }[]' },
+    quota: { description: "Each rep's won value against their target, in USD.", type: '{ id: string; name: string; team: string; avatarUrl?: string; won: number; target: number }[]' },
+    activity: { description: 'What the team did today, newest first. `when` is short, such as `12m`.', type: '{ id: string; who: string; avatarUrl?: string; what: string; when: string }[]' },
+    onNewDeal: { description: 'Shows a Deal button beside the search, which calls this.', type: '() => void' },
+    dealActions: { description: "The items of each deal's actions menu, as `DropdownMenuItem`s. Leave it out for no menu.", type: '(deal: Deal) => ReactNode' },
+    onTaskAction: { description: 'Called with the task whose button was pressed.', type: '(task: CrmTask) => void' },
+    tasksHref: { description: 'Where the View all tasks button goes. Leave it out for no button.', type: 'string' },
+  }}
+/>
+
+`Deal` is `{ id: string; name: string; customer: string; rep: string; stage: DealStage; winChance: number; value: number; detail?: string; closeDate: string; closeNote?: string }`. `winChance` runs from 0 to 100, and `value` is a year of the deal in USD.

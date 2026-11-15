@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-menu",
+  "type": "registry:block",
+  "title": "Command menu",
+  "description": "A ⌘K menu with a search trigger that opens without animation. It filters sample projects, actions and pages as you type, and has lists for picking a teammate or workspace.",
+  "dependencies": [
+    "lucide-react@^1.50.0"
+  ],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/command",
+    "@kosmos/kbd"
+  ],
+  "categories": ["command-menu"],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/command-menu/command-menu.tsx",
+      "type": "registry:component"
+    },
+    { "path": "public/logos/acme.svg", "type": "registry:file", "target": "~/public/logos/acme.svg" },
+    { "path": "public/logos/acme-staging.svg", "type": "registry:file", "target": "~/public/logos/acme-staging.svg" }
+  ]
+}

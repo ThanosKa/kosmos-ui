@@ -1,0 +1,11 @@
+---
+title: Added Command descriptions, loading and nested pages
+description: Command gains item descriptions, a loading row, a Back header for nested pages and a Back hint in the footer, and Command menu uses them.
+date: 2026-10-26
+---
+
+To pick it up, run `shadcn add` again for Command and Command menu. Command now installs Button with it.
+
+- **[Command](/docs/components/command)**: new `CommandItemText` and `CommandDescription` for a second line under an item, `CommandLoading` for a loading state, `CommandBack` for the header of a nested page, and a `back` prop on `CommandFooter`. Nothing existing changes.
+- **[Command menu](/docs/blocks/command-menu)**: a `loading` prop, a `description` on items, and its second lists use `CommandBack` and the Back hint.
+- The site's ⌘K search opens on suggested pages and actions instead of an empty box, groups results by section with highlighted matches, and offers a next step when nothing matches.

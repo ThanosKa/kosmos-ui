@@ -1,0 +1,97 @@
+---
+title: Segmented gauge
+description: Shows a share of a limit, such as an event quota, as a half ring of segments with the value in the middle. The segments light along the arc when the value changes.
+---
+
+<ComponentPreview name="segmented-gauge-demo" />
+
+## Installation
+
+<ComponentInstall name="segmented-gauge" />
+
+## Usage
+
+```tsx
+import { SegmentedGauge } from '@/components/ui/segmented-gauge';
+```
+
+```tsx
+<SegmentedGauge
+  value={3912400}
+  max={8000000}
+  label="Event quota, Fernhill Books"
+  caption="Last 30 days"
+  description="51% left"
+/>
+```
+
+The ring has 18 segments, and the share of `max` that `value` takes lights from the left. Any use lights at least one segment, and the last segment lights only once the value reaches `max`. The middle shows `caption`, the value as a percentage of `max` and `description`. Pass `format` to write the value another way. Under 256px wide the gauge shows the value alone. Put the gauge in a [Chart card](/docs/components/chart-card) with a switch, as above. When the value changes, the segments light or go out one after another from where the old value ended. The number counts to the new value.
+
+Screen readers hear a meter named by `label`, with the value as `format` writes it. Under the reduced motion setting the segments and the text fade in instead of rising. A change then fades every segment at once.
+
+## When to pick which
+
+Pick Segmented gauge for a quota or an allowance that can run past its limit, in a card with room for the number. Pick [Gauge](/docs/components/gauge) for a small ring in a stat card, a table or a list, where the value stays inside its range.
+
+## Entrance
+
+The segments rise out of the ring one after another as the gauge scrolls into view. Then the used ones light along the arc and the number counts up. By default this plays the first time a chart shows in the browser tab. [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the other settings.
+
+## Examples
+
+### Tone
+
+With no `tone`, the lit segments take the first chart color (`chart-1`), turn `warning` from `high` and turn `destructive` past `max`. `high` is 90% of `max` by default. Here it is 75%, the point where an Acme quota counts as near the limit. Pass `tone` to keep one color at every value.
+
+<ComponentPreview name="segmented-gauge-tone" />
+
+## API
+
+### SegmentedGauge
+
+Renders a `<div>` and takes its props.
+
+<TypeTable
+  type={{
+    value: {
+      description: 'The amount used. A value past `max` lights every segment, and a negative value counts as zero.',
+      type: 'number',
+    },
+    max: {
+      description: 'The limit the value is a share of.',
+      type: 'number',
+      default: '100',
+    },
+    label: {
+      description: 'Names the gauge for screen readers.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the value in the middle and for screen readers. It gets the value, not the share.',
+      type: '(value: number) => string',
+      default: 'the share of max as a percentage (49%)',
+    },
+    caption: {
+      description: 'A short line above the value.',
+      type: 'ReactNode',
+    },
+    description: {
+      description: 'A short line under the value.',
+      type: 'ReactNode',
+    },
+    tone: {
+      description: 'The color of the lit segments at every value. Leave it out to color by how full the gauge is.',
+      type: "'primary' | 'success' | 'warning' | 'destructive'",
+    },
+    high: {
+      description: 'With no `tone`, the lit segments turn `warning` from this value.',
+      type: 'number',
+      default: '90% of max',
+    },
+    entrance: {
+      description: 'When the segments rise in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

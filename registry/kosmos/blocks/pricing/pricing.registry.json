@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricing",
+  "type": "registry:block",
+  "title": "Pricing",
+  "description": "Plans side by side with a monthly and yearly switch that screen readers announce. A card raises the featured plan, and each plan lists features and a link. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/button", "@kosmos/segmented-control"],
+  "categories": ["pricing"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/pricing/pricing.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+---
+title: Drawer
+description: A panel that slides in from an edge of the screen, for details next to a list or a bottom sheet on a phone. Built on Base UI, it follows a swipe to close.
+baseUi: https://base-ui.com/react/components/drawer
+---
+
+<ComponentPreview name="drawer-demo" />
+
+## Installation
+
+<ComponentInstall name="drawer" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+```
+
+```tsx
+<Drawer>
+  <DrawerTrigger render={<Button variant="secondary" />}>Open roadmap item</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Server-side batching</DrawerTitle>
+      <DrawerDescription>Ingestion</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>…</DrawerBody>
+    <DrawerFooter>
+      <DrawerClose render={<Button variant="primary" />}>Mark as shipped</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+A drawer keeps the page in view, so use it for content that belongs to something on the page, like the details of a row. For a decision that should stop everything else, use a [Dialog](/docs/components/dialog).
+
+## Examples
+
+### Bottom sheet
+
+`swipeDirection="down"` docks the drawer to the bottom edge with a grab handle, at most 36rem wide. It suits short choices on a phone.
+
+<ComponentPreview name="drawer-bottom" />
+
+### Left
+
+`swipeDirection="left"` opens from the left edge, for navigation on small screens. A side panel takes the width of its container less 1rem, up to 24rem, so it also fits a container narrower than the screen. To change that limit, set a maximum width with the same prefix in `className`, such as `sm:data-[swipe-direction=left]:max-w-72`.
+
+<ComponentPreview name="drawer-left" />
+
+### Non-modal
+
+With `modal={false}` there is no scrim and the page stays usable. Add `disablePointerDismissal` so a click on the page doesn't close the panel.
+
+<ComponentPreview name="drawer-non-modal" />
+
+## Motion
+
+The drawer slides in from its edge over 300ms and out over 150ms, both with `power3-out`, and follows the pointer while someone swipes it. Under reduced motion it fades instead of sliding.
+
+## API
+
+Drawer wraps the [Base UI Drawer](https://base-ui.com/react/components/drawer). Each part takes the props of the Base UI part it renders.
+
+### Drawer
+
+Takes every Base UI `Drawer.Root` prop, such as `open`, `onOpenChange`, `snapPoints` and `disablePointerDismissal`. Two of them shape it most:
+
+<TypeTable
+  type={{
+    swipeDirection: {
+      description: 'The edge the drawer docks to, and the direction a swipe closes it.',
+      type: "'right' | 'left' | 'down' | 'up'",
+      default: "'right'",
+    },
+    modal: {
+      description: 'Traps focus, locks page scroll and shows the scrim. `trap-focus` traps focus only, with no scrim.',
+      type: "boolean | 'trap-focus'",
+      default: 'true',
+    },
+  }}
+/>
+
+### DrawerContent
+
+Takes every Base UI `Drawer.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    showCloseButton: {
+      description: 'Shows a close button in the top corner. Turn it off only when the footer has a way out.',
+      type: 'boolean',
+      default: 'true',
+    },
+    container: {
+      description: 'The element the drawer renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `DrawerTrigger` | Opens the drawer. Base UI `Drawer.Trigger`. |
+| `DrawerClose` | Closes the drawer. Base UI `Drawer.Close`. |
+| `DrawerHeader` | Holds the title and description. |
+| `DrawerTitle` | Names the drawer. Base UI `Drawer.Title`. |
+| `DrawerDescription` | Describes the drawer. Base UI `Drawer.Description`. |
+| `DrawerBody` | The content, in a scroll area that scrolls on its own, so header and footer stay in view. The edge with content hidden past it fades out. `className` styles the padded box inside. |
+| `DrawerFooter` | The actions, on the bottom edge. |
+| `DrawerPortal` | Renders its children into `document.body`. Base UI `Drawer.Portal`. |
+| `DrawerBackdrop` | The scrim, which fades as someone swipes the drawer. Base UI `Drawer.Backdrop`. |
+| `DrawerViewport` | The full-screen layer the popup sits in. Base UI `Drawer.Viewport`. |
+| `DrawerPopup` | The drawer surface, placed by `swipeDirection`. Base UI `Drawer.Popup`. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the trigger: opens the drawer and moves focus into it. |
+| `Tab` | Moves to the next control in the drawer. From the last, it goes back to the first. With `modal={false}`, focus moves on to the page and the drawer stays open. |
+| `Shift` + `Tab` | Moves to the previous control, wrapping around the same way. |
+| `Escape` | Closes the drawer and puts focus back on the trigger. |

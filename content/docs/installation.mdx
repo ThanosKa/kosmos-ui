@@ -1,0 +1,173 @@
+---
+title: Installation
+description: Add the Kosmos registry to a shadcn project, install the tokens, then add your first component.
+icon: Download
+---
+
+Kosmos installs with the shadcn CLI into a Next.js app with Tailwind CSS v4 and shadcn set up on Base UI. Kosmos components build on Base UI. They also install into a shadcn project that uses Radix, but then your app ships two primitive libraries.
+
+<LinkCards>
+<LinkCard title="New project" href="#create-the-app">Create a Next.js app with shadcn on Base UI. Start at step 1.</LinkCard>
+<LinkCard title="Existing shadcn project" href="#add-the-registry">Your app already runs shadcn on Base UI. Start at step 2.</LinkCard>
+</LinkCards>
+
+Not sure which you have? Open `components.json`. A `style` that starts with `base-`, such as `base-nova`, means the project runs on Base UI.
+
+## Install with the CLI
+
+<Steps>
+<Step>
+
+### Create the app
+
+<ShadcnCommand args="init -t next -b base" />
+
+The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The preset's fonts stay. [Fonts](#fonts) below shows how to switch to Geist. The app lands in a new folder with that name, so `cd` into it before you run the next command.
+
+</Step>
+<Step>
+
+### Add the registry
+
+Kosmos is a shadcn registry named `@kosmos`. Tell the CLI where to find it:
+
+<ShadcnCommand registryAdd />
+
+This writes a `registries` entry into your `components.json`. You can also add it by hand:
+
+<RegistryConfig />
+
+</Step>
+<Step>
+
+### Install the tokens
+
+The tokens are the CSS variables every Kosmos component reads: colors, shadows, radius, easing, durations and type roles, in light and dark. Add them once per project, before any component:
+
+<ShadcnCommand args="add @kosmos/tokens" />
+
+They go into your global CSS and replace shadcn's default colors, after the CLI asks you to confirm. Run this command on its own. When a component pulls the tokens in as a dependency instead, the CLI only adds the variables you don't have yet, and shadcn's colors stay.
+
+</Step>
+<Step>
+
+### Add a component
+
+<ShadcnCommand args="add @kosmos/button" />
+
+The Button lands in `components/ui/button.tsx`, and the CLI adds `lib/cn.ts`, the class helper it imports. Each component page lists everything it installs.
+
+`shadcn init` already created a `components/ui/button.tsx`, so the CLI asks whether to overwrite it. Answer yes to use the Kosmos Button. Its variants are `primary`, `secondary`, `ghost`, `destructive` and `item`, and its sizes are `sm`, `md`, `lg`, `icon-sm`, `icon` and `icon-lg`. It also takes shadcn's names, so the shadcn components you already have, such as Dialog, Alert Dialog and Pagination, keep working unchanged:
+
+| shadcn | Renders as |
+| --- | --- |
+| `variant="default"` | `variant="primary"` |
+| `variant="outline"` | `variant="secondary"` |
+| `variant="link"` | A text link that underlines on hover |
+| `size="default"` | `size="md"` |
+| `size="xs"` | `size="sm"` |
+| `size="icon-xs"` | `size="icon-sm"` |
+
+Use the Kosmos names in the code you write, so every Button reads the same way.
+
+</Step>
+<Step>
+
+### Use it
+
+Import the component from `components/ui` and render it:
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+export function SaveBar() {
+  return <Button variant="primary">Save changes</Button>;
+}
+```
+
+</Step>
+</Steps>
+
+## Fonts
+
+Kosmos targets Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
+
+```tsx title="app/layout.tsx"
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="font-sans antialiased">{children}</body>
+    </html>
+  );
+}
+```
+
+Then point the font families at them in the `@theme inline` block of `app/globals.css`, replacing the lines your preset wrote:
+
+```css title="app/globals.css"
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+```
+
+## Without the CLI
+
+Every Kosmos file is plain source, so you can copy it in by hand. Start from a Next.js app with Tailwind CSS v4 and follow the same order: tokens, dark mode, then `cn`, then the component. Load the [fonts](#fonts) the same way as above.
+
+<Steps>
+<Step>
+
+### Copy the tokens
+
+Merge each block below into the matching block of `app/globals.css` (`@theme inline`, `:root` and `.dark`), after the Tailwind import. Where a variable already exists, such as shadcn's `--background` or `--primary`, replace its value.
+
+<RegistryCss name="tokens" />
+
+</Step>
+<Step>
+
+### Turn on dark mode
+
+The dark values apply under a `.dark` class on `<html>`. Add this line after the Tailwind import, so `dark:` classes follow the same class instead of the system setting:
+
+```css title="app/globals.css"
+@custom-variant dark (&:is(.dark *));
+```
+
+Then set the class from your theme switch. With [next-themes](https://github.com/pacocoursey/next-themes), wrap your app in `<ThemeProvider attribute="class">`. `shadcn init` sets up the same line, so the CLI path already has it.
+
+</Step>
+<Step>
+
+### Add cn
+
+Install the `cn` package, then copy `lib/cn.ts`:
+
+<PackageInstall packages="cn" />
+
+<ComponentSource name="cn" />
+
+</Step>
+<Step>
+
+### Copy a component
+
+Open the component's page and switch its install tabs to **Manual**. Install the packages it lists and copy its file into `components/ui/`. If your import aliases differ from `@/components/ui` and `@/lib`, change the imports to match.
+
+</Step>
+</Steps>
+
+## Next steps
+
+<LinkCards>
+<LinkCard title="Components" href="/docs/components">Every component, with live previews, examples and the API.</LinkCard>
+<LinkCard title="Blocks" href="/docs/blocks">Sidebars, tables, boards and dialogs, ready to drop into a page.</LinkCard>
+<LinkCard title="Foundations" href="/docs/foundations/color">The color, type, shadow and motion tokens behind every component.</LinkCard>
+</LinkCards>

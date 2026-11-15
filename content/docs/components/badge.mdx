@@ -1,0 +1,82 @@
+---
+title: Badge
+description: A small pill for a status, a count, a label or a code. A neutral and a primary look, three status looks with a colored dot, and six hues for categories, plans and codes.
+---
+
+<ComponentPreview name="badge-demo" />
+
+## Installation
+
+<ComponentInstall name="badge" />
+
+## Usage
+
+```tsx
+import { Badge } from '@/components/ui/badge';
+```
+
+```tsx
+<Badge variant="success">Active</Badge>
+```
+
+## Examples
+
+### Status
+
+`success`, `warning` and `destructive` keep the neutral surface and add a colored dot. The label carries the meaning, so write one that reads on its own, such as "Payment failed" instead of "Error". The demo above shows all five looks.
+
+### Tags
+
+For categories, such as a segment or a label, and for plans, use a hue: `gray`, `blue`, `green`, `amber`, `red` or `violet`. Each one tints the pill with a faint fill and draws its text in a deep step of the same hue, with no edge. That passes 4.5:1 in both themes. Give each category one hue and keep it everywhere. A status keeps the neutral pill with a dot.
+
+<ComponentPreview name="badge-tags" />
+
+### Codes
+
+For a code, such as an HTTP status or a method, use the same hues. Map status codes by class: 2xx `green`, 4xx `amber`, 5xx `red` and anything else `gray`. Methods take GET `green`, POST `blue`, PATCH `amber` and DELETE `red`. Plans take Free `gray`, Pro `blue`, Scale `violet` and Trial `amber`.
+
+<ComponentPreview name="badge-codes" />
+
+### With an icon
+
+An icon inside a badge is 12px. Put it before the label, or after it when it points somewhere, like an arrow on a link.
+
+<ComponentPreview name="badge-icon" />
+
+### Counts
+
+Numbers in a badge use tabular figures, so a count that changes keeps its width. Use `primary` for a count that needs attention, such as unread items, and `secondary` for the rest.
+
+<ComponentPreview name="badge-count" />
+
+### Link
+
+Pass an `<a>` through `render` to make the whole badge a link. It gets a hover background and the focus outline.
+
+<ComponentPreview name="badge-link" />
+
+### Long labels
+
+A badge never wraps. When the label can outgrow its slot, wrap it in `<span className="min-w-0 truncate">`. Show the full text where the user can reach it, such as the detail view.
+
+<ComponentPreview name="badge-long" />
+
+## API
+
+Badge renders a `<span>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all its props.
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'The look. The status looks add a colored dot before the label. The hues tint the pill with no edge, for categories, plans and codes.',
+      type: "'secondary' | 'primary' | 'success' | 'warning' | 'destructive' | 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet'",
+      default: "'secondary'",
+    },
+    render: {
+      description: 'Replaces the rendered `<span>`, for example with an `<a>`.',
+      type: 'ReactElement | ((props, state) => ReactElement)',
+    },
+  }}
+/>
+
+`badgeVariants({ variant })` returns the same classes, for elements that should look like a Badge without being one.

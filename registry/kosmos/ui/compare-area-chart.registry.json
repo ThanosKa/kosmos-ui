@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "compare-area-chart",
+  "type": "registry:ui",
+  "title": "Compare area chart",
+  "description": "This period as a line with a faint wash over the period before at 45%. The tooltip shows both days and the gap between them, and both lines draw in together as the chart scrolls into view. Built on Recharts inside the Chart container.",
+  "dependencies": ["recharts@^3.10.1"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion", "@kosmos/motion", "@kosmos/chart"],
+  "meta": { "group": "chart-line" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/compare-area-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

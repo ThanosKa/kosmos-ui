@@ -1,0 +1,83 @@
+'use client';
+
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { cn } from '@/registry/kosmos/lib/cn';
+
+/**
+ * A preview route in an iframe, sized to its content. While its width stays the same it only grows, so a
+ * block that shrinks as someone filters it never moves the page or the control under the pointer. A `src` without `?theme=` follows the docs theme
+ * toggle (next-themes syncs both documents through localStorage); with it the frame is pinned to that theme
+ * (the approval page shows light and dark side by side). Content shorter than `minHeight` is centered in the frame (the page marks itself `data-centered`); taller content sits at the top. A page on another origin can't be measured, so it
+ * reports its own height with a `kosmos:preview-height` message (the Pro previews do); until then its frame keeps
+ * `minHeight`.
+ */
+export function PreviewFrame({
+  src,
+  title,
+  minHeight = 240,
+  className,
+}: {
+  src: string;
+  title: string;
+  minHeight?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLIFrameElement>(null);
+  const [height, setHeight] = useState(minHeight);
+
+  useEffect(() => {
+    const iframe = ref.current;
+    if (!iframe) return;
+    let observer: ResizeObserver | undefined;
+    let measuredWidth = 0;
+    const measure = () => {
+      const doc = iframe.contentDocument;
+      const root = doc?.querySelector<HTMLElement>('[data-preview-root]');
+      const content = doc?.querySelector<HTMLElement>('[data-preview-content]');
+      if (!doc?.defaultView || !root || !content) return;
+      root.dataset.inFrame = '';
+      const style = doc.defaultView.getComputedStyle(root);
+      const padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      const natural = Math.ceil(content.getBoundingClientRect().height + padding);
+      const next = Math.max(minHeight, natural);
+      root.toggleAttribute('data-centered', natural <= minHeight);
+      const resized = iframe.clientWidth !== measuredWidth;
+      measuredWidth = iframe.clientWidth;
+      setHeight((current) => (resized ? next : Math.max(current, next)));
+      if (!observer) {
+        observer = new ResizeObserver(measure);
+        observer.observe(content);
+      }
+    };
+    const onLoad = () => {
+      observer?.disconnect();
+      observer = undefined;
+      measuredWidth = 0;
+      measure();
+    };
+    const onMessage = (event: MessageEvent) => {
+      const { type, height: reported } = (event.data ?? {}) as { type?: unknown; height?: unknown };
+      if (event.source !== iframe.contentWindow || type !== 'kosmos:preview-height' || typeof reported !== 'number') return;
+      setHeight(Math.max(minHeight, Math.ceil(reported)));
+    };
+    iframe.addEventListener('load', onLoad);
+    window.addEventListener('message', onMessage);
+    if (iframe.contentDocument?.readyState === 'complete') measure();
+    return () => {
+      iframe.removeEventListener('load', onLoad);
+      window.removeEventListener('message', onMessage);
+      observer?.disconnect();
+    };
+  }, [minHeight]);
+
+  return (
+    <iframe
+      ref={ref}
+      src={src}
+      title={title}
+      loading="lazy"
+      style={{ '--frame-height': `${height}px` } as CSSProperties}
+      className={cn('block h-(--frame-height) w-full rounded-lg bg-background', className)}
+    />
+  );
+}

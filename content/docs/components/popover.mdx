@@ -1,0 +1,123 @@
+---
+title: Popover
+description: A small panel anchored to its trigger, for extra details or a quick action without leaving the page. Built on Base UI, it flips side when it runs out of room.
+baseUi: https://base-ui.com/react/components/popover
+---
+
+<ComponentPreview name="popover-demo" />
+
+## Installation
+
+<ComponentInstall name="popover" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+```
+
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button variant="secondary" />}>Notifications</PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader>
+      <PopoverTitle>Turn on notifications?</PopoverTitle>
+      <PopoverDescription>Get an email when someone mentions you.</PopoverDescription>
+    </PopoverHeader>
+  </PopoverContent>
+</Popover>
+```
+
+A popover doesn't block the page. Escape or a click outside closes it and puts focus back on the trigger, and tabbing past its last control closes it too. For a list of actions use a menu, and for a decision that should stop everything else use a [Dialog](/docs/components/dialog).
+
+## Examples
+
+### Side
+
+`side` picks where the popover opens: `bottom` by default, or `top`, `right` and `left`. `align` lines it up with the start, center or end of the trigger. When there isn't room, it flips to the other side.
+
+<ComponentPreview name="popover-side" />
+
+### Open on hover
+
+`openOnHover` on the trigger opens the popover on hover as well as on click, for a definition next to a label. Keyboard users still open it with Enter or Space, so keep the trigger a button with an `aria-label`.
+
+<ComponentPreview name="popover-hover" />
+
+## Motion
+
+The popover grows out of its trigger from `scale-[0.97]` with a fade over 200ms, and shrinks back over 150ms, both with `power3-out`. Under reduced motion it only fades.
+
+## API
+
+Popover wraps the [Base UI Popover](https://base-ui.com/react/components/popover). `Popover` takes every Base UI `Popover.Root` prop, such as `open`, `onOpenChange` and `modal`. `PopoverTrigger` takes the Base UI `Popover.Trigger` props, such as `openOnHover` and `delay`.
+
+### PopoverContent
+
+Takes every Base UI `Popover.Popup` prop, plus:
+
+<TypeTable
+  type={{
+    side: {
+      description: 'The side of the trigger the popover opens on.',
+      type: "'top' | 'right' | 'bottom' | 'left' | 'inline-start' | 'inline-end'",
+      default: "'bottom'",
+    },
+    align: {
+      description: 'How the popover lines up with the trigger.',
+      type: "'start' | 'center' | 'end'",
+      default: "'center'",
+    },
+    sideOffset: { description: 'The gap between trigger and popover, in px.', type: 'number', default: '8' },
+    alignOffset: { description: 'Shifts the popover along the trigger, in px.', type: 'number', default: '0' },
+    collisionPadding: {
+      description: 'The space kept between the popover and the screen edges, in px.',
+      type: 'number',
+      default: '16',
+    },
+    anchor: {
+      description: 'An element to position against instead of the trigger.',
+      type: 'Element | RefObject<Element | null> | VirtualElement | null',
+    },
+    container: {
+      description: 'The element the popover renders into.',
+      type: 'HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null',
+      default: 'document.body',
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `Popover` | Holds the open state. Base UI `Popover.Root`. |
+| `PopoverTrigger` | Opens the popover. Base UI `Popover.Trigger`. |
+| `PopoverClose` | Closes the popover. Base UI `Popover.Close`. |
+| `PopoverHeader` | Holds the title and description. |
+| `PopoverTitle` | Names the popover. Base UI `Popover.Title`. |
+| `PopoverDescription` | Describes the popover. Base UI `Popover.Description`. |
+| `PopoverPortal` | Renders its children into `document.body`. Base UI `Popover.Portal`. |
+| `PopoverPositioner` | Places the popup next to the trigger, 8px away and 16px clear of the screen edges. Base UI `Popover.Positioner`. |
+| `PopoverPopup` | The popover surface. Its content stacks 12px apart inside 16px of padding, and scrolls in a scroll area when it is taller than the room it has. The edge that hides content fades out. `className` styles the surface, such as its width. The padding sits inside the scroll area, so `p-0` leaves it. `[&_[data-slot=popover-body]]:p-0` removes it for a list that brings its own. `body={false}` leaves out the scroll area and the padding. Use it for content that lays itself out, such as a header, a list that scrolls on its own and a footer. Base UI `Popover.Popup`. |
+
+`PopoverContent` is `PopoverPortal`, `PopoverPositioner` and `PopoverPopup` put together.
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` or `Space` | On the trigger: opens the popover and moves focus to its first control, or closes it. |
+| `Tab` | Moves through the popover's controls. Past the last one, the popover closes and focus moves on to the next control on the page. |
+| `Shift` + `Tab` | From the first control, goes back to the trigger. The popover stays open. |
+| `Escape` | Closes the popover and puts focus back on the trigger. |
+
+With `modal` on `Popover` and a `PopoverClose` inside, focus stays in the popover until it closes.

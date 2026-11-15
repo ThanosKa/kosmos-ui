@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "flickering-grid",
+  "type": "registry:ui",
+  "title": "Flickering grid",
+  "description": "A grid of small squares that flicker behind a section, in the accent color (ink when the preset sets no accent). It has an optional cursor spotlight, pauses off screen, and hides from assistive technology.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "effects" },
+  "files": [
+    { "path": "registry/kosmos/ui/flickering-grid.tsx", "type": "registry:ui" },
+    { "path": "registry/kosmos/ui/LICENSE-MAGIC-UI", "type": "registry:file", "target": "~/LICENSE-MAGIC-UI" }
+  ]
+}

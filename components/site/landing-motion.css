@@ -1,0 +1,87 @@
+/*
+ * The landing's motion, one scale from the Kosmos tokens: durations fast 150 / base 200 / slow 300 / reveal 500,
+ * easing power3-out. Distances: 8 (hero line, parts), 16 (sections), 40 (product frame). Nothing tilts.
+ * Under reduced motion every distance is 0, so each entrance is an opacity fade.
+ * Everything is visible without JavaScript: entrances are CSS animations that fill backwards, and the scroll reveals
+ * are armed by script (`data-reveal`), never by the markup.
+ */
+[data-landing-section] {
+  --m-ease: var(--ease-power3-out);
+  --m-rise-line: 8px;
+  --m-rise-frame: 40px;
+  --m-rise: 16px;
+  --m-rise-row: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-section] {
+    --m-rise-line: 0px;
+    --m-rise-frame: 0px;
+    --m-rise: 0px;
+    --m-rise-row: 0px;
+  }
+}
+
+@keyframes m-rise-line {
+  from {
+    opacity: 0;
+    translate: 0 var(--m-rise-line);
+  }
+}
+@keyframes m-rise-frame {
+  from {
+    opacity: 0;
+    translate: 0 var(--m-rise-frame);
+  }
+}
+@keyframes m-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/*
+ * Hero: the title enters per word on its own (TextReveal, mount). The line and the actions come in together as one
+ * short block while it plays. The frame and its glow follow while the last words play (the title's last word starts at 720ms).
+ */
+.landing-hero [data-slot='hero-description'],
+.landing-hero [data-slot='hero-actions'],
+.landing-hero [data-slot='hero-install'] {
+  animation: m-rise-line var(--transition-duration-slow) var(--m-ease) 240ms both;
+}
+.landing-hero [data-slot='browser-frame'] {
+  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 700ms both;
+}
+.landing-hero [data-slot='hero-product-glow'] {
+  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 800ms both;
+}
+
+/* Sections: each part rises once as it first scrolls into view. `data-reveal` is set by script. */
+[data-landing-section] [data-reveal] {
+  transition:
+    opacity var(--transition-duration-reveal) var(--m-ease) var(--m-delay, 0ms),
+    translate var(--transition-duration-reveal) var(--m-ease) var(--m-delay, 0ms);
+}
+[data-landing-section] [data-reveal='hidden'] {
+  opacity: 0;
+  translate: 0 var(--m-rise);
+}
+
+/* Showcase tabs: a cross-fade with a small rise. The outgoing screen leaves in 150ms, the incoming one arrives in 200ms. */
+.landing-panel {
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 var(--m-rise-row);
+  transition:
+    opacity var(--transition-duration-fast) var(--m-ease),
+    translate var(--transition-duration-fast) var(--m-ease),
+    visibility 0s linear var(--transition-duration-fast);
+}
+.landing-panel[data-active] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity var(--transition-duration-base) var(--m-ease),
+    translate var(--transition-duration-base) var(--m-ease),
+    visibility 0s;
+}

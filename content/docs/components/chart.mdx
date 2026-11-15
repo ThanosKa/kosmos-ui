@@ -1,0 +1,169 @@
+---
+title: Chart
+description: Charts built on Recharts and themed with Kosmos tokens. A growth chart for a value over time, a sparkline for tiles, and parts for any Recharts chart.
+---
+
+<ComponentPreview name="chart-demo" />
+
+## Installation
+
+<ComponentInstall name="chart" />
+
+This installs [Recharts](https://recharts.github.io), the chart library shadcn's charts also use, and `react-is`, which Recharts needs. On React 18, pin `react-is` to version 18.
+
+## Usage
+
+```tsx
+import { GrowthChart, type ChartConfig } from '@/components/ui/chart';
+```
+
+```tsx
+const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisfies ChartConfig;
+
+<GrowthChart title="Monthly revenue, 2026" data={data} config={config} xKey="month" />;
+```
+
+A line is 1.5px and straight, with a faint flat fill of its own color under the first series. The chart has no value axis and labels only its first and last x value, so it reads as a shape; the tooltip gives the numbers.
+
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. A previous period is not a new series: give it the same color as the current one and list its key in `previousKeys`, and it draws at 45% opacity with no fill. They are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
+
+## Examples
+
+### Two or more series
+
+Each key in `config` becomes a series. With two or more, a legend appears above the chart.
+
+<ComponentPreview name="chart-multiple" />
+
+### Sparkline
+
+A small trend line with no axes, for a stat tile or a table cell. It reads as one image, so its `aria-label` says what it shows, including the change: "Signups, last 12 months, up 4.2%". `variant="bar"` draws thin bars instead, the latest in `color` and the rest in the same color at 25%, as in the [Stat card](/docs/components/stat-card#bar-sparkline).
+
+<ComponentPreview name="chart-sparkline" />
+
+### Any Recharts chart
+
+`ChartContainer` sizes a Recharts chart to its box and themes the axes, grid, cursor and focus outline. Each series color is available as `var(--color-<key>)`. Add `ChartTooltip` with `ChartTooltipContent`, and `ChartLegend` with `ChartLegendContent`, for the Kosmos tooltip and legend.
+
+<ComponentPreview name="chart-custom" />
+
+Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `title` to the Recharts chart to name it for screen readers. Spread `useChartAnimation(entrance, data)` on each series, so your chart follows the same entrance setting as the Kosmos charts. The same parts as shadcn's Chart are here under the same names, so its examples work with `color` in place of `theme` in the config.
+
+## Accessibility
+
+- `title` names the growth chart, and keyboard users can focus it and step through the points with the arrow keys.
+- It also renders its data as a visually hidden table, so screen reader users get every value.
+- Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
+
+## Entrance
+
+By default (`entrance="session"`) a chart draws in the first time a chart shows in the browser tab. After that, it appears drawn at once, so a dashboard that someone reloads all day stays still. When its data changes, such as a new range, it moves again. `entrance="always"` draws it in on every load, for a landing page, and `entrance="none"` never does. `GrowthChart`, `Sparkline` and [Donut chart](/docs/charts/donut-chart) take the prop.
+
+## API
+
+### GrowthChart
+
+<TypeTable
+  type={{
+    data: { description: 'One object per x value.', type: 'Record<string, string | number>[]', required: true },
+    config: { description: 'The series to draw, keyed by data key.', type: 'ChartConfig', required: true },
+    xKey: { description: 'The key of the x value in each object.', type: 'string', required: true },
+    title: {
+      description: 'Names the chart for screen readers and captions its hidden data table.',
+      type: 'string',
+      required: true,
+    },
+    xLabel: { description: 'Heads the x column of the hidden table.', type: 'string', default: 'xKey' },
+    valueFormatter: {
+      description: 'Formats values in the tooltip and the hidden table.',
+      type: '(value: number) => string',
+    },
+    xFormatter: {
+      description: 'Formats x values on the axis, in the tooltip and in the hidden table.',
+      type: '(value: string) => string',
+    },
+    previousKeys: { description: 'Keys of the series that are the period before: the same line at 45% opacity, with no fill.', type: 'string[]', default: '[]' },
+    grid: { description: 'Draws a faint dotted vertical grid. For a large chart only.', type: 'boolean', default: 'false' },
+    legend: { description: 'Draws the legend. By default it shows for two or more series.', type: 'boolean' },
+    defaultIndex: { description: 'Shows the tooltip at this point without hovering.', type: 'number' },
+    entrance: { description: 'When the lines draw in: the first time a chart shows in the tab, on every load, or never.', type: "'session' | 'always' | 'none'", default: "'session'" },
+  }}
+/>
+
+### Sparkline
+
+<TypeTable
+  type={{
+    data: { description: 'One object per point.', type: 'Record<string, number>[]', required: true },
+    'aria-label': { description: 'What the line shows, including the trend.', type: 'string', required: true },
+    dataKey: { description: 'The key of the value in each object.', type: 'string', default: "'value'" },
+    variant: { description: '`line` draws the trend. `bar` draws one 4px bar per point, grown from zero.', type: "'line' | 'bar'", default: "'line'" },
+    color: { description: 'Any CSS color. In the bar form, the color of the latest bar.', type: 'string', default: "'var(--chart-1)'" },
+    fill: { description: 'Washes the area under the line. The bar form ignores it.', type: 'boolean', default: 'true' },
+    entrance: { description: 'When the line draws in or the bars grow: the first time a chart shows in the tab, on every load, or never.', type: "'session' | 'always' | 'none'", default: "'session'" },
+  }}
+/>
+
+### ChartContainer
+
+Accepts all `<div>` props.
+
+<TypeTable
+  type={{
+    config: { description: 'The series, keyed by data key. Each color becomes `var(--color-<key>)`.', type: 'ChartConfig', required: true },
+    children: { description: 'One Recharts chart, such as `<BarChart>`.', type: 'ReactElement', required: true },
+  }}
+/>
+
+### ChartConfig
+
+<TypeTable
+  type={{
+    label: { description: 'The series name in the tooltip and legend.', type: 'ReactNode' },
+    color: { description: 'Any CSS color, usually a chart token.', type: 'string' },
+    icon: { description: 'Shown in place of the color swatch.', type: 'ComponentType' },
+  }}
+/>
+
+### ChartTooltipContent
+
+<TypeTable
+  type={{
+    hideLabel: { description: 'Hides the x value above the rows.', type: 'boolean', default: 'false' },
+    hideIndicator: { description: 'Hides the color swatches.', type: 'boolean', default: 'false' },
+    labelFormatter: { description: 'Formats the x value.', type: '(label: ReactNode) => ReactNode' },
+    valueFormatter: {
+      description: 'Formats each value. Numbers default to en-US formatting.',
+      type: '(value, key: string) => ReactNode',
+    },
+  }}
+/>
+
+### ChartLegendContent
+
+<TypeTable
+  type={{
+    verticalAlign: {
+      description: 'Match the `verticalAlign` of its `ChartLegend`, so the spacing lands between legend and chart.',
+      type: "'top' | 'middle' | 'bottom'",
+      default: "'bottom'",
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `ChartTooltip` | Recharts' `Tooltip`. Pass `content={<ChartTooltipContent />}` for rows named and colored from the config. |
+| `ChartLegend` | Recharts' `Legend`. Pass `content={<ChartLegendContent />}` for entries named and colored from the config. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Focuses a `GrowthChart` and shows the tooltip for its first point. |
+| `ArrowRight` or `ArrowLeft` | Shows the next or previous point. It stops at either end. |
+| `Escape` | Hides the tooltip. The next arrow key shows it again. |
+
+`Sparkline` takes no focus. A chart you build with `ChartContainer` and a `ChartTooltip` gets the same keys from Recharts.

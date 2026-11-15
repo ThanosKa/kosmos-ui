@@ -1,0 +1,424 @@
+---
+title: Sidebar
+description: The app sidebar, made of parts you compose, with submenus, a workspace switcher, and a user menu. Drag its edge or use the keyboard to resize it. It collapses to icons or to the edge, and opens as a drawer on phones.
+---
+
+<ComponentPreview name="sidebar-demo" />
+
+## Installation
+
+<ComponentInstall name="sidebar" />
+
+The sidebar brings [Avatar](/docs/components/avatar), [Button](/docs/components/button), [Collapsible](/docs/components/collapsible), [Drawer](/docs/components/drawer), [Dropdown menu](/docs/components/dropdown-menu), [Kbd](/docs/components/kbd), [Scroll area](/docs/components/scroll-area), [Separator](/docs/components/separator) and [Tooltip](/docs/components/tooltip) with it.
+
+## Usage
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarResizeHandle,
+  SidebarSubmenu,
+  SidebarSubmenuButton,
+  SidebarSubmenuContent,
+  SidebarSubmenuItem,
+  SidebarSubmenuTrigger,
+  SidebarTrigger,
+  SidebarUserMenu,
+  SidebarWorkspaceSwitcher,
+} from '@/components/ui/sidebar';
+```
+
+```tsx
+<SidebarProvider>
+  <Sidebar collapsible="icon">
+    <SidebarHeader>Acme</SidebarHeader>
+    <SidebarContent render={<nav aria-label="Main" />}>
+      <SidebarGroup>
+        <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton href="/inbox" isActive tooltip="Inbox">
+              <Inbox />
+              <span>Inbox</span>
+              <SidebarMenuBadge>12</SidebarMenuBadge>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter>…</SidebarFooter>
+  </Sidebar>
+  <SidebarResizeHandle />
+  <SidebarInset>
+    <header>
+      <SidebarTrigger />
+    </header>
+    …
+  </SidebarInset>
+</SidebarProvider>
+```
+
+`SidebarProvider` wraps the whole app shell and fills the screen. The sidebar sticks to the top while the page scrolls. Its content scrolls on its own between the header and the footer, in a [Scroll area](/docs/components/scroll-area). An edge with items out of view past it fades out.
+
+From 768px up the sidebar sits beside the page. Below that it leaves the layout, `SidebarTrigger` opens it as a drawer from the left edge, and a click on a link closes the drawer. `mobileBreakpoint` moves that point.
+
+## Submenus
+
+An item can hold one level of pages under it. Put a `SidebarSubmenu` in the `SidebarMenuItem`, with a trigger and its pages:
+
+```tsx
+<SidebarMenuItem>
+  <SidebarSubmenu label="Reports" defaultOpen>
+    <SidebarSubmenuTrigger isActive={reportPages.includes(pathname)}>
+      <BarChart3 />
+      <span>Reports</span>
+    </SidebarSubmenuTrigger>
+    <SidebarSubmenuContent>
+      <SidebarSubmenuItem>
+        <SidebarSubmenuButton href="/reports/revenue" isActive={pathname === '/reports/revenue'}>
+          <span>Revenue</span>
+        </SidebarSubmenuButton>
+      </SidebarSubmenuItem>
+    </SidebarSubmenuContent>
+  </SidebarSubmenu>
+</SidebarMenuItem>
+```
+
+Beside the page and in the drawer, the trigger opens a panel under it, and the pages line up with the trigger's label. In icon mode the panel closes. The trigger then opens the pages in a popover beside its icon, on hover, on click or with `Enter`, under the submenu's `label`. A click on a page closes it. Give the trigger `isActive` when the current page is inside: it takes the current page's highlight while that page is out of sight. That happens with the panel closed or in icon mode.
+
+## Workspace switcher and user menu
+
+`SidebarWorkspaceSwitcher` sits in the header and switches workspace from a menu. `SidebarUserMenu` sits in the footer and opens the account actions you pass as menu items:
+
+```tsx
+<SidebarHeader>
+  <SidebarWorkspaceSwitcher
+    workspaces={[
+      { id: 'acme', name: 'Acme', description: 'Scale plan' },
+      { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan' },
+    ]}
+    onValueChange={switchWorkspace}
+  >
+    <DropdownMenuItem onClick={addWorkspace}>
+      <Plus />
+      Add workspace
+    </DropdownMenuItem>
+  </SidebarWorkspaceSwitcher>
+</SidebarHeader>
+…
+<SidebarFooter>
+  <SidebarUserMenu user={{ name: 'Lena Park', email: 'lena@acme.example', initials: 'LP' }}>
+    <DropdownMenuItem onClick={openProfile}>
+      <UserRound />
+      Profile
+    </DropdownMenuItem>
+    <DropdownMenuItem onClick={logOut}>
+      <LogOut />
+      Log out
+    </DropdownMenuItem>
+  </SidebarUserMenu>
+</SidebarFooter>
+```
+
+The switcher shows the current workspace's mark, the first letter of its name unless you pass a `logo`, beside its name and description. It lists every workspace with a check on the current one. The user menu shows the avatar, name and email, and opens upward. In icon mode both keep only the mark or the avatar. They name themselves in a tooltip and open their menu beside the column. A user menu with no items shows the user as plain text.
+
+## Collapsing
+
+`SidebarTrigger`, `⌘B` (`Ctrl+B` on Windows and Linux) and the resize handle collapse the sidebar beside the page. `collapsible` on `Sidebar` sets where it goes:
+
+| `collapsible` | Collapsed |
+| --- | --- |
+| `offcanvas` (default) | The sidebar slides off to the edge and gives the page its space. |
+| `icon` | A 48px column of icons stays. The labels, counts and group labels fade out. The active item keeps its highlight. Each item shows its `tooltip` on hover and keyboard focus, and a submenu opens in a popover. |
+
+In icon mode, give every `SidebarMenuButton` a `tooltip` with its name. The button's first child stays visible, so put the icon first. The label and count after it fade. The workspace switcher and the user menu do this for you. Your own content in the header or footer can fade with it. `group-data-[collapsible=icon]/sidebar:opacity-0` hides a name and leaves its logo. `motion-safe:group-data-[state=expanded]/sidebar:delay-(--transition-duration-fast)` holds it back on expand until the column is wide enough. On phones the drawer always shows the full sidebar.
+
+The sidebar remembers whether you collapsed it. It saves the state in local storage under `storageKey` (`'sidebar-state'`), and a small script puts it back before the page paints. A collapsed sidebar then never flashes open on reload. Give each sidebar on a page its own key, or pass `storageKey={false}` to keep nothing. `keyboardShortcut` changes the key, and `false` turns the shortcut off.
+
+## Resizing
+
+`SidebarResizeHandle` sits on the sidebar's edge, between `Sidebar` and `SidebarInset`. It is a window splitter:
+
+| Input | Action |
+| --- | --- |
+| Drag | Resizes between `minWidth` and `maxWidth`. Dragging below halfway from `minWidth` to the collapsed width collapses the sidebar, to the edge or to icons. |
+| Double click | Returns to `defaultWidth`. |
+
+It also takes focus and resizes from the keyboard: see [Keyboard](#keyboard).
+
+The width resets on every visit. To keep it, control `width` and save it, as in the example below. You save a controlled `open` too, because the sidebar stores nothing while you control `open`.
+
+## Examples
+
+### Controlled width
+
+<ComponentPreview name="sidebar-controlled" />
+
+## Motion
+
+The sidebar collapses and reopens by easing its width over 300ms with `smooth-in-out`. In icon mode the labels fade out in 150ms as it narrows. While you drag or use the arrow keys, the width follows without easing. Under reduced motion the sidebar (in icon mode, its labels) fades out, then the width changes at once. On reopen the width comes back first and the content fades in.
+
+## API
+
+No sidebar part wraps a Base UI part directly: the drawer on phones is a Kosmos [Drawer](/docs/components/drawer), and `SidebarMenuButton` a Kosmos [Button](/docs/components/button).
+
+### SidebarProvider
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    defaultOpen: {
+      description: 'Whether the sidebar starts open beside the page.',
+      type: 'boolean',
+      default: 'true',
+    },
+    open: {
+      description: 'Whether the sidebar is open beside the page. Use with `onOpenChange`.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called when the sidebar collapses or reopens.',
+      type: '(open: boolean) => void',
+    },
+    defaultWidth: {
+      description: 'The starting width in pixels. A double click on the resize handle returns to it.',
+      type: 'number',
+      default: '256',
+    },
+    width: {
+      description: 'The width in pixels. Use with `onWidthChange`.',
+      type: 'number',
+    },
+    onWidthChange: {
+      description: 'Called with the new width while the sidebar is resized.',
+      type: '(width: number) => void',
+    },
+    minWidth: {
+      description: 'The narrowest the sidebar can be resized to, in pixels.',
+      type: 'number',
+      default: '208',
+    },
+    maxWidth: {
+      description: 'The widest the sidebar can be resized to, in pixels.',
+      type: 'number',
+      default: '384',
+    },
+    mobileBreakpoint: {
+      description: 'Below this viewport width in pixels the sidebar opens as a drawer.',
+      type: 'number',
+      default: '768',
+    },
+    storageKey: {
+      description: 'The local storage key that keeps the collapsed state between visits. `false` keeps nothing. Unused while `open` is controlled.',
+      type: 'string | false',
+      default: "'sidebar-state'",
+    },
+    keyboardShortcut: {
+      description: 'The key that collapses and reopens the sidebar with ⌘ or Ctrl. `false` turns the shortcut off.',
+      type: 'string | false',
+      default: "'b'",
+    },
+  }}
+/>
+
+### Sidebar
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    label: {
+      description: 'The name screen readers announce for the drawer on phones.',
+      type: 'string',
+      default: "'Sidebar'",
+    },
+    collapsible: {
+      description: 'Where the sidebar collapses to: off to the edge, or a column of icons with tooltips.',
+      type: "'offcanvas' | 'icon'",
+      default: "'offcanvas'",
+    },
+  }}
+/>
+
+### SidebarMenuButton
+
+Takes every [Button](/docs/components/button) prop except `variant` and `size`, plus:
+
+<TypeTable
+  type={{
+    isActive: {
+      description: 'Marks the current page: a highlight, flat in light mode and raised in dark, the label and icon in `accent-text`, and `aria-current="page"` on a link.',
+      type: 'boolean',
+      default: 'false',
+    },
+    tooltip: {
+      description: 'The name shown beside the icon on hover and keyboard focus while the sidebar is collapsed to icons.',
+      type: 'ReactNode',
+    },
+  }}
+/>
+
+### SidebarSubmenu
+
+<TypeTable
+  type={{
+    label: {
+      description: 'The submenu\'s name, the heading of its popover in icon mode. Usually the trigger\'s label.',
+      type: 'ReactNode',
+    },
+    defaultOpen: {
+      description: 'Whether the panel starts open.',
+      type: 'boolean',
+      default: 'false',
+    },
+    open: {
+      description: 'Whether the panel is open. Use with `onOpenChange`.',
+      type: 'boolean',
+    },
+    onOpenChange: {
+      description: 'Called when the panel opens or closes.',
+      type: '(open: boolean) => void',
+    },
+    popoverOpen: {
+      description: 'Whether the popover is open in icon mode. Use with `onPopoverOpenChange`.',
+      type: 'boolean',
+    },
+    onPopoverOpenChange: {
+      description: 'Called when the popover opens or closes.',
+      type: '(open: boolean) => void',
+    },
+  }}
+/>
+
+### SidebarSubmenuTrigger
+
+Takes every [Button](/docs/components/button) prop except `variant`, `size` and `href`, plus:
+
+<TypeTable
+  type={{
+    isActive: {
+      description: 'Marks the submenu that holds the current page. The trigger takes the highlight, and `aria-current="true"`, while the panel is closed and in icon mode.',
+      type: 'boolean',
+      default: 'false',
+    },
+  }}
+/>
+
+`SidebarSubmenuButton` takes the props of `SidebarMenuButton` except `tooltip`, and `SidebarSubmenuContent` every `<ul>` prop plus `container`, the element its popover renders into.
+
+### SidebarWorkspaceSwitcher
+
+Takes every [Dropdown menu](/docs/components/dropdown-menu) root prop, such as `open` and `onOpenChange`, plus:
+
+<TypeTable
+  type={{
+    workspaces: {
+      description: 'The workspaces in the menu. With none, the switcher renders nothing.',
+      type: '{ id: string; name: string; description?: string; logo?: ReactNode }[]',
+    },
+    value: {
+      description: 'The `id` of the current workspace. Use with `onValueChange`.',
+      type: 'string',
+    },
+    defaultValue: {
+      description: 'The workspace shown at first, when the switcher keeps its own state.',
+      type: 'string',
+      default: 'the first workspace',
+    },
+    onValueChange: {
+      description: 'Called with the `id` of the workspace picked in the menu.',
+      type: '(id: string) => void',
+    },
+    label: {
+      description: 'The heading over the workspaces in the menu.',
+      type: 'string',
+      default: "'Workspaces'",
+    },
+    children: {
+      description: 'More menu items after the workspaces, below a line, such as "Add workspace".',
+      type: 'ReactNode',
+    },
+    className: {
+      description: 'Classes for the trigger.',
+      type: 'string',
+    },
+  }}
+/>
+
+### SidebarUserMenu
+
+Takes every [Dropdown menu](/docs/components/dropdown-menu) root prop, plus:
+
+<TypeTable
+  type={{
+    user: {
+      description: 'The signed-in user. `avatar` is the address of a photo. Without it the avatar shows `initials`, or the first letter of the name.',
+      type: '{ name: string; email?: string; avatar?: string; initials?: string }',
+    },
+    children: {
+      description: 'The menu\'s items, below the name and email. Without them the user shows as plain text.',
+      type: 'ReactNode',
+    },
+    className: {
+      description: 'Classes for the trigger.',
+      type: 'string',
+    },
+  }}
+/>
+
+### Parts
+
+Each part is a styled element you can rearrange. `useSidebar()` reads and sets the state from any component inside the provider: `open`, `setOpen`, `openMobile`, `setOpenMobile`, `toggleSidebar`, `isMobile`, `collapsible`, `width` and `setWidth`.
+
+| Part | What it is |
+| --- | --- |
+| `SidebarProvider` | Holds the open state and the width, and lays the sidebar and the page out side by side. |
+| `Sidebar` | The sidebar surface beside the page, or the drawer on phones. `collapsible` sets where it collapses to. `label` names the drawer for screen readers. |
+| `SidebarResizeHandle` | The drag handle on the sidebar's edge. Leave it out for a fixed width. |
+| `SidebarTrigger` | A 30px secondary icon button that opens and closes the sidebar, or the drawer on phones. Beside the page, its tooltip shows the keyboard shortcut. |
+| `SidebarInset` | The page beside the sidebar. Renders `<main>`. Pass `render={<div />}` when your layout already has one. |
+| `SidebarHeader` | The top of the sidebar, for the product or workspace name. A full-width line sets it apart. |
+| `SidebarContent` | The scrolling middle, a Scroll area whose edges fade while items hide past them. `render` and the other props go to the element that scrolls: `render={<nav aria-label="Main" />}`. |
+| `SidebarFooter` | The bottom of the sidebar, for the user menu or help links, below a full-width line. |
+| `SidebarSeparator` | An inset line, for a break inside a group. The header, the groups and the footer draw their own lines. |
+| `SidebarGroup` | A section with a label and a menu. Every group after the first sits below a full-width line. |
+| `SidebarGroupLabel` | The small uppercase heading of a group. `render={<h2 />}` makes it a heading. |
+| `SidebarMenu` | The list of items in a group. Renders `<ul>`. |
+| `SidebarMenuItem` | One item. Renders `<li>`. |
+| `SidebarMenuButton` | The clickable row of an item: a link with `href`, a button without it. `isActive` marks the current page. Idle items take a muted tone, and the active one takes its label and icon in `accent-text`, ink by default. It sits on the flat hover fill in light mode and on a raised `muted` fill in dark. Put the label in a `<span>` so it truncates. |
+| `SidebarMenuBadge` | A count at the end of an item, in a small pill. |
+| `SidebarSubmenu` | An item that holds a level of pages: a panel under its trigger, a popover in icon mode. |
+| `SidebarSubmenuTrigger` | The row that opens the submenu, with a chevron that turns as the panel opens. |
+| `SidebarSubmenuContent` | The pages, a `<ul>` in the panel or in the popover. |
+| `SidebarSubmenuItem` | One page. Renders `<li>`. |
+| `SidebarSubmenuButton` | The page's link, indented so its label lines up with the trigger's. In the popover a long label wraps. |
+| `SidebarWorkspaceSwitcher` | The current workspace in the header, opening a menu that switches to another. |
+| `SidebarUserMenu` | The signed-in user in the footer, opening a menu of account actions. |
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `⌘B` or `Ctrl+B` | Anywhere on the page: collapses or reopens the sidebar beside the page at once, without the width easing. It does nothing on phones, where the trigger opens the drawer. Set by `keyboardShortcut`. |
+| `ArrowRight` or `ArrowLeft` | On the resize handle: widens or narrows the sidebar by 16px. A collapsed sidebar reopens on the key that widens it. |
+| `Shift` + `ArrowRight` or `Shift` + `ArrowLeft` | Resizes by 64px. |
+| `Home` or `End` | On the resize handle: sets the width to `minWidth` or `maxWidth`, and reopens a collapsed sidebar. |
+| `Enter` | On the resize handle: collapses or reopens the sidebar at once, without the width easing. |
+| `Enter` or `Space` | On `SidebarTrigger`: opens or closes the sidebar, or the drawer on phones. |
+| `Enter` or `Space` | On a submenu trigger: opens or closes its panel, or in icon mode its popover, with focus on the first page. |
+| `Tab` | In a submenu's popover: moves through its pages. Past the last one, focus moves on and the popover closes. |
+| `Escape` | Closes a submenu's popover or a menu, and puts focus back on its trigger. On phones, closes the drawer the same way. |
+
+A sidebar collapsed to the edge is out of the tab order, so `Tab` skips its links until it opens again. In icon mode the icons stay in the tab order, and each one shows its name as it takes focus.

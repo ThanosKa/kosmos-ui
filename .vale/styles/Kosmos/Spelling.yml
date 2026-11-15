@@ -1,0 +1,26 @@
+extends: substitution
+message: "Use US spelling: '%s' instead of '%s'."
+ignorecase: true
+level: error
+swap:
+  colour: color
+  colours: colors
+  coloured: colored
+  centre: center
+  centred: centered
+  centres: centers
+  behaviour: behavior
+  cancelled: canceled
+  cancelling: canceling
+  grey: gray
+  favourite: favorite
+  neighbour: neighbor
+  customise: customize
+  customised: customized
+  organise: organize
+  normalise: normalize
+  initialise: initialize
+  analyse: analyze
+  licence: license
+  catalogue: catalog
+  dialogue: dialog

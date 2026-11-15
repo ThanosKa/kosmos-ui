@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "asset",
+  "type": "registry:ui",
+  "title": "Asset",
+  "description": "A frame with a fixed aspect ratio for an image or video. It shows a pulsing placeholder while loading, fades in, falls back on error, and respects reduced motion for autoplay.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button"],
+  "meta": { "group": "misc" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/asset.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

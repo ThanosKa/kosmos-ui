@@ -1,0 +1,123 @@
+---
+title: Flow chart
+description: Shows where an amount comes from and where it goes, as two columns of rounded bars joined by bands. Hover, a click or the arrow keys read a band, and the legend hides a source or target.
+---
+
+<ComponentPreview name="flow-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="flow-chart" />
+
+## Usage
+
+```tsx
+import { FlowChart } from '@/components/ui/flow-chart';
+```
+
+```tsx
+const sources = [
+  { id: 'search', label: 'Search' },
+  { id: 'direct', label: 'Direct' },
+];
+
+const plans = [
+  { id: 'free', label: 'Free' },
+  { id: 'pro', label: 'Pro' },
+];
+
+const flows = [
+  { source: 'search', target: 'free', value: 392 },
+  { source: 'search', target: 'pro', value: 84 },
+  { source: 'direct', target: 'free', value: 284 },
+  { source: 'direct', target: 'pro', value: 80 },
+];
+
+<FlowChart
+  sources={sources}
+  targets={plans}
+  flows={flows}
+  label="New signups, from each source to the plan picked"
+  unit="signups"
+  sourceLabel="Source"
+  targetLabel="Plan"
+/>
+```
+
+The sources stack into bars on the left and the targets on the right, each as tall as its share of the total. A band joins each source to each target it sends to, as thick as the amount between them. The pill on a bar reads its share of the total. A thick band shows its amount at its left end and its share of the target at its right end.
+
+The chart selects one band and opens a tooltip that reads its share of the source, its amount and its share of the target. Hovering a band previews it, and a click selects it. Hovering a legend item or a bar dims every band it has no part in. A click on a legend item hides that source or target and moves every band and bar to its new place. The last one shown in a column stays.
+
+Beside the chart sit the total and, with `targetTotal`, what flows into one target, such as the signups that chose Pro. Both count to each new value. Put the chart in a [Chart card](/docs/components/chart-card), as above.
+
+The plot is a group that screen readers name with `label`. Each band is a button that reads its source, target, amount and both shares. `Tab` reaches the selected band, the arrow keys move between bands, `Home` and `End` jump to the first and last, `Enter` selects and `Escape` clears. A hidden table lists every flow. Under the reduced motion setting the chart fades in instead of flowing, and a change fades it in again at its new layout.
+
+Series take `--chart-1` to `--chart-5` in order down each column. Pass `color` on a source or target to set its own.
+
+## Examples
+
+### Entrance
+
+The left bars grow, the bands flow across behind a soft edge, the right bars grow as it reaches them, and the tooltip opens last. By default this plays the first time a chart shows in the browser tab, and every chart after that draws at once. Changes, such as a new range, always move. [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the three settings.
+
+<ComponentPreview name="flow-chart-entrance" />
+
+## API
+
+### FlowChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    sources: {
+      description: 'The left column, top to bottom, each `{ id, label, color? }`.',
+      type: 'FlowChartNode[]',
+    },
+    targets: {
+      description: 'The right column, top to bottom, each `{ id, label, color? }`. A target may share an `id` with a source.',
+      type: 'FlowChartNode[]',
+    },
+    flows: {
+      description: 'The amount from each source to each target, each `{ source, target, value }`. A pair missing here has no band, a flow to an unknown `id` is left out, and a negative value counts as zero.',
+      type: 'FlowChartFlow[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    unit: {
+      description: 'What the values count, in the plural. It names the total and reads in the tooltip and on each band.',
+      type: 'string',
+    },
+    sourceLabel: {
+      description: 'The heading over the sources in the legend and the hidden table.',
+      type: 'string',
+      default: "'Source'",
+    },
+    targetLabel: {
+      description: 'The heading over the targets in the legend and the hidden table.',
+      type: 'string',
+      default: "'Target'",
+    },
+    targetTotal: {
+      description: 'A second figure beside the total: what flows into one target.',
+      type: '{ target: string; label: string }',
+    },
+    defaultSelected: {
+      description: 'The band selected at first, with its tooltip open. `null` selects none.',
+      type: '{ source: string; target: string } | null',
+      default: 'the first band',
+    },
+    format: {
+      description: 'Writes the totals, the band amounts and the tooltip amount.',
+      type: '(value: number) => string',
+      default: 'a whole number (1,284), compact from a million (2.47B)',
+    },
+    entrance: {
+      description: 'When the chart flows in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

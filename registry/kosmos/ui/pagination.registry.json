@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "type": "registry:ui",
+  "title": "Pagination",
+  "description": "Moves through a long list a page at a time with previous, next and numbered pages. It announces changes such as \"Page 3 of 12\", and has a rows-per-page select and a Load more button.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/paging", "@kosmos/button", "@kosmos/select"],
+  "meta": { "group": "navigation" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/pagination.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

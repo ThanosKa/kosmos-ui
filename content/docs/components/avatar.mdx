@@ -1,0 +1,75 @@
+---
+title: Avatar
+description: A person's picture, with their initials while it loads or when there is none. Three sizes and an overlapping group.
+baseUi: https://base-ui.com/react/components/avatar
+---
+
+<ComponentPreview name="avatar-demo" />
+
+## Installation
+
+<ComponentInstall name="avatar" />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+```
+
+```tsx
+<Avatar>
+  <AvatarImage src="/avatars/lena.jpg" alt="Lena Park" />
+  <AvatarFallback>LP</AvatarFallback>
+</Avatar>
+```
+
+The fallback shows until the image loads, and stays when the image fails or there is no `src`. Images fade in once they load and get a hairline outline, so a light picture keeps its edge on a light page.
+
+## Examples
+
+### Sizes
+
+`md` (32px) is the default. Use `sm` (24px) in table rows and dense lists, and `lg` (40px) next to a name and an email.
+
+<ComponentPreview name="avatar-sizes" />
+
+### Group
+
+`AvatarGroup` overlaps the avatars and rings each one in the page color. End it with `AvatarGroupCount` for the people you leave out, and give that count the same `size` as the avatars. On a surface other than the page, such as a card, match the ring to it with `className="*:ring-card"`.
+
+<ComponentPreview name="avatar-group" />
+
+### Logo
+
+For a company, a project or a workspace, round the avatar less with `className="rounded-md"`. The image follows the avatar's corners, and the fallback is the name's first letter.
+
+<ComponentPreview name="avatar-logo" />
+
+### Alt text
+
+When the person's name is already next to the avatar, set `alt=""`, so a screen reader doesn't read the name twice. Otherwise, use the name as the `alt`.
+
+## API
+
+### Avatar
+
+Takes every Base UI [`Avatar.Root`](https://base-ui.com/react/components/avatar) prop, plus:
+
+<TypeTable
+  type={{
+    size: {
+      description: 'Diameter: 24, 32 or 40px.',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+    },
+  }}
+/>
+
+### Parts
+
+| Part | What it is |
+| --- | --- |
+| `AvatarImage` | The photo. Takes `src`, `alt` and `onLoadingStatusChange`. Base UI `Avatar.Image`. |
+| `AvatarFallback` | The initials or icon shown until the photo loads, or when it fails. Set `delay` in milliseconds to skip it on fast connections. Base UI `Avatar.Fallback`. |
+| `AvatarGroup` | Overlaps a row of avatars. A `<div>`. |
+| `AvatarGroupCount` | The "+3" at the end of a group. A `<span>` that takes the same `size` prop as `Avatar`. |

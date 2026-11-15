@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-header",
+  "type": "registry:block",
+  "title": "Page header",
+  "description": "The top of a list page: a title, a description, a primary action and a More actions menu. It also has saved views as tabs, search, a filter menu, and a removable chip per active filter. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/use-controlled",
+    "@kosmos/button",
+    "@kosmos/dropdown-menu",
+    "@kosmos/input",
+    "@kosmos/tabs"
+  ],
+  "categories": ["page-header"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/page-header/page-header.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

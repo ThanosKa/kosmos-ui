@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "candlestick-chart",
+  "type": "registry:ui",
+  "title": "Candlestick chart",
+  "description": "A value over time as candles that show where each period opened, closed and peaked, with faint volume bars along the bottom. Hover, drag or the arrow keys read a candle in a tooltip, and new data moves every candle to its new place. The entrance plays once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion", "@kosmos/motion"],
+  "meta": { "group": "chart-other" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/candlestick-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "daily-stacked-bar-chart",
+  "type": "registry:ui",
+  "title": "Daily stacked bar chart",
+  "description": "A few series stacked per day, with a button per series that shows its total and hides or shows it. Hover, a click or the arrow keys pick a day and a tooltip lists its amounts. The entrance plays once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion", "@kosmos/motion", "@kosmos/button"],
+  "meta": { "group": "chart-bar" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/daily-stacked-bar-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

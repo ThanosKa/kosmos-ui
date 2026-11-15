@@ -1,0 +1,287 @@
+# Demo world: Acme
+
+Every block's sample data, review preview, demo and docs page uses this world and nothing else. When a block needs a value this file lacks, add it here in the same change, so the next block finds it.
+
+**Acme** is a fictional product analytics SaaS. A customer adds a **project** for each site or app, Acme collects its **events**, and the customer pays a **plan**. The blocks show Acme from the inside: the dashboard its own team uses to run the product, with its users, revenue, events, customer projects and roadmap.
+
+A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
+
+Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the names Maya Chen, Jonas Weber and Priya Raman. A person is never a project's "owner"; projects are filtered by plan, platform and status. The one exception is the CRM dashboard, which is about deals: it uses pipeline, deals and stages as written under Sales below, and nothing else on the list.
+
+## Workspace, domains, dates
+
+- Workspaces (the switcher): **Acme** on the Scale plan, and **Acme Staging** on the Free plan. Their logos are `public/logos/acme.svg` and `acme-staging.svg` (the same mark in gray); the Acme agent's avatar is the Acme logo.
+- Every domain ends in `.example` (reserved, never a real site). Acme itself is `acme.example`; mail is `<first name>@acme.example`. The status page is `status.acme.example`.
+- "Today" in every sample is **11 October 2026**. Write dates through a fixed `en-US` formatter with `timeZone: 'UTC'`, so server and browser match.
+- Money is USD, formatted with `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })`.
+
+## Logos
+
+Each project, Acme, Acme Staging and Lumenfield Health (a new trial on the landing page) has a logo at `public/logos/<id>.svg`: a 64px square in the project's own color with a white mark, drawn for this world. It shows in a square avatar (`className="rounded-md"`), with the name's first letter as the fallback. The SVGs are text, so each block that shows them ships them as `registry:file` items targeting `~/public/logos/`. Never use a real company's logo for a customer.
+
+## People: the Acme team
+
+The signed-in user comes first. Use these four as the user menu, roadmap assignees, activity authors, mentions and "Assigned to" filters.
+
+| Name | Initials | Email | Role |
+| --- | --- | --- | --- |
+| Lena Park | LP | lena@acme.example | Product lead (the signed-in user) |
+| Tomás Ortega | TO | tomas@acme.example | Engineering |
+| Ama Mensah | AM | ama@acme.example | Design |
+| Kai Nakamura | KN | kai@acme.example | Growth |
+
+Every person in the samples has a photo at `public/avatars/<first name>.jpg` (`lena`, `tomas`, `ama`, `kai`; also `ines` for Inês Carvalho, `keiko`, and the testimonial customers below). The photos are 128px crops from Unsplash, under the Unsplash License. A registry item cannot ship a photo, so every avatar keeps its initials as the fallback, and an app that installs a block shows the initials until it brings its own photos. An invite has no photo: its avatar is the mail icon.
+
+## Plans
+
+| Plan | Price | Badge hue |
+| --- | --- | --- |
+| Free | $0 | `gray` |
+| Pro | from $49 / month | `blue` |
+| Scale | from $1,200 / month | `violet` |
+
+A plan is a category, so it is a hue Badge and keeps its hue everywhere; a trial shows `amber`.
+
+## Projects
+
+A project is one customer site or app sending events. Fields, in this order: `id`, `name`, `domain`, `logo` (`/logos/<id>.svg`), `platform` (`web` | `ios` | `android` | `server`), `plan` (`free` | `pro` | `scale`), `status` (`live` | `trial` | `paused`), `users` (monthly active users), `events` (last 30 days), `mrr` (USD; 0 on Free and on a trial), `lastEventAt` (ISO date).
+
+Status is a `StatusDot` beside its label: `live` is green (`done`), `trial` gray (`pending`), `paused` amber (`waiting`). Platform shows as text with an icon (lucide `Globe`, `Smartphone` for iOS and Android, `Server`), never as a tag.
+
+A block that needs fewer rows takes the first ones, in this order:
+
+| id | name | domain | platform | plan | status | users | events | mrr | lastEventAt |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| fernhill | Fernhill Books | fernhill.example | web | scale | live | 48210 | 3912400 | 2400 | 2026-10-11 |
+| brightloop | Brightloop Fitness | brightloop.example | ios | scale | live | 31480 | 5204800 | 3600 | 2026-10-11 |
+| copperline | Copperline Bank | copperline.example | server | scale | live | 12940 | 8730100 | 4800 | 2026-10-11 |
+| saltmarsh | Saltmarsh Coffee | saltmarsh.example | web | pro | live | 6120 | 412300 | 149 | 2026-10-10 |
+| driftwood | Driftwood Travel | driftwood.example | android | pro | live | 9870 | 1108600 | 290 | 2026-10-11 |
+| hollowoak | Hollow Oak Games | hollowoak.example | android | pro | paused | 2310 | 96200 | 99 | 2026-09-18 |
+| cirrus | Cirrus Weather | cirrus.example | ios | pro | live | 22560 | 2391700 | 390 | 2026-10-11 |
+| pebblepine | Pebble & Pine | pebblepine.example | web | free | live | 840 | 31200 | 0 | 2026-10-09 |
+| marigold | Marigold Recipes | marigold.example | web | pro | trial | 1920 | 74500 | 0 | 2026-10-11 |
+| kiln | Kiln Studio | kiln.example | web | free | paused | 120 | 2400 | 0 | 2026-08-30 |
+| tidepool | Tidepool Notes | tidepool.example | ios | pro | trial | 3450 | 188100 | 0 | 2026-10-10 |
+| ironbark | Ironbark Logistics | ironbark.example | server | scale | live | 4780 | 6342900 | 2900 | 2026-10-11 |
+
+These twelve are every project Acme has, so totals computed from them match the overview metrics: 8 live, 2 trial, 2 paused; 5 web, 3 iOS, 2 Android, 2 server; 2 free, 6 pro, 4 scale; 144,600 users, 28,495,200 events, $14,628 a month.
+
+### Event quota
+
+Each plan includes a monthly **event allowance**. A project's **quota** is its events in the last 30 days divided by its plan's allowance, as a rounded percentage. It can pass 100.
+
+| Plan | Allowance (events a month) |
+| --- | --- |
+| Free | 50000 |
+| Pro | 3000000 |
+| Scale | 8000000 |
+
+| Project | Quota |
+| --- | --- |
+| Fernhill Books | 49% |
+| Brightloop Fitness | 65% |
+| Copperline Bank | 109% (over) |
+| Saltmarsh Coffee | 14% |
+| Driftwood Travel | 37% |
+| Hollow Oak Games | 3% |
+| Cirrus Weather | 80% (near) |
+| Pebble & Pine | 62% |
+| Marigold Recipes | 2% |
+| Kiln Studio | 5% |
+| Tidepool Notes | 6% |
+| Ironbark Logistics | 79% (near) |
+
+The quota is a Meter with 10 segments, `tone="auto"`, `low` 75, `high` 95 and `optimum` 0: up to 75% is `success`, to 95% `warning`, above `destructive`. The bar stops at full and the number shows the real percentage. The detail drawer adds "2,391,700 of 3,000,000 events this month" for Cirrus Weather.
+
+## Project detail: Cirrus Weather
+
+The project a block opens by default (the detail drawer) is Cirrus Weather, with the fields of its row above plus:
+
+- Added on March 3, 2025.
+- Events per day, September 12 to October 11 (they add up to its 2,391,700): 73100, 73400, 65400, 65700, 66100, 66400, 66700, 75300, 75700, 67700, 68000, 68300, 68600, 69000, 77600, 77900, 69900, 70300, 70600, 113500, 149600, 151800, 112300, 72200, 72500, 72900, 73200, 73500, 82100, 82400. Weekends run higher, and a storm on October 2 doubled the traffic for three days.
+- Notes: "Sends events from the iOS app only. Their Android app launches in November, on the same project."
+- Activity, oldest first: Kai Nakamura changed the plan to Pro (Sep 2); Tomás Ortega noted "Events doubled during the storm on October 2. Raised their rate limit so nothing was dropped." (Oct 3); Lena Park noted "Asked them for a case study on the mobile SDK." (Oct 9). A note added in a demo is signed by Lena Park.
+
+## Events
+
+Event names are snake_case and render in `font-mono`. Every event Acme received in the last 30 days, across all projects, most frequent first (they add up to the Events metric):
+
+| Event | Count (30 days) |
+| --- | --- |
+| `page_viewed` | 17410000 |
+| `button_clicked` | 5960000 |
+| `screen_viewed` | 4600000 |
+| `signed_up` | 389000 |
+| `checkout_completed` | 91200 |
+| `invite_sent` | 45000 |
+
+Scale the counts for other ranges (7 days ≈ 0.24×, 90 days ≈ 3.1×), keeping the order.
+
+## Overview metrics
+
+The four numbers an Acme dashboard leads with, for the last 30 days against the 30 before. Each one is the total of the projects above:
+
+| Metric | Value | Change | Format |
+| --- | --- | --- | --- |
+| Active users | 144600 | +9.6% | number |
+| Events | 28495200 | +14.2% | number, compact from a million |
+| Monthly revenue | 14628 | +6.8% | currency |
+| Live projects | 8 | −11.1% (Hollow Oak Games paused on 18 September) | number |
+
+Product metrics, for a second row of KPIs (last 30 days against the 30 before):
+
+| Metric | Value | Change | Context |
+| --- | --- | --- | --- |
+| Signups | 1284 | +4.2% | (+52); weekly about 96 to 121 |
+| Conversion (visit to signup) | 3.3% | +0.4 pts | from 2.9% |
+| Median session | 4m 12s | −3.2% | (−8s) |
+| Error events (share of all events) | 1.4% | −0.5 pts, falling is good | from 1.9% |
+
+The other ranges, each against the same span before it:
+
+| Metric | 7 days | 90 days |
+| --- | --- | --- |
+| Active users | 61240, +3.1% | 312800, +21.4% |
+| Events | 6838800, +2.4% | 88335100, +31.8% |
+| Monthly revenue | 14628, +1.2% | 14628, +18.9% |
+| Live projects | 8, no change | 8, +14.3% (7 in mid-July) |
+
+A chart over a range plots one point per day (7 and 30 days) or per week (90 days), so its points are daily or weekly figures, not the headline: about 29,400 active users and 1,012,000 events a day at the end of the range, and 74,800 users and 7,040,000 events a week. Monthly revenue is $14,628 on the last day of every range, and Live projects steps from 9 to 8 on 18 September.
+
+## Chart data
+
+The figures the charts on `/docs/charts` plot. Each adds up to the metrics above.
+
+- **Events a day, Sep 12 to Oct 11** (30 days, 28,495,200): 896600, 881200, 901500, 896700, 917100, 901300, 915500, 926100, 910100, 930900, 925800, 946700, 930300, 944800, 955600, 939000, 960300, 954900, 976400, 959300, 974100, 985200, 967800, 989700, 984000, 1006000, 988300, 1003400, 1014600, 1012000. The last 7 (Oct 5 to 11) add up to 6,838,800, so a 7-day chart uses 962400, 978100, 991500, 953800, 969700, 971300, 1012000.
+- **Events a week, 13 weeks from Jul 13** (88,335,100): 6409100, 6391700, 6541700, 6568300, 6707100, 6773200, 6750800, 6905100, 6929200, 7071600, 7137400, 7109900, 7040000.
+- **The periods before**: 6,678,500 events in the 7 days before Oct 5, and 24,951,100 in the 30 days before Sep 12 (Aug 13 to Sep 11).
+- **Events a minute**: about 703 at the end of a range (1,012,000 / 1,440). A day's events spread over eight 3-hour UTC blocks as 11, 10, 12, 13, 14, 14, 13 and 13%.
+- **Fernhill Books events a day, Sep 12 to Oct 11**: 132400, 137900, 117800, 122000, 117700, 123100, 126100, 135200, 140800, 120300, 124500, 120300, 125600, 128700, 138100, 143800, 122900, 127100, 122800, 128200, 131300, 141000, 146500, 125400, 129700, 125400, 130800, 133800, 143800, 149400. The 30 days before: Fernhill 3,598,100 (+8.7%), Cirrus Weather 2,131,500 (+12.2%).
+- **By platform**: Web, iOS, Server and Android, in that order, take `--chart-1` to `--chart-4` in every chart. Events in the last 30 days: Web 4,432,800, iOS 7,784,600, Server 15,073,000, Android 1,204,800 (the project table). Users: Web 57,210, iOS 57,490, Server 17,720, Android 12,180. A year before (Oct 2025): events 2,940,000 / 4,520,000 / 8,960,000 / 760,000 and users 38,900 / 34,100 / 11,400 / 8,200. Two years before (Oct 2024): events 1,630,000 / 2,210,000 / 4,180,000 / 390,000 and users 21,800 / 15,200 / 5,300 / 4,100.
+- **Events by platform a day, Sep 28 to Oct 11** (`{ web, ios, server, android }`; the last 7 add up to 6,838,800, iOS follows Cirrus Weather's storm): {142200, 247500, 484400, 38200}, {141400, 251900, 481300, 41200}, {141100, 254200, 480400, 42700}, {143000, 292700, 486900, 39400}, {142200, 332400, 484200, 42100}, {144400, 329800, 491800, 38500}, {143100, 293500, 487100, 40900}, {153100, 249800, 521300, 38200}, {155000, 254100, 527800, 41200}, {157200, 256500, 535100, 42700}, {150300, 252400, 511700, 39400}, {152400, 256300, 518900, 42100}, {152700, 260100, 520000, 38500}, {160600, 263600, 546900, 40900}.
+- **Signups by source and plan, last 30 days** (1,284; Free / Pro / Scale): Search 392 / 84 / 6, Direct 284 / 80 / 7, Referral 176 / 69 / 3, Social 86 / 11 / 0, Email 64 / 20 / 2. Plan totals: Free 1,002, Pro 264, Scale 18. The last 7 days (112): Search 34 / 7 / 1, Direct 25 / 8 / 0, Referral 15 / 6 / 0, Social 8 / 1 / 0, Email 5 / 2 / 0.
+- **Quotas on a gauge**: Fernhill Books 49%, Cirrus Weather 80%, Copperline Bank 109%.
+
+## API
+
+Acme's public API, for codes and methods (Badge `tint-*`). Paths start with `/v1`: `GET /v1/projects` (List projects), `GET /v1/projects/{id}`, `POST /v1/events` (Send events), `PATCH /v1/projects/{id}` (Change a plan) and `DELETE /v1/events/{name}` (Delete events, such as `debug_ping` on Tidepool Notes). A request log shows `202` for accepted events, `200`, `304`, `429` when a project sends past its rate limit, and `500`.
+
+Keys and endpoints of Fernhill Books, for copy fields and settings: secret key `acme_secret_demo_7Q2Kf9r3Vx`, webhook signing secret `acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv`, project ID `proj_fernhill`, webhook URL `https://hooks.acme.example/v1/fernhill/events`. Keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys.
+
+## Roadmap
+
+The kanban board is Acme's own roadmap. Columns, in order: **Ideas**, **Planned**, **In progress**, **Shipped**. An item has `id`, `title`, `area`, `votes` (customers who asked for it), `assignee` (a team member, or none in Ideas) and `target` (a quarter, such as `Q4 2026`).
+
+Areas are tags: Insights `amber`, Ingestion `green`, Billing `red`, Platform `blue`.
+
+Each column carries a stage glyph (lucide) colored like a status dot: Ideas `CircleDashed` and Planned `Circle` in `muted-foreground`, In progress `CircleDot` in `warning`, Shipped `CircleCheck` in `success`. Ids are `ideas`, `planned`, `in-progress` and `shipped`; team members go by their lowercase first name without accents (`lena`, `tomas`, `ama`, `kai`).
+
+| Title | Area | Column | Assignee | Votes | Target |
+| --- | --- | --- | --- | --- | --- |
+| Chat alerts for traffic drops | Platform | Ideas | none | 64 | none |
+| Usage-based invoices | Billing | Ideas | none | 27 | none |
+| Shareable dashboard links | Insights | Ideas | none | 51 | none |
+| Retention cohorts by plan | Insights | Planned | Kai Nakamura | 88 | Q1 2027 |
+| SAML single sign-on | Platform | Planned | Tomás Ortega | 73 | Q1 2027 |
+| Mobile SDK 3.0 | Ingestion | Planned | Tomás Ortega | 39 | Q4 2026 |
+| Funnel comparisons | Insights | In progress | Ama Mensah | 112 | Q4 2026 |
+| Server-side batching | Ingestion | In progress | Tomás Ortega | 45 | Q4 2026 |
+| EU data region | Ingestion | Shipped | Tomás Ortega | 97 | Q3 2026 |
+| Annual billing | Billing | Shipped | Lena Park | 58 | Q3 2026 |
+
+## What each block shows
+
+| Block | Shows |
+| --- | --- |
+| Stats overview | The overview metrics as tabs over one chart that compares the range with the period before it (7, 30 or 90 days), and the top events. |
+| Page header | The Projects page: title "Projects", tabs All, Live, Trial and Paused with counts, search, a filter menu grouped by Plan and Platform, and the primary action "New project" where the app passes `onNew`. |
+| Data table | The projects: name with domain, platform, plan, users, events, event quota, revenue, status and last event. |
+| Detail drawer | One project: plan, platform, status, its event quota, its events trend, notes and the team's activity on it. |
+| Kanban board | The roadmap above. |
+| New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
+| App sidebar | The workspace switcher; nav Overview, Projects, Events (a submenu: Live events, Funnels and Alerts), Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
+| Auth forms | The way into Acme itself, not a customer's app: "Log in to Acme", "Create your Acme account" (on the Free plan), a 6-digit email code sent to lena@acme.example, and a password reset. Email placeholders read `name@acme.example`; the review preview's filled forms use the team's addresses. |
+| Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
+| Hero | The top of the Acme website: title, one line, two actions and the install command (Marketing site below). |
+| Bento | The Acme website's feature grid: four live tiles (Marketing site below). |
+| Footer | The bottom of the Acme website: the product with its line, four columns of links and the copyright with icon links (Marketing site below). |
+| Logo marquee | The customers on the Acme website: the logos of its live projects on a paid plan (Marketing site below). |
+| Pricing | The plans on the Acme website, monthly or yearly (Marketing site below). |
+| FAQ | The Acme website's questions before a team starts, with a link to the contact page (Marketing site below). |
+| CTA | The close of the Acme website: a two-line title and "Start for free" (Marketing site below). |
+| Feature section | One feature of the Acme website, dashboards: a live Active users panel beside the points that explain it (Marketing site below). |
+| Testimonials | What people at Acme's customer projects say about it on the Acme website (Marketing site below). |
+| Analytics dashboard | Acme's own website and signups (Website and signups below): four KPIs, traffic against the period before (7, 30 or 90 days), sources, top pages, countries, the October signup goal and the newest signups. |
+| CRM dashboard | Acme's sales of plan upgrades to its customer projects (Sales below): four KPIs, the deals, today's next steps, the pipeline by stage, quota and the team's activity. |
+
+## Marketing site
+
+Marketing blocks show the Acme website, `acme.example`, which sells the product to the teams that run sites and apps.
+
+- Hero: title "Know what every user does next", one line "Acme collects events from your web, iOS, Android and server apps and turns them into answers your whole team can read.", actions "Start for free" (primary, to `/signup`) and "Book a demo" (secondary, to `/demo`), and the install command `curl -fsSL https://acme.example/install.sh | sh`.
+- Bento: title "From the first event to the answer", one line "Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." Tiles, in order: Live events (wide; a feed of `signup_completed`, `checkout_started`, `trial_converted` and `page_viewed` from the first projects), Funnels (meters: Viewed pricing 100%, Started a trial 38%, Paid 12%), Every platform (Web, iOS, Android and Server with their SDKs) and Alerts (wide; switches for "Signups drop below 40 a day", "Error events pass 2%" and "Weekly summary").
+- Announcement: the pill above the hero links to the changelog: "New" with "EU data region: keep your events in Europe" or "Annual billing is here" (the Shipped roadmap items), "Beta" with "Funnel comparisons", and a notice with no badge, "Scheduled maintenance on 14 October, 02:00 UTC", linking to `status.acme.example`.
+- Code tabs: the SDK installs as `@acme/analytics` (`pnpm add`, `npm install`, `yarn add`, `bun add`); the CLI is `@acme/cli` (`pnpm dlx @acme/cli init`, `npx`, `yarn dlx`, `bunx`) and, once installed, `acme login`. Acme's own component registry is `https://ui.acme.example/r/{name}.json`.
+- The stack Kosmos is built on (Base UI, Tailwind CSS, React, Next.js, shadcn CLI) may appear as logo names in a Logo marquee example or docs snippet: it is what the Kosmos landing shows, not a style source.
+- Logo marquee: the line "Used by the teams behind" over the live projects on a paid plan, in table order (Fernhill Books, Brightloop Fitness, Copperline Bank, Saltmarsh Coffee, Driftwood Travel, Cirrus Weather, Ironbark Logistics), each its full name beside its logo from `public/logos`.
+- Pricing: title "Start free, pay as you grow", one line "Every plan collects events from web, iOS, Android and server apps. Pay yearly and save 20%." Billed yearly, a plan costs 20% less a month: Pro $49 or $39 ("per month" or "per month, billed yearly"), Scale $1,200 or $960; Free is "$0 forever". Each plan has one line and its features, built from the allowances above: Free "For a side project or a first app." (1 project, 50,000 events a month, 30 days of history, Community support; "Start for free" to `/signup`); Pro, featured with a neutral "Most popular" badge, "For a team with an app in production." (Everything in Free, 10 projects, 3,000,000 events a month, Funnels and retention, Email support; "Start a trial", primary, to `/signup?plan=pro&billing=<billing>`); Scale "For apps that send millions of events." (Everything in Pro, Unlimited projects, 8,000,000 events a month, EU data region, Priority support; "Book a demo" to `/demo`).
+- FAQ: title "Questions before you start"; questions, in order: how long until the first event (about a minute, it shows in Live events), which platforms can send events (web, iOS, Android, servers), trying Pro before paying (every new project starts on a 14-day Pro trial with no card, then moves to Free unless a plan is picked), going over the event allowance (collection never stops; Acme writes before the next bill), and taking the data along (CSV from any table, a nightly export to the team's own storage on Scale, docs at `https://acme.example/docs/export`). First one open. Contact line "Still have a question? Talk to the team", to `/contact`.
+- CTA: title "Add your first project," / "see events in a minute" on two lines, and "Start for free" (primary, to `/signup`). When an example needs a line under it: "Free up to 50,000 events a month. Pro from $49 a month when you need more."
+- Feature section: title "Dashboards your whole team reads", one line "Pin the numbers you check every morning. Acme keeps them current, a minute behind your events." The visual is a panel of Active users with a 7d, 30d and 90d range, showing the overview metrics' Active users and its chart points (30d first). The card beside it: "One view for everyone", "Build a dashboard once and every teammate opens the same numbers, with the same filters, at the same time.", the points "Share it with a link" (`/docs/dashboards/share`), "Send a Monday digest" (`/docs/dashboards/digest`) and "Export any chart" (`/docs/dashboards/export`), and the action "Read the dashboards guide" (secondary, to `/docs/dashboards`).
+- Testimonials: the title "Teams that know what happens next" with the line "Product, engineering and growth teams on what changed once their events landed in Acme." The featured quote is Grace Whitfield, VP of product at Cirrus Weather (the case study Lena Park asked for), on the storm of October 2. The wall, in project table order: Ines Duarte (Head of growth, Fernhill Books), Marcus Bell (iOS lead, Brightloop Fitness), Ruth Adeyemi (Data engineer, Copperline Bank, on passing the event quota), Owen Fitzgerald (Founder, Saltmarsh Coffee), Sofia Lindqvist (Product manager, Driftwood Travel), Daniel Okafor (Mobile engineer, Cirrus Weather), Noor Rahman (Developer, Pebble & Pine), Tessa Morgan (Editor, Marigold Recipes) and Leila Haddad (Operations lead, Ironbark Logistics). They are customers, never the Acme team. Each has a photo at `public/avatars/<first name>.jpg` (`grace`, `ines-duarte`, `marcus`, `ruth`, `owen`, `sofia`, `daniel`, `noor`, `tessa`, `leila`).
+- Footer: "Acme" with the line "Product analytics for the teams that run sites and apps."; columns Product (Features, Pricing, Changelog, Roadmap), Developers (Docs, SDKs, API reference, Status at `status.acme.example`), Company (About, Blog, Careers, Contact) and Legal (Privacy, Terms, Security); icon links to the blog feed (`/blog/rss.xml`) and `hello@acme.example`, the site's one shared address; "© 2026 Acme".
+
+## Website and signups
+
+The analytics dashboard shows `acme.example` itself over the 30 days to 11 October, against the 30 before. Its KPIs are the product metrics above (Signups, Conversion, Median session) with the visitors they imply: 1,284 signups at 3.3% is 38,910 visitors, down 8.4% (−3,573) from 42,483 at 2.9%.
+
+- Traffic: Visitors 38,910 (−8.4%), Page views 126,400 (−5.1%), Bounce rate 38.2% (−2.1 pts, falling is good). 7 days: 9,180 (+1.8%), 29,800 (+2.6%), 37.6% (−0.8 pts). 90 days: 121,400 (+6.3%), 391,200 (+7.9%), 39.0% (−1.2 pts). About 1,300 visitors a day, a little lower at weekends.
+- Sources: Search 15,950, Direct 10,510, Referral 6,610, Social 3,890, Email 1,950 (they add up to the visitors).
+- Top pages: `/pricing` 9,840, `/docs/install` 8,170, `/` 7,410, `/docs/events` 5,150, `/changelog` 2,660.
+- Countries: United States 15,180, Germany 5,470, United Kingdom 4,550, France 3,330, Greece 2,470.
+- Signup goal: October target 1,300 signups, 482 so far (37%), 1.6 pts ahead of pace; owned by Growth (Kai Nakamura, Lena Park, Ama Mensah).
+- Recent signups are people at the customer projects from the Testimonials cast, each on their project's plan (a trial shows as Trial) with its monthly revenue, at `<first name>@<project domain>`: Leila Haddad, Daniel Okafor, Tessa Morgan, Owen Fitzgerald, Noor Rahman, Sofia Lindqvist, Ines Duarte, Marcus Bell and Ruth Adeyemi. Referrers are named, never a real domain ("Google", "GitHub", "Weekly digest").
+
+## Sales
+
+The CRM dashboard is Acme's own sales: plan upgrades and yearly billing sold to its customer projects. A deal's value is a year of the plan it sells. The sales team: Rosa Delgado (RD) and Felix Brandt (FB) sell Scale plans, Mina Sato (MS) Pro plans, with Kai Nakamura from Growth. Each has a photo (`rosa`, `felix`, `mina`, `kai`).
+
+- KPIs: Pipeline $184.6K (23 open deals, +9.2%), Won $31.7K this quarter (+18.6%), Win rate 28% over 90 days (+2.4 pts from 25.6%), Sales cycle 34 days from trial to won (−10.5%, −4 days, falling is good).
+- Stages, with their tag hue: Lead (gray) $20.6K in 9 deals, Qualified (blue) $29.6K in 6, Proposal (violet) $38.4K in 5, Negotiation (amber) $96K in 3, Won (green) $31.7K in 5. Lead to won 9.8%, average deal $8K, 3 stalled.
+- Deals, by close date: Annual Pro, Saltmarsh Coffee, Mina Sato, Won, $1,430 (Oct 11); More events, Copperline Bank (16M events a month, past its quota), Rosa Delgado, Negotiation 80%, $86,400 (Oct 18); Pro to Scale, Cirrus Weather, Felix Brandt, Proposal 55%, $14,400 (Oct 26); Annual billing, Ironbark Logistics, Rosa Delgado, Qualified 35%, $27,840 (Nov 13); Pro to Scale, Driftwood Travel, Felix Brandt, Proposal 45%, $14,400 (Nov 20); Trial to Pro, Marigold Recipes, Mina Sato, Lead 15%, $588 (Nov 28); Trial to Pro, Tidepool Notes, Kai Nakamura, Lead 20%, $588 (Dec 2).
+- Quota this quarter: Rosa Delgado $14.8K of $16K, Felix Brandt $9.6K of $12K, Mina Sato $4.9K of $8K, Kai Nakamura $2.4K of $4.4K (they add up to Won).
+- Next steps today: call Copperline Bank, send the Cirrus Weather proposal, follow up with Ironbark Logistics, book a demo with Marigold Recipes (its trial ends Oct 22), answer Tidepool Notes in chat.
+- The CRM page's notification inbox is Lena Park's sales news, newest first: Rosa Delgado moved **More events** with Copperline Bank to Negotiation (12m, unread); Mina Sato won **Annual Pro** with Saltmarsh Coffee, "$1,430 a year, signed today." (1h, unread); Felix Brandt mentioned you in **Pro to Scale** with Cirrus Weather: "@Lena can we let them try Scale for a month before they sign?" (2h, unread); **Copperline Bank** has used 109% of its October event allowance (3h); yesterday, **Marigold Recipes** ends its trial on Oct 22. Kind icons: stage `Briefcase`, won `Trophy`. The analytics page's inbox is the Notifications rows below without the request, the export and the assignment.
+
+## AI agents
+
+The AI components and the run timeline and usage overview blocks show the **Acme agent**, the assistant inside the Acme dashboard that the team asks about its own projects. Real model names are fine: Claude Opus 5.5 (most capable), Claude Sonnet 5.5 (balanced, the default) and Claude Haiku 5.5 (fastest), each with the efforts low, medium and high; the 1M context variant of Opus is disabled with the hint "Not on your plan".
+
+- Author "Acme agent"; the people who ask it are the Acme team, and Lena Park is the one who approves. A run is "Run #482", started at 14:02 on 11 October 2026.
+- Agent budget: Acme has $2,000 a month for agents (Acme Staging $200). When it is used up, the composer says "Acme has used this month's agent budget. Lena Park can raise it in Settings."
+- Usage shares by member: Lena Park 38%, Tomás Ortega 29%, Kai Nakamura 19%, Ama Mensah 14%. The usage overview's last day is 11 October.
+- Tasks the agent does, with the numbers to use: find out why Hollow Oak Games stopped sending events (96,200 events up to 18 September, none since, because the project was paused); check the event quota (Copperline Bank 109%, Cirrus Weather 80%, Ironbark Logistics 79%); raise Cirrus Weather from Pro to Scale; delete 12,480 test events (`debug_ping`) from Tidepool Notes; draft the weekly summary (6,838,800 events in 7 days) and email it to the team.
+- Tools are dotted lowercase names: `events.query`, `events.compare`, `events.export`, `events.delete`, `projects.update_plan`, `email.send`, `dashboards.export`, `billing.revenue_by_plan`. Revenue by plan is Scale $13,700, Pro $928 and Free $0 a month.
+- Files people attach: `cirrus-events-30d.csv`, `events-dashboard.png`, `weekly-summary-brief.pdf`.
+
+## Notifications
+
+The notification inbox is Lena Park's, at 12:00 UTC on 11 October. Newest first:
+
+| When | From | Kind | Text | Unread |
+| --- | --- | --- | --- | --- |
+| 4m | Tomás Ortega | mention | mentioned you in **Q4 roadmap**: "@Lena can you check the activation funnel numbers before the Friday review?" | yes |
+| 18m | Kai Nakamura | request | asked for access to **Copperline Bank** (Approve / Decline) | yes |
+| 1h | Cirrus Weather (logo) | quota | **Cirrus Weather** has used 80% of its October event allowance | yes |
+| 2h | Ama Mensah and 3 others | comment | commented on **Onboarding checklist**: "Moved the invite step after the first event, so new teams see data sooner." | no |
+| 3h | Ironbark Logistics (logo) | billing | **Ironbark Logistics** moved to the Scale plan | no |
+| Yesterday | Fernhill Books (logo) | export | **Events export for Fernhill Books** is ready to download (Download CSV) | no |
+| Yesterday | Marigold Recipes (logo) | trial | **Marigold Recipes** ends its trial in 11 days | no |
+| Oct 9 | Tomás Ortega | assign | assigned you **Fix the retention chart tooltip** | no |
+
+Notifications that arrive in a demo, in turn: Kai Nakamura mentioning Lena in **Pricing page test**: "@Lena the yearly toggle lifted upgrades by 6%. Ship it?", then Ama Mensah replying to Lena's comment on **Empty states**: "Agreed, the first-run copy should explain what shows up here.". Kind icons (lucide): mention `AtSign`, comment `MessageSquare`, request `UserPlus`, assign `CircleDot`, quota `Gauge`, billing `CreditCard`, export `Download`, trial `Clock`.
+
+## Creating things
+
+The Acme team runs the product; its customers add their own projects. So the one thing a block creates is a roadmap item: the command menu and the landing dashboard offer "New roadmap item", which opens the new item dialog. The page header's "New project" is the primary action of a Projects page in an app that does let people add projects; it shows only when the app passes `onNew`, so the landing dashboard's Projects page has no primary action.

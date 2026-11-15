@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "run-timeline",
+  "type": "registry:block",
+  "title": "Run timeline",
+  "description": "One agent run in a card: who started it, status, elapsed time, tokens and cost. A timeline shows its plan, reasoning, tool calls and approvals. Failed runs offer a retry. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/format",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/collapsible",
+    "@kosmos/empty",
+    "@kosmos/plan-checklist",
+    "@kosmos/reasoning",
+    "@kosmos/status",
+    "@kosmos/tool-approval",
+    "@kosmos/tool-call",
+    "@kosmos/tooltip"
+  ],
+  "categories": ["run-timeline"],
+  "meta": { "group": "blocks", "section": "ai", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/run-timeline/run-timeline.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

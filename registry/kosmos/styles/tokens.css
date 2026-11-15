@@ -1,0 +1,438 @@
+/*
+ * Kosmos UI tokens: the single source for every color, shadow, radius,
+ * easing, duration and type role. Rules for using them live in the
+ * `kosmos-style` skill (.claude/skills/kosmos-style).
+ *
+ * The four blocks map 1:1 onto a shadcn registry item, so the registry can
+ * ship these exact values:
+ *   @theme inline  -> cssVars.theme  (Tailwind names that point at a mode var)
+ *   @theme static  -> cssVars.theme  (same in light and dark; `static` keeps
+ *                     every var emitted so Motion code and docs can read them)
+ *   :root          -> cssVars.light
+ *   .dark          -> cssVars.dark
+ * Dark mode is the `.dark` class on <html> (next-themes, shadcn convention).
+ * The palette and radius come from the default preset (lib/presets).
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-accent-text: var(--accent-text);
+  --color-scrim: var(--scrim);
+  --color-thumb: var(--thumb);
+  --color-scrollbar-thumb: var(--scrollbar-thumb);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-control: var(--shadow-control);
+  --shadow-primary: var(--shadow-primary);
+  --shadow-primary-hover: var(--shadow-primary-hover);
+  --shadow-card: var(--shadow-card);
+  --shadow-popover: var(--shadow-popover);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-inset: var(--shadow-inset);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-thumb: var(--shadow-thumb);
+  --shadow-field: var(--shadow-field);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + min(var(--radius), 4px));
+  --radius-2xl: calc(var(--radius) + min(var(--radius), 6px));
+  --radius-3xl: calc(var(--radius) + min(var(--radius), 10px));
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@theme static {
+  --ease-power3-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-smooth-in-out: cubic-bezier(0.7, 0, 0, 1);
+
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: var(--ease-power3-out);
+
+  --transition-duration-instant: 100ms;
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 200ms;
+  --transition-duration-overlay: 250ms;
+  --transition-duration-slow: 300ms;
+  --transition-duration-reveal: 500ms;
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      translate: 0 0.35em;
+      filter: blur(8px);
+    }
+  }
+  --animate-reveal-fade: reveal-fade var(--transition-duration-fast) var(--ease-power3-out) both;
+  @keyframes reveal-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  --animate-shimmer: shimmer 2s linear infinite;
+  @keyframes shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
+  }
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: calc(16 / 12);
+  --text-caption--letter-spacing: 0em;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.4;
+  --text-small--letter-spacing: -0.005em;
+  --text-body: 0.875rem;
+  --text-body--line-height: calc(20 / 14);
+  --text-body--letter-spacing: -0.01em;
+  --text-title: 1rem;
+  --text-title--line-height: 1.5;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: 1.25rem;
+  --text-heading--line-height: 1.4;
+  --text-heading--font-weight: 600;
+  --text-heading--letter-spacing: -0.01em;
+  --text-display: 2rem;
+  --text-display--line-height: 1.25;
+  --text-display--font-weight: 500;
+  --text-display--letter-spacing: -0.02em;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 1.1;
+  --text-hero--font-weight: 600;
+  --text-hero--letter-spacing: -0.035em;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.6;
+  --text-lead--letter-spacing: -0.01em;
+}
+
+/*
+ * Palette and radius: the CSS of the default preset (lib/presets), written
+ * here by `pnpm registry:build`. Edit the preset, never these lines.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.205 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(1 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.955 0 0);
+  --muted-foreground: oklch(0.51 0 0);
+  --accent: oklch(0.205 0 0 / 0.05);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.55 0.225 28.5);
+  --success: oklch(0.627 0.17 149.2);
+  --warning: oklch(0.65 0.157 58.3);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.205 0 0 / 0.55);
+  --accent-text: oklch(0.205 0 0);
+  --scrim: oklch(0.205 0 0 / 0.4);
+  --thumb: oklch(1 0 0);
+  --scrollbar-thumb: oklch(0.61 0 0);
+
+  --sidebar: oklch(0.97 0 0);
+  --sidebar-foreground: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.205 0 0 / 0.05);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.205 0 0 / 0.55);
+
+  --chart-1: oklch(0.602 0.201 255.8);
+  --chart-2: oklch(0.65 0.188 47);
+  --chart-3: oklch(0.62 0.17 149);
+  --chart-4: oklch(0.588 0.28 303.8);
+  --chart-5: oklch(0.63 0.135 81);
+}
+
+.dark {
+  --background: oklch(0.19 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.22 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.19 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.225 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.275 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(1 0 0 / 0.06);
+  --accent-foreground: oklch(0.97 0 0);
+  --destructive: oklch(0.715 0.165 22.1);
+  --success: oklch(0.723 0.192 149.6);
+  --warning: oklch(0.837 0.164 84.4);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.335 0 0);
+  --ring: oklch(0.97 0 0 / 0.55);
+  --accent-text: oklch(0.97 0 0);
+  --scrim: oklch(0 0 0 / 0.6);
+  --thumb: oklch(0.97 0 0);
+  --scrollbar-thumb: oklch(0.58 0 0);
+
+  --sidebar: oklch(0.195 0 0);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.97 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(1 0 0 / 0.06);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(0.25 0 0);
+  --sidebar-ring: oklch(0.97 0 0 / 0.55);
+
+  --chart-1: oklch(0.668 0.167 252.2);
+  --chart-2: oklch(0.708 0.188 47);
+  --chart-3: oklch(0.646 0.177 149.1);
+  --chart-4: oklch(0.648 0.241 306.1);
+  --chart-5: oklch(0.834 0.153 81.1);
+}
+
+/* Shadows, the same under every preset: a preset never sets them, they follow its foreground (ADR 0009). */
+:root {
+  --shadow-control:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent),
+    0 1px 2px 0 color-mix(in oklab, var(--foreground) 6%, transparent);
+  --shadow-primary:
+    0 0 0 1px color-mix(in oklab, var(--primary) 78%, black),
+    0 1px 2px 0 color-mix(in oklab, color-mix(in oklab, var(--primary) 55%, black) 32%, transparent),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.28),
+    inset 0 -3px 5px 0 oklch(0 0 0 / 0.1);
+  --shadow-primary-hover:
+    0 0 0 1px color-mix(in oklab, var(--primary) 70%, black),
+    0 2px 4px 0 color-mix(in oklab, color-mix(in oklab, var(--primary) 55%, black) 32%, transparent),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.32),
+    inset 0 -3px 5px 0 oklch(0 0 0 / 0.12);
+  --primary-hover: oklch(from var(--primary) calc(l - 0.04) c h);
+  --shadow-card:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 7%, transparent),
+    0 1px 2px 0 color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 4px 12px -2px color-mix(in oklab, var(--foreground) 7%, transparent);
+  --shadow-popover:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 9%, transparent),
+    0 4px 12px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 12px 32px 0 color-mix(in oklab, var(--foreground) 10%, transparent);
+  --shadow-modal:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 9%, transparent),
+    0 12px 24px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 32px 64px 0 color-mix(in oklab, var(--foreground) 12%, transparent);
+  --shadow-inset:
+    inset 0 0 0 1px oklch(0 0 0 / 0.04),
+    inset 0 1px 2px 0 oklch(0 0 0 / 0.06);
+  --shadow-lift:
+    0 0 0 1px color-mix(in oklab, var(--ring) 24%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--ring) 16%, transparent),
+    0 2px 12px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 6px 16px 0 color-mix(in oklab, var(--foreground) 12%, transparent);
+  --shadow-thumb:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 12%, transparent),
+    0 1px 2px 0 color-mix(in oklab, var(--foreground) 12%, transparent),
+    0 2px 6px 0 color-mix(in oklab, var(--foreground) 12%, transparent);
+  --shadow-field: 0 0 0 1px var(--input);
+}
+
+.dark {
+  --shadow-control:
+    0 0 0 1px oklch(0 0 0 / 0.4),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.1),
+    inset 0 0 0 1px oklch(1 0 0 / 0.06);
+  --shadow-primary:
+    0 0 0 1px oklch(0.164 0 0),
+    0 4px 4px 0 oklch(0.285 0 0 / 0.32),
+    inset 0 4px 6px 0 oklch(1 0 0 / 0.2),
+    inset 0 0 0 1px oklch(1 0 0 / 0.15),
+    inset 0 -8px 14px 0 oklch(0 0 0 / 0.15);
+  --shadow-primary-hover: var(--shadow-primary);
+  --primary-hover: color-mix(in oklab, var(--primary) 90%, transparent);
+  --shadow-card:
+    0 0 0 1px oklch(0.164 0 0),
+    0 4px 4px 0 oklch(0.285 0 0 / 0.32),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08),
+    inset 0 0 0 1px oklch(1 0 0 / 0.08);
+  --shadow-popover:
+    inset 0 0 0 1px var(--input),
+    0 0 0 1px oklch(0.164 0 0),
+    0 16px 40px 0 oklch(0 0 0 / 0.5);
+  --shadow-modal:
+    0 0 0 1px oklch(0 0 0 / 0.32),
+    0 12px 24px 0 oklch(0 0 0 / 0.24),
+    0 32px 64px 0 oklch(0 0 0 / 0.44),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.06),
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  --shadow-inset:
+    0 0 0 1px oklch(0 0 0 / 0.24),
+    inset 0 2px 4px 0 oklch(0 0 0 / 0.2),
+    inset 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow-lift:
+    0 0 0 1px color-mix(in oklab, var(--ring) 40%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--ring) 20%, transparent),
+    0 8px 24px 0 oklch(0 0 0 / 0.5),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08);
+  --shadow-thumb:
+    0 0 0 1px oklch(0 0 0 / 0.4),
+    0 2px 6px 0 oklch(0 0 0 / 0.5);
+  --shadow-field: 0 0 0 1px var(--input);
+}
+
+/*
+ * Chart: categorical series colors, used in this order and never cycled.
+ * shadcn names (--chart-1 ... --chart-5), so charts installed from any
+ * registry pick them up. Their values come with the palette above, and every
+ * preset keeps them 3:1 against card and background in both modes. More than
+ * 5 series fold into "Other".
+ */
+@theme inline {
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+/*
+ * Tints: six hues for every colored badge, state dot and alert, the same under
+ * every preset and never a preset's accent. A badge is the fill and
+ * -foreground, with no edge; a state is a -dot beside its word; an Alert, a
+ * Banner and a Callout take the fill, -border and -foreground; links in them
+ * take foreground. -solid
+ * colors the logo marquee's sample marks. The
+ * fill, -foreground and -dot are OKLCH values from the badge palette study
+ * ("one subtle family"); -border and -solid are derived in the same
+ * style (see tokens.md). No tint reads a chart series.
+ */
+@theme inline {
+  --color-tint-gray: var(--tint-gray);
+  --color-tint-gray-border: var(--tint-gray-border);
+  --color-tint-gray-foreground: var(--tint-gray-foreground);
+  --color-tint-gray-dot: var(--tint-gray-dot);
+  --color-tint-blue: var(--tint-blue);
+  --color-tint-blue-border: var(--tint-blue-border);
+  --color-tint-blue-foreground: var(--tint-blue-foreground);
+  --color-tint-blue-dot: var(--tint-blue-dot);
+  --color-tint-blue-solid: var(--tint-blue-solid);
+  --color-tint-green: var(--tint-green);
+  --color-tint-green-border: var(--tint-green-border);
+  --color-tint-green-foreground: var(--tint-green-foreground);
+  --color-tint-green-dot: var(--tint-green-dot);
+  --color-tint-green-solid: var(--tint-green-solid);
+  --color-tint-amber: var(--tint-amber);
+  --color-tint-amber-border: var(--tint-amber-border);
+  --color-tint-amber-foreground: var(--tint-amber-foreground);
+  --color-tint-amber-dot: var(--tint-amber-dot);
+  --color-tint-amber-solid: var(--tint-amber-solid);
+  --color-tint-red: var(--tint-red);
+  --color-tint-red-border: var(--tint-red-border);
+  --color-tint-red-foreground: var(--tint-red-foreground);
+  --color-tint-red-dot: var(--tint-red-dot);
+  --color-tint-red-solid: var(--tint-red-solid);
+  --color-tint-violet: var(--tint-violet);
+  --color-tint-violet-border: var(--tint-violet-border);
+  --color-tint-violet-foreground: var(--tint-violet-foreground);
+  --color-tint-violet-dot: var(--tint-violet-dot);
+  --color-tint-violet-solid: var(--tint-violet-solid);
+}
+
+:root {
+  --tint-gray: oklch(0.965 0 260);
+  --tint-gray-border: oklch(0.88 0 260);
+  --tint-gray-foreground: oklch(0.45 0 260);
+  --tint-gray-dot: oklch(0.62 0 260);
+  --tint-blue: oklch(0.96 0.03 250);
+  --tint-blue-border: oklch(0.84 0.07 250);
+  --tint-blue-foreground: oklch(0.5 0.17 255);
+  --tint-blue-dot: oklch(0.62 0.17 255);
+  --tint-blue-solid: oklch(0.5 0.17 255);
+  --tint-green: oklch(0.96 0.04 150);
+  --tint-green-border: oklch(0.84 0.09 150);
+  --tint-green-foreground: oklch(0.5 0.14 150);
+  --tint-green-dot: oklch(0.62 0.17 150);
+  --tint-green-solid: oklch(0.5 0.17 150);
+  --tint-amber: oklch(0.97 0.04 75);
+  --tint-amber-border: oklch(0.85 0.09 65);
+  --tint-amber-foreground: oklch(0.5 0.14 55);
+  --tint-amber-dot: oklch(0.62 0.16 62);
+  --tint-amber-solid: oklch(0.5 0.12 58);
+  --tint-red: oklch(0.96 0.03 20);
+  --tint-red-border: oklch(0.85 0.08 22);
+  --tint-red-foreground: oklch(0.52 0.2 25);
+  --tint-red-dot: oklch(0.62 0.2 25);
+  --tint-red-solid: oklch(0.5 0.17 25);
+  --tint-violet: oklch(0.96 0.03 300);
+  --tint-violet-border: oklch(0.85 0.08 300);
+  --tint-violet-foreground: oklch(0.5 0.19 300);
+  --tint-violet-dot: oklch(0.62 0.17 300);
+  --tint-violet-solid: oklch(0.5 0.17 300);
+}
+
+.dark {
+  --tint-gray: oklch(0.25 0 260);
+  --tint-gray-border: oklch(0.38 0 260);
+  --tint-gray-foreground: oklch(0.8 0 260);
+  --tint-gray-dot: oklch(0.8 0 260);
+  --tint-blue: oklch(0.239 0.076 257);
+  --tint-blue-border: oklch(0.4 0.11 255);
+  --tint-blue-foreground: oklch(0.668 0.148 250);
+  --tint-blue-dot: oklch(0.668 0.148 250);
+  --tint-blue-solid: oklch(0.5 0.17 255);
+  --tint-green: oklch(0.24 0.06 150);
+  --tint-green-border: oklch(0.4 0.1 150);
+  --tint-green-foreground: oklch(0.72 0.18 146);
+  --tint-green-dot: oklch(0.72 0.18 146);
+  --tint-green-solid: oklch(0.5 0.17 150);
+  --tint-amber: oklch(0.233 0.055 59);
+  --tint-amber-border: oklch(0.42 0.1 60);
+  --tint-amber-foreground: oklch(0.721 0.17 60);
+  --tint-amber-dot: oklch(0.721 0.17 60);
+  --tint-amber-solid: oklch(0.5 0.12 58);
+  --tint-red: oklch(0.239 0.077 19);
+  --tint-red-border: oklch(0.4 0.12 20);
+  --tint-red-foreground: oklch(0.651 0.198 22);
+  --tint-red-dot: oklch(0.651 0.198 22);
+  --tint-red-solid: oklch(0.5 0.17 25);
+  --tint-violet: oklch(0.24 0.07 300);
+  --tint-violet-border: oklch(0.4 0.11 300);
+  --tint-violet-foreground: oklch(0.7 0.15 300);
+  --tint-violet-dot: oklch(0.7 0.15 300);
+  --tint-violet-solid: oklch(0.5 0.17 300);
+}

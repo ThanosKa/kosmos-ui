@@ -1,0 +1,69 @@
+---
+title: Highlight bar chart
+description: Compares periods as bars with one lit and its value in a pill on a dashed line. Hover, a click or the arrow keys pick a bar, and new data moves every bar to its new height.
+---
+
+<ComponentPreview name="highlight-bar-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="highlight-bar-chart" />
+
+## Usage
+
+```tsx
+import { HighlightBarChart } from '@/components/ui/highlight-bar-chart';
+```
+
+```tsx
+const week = [
+  { label: 'Mon', name: 'Mon, Oct 5', value: 962400 },
+  { label: 'Tue', name: 'Tue, Oct 6', value: 978100 },
+  { label: 'Wed', name: 'Wed, Oct 7', value: 991500 },
+];
+
+<HighlightBarChart data={week} label="Events, last 7 days" />
+```
+
+The bars run oldest first, and the last one is lit. Hovering a bar lights it while the pointer stays, and a click or the arrow keys pin it. `Home` and `End` jump to the first and last bar. A dashed line runs across at the lit bar's height and ends in a pill with its label and value. Put the chart in a [Chart card](/docs/components/chart-card) with a range switch, as above. When the data changes, every bar moves from its old height to the new one and the pill counts to the new value.
+
+With up to 12 bars every bar has its label. With more, only the first and last show, so the labels of 30 days never crowd.
+
+The chart is a group that screen readers name with `label`. Picking a bar announces its full `name` and value, and a hidden table lists every bar. Under the reduced motion setting the bars fade in instead of growing, and new data fades them in again.
+
+## Examples
+
+### Entrance
+
+The bars grow from the baseline one after another as the chart scrolls into view, then the line draws across and the pill opens. By default (`entrance="session"`) this plays the first time a chart shows in the browser tab. After that, every chart draws at once, so a dashboard that someone reloads all day stays still. Changes, such as a new range, always move. Use `entrance="always"` on a landing page, where each visit is a first look, and `entrance="none"` to never play it.
+
+<ComponentPreview name="highlight-bar-chart-entrance" />
+
+## API
+
+### HighlightBarChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The periods to compare, oldest first, each `{ label, value, name? }`. `label` sits under the bar and in the pill, and `name` is what screen readers hear. A negative value counts as zero.',
+      type: 'HighlightBarChartItem[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the value in the pill.',
+      type: '(value: number) => string',
+      default: 'a compact number (1.01M)',
+    },
+    entrance: {
+      description: 'When the bars grow in: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

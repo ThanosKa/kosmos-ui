@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:ui",
+  "title": "Skeleton",
+  "description": "A pulsing placeholder in the shape of the content that is loading. The pulse changes only opacity, so it also runs under reduced motion.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "basics" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/skeleton.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

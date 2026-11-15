@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stacked-block-chart",
+  "type": "registry:ui",
+  "title": "Stacked block chart",
+  "description": "Parts of a whole across a few periods, as columns of rounded blocks joined by faint bands. Hover or the arrow keys lift one series, and new data moves every block to its new place. The entrance plays once per browser tab by default.",
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-chart-motion"],
+  "meta": { "group": "chart-bar" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/stacked-block-chart.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

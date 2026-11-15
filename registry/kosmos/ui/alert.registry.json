@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "type": "registry:ui",
+  "title": "Alert",
+  "description": "A message that stays on the page, with an icon, a title, a description and actions. A neutral card, plus info, success, warning and destructive in their status tints.",
+  "dependencies": ["@base-ui/react@^1.9.0", "class-variance-authority@^0.7.1", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn"],
+  "meta": { "group": "basics" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/alert.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

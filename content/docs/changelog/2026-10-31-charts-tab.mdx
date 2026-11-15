@@ -1,0 +1,8 @@
+---
+title: Changed chart entrance and added a Charts tab
+description: Charts draw in once per browser tab and appear drawn after that. Ready-made charts have their own tab, grouped by kind.
+date: 2026-10-31
+---
+
+- **Entrance**: [Chart](/docs/components/chart)'s `GrowthChart` and `Sparkline`, and [Donut chart](/docs/charts/donut-chart), draw in the first time a chart shows in the browser tab and appear drawn at once after that, so a dashboard that someone reloads all day stays still. They still move when their data changes. `entrance="always"` draws them in on every load and `entrance="none"` never does. `useChartAnimation` gives a chart you compose from Recharts the same setting. Run `shadcn add` for them again to pick this up.
+- **Charts tab**: ready-made charts have their own [tab](/docs/charts), grouped by kind: bar, line and area, ring and other. Donut chart moved there, and its old address leads to the new page. Chart and Chart card stay in Components, under Charts, with a link to every chart.

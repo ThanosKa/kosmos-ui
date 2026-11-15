@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "projects-table",
+  "type": "registry:block",
+  "title": "Projects table",
+  "description": "A table of projects, built from the Data table parts, with search, faceted filters, sortable columns, row selection with a bulk action bar, and pages. It also has a row actions menu, a totals footer, and loading and empty states.",
+  "dependencies": ["@tanstack/react-table@^9.3.1", "lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/use-controlled",
+    "@kosmos/data-table",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/button",
+    "@kosmos/dropdown-menu",
+    "@kosmos/empty",
+    "@kosmos/meter",
+    "@kosmos/skeleton",
+    "@kosmos/status"
+  ],
+  "categories": ["projects-table"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/projects-table/projects-table.tsx",
+      "type": "registry:component"
+    },
+    { "path": "public/logos/fernhill.svg", "type": "registry:file", "target": "~/public/logos/fernhill.svg" },
+    { "path": "public/logos/brightloop.svg", "type": "registry:file", "target": "~/public/logos/brightloop.svg" },
+    { "path": "public/logos/copperline.svg", "type": "registry:file", "target": "~/public/logos/copperline.svg" },
+    { "path": "public/logos/saltmarsh.svg", "type": "registry:file", "target": "~/public/logos/saltmarsh.svg" },
+    { "path": "public/logos/driftwood.svg", "type": "registry:file", "target": "~/public/logos/driftwood.svg" },
+    { "path": "public/logos/hollowoak.svg", "type": "registry:file", "target": "~/public/logos/hollowoak.svg" },
+    { "path": "public/logos/cirrus.svg", "type": "registry:file", "target": "~/public/logos/cirrus.svg" },
+    { "path": "public/logos/pebblepine.svg", "type": "registry:file", "target": "~/public/logos/pebblepine.svg" },
+    { "path": "public/logos/marigold.svg", "type": "registry:file", "target": "~/public/logos/marigold.svg" },
+    { "path": "public/logos/kiln.svg", "type": "registry:file", "target": "~/public/logos/kiln.svg" },
+    { "path": "public/logos/tidepool.svg", "type": "registry:file", "target": "~/public/logos/tidepool.svg" },
+    { "path": "public/logos/ironbark.svg", "type": "registry:file", "target": "~/public/logos/ironbark.svg" }
+  ]
+}

@@ -1,0 +1,126 @@
+'use client';
+
+import { Code, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CodeBlock, Pre } from '@/components/docs/code-block';
+import { PackageManagerTabs } from '@/components/docs/docs-tabs';
+import { LiveHighlightedCode } from '@/components/docs/live-highlighted-code';
+import { chosenPreset, presetCss, presetDesignMdPath, presetItemName, type PresetChoice } from '@/lib/presets';
+import { Button } from '@/registry/kosmos/ui/button';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/registry/kosmos/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+
+type ChosenCodeProps = { code: string; lang: string; title?: string; embedded?: boolean; copy?: boolean };
+
+/** Code in a Kosmos code block, highlighted in the browser as the visitor's choice changes; plain until the first highlight is ready. */
+function ChosenCode({ code, lang, title, embedded, copy }: ChosenCodeProps) {
+  const className = embedded ? undefined : 'my-0';
+  return (
+    <LiveHighlightedCode
+      code={code}
+      lang={lang}
+      title={title}
+      embedded={embedded}
+      copy={copy}
+      className={className}
+      fallback={
+        <CodeBlock title={title} embedded={embedded} copy={copy} className={className}>
+          <Pre>
+            <code>
+              {code
+                .replace(/\n$/, '')
+                .split('\n')
+                .flatMap((line, index) => [index ? '\n' : null, <span key={index} className="line">{line}</span>])}
+            </code>
+          </Pre>
+        </CodeBlock>
+      }
+    />
+  );
+}
+
+/** The DESIGN.md the build wrote for this choice, read from its address, so what the dialog shows is the file it gives. */
+function DesignMdPanel({ choice }: { choice: PresetChoice }) {
+  const path = presetDesignMdPath(choice);
+  const [file, setFile] = useState<{ path: string; text: string }>();
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(path, { signal: controller.signal })
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error(`${path}: ${response.status}`))))
+      .then((text) => setFile({ path, text }))
+      .catch((error: Error) => {
+        if (error.name !== 'AbortError') setFile({ path, text: `Could not load ${path}.` });
+      });
+    return () => controller.abort();
+  }, [path]);
+  return (
+    <>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-small text-muted-foreground">Save it as DESIGN.md at the root of your project, so an agent builds new screens in this preset.</p>
+        <Button variant="secondary" nativeButton={false} render={<a href={path} download="DESIGN.md" />}>
+          <Download aria-hidden data-icon="inline-start" />
+          Download
+        </Button>
+      </div>
+      <ChosenCode title="DESIGN.md" lang="md" code={file?.path === path ? file.text : ''} />
+    </>
+  );
+}
+
+type PresetCodeDialogProps = {
+  choice: PresetChoice;
+  /** Each package manager's `shadcn` runner, such as `pnpm dlx shadcn@latest`. */
+  runners: Record<string, string>;
+  /** The `shadcn` arguments that add the `@kosmos` registry to a project. */
+  registryAdd: string;
+};
+
+/** "Get code": the chosen preset as CSS, as a registry command and as a DESIGN.md, each with a copy button, and the built DESIGN.md as a download. */
+export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDialogProps) {
+  const preset = chosenPreset(choice);
+  const item = presetItemName(choice);
+  const managers = Object.keys(runners);
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button variant="primary" />}>
+        <Code aria-hidden data-icon="inline-start" />
+        Get code
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Get the {preset.name} preset</DialogTitle>
+          <DialogDescription>The palette, radius and size you picked, in light and dark.</DialogDescription>
+        </DialogHeader>
+        <DialogBody className="pb-5">
+          {/* Inline-size containment keeps the widest line of code from widening the dialog: the code scrolls instead. */}
+          <Tabs defaultValue="css" className="min-w-0 [contain:inline-size]">
+            <TabsList>
+              <TabsTrigger value="css">CSS</TabsTrigger>
+              <TabsTrigger value="registry">Registry</TabsTrigger>
+              <TabsTrigger value="design">DESIGN.md</TabsTrigger>
+            </TabsList>
+            <TabsContent value="css" className="flex flex-col gap-3">
+              <p className="text-small text-muted-foreground">Paste it after the Kosmos tokens in your global CSS: light on <code className="font-mono">:root</code>, dark on <code className="font-mono">.dark</code>.</p>
+              <ChosenCode title="app/globals.css" lang="css" code={presetCss(preset)} />
+            </TabsContent>
+            <TabsContent value="registry" className="flex flex-col gap-3">
+              <p className="text-small text-muted-foreground">Adds the @kosmos registry once, then installs the tokens with this preset over them.</p>
+              <PackageManagerTabs
+                managers={managers}
+                panels={Object.fromEntries(
+                  managers.map((manager) => [
+                    manager,
+                    <ChosenCode key={manager} embedded copy={false} lang="bash" code={`${runners[manager]} ${registryAdd}\n${runners[manager]} add @kosmos/${item}`} />,
+                  ]),
+                )}
+              />
+            </TabsContent>
+            <TabsContent value="design" className="flex flex-col gap-3">
+              <DesignMdPanel choice={choice} />
+            </TabsContent>
+          </Tabs>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navbar",
+  "type": "registry:block",
+  "title": "Navbar",
+  "description": "The top of a marketing page with links, dropdowns, end actions, and optionally a mega menu, a search trigger and a banner. It sticks to the top and opens into a sheet on a phone. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/drawer", "@kosmos/kbd", "@kosmos/scroll-area"],
+  "categories": ["navbar"],
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/navbar/navbar.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

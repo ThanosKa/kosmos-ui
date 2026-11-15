@@ -1,0 +1,78 @@
+---
+title: Bento
+description: A grid of tiles for a marketing page, each a live piece of your product above one line of caption and a link.
+---
+
+## Installation
+
+<ComponentInstall name="bento" />
+
+The block brings [Table](/docs/components/table), [Chart card](/docs/components/chart-card), [Command](/docs/components/command), [Segmented control](/docs/components/segmented-control), [Meter](/docs/components/meter) and [Badge](/docs/components/badge) with it for its six sample tiles, and lands in `components/bento.tsx`.
+
+## Usage
+
+```tsx
+import { Bento, type BentoItem } from '@/components/bento';
+import { Meter, MeterBar, MeterLabel, MeterValue } from '@/components/ui/meter';
+
+const items: BentoItem[] = [
+  {
+    id: 'funnels',
+    title: 'Funnels',
+    description: 'See the step where people leave.',
+    href: '/docs/components/meter',
+    visual: (
+      <Meter value={38}>
+        <MeterLabel>Started a trial</MeterLabel>
+        <MeterValue />
+        <MeterBar />
+      </Meter>
+    ),
+  },
+  // …more tiles
+];
+
+export function Features() {
+  return <Bento title="From the first event to the answer" description={null} items={items} />;
+}
+```
+
+Each tile shows a real piece of your product, not a picture of it, so a visitor can click, type and toggle it. The six sample tiles, a table, a range switch, a notification list, a chart card, a command menu and a quota meter, are sample data. Delete them and their imports once you pass your own.
+
+## What it does
+
+- **Header**: the title is an `<h2>` and each tile's title an `<h3>`. Pass `headingLevel={3}` when the bento sits inside a section that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the tiles their heading.
+- **Tiles**: each tile holds its visual in a sunken well, centered, with the title and one line of caption under it. On hover the visual lifts 4px and the arrow of the link moves 2px; under reduced motion both stay still.
+- **Link**: give a tile an `href` and it gets a "Learn more" link under the caption. It is the tile's one tab stop, and the whole tile draws the focus outline while it has focus. The live parts inside a tile stay clickable, so the link is not stretched over the tile. Keep the caption to one line, so a visitor takes in the whole grid in seconds.
+- **Width**: the grid lays itself out by its own width, with container queries, not by the screen's. One column on a phone, two from 576px, three from 896px.
+- **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
+- **Wide tiles**: `size: 'wide'` takes two of the three columns. With two columns every tile takes one, and a lone last tile takes the whole row, so the grid never ends on a gap. With three columns, order the tiles so each row adds up to three.
+
+## API
+
+### Bento
+
+Takes every `<section>` prop, plus:
+
+<TypeTable
+  type={{
+    title: { description: 'The heading. `null` leaves it out.', type: 'ReactNode', default: "'From the first event to the answer'" },
+    description: { description: 'One line under the title. `null` leaves it out.', type: 'ReactNode' },
+    items: { description: 'The tiles, in reading order.', type: 'BentoItem[]' },
+    headingLevel: { description: 'The level of the title. Tile titles take the next one. Pass 3 inside a section that has an `<h2>`.', type: '2 | 3', default: '2' },
+  }}
+/>
+
+### BentoItem
+
+<TypeTable
+  type={{
+    id: { description: 'A stable key for the tile.', type: 'string', required: true },
+    title: { description: "The tile's name.", type: 'ReactNode', required: true },
+    description: { description: 'One line under the title.', type: 'ReactNode', required: true },
+    visual: { description: 'What the tile shows above its caption.', type: 'ReactNode', required: true },
+    size: { description: '`wide` takes two of the three columns.', type: "'default' | 'wide'", default: "'default'" },
+    href: { description: 'Where the tile leads. Adds a link under the caption.', type: 'string' },
+    linkLabel: { description: 'The text of that link.', type: 'ReactNode', default: "'Learn more'" },
+  }}
+/>

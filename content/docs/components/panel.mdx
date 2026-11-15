@@ -1,0 +1,98 @@
+---
+title: Panel
+description: A recessed tray for one section of a dashboard. The title, description and actions sit on the tray, the content on a raised card inside it, and an optional footer below.
+---
+
+<ComponentPreview name="panel-demo" />
+
+## Installation
+
+<ComponentInstall name="panel" />
+
+## Usage
+
+```tsx
+import {
+  Panel,
+  PanelAction,
+  PanelContent,
+  PanelDescription,
+  PanelFooter,
+  PanelHeader,
+  PanelTitle,
+} from '@/components/ui/panel';
+```
+
+```tsx
+<Panel>
+  <PanelHeader>
+    <PanelTitle>Projects</PanelTitle>
+    <PanelDescription>Every site and app sending events</PanelDescription>
+    <PanelAction>
+      <Button variant="secondary">Export</Button>
+    </PanelAction>
+  </PanelHeader>
+  <PanelContent>
+    <Table>{/* … */}</Table>
+  </PanelContent>
+  <PanelFooter>
+    <Pagination total={total}>{/* … */}</Pagination>
+  </PanelFooter>
+</Panel>
+```
+
+Every part but `PanelContent` is optional. `PanelContent` sets no padding, so a table or a divided list runs to the card's edges. Give a chart or other content its own, such as `p-4`.
+
+`PanelAction` sits beside the title from a 448px panel and under it below that. Its controls wrap when they run out of room. In a toolbar, give a search field the button height, `h-7.5`. A title or description too long for its line truncates.
+
+Panels in a grid row stretch to the tallest one, and each card grows to fill its tray, so the rows line up.
+
+## Examples
+
+### Chart
+
+A range switch in `PanelAction` changes what the chart shows. Give the chart room with padding and a `min-h-*` on `PanelContent`.
+
+<ComponentPreview name="panel-chart" />
+
+### List with a button
+
+A [Button](/docs/components/button) alone in `PanelFooter` runs edge to edge, as far from the card as the card is from the tray.
+
+<ComponentPreview name="panel-list" />
+
+## Accessibility
+
+- `PanelTitle` renders an `<h2>`, so screen readers can jump from panel to panel. Pass `render={<h3 />}` when the panels sit under a section heading.
+- A truncated title or description shows no more than fits. Keep them short, or show the full text in the content.
+- To make a panel a landmark, render it as a section named by its title: `render={<section aria-labelledby="…" />}` on `Panel`, with the same `id` on `PanelTitle`.
+
+## API
+
+### Panel
+
+Renders a `<div>` through Base UI's [`useRender`](https://base-ui.com/react/utils/use-render) and accepts all its props. It is a size container named `panel`, so its parts and your content can use `@md/panel:` and the other container variants.
+
+### PanelHeader
+
+Renders a `<div>` that lays out the title, the description and the action.
+
+### PanelTitle
+
+Renders an `<h2>` through `useRender`. Pass `render={<h3 />}` for another level.
+
+### PanelDescription
+
+Renders a `<p>` in muted text under the title.
+
+### PanelAction
+
+Renders a `<div>` for the controls of the content, such as a range switch, a search field or a filter.
+
+### PanelContent
+
+Renders a `<div>`, the raised card that holds the content.
+
+### PanelFooter
+
+Renders a `<div>` on the tray under the card, for pagination or a full-width button.

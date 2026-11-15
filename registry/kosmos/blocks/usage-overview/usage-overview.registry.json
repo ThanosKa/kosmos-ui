@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "usage-overview",
+  "type": "registry:block",
+  "title": "Usage overview",
+  "description": "Agent usage and cost for a workspace: stat tiles, tokens per day stacked by model, and a breakdown with the monthly budget. It has loading and empty states. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0", "recharts@^3.10.1"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/button",
+    "@kosmos/chart",
+    "@kosmos/empty",
+    "@kosmos/meter",
+    "@kosmos/segmented-control",
+    "@kosmos/skeleton",
+    "@kosmos/table"
+  ],
+  "categories": ["usage-overview"],
+  "meta": { "group": "blocks", "section": "ai", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/usage-overview/usage-overview.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

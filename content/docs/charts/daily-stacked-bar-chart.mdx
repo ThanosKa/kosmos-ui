@@ -1,0 +1,75 @@
+---
+title: Daily stacked bar chart
+description: Stacks a few series per day, with a button per series that shows its total and hides or shows it. Hover, a click or the arrow keys pick a day, and a tooltip lists its amounts.
+---
+
+<ComponentPreview name="daily-stacked-bar-chart-demo" />
+
+## Installation
+
+<ComponentInstall name="daily-stacked-bar-chart" />
+
+## Usage
+
+```tsx
+import { DailyStackedBarChart } from '@/components/ui/daily-stacked-bar-chart';
+```
+
+```tsx
+const platforms = [
+  { key: 'web', label: 'Web' },
+  { key: 'ios', label: 'iOS' },
+  { key: 'server', label: 'Server' },
+];
+
+const days = [
+  { label: 'Oct 9', name: 'Fri, Oct 9', values: { web: 152400, ios: 256300, server: 518900 } },
+  { label: 'Oct 10', name: 'Sat, Oct 10', values: { web: 152700, ios: 260100, server: 520000 } },
+  { label: 'Oct 11', name: 'Sun, Oct 11', values: { web: 160600, ios: 263600, server: 546900 } },
+];
+
+<DailyStackedBarChart data={days} series={platforms} label="Events by platform, last 3 days" />
+```
+
+Each bar stacks the series from the bottom up, in the order of `series`, and each series takes the next chart color. A button above the chart shows each series' total for the whole range. Pressing it hides the series: its segments fold away, the others close up and the axis rescales. The last series on show always stays.
+
+The chart starts on the last day, with a soft column behind its bar and a tooltip beside it. Hovering a bar previews its day, and a click or the arrow keys select it. `Home` and `End` jump to the first and last day. When the bars get too narrow for every label, the labels thin out from the last day backwards. Put the chart in a [Chart card](/docs/components/chart-card) with a title and the range, as above.
+
+Each bar is a button that screen readers name with its day, every amount and the total. A hidden table lists every day. Under the reduced motion setting the chart fades in instead of building up, and hiding a series fades the bars in again.
+
+## Entrance
+
+The bars build up segment by segment from the axis, left to right, then the column rises and the tooltip opens. By default this plays the first time a chart shows in the browser tab. The [Highlight bar chart](/docs/charts/highlight-bar-chart#entrance) explains the three settings.
+
+## API
+
+### DailyStackedBarChart
+
+Renders a `<figure>` and takes its props.
+
+<TypeTable
+  type={{
+    data: {
+      description: 'The days, oldest first, each `{ label, values, name? }`. `label` sits under the bar, `name` heads the tooltip and is what screen readers hear, and `values` holds one amount per series key. A missing or negative amount counts as zero.',
+      type: 'DailyStackedBarChartItem[]',
+    },
+    series: {
+      description: 'The series in each bar, from the bottom up, each `{ key, label, color? }`. `color` defaults to the chart colors in order.',
+      type: 'DailyStackedBarChartSeries[]',
+    },
+    label: {
+      description: 'Names the chart for screen readers and captions its hidden table.',
+      type: 'string',
+    },
+    format: {
+      description: 'Writes the totals, the axis and the tooltip amounts.',
+      type: '(value: number) => string',
+      default: 'a compact number (1.01M)',
+    },
+    entrance: {
+      description: 'When the bars build up: the first time a chart shows in the tab, each time it scrolls into view, or never.',
+      type: "'session' | 'always' | 'none'",
+      default: "'session'",
+    },
+  }}
+/>

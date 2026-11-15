@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dashboard-analytics",
+  "type": "registry:block",
+  "title": "Analytics dashboard",
+  "description": "A product analytics dashboard, each section on a Panel, as a whole page beside the App sidebar or as the content alone. It shows KPIs with sparklines, traffic against the period before, sources, top pages and countries. A signup goal and a searchable table of the newest signups close it. It lays itself out by its own width, not the screen's.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/use-controlled",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/bar-list",
+    "@kosmos/button",
+    "@kosmos/chart",
+    "@kosmos/dropdown-menu",
+    "@kosmos/meter",
+    "@kosmos/panel",
+    "@kosmos/segmented-control",
+    "@kosmos/stat-card",
+    "@kosmos/scroll-area",
+    "@kosmos/sidebar",
+    "@kosmos/app-sidebar",
+    "@kosmos/data-table",
+    "@kosmos/dates",
+    "@kosmos/date-picker",
+    "@kosmos/notification-inbox"
+  ],
+  "categories": ["dashboard"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/dashboard-analytics/dashboard-analytics.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

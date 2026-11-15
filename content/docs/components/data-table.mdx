@@ -1,0 +1,157 @@
+---
+title: Data table
+description: Parts for a table of records on TanStack Table. Column menus sort and hide columns, faceted filters show how many rows each value keeps, and a footer shows the rows in view, the pages and a bulk bar for selected rows.
+---
+
+<ComponentPreview name="data-table-demo" />
+
+## Installation
+
+<ComponentInstall name="data-table" />
+
+It installs [TanStack Table](https://tanstack.com/table) 9, which sorts, filters, counts and pages the rows. The parts draw them with [Table](/docs/components/table), [Dropdown menu](/docs/components/dropdown-menu), [Popover](/docs/components/popover), [Checkbox](/docs/components/checkbox) and [Pagination](/docs/components/pagination).
+
+## Usage
+
+```tsx
+import {
+  createDataTableColumnHelper,
+  DataTable,
+  DataTableColumnHeader,
+  DataTableContent,
+  DataTableFooter,
+  useDataTable,
+} from '@/components/ui/data-table';
+```
+
+Define the columns once, outside the component, with the column helper. Then make the table with `useDataTable` and hand it to the parts:
+
+```tsx
+const column = createDataTableColumnHelper<Project>();
+const columns = column.columns([
+  column.accessor('name', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    meta: { label: 'Project', sortLabels: ['A to Z', 'Z to A'] },
+  }),
+  column.accessor('mrr', {
+    header: ({ column }) => <DataTableColumnHeader column={column} />,
+    cell: ({ row }) => usd.format(row.original.mrr),
+    meta: { label: 'MRR', align: 'end' },
+  }),
+]);
+
+function Projects({ projects }: { projects: Project[] }) {
+  const table = useDataTable({ data: projects, columns, getRowId: (row) => row.id });
+  return (
+    <DataTable>
+      <DataTableContent table={table} aria-label="Projects" />
+      <DataTableFooter table={table} noun="project" />
+    </DataTable>
+  );
+}
+```
+
+`useDataTable` is TanStack's `useTable` with the features these parts need already registered. Any TanStack option or piece of state passes through. Pass `state` and its `on…Change` to hold a piece yourself, for example the page in the URL. Keep `columns` and `data` stable between renders: define the columns outside the component, and memoize data you derive.
+
+A column's `meta` tells the parts what TanStack does not know. It holds the column's `label` in menus, `align: 'end'` for numbers, and `className` for the header and its cells, such as `hidden @3xl:table-cell` to drop it on a narrow frame. It also holds `sortLabels` for its menu and its `skeleton` while loading.
+
+## The parts
+
+- **DataTable**: the frame. The parts size themselves by its width, so the table fits the space it gets.
+- **DataTableToolbar**: the row above the table. Put `DataTableSearch`, a `DataTableFacetFilter` for each column you filter by, and `DataTableReset` in it.
+- **DataTableSearch**: searches every text and number column. To search other fields, pass `globalFilterFn` to `useDataTable`.
+- **DataTableFacetFilter**: filters one column to the values that are on. Its list can be searched and counts the rows each value would keep with the other filters on. Give the column `filterFn: 'arrHas'`. Values in one filter widen the match, and filters narrow each other.
+- **DataTableColumnHeader**: the header's name and a menu that sorts the column either way and hides it. Hiding a sorted column clears the sort, and focus moves to the Columns menu.
+- **DataTableColumnToggle**: the Columns menu, usually in the last header. It marks a column that is on but has no room at the current width.
+- **DataTableSelectAll** and **DataTableSelectRow**: the checkboxes of a select column. Shift-click ticks every row between two clicks.
+- **DataTableContent**: the table: the headers and the rows of the page. It shows `loading` skeleton rows, `empty` when no row passes, and with `onRowClick` it opens a row from a click anywhere but its buttons.
+- **DataTableFooter**: the rows in view and the page buttons, after whatever you pass it, such as totals. Add `pageSizes` for a rows-per-page select and `pages` for numbered pages. Screen readers hear the selection change.
+- **DataTableBulkBar**: Clear selection, the count and Select all, then the actions you return from its child function, given the selected rows. It shows only while rows are selected. Put it in the footer.
+
+For a full example with every part, row actions and totals, see the [projects table](/docs/blocks/projects-table) block.
+
+## API
+
+### useDataTable
+
+Takes every option of TanStack's `useTable` except `features`, and returns its table. It sets ten rows a page and the `includesString` search. Columns can name the sort functions `alphanumeric`, `basic`, `datetime` and `text`, and the filter functions `arrHas` and `includesString`.
+
+### DataTableColumnMeta
+
+<TypeTable
+  type={{
+    label: { description: 'The column name in the Columns menu and the header. Defaults to the column id.', type: 'string' },
+    align: { description: 'Lines numbers up at the end of the cell and the header.', type: "'end'" },
+    className: { description: 'Classes for the header and every cell, such as the container query a column shows from.', type: 'string' },
+    headerClassName: { description: 'Classes for the header only.', type: 'string' },
+    cellClassName: { description: 'Classes for the cells only.', type: 'string' },
+    sortLabels: { description: 'The two sort orders in words that fit the values, ascending then descending.', type: '[string, string]', default: "['Ascending', 'Descending']" },
+    skeleton: { description: 'What a cell shows while loading. `null` leaves it empty.', type: 'ReactNode', default: 'a short bar' },
+  }}
+/>
+
+### DataTableSearch
+
+Takes every `<input>` prop, plus:
+
+<TypeTable
+  type={{
+    table: { description: 'The table from `useDataTable`.', type: 'DataTableInstance', required: true },
+    label: { description: 'Its name for screen readers, such as "Search projects".', type: 'string', required: true },
+  }}
+/>
+
+### DataTableFacetFilter
+
+<TypeTable
+  type={{
+    column: { description: 'The column it filters, from `table.getColumn(id)`.', type: 'Column', required: true },
+    options: { description: 'The values in list order, each with a `label` and an optional `render`, such as a Badge.', type: '{ value: string; label: string; render?: ReactNode }[]', required: true },
+    title: { description: 'The button name.', type: 'string', default: "the column's label" },
+    noun: { description: 'The values in words, for the search and its empty text.', type: 'string', default: "'values'" },
+    rowNoun: { description: 'The rows in words, for the counts screen readers hear.', type: 'string', default: "'row'" },
+  }}
+/>
+
+### DataTableContent
+
+Takes every prop of [Table](/docs/components/table), plus:
+
+<TypeTable
+  type={{
+    table: { description: 'The table from `useDataTable`.', type: 'DataTableInstance', required: true },
+    loading: { description: 'Shows up to six skeleton rows in place of the rows.', type: 'boolean', default: 'false' },
+    empty: { description: 'What shows under the header when no row passes, such as an Empty state.', type: 'ReactNode' },
+    onRowClick: { description: 'Called with a row clicked anywhere but its buttons, links and checkboxes.', type: '(row: Row) => void' },
+  }}
+/>
+
+### DataTableFooter
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    table: { description: 'The table from `useDataTable`.', type: 'DataTableInstance', required: true },
+    loading: { description: 'Shows a skeleton line in place of the children and hides the pages.', type: 'boolean', default: 'false' },
+    noun: { description: 'The rows in words, for the count: "project".', type: 'string', default: "'row'" },
+    plural: { description: 'The plural, for nouns that do not take an s.', type: 'string', default: 'noun + s' },
+    pageSizes: { description: 'Adds a rows-per-page select with these sizes, from 512px wide.', type: 'number[]' },
+    pages: { description: 'Adds the numbered pages between previous and next.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### DataTableBulkBar
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    table: { description: 'The table from `useDataTable`.', type: 'DataTableInstance', required: true },
+    noun: { description: 'The rows in words.', type: 'string', default: "'row'" },
+    plural: { description: 'The plural, for nouns that do not take an s.', type: 'string', default: 'noun + s' },
+    children: { description: 'Returns the actions for the selected rows.', type: '(rows: TData[]) => ReactNode' },
+  }}
+/>
+
+`DataTableColumnHeader` takes `column` and an optional `title`. `DataTableColumnToggle` and `DataTableReset` take `table`. `DataTableSelectAll` takes `table` and `label`, and `DataTableSelectRow` takes `row` and `label`.

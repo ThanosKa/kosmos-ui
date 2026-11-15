@@ -1,45 +1,39 @@
-# kosmos-ui
+# Kosmos UI
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
-
-Run development server:
+Kosmos UI is an open source design system for dashboard app UI. It has components and ready-made blocks built on [Base UI](https://base-ui.com), styled with layered shadows, fast motion, and dense typography. You install them with the shadcn CLI. The code lands in your project as plain files that you own and edit.
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+npx shadcn add @kosmos/button
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+This repo holds the components, the blocks, the registry they install from, and the docs site.
 
-## Explore
+## Development
 
-In the project, you can see:
+Requirements: Node.js 20.9 or later. `package.json` pins the pnpm version, and Corepack picks it up.
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+```bash
+corepack enable
+pnpm install
+pnpm dev
+```
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+The dev server runs at http://localhost:3000.
 
-### Fumadocs MDX
+To take the review screenshots with `pnpm screenshots <name>`, first install the Playwright browser once with `pnpm exec playwright install chromium`.
 
-Collections are defined with the [Macro API](https://fumadocs.dev/docs/mdx/macro) in `lib/source.ts`.
+Before you open a pull request, run these three commands:
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
+```bash
+pnpm types:check
+pnpm lint
+pnpm build
+```
 
-## Learn More
+## Contributing
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before you open an issue or a pull request. [docs/adr](docs/adr) records the design decisions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.dev) - learn about Fumadocs
+## License
+
+[MIT](LICENSE) © 2026 Thanos Kazakis. The license does not cover the Kosmos UI name or logo.

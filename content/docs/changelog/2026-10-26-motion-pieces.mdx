@@ -1,0 +1,8 @@
+---
+title: Added Shimmer and changed Text reveal
+description: A light that sweeps across status text, and a text reveal that can wait until it scrolls into view.
+date: 2026-10-26
+---
+
+- [Shimmer](/docs/components/shimmer): a soft light that sweeps across text while a state is still working, such as Thinking or Generating. `active={false}` settles it. Under reduced motion and in forced-colors mode the text is plain and still. Its `animate-shimmer` animation comes with `@kosmos/tokens`.
+- [Text reveal](/docs/components/text-reveal): the new `trigger="view"` plays the reveal once, the first time the text scrolls into view. The rise now scales with the font size, and a long text shortens its stagger so the last word lands within a second. The default, `trigger="mount"`, plays as before.

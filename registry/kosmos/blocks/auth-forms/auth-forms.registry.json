@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-forms",
+  "type": "registry:block",
+  "title": "Auth forms",
+  "description": "Log in, sign up, the email code that confirms a new account, and password reset, as four forms in one card layout. Each has labels, inline errors, a loading state and a success state, and AuthForms switches between them in place.",
+  "dependencies": ["lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/button",
+    "@kosmos/field",
+    "@kosmos/input",
+    "@kosmos/otp-field"
+  ],
+  "categories": ["auth"],
+  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/auth-forms/auth-forms.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

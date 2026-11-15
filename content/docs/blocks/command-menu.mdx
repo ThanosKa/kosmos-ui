@@ -1,0 +1,86 @@
+---
+title: Command menu
+description: A keyboard-first menu that opens from a search button or a shortcut. Find a project, run an action or go to a page.
+---
+
+## Installation
+
+<ComponentInstall name="command-menu" />
+
+The block brings [Command](/docs/components/command), [Kbd](/docs/components/kbd), [Avatar](/docs/components/avatar) and [Button](/docs/components/button) with it, and lands in `components/command-menu.tsx`.
+
+## Usage
+
+```tsx
+import { CommandMenu } from '@/components/command-menu';
+
+<CommandMenu
+  onRun={(value) => {
+    if (value === 'new-roadmap-item') setNewItemOpen(true);
+    if (value.startsWith('go:')) router.push(`/${value.slice(3)}`);
+  }}
+/>;
+```
+
+The menu renders a search button that shows its shortcut. Click it, or press ⌘K (Ctrl+K on Windows and Linux) anywhere on the page. The lists at the top of the file hold sample projects with their status, actions and the pages of the [app sidebar](/docs/blocks/app-sidebar). Replace them with yours, or pass `groups` and `pages`.
+
+## What it does
+
+- **Search**: typing filters every list by each item's `label`, the first match stays highlighted and Enter runs it.
+- **Running**: each command calls `onRun` with its value, such as `new-roadmap-item`, `open:fernhill` or `assignee:lena`, and closes the menu.
+- **Second lists**: an item with a `page` opens that list instead of running (**Show roadmap items assigned to…**, **Switch workspace…**). Backspace in the empty field or Escape goes back to the main list.
+- **Loading**: pass `loading` to show a loading row instead of the list while your records load.
+- **Descriptions and shortcuts**: an item's `description` is a muted second line, and `keys` shows its shortcut at the end.
+- **Closing**: Escape on the main list or a click outside closes the menu, and focus goes back where it was. It opens on the main list every time.
+- **Shortcut**: use one menu with `hotkey` on per page. Pass `trigger={null}` to hide the button, or your own element.
+
+## Motion
+
+The menu appears and closes without animation, because it opens from a keyboard shortcut and should be ready the moment you type.
+
+## API
+
+### CommandMenu
+
+<TypeTable
+  type={{
+    groups: { description: 'The main list.', type: 'CommandMenuGroup[]', default: 'sample projects, actions and pages' },
+    pages: { description: 'Second lists, by the key an item names in `page`.', type: 'Record<string, CommandMenuPage>', default: 'assignee and workspace' },
+    loading: { description: 'Shows a loading row instead of the list.', type: 'boolean', default: 'false' },
+    onRun: { description: 'Called with the value of the command that ran.', type: '(value: string) => void' },
+    open: { description: 'Whether the menu is open, controlled.', type: 'boolean' },
+    defaultOpen: { description: 'Whether the menu starts open, uncontrolled.', type: 'boolean', default: 'false' },
+    onOpenChange: { description: 'Called when the menu opens or closes.', type: '(open: boolean) => void' },
+    hotkey: { description: 'Toggles the menu with ⌘K or Ctrl+K from anywhere on the page.', type: 'boolean', default: 'true' },
+    trigger: { description: 'The element that opens the menu. `null` renders none.', type: 'ReactElement | null', default: 'a search button' },
+    className: { description: 'Classes for the default search button.', type: 'string' },
+    modal: { description: 'Blocks the page behind the menu.', type: 'boolean', default: 'true' },
+    container: { description: 'The element the menu renders into.', type: 'HTMLElement | null', default: 'document.body' },
+    initialFocus: { description: 'Where focus goes when the menu opens.', type: 'boolean | RefObject | function', default: 'the search field' },
+    defaultPage: { description: 'A second list to open on, by its key. For previews.', type: 'string' },
+    query: { description: 'The search text, controlled. Use with `onQueryChange`. It stays as you set it when the menu opens.', type: 'string' },
+    defaultQuery: { description: 'The search text at first, uncontrolled. The menu clears it each time it opens.', type: 'string', default: "''" },
+    onQueryChange: { description: 'Called as the search text changes.', type: '(query: string) => void' },
+  }}
+/>
+
+### CommandMenuItem
+
+`CommandMenuGroup` is `{ value: string; items: CommandMenuItem[] }`, and `CommandMenuPage` is `{ title: string; placeholder: string; groups: CommandMenuGroup[] }`.
+
+<TypeTable
+  type={{
+    value: { description: 'Passed to `onRun`.', type: 'string', required: true },
+    label: { description: 'What the search matches.', type: 'string', required: true },
+    title: { description: 'What the row shows, when it differs from `label`.', type: 'string' },
+    hint: { description: 'Muted text after the title, such as a domain.', type: 'string' },
+    description: { description: 'A muted second line under the title.', type: 'string' },
+    icon: { description: 'The icon at the start of the row.', type: 'LucideIcon' },
+    dot: { description: 'A status dot in place of the icon, as a background class such as `bg-success`.', type: 'string' },
+    initials: { description: 'An avatar in place of the icon.', type: 'string' },
+    avatar: { description: 'The URL of a photo for that avatar. The initials show until it loads.', type: 'string' },
+    logo: { description: "The URL of a logo in place of the icon, such as a workspace's, in a square avatar.", type: 'string' },
+    keys: { description: 'Keys your app binds to the command, shown at the end. The menu doesn’t bind them.', type: 'string[]' },
+    page: { description: 'The key of a second list to open instead of running.', type: 'string' },
+  }}
+/>

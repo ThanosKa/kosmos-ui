@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-chart-motion",
+  "type": "registry:hook",
+  "title": "useChartMotion",
+  "description": "The motion behind the Kosmos charts. An entrance starts as a chart scrolls into view and by default plays once per browser tab. A number counts to each new value, and a hook reads the reduced motion setting.",
+  "registryDependencies": ["@kosmos/motion"],
+  "files": [
+    {
+      "path": "registry/kosmos/hooks/use-chart-motion.ts",
+      "type": "registry:hook"
+    }
+  ]
+}

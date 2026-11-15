@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar",
+  "type": "registry:ui",
+  "title": "Sidebar",
+  "description": "A composable app sidebar with provider, header, groups, menu items with one level of submenus, a workspace switcher, a user menu and a resize handle. It collapses to icons or off screen, toggles with ⌘B, remembers its state, and opens as a drawer below 768px.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/button",
+    "@kosmos/collapsible",
+    "@kosmos/drawer",
+    "@kosmos/dropdown-menu",
+    "@kosmos/kbd",
+    "@kosmos/scroll-area",
+    "@kosmos/separator",
+    "@kosmos/tooltip"
+  ],
+  "meta": {
+    "group": "navigation"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/sidebar.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

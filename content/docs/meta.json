@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "index",
+    "installation",
+    "changelog/index",
+    "---Foundations---",
+    "...foundations",
+    "---Components---",
+    "...components",
+    "---Charts---",
+    "...charts",
+    "---Blocks---",
+    "...blocks"
+  ]
+}

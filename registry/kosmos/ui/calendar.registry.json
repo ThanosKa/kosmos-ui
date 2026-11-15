@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar",
+  "type": "registry:ui",
+  "title": "Calendar",
+  "description": "A month grid to pick one day or a range, across one or more months. It supports min and max dates, disabled days, the locale's week start, and the WAI-ARIA keyboard path.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/dates", "@kosmos/button"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/calendar.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

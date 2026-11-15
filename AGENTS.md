@@ -1,0 +1,30 @@
+# Kosmos UI
+
+Kosmos UI is an open source (MIT) design system for dashboard app UI: components and blocks built on Base UI, distributed as a shadcn registry (`@kosmos`), with a Fumadocs docs site.
+This repo is one Next.js app that holds the landing page, the docs, the preview routes and the registry.
+
+## Where things live
+
+- **Style**: load the `kosmos-style` skill before you write or change any component or block. It is the single source of truth for values and rules and wins every conflict with a review skill.
+- **Terms**: `GLOSSARY.md`. Use its terms and avoid the ones it lists under _Avoid_.
+- **Why**: `docs/adr/`. Read the relevant ADR before reversing a decision; record new hard-to-reverse decisions there.
+- **Plans**: `docs/work/` holds the open spec, tickets and handoffs. Delete each one in the PR that finishes it. Research that names products stays in the gitignored `.scratch/`.
+
+## Code
+
+- Code explains itself through names and structure. Add a comment only when a line cannot be understood without one, such as a browser or library workaround.
+
+## Git
+
+- Commits: `type(scope): description`, one line, imperative, no body, no footer, no `Co-Authored-By`.
+- Types: `feat`, `fix`, `refactor`, `style`, `docs`, `test`, `chore`. Scope is the component or area (`button`, `docs`, `registry`).
+- Branches: `main` is production, `dev` is integration. Short-lived `feature/`, `fix/`, `refactor/`, `docs/` branches start from `dev`, and their PRs go into `dev`, never straight into `main`.
+- PRs are for code. A change that touches only Markdown under `docs/work/` (spec, tickets, handoffs) is committed straight to `dev`. Any other Markdown (ADRs, skills, `GLOSSARY.md`, `AGENTS.md`) goes in the PR of the code it belongs to, and gets its own PR only when it stands alone and changes a rule.
+- PRs: `gh pr create --base dev`, with the body written by the `pr` skill. Squash merge only; the PR title becomes the commit on `dev`, so write it in commit format.
+- Releases: the maintainer opens a PR from `dev` into `main` and merges it with a merge commit, so `main` keeps the commits from `dev`.
+
+## Gotchas
+
+- `style` means code formatting only. A visual change to a component is `feat` or `fix`.
+- Components and blocks may start from MIT-licensed code (shadcn/ui's Base UI variant first) and are restyled to the Kosmos style; each keeps its source's copyright line in a third-party notice (ADR 0010).
+- Pro blocks and templates never enter this repo (ADR 0003).

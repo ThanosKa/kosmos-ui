@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dates",
+  "type": "registry:lib",
+  "title": "Dates",
+  "description": "The day counting behind Calendar and Date picker. It covers month grids, keyboard moves, range picks, quick ranges such as the last 7 days, and short date labels.",
+  "files": [
+    {
+      "path": "registry/kosmos/lib/dates.ts",
+      "type": "registry:lib"
+    }
+  ]
+}

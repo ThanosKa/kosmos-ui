@@ -1,0 +1,10 @@
+extends: existence
+message: "'%s' is vague. Cut it or say what you mean."
+ignorecase: true
+level: warning
+tokens:
+  - just
+  - fully
+  - basically
+  - simple
+  - straightforward

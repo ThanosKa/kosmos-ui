@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "detail-drawer",
+  "type": "registry:block",
+  "title": "Detail drawer",
+  "description": "A side panel for one record, a sample project. It has editable status and plan, a 30 day usage trend, notes, activity, and a more-actions menu.",
+  "dependencies": [
+    "lucide-react@^1.50.0"
+  ],
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/avatar",
+    "@kosmos/badge",
+    "@kosmos/button",
+    "@kosmos/chart",
+    "@kosmos/drawer",
+    "@kosmos/dropdown-menu",
+    "@kosmos/meter",
+    "@kosmos/scroll-area",
+    "@kosmos/select",
+    "@kosmos/separator",
+    "@kosmos/skeleton",
+    "@kosmos/textarea"
+  ],
+  "categories": ["detail-drawer"],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/detail-drawer/detail-drawer.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+---
+title: Showcase
+description: A live product in a browser-style frame, with a tab for each screen.
+---
+
+## Installation
+
+<ComponentInstall name="showcase" />
+
+The block brings [Tabs](/docs/components/tabs), [Sidebar](/docs/components/sidebar), [App sidebar](/docs/blocks/app-sidebar), [Stats overview](/docs/blocks/stats-overview), [Auth forms](/docs/blocks/auth), [Feature section](/docs/blocks/feature-section) and [Settings](/docs/blocks/settings) with it, and lands in `components/showcase.tsx`.
+
+## Usage
+
+```tsx
+import { Showcase } from '@/components/showcase';
+
+export function ProductTour() {
+  return <Showcase />;
+}
+```
+
+To show your own product, pass `screens`: each has an `id`, a tab `label`, an `address` for the browser bar and its live `content`. The four sample screens at the top of the file are sample data.
+
+```tsx
+<Showcase
+  screens={[
+    { id: 'overview', label: 'Overview', address: 'acme.example/overview', content: <Overview /> },
+    { id: 'billing', label: 'Billing', address: 'acme.example/billing', content: <Billing /> },
+  ]}
+/>
+```
+
+## What it does
+
+- **Frame**: a card with a browser bar, three dots and the address of the screen, around a panel of a fixed height. A screen taller than the panel scrolls inside it, so the page below never moves when you switch tabs.
+- **Tabs**: one tab for each screen, in [Tabs](/docs/components/tabs). The arrow keys move between them. The first screen is in the markup, so it shows before JavaScript loads.
+- **Live**: every screen is a real block with its own state, in the preset and theme of your page.
+- **Motion**: a screen cross-fades in as you switch tab. Nothing else moves.
+- **Width**: the panel grows from 544px to 640px tall at 768px of container width.
+
+## API
+
+### Showcase
+
+Takes every `<div>` prop, plus:
+
+<TypeTable
+  type={{
+    screens: { description: 'The screens, one tab each, in order. Each has an `id`, a tab `label`, an `address` and its live `content`.', type: 'ShowcaseScreen[]' },
+    label: { description: 'Names the row of tabs for screen readers.', type: 'string', default: "'Screens'" },
+    defaultScreen: { description: 'The `id` of the screen shown first.', type: 'string' },
+  }}
+/>
