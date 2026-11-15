@@ -98,5 +98,5 @@ Both come from the one existing generator in `lib/presets`, so a new preset or a
 ## Further Notes
 
 - The format's reference repo is `google-labs-code/design.md`; its skeleton and the "Paws and Paths" example were the model. Section aliases (Brand & Style, Layout & Spacing, Elevation) exist, but the canonical names are used.
-- About 150 preset choices exist (six presets, accent on and off where a preset has one, the radii and the three sizes), which is why the files come from the generator and not from hand.
+- 165 preset choices exist (six presets, accent on and off where a preset has one, five radii and three sizes), which is why the files come from the generator and not from hand.
 - A sample run of the linter on Kosmos token names and `oklch` values accepted both, reported a broken `{colors.…}` reference as an error, flagged a 1.04:1 pair as a contrast warning, and flagged unused colors as `orphaned-tokens` warnings.
