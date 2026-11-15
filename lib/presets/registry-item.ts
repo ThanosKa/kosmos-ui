@@ -18,6 +18,11 @@ export function presetItemName(choice: PresetChoice): string {
   ].join('');
 }
 
+/** Where a choice's DESIGN.md is served, beside its registry item. */
+export function presetDesignMdPath(choice: PresetChoice): string {
+  return `/r/${presetItemName(choice)}/DESIGN.md`;
+}
+
 /**
  * A choice as a shadcn `registry:theme` item: the palette, radius and style it sets over the Kosmos tokens, the same
  * values `presetCss` writes. `shadcn add` installs the tokens first, so the preset's values win.

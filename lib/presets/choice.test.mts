@@ -1,7 +1,7 @@
 // Usage: node --test lib/presets/choice.test.mts
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { parseKosmosTokens } from '../tokens.ts';
+import { parseKosmosTokens, readKosmosTokens } from '../tokens.ts';
 import { chosenPreset, choiceFromParams, choiceParams, defaultChoice, presetChoices, presetCss, presetDesignMd, presetItemName, presetRegistryItem, presets, presetSizes } from './index.ts';
 
 const byId = (id: string) => presets.find((preset) => preset.id === id)!;
@@ -85,11 +85,17 @@ test('each choice has its own registry item, named after the preset when it ship
  * The capitalised words a DESIGN.md may use besides the first word of a sentence: the presets' names and the tools a
  * Kosmos project uses. Any other could be the name of a product.
  */
-const designMdNames = new Set([...presets.map((preset) => preset.name), 'Kosmos', 'UI', 'CSS', 'Tailwind', 'DESIGN', 'MD', 'Meter']);
+const designMdNames = new Set([
+  ...presets.map((preset) => preset.name),
+  'Kosmos', 'UI', 'CSS', 'Tailwind', 'DESIGN', 'MD', 'Meter', 'Geist', 'Sans', 'Mono', 'Compact', 'Comfortable',
+]);
 
 test('a DESIGN.md names no product', () => {
+  const tokens = readKosmosTokens();
   for (const choice of presetChoices()) {
-    const prose = presetDesignMd(chosenPreset(choice)).replace(/`[^`]*`/g, '');
+    const prose = presetDesignMd(chosenPreset(choice), tokens)
+      .replace(/`[^`]*`/g, '')
+      .replace(/^#+ .*$/gm, '');
     const midSentence = [...prose.matchAll(/(?<![.:#|-] |^|\n|")\b[A-Z]\w*/g)].map(([word]) => word);
     assert.deepEqual([...new Set(midSentence.filter((word) => !designMdNames.has(word)))], [], presetItemName(choice));
   }

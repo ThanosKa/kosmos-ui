@@ -1,10 +1,11 @@
 'use client';
 
 import { Code, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { CodeBlock, Pre } from '@/components/docs/code-block';
 import { PackageManagerTabs } from '@/components/docs/docs-tabs';
 import { LiveHighlightedCode } from '@/components/docs/live-highlighted-code';
-import { chosenPreset, presetCss, presetDesignMd, presetItemName, type PresetChoice } from '@/lib/presets';
+import { chosenPreset, presetCss, presetDesignMdPath, presetItemName, type PresetChoice } from '@/lib/presets';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/registry/kosmos/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
@@ -38,6 +39,34 @@ function ChosenCode({ code, lang, title, embedded, copy }: ChosenCodeProps) {
   );
 }
 
+/** The DESIGN.md the build wrote for this choice, read from its address, so what the dialog shows is the file it gives. */
+function DesignMdPanel({ choice }: { choice: PresetChoice }) {
+  const path = presetDesignMdPath(choice);
+  const [file, setFile] = useState<{ path: string; text: string }>();
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(path, { signal: controller.signal })
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error(`${path}: ${response.status}`))))
+      .then((text) => setFile({ path, text }))
+      .catch((error: Error) => {
+        if (error.name !== 'AbortError') setFile({ path, text: `Could not load ${path}.` });
+      });
+    return () => controller.abort();
+  }, [path]);
+  return (
+    <>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-small text-muted-foreground">Save it as DESIGN.md at the root of your project, so an agent builds new screens in this preset.</p>
+        <Button variant="secondary" nativeButton={false} render={<a href={path} download="DESIGN.md" />}>
+          <Download aria-hidden data-icon="inline-start" />
+          Download
+        </Button>
+      </div>
+      <ChosenCode title="DESIGN.md" lang="md" code={file?.path === path ? file.text : ''} />
+    </>
+  );
+}
+
 type PresetCodeDialogProps = {
   choice: PresetChoice;
   /** Each package manager's `shadcn` runner, such as `pnpm dlx shadcn@latest`. */
@@ -46,12 +75,11 @@ type PresetCodeDialogProps = {
   registryAdd: string;
 };
 
-/** "Get code": the chosen preset as CSS, as a registry command and as a DESIGN.md, each with a copy button, and the DESIGN.md as a download. */
+/** "Get code": the chosen preset as CSS, as a registry command and as a DESIGN.md, each with a copy button, and the built DESIGN.md as a download. */
 export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDialogProps) {
   const preset = chosenPreset(choice);
   const item = presetItemName(choice);
   const managers = Object.keys(runners);
-  const designMd = presetDesignMd(preset);
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="primary" />}>
@@ -88,18 +116,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
               />
             </TabsContent>
             <TabsContent value="design" className="flex flex-col gap-3">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-small text-muted-foreground">Save it as DESIGN.md at the root of your project, so an agent builds new screens in this preset.</p>
-                <Button
-                  variant="secondary"
-                  nativeButton={false}
-                  render={<a href={`data:text/markdown;charset=utf-8,${encodeURIComponent(designMd)}`} download="DESIGN.md" />}
-                >
-                  <Download aria-hidden data-icon="inline-start" />
-                  Download
-                </Button>
-              </div>
-              <ChosenCode title="DESIGN.md" lang="md" code={designMd} />
+              <DesignMdPanel choice={choice} />
             </TabsContent>
           </Tabs>
         </DialogBody>

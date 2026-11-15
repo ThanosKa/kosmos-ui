@@ -38,6 +38,14 @@ _Avoid_: category (στο shadcn είναι άλλο πεδίο)
 Η δημόσια σελίδα όπου ο επισκέπτης διαλέγει **preset**, βλέπει σε tabs τα components, το dashboard, φόρμες, overlays ανοιχτά και όλα τα **tokens** να αλλάζουν live, και παίρνει τον κώδικά του (CSS, εντολή registry, DESIGN.md).
 _Avoid_: theme builder, customizer, playground
 
+**Preset DESIGN.md**:
+Το DESIGN.md μιας επιλογής της **Presets page** (preset, accent, radius, size), στο format DESIGN.md της Google Labs: ένα YAML block με τα **tokens** σε light και `-dark`, και μετά οι ενότητες του format. Το γράφει το `pnpm registry:build` δίπλα στο registry item της επιλογής (`/r/preset-soft/DESIGN.md`), και αυτό δείχνει και κατεβάζει το «Get code». Δεν έχει ποτέ το **brand color**.
+_Avoid_: theme file, style guide
+
+**Site DESIGN.md**:
+Το `DESIGN.md` στη ρίζα του repo: το design του ίδιου του Kosmos UI, δηλαδή το default preset μαζί με το **brand color** και το πού εμφανίζεται. Το γράφει το build από τον ίδιο generator με το **preset DESIGN.md**, ποτέ με το χέρι. Για τους agents μέσα στο repo, το skill `kosmos-style` μένει η πηγή της αλήθειας.
+_Avoid_: README του design, brand book
+
 ### Στυλ
 
 **Style**:

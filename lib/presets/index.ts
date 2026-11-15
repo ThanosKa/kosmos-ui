@@ -16,8 +16,8 @@ export {
   type PresetChoice,
   type PresetSize,
 } from './choice.ts';
-export { presetDesignMd } from './design-md.ts';
-export { presetItemName, presetRegistryItem } from './registry-item.ts';
+export { presetDesignMd, siteDesignMd } from './design-md.ts';
+export { presetDesignMdPath, presetItemName, presetRegistryItem } from './registry-item.ts';
 export type { Accent, CssRules, Mode, Palette, PaletteToken, Preset, PresetStyle } from './palette.ts';
 
 const declarations = (values: Record<string, string>) =>
