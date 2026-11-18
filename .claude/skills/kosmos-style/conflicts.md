@@ -10,12 +10,12 @@ Reviewers: `emil-design-eng`, `review-animations`, `animate`, `break-ui` and `mo
 | --- | --- | --- | --- |
 | Press scale | Emil `0.97` (range 0.95–0.98) | `0.96`, 150ms, `power3-out`, every enabled standalone Button, its link form included | Inside Emil's range |
 | Easing curves | Emil: his own `--ease-out` `(0.23, 1, 0.32, 1)`; `ease` for hover | `power3-out` `(0.25, 1, 0.5, 1)` for enter, exit, hover and icon swaps; `smooth-in-out` for size and position | One curve family shared by Tailwind and Motion |
-| Exit curve | Emil: never ease-in | `power3-out`, same as enter | Agrees with the reviewers; the studied overlay exits used `power3-in`, which Kosmos drops |
+| Exit curve | Emil: never ease-in | `power3-out`, same as enter | Agrees with the reviewers; Kosmos uses no `power3-in` |
 | Accordion close | Emil: exits shorter than enters, as the Kosmos exit row says | Accordion height and chevron close in 300ms on `smooth-in-out`, as they open | A swap moves two heights at once; a faster close makes the total dip and the page bounce. CSS cannot tell a swap from a lone close, so every close takes the slow timing |
-| Overlay start scale | Emil: from 0.9–0.97 | Popover/menu `0.97`, dialog `0.95` | Inside Emil's range; matches the studied overlays |
+| Overlay start scale | Emil: from 0.9–0.97 | Popover/menu `0.97`, dialog `0.95` | Inside Emil's range |
 | Spring bounce | Emil: 0.1–0.3 when used | `bounce: 0`, `duration: 0.3` | Calm motion |
 | Stagger | Emil: 30–80ms between items | No stagger in components except Text reveal: 120ms between words, the spread capped at 900ms. Landing: 100ms between the hero's parts, from a section's title to its content, and between pricing plans | Slower steps so a title or a section reads in order, one chunk at a time |
-| Durations | Emil: UI under 300ms, drawers 200–500ms | Fixed set 100/150/200/250/300ms, drawer 300ms | The studied drawer ran 350ms; 300ms satisfies both rules |
+| Durations | Emil: UI under 300ms, drawers 200–500ms | Fixed set 100/150/200/250/300ms, drawer 300ms | 300ms satisfies both rules |
 | Hover gating | Emil: `(hover: hover) and (pointer: fine)` | Tailwind 4 `hover:` as is (`(hover: hover)`) | One mechanism |
 
 ## Surfaces and color
@@ -29,9 +29,9 @@ Reviewers: `emil-design-eng`, `review-animations`, `animate`, `break-ui` and `mo
 
 ## Accessibility floor
 
-The studied products go below the contrast floor in places. Kosmos keeps their structure and stops at the floor: 4.5:1 for text, 3:1 for large text and for non-text UI.
+Kosmos stops at the contrast floor: 4.5:1 for text, 3:1 for large text and for non-text UI.
 
-| Point | Studied value | Kosmos value (wins) | Why |
+| Point | Value below the floor | Kosmos value (wins) | Why |
 | --- | --- | --- | --- |
 | A third, fainter grey for meta, counts, placeholders and table headers | Light about 2.6:1 on white; dark about 3:1 | `muted-foreground` (5.0–5.8:1 light, 5.5–6.9:1 dark) | Text floor. Light `muted-foreground` already sits near 4.5:1, so no fainter text role fits between it and the floor |
 | Sidebar group labels | Dark about 1.9:1 | `muted-foreground`, uppercase caption | Same floor; the uppercase eyebrow keeps the label quieter than the items through size and case, not contrast |

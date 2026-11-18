@@ -8,7 +8,7 @@ The maintainer compared the presets with their prototypes and found that color a
 
 Under every preset, buttons and fields keep the Kosmos look. That covers their shape, the bevel and hover of the primary button, the 0.96 press, the control and field shadows, and the focus ring. A style never sets `shadow-control`, `shadow-primary`, `shadow-primary-hover`, `primary-hover` or `shadow-field`. Its rules reach a button or a field only to change its type (font, weight, tracking, case), as in a mono table head.
 
-The maintainer compared the light themes with the Kosmos style and the Kargul reference apps. The presets' pill buttons, flat or glowing primaries and missing press broke both. A button is also the part a project copies most, so it should look the same whichever preset the project took. Fields follow buttons, so a toolbar never pairs a pill field with a 10px button.
+The maintainer compared the light themes with the Kosmos style. The presets' pill buttons, flat or glowing primaries and missing press broke it. A button is also the part a project copies most, so it should look the same whichever preset the project took. Fields follow buttons, so a toolbar never pairs a pill field with a 10px button.
 
 Tabs joined them later. Soft drew a tinted pill under the active tab, and Iris a 1px line and a raised view switcher. Console and Night drew the line in another color, Night with a glow. Side by side on the Presets page, the same tab row read as a different control under each preset. Under every preset a tab is now the Kosmos one: a 2px `primary` line under the active tab, in the preset's accent. A view switcher built from tabs keeps its Kosmos track. No rule reaches `tabs-list`, `tabs-trigger` or `tabs-indicator` except for type.
 
