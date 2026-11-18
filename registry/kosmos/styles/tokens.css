@@ -337,8 +337,8 @@
  * Banner and a Callout take the fill, -border and -foreground; links in them
  * take foreground. -solid
  * colors the logo marquee's sample marks. The
- * fill, -foreground and -dot are OKLCH values from the badge palette study
- * ("one subtle family"); -border and -solid are derived in the same
+ * fill, -foreground and -dot are OKLCH values of one subtle family;
+ * -border and -solid are derived in the same
  * style (see tokens.md). No tint reads a chart series.
  */
 @theme inline {
