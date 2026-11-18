@@ -4,7 +4,7 @@ import { AppWindow } from 'lucide-react';
 import { useEffect, useRef, type ComponentType, type SVGProps } from 'react';
 import { KosmosMark } from '@/components/site/kosmos-mark';
 import { BaseUiIcon, ReactIcon, TailwindIcon } from '@/components/site/brand-icons';
-import { usePrefersReducedMotion } from './stage';
+import { usePrefersReducedMotion, useStageStopped } from './stage';
 
 // The drawing sits in a 400 by 250 box (8:5, like the stage), and the nodes are placed in percent of the same box.
 type Node = { x: number; y: number; label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> };
@@ -41,14 +41,19 @@ function BeamNode({ node }: { node: Node }) {
 export function IntegrationBeam() {
   const svg = useRef<SVGSVGElement>(null);
   const reduced = usePrefersReducedMotion();
+  const stopped = useStageStopped();
 
   useEffect(() => {
     const element = svg.current;
     if (!element || reduced) return;
+    if (stopped) {
+      element.pauseAnimations();
+      return;
+    }
     const view = new IntersectionObserver(([entry]) => (entry.isIntersecting ? element.unpauseAnimations() : element.pauseAnimations()));
     view.observe(element);
     return () => view.disconnect();
-  }, [reduced]);
+  }, [reduced, stopped]);
 
   return (
     <div className="relative aspect-[8/5] w-full">

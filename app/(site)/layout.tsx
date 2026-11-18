@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       <head>
         <SitePresetScript />
       </head>
-      <body className="flex flex-col min-h-screen selection:bg-brand-selection selection:text-foreground">
+      <body className="flex flex-col min-h-svh selection:bg-brand-selection selection:text-foreground">
         <SitePresetSync />
         <SiteProvider searchLabels={getSearchLabels()}>{children}</SiteProvider>
       </body>

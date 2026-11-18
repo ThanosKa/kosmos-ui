@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
 
@@ -15,6 +15,11 @@ export function usePrefersReducedMotion() {
     () => true,
   );
 }
+
+/** Whether the stages inside stop ticking: the gallery is paused, or a pointer or focus is on their card. */
+const stoppedContext = createContext(false);
+export const StageStopped = stoppedContext.Provider;
+export const useStageStopped = () => useContext(stoppedContext);
 
 type StageProps = {
   /** The width the preview lays out at, in pixels; the stage scales it to the card. */
@@ -33,6 +38,7 @@ export function Stage({ base = 360, interval = 1000, staticTick = 3, children }:
   const [inView, setInView] = useState(false);
   const [tick, setTick] = useState(0);
   const reduced = usePrefersReducedMotion();
+  const stopped = useContext(stoppedContext);
 
   useEffect(() => {
     const element = ref.current;
@@ -48,13 +54,13 @@ export function Stage({ base = 360, interval = 1000, staticTick = 3, children }:
   }, [base]);
 
   useEffect(() => {
-    if (!inView || reduced) return;
+    if (!inView || reduced || stopped) return;
     const id = setInterval(() => setTick((current) => current + 1), interval);
     return () => clearInterval(id);
-  }, [inView, reduced, interval]);
+  }, [inView, reduced, stopped, interval]);
 
   return (
-    <div ref={ref} className="relative aspect-[8/5] overflow-hidden rounded-xl bg-background outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10">
+    <div ref={ref} className="relative aspect-[8/5] overflow-hidden rounded-[calc(var(--radius-2xl)-4px)] bg-background outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10">
       <div
         inert
         style={{ '--scale': scale, '--base': `${base}px`, '--base-h': `${base * 0.625}px` } as CSSProperties}

@@ -56,7 +56,7 @@ export function PresetStage({ stageClassName, children, ...card }: PresetStagePr
       <div
         ref={setContainer}
         className={cn(
-          'relative h-80 w-full overflow-hidden rounded-xl border border-transparent bg-background p-3 shadow-inset [transform:translateZ(0)]',
+          'relative h-80 w-full overflow-hidden rounded-[calc(var(--radius-2xl)-4px)] border border-transparent bg-background p-3 shadow-inset [transform:translateZ(0)]',
           stageClassName,
         )}
       >

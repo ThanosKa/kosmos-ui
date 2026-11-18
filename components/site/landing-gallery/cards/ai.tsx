@@ -41,7 +41,7 @@ export const promptComposerCard: GalleryItem = {
         return (
           <div className={frame}>
             <AssistantMessage role="user" className="opacity-100">
-              Summarise last week&apos;s funnel
+              Summarize last week’s funnel
             </AssistantMessage>
             <PromptComposer
               value={typed(prompt, t)}

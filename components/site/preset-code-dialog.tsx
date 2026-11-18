@@ -49,7 +49,7 @@ function DesignMdPanel({ choice }: { choice: PresetChoice }) {
       .then((response) => (response.ok ? response.text() : Promise.reject(new Error(`${path}: ${response.status}`))))
       .then((text) => setFile({ path, text }))
       .catch((error: Error) => {
-        if (error.name !== 'AbortError') setFile({ path, text: `Could not load ${path}.` });
+        if (error.name !== 'AbortError') setFile({ path, text: `Could not load ${path}. Use Download above, or close this dialog and open it again.` });
       });
     return () => controller.abort();
   }, [path]);

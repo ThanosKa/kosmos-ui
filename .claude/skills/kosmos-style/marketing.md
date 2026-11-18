@@ -32,6 +32,7 @@ Marketing blocks and the site's marketing sections are the only text above 14px:
 
 ## Motion
 
+- The landing hero enters in sections: the title, the line and the actions each rise 8px out of an 8px blur, then the product frame rises 40px with its glow, each 100ms after the last, all on `duration-reveal` (500ms) and `ease-power3-out` (`components/site/landing-motion.css`). The title is one piece, never split per word. Under reduced motion each part only fades in.
 - Text reveal brings a title in word by word: each word takes `duration-reveal` (500ms) on `ease-power3-out`, 120ms after the one before, with the spread capped at 900ms. Under reduced motion it only fades in.
 - Landing sections rise once as they scroll into view: the title, then 100ms later the content, or each pricing plan 100ms after the last (`components/site/landing-motion.tsx`).
 - The drift (`@/registry/kosmos/lib/drift`) moves the Logo marquee and the Testimonials wall at a constant speed (`speed`, pixels per second), one animation frame at a time, as a `transform` on a track with `will-change-transform`.

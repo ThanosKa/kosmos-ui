@@ -105,7 +105,7 @@ export function ComponentInstall({ name }: { name: string }) {
                   </InstallStep>
                 ),
               ])}
-              <InstallStep title="Copy the component.">
+              <InstallStep title={item.type === 'registry:block' ? 'Copy the block.' : 'Copy the component.'}>
                 <ComponentSource name={name} item={item} lineNumbers />
               </InstallStep>
             </Steps>

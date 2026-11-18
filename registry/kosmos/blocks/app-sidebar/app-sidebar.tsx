@@ -115,6 +115,8 @@ function useIsMac() {
 }
 
 type AppSidebarContentProps = {
+  /** The level of the saved views heading; pass a deeper one when the sidebar sits under a page's own `h2`. */
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
   /** The main pages, at the top. An item with `items` opens a submenu. */
   navMain?: NavItem[];
   /** The saved views, under their own heading. */
@@ -220,6 +222,7 @@ function NavGroup({
  * own to put the same content in another surface, such as your own drawer.
  */
 function AppSidebarContent({
+  headingLevel = 2,
   navMain = sampleNavMain,
   navViews = sampleNavViews,
   navFooter = sampleNavFooter,
@@ -237,6 +240,7 @@ function AppSidebarContent({
   userMenu,
 }: AppSidebarContentProps) {
   const isMac = useIsMac();
+  const Heading = `h${headingLevel}` as const;
 
   return (
     <>
@@ -281,7 +285,7 @@ function AppSidebarContent({
           <NavGroup items={navMain} activeItem={activeItem} onNavigate={onNavigate} />
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel render={<h2 />}>Saved views</SidebarGroupLabel>
+          <SidebarGroupLabel render={<Heading />}>Saved views</SidebarGroupLabel>
           <NavGroup items={navViews} activeItem={activeItem} onNavigate={onNavigate} />
         </SidebarGroup>
       </SidebarContent>
@@ -321,6 +325,7 @@ type AppSidebarProps = SidebarProps & AppSidebarContentProps;
  * `SidebarResizeHandle` and `SidebarInset`.
  */
 function AppSidebar({
+  headingLevel,
   navMain,
   navViews,
   navFooter,
@@ -343,6 +348,7 @@ function AppSidebar({
   return (
     <Sidebar label={label} collapsible={collapsible} {...props}>
       <AppSidebarContent
+        headingLevel={headingLevel}
         navMain={navMain}
         navViews={navViews}
         navFooter={navFooter}

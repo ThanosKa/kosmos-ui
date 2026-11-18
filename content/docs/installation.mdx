@@ -22,7 +22,7 @@ Not sure which you have? Open `components.json`. A `style` that starts with `bas
 
 <ShadcnCommand args="init -t next -b base" />
 
-The CLI asks for a project name and a preset. Any preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. The preset's fonts stay. [Fonts](#fonts) below shows how to switch to Geist. The app lands in a new folder with that name, so `cd` into it before you run the next command.
+The CLI asks for a project name and a shadcn preset. Any shadcn preset works: the Kosmos tokens replace its colors, and each Kosmos component installs the icon package it uses. That preset's fonts stay. [Fonts](#fonts) below shows how to switch to Geist. The app lands in a new folder with that name, so `cd` into it before you run the next command.
 
 </Step>
 <Step>
@@ -90,7 +90,7 @@ export function SaveBar() {
 
 ## Fonts
 
-Kosmos targets Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
+Kosmos targets Geist and Geist Mono. The tokens don't load fonts: your app keeps the fonts its shadcn preset chose, and every Kosmos component uses them through `font-sans` and `font-mono`. To match these docs, load both fonts with `next/font` in your root layout:
 
 ```tsx title="app/layout.tsx"
 import { Geist, Geist_Mono } from 'next/font/google';

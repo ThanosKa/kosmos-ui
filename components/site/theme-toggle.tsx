@@ -24,8 +24,8 @@ export function ThemeToggle() {
       onClick={() => setTheme(dark ? 'light' : 'dark')}
       className="relative"
     >
-      <Sun aria-hidden className="transition-[opacity] motion-safe:duration-base dark:opacity-0" />
-      <Moon aria-hidden className="absolute opacity-0 transition-[opacity] motion-safe:duration-base dark:opacity-100" />
+      <Sun aria-hidden className="dark:opacity-0" />
+      <Moon aria-hidden className="absolute opacity-0 dark:opacity-100" />
     </Button>
   );
 }

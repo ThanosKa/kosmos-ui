@@ -1,17 +1,27 @@
 'use client';
 
+import { Pause, Play } from 'lucide-react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Button } from '@/registry/kosmos/ui/button';
+import { StageStopped } from './stage';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
 export type GalleryItem = { id: string; title: string; description: string; href: string; stage: ReactNode };
-export type GalleryTab = { id: string; label: string; items: GalleryItem[]; href: string };
+export type GalleryTab = { id: string; label: string; items: GalleryItem[]; href: string; linkLabel: string };
 
-function GalleryCard({ item }: { item: GalleryItem }) {
+/** A card whose preview stops while a pointer is on it or focus is inside it, and while the gallery is paused. */
+function GalleryCard({ item, paused }: { item: GalleryItem; paused: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
   return (
-    <div className="group relative flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-transparent bg-card p-1 pb-3.5 text-card-foreground shadow-card">
-      {item.stage}
+    <div
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      className="group relative flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-transparent bg-card p-1 pb-3.5 text-card-foreground shadow-card">
+      <StageStopped value={paused || hovered || focused}>{item.stage}</StageStopped>
       <div className="flex min-w-0 flex-col gap-0.5 px-3">
         <Link
           href={item.href}
@@ -26,7 +36,12 @@ function GalleryCard({ item }: { item: GalleryItem }) {
   );
 }
 
+/**
+ * The landing's gallery: a tab per kind of part, each a grid of cards whose previews play while on screen. The pause
+ * button stops every preview (WCAG 2.2.2); under reduced motion nothing plays, so it is hidden.
+ */
 export function Gallery({ tabs }: { tabs: GalleryTab[] }) {
+  const [paused, setPaused] = useState(false);
   return (
     <Tabs defaultValue={tabs[0].id} className="items-center gap-8">
       <TabsList>
@@ -41,13 +56,24 @@ export function Gallery({ tabs }: { tabs: GalleryTab[] }) {
           <ul className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tab.items.map((item) => (
               <li key={item.id} className="flex min-w-0">
-                <GalleryCard item={item} />
+                <GalleryCard item={item} paused={paused} />
               </li>
             ))}
           </ul>
-          <Button variant="secondary" href={tab.href}>
-            Explore all {tab.label.toLowerCase()}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" href={tab.href}>
+              {tab.linkLabel}
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              aria-label={paused ? 'Play the previews' : 'Pause the previews'}
+              onClick={() => setPaused((value) => !value)}
+              className="motion-reduce:hidden"
+            >
+              {paused ? <Play aria-hidden /> : <Pause aria-hidden />}
+            </Button>
+          </div>
         </TabsContent>
       ))}
     </Tabs>
