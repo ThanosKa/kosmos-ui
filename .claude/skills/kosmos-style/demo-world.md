@@ -6,7 +6,7 @@ Every block's sample data, review preview, demo and docs page uses this world an
 
 A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
 
-Never use, in sample data or copy: accounts, owners, health, CRM, pipeline, deals, renewals, churn, companies as customers, Northwind, or the names Maya Chen, Jonas Weber and Priya Raman. A person is never a project's "owner"; projects are filtered by plan, platform and status. The one exception is the CRM dashboard, which is about deals: it uses pipeline, deals and stages as written under Sales below, and nothing else on the list.
+Every person, company and domain comes from this file: the Acme team, the sales team, the customers in Testimonials and the projects. Acme's customers are projects, filtered by plan, platform and status, and a person works on a project rather than owning it. Pipeline, deals and stages belong to the CRM dashboard alone, as written under Sales below.
 
 ## Workspace, domains, dates
 

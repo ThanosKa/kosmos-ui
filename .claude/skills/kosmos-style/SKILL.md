@@ -15,7 +15,7 @@ Read the file that matches the work before you start:
 - A marketing block or page (Hero, Logo marquee, Bento, Feature section, Pricing, FAQ, CTA, Testimonials, the landing page): [marketing.md](marketing.md).
 - Sample data in a preview, demo or docs page: [demo-world.md](demo-world.md).
 - A chart: [charts.md](charts.md).
-- Changing the Button component itself: [building.md](building.md), Changing Button.
+- Changing the Button component or a text field itself: [building.md](building.md), Changing Button and Changing a text field.
 
 ## Tokens only
 
@@ -209,7 +209,7 @@ Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-m
 
 ### Press scale
 
-An enabled standalone button scales to `0.96` while pressed, with `scale` in its transition list (150ms, `power3-out`): `motion-safe:not-disabled:not-data-disabled:active:scale-96`. Lint enforces that exact string, and each part earns its place: `not-disabled` (not `enabled`) also matches a Button rendered as a link, `not-data-disabled` covers Base UI's `focusableWhenDisabled`, and `motion-safe:` beats a `motion-reduce:` reset on specificity.
+An enabled standalone button scales to `0.96` while pressed, with `scale` in its transition list (150ms, `power3-out`): `motion-safe:not-disabled:not-data-disabled:active:scale-96`. Lint enforces that exact string ([building.md](building.md), Changing Button, says why each part is there).
 
 - A link styled as a Button presses like one: people cannot tell the two apart.
 - Buttons in dense, repeated rows (menu items, nav items, table row actions, segmented items, tabs) change background only: a `Button` there takes `variant="item"`.
@@ -218,11 +218,7 @@ An enabled standalone button scales to `0.96` while pressed, with `scale` in its
 
 Every focusable element shows `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`. An outline keeps the surface's shadow stack intact and survives forced-colors mode, and the 2px offset leaves a page-color gap, so an ink outline still reads around an ink primary button. `ring` reaches 3:1 against `background`, `card`, `popover`, `secondary` and `muted`, and `sidebar-ring` against the sidebar, in both modes and every preset.
 
-Text fields (Input, Textarea, Select trigger) light up their own edge instead: `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-transparent focus-visible:ring-offset-1 focus-visible:ring-offset-ring focus-visible:ring-3 focus-visible:ring-ring/20`.
-
-- The 1px line is a ring offset and the 3px halo a ring, so both are box-shadow and fade together on the field's `transition-[box-shadow]`.
-- The transparent outline paints only in forced-colors mode, which drops box-shadow, so the focused field still shows its edge there.
-- An invalid field keeps its meaning while focused: line and halo turn `destructive` (`data-invalid:focus-visible:ring-offset-destructive data-invalid:focus-visible:ring-3 data-invalid:focus-visible:ring-destructive/20`, with `aria-invalid:` twins). The `ring-3` repeats, or the invalid `ring-1` wins.
+Text fields (Input, Textarea, Select trigger) light up their own edge instead, a 1px line and a 3px halo: [building.md](building.md), Changing a text field.
 
 Where an offset outline would be clipped or have nothing to surround:
 
