@@ -99,7 +99,10 @@ export function DocsTocDisclosure({ toc, className }: { toc: TableOfContents; cl
     setOpen([]);
     setTimeout(() => {
       history.pushState(null, '', href);
-      document.getElementById(decodeURIComponent(href.slice(1)))?.scrollIntoView();
+      const heading = document.getElementById(decodeURIComponent(href.slice(1)));
+      heading?.scrollIntoView();
+      // The panel that held focus has closed, so focus moves to the heading's own link and the next Tab starts there.
+      heading?.querySelector('a')?.focus({ preventScroll: true });
     }, jumpDelay);
   };
 

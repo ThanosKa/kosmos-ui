@@ -7,7 +7,7 @@ type Target = { element: HTMLElement; delay: number };
 /** The step between a section's title and its parts, and between sibling parts, in milliseconds. */
 const step = 100;
 
-/** The parts of each section that rise on their own: the title, then the content, or the rows or plans inside it. */
+/** The parts of each section that rise on their own: the title, then the content, or the plans inside it. */
 function collectTargets(): Target[] {
   const targets: Target[] = [];
   document.querySelectorAll<HTMLElement>('[data-landing-section]').forEach((section) => {
@@ -17,9 +17,8 @@ function collectTargets(): Target[] {
     const content = section.querySelector<HTMLElement>('[data-landing-content]');
     if (title) targets.push({ element: title, delay: 0 });
     const wait = title ? step : 0;
-    const parts = id === 'features' ? '[data-slot="feature-rows-item"]' : id === 'pricing' ? '[data-slot="pricing-plan"]' : null;
-    const items = parts ? [...section.querySelectorAll<HTMLElement>(parts)] : [];
-    if (items.length) items.forEach((element, index) => targets.push({ element, delay: id === 'pricing' ? wait + index * step : 0 }));
+    const plans = id === 'pricing' ? [...section.querySelectorAll<HTMLElement>('[data-slot="pricing-plan"]')] : [];
+    if (plans.length) plans.forEach((element, index) => targets.push({ element, delay: wait + index * step }));
     else if (content) targets.push({ element: content, delay: wait });
   });
   return targets;

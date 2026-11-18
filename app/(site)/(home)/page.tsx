@@ -14,7 +14,6 @@ import { appDescription, appName, docsRoute, siteOpenGraph } from '@/lib/shared'
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { HeroProduct } from '@/registry/kosmos/blocks/hero/hero-product';
 import { buttonVariants } from '@/registry/kosmos/ui/button';
-import { TextReveal } from '@/registry/kosmos/ui/text-reveal';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
 
@@ -35,7 +34,7 @@ export default function HomePage() {
       <main className="flex w-full flex-1 flex-col">
         <LandingSection id="hero" space="hero" column="wide" className="landing-hero">
           <HeroProduct
-            title={<TextReveal>Dashboard UI with the details already done</TextReveal>}
+            title="Dashboard UI with the details already done"
             product={<LandingHeroProduct />}
             url="acme.example/overview"
             description="Base UI components and dashboard blocks you own, added with the shadcn CLI."

@@ -208,7 +208,7 @@ export function PresetTokens({ tokens }: { tokens: TokenOverview }) {
       <Section title="Shadows" description="Surfaces draw their edge and depth with one layered shadow, not a border. In dark each one adds a 1px rim of light.">
         <Shadows shadows={tokens.shadows} />
       </Section>
-      <Section title="Radius" description="Every step follows the preset's radius, so nested corners stay concentric.">
+      <Section title="Radius" description="Every step follows the preset’s radius, so nested corners stay concentric.">
         <Radii radii={tokens.radii} />
       </Section>
       <Section title="Type" description="Dense UI text, 12 to 14px in components. Hierarchy comes from weight and color, not more sizes.">

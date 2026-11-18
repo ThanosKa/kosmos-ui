@@ -58,6 +58,7 @@ Each item is `{ id: string; label: string; href?: string; icon: LucideIcon; badg
 
 <TypeTable
   type={{
+    headingLevel: { description: 'The level of the saved views heading. Pass a deeper one when the sidebar sits under a heading of the page, as in a preview.', type: '2 | 3 | 4 | 5 | 6', default: '2' },
     navMain: { description: 'The main pages, at the top.', type: 'AppSidebarNavItem[]', default: 'sample pages' },
     navViews: { description: 'The saved views, under their own heading.', type: 'AppSidebarNavItem[]', default: 'sample views' },
     navFooter: { description: 'The links above the user menu.', type: 'AppSidebarNavItem[]', default: 'Help and feedback, Settings' },

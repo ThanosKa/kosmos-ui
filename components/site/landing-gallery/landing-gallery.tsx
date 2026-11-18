@@ -25,10 +25,10 @@ const stackCard: GalleryItem = {
 };
 
 const tabs: GalleryTab[] = [
-  { id: 'components', label: 'Components', items: [stackCard, promptComposerCard, toastCard, toolApprovalCard, dropdownMenuCard, numberTickerCard], href: '/docs/components' },
-  { id: 'ai', label: 'AI', items: [assistantMessageCard, reasoningCard, toolCallCard, planChecklistCard, runTimelineCard, usageMeterCard], href: '/docs/components' },
-  { id: 'blocks', label: 'Blocks', items: [projectsTableCard, kanbanBoardCard, detailDrawerCard, inviteTeammatesCard, authCodeCard, settingsPanelCard], href: '/docs/blocks' },
-  { id: 'screens', label: 'Screens', items: [projectsCard, roadmapCard, overviewCard], href: '/docs/blocks' },
+  { id: 'components', label: 'Components', items: [stackCard, promptComposerCard, toastCard, toolApprovalCard, dropdownMenuCard, numberTickerCard], href: '/docs/components', linkLabel: 'Browse all components' },
+  { id: 'ai', label: 'AI', items: [assistantMessageCard, reasoningCard, toolCallCard, planChecklistCard, runTimelineCard, usageMeterCard], href: '/docs/components', linkLabel: 'Browse AI components' },
+  { id: 'blocks', label: 'Blocks', items: [projectsTableCard, kanbanBoardCard, detailDrawerCard, inviteTeammatesCard, authCodeCard, settingsPanelCard], href: '/docs/blocks', linkLabel: 'Browse all blocks' },
+  { id: 'screens', label: 'Screens', items: [projectsCard, roadmapCard, overviewCard], href: '/docs/blocks', linkLabel: 'Browse all blocks' },
 ];
 
 export function LandingGallery() {

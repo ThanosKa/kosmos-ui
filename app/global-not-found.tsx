@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: `Page not found · ${appName}` };
 export default function GlobalNotFound() {
   return (
     <html lang="en" className={htmlFontClassName} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-svh">
         <SiteProvider searchLabels={getSearchLabels()}>
           <NotFoundPage />
         </SiteProvider>

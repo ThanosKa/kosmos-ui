@@ -22,7 +22,7 @@ const columns = {
 /**
  * One section of the landing page. The landing is an ordered list of these, top to bottom. A section's title and its
  * content carry a marker that `LandingMotion` reads, so each rises once as it first scrolls into view, the title first.
- * Section titles are one block, never per word: only the hero title is. The hero plays on its own.
+ * Titles are one block, never per word. The hero plays on its own.
  */
 export type LandingSectionProps = {
   /** A stable name for the section, its `data-landing-section`. */

@@ -15,7 +15,7 @@ import './landing-motion.css';
 function AppScreen({ active, title, children }: { active: string; title: string; children: React.ReactNode }) {
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
-      <AppSidebar activeItem={active} onNavigate={(_id, event) => event.preventDefault()} />
+      <AppSidebar headingLevel={4} activeItem={active} onNavigate={(_id, event) => event.preventDefault()} />
       <SidebarInset render={<div />} className="overflow-hidden">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
@@ -68,7 +68,7 @@ function RoadmapScreen() {
 }
 
 const screens: ShowcaseScreen[] = [
-  { id: 'dashboard', label: 'Dashboard', address: 'acme.example/projects', content: <ProjectsScreen /> },
+  { id: 'projects', label: 'Projects', address: 'acme.example/projects', content: <ProjectsScreen /> },
   { id: 'roadmap', label: 'Roadmap', address: 'acme.example/roadmap', content: <RoadmapScreen /> },
   {
     id: 'auth',
@@ -93,7 +93,7 @@ const screens: ShowcaseScreen[] = [
 ];
 
 /**
- * The landing's showcase: whole screens in a browser frame, the Dashboard tab the data table with everything on. Every
+ * The landing's showcase: whole screens in a browser frame, the Projects tab the data table with everything on. Every
  * screen stays mounted and stacked in one grid cell, so a tab switch is a true cross-fade (the outgoing screen leaves
  * in 150ms, the incoming one arrives in 200ms) and scroll position and table state survive a switch.
  */

@@ -57,7 +57,7 @@ function IndexCard({ item, sizes, eager }: { item: DocsIndexItem; sizes: string;
       data-docs-card
       className="relative flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-transparent bg-card p-1 pb-3.5 text-card-foreground shadow-card after:pointer-events-none after:absolute after:inset-0 after:rounded-2xl after:bg-accent after:opacity-0 after:transition-[opacity] hover:after:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
-      <div className="relative aspect-[8/5] overflow-hidden rounded-xl bg-background outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10">
+      <div className="relative aspect-[8/5] overflow-hidden rounded-[calc(var(--radius-2xl)-4px)] bg-background outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10">
         <Image src={`/thumbs/${item.name}-light.png`} alt="" fill sizes={sizes} loading={loading} className="object-cover dark:hidden" />
         <Image src={`/thumbs/${item.name}-dark.png`} alt="" fill sizes={sizes} loading={loading} className="hidden object-cover dark:block" />
       </div>

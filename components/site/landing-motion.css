@@ -1,7 +1,7 @@
 /*
  * The landing's motion, one scale from the Kosmos tokens: durations fast 150 / base 200 / slow 300 / reveal 500,
- * easing power3-out. Distances: 8 (hero line, parts), 16 (sections), 40 (product frame). Nothing tilts.
- * Under reduced motion every distance is 0, so each entrance is an opacity fade.
+ * easing power3-out. Distances: 8 (hero parts), 16 (sections), 40 (product frame). Nothing tilts.
+ * Under reduced motion every distance and the blur are 0, so each entrance is an opacity fade.
  * Everything is visible without JavaScript: entrances are CSS animations that fill backwards, and the scroll reveals
  * are armed by script (`data-reveal`), never by the markup.
  */
@@ -11,6 +11,7 @@
   --m-rise-frame: 40px;
   --m-rise: 16px;
   --m-rise-row: 6px;
+  --m-blur: 8px;
 }
 @media (prefers-reduced-motion: reduce) {
   [data-landing-section] {
@@ -18,13 +19,15 @@
     --m-rise-frame: 0px;
     --m-rise: 0px;
     --m-rise-row: 0px;
+    --m-blur: 0px;
   }
 }
 
-@keyframes m-rise-line {
+@keyframes m-enter {
   from {
     opacity: 0;
     translate: 0 var(--m-rise-line);
+    filter: blur(var(--m-blur));
   }
 }
 @keyframes m-rise-frame {
@@ -40,19 +43,23 @@
 }
 
 /*
- * Hero: the title enters per word on its own (TextReveal, mount). The line and the actions come in together as one
- * short block while it plays. The frame and its glow follow while the last words play (the title's last word starts at 720ms).
+ * Hero: a staggered entrance in sections. The title, the line and the actions each rise out of a blur on their own,
+ * 100ms apart, then the frame and its glow. Everything is in by 800ms.
  */
-.landing-hero [data-slot='hero-description'],
-.landing-hero [data-slot='hero-actions'],
-.landing-hero [data-slot='hero-install'] {
-  animation: m-rise-line var(--transition-duration-slow) var(--m-ease) 240ms both;
+.landing-hero [data-slot='hero-title'] {
+  animation: m-enter var(--transition-duration-reveal) var(--m-ease) both;
+}
+.landing-hero [data-slot='hero-description'] {
+  animation: m-enter var(--transition-duration-reveal) var(--m-ease) 100ms both;
+}
+.landing-hero [data-slot='hero-actions'] {
+  animation: m-enter var(--transition-duration-reveal) var(--m-ease) 200ms both;
 }
 .landing-hero [data-slot='browser-frame'] {
-  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 700ms both;
+  animation: m-rise-frame var(--transition-duration-reveal) var(--m-ease) 300ms both;
 }
 .landing-hero [data-slot='hero-product-glow'] {
-  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 800ms both;
+  animation: m-fade var(--transition-duration-reveal) var(--m-ease) 300ms both;
 }
 
 /* Sections: each part rises once as it first scrolls into view. `data-reveal` is set by script. */
