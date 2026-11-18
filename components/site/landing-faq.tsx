@@ -22,7 +22,7 @@ const items: FaqItem[] = [
   {
     id: 'project',
     question: 'What does my project need?',
-    answer: 'React 19 and Tailwind CSS 4, in a project the shadcn CLI can set up, such as a Next.js app. The tokens arrive with the first item you add.',
+    answer: 'React 19 and Tailwind CSS 4, in a project the shadcn CLI can set up, such as a Next.js app. Add @kosmos/tokens first, then any component or block.',
   },
   {
     id: 'look',

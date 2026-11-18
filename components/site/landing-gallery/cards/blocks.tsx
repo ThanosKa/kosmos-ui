@@ -171,7 +171,7 @@ export const authCodeCard: GalleryItem = {
   id: 'code',
   title: 'Auth code entry',
   description: 'One character a box, and it verifies itself when the last box fills.',
-  href: '/docs/blocks/auth-forms',
+  href: '/docs/blocks/auth',
   stage: (
     <Stage base={720} interval={420} staticTick={4}>
       {(tick) => {
