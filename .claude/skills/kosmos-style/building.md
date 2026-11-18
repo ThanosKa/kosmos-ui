@@ -19,3 +19,12 @@ Sample data in every preview, demo and docs page comes from one fictional compan
 
 - The Button also takes shadcn's names as aliases, so shadcn components (Dialog, Alert Dialog, Pagination) keep working in an app that swaps shadcn's Button for ours. Variant `default` renders `primary`, `outline` renders `secondary`, and `link` is an ink text link that underlines on hover and does not press-scale; size `default` renders `md`, `xs` renders `sm` and `icon-xs` renders `icon-sm`. `data-variant` and `data-size` carry the Kosmos name. `pnpm registry:smoke` proves the swap builds.
 - ESLint enforces the Button rules in this repo (`no-restricted-syntax` in `eslint.config.mjs`, which also lints the tsx code blocks of the docs pages): no raw `<button>`, an explicit `variant`, and Kosmos names only. The prop itself stays optional with a `primary` default, so an app that swaps in our Button with `shadcn add -o` still builds.
+- Each part of the press scale string earns its place: `not-disabled` (not `enabled`) also matches a Button rendered as a link, `not-data-disabled` covers Base UI's `focusableWhenDisabled`, and `motion-safe:` beats a `motion-reduce:` reset on specificity.
+
+## Changing a text field
+
+Input, Textarea and Select trigger focus with `focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-transparent focus-visible:ring-offset-1 focus-visible:ring-offset-ring focus-visible:ring-3 focus-visible:ring-ring/20`.
+
+- The 1px line is a ring offset and the 3px halo a ring, so both are box-shadow and fade together on the field's `transition-[box-shadow]`.
+- The transparent outline paints only in forced-colors mode, which drops box-shadow, so the focused field still shows its edge there.
+- An invalid field keeps its meaning while focused: line and halo turn `destructive` (`data-invalid:focus-visible:ring-offset-destructive data-invalid:focus-visible:ring-3 data-invalid:focus-visible:ring-destructive/20`, with `aria-invalid:` twins). The `ring-3` repeats, or the invalid `ring-1` wins.
