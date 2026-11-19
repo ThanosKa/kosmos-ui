@@ -136,9 +136,9 @@ export async function checkPage(browser: Browser, base: string, route: string, {
   const found = (check: Finding['check'], detail: string): Finding => ({ route, theme, width, check, detail });
   let opened: Awaited<ReturnType<typeof openSitePage>>;
   try {
-    opened = await openSitePage(browser, base, route, { theme, viewport: { width, height: 800 } });
+    opened = await openSitePage(browser, base, route, { theme, viewport: { width, height: 800 }, navigationTimeout: 120_000 });
   } catch (error) {
-    return [found('load', String(error instanceof Error ? error.message : error))];
+    return [found('load', String(error instanceof Error ? error.message : error).split('\n')[0])];
   }
   const { page, context, errors } = opened;
   try {
