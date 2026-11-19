@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Sparkline } from '@/registry/kosmos/ui/chart';
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
+import { Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,6 @@ import {
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Meter, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
-import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
@@ -419,19 +418,13 @@ function DetailDrawer({
           <DetailSkeleton />
         ) : (
           <>
-            <ScrollArea
-              viewportRef={bodyRef}
-              // The body spans the drawer's full width, so it draws its focus outline inside.
-              className="min-h-0 flex-1 has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2"
-              // The 20px padding already clears the scrollbar.
-              viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
-            >
-              <div className="flex flex-col gap-1 px-5">
+            <DrawerBody viewportRef={bodyRef} className="p-0">
+              <div className="flex flex-col gap-1 px-4">
                 <DrawerTitle className="wrap-break-word">{project.name}</DrawerTitle>
                 {project.meta ? <DrawerDescription>{project.meta}</DrawerDescription> : null}
               </div>
 
-              <dl className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 gap-y-1.5 px-5 pt-5 text-body">
+              <dl className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 gap-y-1.5 px-4 pt-5 text-body">
                 <Property label="Status" labelId={statusLabelId}>
                   <Select value={status} onValueChange={(value) => changeStatus(value as DetailStatus)} items={statusItems}>
                     <SelectTrigger aria-labelledby={statusLabelId} className="min-w-36">
@@ -474,11 +467,11 @@ function DetailDrawer({
                 </Property>
               </dl>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-3 px-5">
+              <section className="flex flex-col gap-3 px-4">
                 <SectionHeading>Last 30 days</SectionHeading>
                 <dl className="grid grid-cols-3 gap-4">
                   {usage.map((item) => (
@@ -498,11 +491,11 @@ function DetailDrawer({
                 )}
               </section>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-2 px-5">
+              <section className="flex flex-col gap-2 px-4">
                 <SectionHeading>Notes</SectionHeading>
                 {project.notes ? (
                   <p className="text-body text-pretty wrap-break-word">{project.notes}</p>
@@ -511,11 +504,11 @@ function DetailDrawer({
                 )}
               </section>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-3 px-5 pb-5">
+              <section className="flex flex-col gap-3 px-4 pb-4">
                 <SectionHeading>Activity</SectionHeading>
                 {activity.length ? (
                   <ol className="flex flex-col gap-4">
@@ -544,7 +537,7 @@ function DetailDrawer({
                   <p className="text-body text-muted-foreground">No activity yet.</p>
                 )}
               </section>
-            </ScrollArea>
+            </DrawerBody>
 
             <form onSubmit={submitNote} className="flex shrink-0 items-end gap-2 border-t border-border px-5 py-4">
               <label htmlFor={noteId} className="sr-only">

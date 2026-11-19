@@ -60,7 +60,7 @@ export function PresetsView({ sharedChoice, runners, registryAdd }: PresetsViewP
               <DrawerHeader>
                 <DrawerTitle>Preset</DrawerTitle>
               </DrawerHeader>
-              <DrawerBody className="pb-5"><PresetPicker /></DrawerBody>
+              <DrawerBody><PresetPicker /></DrawerBody>
             </DrawerContent>
           </Drawer>
           <PresetCodeDialog choice={choice} runners={runners} registryAdd={registryAdd} />
