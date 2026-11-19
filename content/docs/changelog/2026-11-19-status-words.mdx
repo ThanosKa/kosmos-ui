@@ -1,0 +1,9 @@
+---
+title: Changed Command menu status to show its word
+description: A Command menu row shows its status as a word beside the dot, and error and warning toasts name their type for screen readers.
+date: 2026-11-19
+---
+
+[Command menu](/docs/blocks/command-menu) items take `status: { label, dot }` in place of `dot`. The dot still leads the row, and the word, such as **Paused**, now sits at the end of it, so a state no longer rides on color alone. Rename `dot: 'bg-warning'` to `status: { label: 'Paused', dot: 'bg-warning' }`.
+
+[Toast](/docs/components/toast) and [Sonner](/docs/components/sonner) start an error toast with **Error:** and a warning toast with **Warning:** for screen readers, where before only the icon told them apart.

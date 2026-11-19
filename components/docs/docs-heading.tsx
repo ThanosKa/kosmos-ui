@@ -49,7 +49,7 @@ export function DocsHeading({ as: Tag, id, className, children, ...props }: Docs
           copied && 'opacity-100',
         )}
       >
-        {copied ? <Check /> : <LinkIcon />}
+        {copied ? <Check aria-hidden /> : <LinkIcon aria-hidden />}
       </Button>
       <span role="status" className="sr-only">
         {copied ? 'Link copied' : ''}

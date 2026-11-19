@@ -149,8 +149,18 @@ function ToastClose({ className, children, ...props }: ToastPrimitive.Close.Prop
 
 const toastIcons: Partial<Record<string, React.ReactNode>> = {
   success: <CircleCheck aria-hidden className="text-success" />,
-  error: <CircleAlert aria-hidden className="text-destructive" />,
-  warning: <TriangleAlert aria-hidden className="text-warning" />,
+  error: (
+    <>
+      <CircleAlert aria-hidden className="text-destructive" />
+      <span className="sr-only">Error:</span>
+    </>
+  ),
+  warning: (
+    <>
+      <TriangleAlert aria-hidden className="text-warning" />
+      <span className="sr-only">Warning:</span>
+    </>
+  ),
   info: <Info aria-hidden className="text-muted-foreground" />,
   loading: <LoaderCircle aria-hidden className="text-muted-foreground motion-safe:animate-spin motion-reduce:animate-pulse" />,
 };

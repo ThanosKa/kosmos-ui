@@ -51,8 +51,8 @@ type CommandMenuItem = {
   /** A muted second line under the title. Not searched unless it is also in `label`. */
   description?: string;
   icon?: LucideIcon;
-  /** A colored status dot in place of the icon: a background class such as `bg-success`. */
-  dot?: string;
+  /** A colored dot in place of the icon, and its word at the end of the row: `{ label: 'Paused', dot: 'bg-warning' }`. */
+  status?: { label: string; dot: string };
   /** Initials for an avatar in place of the icon. */
   initials?: string;
   /** The URL of a photo for that avatar. The initials show until it loads. */
@@ -73,10 +73,10 @@ type CommandMenuPage = { title: string; placeholder: string; groups: CommandMenu
 // Sample data: replace it with your records, actions and pages.
 type ProjectStatus = 'live' | 'trial' | 'paused';
 
-const statusDot: Record<ProjectStatus, string> = {
-  live: 'bg-success',
-  trial: 'bg-muted-foreground',
-  paused: 'bg-warning',
+const projectStatus: Record<ProjectStatus, { label: string; dot: string }> = {
+  live: { label: 'Live', dot: 'bg-success' },
+  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
+  paused: { label: 'Paused', dot: 'bg-warning' },
 };
 
 const sampleProjects: { id: string; name: string; domain: string; status: ProjectStatus }[] = [
@@ -102,7 +102,7 @@ const sampleGroups: CommandMenuGroup[] = [
       label: `${project.name} ${project.domain}`,
       title: project.name,
       hint: project.domain,
-      dot: statusDot[project.status],
+      status: projectStatus[project.status],
     })),
   },
   {
@@ -186,9 +186,9 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
           <AvatarImage src={item.logo} alt="" />
           <AvatarFallback>{item.label.charAt(0)}</AvatarFallback>
         </Avatar>
-      ) : item.dot ? (
+      ) : item.status ? (
         <span aria-hidden className="flex size-4 shrink-0 items-center justify-center">
-          <span className={cn('size-2 rounded-full', item.dot)} />
+          <span className={cn('size-2 rounded-full', item.status.dot)} />
         </span>
       ) : Icon ? (
         <Icon aria-hidden />
@@ -202,6 +202,9 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
         <span className="min-w-0 truncate">{item.title ?? item.label}</span>
       )}
       {item.hint ? <span className="min-w-0 shrink-[2] truncate text-small text-muted-foreground">{item.hint}</span> : null}
+      {item.status ? (
+        <span className="ms-auto shrink-0 ps-2 text-small text-muted-foreground">{item.status.label}</span>
+      ) : null}
       {item.keys ? (
         <CommandShortcut>
           {item.keys.map((key) => (
