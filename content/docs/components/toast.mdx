@@ -43,6 +43,15 @@ A toast closes after 5 seconds. The timer pauses while the pointer is over the s
 
 Screen readers announce every new toast politely, after what they are reading. Pass `priority: 'high'` for an error that needs attention now, and screen readers announce it at once. F6 moves focus into the toasts, so keyboard users can reach their buttons.
 
+## When to pick which
+
+Toast, Sonner, Alert and Banner all tell people that something happened. Pick by how long the message lasts and where it sits.
+
+- **Toast** is a short notification that stacks at the bottom of the screen and closes on its own. Use Toast or Sonner in an app, not both.
+- [Sonner](/docs/components/sonner) does the same job with Emil Kowalski's Sonner library. Call `toast()` from anywhere.
+- [Alert](/docs/components/alert) stays in the page, next to the content it is about, with a title, a description and actions.
+- [Banner](/docs/components/banner) is a full-width strip at the top of an app page for a project-wide state to resolve.
+
 ## Examples
 
 ### Types

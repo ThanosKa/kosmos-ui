@@ -46,6 +46,15 @@ import {
 
 Give every dialog a `DialogTitle`: it names the dialog for screen readers. Render the trigger and the close buttons through `render={<Button variant="…" />}`, so they look like every other Kosmos button.
 
+## When to pick which
+
+Dialog, Drawer, Popover and Tooltip all open a layer over the page from a trigger. Pick by how much it holds and whether it stops the page.
+
+- **Dialog** asks for one decision or one short task. It traps focus until the person answers.
+- [Drawer](/docs/components/drawer) shows details next to a list, or a bottom sheet on a phone. It slides in from an edge.
+- [Popover](/docs/components/popover) holds extra details or a quick action beside its trigger, without leaving the page.
+- [Tooltip](/docs/components/tooltip) names a control in a few words, on hover and on keyboard focus. It holds nothing to click.
+
 ## Examples
 
 ### Confirm a destructive action
