@@ -14,6 +14,7 @@
     "registry:check": "node --env-file-if-exists=.env.local scripts/registry-check.mts",
     "registry:smoke": "node --env-file-if-exists=.env.local scripts/registry-smoke.mts",
     "screenshots": "node scripts/screenshots.mts",
+    "site-check": "node scripts/site-check.mts",
     "thumbnails": "node scripts/screenshots.mts --thumbnails",
     "test": "node --test 'lib/**/*.test.mts'"
   },

@@ -21,6 +21,7 @@ type OpenOptions = {
   viewport: { width: number; height: number };
   deviceScaleFactor?: number;
   reducedMotion?: ReducedMotion;
+  navigationTimeout?: number;
 };
 
 /** A dev server message that applies a changed file to the open page: server components, or client modules. */
@@ -42,7 +43,7 @@ export async function openSitePage(
   browser: Browser,
   base: string,
   path: string,
-  { theme = 'light', viewport, deviceScaleFactor = 1, reducedMotion = 'reduce' }: OpenOptions,
+  { theme = 'light', viewport, deviceScaleFactor = 1, reducedMotion = 'reduce', navigationTimeout }: OpenOptions,
 ) {
   const context = await browser.newContext({ viewport, deviceScaleFactor, colorScheme: theme, reducedMotion });
   // next-themes reads localStorage first; pinning it makes pages without ?theme deterministic too. The dev server's
@@ -64,6 +65,7 @@ export async function openSitePage(
       socket.send(message);
     });
   });
+  if (navigationTimeout) context.setDefaultNavigationTimeout(navigationTimeout);
   const page = await context.newPage();
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
