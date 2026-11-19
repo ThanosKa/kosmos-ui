@@ -214,7 +214,8 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="drawer-footer"
       className={cn(
-        'mt-auto flex shrink-0 flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end',
+        'mt-auto flex shrink-0 flex-col-reverse gap-2 rounded-b-[inherit] border-t border-input bg-muted/50 dark:border-input/50 px-5 py-4 sm:flex-row sm:justify-end',
+        'group-data-[swipe-direction=down]/drawer:-mb-[env(safe-area-inset-bottom)] group-data-[swipe-direction=down]/drawer:pb-[calc(--spacing(4)+env(safe-area-inset-bottom))]',
         'group-data-[swipe-direction=down]/drawer:[[data-slot=drawer-header]+&]:mt-5 group-data-[swipe-direction=up]/drawer:[[data-slot=drawer-header]+&]:mt-5',
         className,
       )}
