@@ -34,7 +34,7 @@ This skill describes the Kosmos style, which Default and Warm keep. Soft, Consol
 - Give every part of a component its own `data-slot`, and expose its variant, size and state as data attributes, so a preset can reach it. Keep the names stable: a preset's rules name them, and `pnpm test` fails when a rule names a slot no component has.
 - Buttons, fields and tabs stay Kosmos under every preset (ADR 0014). A style never sets `shadow-control`, `shadow-primary`, `shadow-primary-hover`, `primary-hover` or `shadow-field`, and its rules reach a button, a field or a tab only for type. `pnpm test` enforces both.
 - A preset's style lives in `lib/presets/<id>-style.ts`, never in a component. A component never branches on the preset.
-- A style sizes nothing: no `spacing`, text size, line height, height, padding or gap. Size is the visitor's own choice (Compact, Default, Comfortable), which sets `--spacing` alone, so size every part of a component in spacing units (`h-7.5`, `px-2.5`), never in pixels.
+- A style sizes nothing: no `spacing`, text size, line height, height, padding or gap. Size is the visitor's own choice (Compact, Default, Comfortable), which sets `--spacing` alone, so size every part of a component in spacing units (`h-7.5`, `px-2.5`), never in pixels. Lint flags an arbitrary pixel size (`h-[30px]`, `py-[5px]`) in a component or block.
 - A pill radius that can land on a tall element (a vertical segmented control, an input group around a textarea) is capped at half a control's height (`calc(var(--spacing) * 5)`), not `9999px`, or the tall element turns into an oval.
 
 ## Surfaces: shadows, not borders
@@ -64,7 +64,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 - An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a selected radio, a switch that is on) the ring is 2px, since 1px vanishes against the ink.
 - Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`). Hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo.
 - Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
-- Sticky chrome is opaque. The Navbar block, and the site header built from it (landing page and docs), is `sticky top-0 bg-background`. Its edge is a `border-b border-border`, a divider like the docked sidebar's, which shows once the page scrolls under the bar (`data-scrolled`), and always on a `fullWidth` bar beside a docked sidebar. A translucent fill fails the text floor (conflicts.md, Accessibility floor).
+- Sticky chrome is opaque. The Navbar block, and the site header built from it (landing page and docs), is `sticky top-0 bg-background`. Its edge is a `border-b border-border`, a divider like the docked sidebar's, which shows once the page scrolls under the bar (`data-scrolled`), and always on a `fullWidth` bar beside a docked sidebar. A translucent fill fails the text floor (conflicts.md, Accessibility floor). Lint flags `sticky` with a translucent `bg-*/NN` on the same element.
 
 ## Dividers between items
 
@@ -233,6 +233,7 @@ Buttons are 30px (`md`) with `px-2.5`; text fields are 34px with `px-3`, so a fo
 - Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link.
 - Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers). A variant nothing uses is deleted.
 - The destructive variant is red text on the secondary surface: the dark `destructive` is too light to carry white text.
+- An icon-only `Button` (`size="icon…"`) carries `aria-label` or a `sr-only` label; lint flags one with neither. A Button passed to a primitive's `render` takes the name from the primitive.
 - Kosmos code writes the Kosmos variant and size names, never shadcn's (`default`, `outline`, `link`, `xs`, `icon-xs`).
 - A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content.
 
@@ -259,7 +260,7 @@ Then search the changed files for each detection lint cannot judge:
 | A token in `tokens.css` that no component, block or page uses | Delete it, or use it in this change |
 | `border` used for depth on a card, button, input or overlay | Its shadow token from the surface table plus `border-transparent` |
 | A `shadow-*` ring without `border border-transparent` | Add it |
-| A translucent `bg-background/*` on sticky chrome | `bg-background` |
+| A translucent `bg-background/*` on sticky chrome (lint catches it on the same element) | `bg-background` |
 | A `translate`, `scale` or `blur` transition, or a `motion.*` animation, with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
 | `text-base` outside an input | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |

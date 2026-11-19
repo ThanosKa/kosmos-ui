@@ -52,6 +52,76 @@ export function Panel() {
 }
 `,
   },
+  {
+    name: 'sticky chrome has an opaque fill',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Bar() {
+  return <header className="sticky top-0 z-40 bg-background/80 border-b">Fernhill Books</header>;
+}
+`,
+    message: 'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces).',
+    allowed: `
+export function Bar() {
+  return <header className="sticky top-0 z-40 border-b bg-background">Fernhill Books</header>;
+}
+`,
+  },
+  {
+    name: 'an icon-only button has an accessible name',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { X } from 'lucide-react';
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Close() {
+  return (
+    <Button variant="ghost" size="icon">
+      <X />
+    </Button>
+  );
+}
+`,
+    message: 'An icon-only `Button` needs `aria-label` (or a `sr-only` label) naming its action (kosmos-style, Buttons).',
+    allowed: `
+import { X } from 'lucide-react';
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Close() {
+  return (
+    <Button variant="ghost" size="icon" aria-label="Close">
+      <X />
+    </Button>
+  );
+}
+`,
+  },
+  {
+    name: 'a component sizes in spacing units',
+    file: 'registry/kosmos/ui/example.tsx',
+    flagged: `
+export function Row() {
+  return <div className="h-[30px] px-2.5">Fernhill Books</div>;
+}
+`,
+    message: 'Size in spacing units (`h-7.5`, `py-1.25`), not arbitrary pixels, so the density setting reaches it (kosmos-style, Presets with a style).',
+    allowed: `
+export function Row() {
+  return <div className="h-7.5 px-2.5 tracking-[0.05em]">Fernhill Books</div>;
+}
+`,
+  },
+  {
+    name: 'demo data holds no key-like string',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export const secretKey = 'sk_live_51HxQ2eLkd93Jf8aZpR7vNc';
+`,
+    message: 'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, Demo world).',
+    allowed: `
+export const secretKey = 'acme_secret_demo_7Q2Kf9r3Vx';
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });

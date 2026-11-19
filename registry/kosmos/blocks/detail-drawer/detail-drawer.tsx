@@ -549,7 +549,7 @@ function DetailDrawer({
                 value={draft}
                 onValueChange={(value) => setDraft(String(value))}
                 placeholder="Add a note…"
-                className="max-h-32 min-h-7.5 resize-none py-[5px]"
+                className="max-h-32 min-h-7.5 resize-none py-1.25"
                 onKeyDown={(event) => {
                   // ⌘Enter or Ctrl+Enter adds the note, as in most comment fields.
                   if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {

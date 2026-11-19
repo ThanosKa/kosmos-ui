@@ -270,7 +270,7 @@ function BreadcrumbTrail({ items, link, separator, className, ...props }: Breadc
           ))}
           <BreadcrumbSeparator data-measure="separator">{separator}</BreadcrumbSeparator>
           <li data-measure="ellipsis" className="flex">
-            <Button variant="item" size="icon-sm" tabIndex={-1}>
+            <Button variant="item" size="icon-sm" tabIndex={-1} aria-label="More pages">
               <Ellipsis />
             </Button>
           </li>
