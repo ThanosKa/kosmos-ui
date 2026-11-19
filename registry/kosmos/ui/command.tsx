@@ -142,11 +142,9 @@ function CommandList({ className, ...props }: AutocompletePrimitive.List.Props) 
   return (
     <ScrollArea
       data-slot="command-scroll-area"
-      className={cn(
-        'flex-[0_1_auto] rounded-none',
-        // The palette clips anything outside it, so the list draws its focus outline inside.
-        'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
-      )}
+      // The input keeps focus while the list is open, and the highlighted item scrolls itself into view.
+      focusable={false}
+      className="flex-[0_1_auto] rounded-none"
       // `min-w-0!` beats the content's inline `min-width: fit-content`, so long labels truncate instead of widening the list.
       viewportClassName="max-h-80 overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
     >

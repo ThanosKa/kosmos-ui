@@ -91,7 +91,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
           <DialogTitle>Get the {preset.name} preset</DialogTitle>
           <DialogDescription>The palette, radius and size you picked, in light and dark.</DialogDescription>
         </DialogHeader>
-        <DialogBody className="pb-5">
+        <DialogBody className="pb-4">
           {/* Inline-size containment keeps the widest line of code from widening the dialog: the code scrolls instead. */}
           <Tabs defaultValue="css" className="min-w-0 [contain:inline-size]">
             <TabsList>

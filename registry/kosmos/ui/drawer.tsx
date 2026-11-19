@@ -191,19 +191,27 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
  * The content between header and footer. Scrolls on its own, so header and footer stay in view, in a
  * `ScrollArea`: the edge with content hidden past it fades out. `className` styles the padded box inside.
  */
-function DrawerBody({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerBody({
+  className,
+  viewportRef,
+  ...props
+}: React.ComponentProps<'div'> & {
+  /** A ref to the element that scrolls, to read or set its scroll position. */
+  viewportRef?: React.Ref<HTMLDivElement>;
+}) {
   return (
     <ScrollArea
       data-slot="drawer-body-scroll-area"
+      viewportRef={viewportRef}
       className={cn(
-        'min-h-0 flex-1',
-        // The scrolling body spans the drawer's full width, so it draws its focus outline inside.
+        // Set 4px in from the drawer's edges, with its focus outline drawn inside, so the outline never lands on them.
+        'm-1 min-h-0 flex-1',
         'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
       )}
-      // The 20px padding already clears the scrollbar.
+      // The 16px padding already clears the scrollbar.
       viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
     >
-      <div data-slot="drawer-body" className={cn('px-5 pt-4 pb-5', className)} {...props} />
+      <div data-slot="drawer-body" className={cn('px-4 pt-3 pb-4', className)} {...props} />
     </ScrollArea>
   );
 }
