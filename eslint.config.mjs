@@ -115,7 +115,20 @@ const styleSelectors = [
   },
 ];
 
+// An overlay's scroll area spans its full width, so its focus ring would land on the overlay's edge. The bodies set it
+// in from the edge; a scroll area inside a body is one list among the content and keeps the usual ring.
+const overlayContent = "JSXElement[openingElement.name.name=/^(Dialog|Drawer|Popover)Content$/]";
+const overlayBody = "JSXElement[openingElement.name.name=/^(Dialog|Drawer)Body$/]";
+const overlayScrollSelectors = [
+  {
+    selector: `${overlayContent} JSXElement[openingElement.name.name='ScrollArea']:not(${overlayBody} JSXElement)`,
+    message:
+      "A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay's edge (kosmos-style, Focus).",
+  },
+];
+
 const codeRules = [
+  ...overlayScrollSelectors,
   ...transitionSelectors,
   ...easeSelectors,
   ...textSizeSelectors,
@@ -162,7 +175,7 @@ const eslintConfig = defineConfig([
     // (Installed copies keep `variant` optional, so apps that replace shadcn's Button still build.)
     // shadcn's names are aliases for apps that swap in our Button; Kosmos code uses the Kosmos names.
     rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors],
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...overlayScrollSelectors],
     },
   },
   {
