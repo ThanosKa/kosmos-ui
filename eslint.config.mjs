@@ -115,7 +115,50 @@ const styleSelectors = [
   },
 ];
 
+// An overlay's scroll area spans its full width, so its focus ring would land on the overlay's edge. The bodies set it
+// in from the edge; a scroll area inside a body is one list among the content and keeps the usual ring.
+const overlayContent = "JSXElement[openingElement.name.name=/^(Dialog|Drawer|Popover)Content$/]";
+const overlayBody = "JSXElement[openingElement.name.name=/^(Dialog|Drawer)Body$/]";
+const overlayScrollSelectors = [
+  {
+    selector: `${overlayContent} JSXElement[openingElement.name.name='ScrollArea']:not(${overlayBody} JSXElement)`,
+    message:
+      "A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay's edge (kosmos-style, Focus).",
+  },
+];
+
+// Sticky chrome is opaque: a `bg-*` with an opacity on the same element lets the page show through its text.
+const stickyTranslucentSelectors = classSelectors(
+  `^(?=[\\s\\S]*${classStart}(@[a-z0-9]+:)?sticky${classEnd})(?=[\\s\\S]*${classStart}bg-[a-z-]+\\x2f[0-9])`,
+  'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces).',
+);
+
+// An icon-only Button names its action in `aria-label`, `aria-labelledby` or a `sr-only` child. A spread may carry it,
+// and a Button given to a primitive's `render` takes the name from that primitive.
+const iconButtonSelectors = [
+  {
+    selector:
+      "JSXElement[openingElement.name.name='Button']:has(JSXOpeningElement > JSXAttribute[name.name='size'][value.value=/^icon/]):not(:has(JSXOpeningElement > :matches(JSXAttribute[name.name=/^aria-label(ledby)?$/], JSXSpreadAttribute))):not(:has(Literal[value=/sr-only/])):not(JSXAttribute[name.name='render'] JSXElement)",
+    message: 'An icon-only `Button` needs `aria-label` (or a `sr-only` label) naming its action (kosmos-style, Buttons).',
+  },
+];
+
+// Sizes are spacing units, so the density setting (which sets `--spacing`) reaches every component.
+const spacingPixelProps = 'size|h|w|min-h|max-h|min-w|max-w|p[xytblrse]?|m[xytblrse]?|gap|gap-x|gap-y|space-x|space-y|top|left|right|bottom|inset|inset-x|inset-y|start|end|basis';
+const pixelSizeSelectors = classSelectors(
+  `${classStart}-?(${spacingPixelProps})-\\[-?[0-9.]+px\\]`,
+  'Size in spacing units (`h-7.5`, `py-1.25`), not arbitrary pixels, so the density setting reaches it (kosmos-style, Presets with a style).',
+);
+
+// Push protection reads these prefixes as real keys; demo keys start with `acme_`.
+const keyLikePattern = '\\b((sk|pk|rk)_[A-Za-z0-9_]{6,}|whsec_|AKIA[0-9A-Z]{8,}|gh[pousr]_[A-Za-z0-9]{10,}|github_pat_|xox[abp]-)';
+const keyLikeSelectors = classSelectors(
+  keyLikePattern,
+  'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, Demo world).',
+);
+
 const codeRules = [
+  ...overlayScrollSelectors,
   ...transitionSelectors,
   ...easeSelectors,
   ...textSizeSelectors,
@@ -124,6 +167,9 @@ const codeRules = [
   ...cnSelectors,
   ...styleSelectors,
   ...markColorSelectors,
+  ...stickyTranslucentSelectors,
+  ...iconButtonSelectors,
+  ...keyLikeSelectors,
 ];
 
 /**
@@ -162,7 +208,7 @@ const eslintConfig = defineConfig([
     // (Installed copies keep `variant` optional, so apps that replace shadcn's Button still build.)
     // shadcn's names are aliases for apps that swap in our Button; Kosmos code uses the Kosmos names.
     rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors],
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...overlayScrollSelectors],
     },
   },
   {
@@ -174,7 +220,7 @@ const eslintConfig = defineConfig([
   {
     // Components and blocks hold at phone width. Examples may fill the screen to show a scroll.
     files: ['registry/kosmos/ui/**/*.tsx', 'registry/kosmos/blocks/**/*.tsx'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors] },
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors, ...pixelSizeSelectors] },
   },
   {
     // The site keeps number durations for its docs demos, such as the slow run in the easing demo.

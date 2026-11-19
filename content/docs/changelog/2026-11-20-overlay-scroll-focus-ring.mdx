@@ -1,0 +1,11 @@
+---
+title: Fixed the focus ring of a scrolling Dialog or Drawer body
+description: A scrolling Dialog or Drawer body draws its focus ring 4px inside the panel's edges. The Command list is no longer a tab stop.
+date: 2026-11-20
+---
+
+A [Dialog](/docs/components/dialog) or [Drawer](/docs/components/drawer) body that scrolls takes keyboard focus, so the arrow keys scroll it. Its focus ring ran along the edges of the panel. The body now sits 4px in from the panel's edges and draws its ring inside, in light and dark and under every preset. The text stays where it was, because the padding inside the body is 4px smaller (`px-4 pt-3`). If you pass your own padding to `DialogBody` or `DrawerBody`, take 4px off it to keep your layout.
+
+`DrawerBody` takes `viewportRef`, a ref to the element that scrolls, and the [Detail drawer](/docs/blocks/detail-drawer) block now scrolls its content in a `DrawerBody`.
+
+The [Command](/docs/components/command) list no longer takes focus with Tab. The search input keeps focus, and the highlighted item scrolls itself into view, as in the [Combobox](/docs/components/combobox).

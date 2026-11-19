@@ -130,14 +130,14 @@ function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
     <ScrollArea
       data-slot="dialog-body-scroll-area"
       className={cn(
-        'min-h-0 flex-1',
-        // The scrolling body spans the dialog's full width, so it draws its focus outline inside.
+        // Set 4px in from the dialog's edges, with its focus outline drawn inside, so the outline never lands on them.
+        'm-1 min-h-0 flex-1',
         'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
       )}
-      // The 20px padding already clears the scrollbar.
+      // The 16px padding already clears the scrollbar.
       viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
     >
-      <div data-slot="dialog-body" className={cn('px-5 pt-4 pb-1', className)} {...props} />
+      <div data-slot="dialog-body" className={cn('px-4 pt-3 pb-1', className)} {...props} />
     </ScrollArea>
   );
 }

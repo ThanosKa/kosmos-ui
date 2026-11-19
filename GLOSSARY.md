@@ -18,6 +18,10 @@ _Avoid_: «visual review» για το VRT
 Ένα screenshot που έχει εγκριθεί από άνθρωπο ως «σωστό». Το VRT συγκρίνει τα νέα screenshots με αυτό.
 _Avoid_: snapshot, golden image
 
+**Code check**:
+Ένας κανόνας lint που πιάνει από τον κώδικα ένα λάθος που έχει ξαναγίνει, π.χ. ένα `ScrollArea` μέσα σε Dialog έξω από το `DialogBody`. Τρέχει με το `pnpm lint` σε κάθε PR, το μήνυμά του λέει τη διόρθωση και παραπέμπει στο style skill, και κάθε τέτοιος κανόνας έχει στο `pnpm test` ένα κομμάτι κώδικα που πρέπει να πιάσει και ένα που πρέπει να αφήσει.
+_Avoid_: lint check, guard, «custom rule»
+
 **Preview route**:
 Μια σελίδα του site που δείχνει ένα μόνο component απομονωμένο. Τα docs τη δείχνουν ως demo και ο Claude τη φωτογραφίζει.
 _Avoid_: playground, sandbox

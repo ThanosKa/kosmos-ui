@@ -167,7 +167,7 @@ The figures the charts on `/docs/charts` plot. Each adds up to the metrics above
 
 Acme's public API, for codes and methods (Badge `tint-*`). Paths start with `/v1`: `GET /v1/projects` (List projects), `GET /v1/projects/{id}`, `POST /v1/events` (Send events), `PATCH /v1/projects/{id}` (Change a plan) and `DELETE /v1/events/{name}` (Delete events, such as `debug_ping` on Tidepool Notes). A request log shows `202` for accepted events, `200`, `304`, `429` when a project sends past its rate limit, and `500`.
 
-Keys and endpoints of Fernhill Books, for copy fields and settings: secret key `acme_secret_demo_7Q2Kf9r3Vx`, webhook signing secret `acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv`, project ID `proj_fernhill`, webhook URL `https://hooks.acme.example/v1/fernhill/events`. Keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys.
+Keys and endpoints of Fernhill Books, for copy fields and settings: secret key `acme_secret_demo_7Q2Kf9r3Vx`, webhook signing secret `acme_whsig_MfKQ9r3Vx7bT2nLp8sYc4dZa1eWg6hJu0kRq5tNv`, project ID `proj_fernhill`, webhook URL `https://hooks.acme.example/v1/fernhill/events`. Keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys. Lint flags these prefixes, and `AKIA`, `ghp_` and `xoxb-` keys, in any string.
 
 ## Roadmap
 
