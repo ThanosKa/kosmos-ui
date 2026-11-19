@@ -30,6 +30,10 @@ _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 Το preview route ενός component με το όνομά του σκέτο (`/view/button`): το state matrix και ό,τι άλλο χρειάζεται για έλεγχο. Από αυτό βγαίνουν τα screenshots και αυτό δείχνει η σελίδα έγκρισης.
 _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
 
+**Browser check**:
+Η εντολή `pnpm site-check`. Ανοίγει κάθε σελίδα του site, των docs και κάθε review preview σε έναν browser, στα 375 και 1280, σε light και dark, και αποτυγχάνει όταν μια σελίδα σκρολάρει πλάγια, ένα focus ring κόβεται από τον γονέα του ή υπάρχει console error. Μια γνωστή εξαίρεση, με τον λόγο της, δεν την αποτυγχάνει.
+_Avoid_: e2e test, visual test (δεν συγκρίνει εικόνες)
+
 **Group**:
 Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, AI, Effects, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.
 _Avoid_: category (στο shadcn είναι άλλο πεδίο)
