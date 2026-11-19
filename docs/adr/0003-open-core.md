@@ -30,3 +30,20 @@ The docs render a Pro variant live from the Pro deployment. It sits inside the s
 ## No store yet
 
 Until a store exists, the locked Code tab says the variant comes with Kosmos Pro and points to Preview. It promises no timing and has no link. A "Get Pro" link to a page that does not exist, or to the private repo, would lead nowhere. `proUrl` in `lib/shared.ts` stays unset until the store launches. Setting it brings the link back.
+
+## One Pro, paid once
+
+Pro is a single paid tier next to the free components. It costs one payment, with no subscription, and its license covers one developer. A purchase includes every Pro block and template released later, for good. Price changes apply to new buyers only. The launch price is lower and rises as the catalog grows.
+
+The code ends up in the buyer's project and keeps working whether they pay again or not. A yearly price would sell only the updates, and buyers of UI code rarely renew for those. The buyer gets the code from a private registry, `@kosmos-pro`, served by the Pro deployment. The shadcn CLI sends the buyer's license key in a header from their `.env`, and the deployment checks the key before it returns the item. The key controls who can download. The EULA controls how the code is shared.
+
+### Considered Options
+
+- **Yearly subscription, or yearly and lifetime side by side**: it sells only updates to code the buyer already has, and two prices are harder to change later.
+- **A Team tier with more seats at a higher price**: it needs seat management that one developer cannot run yet. It can come later without breaking the promise to earlier buyers.
+- **Access to the private GitHub repo, or a zip**: the buyer sees the whole repo or has to download again for every new block. The registry installs Pro the same way as the free components.
+
+### Consequences
+
+- "Every later Pro block, for good" cannot be taken back from earlier buyers. Revenue comes from new buyers.
+- Still open: the payment provider, hosting, accounts and storage for the license keys, and which blocks are free and which are Pro.
