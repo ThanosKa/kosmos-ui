@@ -38,6 +38,15 @@ import {
 
 A popover doesn't block the page. Escape or a click outside closes it and puts focus back on the trigger, and tabbing past its last control closes it too. For a list of actions use a menu, and for a decision that should stop everything else use a [Dialog](/docs/components/dialog).
 
+## When to pick which
+
+Dialog, Drawer, Popover and Tooltip all open a layer over the page from a trigger. Pick by how much it holds and whether it stops the page.
+
+- [Dialog](/docs/components/dialog) asks for one decision or one short task. It traps focus until the person answers.
+- [Drawer](/docs/components/drawer) shows details next to a list, or a bottom sheet on a phone. It slides in from an edge.
+- **Popover** holds extra details or a quick action beside its trigger, without leaving the page.
+- [Tooltip](/docs/components/tooltip) names a control in a few words, on hover and on keyboard focus. It holds nothing to click.
+
 ## Examples
 
 ### Side
