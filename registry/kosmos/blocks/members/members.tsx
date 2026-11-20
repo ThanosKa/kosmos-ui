@@ -79,10 +79,13 @@ const assignableRoles = Object.keys(roleHints) as AssignableRole[];
 const roleItems = assignableRoles.map((role) => ({ value: role, label: roleLabels[role] }));
 const maxInvitesAtOnce = 20;
 
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
 const initials = (name: string) => {
   const words = name.split(/\s+/).filter(Boolean);
   const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
-  return letters.join('').toUpperCase();
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
 };
 
 const countLabel = (count: number, one: string, many: string) => `${count.toLocaleString('en-US')} ${count === 1 ? one : many}`;

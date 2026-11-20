@@ -147,7 +147,7 @@ function ProductMark({ name }: { name: string }) {
       aria-hidden
       className="flex size-9 items-center justify-center rounded-xl border border-transparent bg-primary text-title text-primary-foreground shadow-primary"
     >
-      {name.trim().charAt(0).toUpperCase()}
+      {Array.from(name.trim())[0]?.toUpperCase()}
     </span>
   );
 }

@@ -185,7 +185,7 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
       ) : item.logo ? (
         <Avatar size="sm" className="size-5 rounded-sm" aria-hidden>
           <AvatarImage src={item.logo} alt="" />
-          <AvatarFallback>{item.label.charAt(0)}</AvatarFallback>
+          <AvatarFallback>{Array.from(item.label)[0]}</AvatarFallback>
         </Avatar>
       ) : Icon ? (
         <Icon aria-hidden />
