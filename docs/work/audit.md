@@ -696,7 +696,7 @@ Ticket 05. Reviewed with `better-interface` and its six `better-*` domain skills
   - `pnpm prose` (Vale) and `pnpm exec eslint components/docs components/site app`: lint clean, 59 Vale warnings in `content/docs`.
 - **The first site-check run's docs findings, re-checked:**
   - The 55 "`Footer` cut by `nav[scroll-area-viewport]` bottom 1px" findings: real, and worse than 1px. Tab down the docs sidebar and the focused item stops 3px above the edge, inside the 32px edge fade. Finding 3.
-  - The 79 "cut by `div.h-(--collapsible-panel-height)` right 1px" findings, all in dark: not a focus ring. The current item's dark `shadow-control` ring is cut by the group panel, and the check counts any spread shadow as a ring. Finding 5.
+  - The 79 "cut by `div.h-(--collapsible-panel-height)` right 1px" findings, all in dark (check fixed in ticket 15): not a focus ring. The current item's dark `shadow-control` ring is cut by the group panel, and the check counts any spread shadow as a ring. Finding 5.
   - Hydration mismatch on `/docs/blocks/new-item-dialog` and `/docs/blocks/settings`: the preview frame race from the blocks audit. Not reproduced in my 28 single loads, as expected at 3 in 16. Finding 2.
   - `/docs/blocks` load timeout: not reproduced; it loaded at 375 and 1280.
   - `/docs/components/data-table` "MRR" and `/docs/components/sidebar` resize handle: these come from the examples, so they belong to ticket 03 (its findings 9 and 22).
@@ -765,7 +765,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 #### LOW
 
 **5. In dark mode the current sidebar item loses its right edge, and the site check reads it as a cut focus ring.**
-- **Severity:** LOW. **Kind:** bug. **Checkable:** yes, browser. The site check flags it today (79 findings), but under the wrong name.
+- **Severity:** LOW. **Kind:** bug. **Checkable:** yes, browser. The site check flagged it as a cut focus ring (79 findings); the check half is fixed in ticket 15, the panel padding is not.
 - **Where:** `components/docs/docs-sidebar.tsx:222-230`. The group's `Collapsible.Panel` is `overflow-hidden`, and its `SidebarMenu` gives the items the panel's full width. Measured on `/docs/components/button` and `/docs/charts/donut-chart` in dark: the item ends at x 248, and so does the panel.
 - **What is wrong:** the dark current item is raised with `shadow-control` (`registry/kosmos/ui/sidebar.tsx:756`), whose 1px outer ring is clipped on the right, and on the bottom for the last item of a group. The focus outline there is already drawn inside, so the site check is flagging this shadow, not the focus ring.
 - **Fix:** `pe-px pb-px` on the panel's `SidebarMenu` (`:230`), so the ring has its 1px. In the check, `measureFocusRing` (`lib/site-check.ts`) should count only the outline and the shadows that change on focus, so a resting `shadow-control` is not reported as a focus ring.
@@ -923,7 +923,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 
 #### 2. The Presets preview's Components tab scrolls sideways at phone width, most under Console
 
-- **Severity:** MEDIUM. **Kind:** bug. **Preset:** all, widest under Console. **Checkable:** yes, browser: add `/preset-preview` at 341 to the site check's overflow check. The site check visits `/presets`, but not the document inside its iframe.
+- **Severity:** MEDIUM. **Kind:** bug. **Preset:** all, widest under Console. **Checkable:** yes, browser: add `/preset-preview` at 341 to the site check's overflow check (fixed in ticket 15: the check now visits it). The site check visits `/presets`, but not the document inside its iframe.
 - **Location:** `components/site/preset-components.tsx:130` (`grid items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3`: below `md` the grid has one implicit `auto` track). The widest child is the Monthly revenue card's `GrowthChart` (`components/preset-cards/data-cards.tsx:57`) and the Members table.
 - **What is wrong:** at the iframe's 341px on a 375 phone, the preview document is **13px** wider than its viewport under Default, Soft and Night, **26px** under Console and **3px** under Iris, light and dark. Every column (`div.flex.min-w-0`) is 338–351px wide in a 341px grid. Setting the track to `minmax(0,1fr)` in the browser removes it under Default (0px) and leaves 9px under Console.
 - **Why it matters:** the page that shows a preset off scrolls sideways inside its frame on a phone, and cards are cut at the right edge.
@@ -1062,7 +1062,7 @@ Discarded measurements (checked by hand):
 - Focus-all cuts at 341 on "Unassigned", "No target" and "Live": these controls were off-screen in a scroll area because the probe focused with `preventScroll`. A real Tab scrolls them in, and they appear under Default too.
 - The 1px focus guard `span` cut on the Overlays tab: part of finding 4.
 
-Tool note for the site check (ticket 01): `--route /` selects every route, because `siteRoutes` strips the trailing slash and matches `startsWith('/')`. A run started with it went through all 327 routes before it was stopped. It needs a special case for `/`.
+Tool note for the site check (ticket 01): `--route /` selects every route, because `siteRoutes` strips the trailing slash and matches `startsWith('/')`. A run started with it went through all 327 routes before it was stopped. Fixed in ticket 15.
 
 **Not verified:** 200% zoom and 320px reflow, RTL, forced colors, a real screen reader, the picker's non-default choices (accent off, other radii, Compact and Comfortable), Warm, and full-motion playback.
 

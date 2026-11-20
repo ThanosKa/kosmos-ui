@@ -75,7 +75,7 @@ export function PresetPreviewDocument({ tokens }: { tokens: TokenOverview }) {
         )}
         <Toaster />
       </TooltipProvider>
-      <span data-preview-ready={ready ? '' : undefined} hidden />
+      <span data-preview-ready={ready ? '' : undefined} data-preview-page={page} hidden />
     </ThemeProvider>
   );
 }

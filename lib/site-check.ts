@@ -14,6 +14,10 @@ export type Finding = { route: string; theme: Theme; width: number; check: Check
 export type KnownException = { route: string; check: Finding['check']; detail?: string; reason: string };
 
 export const phoneWidth = 375;
+/** The widths the Presets page iframe gives its preview on a 375 and a 1280 page. */
+export const previewWidths = [341, 966];
+const previewTabs = ['components', 'dashboard', 'forms', 'overlays', 'tokens'] as const;
+const previewRoute = /^\/preset-preview \((\w+)\)$/;
 const maxTabStops = 60;
 
 export function formatFinding({ route, theme, width, check, detail }: Finding) {
@@ -28,22 +32,29 @@ export function splitKnown(findings: Finding[], exceptions: KnownException[]) {
 
 /**
  * Every page the check visits: the site pages, every docs page and the review preview of every component and block.
- * `group` keeps one route, or every route under it (`/view`, `/docs/components`).
+ * `group` keeps one route, or every route under it (`/view`, `/docs/components`); `/` is the landing page alone.
  */
 export function siteRoutes(group?: string) {
   const docs = globSync('content/docs/**/*.mdx').map((file) => `/docs/${file.replace('content/docs/', '').replace(/\.mdx$/, '')}`.replace(/\/?index$/, ''));
   const previews = readRegistryItems()
     .filter((item) => (item.type === 'registry:ui' || item.type === 'registry:block') && existsSync(`registry/kosmos/examples/${item.name}.tsx`))
     .map((item) => `/view/${item.name}`);
-  const routes = [...new Set(['/', '/presets', ...docs, ...previews])].sort();
+  const presetPreviews = previewTabs.map((tab) => `/preset-preview (${tab})`);
+  const routes = [...new Set(['/', '/presets', ...presetPreviews, ...docs, ...previews])].sort();
   if (!group) return routes;
-  return routes.filter((route) => route === group || route.startsWith(`${group.replace(/\/$/, '')}/`));
+  const prefix = group.endsWith('/') ? group : `${group}/`;
+  return routes.filter((route) => route === group || (group !== '/' && route.startsWith(prefix)) || route.startsWith(`${group} (`));
+}
+
+/** The widths a route is visited at when none are asked for: the preview's own widths, else `defaults`. */
+export function widthsFor(route: string, defaults: number[]) {
+  return previewRoute.test(route) ? previewWidths : defaults;
 }
 
 type Measured = { element: string; clipper: string; sides: string[] };
 
 /** Runs in the page: the focused element's ring box against every ancestor that clips, or null when nothing is cut. */
-function measureFocusRing(): Measured | null {
+function measureFocusRing(rested: Map<Element, string>): Measured | null {
   const subpixel = 0.5;
   const element = document.activeElement as HTMLElement | null;
   if (!element || element === document.body || !element.matches(':focus-visible')) return null;
@@ -58,18 +69,23 @@ function measureFocusRing(): Measured | null {
     right = Math.max(right, box.right + reach);
     bottom = Math.max(bottom, box.bottom + reach);
   }
-  const shadows: string[] = [];
-  let depth = 0;
-  let current = '';
-  for (const char of style.boxShadow) {
-    if (char === '(') depth++;
-    if (char === ')') depth--;
-    if (char === ',' && depth === 0) {
-      shadows.push(current);
-      current = '';
-    } else current += char;
-  }
-  shadows.push(current);
+  const splitShadows = (value: string) => {
+    const parts: string[] = [];
+    let depth = 0;
+    let current = '';
+    for (const char of value) {
+      if (char === '(') depth++;
+      if (char === ')') depth--;
+      if (char === ',' && depth === 0) {
+        parts.push(current.trim());
+        current = '';
+      } else current += char;
+    }
+    parts.push(current.trim());
+    return parts;
+  };
+  const restingShadows = splitShadows(rested.get(element) ?? 'none');
+  const shadows = splitShadows(style.boxShadow).filter((shadow) => !restingShadows.includes(shadow));
   for (const shadow of shadows) {
     if (!shadow.trim() || shadow.trim() === 'none' || /inset/.test(shadow)) continue;
     const lengths = shadow.replace(/(rgba?|oklab|oklch|color|lab|lch|hsla?)\([^)]*\)/g, '').match(/-?[\d.]+px/g)?.map(parseFloat) ?? [];
@@ -113,13 +129,14 @@ function measureFocusRing(): Measured | null {
   return cuts[0] ?? null;
 }
 
-/** Tabs through the page and reports each element whose focus ring a clipping ancestor cuts. */
+/** Tabs through the page and reports each element whose focus ring a clipping ancestor cuts. A shadow an element wears before it takes focus is not its ring. */
 async function focusRingFindings(page: Page) {
+  const rested = await page.evaluateHandle(() => new Map([...document.querySelectorAll('a[href],button,input,select,textarea,summary,[tabindex],[contenteditable]')].map((element) => [element, getComputedStyle(element).boxShadow])));
   const seen = new Set<string>();
   const cuts: Measured[] = [];
   for (let stop = 0; stop < maxTabStops; stop++) {
     await page.keyboard.press('Tab');
-    const cut = await page.evaluate(measureFocusRing).catch(() => null);
+    const cut = await page.evaluate(measureFocusRing, rested).catch(() => null);
     const identity = await page.evaluate(() => {
       const active = document.activeElement;
       return active && active !== document.body ? `${active.tagName}|${(active as HTMLElement).innerText?.slice(0, 40)}|${[...(active.parentElement?.children ?? [])].indexOf(active)}|${active.getBoundingClientRect().top}` : '';
@@ -131,21 +148,27 @@ async function focusRingFindings(page: Page) {
   return cuts.map((cut) => `${cut.element} is cut by ${cut.clipper} on ${cut.sides.join(', ')}`);
 }
 
-/** Opens `route` in `theme` at `width` and runs `only` (default every check). Overflow counts at phone width only. */
+/** Opens `route` in `theme` at `width` and runs `only` (default every check). Overflow counts at phone width or narrower. */
 export async function checkPage(browser: Browser, base: string, route: string, { theme, width }: { theme: Theme; width: number }, only: readonly Check[] = checks) {
   const found = (check: Finding['check'], detail: string): Finding => ({ route, theme, width, check, detail });
+  const tab = route.match(previewRoute)?.[1];
   let opened: Awaited<ReturnType<typeof openSitePage>>;
   try {
-    opened = await openSitePage(browser, base, route, { theme, viewport: { width, height: 800 }, navigationTimeout: 120_000 });
+    opened = await openSitePage(browser, base, tab ? '/preset-preview' : route, { theme, viewport: { width, height: 800 }, navigationTimeout: 120_000 });
   } catch (error) {
     return [found('load', String(error instanceof Error ? error.message : error).split('\n')[0])];
   }
   const { page, context, errors } = opened;
   try {
     if (route.startsWith('/view/')) await page.locator('[data-preview-root]').waitFor({ timeout: 10_000 });
+    if (tab) {
+      await page.locator('[data-preview-ready]').waitFor({ state: 'attached', timeout: 10_000 });
+      await page.evaluate((id) => window.postMessage({ source: 'kosmos-site', type: 'page', page: id }, window.location.origin), tab);
+      await page.locator(`[data-preview-page="${tab}"]`).waitFor({ state: 'attached', timeout: 10_000 });
+    }
     await page.waitForLoadState('networkidle').catch(() => {});
     const findings: Finding[] = [];
-    if (only.includes('overflow') && width === phoneWidth) {
+    if (only.includes('overflow') && width <= phoneWidth) {
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       if (overflow > 1) findings.push(found('overflow', `scrolls sideways, ${overflow}px wider than the viewport`));
     }
