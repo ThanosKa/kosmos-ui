@@ -30,14 +30,17 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
 | 30 | Docs site fixes | D2 and B24, D4, D6, D7, D8, D9 (changelog), D10, D11, D12 | None | docs shell, preview frame, not-found page, search dialog, lint |
 | 31 | Block copy and docs prose (Fixed in ticket 31) | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
+| 34 | Icon swaps and small marks | M2, M5 | None | Status, Prompt composer, Assistant message, Notification inbox, style skill, lint |
+| 35 | Chart motion | M1, M3, M4 | None | Chart (Sparkline, Growth chart), `use-chart-motion`, Usage overview, Candlestick chart, chart examples, `chart.mdx` |
+| 36 | Copy icon swaps | M6 | 34 | Copy field, Code tabs, Run timeline, docs code block, docs heading, docs page actions |
 
-Tickets 08 and 09 wait for 15, 16 and 18 to 31. Ticket 17 adds a check only and blocks nothing.
+Tickets 08 and 09 wait for 15, 16 and 18 to 31. Ticket 17 adds a check only and blocks nothing. Ticket 11 added 34 to 36 from the Motion section (M and the finding number).
 
 ### Run order
 
 Tickets run two at a time; two that touch the same files never run together. The dashboards are touched by 21, 24, 26, 27 and 31, so those run one at a time. The lint files (`eslint.config.mjs`, `lib/code-checks.test.mts`) and the style skill's line for each check are shared by every ticket marked "lint": each adds its own entries, and a merge conflict there is solved by keeping both sides, so it does not keep two tickets apart.
 
-Pairs that share no file, in an order that respects every blocker: 15 and 17; 16 and 19; 18 and 23; 20 and 22; 21 and 29; 24 and 25; 26 and 30; 27 and 28; then 31 alone.
+Pairs that share no file, in an order that respects every blocker: 15 and 17; 16 and 19; 18 and 23; 20 and 22; 21 and 29; 24 and 25; 26 and 30; 27 and 28; then 31 alone. Motion: 34 and 35 together, then 36 (it may also run beside 35).
 
 ### Finding to ticket
 
@@ -48,6 +51,7 @@ Pairs that share no file, in an order that respects every blocker: 15 and 17; 16
 | Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: Fixed in ticket 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: Fixed in ticket 26 · app page title size: 28 · mixed heights: Fixed in ticket 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: Fixed in ticket 31 · `NumberField` locale: Fixed in ticket 26 · copied code: not doing |
 | Docs site | 1: 20 · 2: 30 · 3: 18 (check: 16) · 4: 30 · 5: 18 (check: 15) · 6: 30 · 7: 30 · 8: 30 · 9: 30 (changelog item; naming not doing) · 10: 30 · 11: 30 · 12: 30 · 13: 23 · 14: Kosmos style · 15: Fixed in ticket 31 |
 | Landing and Presets | 1: 29 · 2: 29 · 3: 29 · 4: 22 · 5: 18 · 6: 29 · 7: 28 · 8: 22 · 9: not doing · 10: 29 · 11: 19 · 12: 29 · 13: 28 · 14: 28 · 15: 29 · site check tool note: 15 |
+| Motion | 1: 35 · 2: 34 · 3: 35 · 4: 35 · 5: 34 · 6: 36 |
 
 ### Not doing
 
@@ -1067,3 +1071,98 @@ Tool note for the site check (ticket 01): `--route /` selects every route, becau
 **Not verified:** 200% zoom and 320px reflow, RTL, forced colors, a real screen reader, the picker's non-default choices (accent off, other radii, Compact and Comfortable), Warm, and full-motion playback.
 
 Tool note for the site check (ticket 16): `--check clipped-text` and `--check names` and the edge-fade test in `focus-ring` measure the checkable half of Blocks 3 and 14, Landing 8, Components 8, Blocks 4 and Docs 3. Fixed in ticket 16.
+
+## Motion
+
+Ticket 11. Emil's `improve-animations` surveyed the motion of every component, block, example, docs page and site page on the integration branch at `4c91ba8`, after ticket 10 trimmed motion and ticket 23 gated reduced motion. It read the code; it changes no source. Every value below follows the style skill's Motion section, `charts.md` and `marketing.md`; a finding that disagrees with them is under Kosmos style.
+
+### Scope
+
+- **Stack:** Tailwind 4 transitions and keyframes, Base UI's `data-starting-style` and `data-ending-style`, `@starting-style` (`starting:`), and WAAPI or `requestAnimationFrame` for the bell, the drift, the charts and the counters. No Motion library: `lib/motion.ts` feeds the WAAPI and dnd-kit timings.
+- **Tokens:** `ease-power3-out`, `ease-smooth-in-out`; `duration-instant` 100, `fast` 150, `base` 200, `overlay` 250, `slow` 300, `reveal` 500 (`registry/kosmos/styles/tokens.css:74-86`). No hand-typed curve or millisecond value outside the docs' easing demo, which lint allows.
+- **Read in full:** the overlays (Popover, Dropdown menu, Select, Combobox, Tooltip, Dialog, Drawer, Toast, Sonner, Command dialog, Navbar menu), the toggles (Switch, Checkbox, Radio, Tabs, Segmented control, Accordion, Collapsible, Sidebar), the AI components (Status, Prompt composer, Assistant message, Asset, Reasoning, Tool call, Tool approval, Plan checklist), Notification inbox, every chart and `use-chart-motion`, the marketing blocks, the landing (`landing-motion.css`, `landing-motion.tsx`, the gallery), the docs shell (sidebar, table of contents, code block, block viewer, headings, page actions) and the examples.
+- **Frequency:** high, many times a day: menu and list highlights, tab and segmented switches, hover fills, chart tooltips on hover, copy buttons. Occasional: overlays, toasts, drawers, status changes, Send and Stop. Rare: chart entrances, the bell, landing reveals.
+
+### Findings
+
+Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
+
+#### 1. Recharts charts jump under reduced motion and play their entrance on mount (Sparkline, Growth chart, Usage overview)
+
+- **Severity:** MEDIUM. **Kind:** bug (style skill, Reduced motion is mandatory; `charts.md`, Entrance and Reduced motion). **Checkable:** partly, browser: with reduced motion emulated, change the Usage overview range and read the chart container's computed opacity on the next frame (below 1 while it fades).
+- **Location:** `registry/kosmos/ui/chart.tsx:25-42` (`chartAnimation`, `useChartAnimation`), `:252-288` (Sparkline), `:299-344` (Sparkline bars), `:371-473` (Growth chart); `registry/kosmos/hooks/use-chart-motion.ts:94-108` (`useEntranceAnimation`); `registry/kosmos/blocks/usage-overview/usage-overview.tsx:294, 369-408`; `content/docs/components/chart.mdx:56`.
+- **What is wrong:** these charts pass `isAnimationActive: 'auto'`, so under reduced motion Recharts skips its animation: the chart appears at once, and a new range or new data snaps into place. The style asks for an opacity cross-fade, never a jump. They also mount and draw at once, so a chart below the fold plays its entrance where nobody sees it (the code says so: "Recharts plays the entrance on mount, not on scroll"). `charts.md` starts every entrance once a third of the chart is in view. Compare area chart already does both (`compare-area-chart.tsx:150-190`).
+- **Why it matters:** people who turn motion down still need to see that a number changed; a snap reads as a glitch. A Sparkline in a stat tile below the fold never shows its draw.
+- **Fix:** ticket 35. Mount each of these charts once a third of it is in view, and under reduced motion remount it with a 500ms fade whenever its data changes, as Compare area chart does.
+
+#### 2. Status and Prompt composer swap icons off the Kosmos recipe; Assistant message's copy swap leaves slowly
+
+- **Severity:** MEDIUM. **Kind:** taste (cohesion). **Checkable:** yes, code: a lint rule that a `motion-safe:` start scale is one of `scale-[0.97]`, `scale-95`, `scale-90` or `scale-25`.
+- **Location:** `registry/kosmos/ui/status.tsx:46-49` (`starting:opacity-0 motion-safe:starting:scale-80`, `duration-fast`); `registry/kosmos/ui/prompt-composer.tsx:95-96` (`motion-safe:data-hidden:scale-80`, `duration-fast` both ways); `registry/kosmos/ui/assistant-message.tsx:48, 261-267` (`*:duration-slow` on both icons, so Copy and Check also leave in 300ms). The recipe they drift from: `registry/kosmos/ui/asset.tsx:136-139, 252-255`.
+- **What is wrong:** Asset and Assistant message swap two icons in one place by fading the hidden one to `scale-25` behind a 4px blur (`blur-xs`): the incoming icon arrives in 300ms, and in Asset the outgoing one leaves in 150ms. Status and Prompt composer grow the new icon from `scale-80` with no blur in 150ms, a third look. `scale-80` is also outside Emil's 0.9 to 0.97 range for an entrance, as ticket 10 noted for Status. Assistant message breaks the exit row of the motion table (any exit 150ms).
+- **Why it matters:** a Status icon turning from the spinner to a check is the moment a run finishes; the same change should look the same in every component. The blur makes two icons read as one shape changing.
+- **Fix:** ticket 34. One recipe for every icon swap, written into the style skill with a lint rule.
+
+#### 3. Candlestick chart slides its tooltip and cursor by animating `left` and `top`
+
+- **Severity:** MEDIUM. **Kind:** taste (performance and cohesion). **Checkable:** no.
+- **Location:** `registry/kosmos/ui/candlestick-chart.tsx:557-566` (cursor, `left-(--x)`, `motion-safe:transition-[opacity,left] motion-safe:duration-base`) and `:610-619` (tooltip, `top-(--y) left-(--x)`, `motion-safe:transition-[opacity,left,top] motion-safe:duration-base`), easing `ease-power3-out`. The sibling that does it right: `registry/kosmos/ui/daily-stacked-bar-chart.tsx:338-342, 405-415` (`translate-x-(--x)`, `transition-[opacity,translate]`, `duration-slow`, `ease-smooth-in-out`).
+- **What is wrong:** `left` and `top` lay the page out again on every frame, and the slide runs on each pointer move across the candles. The motion table moves position on `smooth-in-out` over 300ms; this one uses `power3-out` over 200ms, so the two charts' tooltips glide differently.
+- **Why it matters:** hovering a chart is the most frequent chart motion; layout work per frame is where a busy dashboard drops frames.
+- **Fix:** ticket 35. Position both with `translate` and slide them on `duration-slow`, `ease-smooth-in-out`, as Daily stacked bar chart does.
+
+#### 4. The docs' Recharts examples draw with Recharts' own timing
+
+- **Severity:** LOW. **Kind:** taste (cohesion). **Checkable:** no.
+- **Location:** `registry/kosmos/examples/chart-custom.tsx:35-37`, `chart-card.tsx:103, 225`, `chart-card-legend.tsx:46`, `chart.tsx:140` (each `<Bar>` without `useChartAnimation`).
+- **What is wrong:** `chart.mdx:50` tells people to spread `useChartAnimation(entrance, data)` on each series; the examples on that page and the Chart card page do not, so their bars grow on Recharts' default (400ms, `ease`) instead of 300ms `power3-out`, and they ignore the `entrance` setting.
+- **Why it matters:** people copy the examples, not the sentence.
+- **Fix:** ticket 35.
+
+#### 5. The unread dot grows and shrinks on every read and unread
+
+- **Severity:** LOW. **Kind:** taste. **Checkable:** yes, the lint rule of finding 2 flags `motion-safe:scale-50`.
+- **Location:** `registry/kosmos/ui/notification-inbox.tsx:505-511` (`transition-[opacity,scale]`, `!unread && 'motion-safe:scale-50 opacity-0'`).
+- **What is wrong:** marking a notification read is a repeated action, like ticking a checkbox. Ticket 10 made the Checkbox and Radio marks fade without growing for that reason; the 8px dot still shrinks from full size to half.
+- **Fix:** ticket 34. The dot only fades.
+
+#### 6. Copy and reveal buttons swap their icon at once (missed opportunity)
+
+- **Severity:** LOW. **Kind:** taste (cohesion). **Checkable:** no.
+- **Location:** `registry/kosmos/ui/copy-field.tsx:78, 82`; `registry/kosmos/ui/code-tabs.tsx:104`; `registry/kosmos/blocks/run-timeline/run-timeline.tsx:351`; `components/docs/code-block.tsx:172`; `components/docs/docs-heading.tsx:60`; `components/docs/page-actions.tsx:44`.
+- **What is wrong:** Copy turns into Check with no transition here, while Assistant message's Copy button morphs. The docs' code block Copy is the most used copy button on the site.
+- **Why it matters:** the morph is the confirmation people look for after a copy; one product should confirm it one way.
+- **Fix:** ticket 36, with the recipe from ticket 34.
+
+No other missed opportunity was found: the state changes that teleport (calendar months, dismissed banners, tags) are frequent or keyboard-driven, where no motion is right.
+
+### Kosmos style
+
+Reported, not fixed. Each matches a row of the style skill's motion table or `conflicts.md`:
+
+- **Menu, select, command, table and list highlights fade over 100ms, arrow keys included** (`duration-instant` in `dropdown-menu.tsx:118`, `select.tsx:136`, `combobox.tsx:230`, `command.tsx:192`, `table.tsx:47`). Emil animates nothing on a keyboard action. Motion table: menu item highlight, `duration-instant`.
+- **Tabs and Segmented control indicators slide 300ms on `smooth-in-out`, arrow keys included** (`tabs.tsx:55`, `segmented-control.tsx:116`). Emil cuts motion on high-frequency switches. Motion table: sliding indicator, `duration-slow`.
+- **Accordion closes in 300ms** (`accordion.tsx:82`). Emil: exits shorter than enters. `conflicts.md`, Accordion close.
+- **`power3-out` and `smooth-in-out` in place of Emil's curves.** `conflicts.md`, Easing curves.
+- **Landing steps of 100ms and Text reveal's 120ms between words.** Emil: 30 to 80ms. `conflicts.md`, Stagger.
+- **Hover motion behind Tailwind's `hover:` (`(hover: hover)`) only** (Bento, Feature rows, Announcement, Browser frame tilt). Emil adds `(pointer: fine)`. `conflicts.md`, Hover gating.
+- **Sidebar collapse animates `width` over 300ms.** Emil prefers transforms. Motion table: sidebar resize, `duration-slow`; the keyboard shortcut already toggles it at once (`sidebar.tsx:283`).
+
+### Checked and kept
+
+- Overlays: Popover, Dropdown menu, Select, Combobox and Tooltip grow from `scale-[0.97]` at `origin-(--transform-origin)` in 200ms and leave in 150ms; Dialog from `scale-95` in 250ms; Drawer slides 300ms and leaves 150ms; every scale and slide sits behind `motion-safe:`. Tooltips after the first open at once (`tooltip.tsx:59`).
+- Command dialog and the docs search open and close with no motion (`command.tsx:91, 99`).
+- The bell badge pops from 70%: rare, it means something new arrived, and `notification-inbox.mdx` documents it.
+- Layout properties that stay: chart labels and lines that move on `top`, `bottom` or `height` when data changes (Highlight bar, Flow, Stacked block, Daily stacked bar), Meter and Usage meter `width`, Pricing's `grid-template-columns`, Navbar's positioner and popup size (Base UI's Navigation Menu pattern), Toast `height` (Base UI's stack). Each runs rarely, on one element or a few.
+- Kanban keyboard moves animate 200ms on `smooth-in-out`: the moving card shows where it went.
+- Multi-line chart's cursor tweens with `requestAnimationFrame` because its markers ride the curve; pointer hover tracks directly.
+- Dashboard analytics' Mark read and unread icon swaps at once: a dense row action.
+
+### Not doing
+
+- **Recharts draws in over 300ms, `charts.md` over 500ms (`duration-reveal`).** `chart.mdx:56` promises 300ms and the same value times every data change. The maintainer picks one; ticket 35 keeps 300ms.
+
+### Verification
+
+- Read from the code at `4c91ba8`; nothing was measured in the browser, since every finding is a class string or a prop.
+- **Not verified:** frame timing on a slow device for finding 3, and the feel of the icon swap recipe on Status in a busy Run timeline. Ticket 34 and 35 each feel-check in slow motion.

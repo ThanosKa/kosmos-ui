@@ -2,7 +2,7 @@
 
 **What to build:** A pull request from `dev` into `main` cannot merge while the site check finds a page that scrolls sideways, a clipped focus ring or a console error. Daily PRs into `dev` stay as fast as today. Spec: `docs/work/audit-spec.md`.
 
-**Blocked by:** 01 (Site check command), 10 (Motion trim and phone feel), 11 (Motion plans) and every fix ticket created by 07 and 11.
+**Blocked by:** 01 (Site check command), 10 (Motion trim and phone feel), 11 (Motion plans), the motion fix tickets 34 (Icon swaps and small marks), 35 (Chart motion) and 36 (Copy icon swaps), and every fix ticket created by 07.
 
 **Model:** Sonnet
 
