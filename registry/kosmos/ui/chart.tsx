@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as Recharts from 'recharts';
 import type { LegendPayload, TooltipContentProps, TooltipValueType } from 'recharts';
-import { type ChartEntrance, useEntranceAnimation } from '@/registry/kosmos/hooks/use-chart-motion';
+import { type ChartEntrance, useEntranceAnimation, useRechartsEntrance } from '@/registry/kosmos/hooks/use-chart-motion';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration, ease } from '@/registry/kosmos/lib/motion';
 
@@ -259,32 +259,40 @@ function Sparkline({
   className,
   ...props
 }: SparklineProps) {
-  const animation = useChartAnimation(entrance, data);
-  if (variant === 'bar') return <SparklineBars data={data} dataKey={dataKey} color={color} animation={animation} className={className} {...props} />;
+  const ref = React.useRef<HTMLDivElement>(null);
+  const entranceState = useRechartsEntrance(ref, entrance, data);
+  if (variant === 'bar') {
+    return <SparklineBars ref={ref} data={data} dataKey={dataKey} color={color} entranceState={entranceState} className={className} {...props} />;
+  }
+  const { revealed, isAnimationActive, remountKey } = entranceState;
   return (
-    <ChartContainer
-      config={{ [dataKey]: { color } }}
-      role="img"
-      className={cn('aspect-auto h-8 w-24', className)}
-      {...props}
-    >
-      <Recharts.AreaChart data={data as Datum[]} margin={{ top: 2, right: 2, bottom: 2, left: 2 }} accessibilityLayer={false}>
-        <Recharts.YAxis hide domain={['dataMin', 'dataMax']} />
-        <Recharts.Area
-          dataKey={dataKey}
-          type="linear"
-          stroke={seriesColor(dataKey)}
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-          fill={seriesColor(dataKey)}
-          fillOpacity={fill ? 0.05 : 0}
-          dot={false}
-          activeDot={false}
-          baseValue="dataMin"
-          {...animation}
-        />
-      </Recharts.AreaChart>
-    </ChartContainer>
+    <div ref={ref} data-slot="sparkline" role="img" className={cn('aspect-auto h-8 w-24', className)} {...props}>
+      {revealed ? (
+        <ChartContainer
+          key={remountKey}
+          config={{ [dataKey]: { color } }}
+          className="size-full transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0"
+        >
+          <Recharts.AreaChart data={data as Datum[]} margin={{ top: 2, right: 2, bottom: 2, left: 2 }} accessibilityLayer={false}>
+            <Recharts.YAxis hide domain={['dataMin', 'dataMax']} />
+            <Recharts.Area
+              dataKey={dataKey}
+              type="linear"
+              stroke={seriesColor(dataKey)}
+              strokeWidth={1.5}
+              strokeLinejoin="round"
+              fill={seriesColor(dataKey)}
+              fillOpacity={fill ? 0.05 : 0}
+              dot={false}
+              activeDot={false}
+              baseValue="dataMin"
+              {...chartAnimation}
+              isAnimationActive={isAnimationActive}
+            />
+          </Recharts.AreaChart>
+        </ChartContainer>
+      ) : null}
+    </div>
   );
 }
 
@@ -297,51 +305,60 @@ const BAR_SLOT = 6;
  * dot. When there are more bars than room, the oldest drop out of view, so the latest stays.
  */
 function SparklineBars({
+  ref,
   data,
   dataKey,
   color,
-  animation,
+  entranceState: { revealed, isAnimationActive, remountKey },
   className,
   ...props
-}: Omit<SparklineProps, 'variant' | 'fill' | 'entrance'> & { dataKey: string; animation: ReturnType<typeof useChartAnimation> }) {
+}: Omit<SparklineProps, 'variant' | 'fill' | 'entrance'> & {
+  dataKey: string;
+  entranceState: ReturnType<typeof useRechartsEntrance>;
+}) {
   const bars = data.map((datum) => {
     const value = Number(datum[dataKey]);
     return { [dataKey]: Number.isFinite(value) ? Math.max(value, 0) : 0 };
   });
   return (
     <div
+      ref={ref}
       data-slot="sparkline"
       role="img"
       className={cn('flex h-9 w-fit max-w-full justify-end overflow-hidden', className)}
       {...props}
     >
-      <ChartContainer
-        config={{ [dataKey]: { color } }}
-        style={{ '--sparkline-width': `${bars.length * BAR_SLOT}px` } as React.CSSProperties}
-        className="aspect-auto h-full w-(--sparkline-width) shrink-0"
-      >
-        <Recharts.BarChart data={bars} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} barCategoryGap={0} accessibilityLayer={false}>
-          <Recharts.YAxis hide domain={[0, 'dataMax']} />
-          <Recharts.Bar
-            dataKey={dataKey}
-            barSize={BAR_SLOT - 2}
-            radius={2}
-            minPointSize={4}
-            shape={(bar: Recharts.BarShapeProps) => {
-              const latest = bar.index === bars.length - 1;
-              return (
-                <Recharts.Rectangle
-                  {...bar}
-                  fill={seriesColor(dataKey)}
-                  fillOpacity={latest ? 1 : 0.25}
-                  className={latest ? 'forced-colors:fill-[CanvasText]' : 'forced-colors:fill-[GrayText]'}
-                />
-              );
-            }}
-            {...animation}
-          />
-        </Recharts.BarChart>
-      </ChartContainer>
+      {revealed ? (
+        <ChartContainer
+          key={remountKey}
+          config={{ [dataKey]: { color } }}
+          style={{ '--sparkline-width': `${bars.length * BAR_SLOT}px` } as React.CSSProperties}
+          className="aspect-auto h-full w-(--sparkline-width) shrink-0 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0"
+        >
+          <Recharts.BarChart data={bars} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} barCategoryGap={0} accessibilityLayer={false}>
+            <Recharts.YAxis hide domain={[0, 'dataMax']} />
+            <Recharts.Bar
+              dataKey={dataKey}
+              barSize={BAR_SLOT - 2}
+              radius={2}
+              minPointSize={4}
+              shape={(bar: Recharts.BarShapeProps) => {
+                const latest = bar.index === bars.length - 1;
+                return (
+                  <Recharts.Rectangle
+                    {...bar}
+                    fill={seriesColor(dataKey)}
+                    fillOpacity={latest ? 1 : 0.25}
+                    className={latest ? 'forced-colors:fill-[CanvasText]' : 'forced-colors:fill-[GrayText]'}
+                  />
+                );
+              }}
+              {...chartAnimation}
+              isAnimationActive={isAnimationActive}
+            />
+          </Recharts.BarChart>
+        </ChartContainer>
+      ) : null}
     </div>
   );
 }
@@ -407,7 +424,8 @@ function GrowthChart({
   /** When the lines draw in. See `ChartEntrance`. */
   entrance?: ChartEntrance;
 }) {
-  const animation = useChartAnimation(entrance, data);
+  const figure = React.useRef<HTMLElement>(null);
+  const { revealed, isAnimationActive, remountKey } = useRechartsEntrance(figure, entrance, data);
   const keys = Object.keys(config);
   const formatX = (value: unknown) => (xFormatter ? xFormatter(String(value)) : String(value));
   const formatY = (value: number) => (valueFormatter ? valueFormatter(value) : defaultNumber.format(value));
@@ -417,60 +435,64 @@ function GrowthChart({
   const ends = first === last ? [first] : [first, last];
 
   return (
-    <figure data-slot="growth-chart" className={cn('m-0 flex w-full flex-col', className)}>
-      <ChartContainer
-        config={config}
-        className="aspect-auto h-60 [&_.recharts-cartesian-grid_line]:stroke-foreground/15"
-        {...props}
-      >
-        <Recharts.AreaChart title={title} data={data as Datum[]} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
-          {grid ? <Recharts.CartesianGrid horizontal={false} strokeDasharray="1 5" strokeLinecap="round" /> : null}
-          <Recharts.XAxis
-            dataKey={xKey}
-            ticks={ends}
-            interval={0}
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={formatX}
-            tick={<EndTick first={first} />}
-          />
-          <Recharts.YAxis hide domain={paddedDomain} />
-          <ChartTooltip
-            cursor={{ strokeWidth: 1 }}
-            defaultIndex={defaultIndex}
-            isAnimationActive={false}
-            content={
-              <ChartTooltipContent
-                labelFormatter={(label) => formatX(label)}
-                valueFormatter={(value) => (typeof value === 'number' ? formatY(value) : String(value))}
-                previousKeys={previousKeys}
-              />
-            }
-          />
-          {(legend ?? keys.length > 1) && <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" previousKeys={previousKeys} />} />}
-          {[...keys.filter((key) => previousKeys.includes(key)), ...keys.filter((key) => !previousKeys.includes(key))].map((key) => {
-            const isPrevious = previousKeys.includes(key);
-            return (
-              <Recharts.Area
-                key={key}
-                dataKey={key}
-                name={typeof config[key].label === 'string' ? config[key].label : key}
-                type="linear"
-                stroke={seriesColor(key)}
-                strokeOpacity={isPrevious ? 0.45 : 1}
-                strokeWidth={1.5}
-                strokeLinejoin="round"
-                fill={seriesColor(key)}
-                fillOpacity={key === filledKey ? 0.05 : 0}
-                dot={false}
-                activeDot={isPrevious ? false : { r: 3, strokeWidth: 1.5, stroke: 'var(--card)' }}
-                {...animation}
-              />
-            );
-          })}
-        </Recharts.AreaChart>
-      </ChartContainer>
+    <figure ref={figure} data-slot="growth-chart" className={cn('m-0 flex w-full flex-col', className)}>
+      {revealed ? (
+        <ChartContainer
+          key={remountKey}
+          config={config}
+          className="aspect-auto h-60 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0 [&_.recharts-cartesian-grid_line]:stroke-foreground/15"
+          {...props}
+        >
+          <Recharts.AreaChart title={title} data={data as Datum[]} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
+            {grid ? <Recharts.CartesianGrid horizontal={false} strokeDasharray="1 5" strokeLinecap="round" /> : null}
+            <Recharts.XAxis
+              dataKey={xKey}
+              ticks={ends}
+              interval={0}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={formatX}
+              tick={<EndTick first={first} />}
+            />
+            <Recharts.YAxis hide domain={paddedDomain} />
+            <ChartTooltip
+              cursor={{ strokeWidth: 1 }}
+              defaultIndex={defaultIndex}
+              isAnimationActive={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(label) => formatX(label)}
+                  valueFormatter={(value) => (typeof value === 'number' ? formatY(value) : String(value))}
+                  previousKeys={previousKeys}
+                />
+              }
+            />
+            {(legend ?? keys.length > 1) && <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" previousKeys={previousKeys} />} />}
+            {[...keys.filter((key) => previousKeys.includes(key)), ...keys.filter((key) => !previousKeys.includes(key))].map((key) => {
+              const isPrevious = previousKeys.includes(key);
+              return (
+                <Recharts.Area
+                  key={key}
+                  dataKey={key}
+                  name={typeof config[key].label === 'string' ? config[key].label : key}
+                  type="linear"
+                  stroke={seriesColor(key)}
+                  strokeOpacity={isPrevious ? 0.45 : 1}
+                  strokeWidth={1.5}
+                  strokeLinejoin="round"
+                  fill={seriesColor(key)}
+                  fillOpacity={key === filledKey ? 0.05 : 0}
+                  dot={false}
+                  activeDot={isPrevious ? false : { r: 3, strokeWidth: 1.5, stroke: 'var(--card)' }}
+                  {...chartAnimation}
+                  isAnimationActive={isAnimationActive}
+                />
+              );
+            })}
+          </Recharts.AreaChart>
+        </ChartContainer>
+      ) : null}
       {/* A table keeps its content width at 1px, so the visually hidden box is a wrapper. */}
       <div className="sr-only">
         <table>

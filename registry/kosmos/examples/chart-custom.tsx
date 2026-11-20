@@ -7,6 +7,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
+  useChartAnimation,
   type ChartConfig,
 } from '@/registry/kosmos/ui/chart';
 
@@ -24,6 +25,7 @@ const config = {
 } satisfies ChartConfig;
 
 export default function ChartCustom() {
+  const animation = useChartAnimation(undefined, data);
   return (
     <ChartContainer config={config} className="aspect-auto h-64 max-w-2xl">
       <BarChart data={data} title="Signups per quarter, by platform" barGap={2}>
@@ -32,9 +34,9 @@ export default function ChartCustom() {
         <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" />
         <ChartTooltip cursor content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="web" fill="var(--color-web)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-        <Bar dataKey="ios" fill="var(--color-ios)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-        <Bar dataKey="android" fill="var(--color-android)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+        <Bar dataKey="web" fill="var(--color-web)" radius={[4, 4, 0, 0]} maxBarSize={24} {...animation} />
+        <Bar dataKey="ios" fill="var(--color-ios)" radius={[4, 4, 0, 0]} maxBarSize={24} {...animation} />
+        <Bar dataKey="android" fill="var(--color-android)" radius={[4, 4, 0, 0]} maxBarSize={24} {...animation} />
       </BarChart>
     </ChartContainer>
   );

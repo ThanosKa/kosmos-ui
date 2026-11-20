@@ -53,7 +53,7 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
 
 - `title` names the growth chart, and keyboard users can focus it and step through the points with the arrow keys.
 - It also renders its data as a visually hidden table, so screen reader users get every value.
-- Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
+- Sparkline and Growth chart draw in over 300ms once a third of the chart is in view. When the user prefers reduced motion they fade in instead, and fade in again when their data changes. A chart you compose with `useChartAnimation` draws on mount and skips the animation under that setting.
 
 ## Entrance
 
