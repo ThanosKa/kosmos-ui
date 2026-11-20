@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { BarList } from '@/registry/kosmos/ui/bar-list';
 
@@ -52,9 +53,9 @@ const allZero = [
   { label: 'Kiln Studio', value: 0 },
 ];
 
-export default function BarListPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <div className="grid gap-10 md:grid-cols-2">
         <PreviewSection title="Default format, mono labels">
           <BarList aria-label="Top events" items={topEvents} format={compact.format} />
@@ -76,10 +77,6 @@ export default function BarListPreview() {
             showShare
             total={28495200}
           />
-        </PreviewSection>
-
-        <PreviewSection title="Worst case at 320px">
-          <BarList aria-label="Worst case" items={worstCase} showShare className="max-w-80" />
         </PreviewSection>
 
         <PreviewSection title="A tie, then all zero">
@@ -105,6 +102,36 @@ export default function BarListPreview() {
           <BarList aria-labelledby="bar-list-card-title" items={topEvents.slice(0, 5)} format={compact.format} />
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <div className="grid gap-10 md:grid-cols-2">
+      <PreviewSection title="Worst case at 320px">
+        <BarList aria-label="Worst case at 320px" items={worstCase} showShare className="max-w-80" />
+      </PreviewSection>
+      <PreviewSection title="Worst case, wide">
+        <BarList aria-label="Worst case, wide" items={worstCase} format={compact.format} showShare />
+      </PreviewSection>
+    </div>
+  );
+}
+
+export default function BarListPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

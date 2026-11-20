@@ -14,6 +14,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/registry/kosmos/ui/popover';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[22rem]';
 
@@ -48,12 +49,12 @@ function ChangesPopover({ container, scrolled }: { container: HTMLElement; scrol
   );
 }
 
-export default function PopoverPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
-          <OverlayStage label="bottom, center (default)" className={stageClass}>
+          <OverlayStage whileVisible label="bottom, center (default)" className={stageClass}>
             {(container) => (
               <div className="flex justify-center pt-4">
                 <Popover open>
@@ -78,7 +79,7 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="top, end" className={stageClass}>
+          <OverlayStage whileVisible label="top, end" className={stageClass}>
             {(container) => (
               <div className="flex h-full items-end justify-end pb-4">
                 <Popover open>
@@ -97,7 +98,7 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="right, start" className={stageClass}>
+          <OverlayStage whileVisible label="right, start" className={stageClass}>
             {(container) => (
               <div className="flex items-start pt-4">
                 <Popover open>
@@ -109,6 +110,7 @@ export default function PopoverPreview() {
                     initialFocus={false}
                     side="right"
                     align="start"
+                    aria-label="About this metric"
                     className="w-56"
                   >
                     <PopoverDescription>
@@ -120,7 +122,7 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="long text, no room below (flips up)" className={stageClass}>
+          <OverlayStage whileVisible label="long text, no room below (flips up)" className={stageClass}>
             {(container) => (
               <div className="flex h-full items-end justify-center pb-4">
                 <Popover open>
@@ -139,7 +141,7 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more content than fits, at the top" className={stageClass}>
+          <OverlayStage whileVisible label="more content than fits, at the top" className={stageClass}>
             {(container) => (
               <div className="pt-4">
                 <ChangesPopover container={container} />
@@ -147,7 +149,7 @@ export default function PopoverPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more content than fits, scrolled halfway" className={stageClass}>
+          <OverlayStage whileVisible label="more content than fits, scrolled halfway" className={stageClass}>
             {(container) => (
               <div className="pt-4">
                 <ChangesPopover container={container} scrolled />
@@ -177,6 +179,58 @@ export default function PopoverPreview() {
           </Popover>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewSection title="Long text, an unbreakable link, a long trigger">
+      <OverlayStageGrid>
+        <OverlayStage whileVisible inert label="long title and description" className={stageClass}>
+          {(container) => (
+            <div className="flex justify-center pt-4">
+              <Popover open>
+                <PopoverTrigger render={<Button variant="secondary" className="max-w-48" />}>
+                  <Bell data-icon="inline-start" />
+                  <span className="truncate">Notifications for Copperline Bank server events</span>
+                </PopoverTrigger>
+                <PopoverContent container={container} initialFocus={false}>
+                  <PopoverHeader>
+                    <PopoverTitle>Turn on notifications for the Copperline Bank server events workspace?</PopoverTitle>
+                    <PopoverDescription>
+                      Get an email at bartholomew.fitzgerald@northwind-industries-holdings.example whenever someone assigns you a task or mentions you.
+                    </PopoverDescription>
+                  </PopoverHeader>
+                  <div className="flex justify-end gap-2">
+                    <PopoverClose render={<Button variant="secondary" size="sm" />}>Not now</PopoverClose>
+                    <Button variant="primary" size="sm">
+                      Turn on
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+        </OverlayStage>
+      </OverlayStageGrid>
+    </PreviewSection>
+  );
+}
+
+export default function PopoverPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

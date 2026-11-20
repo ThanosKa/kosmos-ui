@@ -1,0 +1,12 @@
+---
+title: Flickering grid settles, and the unread dot holds still
+description: Flickering grid stops after 5 seconds, and the Notification inbox unread dot no longer scales under reduced motion.
+date: 2026-11-20
+---
+
+Two components moved in ways a reader could not stop.
+
+- [Flickering grid](/docs/components/flickering-grid): it flickers for 3.5 seconds after it first comes into view, then eases to its still pattern and stays still. It stops moving within 5 seconds. Under reduced motion it draws the still pattern from the start, as before.
+- [Notification inbox](/docs/components/notification-inbox): the unread dot scaled in and out under reduced motion. It now only fades.
+
+To update, run the add command again for each item.

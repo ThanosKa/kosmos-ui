@@ -4,7 +4,7 @@ description: A preset with an accent fills buttons, switches, checkboxes, radios
 date: 2026-10-26
 ---
 
-A preset's color now drives `primary` too, as shadcn themes do. With Console the primary button, a checked checkbox, a switch that is on and the slider range are violet; with Warm they are orange. Default stays black and white. Each preset states its own `primary-foreground`, white where it passes 4.5:1 and dark ink where it does not (Warm in light, every preset in dark). To pick it up, take the preset's CSS or run `shadcn add` for it again.
+A preset's color now drives `primary` too, as shadcn themes do. With Console the primary button, a checked checkbox, a switch that is on and the slider range are violet; with Warm they are orange. Default stays black and white. Each preset states its own `primary-foreground`. It is white where white passes 4.5:1 and dark ink where it does not (Warm in light, every preset in dark). To pick it up, take the preset's CSS or run `shadcn add` for it again.
 
 - **[Tabs](/docs/components/tabs)**: the indicator takes `primary` instead of `foreground`, so it follows the preset.
 - **Presets**: each one also sets `primary`, `primary-foreground`, `sidebar-primary` and `sidebar-primary-foreground`. Turning the Accent switch off returns the ink primary.

@@ -2,6 +2,8 @@
 
 import { ChartColumn, Check, CircleAlert, Database, Hourglass, Link2, RotateCcw, Square } from 'lucide-react';
 import * as React from 'react';
+import { useCopy, type CopyResult } from '@/registry/kosmos/hooks/use-copy';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { formatDuration } from '@/registry/kosmos/lib/format';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -54,6 +56,7 @@ type RunTimelineProps = {
   onStop?: () => void;
   onRetry?: (fromStepId: string) => void;
   onDecide?: (stepId: string, decision: ApprovalDecision) => void | Promise<void>;
+  /** Runs after the link is copied. The Copy link button shows only when the run has a `url`. */
   onCopyLink?: (run: Run) => void;
   className?: string;
 };
@@ -160,14 +163,13 @@ function clockAt(start: string, offsetMs: number) {
     .join(':');
 }
 
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
 function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase();
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
 }
 
 function plural(count: number, word: string) {
@@ -187,21 +189,19 @@ const stepEnter =
   'transition-[opacity,translate] duration-base ease-power3-out starting:opacity-0 motion-safe:starting:translate-y-1';
 
 /** One row of the timeline: the offset, the node on the connector, then the body. */
-function TimelineRow({ time, clock, children }: { time: string; clock: string; children: React.ReactNode }) {
+function TimelineRow({ time, clock, enter, children }: { time: string; clock: string; enter: boolean; children: React.ReactNode }) {
   return (
     <li
       className={cn(
         'group/step grid grid-cols-[0.5rem_minmax(0,1fr)] gap-x-3 @md/run:grid-cols-[3.5rem_0.5rem_minmax(0,1fr)]',
-        stepEnter,
+        enter && stepEnter,
       )}
     >
-      <span className="hidden h-9 items-center justify-end @md/run:flex">
-        <Tooltip>
-          <TooltipTrigger render={<time dateTime={clock} />} className="text-caption text-muted-foreground tabular-nums">
-            {time}
-          </TooltipTrigger>
-          <TooltipContent side="left">{clock}</TooltipContent>
-        </Tooltip>
+      <span className="sr-only h-9 items-center justify-end @md/run:not-sr-only @md/run:flex">
+        <time dateTime={clock} className="text-caption text-muted-foreground tabular-nums">
+          <span className="sr-only">{clock}</span>
+          <span aria-hidden>{time}</span>
+        </time>
       </span>
       <span aria-hidden className="relative flex justify-center">
         <span className="absolute inset-y-0 w-px bg-border group-first/step:top-4.5 group-last/step:bottom-auto group-last/step:h-4.5" />
@@ -237,9 +237,15 @@ function StepBody({
     case 'approval':
       return <ToolApproval {...step.approval} surface="none" onDecide={(decision) => onDecide?.(step.id, decision)} />;
     default:
-      return <p className="max-w-[40em] px-2 py-2 text-body text-pretty text-foreground">{step.text}</p>;
+      return <p className="max-w-[40em] px-2 py-2 text-body text-pretty wrap-anywhere text-foreground">{step.text}</p>;
   }
 }
+
+// Icon swaps cross-fade; with motion allowed they also scale and blur, as Asset's play and pause icons do.
+const iconSwap = cn(
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+);
 
 function HeaderAction({ label, onClick, children }: { label: string; onClick?: () => void; children: React.ReactNode }) {
   return (
@@ -252,25 +258,10 @@ function HeaderAction({ label, onClick, children }: { label: string; onClick?: (
   );
 }
 
-function CopyLinkAction({ run, onCopyLink }: { run: Run; onCopyLink?: (run: Run) => void }) {
-  const [copied, setCopied] = React.useState(false);
-  React.useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1600);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  function copy() {
-    if (onCopyLink) onCopyLink(run);
-    else if (run.url) void navigator.clipboard?.writeText(run.url);
-    setCopied(true);
-  }
-
-  return (
-    <HeaderAction label={copied ? 'Link copied' : 'Copy link'} onClick={copy}>
-      {copied ? <Check /> : <Link2 />}
-    </HeaderAction>
-  );
+function copyLinkMessage(result: CopyResult) {
+  if (result === 'copied') return 'Link copied';
+  if (result === 'failed') return 'Couldn’t copy the link';
+  return '';
 }
 
 /**
@@ -296,6 +287,16 @@ function RunTimeline({
   const titleId = React.useId();
   const actionsRef = React.useRef<HTMLDivElement>(null);
   const stopPressed = React.useRef(false);
+  const [copyResult, copyLink] = useCopy(run.url ?? '');
+  const mounted = useMounted();
+  // Each change to the status or the copy result replaces the text of the one live region, which is what screen readers announce.
+  const [announced, setAnnounced] = React.useState({ status: run.status, copyResult, text: '' });
+  if (announced.status !== run.status) {
+    setAnnounced({ status: run.status, copyResult, text: run.status === 'running' ? 'Working…' : badge.label });
+  } else if (announced.copyResult !== copyResult) {
+    setAnnounced({ status: run.status, copyResult, text: copyLinkMessage(copyResult) });
+  }
+  const announcement = announced.text;
 
   React.useEffect(() => {
     if (active || !stopPressed.current) return;
@@ -345,9 +346,25 @@ function RunTimeline({
                 <Square />
               </HeaderAction>
             ) : null}
-            <CopyLinkAction run={run} onCopyLink={onCopyLink} />
+            {run.url ? (
+              <HeaderAction
+                label={copyResult === 'copied' ? 'Link copied' : 'Copy link'}
+                onClick={() => {
+                  copyLink();
+                  onCopyLink?.(run);
+                }}
+              >
+                <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+                  <Check data-visible={copyResult === 'copied' || undefined} className={iconSwap} />
+                  <Link2 data-visible={copyResult !== 'copied' || undefined} className={iconSwap} />
+                </span>
+              </HeaderAction>
+            ) : null}
           </div>
         </div>
+        <p role="status" className="sr-only">
+          {announcement}
+        </p>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-caption text-muted-foreground">
           <StatusBadge status={badge.status}>{badge.label}</StatusBadge>
           <span className="flex min-w-0 items-center gap-1.5">
@@ -405,13 +422,13 @@ function RunTimeline({
           <CollapsibleContent>
             <ol aria-label="Steps" className={cn('flex flex-col px-3 pb-3 @md/run:px-4', finished ? 'pt-1' : 'pt-3')}>
               {run.steps.map((step) => (
-                <TimelineRow key={step.id} time={formatOffset(step.offsetMs)} clock={clockAt(run.startedAt, step.offsetMs)}>
+                <TimelineRow key={step.id} time={formatOffset(step.offsetMs)} clock={clockAt(run.startedAt, step.offsetMs)} enter={mounted}>
                   <StepBody step={step} onDecide={onDecide} />
                 </TimelineRow>
               ))}
               {run.status === 'running' ? (
-                <TimelineRow time={formatOffset(run.elapsedMs)} clock={clockAt(run.startedAt, run.elapsedMs)}>
-                  <p role="status" className="flex h-9 items-center gap-2 px-2 text-body text-muted-foreground">
+                <TimelineRow time={formatOffset(run.elapsedMs)} clock={clockAt(run.startedAt, run.elapsedMs)} enter={mounted}>
+                  <p className="flex h-9 items-center gap-2 px-2 text-body text-muted-foreground">
                     <StatusIcon status="running" />
                     Working…
                   </p>
@@ -428,10 +445,12 @@ function RunTimeline({
             <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0 text-destructive" />
             <span className="min-w-0 break-words">{run.error.message}</span>
           </p>
-          <Button variant="secondary" onClick={() => run.error && onRetry?.(run.error.stepId)}>
-            <RotateCcw />
-            {retryLabel}
-          </Button>
+          {onRetry ? (
+            <Button variant="secondary" onClick={() => run.error && onRetry(run.error.stepId)}>
+              <RotateCcw />
+              {retryLabel}
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </section>

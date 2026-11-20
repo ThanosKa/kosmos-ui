@@ -306,12 +306,12 @@ function PaginationPageSize({ options = [10, 25, 50, 100], label = 'Rows per pag
   const labelId = React.useId();
   const items = options.map((size) => ({ value: size, label: numberFormat.format(size) }));
   return (
-    <div data-slot="pagination-page-size" className={cn('flex items-center gap-2', className)} {...props}>
-      <span id={labelId} className="text-small whitespace-nowrap text-muted-foreground">
+    <div data-slot="pagination-page-size" className={cn('flex min-w-0 items-center gap-2', className)} {...props}>
+      <span id={labelId} title={label} className="min-w-0 truncate text-small text-muted-foreground">
         {label}
       </span>
       <Select items={items} value={pageSize} onValueChange={(next) => next !== null && setPageSize(next)}>
-        <SelectTrigger aria-labelledby={labelId} className="h-7.5 tabular-nums">
+        <SelectTrigger aria-labelledby={labelId} className="h-7.5 shrink-0 tabular-nums">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -366,7 +366,7 @@ function PaginationLoadMore({ shown, total, onLoadMore, loading = false, classNa
           className="data-disabled:opacity-100"
         >
           {loading ? (
-            <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin" />
+            <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin motion-reduce:animate-pulse" />
           ) : (
             <ArrowDown aria-hidden data-icon="inline-start" />
           )}

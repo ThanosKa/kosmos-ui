@@ -12,9 +12,11 @@ import {
   ChartTooltipContent,
   GrowthChart,
   Sparkline,
+  useChartAnimation,
   type ChartConfig,
 } from '@/registry/kosmos/ui/chart';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/registry/kosmos/ui/empty';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const revenue = [18200, 21400, 19800, 24600, 27100, 26300, 31800, 34200, 33100, 38900, 41200, 45600];
@@ -55,9 +57,10 @@ const tiles = [
   { label: 'Dropped events', value: '0.21%', change: '−0.03 pts', rising: false, data: trend([0.31, 0.3, 0.29, 0.32, 0.28, 0.27, 0.26, 0.26, 0.24, 0.23, 0.22, 0.21]), color: 'var(--chart-2)' },
 ];
 
-export default function ChartPreview() {
+function Normal() {
+  const animation = useChartAnimation(undefined, paletteData);
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Growth chart: one series, tooltip pinned">
         <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <div className="mb-4 flex flex-col gap-0.5">
@@ -136,10 +139,48 @@ export default function ChartPreview() {
               <ChartTooltip cursor defaultIndex={2} isAnimationActive={false} content={<ChartTooltipContent />} />
               <ChartLegend content={<ChartLegendContent />} />
               {Object.keys(paletteConfig).map((key) => (
-                <Recharts.Bar key={key} dataKey={key} fill={`var(--color-${key})`} radius={[4, 4, 0, 0]} maxBarSize={24} />
+                <Recharts.Bar key={key} dataKey={key} fill={`var(--color-${key})`} radius={[4, 4, 0, 0]} maxBarSize={24} {...animation} />
               ))}
             </Recharts.BarChart>
           </ChartContainer>
+        </div>
+      </PreviewSection>
+
+    </>
+  );
+}
+
+const hugeData = months.map((month, index) => ({ month, revenue: revenue[index] * 28_000, expenses: expenses[index] * 28_000 }));
+const longConfig = {
+  revenue: { label: 'Recurring revenue across every plan, region and currency', color: 'var(--chart-1)' },
+  expenses: { label: 'Ιστότοπος καφέ 🌊', color: 'var(--chart-2)' },
+} satisfies ChartConfig;
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Growth chart: numbers in the billions, long series names in the legend">
+        <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">
+          <GrowthChart title="Revenue and expenses, in the billions" data={hugeData} config={longConfig} xKey="month" previousKeys={['expenses']} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Growth chart: one point, then every value zero">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">
+            <GrowthChart title="Revenue, one month" data={growthData.slice(0, 1)} config={revenueConfig} xKey="month" />
+          </div>
+          <div className="rounded-2xl border border-transparent bg-card p-4 shadow-card">
+            <GrowthChart title="Revenue, all zero" data={growthData.map((row) => ({ ...row, revenue: 0 }))} config={revenueConfig} xKey="month" />
+          </div>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Sparklines: one point, a flat line, a huge swing">
+        <div className="flex flex-wrap items-center gap-8">
+          <Sparkline data={trend([5])} aria-label="One point" />
+          <Sparkline data={trend([0, 0, 0, 0, 0, 0])} aria-label="All zero" />
+          <Sparkline data={trend([1, 1_284_903_772, 2, 1_100_000_000, 3])} aria-label="A huge swing" />
         </div>
       </PreviewSection>
 
@@ -154,6 +195,23 @@ export default function ChartPreview() {
           </Empty>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+export default function ChartPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

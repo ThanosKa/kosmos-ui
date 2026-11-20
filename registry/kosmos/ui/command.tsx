@@ -134,7 +134,7 @@ function CommandInput({ className, ...props }: AutocompletePrimitive.Input.Props
 }
 
 /**
- * The scrolling list of matches. Pass a function to render each item or group of `items`,
+ * The scrolling list of matches, named "Commands" for screen readers; pass `aria-label` for a better name. Pass a function to render each item or group of `items`,
  * or the items themselves. Scrolls past 20rem in a `ScrollArea`: while matches are hidden past an
  * edge, that edge fades out and the scrollbar shows, so rows below the fold are never missed.
  */
@@ -142,15 +142,13 @@ function CommandList({ className, ...props }: AutocompletePrimitive.List.Props) 
   return (
     <ScrollArea
       data-slot="command-scroll-area"
-      className={cn(
-        'flex-[0_1_auto] rounded-none',
-        // The palette clips anything outside it, so the list draws its focus outline inside.
-        'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
-      )}
+      // The input keeps focus while the list is open, and the highlighted item scrolls itself into view.
+      focusable={false}
+      className="flex-[0_1_auto] rounded-none"
       // `min-w-0!` beats the content's inline `min-width: fit-content`, so long labels truncate instead of widening the list.
       viewportClassName="max-h-80 overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
     >
-      <AutocompletePrimitive.List data-slot="command-list" className={cn('p-1 data-empty:p-0', className)} {...props} />
+      <AutocompletePrimitive.List data-slot="command-list" aria-label="Commands" className={cn('p-1 data-empty:p-0', className)} {...props} />
     </ScrollArea>
   );
 }
@@ -190,7 +188,7 @@ function CommandItem({ className, ...props }: AutocompletePrimitive.Item.Props) 
     <AutocompletePrimitive.Item
       data-slot="command-item"
       className={cn(
-        'flex min-h-9 cursor-default scroll-my-1 items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none',
+        'flex min-h-9 cursor-default scroll-my-1 items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none [-webkit-tap-highlight-color:transparent]',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
@@ -213,6 +211,7 @@ function CommandDescription({ className, ...props }: React.ComponentProps<'span'
   return (
     <span
       data-slot="command-description"
+      title={typeof props.children === 'string' ? props.children : undefined}
       className={cn('truncate text-small font-normal text-muted-foreground', className)}
       {...props}
     />
@@ -231,7 +230,7 @@ function CommandLoading({ className, children = 'Searching…', ...props }: Reac
       className={cn('flex items-center justify-center gap-2 px-4 py-10 text-body text-muted-foreground', className)}
       {...props}
     >
-      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />
+      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin motion-reduce:animate-pulse" />
       {children}
     </div>
   );

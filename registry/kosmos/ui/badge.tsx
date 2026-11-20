@@ -1,6 +1,7 @@
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
 import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 const neutral = 'bg-secondary text-secondary-foreground shadow-control [a&]:hover:bg-muted';
@@ -23,12 +24,12 @@ const badgeVariants = cva(
         success: `${neutral} ${withDot} before:bg-success`,
         warning: `${neutral} ${withDot} before:bg-warning`,
         destructive: `${neutral} ${withDot} before:bg-destructive`,
-        gray: 'bg-tint-gray text-tint-gray-foreground [a&]:hover:bg-tint-gray-border',
-        blue: 'bg-tint-blue text-tint-blue-foreground [a&]:hover:bg-tint-blue-border',
-        green: 'bg-tint-green text-tint-green-foreground [a&]:hover:bg-tint-green-border',
-        amber: 'bg-tint-amber text-tint-amber-foreground [a&]:hover:bg-tint-amber-border',
-        red: 'bg-tint-red text-tint-red-foreground [a&]:hover:bg-tint-red-border',
-        violet: 'bg-tint-violet text-tint-violet-foreground [a&]:hover:bg-tint-violet-border',
+        gray: 'bg-tint-gray text-tint-gray-foreground [a&]:hover:bg-tint-gray-hover',
+        blue: 'bg-tint-blue text-tint-blue-foreground [a&]:hover:bg-tint-blue-hover',
+        green: 'bg-tint-green text-tint-green-foreground [a&]:hover:bg-tint-green-hover',
+        amber: 'bg-tint-amber text-tint-amber-foreground [a&]:hover:bg-tint-amber-hover',
+        red: 'bg-tint-red text-tint-red-foreground [a&]:hover:bg-tint-red-hover',
+        violet: 'bg-tint-violet text-tint-violet-foreground [a&]:hover:bg-tint-violet-hover',
       },
     },
     defaultVariants: {
@@ -47,11 +48,20 @@ type BadgeProps = useRender.ComponentProps<'span'> & {
   variant?: BadgeVariant;
 };
 
-function Badge({ className, variant = 'secondary', render, ...props }: BadgeProps) {
+function Badge({ className, variant = 'secondary', render, children, ...props }: BadgeProps) {
+  const label = React.Children.map(children, (child) =>
+    typeof child === 'string' ? (
+      <span title={child} className="min-w-0 truncate">
+        {child}
+      </span>
+    ) : (
+      child
+    ),
+  );
   return useRender({
     defaultTagName: 'span',
     render,
-    props: mergeProps<'span'>({ className: cn(badgeVariants({ variant }), className) }, props),
+    props: mergeProps<'span'>({ className: cn(badgeVariants({ variant }), className), ...(children === undefined ? {} : { children: label }) }, props),
     state: { slot: 'badge', variant },
   });
 }

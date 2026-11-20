@@ -2,9 +2,11 @@
 
 import {
   Activity,
+  ChartNoAxesColumn,
   CircleDollarSign,
   CircleHelp,
   FolderKanban,
+  Handshake,
   Layers,
   LayoutDashboard,
   LogOut,
@@ -61,6 +63,8 @@ type NavItem = {
 
 const sampleNavMain: NavItem[] = [
   { id: 'overview', label: 'Overview', href: '#overview', icon: LayoutDashboard },
+  { id: 'analytics', label: 'Analytics', href: '#analytics', icon: ChartNoAxesColumn },
+  { id: 'sales', label: 'Sales', href: '#sales', icon: Handshake },
   { id: 'projects', label: 'Projects', href: '#projects', icon: FolderKanban },
   {
     id: 'events-menu',
@@ -115,6 +119,8 @@ function useIsMac() {
 }
 
 type AppSidebarContentProps = {
+  /** Names the navigation landmark. Give each sidebar on a page its own, so a screen reader can tell them apart. */
+  navLabel?: string;
   /** The level of the saved views heading; pass a deeper one when the sidebar sits under a page's own `h2`. */
   headingLevel?: 2 | 3 | 4 | 5 | 6;
   /** The main pages, at the top. An item with `items` opens a submenu. */
@@ -222,6 +228,7 @@ function NavGroup({
  * own to put the same content in another surface, such as your own drawer.
  */
 function AppSidebarContent({
+  navLabel = 'Main',
   headingLevel = 2,
   navMain = sampleNavMain,
   navViews = sampleNavViews,
@@ -259,28 +266,30 @@ function AppSidebarContent({
             </DropdownMenuItem>
           ) : null}
         </SidebarWorkspaceSwitcher>
-        <SidebarMenuButton
-          tooltip="Search"
-          className={cn(
-            'bg-secondary font-normal shadow-control hover:not-data-disabled:bg-muted hover:not-data-disabled:text-muted-foreground',
-            'transition-[background-color,color,box-shadow,scale] motion-safe:not-disabled:not-data-disabled:active:scale-96',
-          )}
-          // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
-          aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
-          onClick={onSearch}
-        >
-          <Search aria-hidden />
-          <span className="flex-1 text-start">Search…</span>
-          {searchShortcut ? (
-            <KbdGroup aria-hidden className={hiddenInIconMode}>
-              <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
-              <Kbd>K</Kbd>
-            </KbdGroup>
-          ) : null}
-        </SidebarMenuButton>
+        {onSearch ? (
+          <SidebarMenuButton
+            tooltip="Search"
+            className={cn(
+              'bg-secondary font-normal shadow-control hover:not-data-disabled:bg-muted hover:not-data-disabled:text-muted-foreground',
+              'transition-[background-color,color,box-shadow,scale] motion-safe:not-disabled:not-data-disabled:active:scale-96',
+            )}
+            // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
+            aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
+            onClick={onSearch}
+          >
+            <Search aria-hidden />
+            <span className="flex-1 text-start">Search…</span>
+            {searchShortcut ? (
+              <KbdGroup aria-hidden className={hiddenInIconMode}>
+                <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
+                <Kbd>K</Kbd>
+              </KbdGroup>
+            ) : null}
+          </SidebarMenuButton>
+        ) : null}
       </SidebarHeader>
 
-      <SidebarContent render={<nav aria-label="Main" />}>
+      <SidebarContent render={<nav aria-label={navLabel} />}>
         <SidebarGroup>
           <NavGroup items={navMain} activeItem={activeItem} onNavigate={onNavigate} />
         </SidebarGroup>
@@ -325,6 +334,7 @@ type AppSidebarProps = SidebarProps & AppSidebarContentProps;
  * `SidebarResizeHandle` and `SidebarInset`.
  */
 function AppSidebar({
+  navLabel,
   headingLevel,
   navMain,
   navViews,
@@ -348,6 +358,7 @@ function AppSidebar({
   return (
     <Sidebar label={label} collapsible={collapsible} {...props}>
       <AppSidebarContent
+        navLabel={navLabel}
         headingLevel={headingLevel}
         navMain={navMain}
         navViews={navViews}

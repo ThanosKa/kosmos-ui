@@ -1,0 +1,14 @@
+---
+title: Icons that swap in place move the same way
+description: Status, Prompt composer and Assistant message swap icons with one recipe, and the Notification inbox unread dot only fades.
+date: 2026-11-20
+---
+
+Every icon that swaps for another now cross-fades the same way. The incoming icon grows from `scale-25` out of a 4px blur over 300ms, and the outgoing one leaves in 150ms. The reduced motion setting keeps only the fade.
+
+- [Status](/docs/components/status): a new icon grows out of a blur instead of popping in from `scale-80`.
+- [Prompt composer](/docs/components/prompt-composer): Send and Stop swap with the same recipe.
+- [Assistant message](/docs/components/assistant-message): the Copy icon now leaves in 150ms instead of 300ms.
+- [Notification inbox](/docs/components/notification-inbox): the unread dot fades without shrinking.
+
+To update, run the add command again for each item.

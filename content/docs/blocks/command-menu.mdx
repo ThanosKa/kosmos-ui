@@ -76,7 +76,7 @@ The menu appears and closes without animation, because it opens from a keyboard 
     hint: { description: 'Muted text after the title, such as a domain.', type: 'string' },
     description: { description: 'A muted second line under the title.', type: 'string' },
     icon: { description: 'The icon at the start of the row.', type: 'LucideIcon' },
-    status: { description: 'A colored dot in place of the icon, and its word at the end of the row, so the state never rides on color alone. `dot` is a background class such as `bg-warning`.', type: '{ label: string; dot: string }' },
+    status: { description: 'A state at the end of the row: a dot beside its word, so the state never rides on color alone. `state` is `done`, `pending` or `waiting`.', type: "{ label: string; state: 'done' | 'pending' | 'waiting' }" },
     initials: { description: 'An avatar in place of the icon.', type: 'string' },
     avatar: { description: 'The URL of a photo for that avatar. The initials show until it loads.', type: 'string' },
     logo: { description: "The URL of a logo in place of the icon, such as a workspace's, in a square avatar.", type: 'string' },

@@ -5,6 +5,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Slider, SliderLabel, SliderValue } from '@/registry/kosmos/ui/slider';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['single', 'range'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -27,9 +28,9 @@ const thresholdLabel = (index: number) => (index === 0 ? 'Minimum threshold' : '
 const spendLabel = (index: number) => (index === 0 ? 'Minimum monthly spend' : 'Maximum monthly spend');
 const bandLabel = (index: number) => (index === 0 ? 'Lowest frequency' : 'Highest frequency');
 
-export default function SliderPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Values × states">
         <StateMatrix
           rows={rows}
@@ -101,16 +102,40 @@ export default function SliderPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long label in a narrow slot">
-        <div className="w-56">
-          <Slider defaultValue={[1200, 4800]} min={0} max={10000} step={100} getAriaLabel={spendLabel}>
-            <div className="flex items-start justify-between gap-3">
-              <SliderLabel>Monthly spend across every workspace</SliderLabel>
-              <SliderValue className="shrink-0" />
-            </div>
-          </Slider>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long label in a narrow slot">
+      <div className="w-56">
+        <Slider defaultValue={[1200, 4800]} min={0} max={10000} step={100} getAriaLabel={spendLabel}>
+          <div className="flex items-start justify-between gap-3">
+            <SliderLabel>Monthly spend across every workspace</SliderLabel>
+            <SliderValue className="shrink-0" />
+          </div>
+        </Slider>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function SliderPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

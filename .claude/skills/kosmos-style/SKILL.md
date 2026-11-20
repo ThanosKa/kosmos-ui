@@ -34,7 +34,7 @@ This skill describes the Kosmos style, which Default and Warm keep. Soft, Consol
 - Give every part of a component its own `data-slot`, and expose its variant, size and state as data attributes, so a preset can reach it. Keep the names stable: a preset's rules name them, and `pnpm test` fails when a rule names a slot no component has.
 - Buttons, fields and tabs stay Kosmos under every preset (ADR 0014). A style never sets `shadow-control`, `shadow-primary`, `shadow-primary-hover`, `primary-hover` or `shadow-field`, and its rules reach a button, a field or a tab only for type. `pnpm test` enforces both.
 - A preset's style lives in `lib/presets/<id>-style.ts`, never in a component. A component never branches on the preset.
-- A style sizes nothing: no `spacing`, text size, line height, height, padding or gap. Size is the visitor's own choice (Compact, Default, Comfortable), which sets `--spacing` alone, so size every part of a component in spacing units (`h-7.5`, `px-2.5`), never in pixels.
+- A style sizes nothing: no `spacing`, text size, line height, height, padding or gap. Size is the visitor's own choice (Compact, Default, Comfortable), which sets `--spacing` alone, so size every part of a component in spacing units (`h-7.5`, `px-2.5`), never in pixels. Lint flags an arbitrary pixel size (`h-[30px]`, `py-[5px]`) in a component or block.
 - A pill radius that can land on a tall element (a vertical segmented control, an input group around a textarea) is capped at half a control's height (`calc(var(--spacing) * 5)`), not `9999px`, or the tall element turns into an oval.
 
 ## Surfaces: shadows, not borders
@@ -64,7 +64,7 @@ Surfaces draw their edge and depth with one layered shadow token, never a depth 
 - An invalid control adds a 1px `ring-destructive` over its ring; on a dark fill (a ticked checkbox, a selected radio, a switch that is on) the ring is 2px, since 1px vanishes against the ink.
 - Hover on a switch track steps it to `bg-input` (on: `bg-primary/90`). Hovering a slider or dragging its thumb rings the thumb in a 4px `ring-foreground/10` halo.
 - Overlay backdrops use `bg-scrim`. Content images take `outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10`.
-- Sticky chrome is opaque. The Navbar block, and the site header built from it (landing page and docs), is `sticky top-0 bg-background`. Its edge is a `border-b border-border`, a divider like the docked sidebar's, which shows once the page scrolls under the bar (`data-scrolled`), and always on a `fullWidth` bar beside a docked sidebar. A translucent fill fails the text floor (conflicts.md, Accessibility floor).
+- Sticky chrome is opaque. The Navbar block, and the site header built from it (landing page and docs), is `sticky top-0 bg-background`. Its edge is a `border-b border-border`, a divider like the docked sidebar's, which shows once the page scrolls under the bar (`data-scrolled`), and always on a `fullWidth` bar beside a docked sidebar. A translucent fill fails the text floor (conflicts.md, Accessibility floor). Lint flags `sticky` with a translucent `bg-*/NN` on the same element.
 
 ## Dividers between items
 
@@ -81,7 +81,7 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 
 ## Overflow
 
-Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover, a horizontal tab list, a command list, a sidebar's content, a board column) scrolls in `ScrollArea`.
+Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover, a horizontal tab list, a command list, a sidebar's content, a board column) scrolls in `ScrollArea`. Lint flags `overflow-auto`, `overflow-x-auto` and `overflow-y-auto` in `components/docs`, `components/site` and `registry/kosmos/blocks`, except in the docs code block viewport.
 
 - Its edge fade is the one overflow cue: each edge with content hidden past it fades out over 2rem, and the fade leaves as the scroll reaches that edge. The scrollbar shows beside it.
 - The frame keeps its fill and shadow and clips; the padding sits inside the scroll area, so content fades out at the frame's edge.
@@ -152,7 +152,10 @@ Six tints (`gray`, `blue`, `green`, `amber`, `red`, `violet`) color every badge,
 | Alert (info blue, success green, warning amber, destructive red) | Filled by default: `bg-tint-*`, `-foreground` text and icon, `border border-transparent`. `appearance="subtle"` is the outline: transparent fill, 1px `border-tint-*-border`. The neutral tone is a card |
 | Banner, docs callout | A filled alert. The banner has no divider; only the neutral one keeps a `border-b border-border` against the page |
 | A link inside an Alert, Banner or Callout | `text-foreground font-medium` with a soft underline (`decoration-foreground/40`, full on hover), since tint text against foreground is under 3:1 |
+| A Banner action on a tint | A ghost button whose hover fill is `tint-<hue>-hover`, not `bg-accent`, so the text keeps 4.5:1 |
+| A brand color on a logo (Logo marquee) | The mark only (`[&_:is(svg,img)]:text-(--logo-color)`, a lint rule); the name stays `text-foreground`, since a brand color can fall below 4.5:1 |
 
+- Lint flags a hue `Badge` whose `variant` picks between `'green'` and `'red'` (a change is a triangle and a signed number), and a small `rounded-full` span with `bg-success`, `bg-warning` or `bg-muted-foreground` in `registry/kosmos/blocks` or `registry/kosmos/examples` (a state is a `StatusDot`). A dot with a `ring-*`, a timeline node or a presence mark, is not flagged.
 - A category keeps one hue everywhere. Plans: Free gray, Pro blue, Scale violet, Trial amber. HTTP status: 2xx green, 4xx amber, 5xx red, 3xx and the rest gray. Methods: GET green, POST blue, PATCH amber, DELETE red.
 - `pnpm test` checks tint text at 4.5:1 on its fill and on `background` and `card`, foreground at 4.5:1 on every fill, and dots at 3:1 on the fill and the page. An outline alert on another surface, such as `muted`, is not checked.
 
@@ -198,6 +201,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 - Exits run faster than enters with the same curve and the same distance, reversed.
 - The accordion is the one exception: a section closes as it opens, so when one opens as another closes the page below never bounces (conflicts.md, Accordion close). Under reduced motion the closing section collapses at once with no fade and the opening one fades in, so the page shifts once. The chevron follows its section's timing.
 - Popovers and menus enter from `scale-[0.97]` plus `opacity-0`, growing from the trigger (`origin-(--transform-origin)`). Dialogs enter from `scale-95` plus `opacity-0`, centered. Base UI exposes the start and end states as `data-starting-style` and `data-ending-style`.
+- An icon swap (Copy to Check, Play to Pause, Send to Stop, a new Status icon) stacks both icons in one cell and cross-fades them. The hidden icon sits at `opacity-0 motion-safe:scale-25 motion-safe:blur-xs`; the incoming one arrives in `duration-slow`, the outgoing one leaves in `duration-fast`, both `ease-power3-out` (`asset.tsx`). A small mark that toggles, such as a checkbox tick or an unread dot, only fades. Lint flags a `motion-safe:` start scale other than `scale-[0.97]`, `scale-95`, `scale-90` or `scale-25`.
 - Interactive state uses transitions, which reverse mid-flight. Keyframes are for looping live states (a ping on a running item, the skeleton pulse).
 - Skeleton loading is Tailwind's `animate-pulse`. It changes only opacity, so it keeps running under reduced motion with no `motion-safe:` gate. The Shimmer component is the one sweep, `animate-shimmer` from `@kosmos/tokens`, for status text only and gated by `motion-safe:`.
 - The command palette and anything opened by a keyboard shortcut appear without animation.
@@ -205,7 +209,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 
 ### Reduced motion is mandatory
 
-Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-motion: reduce` the same change becomes an opacity cross-fade, never an instant jump. Motion trees sit inside `<MotionConfig reducedMotion="user">`. An animation without this gate is a blocking bug.
+Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-motion: reduce` the same change becomes an opacity cross-fade, never an instant jump. Lint flags a `scale-*` outside `motion-safe:` in a class list that transitions `scale`, and `motion-reduce:transition-none`; fade with `motion-reduce:transition-[opacity]`. A toast with an action stays until it is used (WCAG 2.2.1): lint flags a Sonner `toast(…, { action })` with no `duration: Infinity`, and a Base UI `toast.add` with `actionProps` and no `timeout: 0`. Motion trees sit inside `<MotionConfig reducedMotion="user">`. An animation without this gate is a blocking bug.
 
 ### Press scale
 
@@ -223,24 +227,30 @@ Text fields (Input, Textarea, Select trigger) light up their own edge instead, a
 Where an offset outline would be clipped or have nothing to surround:
 
 - An element a clipping container would cut (a tab in a scrolling tab list, an item in a collapsible panel, a scrolling code viewport inside its card) draws it inside: `-outline-offset-2`. Any container with `overflow` other than `visible` clips outside its padding box.
+- An overlay's scrolling content sits 4px in from the overlay's edges and draws its outline inside, so the outline never lands on those edges. `DialogBody` and `DrawerBody` do both. `PopoverContent` scrolls its own content and draws that outline inside, so it needs no `ScrollArea`; lint flags a `ScrollArea` placed in a `DialogContent`, `DrawerContent` or `PopoverContent` outside a body.
 - The zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line.
 
 ## Buttons
 
 Buttons are 30px (`md`) with `px-2.5`; text fields are 34px with `px-3`, so a form reads calmer than its toolbar. A field in a toolbar or beside a Button takes the Button's height (`h-7.5`). Icon buttons in headers and toolbars are `variant="secondary" size="icon"`, a 30px square with the control ring.
 
-- Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link.
+- Every clickable control is the Kosmos `Button`, and every `<Button>` in Kosmos code passes `variant` explicitly, even when it matches the default. A `Button` with `href` renders a link. A control with no action is not rendered: render it only when its handler or `href` is passed. Lint flags `onClick={() => {}}` in `registry/kosmos/blocks` and `registry/kosmos/examples`. A `NumberField` sets `locale="en-US"` so the server and the browser format a number alike; lint flags one with no `locale` in the same places. A router link that looks like a Button is `<Button variant="primary" nativeButton={false} render={<Link href=… />}>`, never `className={buttonVariants(…)}` on a `Link`; lint flags that, because presets skip Buttons.
 - Variants describe role (`primary`, `secondary`, `ghost`, `destructive`) or layout slot (`item`: the ghost look without the press scale, for buttons repeated in dense rows such as nav items, menu rows, table row actions and sortable headers). A variant nothing uses is deleted.
 - The destructive variant is red text on the secondary surface: the dark `destructive` is too light to carry white text.
+- An icon-only `Button` (`size="icon…"`) carries `aria-label` or a `sr-only` label; lint flags one with neither. A Button passed to a primitive's `render` takes the name from the primitive.
 - Kosmos code writes the Kosmos variant and size names, never shadcn's (`default`, `outline`, `link`, `xs`, `icon-xs`).
-- A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content.
+- A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background (`tint-<hue>-hover` for a hue) and the focus outline, and does not press-scale, because it sits inline with content.
+
+## Names and announcements
+
+A screen reader announces a change to a live region that already exists, so the region is always rendered and only its text changes. A `role="status"` or `role="alert"` rendered behind a condition, or carrying `empty:hidden` (it starts as `display: none`), is flagged by lint; render it always, empty at first, and hide it with `empty:sr-only`. A static empty state is not a live region. A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; lint flags one that renders a `<time>` or a `<span>` with no `tabIndex`. Every popup has a name: `CommandList` is "Commands" until given an `aria-label`, `SelectContent` is named by its trigger, and a Popover with no `PopoverTitle` takes `aria-label` on `PopoverContent`.
 
 ## Phones
 
 Every component and block works at 375px wide, in light and dark:
 
 - Nothing runs past its frame or scrolls the page sideways. A block sizes by its own width with container queries (`@container`, `@2xl:`); only a page's rhythm uses screen breakpoints ([marketing.md](marketing.md)).
-- Text that grows with the data (names, emails, titles, labels) sits in a child with `min-w-0`, then wraps, takes `truncate` or takes `line-clamp-*`. Truncated text stays readable in full somewhere: a `title`, a tooltip or the detail view. Numbers, amounts and dates never truncate; they take `shrink-0`.
+- Text that grows with the data (names, emails, titles, labels) sits in a child with `min-w-0`, then wraps, takes `truncate` or takes `line-clamp-*`. Truncated text stays readable in full somewhere: a `title`, a tooltip or the detail view. Numbers, amounts and dates never truncate; they take `shrink-0`. Lint flags `truncate` with `tabular-nums` or `text-display` on one element, and `truncate` or `line-clamp-*` with no `title` in `registry/kosmos/ui` and `registry/kosmos/blocks`; lint also flags `order-*` in a block, which places an item with `col-start-*` and `row-start-*` so the visual order matches the DOM order; a slot whose full text lives in a tooltip or detail view goes in `fullTextElsewhere` in `eslint.config.mjs`, with its reason.
 - Full-height layouts take `svh` (`min-h-svh`, `h-svh`), as the Sidebar does, since `vh` and `h-screen` ignore the phone's browser bars.
 - A surface fixed to the bottom edge pads by `env(safe-area-inset-bottom)`, as the bottom-sheet Drawer does.
 - Hover styles use the `hover:` variant, which fires only on a device that can hover, so a tap never leaves a row lit.
@@ -258,7 +268,7 @@ Then search the changed files for each detection lint cannot judge:
 | A token in `tokens.css` that no component, block or page uses | Delete it, or use it in this change |
 | `border` used for depth on a card, button, input or overlay | Its shadow token from the surface table plus `border-transparent` |
 | A `shadow-*` ring without `border border-transparent` | Add it |
-| A translucent `bg-background/*` on sticky chrome | `bg-background` |
+| A translucent `bg-background/*` on sticky chrome (lint catches it on the same element) | `bg-background` |
 | A `translate`, `scale` or `blur` transition, or a `motion.*` animation, with no `motion-safe:` or `MotionConfig` gate | Gate it and cross-fade opacity under reduced motion |
 | `text-base` outside an input | The matching type role |
 | A number column, stat or counter without `tabular-nums` | Add it |

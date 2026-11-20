@@ -187,73 +187,75 @@ const sampleTraffic: Record<Range, Traffic> = {
   },
 };
 
-const sampleKpis: Kpi[] = [
-  {
-    id: 'visitors',
-    icon: Users,
-    eyebrow: 'acme.example',
-    label: 'Visitors',
-    value: '38,910',
-    change: -8.4,
-    context: '(−3,573)',
-    trend: [10120, 10040, 9890, 9760, 9820, 9640, 9580, 9610, 9470, 9390, 9420, 9180],
-  },
-  {
-    id: 'signups',
-    icon: UserPlus,
-    eyebrow: 'Free and trial',
-    label: 'Signups',
-    value: '1,284',
-    change: 4.2,
-    context: '(+52)',
-    trend: [96, 104, 99, 108, 112, 106, 115, 118, 112, 121, 117, 121],
-  },
-  {
-    id: 'conversion',
-    icon: Percent,
-    eyebrow: 'Visit to signup',
-    label: 'Conversion',
-    value: '3.3%',
-    change: 0.4,
-    unit: 'points',
-    context: 'from 2.9%',
-    trend: [2.9, 3.0, 2.9, 3.1, 3.0, 3.1, 3.2, 3.1, 3.2, 3.3, 3.2, 3.3],
-  },
-  {
-    id: 'session',
-    icon: Timer,
-    eyebrow: 'Per visit',
-    label: 'Median session',
-    value: '4m 12s',
-    change: -3.2,
-    context: '(−8s)',
-    trend: [262, 266, 259, 264, 258, 261, 255, 257, 254, 256, 253, 252],
-  },
-];
+const kpiOf = (range: Range, rows: Array<Pick<Kpi, 'value' | 'change' | 'context' | 'trend'>>): Kpi[] => {
+  const identity = [
+    { id: 'visitors', icon: Users, eyebrow: 'acme.example', label: 'Visitors' },
+    { id: 'signups', icon: UserPlus, eyebrow: 'Free and trial', label: 'Signups' },
+    { id: 'conversion', icon: Percent, eyebrow: 'Visit to signup', label: 'Conversion', unit: 'points' as const },
+    { id: 'session', icon: Timer, eyebrow: 'Per visit', label: 'Median session' },
+  ];
+  return identity.map((item, index) => ({ ...item, ...rows[index], id: `${item.id}-${range}` }));
+};
 
-const sampleSources: Source[] = [
-  { id: 'search', label: 'Search', visitors: 15950 },
-  { id: 'direct', label: 'Direct', visitors: 10510 },
-  { id: 'referral', label: 'Referral', visitors: 6610 },
-  { id: 'social', label: 'Social', visitors: 3890 },
-  { id: 'email', label: 'Email', visitors: 1950 },
-];
+const sampleKpis: Record<Range, Kpi[]> = {
+  '7d': kpiOf('7d', [
+    { value: '9,180', change: 1.8, context: '(+162)', trend: [1280, 1310, 1290, 1330, 1350, 1310, 1310] },
+    { value: '300', change: 3.4, context: '(+10)', trend: [41, 43, 42, 44, 45, 43, 42] },
+    { value: '3.3%', change: 0.1, context: 'from 3.2%', trend: [3.2, 3.3, 3.3, 3.3, 3.3, 3.3, 3.2] },
+    { value: '4m 15s', change: 1.2, context: '(+3s)', trend: [250, 252, 251, 254, 255, 254, 255] },
+  ]),
+  '30d': kpiOf('30d', [
+    { value: '38,910', change: -8.4, context: '(−3,573)', trend: [10120, 10040, 9890, 9760, 9820, 9640, 9580, 9610, 9470, 9390, 9420, 9180] },
+    { value: '1,284', change: 4.2, context: '(+52)', trend: [96, 104, 99, 108, 112, 106, 115, 118, 112, 121, 117, 121] },
+    { value: '3.3%', change: 0.4, context: 'from 2.9%', trend: [2.9, 3.0, 2.9, 3.1, 3.0, 3.1, 3.2, 3.1, 3.2, 3.3, 3.2, 3.3] },
+    { value: '4m 12s', change: -3.2, context: '(−8s)', trend: [262, 266, 259, 264, 258, 261, 255, 257, 254, 256, 253, 252] },
+  ]),
+  '90d': kpiOf('90d', [
+    { value: '121,400', change: 6.3, context: '(+7,195)', trend: [8600, 8750, 8820, 8900, 9010, 9060, 9120, 9180, 9240, 9230, 9290, 9300, 9300] },
+    { value: '3,890', change: 9.8, context: '(+347)', trend: [262, 270, 275, 281, 288, 292, 297, 300, 303, 306, 305, 310, 312] },
+    { value: '3.2%', change: 0.1, context: 'from 3.1%', trend: [3.0, 3.1, 3.1, 3.1, 3.2, 3.2, 3.2, 3.2, 3.2, 3.2, 3.3, 3.3, 3.3] },
+    { value: '4m 18s', change: 2.6, context: '(+7s)', trend: [250, 251, 253, 252, 255, 256, 257, 257, 258, 259, 258, 259, 258] },
+  ]),
+};
 
-const sampleTopPages: BarListItem[] = [
-  { id: 'pricing', label: '/pricing', value: 9840 },
-  { id: 'install', label: '/docs/install', value: 8170 },
-  { id: 'home', label: '/', value: 7410 },
-  { id: 'events', label: '/docs/events', value: 5150 },
-  { id: 'changelog', label: '/changelog', value: 2660 },
-];
+const ranked = (rows: Array<[string, string, number] | [string, string, number, string]>): BarListItem[] =>
+  rows.map(([id, label, value, meta]) => ({ id, label, value, ...(meta ? { meta } : {}) }));
 
-const sampleCountries: BarListItem[] = [
-  { id: 'us', label: 'United States', meta: 'US', value: 15180 },
-  { id: 'de', label: 'Germany', meta: 'DE', value: 5470 },
-  { id: 'gb', label: 'United Kingdom', meta: 'GB', value: 4550 },
-  { id: 'fr', label: 'France', meta: 'FR', value: 3330 },
-  { id: 'gr', label: 'Greece', meta: 'GR', value: 2470 },
-];
+const sampleSources: Record<Range, Source[]> = {
+  '7d': [
+    { id: 'search', label: 'Search', visitors: 3760 },
+    { id: 'direct', label: 'Direct', visitors: 2480 },
+    { id: 'referral', label: 'Referral', visitors: 1560 },
+    { id: 'social', label: 'Social', visitors: 910 },
+    { id: 'email', label: 'Email', visitors: 470 },
+  ],
+  '30d': [
+    { id: 'search', label: 'Search', visitors: 15950 },
+    { id: 'direct', label: 'Direct', visitors: 10510 },
+    { id: 'referral', label: 'Referral', visitors: 6610 },
+    { id: 'social', label: 'Social', visitors: 3890 },
+    { id: 'email', label: 'Email', visitors: 1950 },
+  ],
+  '90d': [
+    { id: 'search', label: 'Search', visitors: 49800 },
+    { id: 'direct', label: 'Direct', visitors: 33200 },
+    { id: 'referral', label: 'Referral', visitors: 20600 },
+    { id: 'social', label: 'Social', visitors: 11600 },
+    { id: 'email', label: 'Email', visitors: 6200 },
+  ],
+};
+
+const sampleTopPages: Record<Range, BarListItem[]> = {
+  '7d': ranked([['pricing', '/pricing', 2320], ['install', '/docs/install', 1930], ['home', '/', 1750], ['events', '/docs/events', 1220], ['changelog', '/changelog', 630]]),
+  '30d': ranked([['pricing', '/pricing', 9840], ['install', '/docs/install', 8170], ['home', '/', 7410], ['events', '/docs/events', 5150], ['changelog', '/changelog', 2660]]),
+  '90d': ranked([['pricing', '/pricing', 30700], ['install', '/docs/install', 25500], ['home', '/', 23100], ['events', '/docs/events', 16100], ['changelog', '/changelog', 8300]]),
+};
+
+const sampleCountries: Record<Range, BarListItem[]> = {
+  '7d': ranked([['us', 'United States', 3580, 'US'], ['de', 'Germany', 1290, 'DE'], ['gb', 'United Kingdom', 1070, 'GB'], ['fr', 'France', 790, 'FR'], ['gr', 'Greece', 580, 'GR']]),
+  '30d': ranked([['us', 'United States', 15180, 'US'], ['de', 'Germany', 5470, 'DE'], ['gb', 'United Kingdom', 4550, 'GB'], ['fr', 'France', 3330, 'FR'], ['gr', 'Greece', 2470, 'GR']]),
+  '90d': ranked([['us', 'United States', 47300, 'US'], ['de', 'Germany', 17000, 'DE'], ['gb', 'United Kingdom', 14200, 'GB'], ['fr', 'France', 10400, 'FR'], ['gr', 'Greece', 7700, 'GR']]),
+};
 
 const sampleGoal: SignupGoal = {
   description: 'October target: 1,300 signups',
@@ -304,13 +306,14 @@ const firstPageSize = 5;
 /** Sources shows the first five; their shares are of all visitors. */
 const maxSources = 5;
 
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('');
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
+const initials = (name: string) => {
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
+};
 
 /** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Signups trend, up +4.2%"). */
 function trendLabel({ label, change, unit }: Pick<Kpi, 'label' | 'change' | 'unit'>) {
@@ -376,7 +379,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
           ) : null}
           <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => onRangeChange(value as Range)}>
             {(Object.keys(ranges) as Range[]).map((key) => (
-              <SegmentedControlItem key={key} value={key}>
+              <SegmentedControlItem key={key} value={key} aria-label={`Last ${ranges[key].label}`}>
                 {key}
               </SegmentedControlItem>
             ))}
@@ -385,12 +388,12 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
       </PanelHeader>
       <PanelContent className="flex flex-col">
         {totals.length > 0 ? (
-          <dl className="grid auto-cols-fr grid-flow-col divide-x divide-border border-b border-border">
+          <dl className="grid auto-cols-fr grid-flow-row divide-y divide-border border-b border-border @sm:grid-flow-col @sm:divide-x @sm:divide-y-0">
             {totals.map((total) => (
               <div key={total.label} className="flex min-w-0 flex-col gap-1 px-4 py-3">
                 <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{total.label}</dt>
                 <dd className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
-                  <span className="truncate text-title font-medium text-foreground tabular-nums">{total.value}</span>
+                  <span className="shrink-0 text-title font-medium text-foreground tabular-nums">{total.value}</span>
                   <StatCardDelta value={total.change} unit={total.unit} goodWhen={total.goodWhen} className="text-caption" />
                 </dd>
               </div>
@@ -400,7 +403,6 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
         <div className="flex flex-1 flex-col justify-center px-4 pt-3 pb-4">
           {points.length > 0 ? (
             <GrowthChart
-              key={range}
               title={`Visitors, last ${rangeLabel} against the ${rangeLabel} before`}
               data={points}
               config={trafficConfig}
@@ -412,7 +414,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
               className="flex-1 *:data-[slot=chart]:h-auto *:data-[slot=chart]:min-h-60 *:data-[slot=chart]:flex-1"
             />
           ) : (
-            <p role="status" className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
+            <p className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
               No visits in this range yet
             </p>
           )}
@@ -470,7 +472,7 @@ function GoalPanel({ goal }: { goal: SignupGoal }) {
                   </Avatar>
                 ))}
               </AvatarGroup>
-              <span className="truncate text-small text-muted-foreground">{goal.team.label}</span>
+              <span title={goal.team.label} className="truncate text-small text-muted-foreground">{goal.team.label}</span>
             </div>
           ) : null}
         </div>
@@ -486,11 +488,27 @@ const presenceDot: Record<Presence, { className: string; label: string }> = {
 };
 
 /** A value in ink with a muted line of context under it. */
-function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+function TwoLine({
+  primary,
+  secondary,
+  numeric,
+  className,
+}: {
+  primary: React.ReactNode;
+  secondary?: React.ReactNode;
+  numeric?: boolean;
+  className?: string;
+}) {
   return (
-    <div className={cn('flex min-w-0 flex-col', className)}>
-      <span className="truncate text-body text-foreground">{primary}</span>
-      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    <div className={cn('flex flex-col', numeric ? 'shrink-0' : 'min-w-0', className)}>
+      <span title={typeof primary === 'string' ? primary : undefined} className={cn(numeric ? 'whitespace-nowrap' : 'truncate', 'text-body text-foreground')}>
+        {primary}
+      </span>
+      {secondary ? (
+        <span title={typeof secondary === 'string' ? secondary : undefined} className="truncate text-small text-muted-foreground">
+          {secondary}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -513,13 +531,8 @@ function PersonCell({ signup }: { signup: Signup }) {
         ) : null}
       </span>
       <TwoLine
-        primary={
-          <>
-            <span title={signup.name}>{signup.name}</span>
-            {presence ? <span className="sr-only">, {presence.label}</span> : null}
-          </>
-        }
-        secondary={<span title={signup.email}>{signup.email}</span>}
+        primary={signup.name}
+        secondary={presence ? `${presence.label} · ${signup.email}` : signup.email}
       />
     </div>
   );
@@ -580,7 +593,7 @@ const signupColumns = signupColumn.columns([
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row: { original: signup } }) => (
       <div className="flex min-w-40 flex-col gap-1">
-        <span className="truncate text-body">{signup.step}</span>
+        <span title={signup.step} className="truncate text-body">{signup.step}</span>
         <Meter value={signup.activation} aria-label={`${signup.name}, onboarding`} className="items-center gap-y-0">
           <MeterBar className="col-span-1 row-start-1" />
           <MeterValue className="row-start-1 w-9 text-caption" />
@@ -595,6 +608,7 @@ const signupColumns = signupColumn.columns([
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row: { original: signup } }) => (
       <TwoLine
+        numeric
         primary={signup.mrr > 0 ? usd.format(signup.mrr) : '—'}
         secondary={signup.mrr > 0 ? 'per month' : 'no charge'}
         className="items-end tabular-nums"
@@ -680,21 +694,21 @@ function SignupsPanel({ signups, signupActions }: { signups: Signup[]; signupAct
 }
 
 type DashboardAnalyticsProps = Omit<React.ComponentProps<'section'>, 'children'> & {
-  /** The KPIs across the top, four in a row on a wide container. */
-  kpis?: Kpi[];
+  /** The KPIs across the top for each range, four in a row on a wide container. */
+  kpis?: Record<Range, Kpi[]>;
   /** The traffic chart and its totals for each range. */
   traffic?: Record<Range, Traffic>;
-  /** Visitors by source, most first; the list shows the first five, each with its share of all visitors. */
-  sources?: Source[];
-  /** The most visited pages, most visited first. */
-  topPages?: BarListItem[];
-  /** Visitors by country, most first. Each row's share is against all visitors in `sources`. */
-  countries?: BarListItem[];
+  /** Visitors by source for each range, most first; the list shows the first five, each with its share of all visitors. */
+  sources?: Record<Range, Source[]>;
+  /** The most visited pages for each range, most visited first. */
+  topPages?: Record<Range, BarListItem[]>;
+  /** Visitors by country for each range, most first. Each row's share is against all visitors in `sources`. */
+  countries?: Record<Range, BarListItem[]>;
   /** The signup goal of the month. */
   goal?: SignupGoal;
   /** The newest signups, newest first. */
   signups?: Signup[];
-  /** The range of the traffic chart. Use with `onRangeChange`, or leave it out and pass `defaultRange`. */
+  /** The range every panel shows, except the signup goal and the newest signups. Use with `onRangeChange`, or leave it out and pass `defaultRange`. */
   range?: Range;
   defaultRange?: Range;
   onRangeChange?: (range: Range) => void;
@@ -722,7 +736,8 @@ function DashboardAnalytics({
   ...props
 }: DashboardAnalyticsProps) {
   const [range, setRange] = useControlled(rangeProp, defaultRange, onRangeChange);
-  const visitors = sources.reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
+  const rangeLabel = ranges[range].label;
+  const visitors = sources[range].reduce((sum, source) => sum + Math.max(0, source.visitors), 0);
 
   return (
     <section
@@ -731,26 +746,26 @@ function DashboardAnalytics({
       className={cn('@container flex min-w-0 flex-col gap-3', className)}
       {...props}
     >
-      <KpiStrip kpis={kpis} />
+      <KpiStrip kpis={kpis[range]} />
       <div className="grid min-w-0 gap-3 @5xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <TrafficPanel traffic={traffic} range={range} onRangeChange={setRange} />
         <div className="grid min-w-0 gap-3 @3xl:grid-cols-2 @5xl:grid-cols-1">
           <GoalPanel goal={goal} />
           <RankedPanel
             title="Sources"
-            description="Where visitors came from"
-            items={sources.slice(0, maxSources).map((source) => ({ id: source.id, label: source.label, value: source.visitors }))}
+            description={`Where visitors came from, last ${rangeLabel}`}
+            items={sources[range].slice(0, maxSources).map((source) => ({ id: source.id, label: source.label, value: source.visitors }))}
             showShare
             total={visitors > 0 ? visitors : undefined}
           />
         </div>
       </div>
       <div className="grid min-w-0 gap-3 @3xl:grid-cols-2">
-        <RankedPanel title="Top pages" description="By visitors, last 30 days" items={topPages} />
+        <RankedPanel title="Top pages" description={`By visitors, last ${rangeLabel}`} items={topPages[range]} />
         <RankedPanel
           title="Countries"
-          description="By visitors, last 30 days"
-          items={countries}
+          description={`By visitors, last ${rangeLabel}`}
+          items={countries[range]}
           showShare
           total={visitors > 0 ? visitors : undefined}
         />
@@ -858,6 +873,8 @@ type DashboardNotification = {
   /** The kind, as a small icon on the avatar: a mention, a quota, a won deal. */
   icon?: React.ReactNode;
   unread?: boolean;
+  /** Where the notification opens. Leave it out and the title is a button that calls `onNotificationOpen`. */
+  href?: string;
 };
 
 type InboxTab = 'all' | 'unread' | 'archive';
@@ -896,6 +913,21 @@ function HeaderInbox({
     return next;
   };
 
+  // A row that leaves the list, or the button that hides itself, takes focus with it, so focus moves to the next row,
+  // else the previous one, else the selected tab.
+  const focusAfter = React.useRef<{ inbox: Element | null; rowId?: string } | null>(null);
+  React.useEffect(() => {
+    const request = focusAfter.current;
+    if (!request) return;
+    focusAfter.current = null;
+    const row = request.rowId ? request.inbox?.querySelector<HTMLElement>(`[data-notification-id="${CSS.escape(request.rowId)}"] [data-slot="notification-item-title"]`) : null;
+    (row ?? request.inbox?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]'))?.focus();
+  }, [read, archived]);
+  const focusFrom = (element: Element, id?: string) => {
+    const index = shown.findIndex((item) => item.id === id);
+    focusAfter.current = { inbox: element.closest('[data-slot="notification-inbox-content"]'), rowId: id ? (shown[index + 1] ?? shown[index - 1])?.id : undefined };
+  };
+
   return (
     <NotificationInbox open={open} onOpenChange={setOpen}>
       <NotificationInboxTrigger count={unread} />
@@ -904,7 +936,14 @@ function HeaderInbox({
           <NotificationInboxTitle>Notifications</NotificationInboxTitle>
           {unread > 0 ? (
             <NotificationInboxActions>
-              <Button variant="ghost" size="sm" onClick={() => setRead(new Set(notifications.map((item) => item.id)))}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(event) => {
+                  focusFrom(event.currentTarget);
+                  setRead(new Set(notifications.map((item) => item.id)));
+                }}
+              >
                 <CheckCheck data-icon="inline-start" aria-hidden />
                 Mark all as read
               </Button>
@@ -926,7 +965,7 @@ function HeaderInbox({
                   {shown
                     .filter((item) => item.day === day)
                     .map((item) => (
-                      <NotificationItem key={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
+                      <NotificationItem key={item.id} data-notification-id={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
                         <NotificationItemMedia icon={item.icon}>
                           <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
                             {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
@@ -935,9 +974,8 @@ function HeaderInbox({
                         </NotificationItemMedia>
                         <NotificationItemContent>
                           <NotificationItemTitle
-                            href={`#${item.id}`}
-                            onClick={(event) => {
-                              event.preventDefault();
+                            href={item.href}
+                            onClick={() => {
                               if (!read.has(item.id)) setRead(toggle(read, item.id));
                               onNotificationOpen?.(item);
                             }}
@@ -952,14 +990,18 @@ function HeaderInbox({
                             {archived.has(item.id) ? null : (
                               <NotificationItemQuickAction
                                 label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
-                                onClick={() => setRead(toggle(read, item.id))}
+                                onClick={(event) => {
+                                  if (tab === 'unread') focusFrom(event.currentTarget, item.id);
+                                  setRead(toggle(read, item.id));
+                                }}
                               >
                                 {read.has(item.id) ? <Mail /> : <Check />}
                               </NotificationItemQuickAction>
                             )}
                             <NotificationItemQuickAction
                               label={archived.has(item.id) ? 'Move to inbox' : 'Archive'}
-                              onClick={() => {
+                              onClick={(event) => {
+                                focusFrom(event.currentTarget, item.id);
                                 setArchived(toggle(archived, item.id));
                                 setRead((current) => new Set(current).add(item.id));
                               }}
@@ -1040,12 +1082,12 @@ function DashboardAnalyticsPage({
 
   return (
     <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
-      <AppSidebar activeItem="overview" {...sidebar} />
+      <AppSidebar activeItem="analytics" {...sidebar} />
       <SidebarResizeHandle />
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          <h1 title={title} className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
           <DateRangePicker
             aria-label="Period"
             value={picked ?? current}

@@ -8,6 +8,7 @@
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
+    "@kosmos/alert",
     "@kosmos/button",
     "@kosmos/field",
     "@kosmos/input",

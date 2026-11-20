@@ -141,7 +141,7 @@ function PickerTrigger({ className, empty, label, labelId, valueId, children, ..
           {label}
         </span>
       )}
-      <span id={valueId} className={cn('min-w-0 flex-1 truncate', empty && 'text-muted-foreground')}>
+      <span id={valueId} title={typeof children === 'string' ? children : undefined} className={cn('min-w-0 flex-1 truncate', empty && 'text-muted-foreground')}>
         {children}
       </span>
     </PopoverTrigger>

@@ -35,6 +35,7 @@ import {
   NotificationItemTitle,
 } from '@/registry/kosmos/ui/notification-inbox';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[42rem]';
 
@@ -214,9 +215,9 @@ function Inbox({
   );
 }
 
-export default function NotificationInboxPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Bell">
         <div className="flex flex-wrap items-center gap-8">
           {[0, 3, 9, 12].map((count) => (
@@ -302,6 +303,130 @@ export default function NotificationInboxPreview() {
           </OverlayStage>
         </OverlayStageGrid>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+const worstRows: Row[] = [
+  {
+    id: 'w-long',
+    time: '12 minutes ago',
+    avatar: '',
+    fallback: 'AW',
+    icon: <AtSign />,
+    title: (
+      <>
+        <strong>Aleksandra Wiśniewska-Kowalczyk</strong> mentioned you in <strong>Copperline Bank server events for card payments, loans and the business portal</strong>
+      </>
+    ),
+    quote: 'bartholomew.fitzgerald@northwind-industries-holdings.example/dashboards/share/links/with-a-very-long-unbreakable-path-segment',
+    meta: 'payments-gateway.eu-west.copperline.example',
+    unread: true,
+  },
+  {
+    id: 'w-short',
+    time: '1h',
+    avatar: '',
+    fallback: 'J',
+    icon: <UserPlus />,
+    title: (
+      <>
+        <strong>Jo</strong> asked for access to <strong>K</strong>
+      </>
+    ),
+    request: true,
+    unread: true,
+  },
+  {
+    id: 'w-greek',
+    time: '3h',
+    avatar: '',
+    fallback: 'ΕΠ',
+    icon: <MessageSquare />,
+    title: (
+      <>
+        <strong>Ελένη Παπαδοπούλου</strong> σχολίασε στο <strong>Ιστότοπος καφέ Saltmarsh 🌊</strong>
+      </>
+    ),
+    quote: 'Μετακίνησα το βήμα της πρόσκλησης μετά το πρώτο event, ώστε οι νέες ομάδες να βλέπουν δεδομένα νωρίτερα. 🌊🌊🌊',
+  },
+  {
+    id: 'w-number',
+    time: '9 Oct',
+    avatar: '',
+    fallback: 'C',
+    square: true,
+    icon: <Gauge />,
+    title: (
+      <>
+        <strong>Cirrus Weather</strong> has used 1,284,903,772 of its 1,000,000,000 monthly events
+      </>
+    ),
+    meta: 'Scale plan',
+  },
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Bell: counts in the thousands">
+        <div className="flex flex-wrap items-center gap-8">
+          {[99, 1_284, 100_000].map((count) => (
+            <figure key={count} className="flex flex-col items-center gap-2">
+              <NotificationBell count={count} />
+              <figcaption className="font-mono text-caption text-muted-foreground">count {count.toLocaleString('en-US')}</figcaption>
+            </figure>
+          ))}
+          <figure className="flex flex-col items-center gap-2">
+            <NotificationBell count={1_284} max={999} />
+            <figcaption className="font-mono text-caption text-muted-foreground">count 1,284, max 999</figcaption>
+          </figure>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Long names, a one-letter name, Greek, missing images and a huge number">
+        <OverlayStageGrid>
+          <OverlayStage label="popover" className={stageClass}>
+            {(container) => (
+              <Inbox container={container} unread={1_284}>
+                <NotificationInboxGroup label="Today">
+                  {worstRows.map((row) => (
+                    <NotificationRow key={row.id} row={row} />
+                  ))}
+                </NotificationInboxGroup>
+              </Inbox>
+            )}
+          </OverlayStage>
+          <OverlayStage label="sheet" className={stageClass}>
+            {(container) => (
+              <Inbox container={container} variant="sheet" unread={1_284}>
+                <NotificationInboxGroup label="Today">
+                  {worstRows.map((row) => (
+                    <NotificationRow key={row.id} row={row} />
+                  ))}
+                </NotificationInboxGroup>
+              </Inbox>
+            )}
+          </OverlayStage>
+        </OverlayStageGrid>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function NotificationInboxPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

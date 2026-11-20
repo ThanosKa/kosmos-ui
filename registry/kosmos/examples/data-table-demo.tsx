@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { Trash2 } from 'lucide-react';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -62,6 +63,17 @@ const statusOrder = Object.keys(statuses) as Project['status'][];
 const count = new Intl.NumberFormat('en-US');
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
+const OpenProjectContext = React.createContext<(project: Project) => void>(() => {});
+
+function NameCell({ project }: { project: Project }) {
+  const open = React.useContext(OpenProjectContext);
+  return (
+    <Button variant="item" size="sm" onClick={() => open(project)} title={project.name} className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium">
+      <span className="truncate">{project.name}</span>
+    </Button>
+  );
+}
+
 const column = createDataTableColumnHelper<Project>();
 const columns = column.columns([
   column.display({
@@ -74,10 +86,10 @@ const columns = column.columns([
   }),
   column.accessor('name', {
     header: ({ column }) => <DataTableColumnHeader column={column} />,
-    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    cell: ({ row }) => <NameCell project={row.original} />,
     sortFn: 'text',
     enableHiding: false,
-    meta: { label: 'Project', sortLabels: ['A to Z', 'Z to A'] },
+    meta: { label: 'Project', sortLabels: ['A to Z', 'Z to A'], className: 'max-w-56 @lg:max-w-80' },
   }),
   column.accessor('plan', {
     header: ({ column }) => <DataTableColumnHeader column={column} />,
@@ -126,6 +138,7 @@ const statusOptions = statusOrder.map((status) => ({
 }));
 
 export default function DataTableDemo({ rows = projects, loading = false }: { rows?: Project[]; loading?: boolean }) {
+  const [opened, setOpened] = React.useState<Project | null>(null);
   const table = useDataTable({
     data: rows,
     columns,
@@ -134,6 +147,7 @@ export default function DataTableDemo({ rows = projects, loading = false }: { ro
   });
 
   return (
+    <OpenProjectContext.Provider value={setOpened}>
     <DataTable className="w-full overflow-hidden rounded-xl border border-transparent bg-background shadow-card">
       <DataTableToolbar aria-label="Search and filter projects">
         <DataTableSearch table={table} label="Search projects" />
@@ -145,6 +159,7 @@ export default function DataTableDemo({ rows = projects, loading = false }: { ro
         table={table}
         aria-label="Projects"
         loading={loading}
+        onRowClick={(row) => setOpened(row.original)}
         empty={<EmptyState className="py-10" headingLevel={2} noun="projects" variant="filtered" onClear={() => table.resetColumnFilters(true)} />}
       />
       <DataTableFooter table={table} loading={loading} noun="project">
@@ -157,6 +172,10 @@ export default function DataTableDemo({ rows = projects, loading = false }: { ro
           )}
         </DataTableBulkBar>
       </DataTableFooter>
+      <p aria-live="polite" className="px-4 pb-3 text-caption text-muted-foreground">
+        {opened ? `Opened ${opened.name}.` : 'Click a row, or press its name, to open it.'}
+      </p>
     </DataTable>
+    </OpenProjectContext.Provider>
   );
 }

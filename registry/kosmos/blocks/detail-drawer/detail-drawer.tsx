@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Sparkline } from '@/registry/kosmos/ui/chart';
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
+import { Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from '@/registry/kosmos/ui/drawer';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +15,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
+import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Meter, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
-import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
 
 type DetailStatus = 'live' | 'trial' | 'paused';
@@ -103,10 +104,10 @@ const sampleProject: DetailProject = {
 
 const planAllowance: Record<DetailPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
 
-const statuses: Record<DetailStatus, { label: string; dot: string }> = {
-  live: { label: 'Live', dot: 'bg-success' },
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  paused: { label: 'Paused', dot: 'bg-warning' },
+const statuses: Record<DetailStatus, { label: string; state: Status }> = {
+  live: { label: 'Live', state: 'done' },
+  trial: { label: 'Trial', state: 'pending' },
+  paused: { label: 'Paused', state: 'waiting' },
 };
 const statusItems = Object.fromEntries(Object.entries(statuses).map(([key, value]) => [key, value.label]));
 
@@ -146,18 +147,13 @@ function PersonAvatar({ person }: { person: DetailPerson }) {
 }
 
 function StatusLabel({ status }: { status: DetailStatus }) {
-  return (
-    <span className="flex min-w-0 items-center gap-2">
-      <span aria-hidden className={cn('size-2 shrink-0 rounded-full', statuses[status].dot)} />
-      <span className="truncate">{statuses[status].label}</span>
-    </span>
-  );
+  return <StatusDot status={statuses[status].state}>{statuses[status].label}</StatusDot>;
 }
 
 function Property({ label, labelId, children }: { label: string; labelId?: string; children: React.ReactNode }) {
   return (
     <div className="contents">
-      <dt id={labelId} className="flex h-7.5 items-center text-muted-foreground">
+      <dt id={labelId} className="flex min-h-7.5 items-center text-muted-foreground">
         {label}
       </dt>
       <dd className="flex min-h-7.5 min-w-0 flex-wrap items-center gap-1.5">{children}</dd>
@@ -205,7 +201,7 @@ function EventQuota({ events, plan }: { events: number; plan: DetailPlan }) {
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase">{children}</h3>;
+  return <h3 className="text-caption tracking-[0.05em] text-muted-foreground uppercase">{children}</h3>;
 }
 
 function EventsTrend({ trend }: { trend: NonNullable<DetailProject['trend']> }) {
@@ -318,8 +314,9 @@ function DetailDrawer({
   if (local.id !== project.id) setLocal({ id: project.id, propStatus: project.status, notes: [] });
   else if (local.propStatus !== project.status) setLocal({ ...local, propStatus: project.status, status: undefined });
   const [draft, setDraft] = React.useState('');
+  const [noteEmpty, setNoteEmpty] = React.useState(false);
+  const [noteAdded, setNoteAdded] = React.useState(false);
   const statusLabelId = React.useId();
-  const noteId = React.useId();
   const noteRef = React.useRef<HTMLTextAreaElement>(null);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   // Bring a note added here into view at the end of the activity.
@@ -347,6 +344,8 @@ function DetailDrawer({
     event.preventDefault();
     const body = draft.trim();
     if (!body) {
+      setNoteEmpty(true);
+      setNoteAdded(false);
       noteRef.current?.focus();
       return;
     }
@@ -358,6 +357,8 @@ function DetailDrawer({
       });
     }
     setDraft('');
+    setNoteEmpty(false);
+    setNoteAdded(true);
   }
 
   return (
@@ -419,19 +420,13 @@ function DetailDrawer({
           <DetailSkeleton />
         ) : (
           <>
-            <ScrollArea
-              viewportRef={bodyRef}
-              // The body spans the drawer's full width, so it draws its focus outline inside.
-              className="min-h-0 flex-1 has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2"
-              // The 20px padding already clears the scrollbar.
-              viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
-            >
-              <div className="flex flex-col gap-1 px-5">
+            <DrawerBody viewportRef={bodyRef} className="p-0">
+              <div className="flex flex-col gap-1 px-4">
                 <DrawerTitle className="wrap-break-word">{project.name}</DrawerTitle>
                 {project.meta ? <DrawerDescription>{project.meta}</DrawerDescription> : null}
               </div>
 
-              <dl className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 gap-y-1.5 px-5 pt-5 text-body">
+              <dl className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 gap-y-1.5 px-4 pt-5 text-body">
                 <Property label="Status" labelId={statusLabelId}>
                   <Select value={status} onValueChange={(value) => changeStatus(value as DetailStatus)} items={statusItems}>
                     <SelectTrigger aria-labelledby={statusLabelId} className="min-w-36">
@@ -474,11 +469,11 @@ function DetailDrawer({
                 </Property>
               </dl>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-3 px-5">
+              <section className="flex flex-col gap-3 px-4">
                 <SectionHeading>Last 30 days</SectionHeading>
                 <dl className="grid grid-cols-3 gap-4">
                   {usage.map((item) => (
@@ -498,11 +493,11 @@ function DetailDrawer({
                 )}
               </section>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-2 px-5">
+              <section className="flex flex-col gap-2 px-4">
                 <SectionHeading>Notes</SectionHeading>
                 {project.notes ? (
                   <p className="text-body text-pretty wrap-break-word">{project.notes}</p>
@@ -511,11 +506,11 @@ function DetailDrawer({
                 )}
               </section>
 
-              <div className="p-5">
+              <div className="px-4 py-5">
                 <Separator />
               </div>
 
-              <section className="flex flex-col gap-3 px-5 pb-5">
+              <section className="flex flex-col gap-3 px-4 pb-4">
                 <SectionHeading>Activity</SectionHeading>
                 {activity.length ? (
                   <ol className="flex flex-col gap-4">
@@ -544,30 +539,37 @@ function DetailDrawer({
                   <p className="text-body text-muted-foreground">No activity yet.</p>
                 )}
               </section>
-            </ScrollArea>
+            </DrawerBody>
 
             <form onSubmit={submitNote} className="flex shrink-0 items-end gap-2 border-t border-border px-5 py-4">
-              <label htmlFor={noteId} className="sr-only">
-                Add a note
-              </label>
-              <Textarea
-                id={noteId}
-                ref={noteRef}
-                value={draft}
-                onValueChange={(value) => setDraft(String(value))}
-                placeholder="Add a note…"
-                className="max-h-32 min-h-7.5 resize-none py-[5px]"
-                onKeyDown={(event) => {
-                  // ⌘Enter or Ctrl+Enter adds the note, as in most comment fields.
-                  if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-                    event.preventDefault();
-                    event.currentTarget.form?.requestSubmit();
-                  }
-                }}
-              />
+              <Field invalid={noteEmpty} className="min-w-0 flex-1">
+                <FieldLabel className="sr-only">Add a note</FieldLabel>
+                <Textarea
+                  ref={noteRef}
+                  value={draft}
+                  onValueChange={(value) => {
+                    setDraft(String(value));
+                    setNoteEmpty(false);
+                    setNoteAdded(false);
+                  }}
+                  placeholder="Add a note…"
+                  className="max-h-32 min-h-7.5 resize-none py-1.25"
+                  onKeyDown={(event) => {
+                    // ⌘Enter or Ctrl+Enter adds the note, as in most comment fields.
+                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                      event.preventDefault();
+                      event.currentTarget.form?.requestSubmit();
+                    }
+                  }}
+                />
+                <FieldError>{noteEmpty ? 'Write a note before you add it.' : null}</FieldError>
+              </Field>
               <Button type="submit" variant="primary">
                 Add note
               </Button>
+              <p role="status" className="sr-only">
+                {noteAdded ? 'Note added' : ''}
+              </p>
             </form>
           </>
         )}

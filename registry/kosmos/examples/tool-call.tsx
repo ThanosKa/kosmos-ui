@@ -4,6 +4,7 @@ import { Database, Download, FileText, Gauge, Mail, Receipt } from 'lucide-react
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ToolCall } from '@/registry/kosmos/ui/tool-call';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const card = 'min-w-0 rounded-2xl border border-transparent bg-card p-2 shadow-card';
 
@@ -43,9 +44,9 @@ function Cell({ label, className, children }: { label: string; className?: strin
   );
 }
 
-export default function ToolCallPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="All six statuses, collapsed">
         <div className={card}>
           <div className="divide-y divide-border">
@@ -185,31 +186,55 @@ export default function ToolCallPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Narrow and long">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Cell label="Long titles in a 320px card: clamped to two lines until opened, in full without details" className={`${card} max-w-80`}>
-            <div className="divide-y divide-border">
-              <ToolCall
-                name="dashboards.rebuild_all_widgets"
-                title="Rebuild every widget on the Revenue by plan and platform dashboard"
-                icon={Database}
-                status="running"
-                durationMs={61000}
-                input={{ dashboard: 'Revenue by plan and platform', widgets: 'all' }}
-              />
-              <ToolCall
-                name="dashboards.rebuild_all_widgets"
-                title="Rebuild every widget on the Revenue by plan and platform dashboard"
-                icon={Database}
-                status="queued"
-              />
-            </div>
-          </Cell>
-          <Cell label="No input or output yet (no chevron)">
-            <ToolCall name="dashboards.export" title="Export the revenue dashboard" icon={FileText} status="queued" />
-          </Cell>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Narrow and long">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Cell label="Long titles in a 320px card: clamped to two lines until opened, in full without details" className={`${card} max-w-80`}>
+          <div className="divide-y divide-border">
+            <ToolCall
+              name="dashboards.rebuild_all_widgets"
+              title="Rebuild every widget on the Revenue by plan and platform dashboard"
+              icon={Database}
+              status="running"
+              durationMs={61000}
+              input={{ dashboard: 'Revenue by plan and platform', widgets: 'all' }}
+            />
+            <ToolCall
+              name="dashboards.rebuild_all_widgets"
+              title="Rebuild every widget on the Revenue by plan and platform dashboard"
+              icon={Database}
+              status="queued"
+            />
+          </div>
+        </Cell>
+        <Cell label="No input or output yet (no chevron)">
+          <ToolCall name="dashboards.export" title="Export the revenue dashboard" icon={FileText} status="queued" />
+        </Cell>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function ToolCallPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

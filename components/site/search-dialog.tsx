@@ -20,6 +20,7 @@ import {
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { createContext, use, useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react';
+import { copyAnnouncement, useDocsCopy } from '@/components/docs/use-docs-copy';
 import { defaultChoice, presetById, presets } from '@/lib/presets';
 import { githubUrl } from '@/lib/shared';
 import {
@@ -204,7 +205,7 @@ export function SearchDialog({ open, onOpenChange }: SharedProps) {
   const { search, onSearchChange, isLoading, data, error } = useFetchSearch();
   const [page, setPage] = useState<PalettePage>(null);
   const [presetQuery, setPresetQuery] = useState('');
-  const [copied, setCopied] = useState(false);
+  const { status: copyStatus, copied, copy } = useDocsCopy();
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
@@ -212,15 +213,8 @@ export function SearchDialog({ open, onOpenChange }: SharedProps) {
       onSearchChange('');
       setPage(null);
       setPresetQuery('');
-      setCopied(false);
     }
   }
-
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1600);
-    return () => clearTimeout(timer);
-  }, [copied]);
 
   const close = () => onOpenChange(false);
   const go = (url: string) => {
@@ -265,10 +259,7 @@ export function SearchDialog({ open, onOpenChange }: SharedProps) {
       crumb: 'Adds the @kosmos registry to your project',
       icon: copied ? Check : Copy,
       run: () => {
-        navigator.clipboard?.writeText(labels.installCommand).then(
-          () => setCopied(true),
-          () => {},
-        );
+        copy(() => labels.installCommand);
       },
     },
     { key: 'action:github', title: 'Open GitHub', crumb: 'Source, issues and releases', icon: GitHubIcon, run: () => goOut(githubUrl) },
@@ -415,6 +406,9 @@ export function SearchDialog({ open, onOpenChange }: SharedProps) {
           )}
         </CommandList>
         <CommandFooter back={Boolean(page)} />
+        <span role="status" className="sr-only">
+          {copyAnnouncement(copyStatus, 'Install command copied')}
+        </span>
       </Command>
     </CommandDialog>
   );

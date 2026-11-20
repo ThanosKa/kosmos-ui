@@ -45,7 +45,10 @@ type AssistantMessageProps = {
 
 const newTab = { target: '_blank', rel: 'noreferrer' } as const;
 
-const iconHidden = 'opacity-0 motion-safe:scale-25 motion-safe:blur-xs';
+const iconSwap = cn(
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+);
 
 /** A numbered marker inside the answer. It links to its source and shows the source title in a tooltip. */
 function Citation({ n, source }: { n: number; source: Pick<Source, 'title' | 'url'> }) {
@@ -224,18 +227,20 @@ function AssistantMessage({
         ) : null}
       </div>
 
-      {status === 'error' ? (
-        <div role="alert" className="flex flex-wrap items-center gap-2">
-          <CircleAlert aria-hidden className="size-3.5 shrink-0 text-destructive" />
-          <span className="text-small">{error ?? 'This reply didn’t finish.'}</span>
-          {onRetry ? (
-            <Button variant="secondary" onClick={onRetry}>
-              <RotateCcw aria-hidden />
-              Retry
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
+      <div role="alert" className="empty:sr-only">
+        {status === 'error' ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <CircleAlert aria-hidden className="size-3.5 shrink-0 text-destructive" />
+            <span className="text-small">{error ?? 'This reply didn’t finish.'}</span>
+            {onRetry ? (
+              <Button variant="secondary" onClick={onRetry}>
+                <RotateCcw aria-hidden />
+                Retry
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
       {sources && sources.length > 0 && status !== 'streaming' ? (
         <div className="max-w-[40em]">
@@ -258,10 +263,10 @@ function AssistantMessage({
             <ActionButton label={copied ? 'Copied' : 'Copy'} onClick={copy}>
               <span
                 aria-hidden
-                className="relative size-3 *:absolute *:inset-0 *:transition-[opacity,scale,filter] *:duration-slow *:ease-power3-out"
+                className="relative size-3 *:absolute *:inset-0"
               >
-                <Copy className={cn(copied && iconHidden)} />
-                <Check className={cn(!copied && iconHidden)} />
+                <Copy data-visible={!copied || undefined} className={iconSwap} />
+                <Check data-visible={copied || undefined} className={iconSwap} />
               </span>
             </ActionButton>
             {onRetry ? (

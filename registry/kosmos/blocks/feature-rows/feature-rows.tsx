@@ -164,9 +164,9 @@ function FeatureRows({
     <section data-slot="feature-rows" className={cn('@container flex flex-col', className)} {...props}>
       {title || description ? (
         <header className="mb-10 flex flex-col items-center text-center @3xl:mb-14">
-          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
           {description ? (
-            <p data-slot="feature-rows-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">
+            <p data-slot="feature-rows-description" className="mt-3 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">
               {description}
             </p>
           ) : null}
@@ -182,9 +182,9 @@ function FeatureRows({
               data-side={flipped ? 'start' : 'end'}
               className="grid min-w-0 grid-cols-1 gap-6 @3xl:grid-cols-12 @3xl:items-center @3xl:gap-12"
             >
-              <div className={cn('flex min-w-0 flex-col items-start gap-3 @3xl:col-span-4', flipped && '@3xl:order-2')}>
-                <RowHeading className="text-heading font-semibold text-balance text-foreground">{item.title}</RowHeading>
-                <p data-slot="feature-rows-item-description" className="text-body text-pretty text-muted-foreground">
+              <div className={cn('flex min-w-0 flex-col items-start gap-3 @3xl:row-start-1 @3xl:col-span-4', flipped ? '@3xl:col-start-9' : '@3xl:col-start-1')}>
+                <RowHeading className="max-w-full text-heading font-semibold text-balance wrap-break-word text-foreground">{item.title}</RowHeading>
+                <p data-slot="feature-rows-item-description" className="max-w-full text-body text-pretty wrap-break-word text-muted-foreground">
                   {item.description}
                 </p>
                 {item.href ? (
@@ -197,8 +197,8 @@ function FeatureRows({
               <div
                 data-slot="feature-rows-item-media"
                 className={cn(
-                  'flex min-h-64 min-w-0 items-center overflow-hidden rounded-2xl border border-transparent bg-muted p-4 shadow-inset @xl:p-6 @3xl:col-span-8 @3xl:min-h-80 @3xl:p-10',
-                  flipped ? 'justify-end' : 'justify-start',
+                  'flex min-h-64 min-w-0 items-center justify-start overflow-hidden rounded-2xl border border-transparent bg-muted p-4 shadow-inset @xl:p-6 @3xl:row-start-1 @3xl:col-span-8 @3xl:min-h-80 @3xl:p-10',
+                  flipped ? '@3xl:col-start-1' : '@3xl:col-start-5',
                 )}
               >
                 <div className="w-full min-w-0 @3xl:min-w-136">{item.media}</div>

@@ -37,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Kbd } from '@/registry/kosmos/ui/kbd';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[24rem]';
 
@@ -75,12 +76,12 @@ function MoveToMenu({ container, scrolled }: { container: HTMLElement; scrolled?
   );
 }
 
-export default function DropdownMenuPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
-          <OverlayStage label="items: icon, shortcut, highlighted, disabled, destructive" className={stageClass}>
+          <OverlayStage inert label="items: icon, shortcut, highlighted, disabled, destructive" className={stageClass}>
             {(container) => (
               <DropdownMenu open modal={false}>
                 <DropdownMenuTrigger render={<Button variant="secondary" />}>
@@ -119,11 +120,11 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="checkbox and radio items, group labels" className={stageClass}>
+          <OverlayStage inert label="checkbox and radio items, group labels" className={stageClass}>
             {(container) => <CheckAndRadioMenu container={container} />}
           </OverlayStage>
 
-          <OverlayStage label="submenu open, link item" className={stageClass}>
+          <OverlayStage inert label="submenu open, link item" className={stageClass}>
             {(container) => (
               <DropdownMenu open modal={false}>
                 <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="More actions" />}>
@@ -159,39 +160,11 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="long text, no room below (flips up), end aligned" className={stageClass}>
-            {(container) => (
-              <div className="flex h-full items-end justify-end">
-                <DropdownMenu open modal={false}>
-                  <DropdownMenuTrigger render={<Button variant="secondary" />}>
-                    <User data-icon="inline-start" />
-                    Lena Park
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent container={container} align="end" className="w-56">
-                    <DropdownMenuGroup>
-                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.acme.example</DropdownMenuLabel>
-                      <DropdownMenuItem>
-                        <Settings />
-                        Workspace settings and billing for Acme Staging
-                      </DropdownMenuItem>
-                      <DropdownMenuItem inset>Keyboard shortcuts</DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LogOut />
-                      Log out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
-          </OverlayStage>
-
-          <OverlayStage label="more items than fit, at the top" className={stageClass}>
+          <OverlayStage inert label="more items than fit, at the top" className={stageClass}>
             {(container) => <MoveToMenu container={container} />}
           </OverlayStage>
 
-          <OverlayStage label="more items than fit, scrolled halfway" className={stageClass}>
+          <OverlayStage inert label="more items than fit, scrolled halfway" className={stageClass}>
             {(container) => <MoveToMenu container={container} scrolled />}
           </OverlayStage>
         </OverlayStageGrid>
@@ -240,7 +213,7 @@ export default function DropdownMenuPreview() {
           <CheckAndRadioMenu />
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
   );
 }
 
@@ -274,5 +247,85 @@ function CheckAndRadioMenu({ container }: { container?: HTMLElement }) {
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewSection title="Long text, no room below (flips up), end aligned">
+      <OverlayStageGrid>
+          <OverlayStage inert label="long text, no room below (flips up), end aligned" className={stageClass}>
+            {(container) => (
+              <div className="flex h-full items-end justify-end">
+                <DropdownMenu open modal={false}>
+                  <DropdownMenuTrigger render={<Button variant="secondary" />}>
+                    <User data-icon="inline-start" />
+                    Lena Park
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent container={container} align="end" className="w-56">
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="truncate">lena.park@analytics-staging.acme.example</DropdownMenuLabel>
+                      <DropdownMenuItem>
+                        <Settings />
+                        Workspace settings and billing for Acme Staging
+                      </DropdownMenuItem>
+                      <DropdownMenuItem inset>Keyboard shortcuts</DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <LogOut />
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </OverlayStage>
+        <OverlayStage inert label="an unbreakable email, a one-letter name, Greek and emoji" className={stageClass}>
+          {(container) => (
+            <DropdownMenu open modal={false}>
+              <DropdownMenuTrigger render={<Button variant="secondary" className="max-w-40" />}>
+                <User data-icon="inline-start" />
+                <span className="truncate">Aleksandra Wiśniewska-Kowalczyk</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent container={container} className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="truncate">bartholomew.fitzgerald@northwind-industries-holdings.example</DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <Pencil />
+                    Ιστότοπος καφέ Saltmarsh 🌊
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Copy />K
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Share2 />
+                    Share the Copperline Bank server events for card payments, loans and the business portal
+                    <DropdownMenuShortcut><Kbd>⌘</Kbd><Kbd>⇧</Kbd><Kbd>⌥</Kbd><Kbd>S</Kbd></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </OverlayStage>
+      </OverlayStageGrid>
+    </PreviewSection>
+  );
+}
+
+export default function DropdownMenuPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -1,8 +1,9 @@
 'use client';
 
-import { CircleAlert, CircleCheck, Eye, LoaderCircle, MailCheck } from 'lucide-react';
+import { CircleCheck, Eye, LoaderCircle, MailCheck } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { Alert, AlertDescription } from '@/registry/kosmos/ui/alert';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
@@ -146,7 +147,7 @@ function ProductMark({ name }: { name: string }) {
       aria-hidden
       className="flex size-9 items-center justify-center rounded-xl border border-transparent bg-primary text-title text-primary-foreground shadow-primary"
     >
-      {name.trim().charAt(0).toUpperCase()}
+      {Array.from(name.trim())[0]?.toUpperCase()}
     </span>
   );
 }
@@ -221,12 +222,15 @@ function AuthLink({
   );
 }
 
-/** An error from the server, above the fields. */
-function FormAlert({ children }: { children: React.ReactNode }) {
+/** An error from the server, above the fields. Its live region is always on the page, so the message is announced when it arrives. */
+function FormAlert({ error }: { error: string | null }) {
   return (
-    <div role="alert" className="flex items-start gap-2 rounded-lg bg-muted px-3 py-2.5 text-small text-foreground">
-      <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0 text-destructive" />
-      <p className="min-w-0">{children}</p>
+    <div role="alert" className="empty:sr-only">
+      {error ? (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : null}
     </div>
   );
 }
@@ -375,7 +379,7 @@ function LogInForm({
     >
       {alternatives ? <Alternatives>{alternatives}</Alternatives> : null}
       <form noValidate onSubmit={submit} aria-busy={pending || undefined} className="flex flex-col gap-4">
-        {error ? <FormAlert>{error}</FormAlert> : null}
+        <FormAlert error={error} />
         <Field invalid={submitted && errors.email !== null}>
           <FieldLabel>Email</FieldLabel>
           <Input
@@ -493,7 +497,7 @@ function SignUpForm({
     >
       {alternatives ? <Alternatives>{alternatives}</Alternatives> : null}
       <form noValidate onSubmit={submit} aria-busy={pending || undefined} className="flex flex-col gap-4">
-        {error ? <FormAlert>{error}</FormAlert> : null}
+        <FormAlert error={error} />
         <Field invalid={submitted && errors.name !== null}>
           <FieldLabel>Name</FieldLabel>
           <Input
@@ -832,7 +836,7 @@ function ForgotPasswordForm({
       footer={<>Remembered it? {backToLogIn}</>}
     >
       <form noValidate onSubmit={submit} aria-busy={pending || undefined} className="flex flex-col gap-4">
-        {error ? <FormAlert>{error}</FormAlert> : null}
+        <FormAlert error={error} />
         <Field invalid={submitted && invalid !== null}>
           <FieldLabel>Email</FieldLabel>
           <Input

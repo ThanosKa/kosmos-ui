@@ -211,7 +211,7 @@ function TooltipRow({
           on ? 'bg-(--series)' : 'bg-transparent ring-1 ring-(--series) ring-inset',
         )}
       />
-      <span className="min-w-0 flex-1 truncate text-muted-foreground">{name}</span>
+      <span title={name} className="min-w-0 flex-1 truncate text-muted-foreground">{name}</span>
       <span className={cn('shrink-0 font-medium transition-[color]', !on && 'font-normal text-muted-foreground')}>{format(shown)}</span>
     </li>
   );
@@ -508,7 +508,7 @@ function MultiLineChart({
                   !tooltipReady && 'opacity-0 motion-safe:translate-y-1',
                 )}
               >
-                <div className="truncate font-medium">{points[point].label}</div>
+                <div title={points[point].label} className="truncate font-medium">{points[point].label}</div>
                 <ul className="flex flex-col gap-1">
                   {series.map((each, index) => (
                     <TooltipRow
@@ -534,6 +534,7 @@ function MultiLineChart({
           ? shownTicks.map((tick, i) => (
               <span
                 key={tick.index}
+                title={tick.label}
                 style={{ '--x': `${xAt(tick.index)}px`, '--w': `${width}px`, '--delay': at(100, i * 30) } as React.CSSProperties}
                 className={cn(
                   // Centered under its point, but never past either edge of the plot.
@@ -649,7 +650,7 @@ function MultiLineChartLegend({
                   on ? 'bg-(--series)' : 'bg-transparent ring-1 ring-(--series) ring-inset',
                 )}
               />
-              <span className="truncate">{each.name}</span>
+              <span title={each.name} className="truncate">{each.name}</span>
             </Button>
           </li>
         );

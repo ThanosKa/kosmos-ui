@@ -214,7 +214,7 @@ function DonutChart({
         </div>
       ) : totalText ? (
         <div data-slot="donut-chart-label" className={centerClassName}>
-          {showLabel && label ? <span className="max-w-full truncate text-caption text-muted-foreground">{label}</span> : null}
+          {showLabel && label ? <span title={typeof label === 'string' ? label : undefined} className="max-w-full truncate text-caption text-muted-foreground">{label}</span> : null}
           <span className={cn('whitespace-nowrap text-foreground tabular-nums', totalText)}>
             <bdi dir="ltr">{format(total)}</bdi>
           </span>

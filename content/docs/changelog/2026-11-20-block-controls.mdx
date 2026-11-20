@@ -1,0 +1,16 @@
+---
+title: Block controls keep focus and do what they say
+description: Dashboards, Navbar, Settings and Members keep keyboard focus when a control removes itself, and controls with no action are no longer shown.
+date: 2026-11-20
+---
+
+In blocks, a control keeps keyboard focus when it removes or disables itself, and a control with no action is not shown.
+
+- [Dashboard analytics](/docs/blocks/dashboard-analytics) and [Dashboard CRM](/docs/blocks/dashboard-crm): after you use Archive or Mark as read, focus moves to the next notification or to the selected tab. A notification title is a link when the notification has an `href` and a button when it has none. The sidebar marks Analytics or Sales as the current page, not Overview. The task buttons in CRM show only when you pass `onTaskAction`.
+- [Notification inbox](/docs/components/notification-inbox): `NotificationItemTitle` renders a button when it has no `href`.
+- [App sidebar](/docs/blocks/app-sidebar): the Search button shows only when you pass `onSearch`, and the sample pages include Analytics and Sales.
+- [Navbar](/docs/blocks/navbar): dismissing the banner moves focus to the home link, and `NavbarSearch` builds `aria-keyshortcuts` from its `shortcut` keys.
+- [Settings](/docs/blocks/settings): Save stays focusable while it saves, Discard moves focus to Save, and the usage alert field sets `locale="en-US"`.
+- [Members](/docs/blocks/members): Send invite stays focusable while it sends, and the role select takes the height of the button beside it.
+
+To update, run the add command again for each item.

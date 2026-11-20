@@ -9,6 +9,7 @@
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/format",
+    "@kosmos/use-mounted",
     "@kosmos/collapsible",
     "@kosmos/scroll-area",
     "@kosmos/status"

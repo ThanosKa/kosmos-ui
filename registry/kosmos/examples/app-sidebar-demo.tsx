@@ -6,6 +6,8 @@ import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } fr
 
 const titles: Record<string, string> = {
   overview: 'Overview',
+  analytics: 'Analytics',
+  sales: 'Sales',
   projects: 'Projects',
   events: 'Live events',
   funnels: 'Funnels',
@@ -48,7 +50,7 @@ export default function AppSidebarDemo() {
       <SidebarInset>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="truncate text-body font-medium">{titles[page]}</h1>
+          <h1 title={titles[page]} className="truncate text-title font-medium">{titles[page]}</h1>
         </header>
         <p className="p-4 text-body text-muted-foreground">
           Pick a page in the sidebar or drag its edge to resize it. The button beside the title, or the shortcut in its

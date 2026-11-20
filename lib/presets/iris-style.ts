@@ -69,9 +69,6 @@ export const irisStyle: PresetStyle = {
 
     '::selection': { 'background-color': 'color-mix(in oklab, var(--ring) 30%, transparent)' },
 
-    ':is([data-slot="badge"], [data-slot="checkbox"], [data-slot="switch"], [data-slot="segmented-control-item"], a:not([data-slot="button"])):focus-visible:not([class*="-outline-offset-"])':
-      { 'outline-offset': '0' },
-
     '@media (prefers-reduced-motion: no-preference)': {
       ':is([data-slot="dialog-backdrop"], [data-slot="drawer-backdrop"])': { 'backdrop-filter': 'blur(6px)' },
     },
@@ -177,11 +174,6 @@ export const irisStyle: PresetStyle = {
       'background-color': 'var(--iris-key)',
       'box-shadow': 'var(--iris-shadow-key)',
     },
-
-    '[data-slot="table-body"] [data-slot="table-row"]:hover': {
-      'background-color': 'color-mix(in srgb, var(--card) 60%, transparent)',
-    },
-    '[data-slot="table-row"][data-state="selected"]': { 'background-color': 'var(--card)' },
 
     ':is([data-slot="stat-card"], [data-slot="chart-card"], [data-slot="panel"])': { 'border-radius': 'var(--radius)' },
     '[data-slot="panel-content"]': { 'border-radius': 'calc(var(--radius) - 4px)' },

@@ -2,7 +2,7 @@
 
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { PreviewFrame } from './preview-frame';
@@ -57,7 +57,13 @@ export function BlockViewerPanels({
   locked?: boolean;
 }) {
   const [width, setWidth] = useState<PreviewWidth>('desktop');
+  const [switching, setSwitching] = useState(false);
   const framed = previewWidths[width].width;
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setSwitching(false)));
+    return () => cancelAnimationFrame(frame);
+  }, [width]);
   const src = useThemedPreviewUrl(previewUrl);
 
   return (
@@ -71,7 +77,10 @@ export function BlockViewerPanels({
         <SegmentedControl
           aria-label="Preview width"
           value={width}
-          onValueChange={(value) => setWidth(value as PreviewWidth)}
+          onValueChange={(value) => {
+            if (value !== width) setSwitching(true);
+            setWidth(value as PreviewWidth);
+          }}
           className="hidden group-data-[tab=code]/shell:invisible @min-[770px]/viewer:inline-flex"
         >
           {(Object.keys(previewWidths) as PreviewWidth[]).map((key) => {
@@ -86,7 +95,7 @@ export function BlockViewerPanels({
       }
       stage={
         <div
-          className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-none', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
+          className={cn('box-content w-full motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out', switching ? 'motion-reduce:opacity-0' : 'motion-reduce:transition-[opacity] motion-reduce:duration-fast', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
           style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
         >
           {src ? (

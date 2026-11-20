@@ -1,0 +1,13 @@
+---
+title: Sparkline, Growth chart, Usage overview and Candlestick chart move with the Kosmos timing
+description: The Recharts charts draw in once they scroll into view and fade under reduced motion, and the Candlestick tooltip glides.
+date: 2026-11-20
+---
+
+Four items changed so chart motion follows the same rules everywhere.
+
+- [Chart](/docs/components/chart): Sparkline and Growth chart draw in over 300ms once a third of the chart is in view, not on mount. Under the reduced motion setting they fade in instead of jumping, and fade in again when their data changes.
+- [Usage overview](/docs/blocks/usage-overview): the bars draw in when the chart scrolls into view, and fade in under reduced motion when you switch the range.
+- [Candlestick chart](/docs/charts/candlestick-chart): the tooltip and the dashed line glide over 300ms with a transform, so the page no longer lays out on each frame.
+
+To update, run the add command again for each item.

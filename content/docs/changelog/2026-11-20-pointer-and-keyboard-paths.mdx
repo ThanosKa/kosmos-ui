@@ -1,0 +1,10 @@
+---
+title: Every action has a keyboard and a pointer path
+description: A Data table row opens from its name. The Daily stacked bar chart and Flow chart take a larger touch target. A Kanban card moves from a menu.
+date: 2026-11-20
+---
+
+- **[Data table](/docs/components/data-table)**: `onRowClick` is a pointer shortcut, since a row cannot take focus. Put a link or button that opens the same thing in the name cell. The docs example shows it.
+- **[Daily stacked bar chart](/docs/components/daily-stacked-bar-chart)**: the chart tracks the pointer over the whole plot and lights the nearest day. A thin bar is no longer a thin target. The day buttons stay for the keyboard.
+- **[Flow chart](/docs/components/flow-chart)**: the value label on each band has a hit area of at least 24px.
+- **[Kanban board](/docs/blocks/kanban-board)**: each card has a Move menu with Move to each other column, Move up and Move down, for a pointer that cannot drag. The block adds the [Dropdown menu](/docs/components/dropdown-menu). The board no longer rounds its corners, as its columns are open lanes.

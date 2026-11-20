@@ -124,6 +124,30 @@ function useReducedMotion() {
   );
 }
 
+/**
+ * What a Recharts chart that draws in once it scrolls into view needs. Mount the chart only when `revealed`, give it
+ * `key={remountKey}`, and spread `isAnimationActive` on its series. Under reduced motion `remountKey` goes up with each
+ * new `data`, so the chart fades in again instead of moving.
+ */
+function useRechartsEntrance(ref: React.RefObject<Element | null>, entrance: ChartEntrance | undefined, data: unknown) {
+  const { revealed, instant } = useChartEntrance(ref, entrance);
+  const reduced = useReducedMotion();
+  const [shownData, setShownData] = React.useState(data);
+  const [version, setVersion] = React.useState(0);
+  if (data !== shownData) {
+    setShownData(data);
+    setVersion(version + 1);
+  }
+  // The data drawn while the entrance is skipped stays still; any data after it moves.
+  const [stillData, setStillData] = React.useState<unknown>(instant ? data : null);
+  if (instant && stillData !== data) setStillData(data);
+  return {
+    revealed,
+    isAnimationActive: stillData === data ? (false as const) : ('auto' as const),
+    remountKey: reduced ? version : 'chart',
+  };
+}
+
 /** `ease-power3-out` as a function of time, for a value drawn frame by frame. */
 const power3Out = (t: number) => 1 - (1 - t) ** 4;
 
@@ -158,4 +182,4 @@ function useCountUp(value: number, { ready = true, instant = false }: { ready?: 
   return shown;
 }
 
-export { ChartEntranceContext, useChartEntrance, useCountUp, useEntranceAnimation, useReducedMotion, type ChartEntrance };
+export { ChartEntranceContext, useChartEntrance, useCountUp, useEntranceAnimation, useReducedMotion, useRechartsEntrance, type ChartEntrance };

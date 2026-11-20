@@ -2,10 +2,21 @@
 
 import { Select as SelectPrimitive } from '@base-ui/react/select';
 import { Check, ChevronDown, ChevronsUpDown, ChevronUp } from 'lucide-react';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
+const SelectTriggerId = React.createContext<string | undefined>(undefined);
+
 /** Holds the value and open state. Takes `items` so `SelectValue` can show a label instead of the raw value. */
-const Select = SelectPrimitive.Root;
+function Select<Value, Multiple extends boolean | undefined = false>({ id, ...props }: SelectPrimitive.Root.Props<Value, Multiple>) {
+  const generatedId = React.useId();
+  const triggerId = id ?? generatedId;
+  return (
+    <SelectTriggerId value={triggerId}>
+      <SelectPrimitive.Root id={triggerId} {...props} />
+    </SelectTriggerId>
+  );
+}
 
 type SelectTriggerProps = Omit<SelectPrimitive.Trigger.Props, 'className'> & { className?: string };
 
@@ -55,7 +66,7 @@ type SelectContentProps = Omit<SelectPrimitive.Popup.Props, 'className'> &
   };
 
 /**
- * The list in a popup. By default it opens over the trigger with the selected item on top of
+ * The list in a popup, named by its trigger. By default it opens over the trigger with the selected item on top of
  * the value (`alignItemWithTrigger`); set it to `false` to open below the trigger instead.
  */
 function SelectContent({
@@ -68,6 +79,15 @@ function SelectContent({
   alignItemWithTrigger = true,
   ...props
 }: SelectContentProps) {
+  const triggerId = React.use(SelectTriggerId);
+  // The list takes its trigger's name: a combobox gives a reader its value instead of its label when another element points to it.
+  const [name, setName] = React.useState<{ label?: string; labelledBy?: string }>({});
+  const nameList = (list: HTMLElement | null) => {
+    const trigger = list && triggerId ? document.getElementById(triggerId) : null;
+    const label = trigger?.getAttribute('aria-label') ?? undefined;
+    const labelledBy = trigger?.getAttribute('aria-labelledby') ?? undefined;
+    if (list) setName((current) => (current.label === label && current.labelledBy === labelledBy ? current : { label, labelledBy }));
+  };
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Positioner
@@ -92,7 +112,7 @@ function SelectContent({
           <SelectPrimitive.ScrollUpArrow className="absolute inset-x-0 top-0 z-10 flex h-5 items-center justify-center bg-popover text-muted-foreground">
             <ChevronUp aria-hidden className="size-3.5" />
           </SelectPrimitive.ScrollUpArrow>
-          <SelectPrimitive.List data-slot="select-list" className="max-h-(--available-height) scroll-py-1 overflow-y-auto overscroll-contain p-1">
+          <SelectPrimitive.List data-slot="select-list" ref={nameList} aria-label={name.label} aria-labelledby={name.labelledBy} className="max-h-(--available-height) scroll-py-1 overflow-y-auto overscroll-contain p-1">
             {children}
           </SelectPrimitive.List>
           <SelectPrimitive.ScrollDownArrow className="absolute inset-x-0 bottom-0 z-10 flex h-5 items-center justify-center bg-popover text-muted-foreground">
@@ -112,7 +132,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none',
+        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none [-webkit-tap-highlight-color:transparent]',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",

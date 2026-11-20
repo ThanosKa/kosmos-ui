@@ -100,12 +100,13 @@ function NavbarMark({ name }: { name: React.ReactNode }) {
       aria-hidden
       className="flex size-6 items-center justify-center rounded-md border border-transparent bg-primary text-caption font-semibold text-primary-foreground shadow-primary"
     >
-      {typeof name === 'string' ? name.trim().charAt(0).toUpperCase() : null}
+      {typeof name === 'string' ? Array.from(name.trim())[0]?.toUpperCase() : null}
     </span>
   );
 }
 
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+const noTapFlash = '[-webkit-tap-highlight-color:transparent]';
 
 // A nav item: the ghost look without the press scale, which dense rows of items skip.
 const barItemClass = cn(
@@ -113,6 +114,7 @@ const barItemClass = cn(
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
   'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text data-current:bg-accent data-current:text-accent-text',
   focusRing,
+  noTapFlash,
 );
 
 const sheetLinkClass = cn(
@@ -120,6 +122,7 @@ const sheetLinkClass = cn(
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
   'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text',
   focusRing,
+  noTapFlash,
 );
 
 type NavbarLinksProps = {
@@ -150,6 +153,7 @@ function renderDropdownLink(link: NavbarLink, current: string | undefined, Link:
       className={cn(
         'group/link flex gap-2.5 rounded-lg px-2.5 py-2 transition-[background-color] duration-instant hover:bg-accent aria-[current=page]:bg-accent',
         'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+        noTapFlash,
       )}
     >
       {link.icon ? (
@@ -307,7 +311,7 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
             {link.icon}
           </span>
         ) : null}
-        <span className="truncate">{link.label}</span>
+        <span title={link.label} className="truncate">{link.label}</span>
         {link.href === current ? <Check aria-hidden className="ms-auto size-4 shrink-0" /> : null}
       </Link>
     </li>
@@ -355,18 +359,26 @@ type NavbarSearchProps = Omit<React.ComponentProps<'button'>, 'children'> & {
   shortcut?: string[];
 };
 
+const keyNames: Record<string, string> = { '⌘': 'Meta', '⌃': 'Control', '⌥': 'Alt', '⇧': 'Shift', Ctrl: 'Control', Cmd: 'Meta' };
+
+/** `['⌘', 'K']` becomes `Meta+K Control+K`: a Command hint also answers to Control on Windows and Linux. */
+function keyShortcuts(keys: string[]) {
+  const mac = keys.map((key) => keyNames[key] ?? key.toUpperCase()).join('+');
+  return keys.some((key) => keyNames[key] === 'Meta') ? `${mac} ${mac.replace('Meta', 'Control')}` : mac;
+}
+
 /** A search field look-alike that opens a search, such as the command menu. Takes the width of its slot. */
 function NavbarSearch({ children = 'Search…', shortcut, className, ...props }: NavbarSearchProps) {
   return (
     <Button
       variant="secondary"
       data-slot="navbar-search"
-      aria-keyshortcuts={shortcut ? 'Meta+K Control+K' : undefined}
+      aria-keyshortcuts={shortcut ? keyShortcuts(shortcut) : undefined}
       className={cn('w-full justify-start ps-2.5 pe-1.5 font-normal text-muted-foreground', className)}
       {...props}
     >
       <Search aria-hidden />
-      <span className="flex-1 truncate text-start">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="flex-1 truncate text-start">{children}</span>
       {shortcut ? (
         <KbdGroup aria-hidden>
           {shortcut.map((key) => (
@@ -407,7 +419,7 @@ function NavbarBanner({
   if (dismissed) return null;
   const line = (
     <>
-      <span className="min-w-0 line-clamp-2 text-pretty">{children}</span>
+      <span className="min-w-0 text-pretty wrap-break-word">{children}</span>
       {linkLabel ? (
         <span className="flex shrink-0 items-center gap-1 font-medium text-foreground">
           {linkLabel}
@@ -427,20 +439,21 @@ function NavbarBanner({
         <Link
           href={href}
           className={cn(
-            'mx-auto flex min-w-0 items-center gap-2 rounded-md px-1 py-0.5 transition-[color] hover:text-foreground',
+            'mx-auto flex min-w-0 flex-col items-start gap-0.5 rounded-md px-1 py-0.5 transition-[color] hover:text-foreground @sm:flex-row @sm:items-center @sm:gap-2',
             focusRing,
           )}
         >
           {line}
         </Link>
       ) : (
-        <span className="mx-auto flex min-w-0 items-center gap-2">{line}</span>
+        <span className="mx-auto flex min-w-0 flex-col items-start gap-0.5 @sm:flex-row @sm:items-center @sm:gap-2">{line}</span>
       )}
       <Button
         variant="ghost"
         size="icon-sm"
         aria-label={dismissLabel}
-        onClick={() => {
+        onClick={(event) => {
+          event.currentTarget.closest('[data-slot="navbar"]')?.querySelector<HTMLElement>('[data-slot="navbar-home"]')?.focus();
           setDismissed(true);
           onDismiss?.();
         }}
@@ -582,13 +595,14 @@ function Navbar({
           ) : null}
           <Link
             href={homeHref}
+            data-slot="navbar-home"
             className={cn(
               '-mx-1 flex min-w-0 items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold whitespace-nowrap text-foreground [&>:first-child]:shrink-0',
               focusRing,
             )}
           >
             {logo ?? <NavbarMark name={name} />}
-            <span className="truncate">{name}</span>
+            <span title={typeof name === 'string' ? name : undefined} className="truncate">{name}</span>
           </Link>
         </div>
         {items.length > 0 ? (

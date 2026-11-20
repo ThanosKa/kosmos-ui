@@ -25,7 +25,7 @@ const config = { revenue: { label: 'Revenue', color: 'var(--chart-1)' } } satisf
 
 A line is 1.5px and straight, with a faint flat fill of its own color under the first series. The chart has no value axis and labels only its first and last x value, so it reads as a shape. The tooltip gives the numbers.
 
-`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. A previous period is not a new series: give it the same color as the current one and list its key in `previousKeys`, and it draws at 45% opacity with no fill. They are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
+`config` names each series and picks its color. Use the chart tokens in order, `--chart-1` to `--chart-5`. A previous period is not a new series: give it the same color as the current one and list its key in `previousKeys`. It then draws at 45% opacity with no fill. The tokens are a mono ramp, ink then four steps of gray. They read for color-blind readers, and each keeps 3:1 on cards and on the page. They switch with the theme. In a stacked chart, give each segment a 1px `stroke` in `var(--card)`, so adjacent grays stay apart. For more than five series, group the smallest into "Other".
 
 ## Examples
 
@@ -53,7 +53,7 @@ Give the container a height or an aspect ratio. It is 16:9 by default. Pass a `t
 
 - `title` names the growth chart, and keyboard users can focus it and step through the points with the arrow keys.
 - It also renders its data as a visually hidden table, so screen reader users get every value.
-- Charts draw in over 300ms and skip the animation when the user prefers reduced motion.
+- Sparkline and Growth chart draw in over 300ms once a third of the chart is in view. When the user prefers reduced motion they fade in instead, and fade in again when their data changes. A chart you compose with `useChartAnimation` draws on mount and skips the animation under that setting.
 
 ## Entrance
 

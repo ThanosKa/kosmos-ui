@@ -204,6 +204,7 @@ function SegmentedGauge({
         {caption ? (
           <span
             data-slot="segmented-gauge-caption"
+            title={typeof caption === 'string' ? caption : undefined}
             style={delay(TEXT_AT_MS)}
             className={cn('hidden max-w-[70%] truncate text-caption text-muted-foreground @3xs/segmented-gauge:block', rise(revealed))}
           >
@@ -221,6 +222,7 @@ function SegmentedGauge({
         {description ? (
           <span
             data-slot="segmented-gauge-description"
+            title={typeof description === 'string' ? description : undefined}
             style={delay(TEXT_AT_MS + 2 * TEXT_STEP_MS)}
             className={cn('hidden max-w-[90%] truncate text-small text-muted-foreground @3xs/segmented-gauge:block', rise(revealed))}
           >

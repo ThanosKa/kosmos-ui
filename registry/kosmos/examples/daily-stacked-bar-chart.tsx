@@ -7,6 +7,7 @@ import {
   type DailyStackedBarChartItem,
   type DailyStackedBarChartSeries,
 } from '@/registry/kosmos/ui/daily-stacked-bar-chart';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const platforms: DailyStackedBarChartSeries[] = [
   { key: 'web', label: 'Web' },
@@ -68,22 +69,11 @@ const cases: { title: string; data: DailyStackedBarChartItem[]; series?: DailySt
   },
 ];
 
-export default function DailyStackedBarChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card">
         <DailyStackedBarChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, data, series = platforms }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <DailyStackedBarChart data={data} series={series} label={title} entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -96,6 +86,40 @@ export default function DailyStackedBarChartPreview() {
           ))}
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, data, series = platforms }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <DailyStackedBarChart data={data} series={series} label={title} entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function DailyStackedBarChartPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

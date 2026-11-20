@@ -16,10 +16,10 @@ const bannerVariants = cva(
     variants: {
       variant: {
         neutral: 'border-b border-border bg-card text-card-foreground',
-        info: 'bg-tint-blue text-tint-blue-foreground',
-        success: 'bg-tint-green text-tint-green-foreground',
-        warning: 'bg-tint-amber text-tint-amber-foreground',
-        destructive: 'bg-tint-red text-tint-red-foreground',
+        info: 'bg-tint-blue text-tint-blue-foreground [&_[data-slot=banner-action]]:hover:not-data-disabled:bg-tint-blue-hover',
+        success: 'bg-tint-green text-tint-green-foreground [&_[data-slot=banner-action]]:hover:not-data-disabled:bg-tint-green-hover',
+        warning: 'bg-tint-amber text-tint-amber-foreground [&_[data-slot=banner-action]]:hover:not-data-disabled:bg-tint-amber-hover',
+        destructive: 'bg-tint-red text-tint-red-foreground [&_[data-slot=banner-action]]:hover:not-data-disabled:bg-tint-red-hover',
       },
     },
     defaultVariants: { variant: 'neutral' },

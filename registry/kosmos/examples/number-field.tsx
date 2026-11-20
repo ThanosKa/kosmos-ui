@@ -10,6 +10,7 @@ import NumberFieldDemo from './number-field-demo';
 import NumberFieldFormat from './number-field-format';
 import NumberFieldInvalid from './number-field-invalid';
 import NumberFieldSettings from './number-field-settings';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['empty', 'value', 'at min', 'currency'] as const;
 const states = ['default', 'hover', 'active', 'focus', 'invalid', 'disabled', 'read-only'] as const;
@@ -35,9 +36,9 @@ function PinPart({ state, children }: { state: string; children: React.ReactNode
   );
 }
 
-export default function NumberFieldPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Values × states">
         <StateMatrix
           rows={rows}
@@ -81,27 +82,51 @@ export default function NumberFieldPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long values and a long label">
-        <div className="grid gap-6 sm:grid-cols-3">
-          <Field>
-            <FieldLabel>Events this month</FieldLabel>
-            <NumberField defaultValue={28495200} min={0} step={1000} locale="en-US" className="w-48" />
-          </Field>
-          <Field>
-            <FieldLabel>Lowest balance</FieldLabel>
-            <NumberField
-              defaultValue={-1250.5}
-              format={{ style: 'currency', currency: 'USD' }}
-              locale="en-US"
-              className="w-48"
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Sampling rate for every event a project sends while it is on a trial</FieldLabel>
-            <NumberField defaultValue={0.125} min={0} max={1} step={0.005} format={{ style: 'percent', maximumFractionDigits: 1 }} locale="en-US" />
-          </Field>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long values and a long label">
+      <div className="grid gap-6 sm:grid-cols-3">
+        <Field>
+          <FieldLabel>Events this month</FieldLabel>
+          <NumberField defaultValue={28495200} min={0} step={1000} locale="en-US" className="w-48" />
+        </Field>
+        <Field>
+          <FieldLabel>Lowest balance</FieldLabel>
+          <NumberField
+            defaultValue={-1250.5}
+            format={{ style: 'currency', currency: 'USD' }}
+            locale="en-US"
+            className="w-48"
+          />
+        </Field>
+        <Field>
+          <FieldLabel>Sampling rate for every event a project sends while it is on a trial</FieldLabel>
+          <NumberField defaultValue={0.125} min={0} max={1} step={0.005} format={{ style: 'percent', maximumFractionDigits: 1 }} locale="en-US" />
+        </Field>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function NumberFieldPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

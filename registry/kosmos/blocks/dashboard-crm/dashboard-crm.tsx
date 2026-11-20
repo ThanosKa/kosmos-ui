@@ -246,13 +246,14 @@ const stages: Record<Stage, { label: string; hue: 'gray' | 'blue' | 'violet' | '
   won: { label: 'Won', hue: 'green' },
 };
 
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('');
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
+const initials = (name: string) => {
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
+};
 
 /** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Won trend, up +18.6%"). */
 function trendLabel({ label, change, unit }: Pick<Kpi, 'label' | 'change' | 'unit'>) {
@@ -296,11 +297,27 @@ function KpiStrip({ kpis }: { kpis: Kpi[] }) {
 }
 
 /** A value in ink with a muted line of context under it. */
-function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+function TwoLine({
+  primary,
+  secondary,
+  numeric,
+  className,
+}: {
+  primary: React.ReactNode;
+  secondary?: React.ReactNode;
+  numeric?: boolean;
+  className?: string;
+}) {
   return (
-    <div className={cn('flex min-w-0 flex-col', className)}>
-      <span className="truncate text-body text-foreground">{primary}</span>
-      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    <div className={cn('flex flex-col', numeric ? 'shrink-0' : 'min-w-0', className)}>
+      <span title={typeof primary === 'string' ? primary : undefined} className={cn(numeric ? 'whitespace-nowrap' : 'truncate', 'text-body text-foreground')}>
+        {primary}
+      </span>
+      {secondary ? (
+        <span title={typeof secondary === 'string' ? secondary : undefined} className="truncate text-small text-muted-foreground">
+          {secondary}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -392,7 +409,7 @@ const dealColumns = dealColumn.columns([
   dealColumn.accessor('value', {
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row }) => (
-      <TwoLine primary={usd.format(row.original.value)} secondary={row.original.detail} className="items-end tabular-nums" />
+      <TwoLine numeric primary={usd.format(row.original.value)} secondary={row.original.detail} className="items-end tabular-nums" />
     ),
     sortFn: 'basic',
     enableHiding: false,
@@ -402,6 +419,7 @@ const dealColumns = dealColumn.columns([
     header: 'Close',
     cell: ({ row: { original: deal } }) => (
       <TwoLine
+        numeric
         primary={deal.closeDate}
         secondary={
           deal.closeNote ? (
@@ -473,7 +491,7 @@ function DealsPanel({
             {onNewDeal ? (
               <Button variant="secondary" onClick={onNewDeal}>
                 <Plus data-icon="inline-start" aria-hidden />
-                Deal
+                New deal
               </Button>
             ) : null}
           </PanelAction>
@@ -510,8 +528,8 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
       </PanelHeader>
       <PanelContent>
         {tasks.length === 0 ? (
-          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
-            You are all caught up
+          <p className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+            You’re all caught up
           </p>
         ) : (
           <ul aria-labelledby={titleId} role="list" className="flex flex-col divide-y divide-border">
@@ -521,12 +539,14 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
                   <Icon />
                 </StatCardIcon>
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <span className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
-                  {task.detail ? <span className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
+                  <span title={task.title} className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
+                  {task.detail ? <span title={task.detail} className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
                 </div>
-                <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction?.({ icon: Icon, ...task })}>
-                  {task.action}
-                </Button>
+                {onTaskAction ? (
+                  <Button variant="secondary" size="sm" aria-label={task.title} onClick={() => onTaskAction({ icon: Icon, ...task })}>
+                    {task.action}
+                  </Button>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -565,11 +585,11 @@ function StagesPanel({ stageTotals, stats }: { stageTotals: StageTotal[]; stats:
           empty="No deals yet"
         />
         {stats.length > 0 ? (
-          <dl className="mt-auto grid auto-cols-fr grid-flow-col divide-x divide-border border-t border-border">
+          <dl className="mt-auto grid auto-cols-fr grid-flow-row divide-y divide-border border-t border-border @sm:grid-flow-col @sm:divide-x @sm:divide-y-0">
             {stats.map((stat) => (
               <div key={stat.label} className="flex min-w-0 flex-col gap-0.5 px-4 py-3">
                 <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{stat.label}</dt>
-                <dd className="truncate text-title font-medium text-foreground tabular-nums">{stat.value}</dd>
+                <dd className="shrink-0 text-title font-medium text-foreground tabular-nums">{stat.value}</dd>
               </div>
             ))}
           </dl>
@@ -589,7 +609,7 @@ function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
       </PanelHeader>
       <PanelContent>
         {quota.length === 0 ? (
-          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+          <p className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
             No targets set for this quarter
           </p>
         ) : (
@@ -604,9 +624,10 @@ function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
                       <TwoLine primary={<span title={row.name}>{row.name}</span>} secondary={row.team} />
                     </div>
                     <TwoLine
+                      numeric
                       primary={usdCompact.format(row.won)}
                       secondary={`of ${usdCompact.format(row.target)}`}
-                      className="shrink-0 items-end tabular-nums"
+                      className="items-end tabular-nums"
                     />
                   </div>
                   <Meter
@@ -642,7 +663,7 @@ function ActivityPanel({ activity, className }: { activity: ActivityItem[]; clas
       </PanelHeader>
       <PanelContent className="flex flex-col p-4">
         {activity.length === 0 ? (
-          <p role="status" className="flex min-h-28 flex-1 items-center justify-center text-center text-small text-muted-foreground">
+          <p className="flex min-h-28 flex-1 items-center justify-center text-center text-small text-muted-foreground">
             Nothing yet today
           </p>
         ) : (
@@ -682,7 +703,7 @@ type DashboardCrmProps = Omit<React.ComponentProps<'section'>, 'children'> & {
   quota?: QuotaRow[];
   /** What the team did today, newest first. */
   activity?: ActivityItem[];
-  /** Shows a Deal button beside the search, which calls this. */
+  /** Shows a New deal button beside the search, which calls this. */
   onNewDeal?: () => void;
   /** The items of each deal's actions menu, as `DropdownMenuItem`s. Leave it out for no menu. */
   dealActions?: (deal: Deal) => React.ReactNode;
@@ -818,6 +839,8 @@ type DashboardNotification = {
   /** The kind, as a small icon on the avatar: a mention, a quota, a won deal. */
   icon?: React.ReactNode;
   unread?: boolean;
+  /** Where the notification opens. Leave it out and the title is a button that calls `onNotificationOpen`. */
+  href?: string;
 };
 
 type InboxTab = 'all' | 'unread' | 'archive';
@@ -856,6 +879,21 @@ function HeaderInbox({
     return next;
   };
 
+  // A row that leaves the list, or the button that hides itself, takes focus with it, so focus moves to the next row,
+  // else the previous one, else the selected tab.
+  const focusAfter = React.useRef<{ inbox: Element | null; rowId?: string } | null>(null);
+  React.useEffect(() => {
+    const request = focusAfter.current;
+    if (!request) return;
+    focusAfter.current = null;
+    const row = request.rowId ? request.inbox?.querySelector<HTMLElement>(`[data-notification-id="${CSS.escape(request.rowId)}"] [data-slot="notification-item-title"]`) : null;
+    (row ?? request.inbox?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]'))?.focus();
+  }, [read, archived]);
+  const focusFrom = (element: Element, id?: string) => {
+    const index = shown.findIndex((item) => item.id === id);
+    focusAfter.current = { inbox: element.closest('[data-slot="notification-inbox-content"]'), rowId: id ? (shown[index + 1] ?? shown[index - 1])?.id : undefined };
+  };
+
   return (
     <NotificationInbox open={open} onOpenChange={setOpen}>
       <NotificationInboxTrigger count={unread} />
@@ -864,7 +902,14 @@ function HeaderInbox({
           <NotificationInboxTitle>Notifications</NotificationInboxTitle>
           {unread > 0 ? (
             <NotificationInboxActions>
-              <Button variant="ghost" size="sm" onClick={() => setRead(new Set(notifications.map((item) => item.id)))}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(event) => {
+                  focusFrom(event.currentTarget);
+                  setRead(new Set(notifications.map((item) => item.id)));
+                }}
+              >
                 <CheckCheck data-icon="inline-start" aria-hidden />
                 Mark all as read
               </Button>
@@ -886,7 +931,7 @@ function HeaderInbox({
                   {shown
                     .filter((item) => item.day === day)
                     .map((item) => (
-                      <NotificationItem key={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
+                      <NotificationItem key={item.id} data-notification-id={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
                         <NotificationItemMedia icon={item.icon}>
                           <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
                             {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
@@ -895,9 +940,8 @@ function HeaderInbox({
                         </NotificationItemMedia>
                         <NotificationItemContent>
                           <NotificationItemTitle
-                            href={`#${item.id}`}
-                            onClick={(event) => {
-                              event.preventDefault();
+                            href={item.href}
+                            onClick={() => {
                               if (!read.has(item.id)) setRead(toggle(read, item.id));
                               onNotificationOpen?.(item);
                             }}
@@ -912,14 +956,18 @@ function HeaderInbox({
                             {archived.has(item.id) ? null : (
                               <NotificationItemQuickAction
                                 label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
-                                onClick={() => setRead(toggle(read, item.id))}
+                                onClick={(event) => {
+                                  if (tab === 'unread') focusFrom(event.currentTarget, item.id);
+                                  setRead(toggle(read, item.id));
+                                }}
                               >
                                 {read.has(item.id) ? <Mail /> : <Check />}
                               </NotificationItemQuickAction>
                             )}
                             <NotificationItemQuickAction
                               label={archived.has(item.id) ? 'Move to inbox' : 'Archive'}
-                              onClick={() => {
+                              onClick={(event) => {
+                                focusFrom(event.currentTarget, item.id);
                                 setArchived(toggle(archived, item.id));
                                 setRead((current) => new Set(current).add(item.id));
                               }}
@@ -981,12 +1029,12 @@ function DashboardCrmPage({
 }: DashboardCrmPageProps) {
   return (
     <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
-      <AppSidebar activeItem="overview" {...sidebar} />
+      <AppSidebar activeItem="sales" {...sidebar} />
       <SidebarResizeHandle />
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          <h1 title={title} className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
           {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} onViewAll={onViewAllNotifications} /> : null}
         </header>
         <ScrollArea className="min-h-0 flex-1">

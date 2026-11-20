@@ -79,10 +79,21 @@ const assignableRoles = Object.keys(roleHints) as AssignableRole[];
 const roleItems = assignableRoles.map((role) => ({ value: role, label: roleLabels[role] }));
 const maxInvitesAtOnce = 20;
 
-const initials = (name: string) =>
-  (name.includes(' ') ? name.split(' ').map((part) => part[0]) : [name.slice(0, 2)]).join('').toUpperCase();
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
 
-const countLabel = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
+const initials = (name: string) => {
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
+};
+
+const countLabel = (count: number, one: string, many: string) => `${count.toLocaleString('en-US')} ${count === 1 ? one : many}`;
+
+function listAddresses(addresses: string[]) {
+  if (addresses.length <= 2) return addresses.join(' and ');
+  return `${addresses.slice(0, 2).join(', ')} and ${addresses.length - 2} more`;
+}
 
 function RoleSelect({
   value,
@@ -305,7 +316,7 @@ function Members({
             {rejected.length > 0 ? (
               <FieldError>
                 {mistyped.length > 0
-                  ? `Fix or remove ${mistyped.length === 1 ? mistyped[0] : `the ${mistyped.length} addresses in red`}: an address ends in a domain, such as acme.example.`
+                  ? `Fix or remove ${listAddresses(mistyped)}: an address ends in a domain, such as acme.example.`
                   : `${taking.length === 1 ? taking[0] : `${taking.length} addresses`} already ${taking.length === 1 ? 'belongs' : 'belong'} to a member or a pending invite.`}
               </FieldError>
             ) : (
@@ -315,8 +326,8 @@ function Members({
             )}
           </Field>
           <div className="flex items-center gap-2 @lg:pt-6">
-            <RoleSelect aria-label="Role for new invites" className="h-8.5 w-32" value={inviteRole} onValueChange={setInviteRole} />
-            <Button type="submit" variant="primary" size="lg" disabled={!canSend || loading}>
+            <RoleSelect aria-label="Role for new invites" className="h-9 w-32" value={inviteRole} onValueChange={setInviteRole} />
+            <Button type="submit" variant="primary" size="lg" disabled={!canSend || loading} focusableWhenDisabled>
               {emails.length > 1 ? `Send ${emails.length} invites` : 'Send invite'}
             </Button>
           </div>
@@ -402,7 +413,7 @@ function Members({
                                   setRemoveOpen(true);
                                 }}>
                                 <UserMinus aria-hidden />
-                                Remove from {workspace}
+                                <span title={`Remove from ${workspace}`} className="min-w-0 truncate">{`Remove from ${workspace}`}</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -446,7 +457,7 @@ function Members({
               <li key={invite.id} data-invite-id={invite.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
                 <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
                   <PersonCell email={invite.email} />
-                  <p className="ms-11 truncate text-small text-muted-foreground">
+                  <p title={`${roleLabels[invite.role]} · ${invite.sentLabel}`} className="ms-11 truncate text-small text-muted-foreground">
                     {roleLabels[invite.role]} · {invite.sentLabel}
                   </p>
                 </div>

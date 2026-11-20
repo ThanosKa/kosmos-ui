@@ -1,6 +1,7 @@
 'use client';
 
 import { Database, Send } from 'lucide-react';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { RunTimeline, sampleRun, type Run, type RunStep } from '@/registry/kosmos/blocks/run-timeline/run-timeline';
 import type { PlanStep } from '@/registry/kosmos/ui/plan-checklist';
@@ -182,7 +183,69 @@ const longRun: Run = {
   ],
 };
 
+const longFailedRun: Run = {
+  ...failedRun,
+  title: '🚀 日本語のレポートを毎週作成して、Growth and Platform チームに送る',
+  startedBy: { name: '山田 太郎' },
+  tokens: 0,
+  costUsd: 0,
+  error: {
+    stepId: 'query',
+    message:
+      'events.query timed out after 30s: https://status.acme.example/incidents/2026-10-11/event-store-partial-outage-in-the-europe-and-middle-east-data-region-affecting-every-scale-plan-project',
+  },
+  steps: [
+    ...failedRun.steps.slice(0, 2),
+    {
+      id: 'query',
+      offsetMs: 14_000,
+      kind: 'tool',
+      call: {
+        name: 'events.query',
+        title: 'Query every project of the Growth and Platform teams for the last four quarters',
+        icon: Database,
+        status: 'error',
+        durationMs: 3_600_000,
+        input: { projects: 'fernhill,brightloop,copperline,saltmarsh,driftwood,hollowoak,cirrus,pebblepine,marigold,kiln,tidepool,ironbark', group_by: 'day', range: '2025-10-11..2026-10-11' },
+        error: 'Timed out after 3,600s while the event store was under heavy load across every region',
+      },
+    },
+    { id: 'answer', offsetMs: 3_700_000, kind: 'message', text: 'Supercalifragilisticexpialidocious-storefront-identifier-0000000000000000000000000000000000000000 🚀 山田書店' },
+  ],
+};
+
+function Worst() {
+  return (
+    <PreviewStack>
+      <PreviewSection title="Long text and extreme values">
+        <div className={frame}>
+          <RunTimeline run={longRun} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Failed with a long error, long tool input and an unbreakable message">
+        <div className={frame}>
+          <RunTimeline run={longFailedRun} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-sm`}>
+          <RunTimeline run={longRun} />
+        </div>
+        <div className={`${frame} max-w-sm`}>
+          <RunTimeline run={longFailedRun} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
 export default function RunTimelinePreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Waiting for an approval">
@@ -224,12 +287,6 @@ export default function RunTimelinePreview() {
       <PreviewSection title="Queued, no steps yet">
         <div className={frame}>
           <RunTimeline run={queuedRun} />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Long text and extreme values">
-        <div className={frame}>
-          <RunTimeline run={longRun} />
         </div>
       </PreviewSection>
 

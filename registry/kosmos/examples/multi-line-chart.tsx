@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import MultiLineChartDemo from '@/registry/kosmos/examples/multi-line-chart-demo';
 import { MultiLineChart, type MultiLineChartPoint, type MultiLineChartSeries } from '@/registry/kosmos/ui/multi-line-chart';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const day = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 
@@ -36,22 +37,11 @@ const cases: { title: string; series: MultiLineChartSeries[]; points: MultiLineC
   },
 ];
 
-export default function MultiLineChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a legend that hides a project">
         <MultiLineChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, series, points, hidden }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <MultiLineChart series={series} points={points} hiddenSeries={hidden} label={title} entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -64,6 +54,40 @@ export default function MultiLineChartPreview() {
           ))}
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, series, points, hidden }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <MultiLineChart series={series} points={points} hiddenSeries={hidden} label={title} entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function MultiLineChartPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

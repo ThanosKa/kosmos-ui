@@ -1,5 +1,6 @@
 'use client';
 
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { UsageOverview, type UsageDataset, type UsageRange } from '@/registry/kosmos/blocks/usage-overview/usage-overview';
 
@@ -25,13 +26,17 @@ const longDataset: UsageDataset = {
     haiku: index === 6 ? 4_100 : 0,
   })),
   models: longRows,
-  members: [{ id: 'growth', name: 'Kai Nakamura for the Growth and Platform teams, Europe and Middle East', runs: 1_284_319, tokens: 18_204_554_100, costUsd: 327_681.91 }],
+  members: [{ id: 'emoji', name: '🚀 山田 太郎', runs: 3, tokens: 12, costUsd: 0 }, { id: 'growth', name: 'Kai Nakamura for the Growth and Platform teams, Europe and Middle East', runs: 1_284_319, tokens: 18_204_554_100, costUsd: 327_681.91 }],
 };
 const longUsage: Record<UsageRange, UsageDataset> = { '7d': longDataset, '30d': longDataset, '90d': longDataset };
 
 const emptyUsage: Record<UsageRange, UsageDataset> = { '7d': emptyDataset, '30d': emptyDataset, '90d': emptyDataset };
 
 export default function UsageOverviewPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Full, 30 days">
@@ -58,6 +63,18 @@ export default function UsageOverviewPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="In a narrow container, budget at 92%">
+        <div className={`${frame} max-w-sm`}>
+          <UsageOverview defaultRange="90d" defaultBreakdown="member" budget={{ usedUsd: 1380, limitUsd: 1500 }} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long names and extreme values, over budget">
         <div className={frame}>
           <UsageOverview
@@ -69,9 +86,15 @@ export default function UsageOverviewPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="In a narrow container, budget at 92%">
+      <PreviewSection title="Worst case in a narrow container, by member">
         <div className={`${frame} max-w-sm`}>
-          <UsageOverview defaultRange="90d" defaultBreakdown="member" budget={{ usedUsd: 1380, limitUsd: 1500 }} />
+          <UsageOverview
+            workspace="Acme Staging, the Europe and Middle East data region"
+            usage={longUsage}
+            defaultRange="7d"
+            defaultBreakdown="member"
+            budget={{ usedUsd: 327_681.91, limitUsd: 250_000 }}
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

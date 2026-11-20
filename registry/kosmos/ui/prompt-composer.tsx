@@ -92,8 +92,10 @@ function useControllableState<Value>(controlled: Value | undefined, initial: Val
   return [controlled ?? inner, set] as const;
 }
 
-const swapIcon =
-  'absolute transition-[opacity,scale] duration-fast data-hidden:opacity-0 motion-safe:data-hidden:scale-80';
+const swapIcon = cn(
+  'absolute transition-[opacity,scale,filter] duration-slow',
+  'data-hidden:opacity-0 data-hidden:duration-fast motion-safe:data-hidden:scale-25 motion-safe:data-hidden:blur-xs',
+);
 
 /** Where a user writes to an agent: a text box that grows, attachments, the model, the context meter, and Send that turns into Stop. */
 function PromptComposer({
@@ -312,14 +314,17 @@ function PromptComposer({
             </Tooltip>
           </div>
         </form>
-        {error ? (
-          <p id={noteId} role="alert" className="flex items-start gap-1.5 px-2 text-small text-muted-foreground">
-            <span aria-hidden className="flex h-[1.4em] shrink-0 items-center">
-              <CircleAlert className="size-3.5 text-destructive" />
-            </span>
-            {error}
-          </p>
-        ) : note ? (
+        <div role="alert" className="empty:sr-only">
+          {error ? (
+            <p id={noteId} className="flex items-start gap-1.5 px-2 text-small text-muted-foreground">
+              <span aria-hidden className="flex h-[1.4em] shrink-0 items-center">
+                <CircleAlert className="size-3.5 text-destructive" />
+              </span>
+              {error}
+            </p>
+          ) : null}
+        </div>
+        {error ? null : note ? (
           <p id={noteId} className="px-2 text-small text-muted-foreground">
             {note}
           </p>

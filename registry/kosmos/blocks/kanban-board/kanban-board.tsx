@@ -21,7 +21,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CalendarDays, Circle, CircleCheck, CircleDashed, CircleDot, Plus, ThumbsUp, type LucideIcon } from 'lucide-react';
+import { CalendarDays, Circle, CircleCheck, CircleDashed, CircleDot, Ellipsis, Plus, ThumbsUp, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -29,6 +29,7 @@ import { duration, ease } from '@/registry/kosmos/lib/motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/registry/kosmos/ui/dropdown-menu';
 import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
@@ -178,10 +179,16 @@ type KanbanCardProps = React.ComponentProps<'div'> & {
   lifted?: boolean;
   /** The empty slot the card leaves in its column while it is dragged. */
   placeholder?: boolean;
+  /** A control in the card's top corner, such as its move menu. Its pointer and key events stay off the card. */
+  menu?: React.ReactNode;
 };
 
+function stopEvent(event: React.SyntheticEvent) {
+  event.stopPropagation();
+}
+
 /** One roadmap item: its area and title, then its votes, target quarter and assignee. */
-function KanbanCard({ item, lifted = false, placeholder = false, className, ...props }: KanbanCardProps) {
+function KanbanCard({ item, lifted = false, placeholder = false, menu, className, ...props }: KanbanCardProps) {
   const hasMeta = item.votes !== undefined || Boolean(item.target) || Boolean(item.assignee);
   return (
     <div
@@ -201,13 +208,25 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
       )}
       {...props}
     >
-      <div className="flex flex-col items-start gap-2 p-3">
+      <div className="relative flex flex-col items-start gap-2 p-3">
+        {menu ? (
+          <div
+            className="absolute end-1.5 top-1.5"
+            onClick={stopEvent}
+            onKeyDown={stopEvent}
+            onMouseDown={stopEvent}
+            onPointerDown={stopEvent}
+            onTouchStart={stopEvent}
+          >
+            {menu}
+          </div>
+        ) : null}
         {item.area ? (
           <Badge variant={item.area.hue} className="max-w-full">
-            <span className="truncate">{item.area.label}</span>
+            <span title={item.area.label} className="truncate">{item.area.label}</span>
           </Badge>
         ) : null}
-        <p className="line-clamp-3 text-body font-medium text-pretty wrap-break-word">{item.title}</p>
+        <p title={item.title} className={cn('line-clamp-3 text-body font-medium text-pretty wrap-break-word', menu && 'pe-7')}>{item.title}</p>
       </div>
       {hasMeta ? (
         <div className="flex min-h-10 items-center gap-3 px-3 py-2">
@@ -220,7 +239,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, className, ...p
           {item.target ? (
             <span className="flex min-w-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
               <CalendarDays aria-hidden className="size-3.5 shrink-0" />
-              <span className="truncate">{item.target}</span>
+              <span className="wrap-break-word">{item.target}</span>
             </span>
           ) : null}
           {item.assignee ? (
@@ -258,11 +277,13 @@ function SortableCard({
   reducedMotion,
   dragging,
   onOpen,
+  menu,
 }: {
   item: KanbanItem;
   reducedMotion: boolean;
   dragging: boolean;
   onOpen?: (item: KanbanItem) => void;
+  menu?: React.ReactNode;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging, index } = useSortable({
     id: item.id,
@@ -282,6 +303,7 @@ function SortableCard({
     <KanbanCard
       ref={ref}
       item={item}
+      menu={menu}
       placeholder={isDragging}
       style={
         {
@@ -312,25 +334,29 @@ function KanbanColumnView({
   column,
   items,
   loading,
+  filtered,
   reducedMotion,
   dragging,
   onOpen,
   onAdd,
+  moveMenu,
 }: {
   column: KanbanColumn;
   items: KanbanItem[];
   loading: boolean;
+  filtered: boolean;
   reducedMotion: boolean;
   dragging: boolean;
   onOpen?: (item: KanbanItem) => void;
   onAdd?: (columnId: string) => void;
+  moveMenu: (item: KanbanItem, index: number, count: number) => React.ReactNode;
 }) {
   const { setNodeRef } = useDroppable({ id: column.id, data: { type: 'column' } });
   const headingId = React.useId();
   const tone = column.tone ?? 'muted';
   const Icon = column.icon;
   return (
-    <section data-slot="kanban-column" aria-labelledby={headingId} className="flex max-h-full w-72 shrink-0 flex-col">
+    <section data-slot="kanban-column" aria-labelledby={headingId} className="box-content flex max-h-full w-(--kanban-column) shrink-0 flex-col">
       {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
       <header className="relative flex h-11 shrink-0 items-center gap-2 ps-3.5 pe-2">
         {Icon ? (
@@ -338,14 +364,14 @@ function KanbanColumnView({
         ) : (
           <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[tone])} />
         )}
-        <h3 id={headingId} className="truncate text-body font-medium">
+        <h3 id={headingId} title={column.title} className="truncate text-body font-medium">
           {column.title}
         </h3>
         {loading ? (
           <Skeleton className="h-3 w-4" />
         ) : (
           <span className="text-caption text-muted-foreground tabular-nums">
-            {items.length}
+            {count.format(items.length)}
             <span className="sr-only">{items.length === 1 ? ' card' : ' cards'}</span>
           </span>
         )}
@@ -368,10 +394,10 @@ function KanbanColumnView({
       <ScrollArea
         focusable={false}
         className="min-h-0 flex-1 rounded-none"
-        viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0"
+        viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
       >
         <SortableContext id={column.id} items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-          <div ref={setNodeRef} className="flex min-h-20 flex-col gap-2 px-3 py-1">
+          <div ref={setNodeRef} className="flex min-h-20 w-full flex-col gap-2 px-3 py-1">
             {loading ? (
               <>
                 <Skeleton className="h-24 rounded-2xl" />
@@ -382,12 +408,25 @@ function KanbanColumnView({
                 compact
                 variant="first-use"
                 className="min-h-20"
-                title={dragging ? 'Drop here' : 'No items'}
-                description={dragging ? 'Release to move the card to this column.' : 'Drag a card here to plan it.'}
+                title={dragging ? 'Drop here' : filtered ? 'No matches' : 'No items'}
+                description={
+                  dragging
+                    ? 'Release to move the card to this column.'
+                    : filtered
+                      ? 'No card in this column matches your search.'
+                      : 'Drag a card here to plan it.'
+                }
               />
             ) : (
-              items.map((item) => (
-                <SortableCard key={item.id} item={item} reducedMotion={reducedMotion} dragging={dragging} onOpen={onOpen} />
+              items.map((item, index) => (
+                <SortableCard
+                  key={item.id}
+                  item={item}
+                  reducedMotion={reducedMotion}
+                  dragging={dragging}
+                  onOpen={onOpen}
+                  menu={moveMenu(item, index, items.length)}
+                />
               ))
             )}
           </div>
@@ -419,7 +458,7 @@ type KanbanBoardProps = Omit<React.ComponentProps<'div'>, 'children'> & {
 /**
  * Columns of cards that scroll sideways inside their container. Cards move by drag and drop, or
  * from the keyboard: Space picks a card up, the arrow keys move it, Space drops it and Escape puts
- * it back. Every move is announced to screen readers.
+ * it back. Each card also has a Move menu, for a pointer that cannot drag. Every move is announced to screen readers.
  */
 function KanbanBoard({
   columns = sampleColumns,
@@ -475,6 +514,55 @@ function KanbanBoard({
     return `${columnTitle(columnId)}, position ${inColumn.findIndex((item) => item.id === id) + 1} of ${inColumn.length}`;
   };
   const titleOf = (id: UniqueIdentifier) => latestItems.current.find((item) => item.id === id)?.title ?? String(id);
+
+  const [moveAnnouncement, setMoveAnnouncement] = React.useState('');
+  function moveCard(id: string, to: { column: string } | { by: -1 | 1 }) {
+    const list = latestItems.current;
+    const moving = list.find((item) => item.id === id);
+    if (!moving) return;
+    let next: KanbanItem[];
+    if ('column' in to) {
+      const rest = list.filter((item) => item.id !== id);
+      const lastInColumn = rest.findLastIndex((item) => item.column === to.column);
+      const index = lastInColumn >= 0 ? lastInColumn + 1 : rest.length;
+      rest.splice(index, 0, { ...moving, column: to.column });
+      next = rest;
+    } else {
+      const siblings = visibleIn(moving.column, list);
+      const neighbor = siblings[siblings.findIndex((item) => item.id === id) + to.by];
+      if (!neighbor) return;
+      next = arrayMove(list, list.indexOf(moving), list.indexOf(neighbor));
+    }
+    commit(next);
+    setMoveAnnouncement(`Moved ${moving.title} to ${position(id)}.`);
+  }
+
+  const moveMenu = (item: KanbanItem, index: number, count: number) =>
+    loading ? null : (
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={<Button variant="item" size="icon-sm" aria-label={`Move ${item.title}`} className="text-muted-foreground" />}
+        >
+          <Ellipsis aria-hidden />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {columns
+            .filter((column) => column.id !== item.column)
+            .map((column) => (
+              <DropdownMenuItem key={column.id} onClick={() => moveCard(item.id, { column: column.id })}>
+                Move to {column.title}
+              </DropdownMenuItem>
+            ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled={index === 0} onClick={() => moveCard(item.id, { by: -1 })}>
+            Move up
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={index === count - 1} onClick={() => moveCard(item.id, { by: 1 })}>
+            Move down
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
 
   const announcements: Announcements = {
     onDragStart: ({ active }) => `Picked up ${titleOf(active.id)}, in ${position(active.id)}.`,
@@ -564,7 +652,7 @@ function KanbanBoard({
     <div
       data-slot="kanban-board"
       aria-busy={loading || undefined}
-      className={cn('flex min-h-0 w-full min-w-0 flex-col', className)}
+      className={cn('@container flex min-h-0 w-full min-w-0 flex-col', className)}
       {...props}
     >
       <DndContext
@@ -582,18 +670,20 @@ function KanbanBoard({
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <ScrollArea className="min-h-0 flex-1 rounded-3xl" viewportClassName="[&>[data-slot=scroll-area-content]]:h-full">
-          <div className="flex h-full w-max items-stretch divide-x divide-border">
+        <ScrollArea className="min-h-0 flex-1 rounded-none" viewportClassName="[&>[data-slot=scroll-area-content]]:h-full">
+          <div className="flex h-full w-max items-stretch divide-x divide-border [--kanban-column:min(18rem,calc(100cqw-3.5rem))]">
             {columns.map((column) => (
               <KanbanColumnView
                 key={column.id}
                 column={column}
                 items={items.filter((item) => item.column === column.id && matches(item))}
                 loading={loading}
+                filtered={needle !== ''}
                 reducedMotion={reducedMotion}
                 dragging={activeId !== null}
                 onOpen={onOpen}
                 onAdd={onAdd}
+                moveMenu={moveMenu}
               />
             ))}
           </div>
@@ -612,6 +702,9 @@ function KanbanBoard({
             )
           : null}
       </DndContext>
+      <div role="status" className="sr-only">
+        {moveAnnouncement}
+      </div>
     </div>
   );
 }

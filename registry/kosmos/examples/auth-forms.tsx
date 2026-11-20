@@ -2,6 +2,7 @@
 
 import { KeyRound } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { AuthForms, EmailCodeForm, ForgotPasswordForm, LogInForm, SignUpForm } from '@/registry/kosmos/blocks/auth-forms/auth-forms';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -27,6 +28,10 @@ function Frame({ label, className, children }: { label: string; className?: stri
 const grid = 'grid gap-6 lg:grid-cols-2';
 
 export default function AuthFormsPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Log in">
@@ -117,6 +122,18 @@ export default function AuthFormsPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="Live flow (links switch views in place)">
+        <Frame label="AuthForms">
+          <AuthForms headingLevel={2} alternatives={sso} />
+        </Frame>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text and narrow container">
         <div className={grid}>
           <Frame label="long product name and email">
@@ -130,12 +147,6 @@ export default function AuthFormsPreview() {
             <LogInForm headingLevel={2} productName="Acme Staging Environment" defaultSubmitted />
           </Frame>
         </div>
-      </PreviewSection>
-
-      <PreviewSection title="Live flow (links switch views in place)">
-        <Frame label="AuthForms">
-          <AuthForms headingLevel={2} alternatives={sso} />
-        </Frame>
       </PreviewSection>
     </PreviewStack>
   );

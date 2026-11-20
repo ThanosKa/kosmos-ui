@@ -1,5 +1,6 @@
 'use client';
 
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { KanbanBoard, KanbanCard, type KanbanItem } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 
@@ -16,6 +17,8 @@ const longItems: KanbanItem[] = [
     target: 'Q1 2027',
   },
   { id: 'bare', title: 'Server-side-batching-for-every-ingestion-endpoint-and-region', column: 'ideas' },
+  { id: 'emoji', title: '🚀 Launch checklist for the Japanese market: 日本語のドキュメントと価格表', column: 'planned', area: { label: 'Internationalization and localization', hue: 'violet' }, votes: 1284000, target: 'Q4 2026, pending the security review' },
+  { id: 'rtl', title: 'دعم اللغة العربية في لوحة التحكم', column: 'in-progress', votes: 0, assignee: { name: 'ليلى', initials: 'ل' } },
   { id: 'short', title: 'SSO', column: 'planned', area: { label: 'Platform', hue: 'blue' }, votes: 1 },
 ];
 
@@ -30,6 +33,28 @@ const sample: KanbanItem = {
 };
 
 export default function KanbanBoardPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
+      <PreviewSection title="Long text and extreme counts">
+        <div className={`${frame} h-[28rem]`}>
+          <KanbanBoard defaultItems={longItems} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} h-[28rem] max-w-xs`}>
+          <KanbanBoard defaultItems={longItems} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Full (drag a card, or Tab to it and press Space)">
@@ -53,12 +78,6 @@ export default function KanbanBoardPreview() {
       <PreviewSection title="Empty">
         <div className={`${frame} h-44`}>
           <KanbanBoard defaultItems={[]} onAdd={() => {}} />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Long text">
-        <div className={`${frame} h-[28rem]`}>
-          <KanbanBoard defaultItems={longItems} />
         </div>
       </PreviewSection>
 

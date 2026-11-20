@@ -89,7 +89,7 @@ function StatCardLabel({ className, ...props }: React.ComponentProps<'span'>) {
     <span
       data-slot="stat-card-label"
       className={cn(
-        'block text-body font-medium text-pretty wrap-break-word text-muted-foreground',
+        'block min-w-0 text-body font-medium text-pretty wrap-break-word text-muted-foreground',
         'in-data-[slot=stat-card-header]:text-foreground',
         className,
       )}
@@ -105,7 +105,7 @@ function StatCardValue({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="stat-card-value"
-      className={cn('block truncate text-display text-foreground tabular-nums', className)}
+      className={cn('block shrink-0 text-display text-foreground tabular-nums @max-[11rem]/stat-card-content:text-title', className)}
       {...props}
     />
   );

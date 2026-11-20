@@ -45,6 +45,15 @@ import {
 
 A drawer keeps the page in view, so use it for content that belongs to something on the page, like the details of a row. For a decision that should stop everything else, use a [Dialog](/docs/components/dialog).
 
+## When to pick which
+
+Dialog, Drawer, Popover and Tooltip all open a layer over the page from a trigger. Pick by how much it holds and whether it stops the page.
+
+- [Dialog](/docs/components/dialog) asks for one decision or one short task. It traps focus until the person answers.
+- **Drawer** shows details next to a list, or a bottom sheet on a phone. It slides in from an edge.
+- [Popover](/docs/components/popover) holds extra details or a quick action beside its trigger, without leaving the page.
+- [Tooltip](/docs/components/tooltip) names a control in a few words, on hover and on keyboard focus. It holds nothing to click.
+
 ## Examples
 
 ### Bottom sheet
@@ -120,7 +129,7 @@ Takes every Base UI `Drawer.Popup` prop, plus:
 | `DrawerHeader` | Holds the title and description. |
 | `DrawerTitle` | Names the drawer. Base UI `Drawer.Title`. |
 | `DrawerDescription` | Describes the drawer. Base UI `Drawer.Description`. |
-| `DrawerBody` | The content, in a scroll area that scrolls on its own, so header and footer stay in view. The edge with content hidden past it fades out. `className` styles the padded box inside. |
+| `DrawerBody` | The content, in a scroll area that scrolls on its own, so header and footer stay in view. The edge with content hidden past it fades out. `className` styles the padded box inside, and `viewportRef` reaches the element that scrolls. |
 | `DrawerFooter` | The actions, on the bottom edge. |
 | `DrawerPortal` | Renders its children into `document.body`. Base UI `Drawer.Portal`. |
 | `DrawerBackdrop` | The scrim, which fades as someone swipes the drawer. Base UI `Drawer.Backdrop`. |

@@ -7,7 +7,7 @@ description: A product roadmap in columns of cards that move by drag and drop, t
 
 <ComponentInstall name="kanban-board" />
 
-The block brings [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Scroll area](/docs/components/scroll-area) and [Skeleton](/docs/components/skeleton) with it, plus [dnd-kit](https://dndkit.com) for drag and drop, and lands in `components/kanban-board.tsx`.
+The block brings [Avatar](/docs/components/avatar), [Badge](/docs/components/badge), [Button](/docs/components/button), [Dropdown menu](/docs/components/dropdown-menu), [Scroll area](/docs/components/scroll-area) and [Skeleton](/docs/components/skeleton) with it, plus [dnd-kit](https://dndkit.com) for drag and drop, and lands in `components/kanban-board.tsx`.
 
 ## Usage
 
@@ -26,6 +26,7 @@ Each item names its column in `column`. The order of `items` is the order of the
 ## What it does
 
 - **Pointer**: drag a card to another place or column. A short press without moving opens it.
+- **Move menu**: the button in a card's corner opens a menu with Move to each other column, Move up and Move down. It serves a pointer that cannot drag. It moves the card the way a drop does, and screen readers hear the same announcement.
 - **Touch**: press and hold a card for a moment, then drag.
 - **Keyboard**: Tab to a card and press Space to pick it up. Up and Down move it within its column. Left and Right move it to the same place in the next column. Space drops it and Escape puts it back. Enter opens the card.
 - **Screen readers** hear how to move a card when they reach it, and where it is after every step. Each card reads as one line: title, area, votes, target and assignee.

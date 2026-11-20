@@ -1,4 +1,4 @@
-import { readKosmosTokens, type Declarations, type KosmosTokens } from './tokens';
+import { readKosmosTokens, type Declarations, type KosmosTokens } from './tokens.ts';
 
 // Values come only from tokens.css; the copy here says when to use each token, and a token without copy throws.
 
@@ -87,6 +87,7 @@ function tintDocs(): Record<string, { group: ColorGroup; use: string }> {
     docs[`tint-${hue}-foreground`] = { group: 'tints', use: `Text on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-link`] = { group: 'tints', use: `A link on the ${hue} fill, 4.5:1 or more.` };
     docs[`tint-${hue}-dot`] = { group: 'tints', use: `The dot beside a ${hue} state.` };
+    docs[`tint-${hue}-hover`] = { group: 'tints', use: `The hover fill of a ${hue} badge link or banner action, with its text at 4.5:1 or more.` };
   }
   for (const hue of ['blue', 'green', 'amber', 'red', 'violet']) {
     docs[`tint-${hue}-solid`] = { group: 'tints', use: `A saturated ${hue} for sample marks, such as the logo marquee's logos.` };

@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowUpRight, Lock, Maximize2 } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/registry/kosmos/ui/dialog';
@@ -138,8 +138,8 @@ export function PreviewShell({
       </TabsContent>
       <TabsContent
         value="code"
-        style={stageHeight ? { height: stageHeight } : undefined}
-        className="flex flex-none flex-col overflow-hidden rounded-b-(--inner-radius) focus-visible:-outline-offset-2"
+        style={stageHeight ? ({ '--stage-height': `${stageHeight}px` } as CSSProperties) : undefined}
+        className="h-(--stage-height) flex flex-none flex-col overflow-hidden rounded-b-(--inner-radius) focus-visible:-outline-offset-2"
       >
         {code}
       </TabsContent>

@@ -71,7 +71,7 @@ function InputGroupAddon({ className, align = 'inline-start', onMouseDown, ...pr
 
 /** Text beside the input, such as a unit, a currency or the start of a URL. */
 function InputGroupText({ className, ...props }: React.ComponentProps<'span'>) {
-  return <span data-slot="input-group-text" className={cn('truncate', className)} {...props} />;
+  return <span data-slot="input-group-text" title={typeof props.children === 'string' ? props.children : undefined} className={cn('truncate', className)} {...props} />;
 }
 
 type InputGroupInputProps = Omit<InputPrimitive.Props, 'className'> & { className?: string };

@@ -1,5 +1,8 @@
+'use client';
+
 import { CircleCheck, CircleDashed, CirclePause, CircleSlash, CircleX, LoaderCircle, type LucideIcon } from 'lucide-react';
 import type * as React from 'react';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { Badge, type BadgeProps } from '@/registry/kosmos/ui/badge';
 import { cn } from '@/registry/kosmos/lib/cn';
 
@@ -27,9 +30,13 @@ type StatusIconProps = {
   className?: string;
 };
 
-/** The 16px mark that leads a row: a plan step, an eval case, a reasoning step. Pass `size-3.5` for 13px rows. */
+/**
+ * The 16px mark that leads a row: a plan step, an eval case, a reasoning step. Pass `size-3.5` for 13px rows. A new
+ * icon fades in when the status changes; the icon a row first shows does not.
+ */
 function StatusIcon({ status, label, className }: StatusIconProps) {
   const { icon: Icon, className: tone } = statusMark[status];
+  const mounted = useMounted();
   return (
     <Icon
       aria-hidden={label ? undefined : true}
@@ -37,7 +44,8 @@ function StatusIcon({ status, label, className }: StatusIconProps) {
       aria-label={label}
       data-status={status}
       className={cn(
-        'size-4 shrink-0 transition-[opacity,scale] duration-fast starting:opacity-0 motion-safe:starting:scale-80',
+        'size-4 shrink-0 transition-[opacity,scale,filter] duration-slow',
+        mounted && 'starting:opacity-0 motion-safe:starting:scale-25 motion-safe:starting:blur-xs',
         tone,
         className,
       )}
@@ -69,7 +77,7 @@ function StatusDot({ status, children, className, ...props }: StatusDotProps) {
       {...props}
     >
       <span aria-hidden className={cn('size-1.5 shrink-0 rounded-full', statusDot[status])} />
-      <span className="min-w-0 truncate">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="min-w-0 truncate">{children}</span>
     </span>
   );
 }
@@ -96,7 +104,7 @@ function StatusBadge({ status, children, className, ...props }: StatusBadgeProps
       {Icon ? (
         <Icon aria-hidden className={cn('text-muted-foreground', status === 'running' && cn('text-foreground', running))} />
       ) : null}
-      <span className="min-w-0 truncate">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="min-w-0 truncate">{children}</span>
     </Badge>
   );
 }

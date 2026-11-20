@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={htmlFontClassName} suppressHydrationWarning>
+    <html lang="en" className={`${htmlFontClassName} [-webkit-tap-highlight-color:transparent]`} suppressHydrationWarning>
       <head>
         <SitePresetScript />
       </head>

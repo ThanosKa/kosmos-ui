@@ -1,7 +1,7 @@
 'use client';
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, useChartAnimation, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   ChartCard,
   ChartCardContent,
@@ -28,6 +28,7 @@ const config = {
 const millions = (value: number) => `${value}M`;
 
 export default function ChartCardLegendExample() {
+  const animation = useChartAnimation(undefined, data);
   return (
     <ChartCard className="w-full max-w-2xl">
       <ChartCardHeader>
@@ -43,7 +44,7 @@ export default function ChartCardLegendExample() {
             <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" tickFormatter={millions} />
             <ChartTooltip cursor content={<ChartTooltipContent valueFormatter={(value) => millions(Number(value))} />} />
             {Object.keys(config).map((key) => (
-              <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} />
+              <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} {...animation} />
             ))}
           </BarChart>
         </ChartContainer>

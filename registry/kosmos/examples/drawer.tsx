@@ -16,6 +16,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/registry/kosmos/ui/drawer';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const details = [
   ['Status', 'In progress'],
@@ -49,9 +50,9 @@ function ItemDetails() {
   );
 }
 
-export default function DrawerPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
           <OverlayStage label="right (default)">
@@ -191,6 +192,51 @@ export default function DrawerPreview() {
           </Drawer>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewSection title="A long title and description, an unbreakable link, a long button">
+      <OverlayStageGrid>
+        <OverlayStage inert label="right, long text" className="h-[30rem]">
+          {(container) => (
+            <Drawer open modal={false}>
+              <DrawerBackdrop />
+              <DrawerContent container={container} initialFocus={false}>
+                <DrawerHeader>
+                  <DrawerTitle>Server-side batching for the Copperline Bank card payments, loans and business portal events</DrawerTitle>
+                  <DrawerDescription>Ingestion · added by Aleksandra Wiśniewska-Kowalczyk, bartholomew.fitzgerald@northwind-industries-holdings.example</DrawerDescription>
+                </DrawerHeader>
+                <DrawerBody>
+                  <p>https://acme.example/projects/copperline/dashboards/share/links/with-a-very-long-unbreakable-path-segment-that-never-ends</p>
+                </DrawerBody>
+                <DrawerFooter>
+                  <Button variant="primary">Mark as shipped to every project in every region</Button>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          )}
+        </OverlayStage>
+      </OverlayStageGrid>
+    </PreviewSection>
+  );
+}
+
+export default function DrawerPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

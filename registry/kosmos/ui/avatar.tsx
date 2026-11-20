@@ -75,13 +75,19 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-/** The "+3" at the end of an AvatarGroup, sized like the avatars beside it. */
+const countSizes: Record<AvatarSize, string> = { sm: 'h-6 min-w-6', md: 'h-8 min-w-8', lg: 'h-10 min-w-10 text-body' };
+
+/** The "+3" at the end of an AvatarGroup, as tall as the avatars beside it and wider when the count needs the room ("+1,284"). */
 function AvatarGroupCount({ className, size = 'md', ...props }: React.ComponentProps<'span'> & { size?: AvatarSize }) {
   return (
     <span
       data-slot="avatar-group-count"
       data-size={size}
-      className={cn(avatarVariants({ size }), 'font-medium text-muted-foreground tabular-nums', className)}
+      className={cn(
+        'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted px-1.5 align-middle text-caption font-medium whitespace-nowrap text-muted-foreground select-none tabular-nums',
+        countSizes[size],
+        className,
+      )}
       {...props}
     />
   );

@@ -18,6 +18,10 @@ _Avoid_: «visual review» για το VRT
 Ένα screenshot που έχει εγκριθεί από άνθρωπο ως «σωστό». Το VRT συγκρίνει τα νέα screenshots με αυτό.
 _Avoid_: snapshot, golden image
 
+**Code check**:
+Ένας κανόνας lint που πιάνει από τον κώδικα ένα λάθος που έχει ξαναγίνει, π.χ. ένα `ScrollArea` μέσα σε Dialog έξω από το `DialogBody`. Τρέχει με το `pnpm lint` σε κάθε PR, το μήνυμά του λέει τη διόρθωση και παραπέμπει στο style skill, και κάθε τέτοιος κανόνας έχει στο `pnpm test` ένα κομμάτι κώδικα που πρέπει να πιάσει και ένα που πρέπει να αφήσει.
+_Avoid_: lint check, guard, «custom rule»
+
 **Preview route**:
 Μια σελίδα του site που δείχνει ένα μόνο component απομονωμένο. Τα docs τη δείχνουν ως demo και ο Claude τη φωτογραφίζει.
 _Avoid_: playground, sandbox
@@ -29,6 +33,18 @@ _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 **Review preview**:
 Το preview route ενός component με το όνομά του σκέτο (`/view/button`): το state matrix και ό,τι άλλο χρειάζεται για έλεγχο. Από αυτό βγαίνουν τα screenshots και αυτό δείχνει η σελίδα έγκρισης.
 _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
+
+**Worst-case data**:
+Τα χειρότερα ρεαλιστικά δεδομένα ενός component ή block: μακριά ονόματα, emails χωρίς σημείο αλλαγής γραμμής, ονόματα ενός γράμματος, πεδία που λείπουν, τεράστια ποσά, μηδέν items, μη λατινικά κείμενα, emoji. Ζουν στο review preview πίσω από τον διακόπτη Demo data / Worst case (`?data=worst`) και μένουν εκεί για πάντα. Τα demos των docs κρατούν τα κανονικά δεδομένα.
+_Avoid_: «edge cases» (πολύ γενικό), τυχαία κείμενα (πρέπει να είναι κάτι που θα έβγαζε ο Acme)
+
+**Browser check**:
+Η εντολή `pnpm site-check`. Ανοίγει κάθε σελίδα του site, των docs και κάθε review preview σε έναν browser, στα 375 και 1280, σε light και dark, και αποτυγχάνει όταν μια σελίδα σκρολάρει πλάγια, ένα focus ring κόβεται από τον γονέα του ή μπαίνει κάτω από το fade της άκρης ενός scroll area, ένα κείμενο κόβεται από γονέα που δεν σκρολάρει, ένα control δεν έχει όνομα για τους screen readers ή υπάρχει console error. Μια γνωστή εξαίρεση, με τον λόγο της, δεν την αποτυγχάνει.
+_Avoid_: e2e test, visual test (δεν συγκρίνει εικόνες)
+
+**Audit**:
+Ένας γύρος ελέγχου όλου του UI (components, blocks, docs, landing page, presets) με τα **review skills**, τα **code checks**, το **browser check** και τα **worst-case data**. Γράφει κάθε εύρημα με τη θέση του στον κώδικα, και κάθε εύρημα είτε διορθώνεται είτε μένει ως απόφαση του maintainer. Ένα λάθος που ξαναγίνεται γίνεται code check, ώστε το επόμενο audit να μη χρειάζεται να το ξαναβρεί.
+_Avoid_: review (το review κοιτάει ένα diff ή ένα PR), QA
 
 **Group**:
 Μία από τις ομάδες με τις οποίες χτίζονται και οργανώνονται τα components (Basics, Forms, Overlays, Navigation, Data, AI, Effects, Misc, Blocks). Κάθε registry item τη δηλώνει στο `meta.group`.

@@ -212,9 +212,9 @@ function Testimonials({
       <div className="flex flex-col gap-8 @2xl:gap-10">
         {title || description ? (
           <header className="flex flex-col items-center text-center">
-            {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+            {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
             {description ? (
-              <p className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">{description}</p>
+              <p className="mt-3 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">{description}</p>
             ) : null}
           </header>
         ) : null}

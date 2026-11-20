@@ -2,6 +2,7 @@
 
 import { CircleAlert, Wrench, type LucideIcon } from 'lucide-react';
 import type * as React from 'react';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { formatDuration } from '@/registry/kosmos/lib/format';
 import {
   Collapsible,
@@ -92,6 +93,7 @@ function ToolCall({
   className,
 }: ToolCallProps) {
   const badge = statusBadge[status];
+  const mounted = useMounted();
   const hasDetails = input !== undefined || output !== undefined || error !== undefined || children !== undefined;
   const row = (
     <>
@@ -116,7 +118,7 @@ function ToolCall({
       <StatusBadge
         key={status}
         status={badge.status}
-        className="transition-[opacity] duration-fast starting:opacity-0"
+        className={cn('transition-[opacity] duration-fast', mounted && 'starting:opacity-0')}
       >
         {badge.label}
       </StatusBadge>

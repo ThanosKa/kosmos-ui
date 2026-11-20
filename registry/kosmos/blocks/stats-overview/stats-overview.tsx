@@ -1,10 +1,8 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
 import * as React from 'react';
 import { useControlled } from '@/registry/kosmos/hooks/use-controlled';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { statDelta } from '@/registry/kosmos/lib/stat-delta';
 import { GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   ChartCard,
@@ -17,6 +15,7 @@ import {
 } from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
 type StatFormat = 'currency' | 'number' | 'percent';
@@ -146,33 +145,13 @@ function formatValue(value: number, format: StatFormat) {
   return format === 'currency' ? usdCompact.format(value) : compactNumber.format(value);
 }
 
-/** The change as a green or red triangle and signed number, with the muted period it is measured against. A flat change stays muted. */
-function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
-  const delta = metric.change === undefined ? null : statDelta(metric.change, { goodWhen: metric.goodWhen, unit: metric.format === 'percent' ? 'points' : 'percent' });
-  if (!delta) return <span className="truncate text-caption text-muted-foreground">No earlier period</span>;
+/** The change as a green or red triangle and signed number, with the muted period it is measured against. */
+function MetricChange({ metric }: { metric: Metric }) {
+  if (metric.change === undefined) return <span title="No earlier period" className="truncate text-caption text-muted-foreground">No earlier period</span>;
   return (
-    <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-caption tabular-nums">
-      <span
-        className={cn(
-          'flex items-center gap-1 font-medium text-muted-foreground',
-          delta.tone === 'good' && 'text-tint-green-foreground',
-          delta.tone === 'bad' && 'text-tint-red-foreground',
-        )}
-      >
-        {delta.direction === 'flat' ? (
-          <ArrowRight aria-hidden className="size-3 shrink-0" />
-        ) : (
-          <svg aria-hidden viewBox="0 0 8 8" className={cn('size-2 shrink-0 fill-current', delta.direction === 'down' && 'rotate-180')}>
-            <path d="M4 0.5 7.5 7H0.5z" />
-          </svg>
-        )}
-        {delta.text}
-      </span>
-      <span className="text-muted-foreground" aria-hidden>
-        vs. last period
-      </span>
-      <span className="sr-only">against the previous {rangeLabel}</span>
-    </span>
+    <StatCardDelta value={metric.change} goodWhen={metric.goodWhen} unit={metric.format === 'percent' ? 'points' : 'percent'} className="text-caption">
+      vs. last period
+    </StatCardDelta>
   );
 }
 
@@ -180,7 +159,7 @@ function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: stri
  * One metric as a tab cell: its label, its value and its change. The selected cell keeps its value in ink while idle
  * cells step back to muted, and the Tabs indicator slides under it in `primary`.
  */
-function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: boolean; rangeLabel: string }) {
+function MetricTab({ metric, loading }: { metric: Metric; loading: boolean }) {
   return (
     <TabsTrigger
       value={metric.id}
@@ -202,8 +181,8 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
         </>
       ) : (
         <>
-          <span className="max-w-full truncate text-title font-medium text-foreground tabular-nums">{formatValue(metric.value, metric.format)}</span>
-          <MetricChange metric={metric} rangeLabel={rangeLabel} />
+          <span className="shrink-0 text-title font-medium text-foreground tabular-nums">{formatValue(metric.value, metric.format)}</span>
+          <MetricChange metric={metric} />
         </>
       )}
     </TabsTrigger>
@@ -236,7 +215,6 @@ function MetricChart({ metric, range }: { metric: Metric; range: Range }) {
 
   return (
     <GrowthChart
-      key={range}
       title={`${metric.label}, last ${rangeLabel} against the ${rangeLabel} before`}
       data={metric.points}
       config={config}
@@ -366,7 +344,7 @@ function StatsOverview({
       {active ? (
         <>
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pb-3">
-            <span className="truncate text-small text-muted-foreground">
+            <span title={`${active.label}, last ${rangeLabel}`} className="truncate text-small text-muted-foreground">
               {active.label}, last {rangeLabel}
             </span>
             <PeriodLegend rangeLabel={rangeLabel} />
@@ -406,7 +384,7 @@ function StatsOverview({
           <Tabs value={active.id} onValueChange={(value) => setMetric(String(value))} className="min-w-0 flex-1 gap-0">
             <TabsList aria-label="Metric" className="grid grid-cols-2 gap-0 border-t border-border @3xl:grid-cols-4">
               {list.map((item) => (
-                <MetricTab key={item.id} metric={item} loading={loading} rangeLabel={rangeLabel} />
+                <MetricTab key={item.id} metric={item} loading={loading} />
               ))}
             </TabsList>
             <TabsContent value={active.id} className="flex flex-1 flex-col pt-5">

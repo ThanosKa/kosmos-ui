@@ -135,7 +135,7 @@ function PageHeader({
   const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
   const searchId = React.useId();
   const Heading = `h${headingLevel}` as const;
-  const noun = title.toLowerCase();
+  const noun = title;
   const activeOptions = filters.flatMap((value) => filterOptions.filter((option) => option.value === value));
   const toggleFilter = (value: string, on: boolean) =>
     setFilters(on ? [...filters, value] : filters.filter((item) => item !== value));
@@ -237,7 +237,7 @@ function PageHeader({
             </TabsList>
           </div>
 
-          <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2">
+          <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2 @3xl:shrink-0">
             <div className="relative min-w-0 flex-1 @3xl:w-56 @3xl:flex-none">
               <Search
                 aria-hidden
@@ -312,13 +312,13 @@ function PageHeader({
                   className="max-w-full"
                 >
                   {option.group ? <span className="text-muted-foreground">{option.group}</span> : null}
-                  <span className="truncate">{option.label}</span>
+                  <span title={option.label} className="truncate">{option.label}</span>
                   <X aria-hidden data-icon="inline-end" />
                 </Button>
               );
             })}
             <Button variant="ghost" size="sm" onClick={clearFilters}>
-              Clear all
+              Clear filters
             </Button>
           </div>
         ) : null}

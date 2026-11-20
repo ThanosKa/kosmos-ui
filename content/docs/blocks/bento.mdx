@@ -21,6 +21,7 @@ const items: BentoItem[] = [
     title: 'Funnels',
     description: 'See the step where people leave.',
     href: '/docs/components/meter',
+    linkLabel: 'See the meter',
     visual: (
       <Meter value={38}>
         <MeterLabel>Started a trial</MeterLabel>
@@ -33,7 +34,7 @@ const items: BentoItem[] = [
 ];
 
 export function Features() {
-  return <Bento title="From the first event to the answer" description={null} items={items} />;
+  return <Bento title="From the first event to the answer" description="Acme collects your events, joins them to your users and keeps the numbers your team asks about ready to read." items={items} />;
 }
 ```
 
@@ -43,7 +44,7 @@ Each tile shows a real piece of your product, not a picture of it, so a visitor 
 
 - **Header**: the title is an `<h2>` and each tile's title an `<h3>`. Pass `headingLevel={3}` when the bento sits inside a section that already has an `<h2>`. With `title={null}` the header goes, and the page above it gives the tiles their heading.
 - **Tiles**: each tile holds its visual in a sunken well, centered, with the title and one line of caption under it. On hover the visual lifts 4px and the arrow of the link moves 2px; under reduced motion both stay still.
-- **Link**: give a tile an `href` and it gets a "Learn more" link under the caption. It is the tile's one tab stop, and the whole tile draws the focus outline while it has focus. The live parts inside a tile stay clickable, so the link is not stretched over the tile. Keep the caption to one line, so a visitor takes in the whole grid in seconds.
+- **Link**: give a tile an `href` and a `linkLabel`, and it gets that link under the caption. The type requires both, so no tile falls back to a generic "Learn more". It is the tile's one tab stop, and the whole tile draws the focus outline while it has focus. The live parts inside a tile stay clickable, so the link is not stretched over the tile. Keep the caption to one line, so a visitor takes in the whole grid in seconds.
 - **Width**: the grid lays itself out by its own width, with container queries, not by the screen's. One column on a phone, two from 576px, three from 896px.
 - **Spacing**: the block sets no padding around itself. Give the section around it the space your page uses between sections, such as `pb-20 md:pb-28`, so every block on the page keeps the same rhythm.
 - **Wide tiles**: `size: 'wide'` takes two of the three columns. With two columns every tile takes one, and a lone last tile takes the whole row, so the grid never ends on a gap. With three columns, order the tiles so each row adds up to three.
@@ -72,7 +73,7 @@ Takes every `<section>` prop, plus:
     description: { description: 'One line under the title.', type: 'ReactNode', required: true },
     visual: { description: 'What the tile shows above its caption.', type: 'ReactNode', required: true },
     size: { description: '`wide` takes two of the three columns.', type: "'default' | 'wide'", default: "'default'" },
-    href: { description: 'Where the tile leads. Adds a link under the caption.', type: 'string' },
-    linkLabel: { description: 'The text of that link.', type: 'ReactNode', default: "'Learn more'" },
+    href: { description: 'Where the tile leads. Adds a link under the caption. Required together with `linkLabel`.', type: 'string' },
+    linkLabel: { description: 'The text of that link. Name where it leads. Required with `href`.', type: 'ReactNode' },
   }}
 />

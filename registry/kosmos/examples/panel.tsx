@@ -18,6 +18,7 @@ import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelH
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const projects = [
   { name: 'Fernhill Books', domain: 'fernhill.example', plan: 'Scale', status: 'live', users: 48210, mrr: 2400 },
@@ -137,9 +138,9 @@ function Pager() {
   );
 }
 
-export default function PanelPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Table with a search, a filter and pagination">
         <Panel>
           <PanelHeader>
@@ -222,66 +223,90 @@ export default function PanelPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text, a 320px panel">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text, a 320px panel">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Panel>
+          <PanelHeader>
+            <PanelTitle render={<h3 />}>Events received across every project and region, by name, most frequent first</PanelTitle>
+            <PanelDescription>Against the same 30 days of the previous year, before the EU data region went live</PanelDescription>
+            <PanelAction>
+              <RangeSwitch />
+            </PanelAction>
+          </PanelHeader>
+          <PanelContent>
+            <EventList />
+          </PanelContent>
+        </Panel>
+        <div className="w-80 max-w-full">
           <Panel>
             <PanelHeader>
-              <PanelTitle render={<h3 />}>Events received across every project and region, by name, most frequent first</PanelTitle>
-              <PanelDescription>Against the same 30 days of the previous year, before the EU data region went live</PanelDescription>
+              <PanelTitle render={<h3 />}>Projects on a paid plan</PanelTitle>
+              <PanelDescription>Live and paused</PanelDescription>
               <PanelAction>
-                <RangeSwitch />
+                <SearchField label="Search projects" />
+                <Button variant="secondary">
+                  <ListFilter data-icon="inline-start" aria-hidden />
+                  Plan
+                </Button>
               </PanelAction>
             </PanelHeader>
             <PanelContent>
               <EventList />
             </PanelContent>
+            <PanelFooter>
+              <Button variant="secondary" className="w-full">
+                View all projects
+              </Button>
+            </PanelFooter>
           </Panel>
-          <div className="w-80 max-w-full">
-            <Panel>
-              <PanelHeader>
-                <PanelTitle render={<h3 />}>Projects on a paid plan</PanelTitle>
-                <PanelDescription>Live and paused</PanelDescription>
-                <PanelAction>
-                  <SearchField label="Search projects" />
-                  <Button variant="secondary">
-                    <ListFilter data-icon="inline-start" aria-hidden />
-                    Plan
-                  </Button>
-                </PanelAction>
-              </PanelHeader>
-              <PanelContent>
-                <EventList />
-              </PanelContent>
-              <PanelFooter>
-                <Button variant="secondary" className="w-full">
-                  View all projects
-                </Button>
-              </PanelFooter>
-            </Panel>
-          </div>
-          <div className="w-100 max-w-full">
-            <Panel>
-              <PanelHeader>
-                <PanelTitle render={<h3 />}>checkout_completed_after_trial_conversion_v2</PanelTitle>
-                <PanelDescription>copperline-bank-production.example</PanelDescription>
-                <PanelAction>
-                  <SearchField label="Search projects" />
-                  <Button variant="secondary">
-                    <ListFilter data-icon="inline-start" aria-hidden />
-                    Plan
-                  </Button>
-                </PanelAction>
-              </PanelHeader>
-              <PanelContent>
-                <EventList />
-              </PanelContent>
-              <PanelFooter>
-                <Pager />
-              </PanelFooter>
-            </Panel>
-          </div>
         </div>
-      </PreviewSection>
-    </PreviewStack>
+        <div className="w-100 max-w-full">
+          <Panel>
+            <PanelHeader>
+              <PanelTitle render={<h3 />}>checkout_completed_after_trial_conversion_v2</PanelTitle>
+              <PanelDescription>copperline-bank-production.example</PanelDescription>
+              <PanelAction>
+                <SearchField label="Search projects" />
+                <Button variant="secondary">
+                  <ListFilter data-icon="inline-start" aria-hidden />
+                  Plan
+                </Button>
+              </PanelAction>
+            </PanelHeader>
+            <PanelContent>
+              <EventList />
+            </PanelContent>
+            <PanelFooter>
+              <Pager />
+            </PanelFooter>
+          </Panel>
+        </div>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function PanelPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

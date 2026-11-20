@@ -4,6 +4,7 @@ import { AnchorProvider, ScrollProvider, TOCItem, useTOCListener, type TableOfCo
 import { useRef, useState, type MouseEvent, type RefObject } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { duration } from '@/registry/kosmos/lib/motion';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
 import { eyebrowClass } from './classes';
 
@@ -73,11 +74,11 @@ export function DocsToc({ toc, className }: { toc: TableOfContents; className?: 
         <h2 id="docs-toc-label" className={cn('px-1', eyebrowClass)}>
           On this page
         </h2>
-        <div ref={viewport} className="min-h-0 overflow-y-auto overscroll-contain p-1">
+        <ScrollArea viewportRef={viewport} focusable={false} viewportClassName="p-1">
           <ScrollProvider containerRef={viewport}>
             <DocsTocList toc={toc} thumb />
           </ScrollProvider>
-        </div>
+        </ScrollArea>
       </nav>
     </AnchorProvider>
   );

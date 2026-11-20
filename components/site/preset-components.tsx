@@ -127,7 +127,7 @@ function AssistantCard() {
 /** The Components screen of the Presets preview: three composed columns, then Members across the full width. */
 export function PresetComponents() {
   return (
-    <div className="grid items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid items-start gap-4 p-4 sm:p-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
       <div className="flex min-w-0 flex-col gap-4">
         <RevenueCard />
         <NewProjectCard />

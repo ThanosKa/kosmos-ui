@@ -33,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`. `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/blocks/command-menu). The block binds no keys. When your app binds ⌘K (Ctrl+K on Windows and Linux) to the same search, as the command menu does, pass `searchShortcut`. The button then shows and announces it. The workspace and user menus run their actions (add workspace, profile, preferences, log out) through `onAction`. Without it, the block hides those items and shows the user as plain text.
+The pages, saved views, workspaces and user at the top of the file are sample data: pass your own as props, or edit the defaults. Each item has an `id`. `activeItem` marks the current page, and `onNavigate` lets you route in place. The search button calls `onSearch`, so it can open a [command menu](/docs/blocks/command-menu). Without `onSearch`, the button is not shown. The block binds no keys. When your app binds ⌘K (Ctrl+K on Windows and Linux) to the same search, as the command menu does, pass `searchShortcut`. The button then shows and announces it. The workspace and user menus run their actions (add workspace, profile, preferences, log out) through `onAction`. Without it, the block hides those items and shows the user as plain text.
 
 The sidebar collapses to a 48px column of icons. Collapse it from its trigger, with ⌘B (Ctrl+B on Windows and Linux) or by dragging its edge. Each page then names itself in a tooltip and a submenu opens its pages in a popover beside its icon. The workspace mark and the user's avatar stay. `SidebarProvider` saves the state in local storage under `sidebar-state`, so the sidebar comes back in the state you left it. Pass `storageKey` to use your own key, or `false` to keep nothing. Pass `collapsible="offcanvas"` to hide it at the edge instead.
 
@@ -72,7 +72,7 @@ Each item is `{ id: string; label: string; href?: string; icon: LucideIcon; badg
       type: '(id: string, event: React.MouseEvent<HTMLElement>) => void',
     },
     onSearch: {
-      description: 'Called by the search button, usually to open a command menu.',
+      description: 'Called by the search button, usually to open a command menu. Leave it out and the button is not shown.',
       type: '() => void',
     },
     searchShortcut: {

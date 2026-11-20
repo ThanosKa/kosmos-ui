@@ -1,11 +1,11 @@
 'use client';
 
-import { Bot, TrendingDown, TrendingUp } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import * as React from 'react';
 import * as Recharts from 'recharts';
+import { useRechartsEntrance } from '@/registry/kosmos/hooks/use-chart-motion';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
-import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   ChartContainer,
@@ -14,12 +14,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-  useChartAnimation,
+  chartAnimation,
 } from '@/registry/kosmos/ui/chart';
 import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type UsageRange = '7d' | '30d' | '90d';
@@ -133,21 +134,34 @@ const chartConfigOf = (models: UsageRow[]): ChartConfig =>
 const integer = new Intl.NumberFormat('en-US');
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 const usdWhole = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-const signed = new Intl.NumberFormat('en-US', { signDisplay: 'exceptZero', maximumFractionDigits: 1 });
-// A true minus sign, not the hyphen Intl writes.
-const formatChange = (change: number) => `${signed.format(change).replace('-', '−')}%`;
 
-const initials = (name: string) =>
-  (name.includes(' ') ? name.split(' ').map((part) => part[0]) : [name.slice(0, 2)]).join('').toUpperCase();
+/** The tooltip's cursor over a bar chart: the thin vertical line the Chart's line charts draw, not a highlighted column. */
+function LineCursor({ x = 0, y = 0, width = 0, height = 0 }: { x?: number; y?: number; width?: number; height?: number }) {
+  const center = x + width / 2;
+  return <line x1={center} x2={center} y1={y} y2={y + height} strokeWidth={1} className="stroke-border" />;
+}
+
+/** The first and last day only, the one x label pair a quiet chart keeps. */
+const edgeDates = (daily: UsageDataset['daily']) => {
+  const first = String(daily[0]?.date ?? '');
+  const last = String(daily[daily.length - 1]?.date ?? '');
+  return first === last ? [first] : [first, last];
+};
+
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
+const initials = (name: string) => {
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
+};
 
 type Tile = { id: string; label: string; value: string; change: number; goodWhen: 'up' | 'down' };
 
 function StatTile({ tile, loading }: { tile: Tile; loading: boolean }) {
-  const rising = tile.change > 0;
-  const good = tile.change === 0 ? null : rising === (tile.goodWhen === 'up');
-  const Icon = rising ? TrendingUp : TrendingDown;
-
   return (
     <div
       data-slot="stat-tile"
@@ -163,14 +177,10 @@ function StatTile({ tile, loading }: { tile: Tile; loading: boolean }) {
         </>
       ) : (
         <>
-          <p className="truncate text-display tabular-nums">{tile.value}</p>
-          <p className="flex min-w-0 items-center gap-2 text-small tabular-nums">
-            <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
-              {good === null ? null : <Icon aria-hidden />}
-              {formatChange(tile.change)}
-            </Badge>
-            <span className="truncate text-muted-foreground">vs previous period</span>
-          </p>
+          <p className="shrink-0 text-display tabular-nums">{tile.value}</p>
+          <StatCardDelta value={tile.change} goodWhen={tile.goodWhen}>
+            vs. last period
+          </StatCardDelta>
         </>
       )}
     </div>
@@ -282,7 +292,8 @@ function UsageOverview({
   };
 
   const data = usage[range];
-  const barAnimation = useChartAnimation(undefined, data.daily);
+  const figureRef = React.useRef<HTMLDivElement>(null);
+  const { revealed, isAnimationActive, remountKey } = useRechartsEntrance(figureRef, undefined, data.daily);
   const { totals } = data;
   const empty = !loading && totals.runs === 0;
   const costPerRun = totals.runs > 0 ? totals.costUsd / totals.runs : 0;
@@ -292,7 +303,7 @@ function UsageOverview({
   const tiles: Tile[] = [
     { id: 'tokens', label: 'Tokens', value: compact.format(totals.tokens), change: totals.changePct.tokens, goodWhen: 'up' },
     { id: 'runs', label: 'Runs', value: integer.format(totals.runs), change: totals.changePct.runs, goodWhen: 'up' },
-    { id: 'spend', label: 'Spend', value: usd.format(totals.costUsd), change: totals.changePct.costUsd, goodWhen: 'down' },
+    { id: 'spend', label: 'Spend', value: totals.costUsd >= 100_000 ? usdCompact.format(totals.costUsd) : usd.format(totals.costUsd), change: totals.changePct.costUsd, goodWhen: 'down' },
     { id: 'cost-per-run', label: 'Cost per run', value: usd.format(costPerRun), change: costPerRunChange, goodWhen: 'down' },
   ];
 
@@ -349,7 +360,7 @@ function UsageOverview({
             ))}
           </div>
 
-          <div className="flex min-w-0 flex-col gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
+          <div ref={figureRef} className="flex min-w-0 flex-col gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
             <div className="flex flex-col gap-0.5">
               <h3 className="text-title">Tokens per day</h3>
               <p className="text-small text-muted-foreground">By model, last {rangeLabels[range]}</p>
@@ -358,46 +369,48 @@ function UsageOverview({
               <Skeleton className="h-60 w-full" />
             ) : (
               <figure className="m-0 flex w-full flex-col">
-                <ChartContainer config={chartConfig} className="aspect-auto h-60">
-                  <Recharts.BarChart
-                    key={range}
-                    title={`Tokens per day by model, last ${rangeLabels[range]}`}
-                    data={data.daily}
-                    margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-                  >
-                    <Recharts.CartesianGrid vertical={false} />
-                    <Recharts.XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
-                    <Recharts.YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      width="auto"
-                      tickFormatter={(value: number) => compact.format(value)}
-                    />
-                    <ChartTooltip
-                      isAnimationActive={false}
-                      cursor
-                      content={
-                        <ChartTooltipContent
-                          valueFormatter={(value) => (typeof value === 'number' ? `${compact.format(value)} tokens` : String(value))}
-                        />
-                      }
-                    />
-                    <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
-                    {series.map((model) => (
-                      <Recharts.Bar
-                        key={model.id}
-                        dataKey={model.id}
-                        name={model.name}
-                        stackId="tokens"
-                        fill={`var(--color-${model.id})`}
-                        {...stackSeparator}
-                        maxBarSize={24}
-                        {...barAnimation}
+                {revealed ? (
+                  <ChartContainer key={remountKey} config={chartConfig} className="aspect-auto h-60 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0">
+                    <Recharts.BarChart
+                      title={`Tokens per day by model, last ${rangeLabels[range]}`}
+                      data={data.daily}
+                      margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+                    >
+                      <Recharts.XAxis
+                        dataKey="date"
+                        ticks={edgeDates(data.daily)}
+                        interval={0}
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
                       />
-                    ))}
-                  </Recharts.BarChart>
-                </ChartContainer>
+                      <Recharts.YAxis hide />
+                      <ChartTooltip
+                        isAnimationActive={false}
+                        cursor={<LineCursor />}
+                        content={
+                          <ChartTooltipContent
+                            valueFormatter={(value) => (typeof value === 'number' ? `${compact.format(value)} tokens` : String(value))}
+                          />
+                        }
+                      />
+                      <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
+                      {series.map((model) => (
+                        <Recharts.Bar
+                          key={model.id}
+                          dataKey={model.id}
+                          name={model.name}
+                          stackId="tokens"
+                          fill={`var(--color-${model.id})`}
+                          {...stackSeparator}
+                          maxBarSize={24}
+                          {...chartAnimation}
+                          isAnimationActive={isAnimationActive}
+                        />
+                      ))}
+                    </Recharts.BarChart>
+                  </ChartContainer>
+                ) : null}
                 <div className="sr-only">
                   <table>
                     <caption>Tokens per day by model, last {rangeLabels[range]}</caption>
@@ -451,7 +464,7 @@ function UsageOverview({
                   <Skeleton className="h-1.5 w-full rounded-full" />
                 </div>
               ) : (
-                <Meter value={budget.usedUsd} max={budget.limitUsd} tone={budgetPercent >= 90 ? 'warning' : 'primary'}>
+                <Meter value={budget.usedUsd} max={budget.limitUsd} tone={budgetPercent > 100 ? 'destructive' : budgetPercent >= 90 ? 'warning' : 'primary'}>
                   <MeterLabel>Monthly budget</MeterLabel>
                   <MeterValue>
                     {() => (

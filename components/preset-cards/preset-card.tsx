@@ -38,6 +38,8 @@ export function PresetCard({ title, description, action, className, bodyClassNam
 type PresetStageProps = Omit<PresetCardProps, 'children' | 'bodyClassName'> & {
   /** The stage height, such as `h-80`. */
   stageClassName?: string;
+  /** The overlays are a picture of the preset, so the stage is out of the tab order and pointer reach; a toast stage turns this off to spread on hover. */
+  inert?: boolean;
   /** Renders the scene; portal the pinned overlay into `container`. */
   children: (container: HTMLElement) => ReactNode;
 };
@@ -48,13 +50,14 @@ type PresetStageProps = Omit<PresetCardProps, 'children' | 'bodyClassName'> & {
  * into it fills the stage instead of the page. Pin the overlay with controlled `open`, `modal={false}`
  * and `initialFocus={false}`, as on the review previews.
  */
-export function PresetStage({ stageClassName, children, ...card }: PresetStageProps) {
+export function PresetStage({ stageClassName, inert = true, children, ...card }: PresetStageProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     // The card's 16px corner is the stage's 12px corner plus the 4px gap around it.
     <PresetCard {...card} bodyClassName="p-1 pt-4">
       <div
         ref={setContainer}
+        inert={inert}
         className={cn(
           'relative h-80 w-full overflow-hidden rounded-[calc(var(--radius-2xl)-4px)] border border-transparent bg-background p-3 shadow-inset [transform:translateZ(0)]',
           stageClassName,

@@ -36,10 +36,8 @@ function Checkbox({ className, ...props }: CheckboxProps) {
         data-slot="checkbox-indicator"
         className={cn(
           'flex items-center justify-center',
-          // The mark fades in and out with the fill; it grows from half size only when motion is allowed.
-          'transition-[opacity,scale] duration-fast',
+          'transition-[opacity] duration-fast',
           'data-starting-style:opacity-0 data-ending-style:opacity-0',
-          'motion-safe:data-starting-style:scale-50 motion-safe:data-ending-style:scale-50',
         )}
         render={(indicatorProps, state) => (
           <span {...indicatorProps}>

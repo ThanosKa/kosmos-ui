@@ -58,12 +58,12 @@ function ModelSelectButton({ model, effort, variant = 'ghost', size = 'md', clas
       variant={variant}
       size={size}
       className={cn(
-        'max-w-full min-w-0 gap-1 px-2 text-muted-foreground transition-[background-color,color,scale] hover:not-data-disabled:text-foreground data-popup-open:bg-accent data-popup-open:text-foreground',
+        'relative max-w-full min-w-0 gap-1 px-2 text-muted-foreground transition-[background-color,color,scale] hover:not-data-disabled:text-foreground data-popup-open:bg-accent data-popup-open:text-foreground',
         className,
       )}
       {...props}
     >
-      <span className="truncate">
+      <span title={model?.name} className="relative truncate">
         <span className="sr-only">Model: </span>
         {model?.name ?? 'Choose a model'}
         {effort ? <span className="sr-only">,</span> : null}
@@ -214,6 +214,7 @@ function ModelSelect({
               <span className="min-w-0 break-words">{model.name}</span>
               {model.hint ? (
                 <span
+                  title={model.hint}
                   className={cn(
                     'min-w-0 truncate font-normal text-muted-foreground',
                     model.disabled ? 'shrink-0' : 'shrink-[100]',

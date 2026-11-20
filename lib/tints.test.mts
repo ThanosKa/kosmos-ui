@@ -33,6 +33,13 @@ for (const [mode, declarations] of Object.entries(modes)) {
   }
 
   for (const hue of hues) {
+    test(`${hue} tint, ${mode}: its text reads at 4.5:1 on its hover fill, the one of a linked Badge and a Banner action`, () => {
+      const ratio = contrastRatio(value(`tint-${hue}-foreground`), value(`tint-${hue}-hover`));
+      assert.ok(ratio >= 4.5, `tint-${hue}-foreground on tint-${hue}-hover: ${ratio.toFixed(2)}:1`);
+    });
+  }
+
+  for (const hue of hues) {
     test(`${hue} tint, ${mode}: its dot reads at 3:1 on its fill and on the page`, () => {
       const dot = value(`tint-${hue}-dot`);
       assert.ok(contrastRatio(dot, value(`tint-${hue}`)) >= 3, `tint-${hue}-dot on tint-${hue}`);

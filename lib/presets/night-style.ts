@@ -45,7 +45,6 @@ export const nightStyle: PresetStyle = {
       filter: 'drop-shadow(0 0 6px color-mix(in oklab, var(--ring) 55%, transparent))',
     },
     '[data-slot="sidebar-menu-button"][data-active]': {
-      color: 'var(--sidebar-foreground)',
       'box-shadow': 'var(--shadow-control)',
     },
     ':root:not(.dark) [data-slot="sidebar-menu-button"][data-active]': {

@@ -306,7 +306,8 @@ function NotificationInboxBody({ className, children, notice, viewportClassName,
 
 /**
  * A pill over the top of the list for notifications that arrived while the inbox is open, so the rows under the
- * pointer never move. Clicking it shows them; hold new items back until then. Renders nothing at 0.
+ * pointer never move. Clicking it shows them; hold new items back until then. At 0 the pill is gone, but its live region stays,
+ * so screen readers hear "3 new notifications" when the count rises.
  */
 function NotificationInboxNewItems({
   count,
@@ -314,23 +315,29 @@ function NotificationInboxNewItems({
   children,
   ...props
 }: Omit<PlainButtonProps, 'variant' | 'size'> & { count: number }) {
-  if (count === 0) return null;
   return (
-    <div role="status" className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
-      <Button
-        data-slot="notification-inbox-new-items"
-        variant="secondary"
-        size="sm"
-        className={cn(
-          'pointer-events-auto rounded-full shadow-popover',
-          'transition-[opacity,translate,scale] starting:opacity-0 motion-safe:starting:-translate-y-2',
-          className,
-        )}
-        {...props}
-      >
-        {children ?? `${count} new`}
-      </Button>
-    </div>
+    <>
+      <span role="status" className="sr-only">
+        {count > 0 ? `${count} new ${count === 1 ? 'notification' : 'notifications'}` : ''}
+      </span>
+      {count > 0 ? (
+        <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
+          <Button
+            data-slot="notification-inbox-new-items"
+            variant="secondary"
+            size="sm"
+            className={cn(
+              'pointer-events-auto rounded-full shadow-popover',
+              'transition-[opacity,translate,scale] starting:opacity-0 motion-safe:starting:-translate-y-2',
+              className,
+            )}
+            {...props}
+          >
+            {children ?? `${count} new`}
+          </Button>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -430,18 +437,21 @@ function NotificationItemContent({ className, ...props }: React.ComponentProps<'
 
 /**
  * The sentence, and the link that opens the notification: it stretches over the whole row. Wrap names and the object
- * in `<strong>`. Renders an `<a>`; `render` swaps in a router link.
+ * in `<strong>`. Renders an `<a>` with an `href` and a `<button>` without one; `render` swaps in a router link.
  */
 function NotificationItemTitle({ className, render, children, ...props }: useRender.ComponentProps<'a'>) {
   const unread = React.use(ItemUnread);
+  const link = props.href !== undefined;
   return useRender({
-    defaultTagName: 'a',
+    defaultTagName: link ? 'a' : 'button',
     render,
     props: mergeProps<'a'>(
       {
+        ...(link ? null : { type: 'button' as never }),
         className: cn(
           'block text-body text-pretty text-muted-foreground [&_strong]:font-medium [&_strong]:text-foreground',
           'after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-ring',
+          link ? null : 'w-full text-start',
           className,
         ),
       },
@@ -496,8 +506,8 @@ function NotificationItemAside({ className, children, ...props }: React.Componen
       <span
         aria-hidden
         className={cn(
-          'me-0.5 size-2 rounded-full bg-tint-blue-dot transition-[opacity,scale] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
-          !unread && 'scale-50 opacity-0',
+          'me-0.5 size-2 rounded-full bg-tint-blue-dot transition-[opacity] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
+          !unread && 'opacity-0',
         )}
       />
     </div>

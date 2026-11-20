@@ -16,9 +16,10 @@ import {
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/registry/kosmos/ui/command';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import { StatusDot } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
-type BentoItem = {
+type BentoItemBase = {
   /** A stable key for the tile. */
   id: string;
   /** The tile's name, an `<h3>` under the section title. */
@@ -29,11 +30,18 @@ type BentoItem = {
   visual: React.ReactNode;
   /** `wide` takes two of the three columns. */
   size?: 'default' | 'wide';
-  /** Where the tile leads. Adds a link under the caption, the tile's one tab stop. */
-  href?: string;
-  /** The text of that link. */
-  linkLabel?: React.ReactNode;
 };
+
+type BentoItem = BentoItemBase &
+  (
+    | { href?: undefined; linkLabel?: undefined }
+    | {
+        /** Where the tile leads. Adds a link under the caption, the tile's one tab stop. */
+        href: string;
+        /** The text of that link. Name where it leads, such as "See the table". */
+        linkLabel: React.ReactNode;
+      }
+  );
 
 // Sample data: replace it with your product's title, line and tiles.
 const sampleTitle = 'From the first event to the answer';
@@ -43,9 +51,9 @@ const card = 'w-full rounded-xl border border-transparent bg-card shadow-card';
 const wholeNumber = new Intl.NumberFormat('en-US');
 
 const sampleProjects = [
-  { name: 'Fernhill Books', plan: 'Scale', hue: 'violet', dot: 'bg-success', status: 'Live', users: 48210 },
-  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'blue', dot: 'bg-success', status: 'Live', users: 6120 },
-  { name: 'Marigold Recipes', plan: 'Pro', hue: 'blue', dot: 'bg-muted-foreground', status: 'Trial', users: 1920 },
+  { name: 'Fernhill Books', plan: 'Scale', hue: 'violet', status: 'done', statusLabel: 'Live', users: 48210 },
+  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'blue', status: 'done', statusLabel: 'Live', users: 6120 },
+  { name: 'Marigold Recipes', plan: 'Pro', hue: 'blue', status: 'pending', statusLabel: 'Trial', users: 1920 },
 ] as const;
 
 function ProjectsTable() {
@@ -63,15 +71,12 @@ function ProjectsTable() {
         <TableBody>
           {sampleProjects.map((project) => (
             <TableRow key={project.name}>
-              <TableCell className="max-w-36 truncate font-medium">{project.name}</TableCell>
+              <TableCell title={project.name} className="max-w-36 truncate font-medium">{project.name}</TableCell>
               <TableCell>
                 <Badge variant={project.hue}>{project.plan}</Badge>
               </TableCell>
               <TableCell className="hidden @sm:table-cell">
-                <span className="inline-flex items-center gap-2">
-                  <span aria-hidden className={cn('size-2 shrink-0 rounded-full', project.dot)} />
-                  {project.status}
-                </span>
+                <StatusDot status={project.status}>{project.statusLabel}</StatusDot>
               </TableCell>
               <TableCell className="text-end tabular-nums">{wholeNumber.format(project.users)}</TableCell>
             </TableRow>
@@ -171,7 +176,7 @@ function Notifications() {
       {sampleNotifications.map((notification) => (
         <li key={notification.id} className="flex min-w-0 items-center gap-2.5 px-3 py-2.5 text-body">
           <Bell aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="min-w-0 truncate text-foreground">{notification.text}</span>
+          <span title={notification.text} className="min-w-0 truncate text-foreground">{notification.text}</span>
           <span className="ms-auto shrink-0 text-small text-muted-foreground tabular-nums">{notification.time}</span>
         </li>
       ))}
@@ -204,6 +209,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <ProjectsTable />,
     href: '/docs/components/table',
+    linkLabel: 'See the table',
   },
   {
     id: 'granularity',
@@ -211,6 +217,7 @@ const sampleItems: BentoItem[] = [
     description: 'Switch between hours, days and weeks in one tap.',
     visual: <Granularity />,
     href: '/docs/components/segmented-control',
+    linkLabel: 'See the range switch',
   },
   {
     id: 'notifications',
@@ -218,6 +225,7 @@ const sampleItems: BentoItem[] = [
     description: 'Alerts land in a list your team can scan.',
     visual: <Notifications />,
     href: '/docs/components/alert',
+    linkLabel: 'See the alerts',
   },
   {
     id: 'chart',
@@ -226,6 +234,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <EventsChart />,
     href: '/docs/components/chart-card',
+    linkLabel: 'See the chart card',
   },
   {
     id: 'command',
@@ -234,6 +243,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <CommandMenu />,
     href: '/docs/components/command',
+    linkLabel: 'See the command menu',
   },
   {
     id: 'quota',
@@ -241,6 +251,7 @@ const sampleItems: BentoItem[] = [
     description: 'Usage as a bar, with the number beside it.',
     visual: <Quota />,
     href: '/docs/components/meter',
+    linkLabel: 'See the meter',
   },
 ];
 
@@ -267,9 +278,9 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
     <section data-slot="bento" className={cn('@container flex flex-col', className)} {...props}>
       {title || description ? (
         <header className="mb-8 flex flex-col items-center text-center @2xl:mb-10">
-          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
           {description ? (
-            <p data-slot="bento-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">
+            <p data-slot="bento-description" className="mt-3 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">
               {description}
             </p>
           ) : null}
@@ -302,8 +313,8 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
               </div>
             </div>
             <div className="flex flex-col gap-1 px-3 pt-4 pb-3">
-              <TileHeading className="text-title text-foreground">{item.title}</TileHeading>
-              <p data-slot="bento-item-description" className="text-body text-pretty text-muted-foreground">
+              <TileHeading className="text-title wrap-break-word text-foreground">{item.title}</TileHeading>
+              <p data-slot="bento-item-description" className="text-body text-pretty wrap-break-word text-muted-foreground">
                 {item.description}
               </p>
               {item.href ? (
@@ -312,7 +323,7 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
                   href={item.href}
                   className="mt-2 inline-flex w-fit items-center gap-1 rounded-sm text-body font-medium text-muted-foreground transition-[color] group-hover/tile:text-foreground focus-visible:text-foreground focus-visible:outline-none"
                 >
-                  {item.linkLabel ?? 'Learn more'}
+                  {item.linkLabel}
                   <ArrowRight
                     aria-hidden
                     className={cn('size-3.5 transition-[translate] motion-safe:group-hover/tile:translate-x-0.5', 'motion-safe:group-has-[[data-slot=bento-item-link]:focus-visible]/tile:translate-x-0.5')}

@@ -558,9 +558,9 @@ function CandlestickChart({
                 data-slot="candlestick-chart-cursor"
                 style={{ '--x': `${tooltip.x}px`, '--h': `${frame.plotBottom}px` } as React.CSSProperties}
                 className={cn(
-                  'pointer-events-none absolute top-0 left-(--x) h-(--h) w-0 border-l border-dashed border-foreground/40',
+                  'pointer-events-none absolute top-0 left-0 h-(--h) w-0 translate-x-(--x) border-l border-dashed border-foreground/40',
                   'transition-[opacity] duration-fast ease-power3-out',
-                  slides && 'motion-safe:transition-[opacity,left] motion-safe:duration-base',
+                  slides && 'motion-safe:transition-[opacity,translate] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
                   inspected === null ? 'opacity-0' : 'opacity-100 duration-base',
                 )}
               />
@@ -611,9 +611,9 @@ function CandlestickChart({
             data-slot="candlestick-chart-tooltip"
             style={{ '--x': `${tooltip?.left ?? 0}px`, '--y': `${tooltip?.top ?? 0}px` } as React.CSSProperties}
             className={cn(
-              'pointer-events-none absolute top-(--y) left-(--x) grid w-max max-w-full min-w-[min(calc(var(--spacing)*44),100%)] gap-1.5 rounded-xl border border-transparent bg-popover px-2.5 py-2 text-caption text-popover-foreground tabular-nums shadow-popover',
+              'pointer-events-none absolute top-0 left-0 translate-x-(--x) translate-y-(--y) grid w-max max-w-full min-w-[min(calc(var(--spacing)*44),100%)] gap-1.5 rounded-xl border border-transparent bg-popover px-2.5 py-2 text-caption text-popover-foreground tabular-nums shadow-popover',
               'transition-[opacity] duration-fast ease-power3-out',
-              slides && 'motion-safe:transition-[opacity,left,top] motion-safe:duration-base',
+              slides && 'motion-safe:transition-[opacity,translate] motion-safe:duration-slow motion-safe:ease-smooth-in-out',
               inspected === null ? 'opacity-0' : 'opacity-100 duration-base',
             )}
           >

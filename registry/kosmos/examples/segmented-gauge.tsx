@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import SegmentedGaugeDemo from '@/registry/kosmos/examples/segmented-gauge-demo';
 import { SegmentedGauge, type SegmentedGaugeProps } from '@/registry/kosmos/ui/segmented-gauge';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 });
 
@@ -26,26 +27,11 @@ const cases: { title: string; props: Omit<SegmentedGaugeProps, 'label'> }[] = [
   { title: 'tone="success"', props: { value: 840, max: 50_000, tone: 'success', caption: 'Pebble & Pine' } },
 ];
 
-export default function SegmentedGaugePreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a project switch">
         <SegmentedGaugeDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, props }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <SegmentedGauge {...props} label={title} entrance="none" />
-            </div>
-          ))}
-          <div className="flex min-w-0 flex-col gap-2">
-            <p className="font-mono text-caption text-muted-foreground">In a 160px slot</p>
-            <SegmentedGauge value={2_391_700} max={3_000_000} label="Narrow" caption="Last 30 days" className="w-40" entrance="none" />
-          </div>
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -58,6 +44,44 @@ export default function SegmentedGaugePreview() {
           ))}
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, props }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <SegmentedGauge {...props} label={title} entrance="none" />
+          </div>
+        ))}
+        <div className="flex min-w-0 flex-col gap-2">
+          <p className="font-mono text-caption text-muted-foreground">In a 160px slot</p>
+          <SegmentedGauge value={2_391_700} max={3_000_000} label="Narrow" caption="Last 30 days" className="w-40" entrance="none" />
+        </div>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function SegmentedGaugePreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

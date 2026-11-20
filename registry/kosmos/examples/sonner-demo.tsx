@@ -12,6 +12,7 @@ export default function SonnerDemo() {
         onClick={() =>
           toast('Roadmap item created', {
             description: 'Fix the retention chart tooltip is on the Q4 roadmap.',
+            duration: Infinity,
             action: { label: 'Undo', onClick: () => toast('Roadmap item removed') },
           })
         }

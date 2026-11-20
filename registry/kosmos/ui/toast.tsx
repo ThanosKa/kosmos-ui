@@ -126,7 +126,7 @@ function ToastAction({ className, ...props }: ToastPrimitive.Action.Props) {
     <ToastPrimitive.Action
       data-slot="toast-action"
       render={<Button variant="secondary" size="sm" />}
-      className={cn('shrink-0', className)}
+      className={cn('h-auto min-h-6 max-w-full shrink-0 py-1 text-start whitespace-normal', className)}
       {...props}
     />
   );
@@ -183,9 +183,10 @@ function ToastIcon({ type, className }: { type: string | undefined; className?: 
 function ToastList() {
   const { toasts } = ToastPrimitive.useToastManager();
   return toasts.map((item) => {
-    const action = item.actionProps ? <ToastAction /> : null;
+    const action = item.actionProps ? <ToastAction className={item.description ? undefined : 'max-w-[45%]'} /> : null;
+    const label = typeof item.description === 'string' ? item.description : 'Notification';
     return (
-      <Toast key={item.id} toast={item}>
+      <Toast key={item.id} toast={item} aria-label={item.title ? undefined : label}>
         <ToastContent>
           <ToastIcon type={item.type} />
           <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">

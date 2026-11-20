@@ -1,0 +1,18 @@
+---
+title: Screen readers hear names and changes
+description: Command, Select and Popover lists carry a name, and the Notification inbox, Run timeline, Detail drawer, Auth forms and Settings announce what changed.
+date: 2026-11-20
+---
+
+Every popup has a name, and a live region exists before its text arrives, which is when screen readers announce it.
+
+- [Command](/docs/components/command): `CommandList` has the name "Commands" by default. Pass `aria-label` to name it for your list.
+- [Select](/docs/components/select): the trigger names the list. `Select` now sets the trigger `id` itself, so pass `id` to `Select`, not to `SelectTrigger`.
+- [Popover](/docs/components/popover): a popover with no `PopoverTitle` takes an `aria-label` on `PopoverContent`.
+- [Notification inbox](/docs/components/notification-inbox): a status line that is always on the page says "3 new notifications" when the count rises. The new-items pill sits outside it.
+- [Run timeline](/docs/blocks/run-timeline): a status line in the header says when the status changes and whether the link copied. The step times are in the text for screen readers, at every width. Retry shows only when you pass `onRetry`, and Copy link only when the run has a `url`. `onCopyLink` now runs after the copy and no longer replaces it.
+- [Detail drawer](/docs/blocks/detail-drawer): Add note says "Note added", and an empty note shows an error under the field.
+- [Auth forms](/docs/blocks/auth-forms): the server error is the destructive `Alert`, in a region that is always on the page.
+- [Settings](/docs/blocks/settings): the API key field has a name, and screen readers announce the error in the confirm dialog.
+- [Assistant message](/docs/components/assistant-message) and [Prompt composer](/docs/components/prompt-composer): their errors sit in a region that is always on the page.
+- [Dashboard analytics](/docs/blocks/dashboard-analytics) and [Dashboard CRM](/docs/blocks/dashboard-crm): an empty panel is plain text, not a live region.

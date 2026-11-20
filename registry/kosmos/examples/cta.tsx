@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -5,6 +6,10 @@ import { Button } from '@/registry/kosmos/ui/button';
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background px-4 py-12 shadow-card';
 
 export default function CtaPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default">
@@ -36,6 +41,21 @@ export default function CtaPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="Title only, and action only">
+        <div className={frame}>
+          <Cta action={null} />
+        </div>
+        <div className={frame}>
+          <Cta title={null} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text">
         <div className={frame}>
           <Cta
@@ -56,12 +76,23 @@ export default function CtaPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Title only, and action only">
-        <div className={frame}>
-          <Cta action={null} />
-        </div>
-        <div className={frame}>
-          <Cta title={null} />
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <Cta
+            title={
+              <>
+                Add every web, iOS, Android and server app your team ships,
+                <br />
+                and see what each of their users does next, as it happens
+              </>
+            }
+            description="Acme collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
+            action={
+              <Button variant="primary" size="lg" href="/signup">
+                Start your 14-day Pro trial, no card needed
+              </Button>
+            }
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

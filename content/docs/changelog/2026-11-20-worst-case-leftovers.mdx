@@ -1,0 +1,13 @@
+---
+title: Kanban board, Dialog and Toast hold up on a phone and with long text
+description: Kanban columns narrow on a phone, Dialog stops growing to its widest child, and Toast wraps a long action.
+date: 2026-11-20
+---
+
+Three items changed so the worst data a real user can send no longer breaks them.
+
+- [Kanban board](/docs/blocks/kanban-board): a column is at most 18rem wide and narrows on a phone. A focused card keeps its whole focus ring clear of the edge fade. A long unbroken word stays inside its column.
+- [Dialog](/docs/components/dialog): the body no longer grows to its widest child. A long unbroken word wraps instead of pushing the dialog past its frame.
+- [Toast](/docs/components/toast): a long action label wraps inside the toast. A toast with only a description takes its accessible name from that text, or "Notification" when the description is an element.
+
+To update, run the add command again for each item.

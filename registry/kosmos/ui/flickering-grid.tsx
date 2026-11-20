@@ -32,6 +32,13 @@ function useReducedMotion() {
   );
 }
 
+/** How long the squares flicker after the grid first comes into view, in seconds. */
+const flickerDuration = 3.5;
+/** The time constant of the squares easing to the still pattern once the flicker ends, in seconds. */
+const settleTimeConstant = 0.3;
+/** How long the grid takes to settle before it snaps to the still pattern, in seconds. Flicker and settle end by 5s. */
+const settleDuration = 1.5;
+
 /** How fast the halo follows the pointer and fades in and out, in seconds. */
 const haloEasing = 0.12;
 
@@ -39,9 +46,11 @@ type Cells = [firstCol: number, lastCol: number, firstRow: number, lastRow: numb
 
 /**
  * A grid of small squares that flicker, as a background. Squares take the accent color (ink when the preset sets no
- * accent). It fills the nearest positioned parent, pauses while off screen and while the tab is hidden, shows a still grid
- * when the visitor asks for less motion, and is hidden from assistive technology. With `spotlight`, squares near a mouse
- * or pen pointer over the parent brighten in a soft halo that follows it. A frame redraws only the squares that changed.
+ * accent). It fills the nearest positioned parent and pauses while off screen and while the tab is hidden. It flickers
+ * for 3.5 seconds after it first comes into view, then eases to a still grid within 5 seconds and stays still; it
+ * shows that still grid from the start when the visitor asks for less motion. It is hidden from assistive technology.
+ * With `spotlight`, squares near a mouse or pen pointer over the parent brighten in a soft halo that follows it. A
+ * frame redraws only the squares that changed.
  */
 function FlickeringGrid({
   squareSize = 3,
@@ -73,6 +82,8 @@ function FlickeringGrid({
     let visible = false;
     let frame = 0;
     let last = 0;
+    let flickered = 0;
+    let settled = reducedMotion;
 
     // The halo: where it is and how strong, easing toward the pointer. `touched` is the squares it covered last frame.
     const pointer = { x: 0, y: 0, inside: false };
@@ -126,7 +137,7 @@ function FlickeringGrid({
       canvas.height = Math.ceil(clientHeight * scale);
       cols = Math.ceil(clientWidth / pitch);
       rows = Math.ceil(clientHeight / pitch);
-      squares = Float32Array.from({ length: cols * rows }, (_, index) => (reducedMotion ? stillOpacity(index) : Math.random() * maxOpacity));
+      squares = Float32Array.from({ length: cols * rows }, (_, index) => (settled ? stillOpacity(index) : Math.random() * maxOpacity));
       touched = null;
       drawAll();
     };
@@ -135,11 +146,25 @@ function FlickeringGrid({
       const elapsed = Math.min((time - last) / 1000, 0.1);
       last = time;
       context.fillStyle = color;
-      const chance = flickerRate * elapsed;
-      for (let index = 0; index < squares.length; index += 1) {
-        if (Math.random() < chance) {
-          squares[index] = Math.random() * maxOpacity;
-          paint(Math.floor(index / rows), index % rows);
+      if (!settled) {
+        flickered += elapsed;
+        if (flickered < flickerDuration) {
+          const chance = flickerRate * elapsed;
+          for (let index = 0; index < squares.length; index += 1) {
+            if (Math.random() < chance) {
+              squares[index] = Math.random() * maxOpacity;
+              paint(Math.floor(index / rows), index % rows);
+            }
+          }
+        } else {
+          const done = flickered >= flickerDuration + settleDuration;
+          const ease = 1 - Math.exp(-elapsed / settleTimeConstant);
+          for (let index = 0; index < squares.length; index += 1) {
+            const target = stillOpacity(index);
+            squares[index] = done ? target : squares[index] + (target - squares[index]) * ease;
+            paint(Math.floor(index / rows), index % rows);
+          }
+          settled = done;
         }
       }
       if (haloOn && (pointer.inside || halo.strength > 0)) {
@@ -153,10 +178,15 @@ function FlickeringGrid({
         if (touched) paintCells(touched);
       }
       context.globalAlpha = 1;
+      if (resting()) {
+        frame = 0;
+        return;
+      }
       frame = requestAnimationFrame(tick);
     };
+    const resting = () => settled && !pointer.inside && halo.strength === 0;
     const start = () => {
-      if (reducedMotion || !visible || document.hidden || frame) return;
+      if (resting() || !visible || document.hidden || frame) return;
       last = performance.now();
       frame = requestAnimationFrame(tick);
     };
@@ -199,6 +229,7 @@ function FlickeringGrid({
           halo.x = pointer.x;
           halo.y = pointer.y;
         }
+        start();
       }
     };
     const leave = () => {

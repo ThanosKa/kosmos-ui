@@ -42,7 +42,10 @@ function PanelTitle({ className, render, ...props }: useRender.ComponentProps<'h
   return useRender({
     defaultTagName: 'h2',
     render,
-    props: mergeProps<'h2'>({ className: cn('col-start-1 min-w-0 truncate text-body font-medium text-foreground', className) }, props),
+    props: mergeProps<'h2'>(
+      { title: typeof props.children === 'string' ? props.children : undefined, className: cn('col-start-1 min-w-0 truncate text-body font-medium text-foreground', className) },
+      props,
+    ),
     state: { slot: 'panel-title' },
   });
 }
@@ -52,6 +55,7 @@ function PanelDescription({ className, ...props }: React.ComponentProps<'p'>) {
   return (
     <p
       data-slot="panel-description"
+      title={typeof props.children === 'string' ? props.children : undefined}
       className={cn('col-start-1 min-w-0 truncate text-small text-muted-foreground', className)}
       {...props}
     />

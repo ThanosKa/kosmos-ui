@@ -19,7 +19,7 @@ export function DocsTabs({ tabs }: { tabs: DocsTab[] }) {
         ))}
       </TabsList>
       {tabs.map((tab) => (
-        <TabsContent key={tab.label} value={tab.label} keepMounted>
+        <TabsContent key={tab.label} value={tab.label} keepMounted tabIndex={-1}>
           {tab.content}
         </TabsContent>
       ))}
@@ -43,9 +43,6 @@ export function PackageManagerTabs<T extends string>({ managers, panels }: { man
       onValueChange={(value) => setManager(value as T)}
       className="not-prose relative min-w-0 gap-0 rounded-2xl border border-transparent bg-card shadow-card"
     >
-      <div className="absolute end-2 top-1.5 z-10">
-        <CopyButton text={activeCode} />
-      </div>
       <TabsList aria-label="Package manager" className="ps-2 pe-10">
         {managers.map((item) => (
           <TabsTrigger key={item} value={item}>
@@ -53,6 +50,9 @@ export function PackageManagerTabs<T extends string>({ managers, panels }: { man
           </TabsTrigger>
         ))}
       </TabsList>
+      <div className="absolute end-2 top-1.5 z-10">
+        <CopyButton text={activeCode} />
+      </div>
       {managers.map((item) => (
         <TabsContent key={item} value={item} keepMounted className="focus-visible:-outline-offset-2">
           {panels[item]}

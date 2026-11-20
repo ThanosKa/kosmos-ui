@@ -6,7 +6,7 @@ import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-ove
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Badge } from '@/registry/kosmos/ui/badge';
 import { DonutChart, type DonutChartItem } from '@/registry/kosmos/ui/donut-chart';
-import { SidebarInset, SidebarProvider } from '@/registry/kosmos/ui/sidebar';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 
 const sources: DonutChartItem[] = [
@@ -89,10 +89,11 @@ function RecentActivity() {
 function LandingHeroProduct() {
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
-      <AppSidebar activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
+      <AppSidebar navLabel="App" activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
       <SidebarInset render={<div />} className="overflow-hidden">
-        <header className="flex h-12 shrink-0 items-center border-b border-border px-4">
-          <h3 className="truncate text-body font-medium">Overview</h3>
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
+          <SidebarTrigger />
+          <h3 className="truncate text-title font-medium">Overview</h3>
         </header>
         <div className="@container flex flex-col gap-4 p-4 @max-md:p-2">
           <StatsOverview topEvents={false} />

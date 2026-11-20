@@ -1,16 +1,17 @@
 import { Globe } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Bento, type BentoItem } from '@/registry/kosmos/blocks/bento/bento';
 
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background p-4 shadow-card sm:p-6';
 
 function Visual({ children }: { children: ReactNode }) {
-  return <div className="w-full max-w-sm rounded-xl border border-transparent bg-card p-4 text-body shadow-card">{children}</div>;
+  return <div className="w-full max-w-sm rounded-xl border border-transparent bg-card p-4 text-body wrap-anywhere shadow-card">{children}</div>;
 }
 
 const threeTiles: BentoItem[] = [
-  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>acme.track()</Visual>, href: '#web' },
+  { id: 'web', title: 'Web', description: 'A script tag or an npm package.', visual: <Visual>acme.track()</Visual>, href: '#web', linkLabel: 'See the web SDK' },
   { id: 'ios', title: 'iOS', description: 'A Swift package.', visual: <Visual>Acme.track()</Visual> },
   { id: 'server', title: 'Server', description: 'Node, Go and Python.', visual: <Visual>acme.track()</Visual> },
 ];
@@ -35,6 +36,10 @@ const longTiles: BentoItem[] = [
 ];
 
 export default function BentoPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default, three columns from 896px">
@@ -61,6 +66,18 @@ export default function BentoPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="No header">
+        <div className={frame}>
+          <Bento title={null} description={null} items={threeTiles} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text">
         <div className={frame}>
           <Bento
@@ -71,9 +88,13 @@ export default function BentoPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="No header">
-        <div className={frame}>
-          <Bento title={null} description={null} items={threeTiles} />
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <Bento
+            title="Everything your team asks about, collected, joined to your users and ready to read before anyone thinks to ask"
+            description="Acme collects events from your web, iOS, Android and server apps, keeps them for as long as your plan allows, and turns them into funnels, retention cohorts and answers your whole team can read without writing a query."
+            items={longTiles}
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

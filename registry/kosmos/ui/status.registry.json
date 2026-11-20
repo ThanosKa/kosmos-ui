@@ -5,7 +5,7 @@
   "title": "Status",
   "description": "Six states for a task, step or run: pending, running, waiting, done, error and skipped. They come as a 16px row icon, a dot beside its word, and a Badge.",
   "dependencies": ["lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-mounted", "@kosmos/badge"],
   "meta": { "group": "ai" },
   "files": [
     {

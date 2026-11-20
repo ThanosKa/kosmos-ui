@@ -13,6 +13,7 @@ import {
   PaginationPrevious,
   PaginationStatus,
 } from '@/registry/kosmos/ui/pagination';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const pages = ['page', 'current page'] as const;
 const steps = ['previous', 'next', 'previous with label', 'next with label'] as const;
@@ -51,7 +52,6 @@ const ranges = [
   [20, 20],
   [3, 5],
   [1, 1],
-  [120, 245],
 ] as const;
 
 function Controlled({ children, ...props }: Omit<React.ComponentProps<typeof Pagination>, 'page' | 'onPageChange'> & { initialPage: number }) {
@@ -88,9 +88,9 @@ function LoadMoreCase({ shown, total, loading = false }: { shown: number; total:
   return <PaginationLoadMore shown={count} total={total} loading={loading} onLoadMore={() => setCount((c) => Math.min(total, c + 20))} />;
 }
 
-export default function PaginationPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Pages × states">
         <StateMatrix rows={pages} states={pageStates} render={(row, state) => <Page current={row === 'current page'} state={state} />} />
       </PreviewSection>
@@ -130,8 +130,6 @@ export default function PaginationPreview() {
 
       <PreviewSection title="Table footer: rows per page, rows in view, steps">
         <TableFooter total={2450} initialPage={3} />
-        <TableFooter total={1_284_906} initialPage={128_491} />
-        <TableFooter total={0} initialPage={1} />
         <TableFooter total={36} initialPage={9} />
         <Controlled initialPage={3} total={2450}>
           <PaginationStatus show="pages" />
@@ -142,16 +140,11 @@ export default function PaginationPreview() {
         </Controlled>
       </PreviewSection>
 
-      <PreviewSection title="Narrow: 320px">
-        <TableFooter total={2450} initialPage={3} narrow />
-      </PreviewSection>
-
       <PreviewSection title="Load more">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-6">
           <LoadMoreCase shown={20} total={134} />
           <LoadMoreCase shown={20} total={134} loading />
           <LoadMoreCase shown={134} total={134} />
-          <LoadMoreCase shown={20} total={1_284_906} />
         </div>
       </PreviewSection>
 
@@ -169,6 +162,75 @@ export default function PaginationPreview() {
           </div>
         </Controlled>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+const worstRanges = [
+  [120, 245],
+  [6_424, 12_849],
+  [1, 1_000_000],
+] as const;
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Pages: three and four digit pages keep the row's length">
+        <ul className="flex flex-col gap-3">
+          {worstRanges.map(([page, pageCount]) => (
+            <li key={`${page}-${pageCount}`} className="flex flex-col items-start gap-1.5">
+              <span className="font-mono text-caption text-muted-foreground">
+                page {page.toLocaleString('en-US')} of {pageCount.toLocaleString('en-US')}
+              </span>
+              <Controlled initialPage={page} pageCount={pageCount}>
+                <div className="flex items-center gap-1">
+                  <PaginationPrevious />
+                  <PaginationPages />
+                  <PaginationNext />
+                </div>
+              </Controlled>
+            </li>
+          ))}
+        </ul>
+      </PreviewSection>
+
+      <PreviewSection title="Table footer: over a million rows, no rows, one row">
+        <TableFooter total={1_284_906} initialPage={128_491} />
+        <TableFooter total={0} initialPage={1} />
+        <TableFooter total={1} initialPage={1} />
+      </PreviewSection>
+
+      <PreviewSection title="Narrow: 320px">
+        <TableFooter total={1_284_906} initialPage={128_491} narrow />
+        <TableFooter total={2450} initialPage={3} narrow />
+      </PreviewSection>
+
+      <PreviewSection title="Load more: a million rows, and a longer language">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-6">
+          <LoadMoreCase shown={20} total={1_284_906} />
+          <Controlled initialPage={3} total={1_284_906} className="justify-between">
+            <PaginationPageSize label="Zeilen pro Seite, die gleichzeitig angezeigt werden" />
+            <PaginationStatus>{({ from, to, total }) => `${from.toLocaleString('de-DE')}–${to.toLocaleString('de-DE')} von ${(total ?? 0).toLocaleString('de-DE')}`}</PaginationStatus>
+          </Controlled>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function PaginationPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

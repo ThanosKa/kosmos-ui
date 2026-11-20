@@ -2,6 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Input } from '@/registry/kosmos/ui/input';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['placeholder', 'filled'] as const;
 const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
@@ -12,9 +13,9 @@ function stateProps(state: (typeof states)[number]) {
   return previewState(state);
 }
 
-export default function InputPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Content × states">
         <StateMatrix
           rows={rows}
@@ -49,11 +50,35 @@ export default function InputPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long value in a narrow slot">
-        <div className="w-48">
-          <Input aria-label="Project name" defaultValue="Quarterly revenue forecast for every region and product line" />
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long value in a narrow slot">
+      <div className="w-48">
+        <Input aria-label="Project name" defaultValue="Quarterly revenue forecast for every region and product line" />
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function InputPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

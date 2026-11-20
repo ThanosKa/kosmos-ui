@@ -13,7 +13,8 @@
     "@kosmos/avatar",
     "@kosmos/button",
     "@kosmos/command",
-    "@kosmos/kbd"
+    "@kosmos/kbd",
+    "@kosmos/status"
   ],
   "categories": ["command-menu"],
   "meta": {
