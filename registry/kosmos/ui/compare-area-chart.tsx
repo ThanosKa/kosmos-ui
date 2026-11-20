@@ -82,16 +82,16 @@ function CompareTooltip({
       data-slot="compare-area-chart-tooltip"
       className="grid max-w-64 min-w-40 grid-cols-[minmax(0,1fr)] gap-1.5 rounded-xl border border-transparent bg-popover px-2.5 py-1.5 text-caption text-popover-foreground tabular-nums shadow-popover"
     >
-      <div className="truncate font-medium">{item.name ?? item.label}</div>
+      <div title={item.name ?? item.label} className="truncate font-medium">{item.name ?? item.label}</div>
       <ul className="flex flex-col gap-1">
         <li className="flex items-center gap-2">
           <span aria-hidden className="size-2 shrink-0 rounded-sm bg-chart-1 forced-colors:bg-[CanvasText]" />
-          <span className="min-w-0 flex-1 truncate text-muted-foreground">{currentLabel}</span>
+          <span title={typeof currentLabel === 'string' ? currentLabel : undefined} className="min-w-0 flex-1 truncate text-muted-foreground">{currentLabel}</span>
           <span className="shrink-0 font-medium">{format(point.current)}</span>
         </li>
         <li className="flex items-center gap-2">
           <span aria-hidden className="size-2 shrink-0 rounded-sm bg-chart-1 opacity-45 forced-colors:bg-[CanvasText]" />
-          <span className="min-w-0 flex-1 truncate text-muted-foreground">{previousLabel}</span>
+          <span title={typeof previousLabel === 'string' ? previousLabel : undefined} className="min-w-0 flex-1 truncate text-muted-foreground">{previousLabel}</span>
           <span className="shrink-0 font-medium">{format(point.previous)}</span>
         </li>
       </ul>

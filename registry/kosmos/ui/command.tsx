@@ -211,6 +211,7 @@ function CommandDescription({ className, ...props }: React.ComponentProps<'span'
   return (
     <span
       data-slot="command-description"
+      title={typeof props.children === 'string' ? props.children : undefined}
       className={cn('truncate text-small font-normal text-muted-foreground', className)}
       {...props}
     />

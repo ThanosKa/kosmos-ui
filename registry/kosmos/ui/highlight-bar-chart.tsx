@@ -150,7 +150,7 @@ function HighlightBarChart({ data, label, format = formatCompact, entrance, clas
                 !revealed && 'opacity-0 motion-safe:scale-90',
               )}
             >
-              <span className="truncate">{litBar.label}</span>
+              <span title={litBar.label} className="truncate">{litBar.label}</span>
               <span className="shrink-0">&nbsp;· {format(litValue)}</span>
             </span>
           </div>

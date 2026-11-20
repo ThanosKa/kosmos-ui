@@ -112,7 +112,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** the label of a control the pointer is on becomes the hardest text on the page to read.
 - **Fix:** keep the fill and mark hover another way the tint already supports (underline the badge link, as the Kosmos link-in-alert rule does), or give the hover a fill that keeps 4.5:1 and add that pair to the tint test. For the Banner action, keep the ghost hover off the tint (`hover:bg-tint-*-border` with a passing pair, or the underline).
 
-#### 3. Model select's hidden labels widen the page by 223px at 375
+#### 3. Model select's hidden labels widen the page by 223px at 375 (Fixed in ticket 20)
 
 - **Severity:** HIGH (page scrolls sideways at phone width). **Kind:** bug. **Checkable:** yes, browser (the site check's overflow check already fails on `/view/model-select`).
 - **Location:** `registry/kosmos/ui/model-select.tsx:66-75` (`sr-only` spans inside a `truncate` span inside the trigger Button); root cause shared with `registry/kosmos/ui/button.tsx:35` (the Button base is not `relative`).
@@ -120,7 +120,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** the whole page pans sideways on a phone; the same will happen in any app that puts a long model name in a narrow composer toolbar.
 - **Fix:** `relative` on the trigger (`ModelSelectButton`'s class list), as `sidebar.tsx:752` and `scroll-area.tsx:63` already do for the same reason. Consider `relative` on the Button base so every `sr-only` label inside a Button stays clipped.
 
-#### 4. Truncated text with no way to the full value
+#### 4. Truncated text with no way to the full value (Fixed in ticket 20)
 
 - **Severity:** HIGH (escalation trigger: truncated content with no way back). **Kind:** bug (the Kosmos rule itself requires a way back). **Checkable:** yes, code: flag `truncate` / `line-clamp-*` on an element with no `title` in `registry/kosmos/ui` (allowlist the slots that have a detail view).
 - **Locations (no `title`, tooltip or detail view):** `panel.tsx:45` (PanelTitle), `panel.tsx:55` (PanelDescription), `status.tsx:72` (StatusDot label), `status.tsx:99` (StatusBadge label), `sidebar.tsx:695` (group label), `sidebar.tsx:757` (menu item label while expanded; the tooltip shows only in icon mode), `sidebar.tsx:988` (submenu popover label), `chart.tsx:166` (tooltip series name), `multi-line-chart.tsx:214`, `:511`, `:652`, `compare-area-chart.tsx:85`, `:89`, `:94`, `highlight-bar-chart.tsx:153`, `segmented-gauge.tsx:208`, `:225`, `command.tsx:214` (item description), `data-table.tsx:237` (filter summary), `announcement.tsx:37` (tag), `input-group.tsx:74` (addon text).
@@ -128,7 +128,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** a long project, status or series name is lost for good; with real data (ticket 08's worst case) the panel title and the legend are the first to go.
 - **Fix:** add `title={…}` where the child is a string (the Kosmos minimum), or let slots that name something wrap: `line-clamp-2` on PanelTitle and PanelDescription, wrap legend names. See the Kosmos-style entry on `title` for why a tooltip or wrap is better than `title` alone.
 
-#### 5. A stat value truncates the number
+#### 5. A stat value truncates the number (Fixed in ticket 20)
 
 - **Severity:** HIGH (truncated value, misleads). **Kind:** bug (breaks "Numbers, amounts and dates never truncate; they take `shrink-0`"). **Checkable:** yes, code: `truncate` together with `tabular-nums` on one element.
 - **Location:** `registry/kosmos/ui/stat-card.tsx:108` (`'block truncate text-display text-foreground tabular-nums'`).
@@ -224,7 +224,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Fix:** take label props (as Calendar's `previousMonthLabel` does) and use `Intl.PluralRules` where a count is spoken.
 - **Triage:** not doing. Kosmos ships English copy and the style skill sets no translation rule; label props on every component are an API decision for the maintainer.
 
-#### 17. Donut chart preview's controls overflow at 375
+#### 17. Donut chart preview's controls overflow at 375 (Fixed in ticket 20)
 
 - **Severity:** LOW (review preview only). **Kind:** bug. **Checkable:** yes, browser (site check, overflow: `/view/donut-chart` 9px, light and dark).
 - **Location:** `registry/kosmos/examples/donut-chart.tsx:150` (`<div className="flex gap-2">` with two Buttons).
@@ -733,7 +733,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 
 #### HIGH
 
-**1. A color token's name is cut off on the Color page with no way to read it.**
+**1. A color token's name is cut off on the Color page with no way to read it (Fixed in ticket 20).**
 - **Severity:** HIGH (escalation trigger: truncated content with no way to reach the full value). **Kind:** bug. **Checkable:** yes, browser: text with `text-overflow: ellipsis` whose `scrollWidth` exceeds `clientWidth` and that has no `title`, tooltip or `aria-describedby`.
 - **Where:** `components/docs/foundations/copy-swatch.tsx:39` (`<code className="truncate font-mono text-body">{tokenClass}</code>`). Seen on `/docs/foundations/color`, Sidebar group, `text-sidebar-primary-foreground`, at 375 and 1280, light and dark.
 - **What is wrong:** the class name is the one thing the card exists to show, and it ends in "…". The full name reaches only the clipboard, so a reader has to paste it to find out what it is.

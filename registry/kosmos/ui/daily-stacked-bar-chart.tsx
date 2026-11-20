@@ -280,7 +280,7 @@ function DailyStackedBarChart({
                 <span title={item.label} className="truncate text-caption font-normal text-muted-foreground">
                   {item.label}
                 </span>
-                <span className={cn('truncate text-title tabular-nums transition-[color]', off && 'font-normal text-muted-foreground')}>
+                <span className={cn('shrink-0 text-title tabular-nums transition-[color]', off && 'font-normal text-muted-foreground')}>
                   <Count
                     value={data.reduce((total, day) => total + amount(day, item.key), 0)}
                     format={format}
@@ -415,7 +415,7 @@ function DailyStackedBarChart({
                   )}
                 >
                   <div className="grid grid-cols-[minmax(0,1fr)] gap-1.5 rounded-xl border border-transparent bg-popover px-2.5 py-1.5 text-caption text-popover-foreground tabular-nums shadow-popover">
-                    <div className="truncate font-medium">{litDay.name ?? litDay.label}</div>
+                    <div title={litDay.name ?? litDay.label} className="truncate font-medium">{litDay.name ?? litDay.label}</div>
                     <ul className="grid grid-cols-[minmax(0,1fr)] gap-1">
                       {series.map((item, s) => {
                         const off = hidden.has(item.key);
@@ -427,7 +427,7 @@ function DailyStackedBarChart({
                                 off && 'opacity-25',
                               )}
                             />
-                            <span className="min-w-0 flex-1 truncate text-muted-foreground">{item.label}</span>
+                            <span title={item.label} className="min-w-0 flex-1 truncate text-muted-foreground">{item.label}</span>
                             <span className={cn('shrink-0 font-medium transition-[color]', off && 'font-normal text-muted-foreground')}>
                               <Count value={amount(litDay, item.key)} format={format} ready={tooltipIn} instant={still} />
                             </span>
@@ -463,7 +463,7 @@ function DailyStackedBarChart({
                 !revealed && 'opacity-0 motion-safe:translate-y-1',
               )}
             >
-              <span className={cn('max-w-(--label-room) shrink-0 truncate text-muted-foreground transition-[color] [direction:ltr]', d === lit && 'text-foreground')}>
+              <span title={showLabel(d) ? day.label : undefined} className={cn('max-w-(--label-room) shrink-0 truncate text-muted-foreground transition-[color] [direction:ltr]', d === lit && 'text-foreground')}>
                 {showLabel(d) ? day.label : null}
               </span>
             </span>

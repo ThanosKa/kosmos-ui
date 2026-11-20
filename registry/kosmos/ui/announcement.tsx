@@ -34,6 +34,7 @@ function Announcement({ badge, className, children, render, ...props }: Announce
             {badge != null ? (
               <span
                 data-slot="announcement-badge"
+                title={typeof badge === 'string' ? badge : undefined}
                 className="block max-w-1/2 shrink-0 truncate rounded-full bg-accent px-2 py-0.75 text-caption font-medium text-foreground"
               >
                 {badge}

@@ -117,7 +117,7 @@ function BarList({
                 {item.label}
               </span>
               {item.meta === undefined || item.meta === null ? null : (
-                <span className="max-w-1/2 shrink-0 truncate text-caption text-muted-foreground">{item.meta}</span>
+                <span title={typeof item.meta === 'string' ? item.meta : undefined} className="max-w-1/2 shrink-0 truncate text-caption text-muted-foreground">{item.meta}</span>
               )}
             </span>
           </div>

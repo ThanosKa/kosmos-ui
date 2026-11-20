@@ -225,6 +225,28 @@ const tooltipTriggerSelectors = [
   },
 ];
 
+// A number, amount or date never truncates: it takes `shrink-0`, and the text beside it takes `min-w-0`.
+const truncatedNumberSelectors = classSelectors(
+  `^(?=[\\s\\S]*${classStart}truncate${classEnd})(?=[\\s\\S]*${classStart}(tabular-nums|text-display)${classEnd})`,
+  'A number, amount or date never truncates; it takes `shrink-0`, and the text beside it takes `min-w-0` (kosmos-style, Phones).',
+);
+
+// Truncated text stays readable in full. A string child goes in `title`; a slot whose full text lives in a tooltip or a
+// detail view is listed here, with the reason.
+const fullTextElsewhere = {
+  'registry/kosmos/ui/breadcrumb.tsx': 'A tooltip shows a crumb in full while it is truncated.',
+  'registry/kosmos/ui/select.tsx': 'The open list shows every option in full.',
+  'registry/kosmos/ui/tool-call.tsx': 'Opening the call shows its title in full.',
+  'registry/kosmos/ui/notification-inbox.tsx': 'The item opens its detail view, which shows the description in full.',
+};
+const truncateWithoutTitleSelectors = [
+  {
+    selector: `JSXOpeningElement:has(JSXAttribute[name.name='className'] :matches(Literal[value=/${classStart}(truncate|line-clamp-[0-9])${classEnd}/], TemplateElement[value.raw=/${classStart}(truncate|line-clamp-[0-9])${classEnd}/])):not(:has(JSXAttribute[name.name='title']))`,
+    message:
+      'Truncated text stays readable in full: give `truncate` or `line-clamp-*` a `title` (a string child), or list the file in `fullTextElsewhere` in the lint config with its reason (kosmos-style, Phones).',
+  },
+];
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -246,6 +268,8 @@ const codeRules = [
   ...liveRegionSelectors,
   ...tooltipTriggerSelectors,
 ];
+
+const uiRules = [...codeRules, ...truncatedNumberSelectors];
 
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
@@ -296,6 +320,20 @@ const eslintConfig = defineConfig([
     // Components and blocks hold at phone width. Examples may fill the screen to show a scroll.
     files: ['registry/kosmos/ui/**/*.tsx', 'registry/kosmos/blocks/**/*.tsx'],
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors, ...pixelSizeSelectors] },
+  },
+  {
+    // Ticket 21 extends the truncation rules to the blocks once they are fixed.
+    files: ['registry/kosmos/ui/**/*.tsx'],
+    ignores: Object.keys(fullTextElsewhere),
+    rules: {
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...uiRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors],
+    },
+  },
+  {
+    files: Object.keys(fullTextElsewhere),
+    rules: {
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...uiRules, ...viewportSelectors, ...pixelSizeSelectors],
+    },
   },
   {
     // The site keeps number durations for its docs demos, such as the slow run in the easing demo.

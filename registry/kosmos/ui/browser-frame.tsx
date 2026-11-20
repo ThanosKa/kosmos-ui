@@ -38,7 +38,7 @@ function BrowserFrame({ url, tilt = false, className, children, ...props }: Brow
             <span className="size-2.5 rounded-full bg-foreground/15" />
           </span>
           {url ? (
-            <span className="truncate rounded-full border border-transparent bg-muted px-3 py-0.5 text-center text-caption text-muted-foreground shadow-inset">{url}</span>
+            <span title={url} className="truncate rounded-full border border-transparent bg-muted px-3 py-0.5 text-center text-caption text-muted-foreground shadow-inset">{url}</span>
           ) : null}
         </div>
         <div data-slot="browser-frame-content" className="bg-background">

@@ -147,7 +147,7 @@ export default function DonutChartPreview() {
       <PreviewSection title="Value change">
         <div className="flex items-center gap-6">
           <DonutChart data={live} label="Visitors" format={compact.format} />
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={() => setShift((s) => Math.max(-15000, s - 10000))}>
               Less search
             </Button>

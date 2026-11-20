@@ -36,7 +36,7 @@ export function CopySwatch({ tokenClass, swatches }: { tokenClass: string; swatc
           ))}
         </span>
         <span className="flex items-center justify-between gap-2 px-1">
-          <code className="truncate font-mono text-body">{tokenClass}</code>
+          <code className="min-w-0 font-mono text-body wrap-break-word">{tokenClass}</code>
           <span className="flex shrink-0 items-center gap-1 text-caption text-muted-foreground">
             {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
             {copied ? 'Copied' : 'Copy'}
