@@ -385,12 +385,12 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
       </PanelHeader>
       <PanelContent className="flex flex-col">
         {totals.length > 0 ? (
-          <dl className="grid auto-cols-fr grid-flow-col divide-x divide-border border-b border-border">
+          <dl className="grid auto-cols-fr grid-flow-row divide-y divide-border border-b border-border @sm:grid-flow-col @sm:divide-x @sm:divide-y-0">
             {totals.map((total) => (
               <div key={total.label} className="flex min-w-0 flex-col gap-1 px-4 py-3">
                 <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{total.label}</dt>
                 <dd className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
-                  <span className="truncate text-title font-medium text-foreground tabular-nums">{total.value}</span>
+                  <span className="shrink-0 text-title font-medium text-foreground tabular-nums">{total.value}</span>
                   <StatCardDelta value={total.change} unit={total.unit} goodWhen={total.goodWhen} className="text-caption" />
                 </dd>
               </div>
@@ -470,7 +470,7 @@ function GoalPanel({ goal }: { goal: SignupGoal }) {
                   </Avatar>
                 ))}
               </AvatarGroup>
-              <span className="truncate text-small text-muted-foreground">{goal.team.label}</span>
+              <span title={goal.team.label} className="truncate text-small text-muted-foreground">{goal.team.label}</span>
             </div>
           ) : null}
         </div>
@@ -486,11 +486,27 @@ const presenceDot: Record<Presence, { className: string; label: string }> = {
 };
 
 /** A value in ink with a muted line of context under it. */
-function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+function TwoLine({
+  primary,
+  secondary,
+  numeric,
+  className,
+}: {
+  primary: React.ReactNode;
+  secondary?: React.ReactNode;
+  numeric?: boolean;
+  className?: string;
+}) {
   return (
-    <div className={cn('flex min-w-0 flex-col', className)}>
-      <span className="truncate text-body text-foreground">{primary}</span>
-      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    <div className={cn('flex flex-col', numeric ? 'shrink-0' : 'min-w-0', className)}>
+      <span title={typeof primary === 'string' ? primary : undefined} className={cn(numeric ? 'whitespace-nowrap' : 'truncate', 'text-body text-foreground')}>
+        {primary}
+      </span>
+      {secondary ? (
+        <span title={typeof secondary === 'string' ? secondary : undefined} className="truncate text-small text-muted-foreground">
+          {secondary}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -580,7 +596,7 @@ const signupColumns = signupColumn.columns([
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row: { original: signup } }) => (
       <div className="flex min-w-40 flex-col gap-1">
-        <span className="truncate text-body">{signup.step}</span>
+        <span title={signup.step} className="truncate text-body">{signup.step}</span>
         <Meter value={signup.activation} aria-label={`${signup.name}, onboarding`} className="items-center gap-y-0">
           <MeterBar className="col-span-1 row-start-1" />
           <MeterValue className="row-start-1 w-9 text-caption" />
@@ -595,6 +611,7 @@ const signupColumns = signupColumn.columns([
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row: { original: signup } }) => (
       <TwoLine
+        numeric
         primary={signup.mrr > 0 ? usd.format(signup.mrr) : '—'}
         secondary={signup.mrr > 0 ? 'per month' : 'no charge'}
         className="items-end tabular-nums"
@@ -1045,7 +1062,7 @@ function DashboardAnalyticsPage({
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          <h1 title={title} className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
           <DateRangePicker
             aria-label="Period"
             value={picked ?? current}

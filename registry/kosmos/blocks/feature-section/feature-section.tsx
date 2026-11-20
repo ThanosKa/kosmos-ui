@@ -50,8 +50,10 @@ const samplePoints: FeatureSectionPoint[] = [
   },
 ];
 const sampleAction = (
-  <Button variant="secondary" href="/docs/dashboards">
-    Read the dashboards guide
+  <Button variant="secondary" href="/docs/dashboards" className="max-w-full">
+    <span title="Read the dashboards guide" className="truncate">
+      Read the dashboards guide
+    </span>
   </Button>
 );
 
@@ -177,8 +179,8 @@ function FeatureSection({
     >
       {cardTitle || cardDescription ? (
         <div className="flex flex-col gap-1.5">
-          {cardTitle ? <CardHeading className="text-title text-balance text-foreground">{cardTitle}</CardHeading> : null}
-          {cardDescription ? <p className="text-body text-pretty text-muted-foreground">{cardDescription}</p> : null}
+          {cardTitle ? <CardHeading className="text-title text-balance wrap-break-word text-foreground">{cardTitle}</CardHeading> : null}
+          {cardDescription ? <p className="text-body text-pretty wrap-break-word text-muted-foreground">{cardDescription}</p> : null}
         </div>
       ) : null}
       {points.length > 0 ? (
@@ -204,16 +206,16 @@ function FeatureSection({
           ))}
         </ul>
       ) : null}
-      {action ? <div className="mt-auto flex pt-1">{action}</div> : null}
+      {action ? <div className="mt-auto flex max-w-full min-w-0 pt-1">{action}</div> : null}
     </div>
   );
   return (
     <section data-slot="feature-section" className={cn('@container flex flex-col', className)} {...props}>
       {title || description ? (
         <header className="mb-8 flex flex-col items-center text-center @2xl:mb-10">
-          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
           {description ? (
-            <p data-slot="feature-section-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">
+            <p data-slot="feature-section-description" className="mt-3 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">
               {description}
             </p>
           ) : null}

@@ -21,7 +21,7 @@ function Page({ title }: { title: string }) {
     <SidebarInset>
       <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
         <SidebarTrigger />
-        <h1 className="truncate text-body font-medium">{title}</h1>
+        <h1 title={title} className="truncate text-body font-medium">{title}</h1>
       </header>
       <p className="p-4 text-body text-muted-foreground">Page content</p>
     </SidebarInset>

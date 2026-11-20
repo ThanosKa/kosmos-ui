@@ -101,16 +101,16 @@ function StageLabel({ stage }: { stage: NewItemStage | undefined }) {
       ) : (
         <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[tone])} />
       )}
-      <span className="truncate">{stage.label}</span>
+      <span title={stage.label} className="truncate">{stage.label}</span>
     </span>
   );
 }
 
 function AreaLabel({ area }: { area: NewItemArea | undefined }) {
-  if (!area) return <span className="truncate text-muted-foreground">No area</span>;
+  if (!area) return <span title="No area" className="truncate text-muted-foreground">No area</span>;
   return (
     <Badge variant={area.hue} className="max-w-full">
-      <span className="truncate">{area.label}</span>
+      <span title={area.label} className="truncate">{area.label}</span>
     </Badge>
   );
 }
@@ -120,7 +120,7 @@ function PersonLabel({ person }: { person: NewItemPerson | undefined }) {
     return (
       <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
         <CircleDashed aria-hidden className="size-4 shrink-0" />
-        <span className="truncate">Unassigned</span>
+        <span title="Unassigned" className="truncate">Unassigned</span>
       </span>
     );
   }
@@ -130,7 +130,7 @@ function PersonLabel({ person }: { person: NewItemPerson | undefined }) {
         {person.avatarUrl ? <AvatarImage src={person.avatarUrl} alt="" /> : null}
         <AvatarFallback>{person.initials}</AvatarFallback>
       </Avatar>
-      <span className="truncate">{person.name}</span>
+      <span title={person.name} className="truncate">{person.name}</span>
     </span>
   );
 }
@@ -139,7 +139,7 @@ function TargetLabel({ target }: { target: string | null }) {
   return (
     <span className={cn('flex min-w-0 items-center gap-2 tabular-nums', !target && 'text-muted-foreground')}>
       <CalendarDays aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className="truncate">{target ?? 'No target'}</span>
+      <span className="shrink-0">{target ?? 'No target'}</span>
     </span>
   );
 }
@@ -283,7 +283,7 @@ function NewItemDialog({
               {lastCreated ? (
                 <>
                   <CircleCheck aria-hidden className="size-3.5 shrink-0 text-success" />
-                  <span className="min-w-0 truncate">Created {lastCreated}</span>
+                  <span title={`Created ${lastCreated}`} className="min-w-0 truncate">Created {lastCreated}</span>
                 </>
               ) : null}
             </p>

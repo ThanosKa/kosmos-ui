@@ -63,7 +63,7 @@ function ProjectsTable() {
         <TableBody>
           {sampleProjects.map((project) => (
             <TableRow key={project.name}>
-              <TableCell className="max-w-36 truncate font-medium">{project.name}</TableCell>
+              <TableCell title={project.name} className="max-w-36 truncate font-medium">{project.name}</TableCell>
               <TableCell>
                 <Badge variant={project.hue}>{project.plan}</Badge>
               </TableCell>
@@ -171,7 +171,7 @@ function Notifications() {
       {sampleNotifications.map((notification) => (
         <li key={notification.id} className="flex min-w-0 items-center gap-2.5 px-3 py-2.5 text-body">
           <Bell aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="min-w-0 truncate text-foreground">{notification.text}</span>
+          <span title={notification.text} className="min-w-0 truncate text-foreground">{notification.text}</span>
           <span className="ms-auto shrink-0 text-small text-muted-foreground tabular-nums">{notification.time}</span>
         </li>
       ))}
@@ -267,9 +267,9 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
     <section data-slot="bento" className={cn('@container flex flex-col', className)} {...props}>
       {title || description ? (
         <header className="mb-8 flex flex-col items-center text-center @2xl:mb-10">
-          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance text-foreground @2xl:text-display">{title}</Heading> : null}
+          {title ? <Heading className="max-w-[20em] text-heading font-semibold text-balance wrap-break-word text-foreground @2xl:text-display">{title}</Heading> : null}
           {description ? (
-            <p data-slot="bento-description" className="mt-3 max-w-[38em] text-body text-pretty text-muted-foreground @2xl:text-lead">
+            <p data-slot="bento-description" className="mt-3 max-w-[38em] text-body text-pretty wrap-break-word text-muted-foreground @2xl:text-lead">
               {description}
             </p>
           ) : null}
@@ -302,8 +302,8 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
               </div>
             </div>
             <div className="flex flex-col gap-1 px-3 pt-4 pb-3">
-              <TileHeading className="text-title text-foreground">{item.title}</TileHeading>
-              <p data-slot="bento-item-description" className="text-body text-pretty text-muted-foreground">
+              <TileHeading className="text-title wrap-break-word text-foreground">{item.title}</TileHeading>
+              <p data-slot="bento-item-description" className="text-body text-pretty wrap-break-word text-muted-foreground">
                 {item.description}
               </p>
               {item.href ? (

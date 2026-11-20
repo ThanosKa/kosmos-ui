@@ -80,7 +80,7 @@ const roleItems = assignableRoles.map((role) => ({ value: role, label: roleLabel
 const maxInvitesAtOnce = 20;
 
 const initials = (name: string) =>
-  (name.includes(' ') ? name.split(' ').map((part) => part[0]) : [name.slice(0, 2)]).join('').toUpperCase();
+  (name.includes(' ') ? name.split(' ').map((part) => part[0]) : [name.slice(0, 2)]).slice(0, 2).join('').toUpperCase();
 
 const countLabel = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
@@ -446,7 +446,7 @@ function Members({
               <li key={invite.id} data-invite-id={invite.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
                 <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
                   <PersonCell email={invite.email} />
-                  <p className="ms-11 truncate text-small text-muted-foreground">
+                  <p title={`${roleLabels[invite.role]} · ${invite.sentLabel}`} className="ms-11 truncate text-small text-muted-foreground">
                     {roleLabels[invite.role]} · {invite.sentLabel}
                   </p>
                 </div>

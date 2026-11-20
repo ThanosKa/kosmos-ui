@@ -15,7 +15,7 @@ function SampleDashboard() {
       <AppSidebar activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
       <SidebarInset render={<div />} className="overflow-hidden">
         <header className="flex h-12 shrink-0 items-center border-b border-border px-4">
-          <h3 className="truncate text-body font-medium">Overview</h3>
+          <h3 className="text-body font-medium">Overview</h3>
         </header>
         <div className="p-4">
           <StatsOverview />

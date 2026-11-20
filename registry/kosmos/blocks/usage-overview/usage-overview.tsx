@@ -133,6 +133,7 @@ const chartConfigOf = (models: UsageRow[]): ChartConfig =>
 const integer = new Intl.NumberFormat('en-US');
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 const usdWhole = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 const signed = new Intl.NumberFormat('en-US', { signDisplay: 'exceptZero', maximumFractionDigits: 1 });
 // A true minus sign, not the hyphen Intl writes.
@@ -163,13 +164,13 @@ function StatTile({ tile, loading }: { tile: Tile; loading: boolean }) {
         </>
       ) : (
         <>
-          <p className="truncate text-display tabular-nums">{tile.value}</p>
+          <p className="shrink-0 text-display tabular-nums">{tile.value}</p>
           <p className="flex min-w-0 items-center gap-2 text-small tabular-nums">
             <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
               {good === null ? null : <Icon aria-hidden />}
               {formatChange(tile.change)}
             </Badge>
-            <span className="truncate text-muted-foreground">vs previous period</span>
+            <span title="vs previous period" className="truncate text-muted-foreground">vs previous period</span>
           </p>
         </>
       )}
@@ -292,7 +293,7 @@ function UsageOverview({
   const tiles: Tile[] = [
     { id: 'tokens', label: 'Tokens', value: compact.format(totals.tokens), change: totals.changePct.tokens, goodWhen: 'up' },
     { id: 'runs', label: 'Runs', value: integer.format(totals.runs), change: totals.changePct.runs, goodWhen: 'up' },
-    { id: 'spend', label: 'Spend', value: usd.format(totals.costUsd), change: totals.changePct.costUsd, goodWhen: 'down' },
+    { id: 'spend', label: 'Spend', value: totals.costUsd >= 100_000 ? usdCompact.format(totals.costUsd) : usd.format(totals.costUsd), change: totals.changePct.costUsd, goodWhen: 'down' },
     { id: 'cost-per-run', label: 'Cost per run', value: usd.format(costPerRun), change: costPerRunChange, goodWhen: 'down' },
   ];
 

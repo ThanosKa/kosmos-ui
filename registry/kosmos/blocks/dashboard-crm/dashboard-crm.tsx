@@ -296,11 +296,27 @@ function KpiStrip({ kpis }: { kpis: Kpi[] }) {
 }
 
 /** A value in ink with a muted line of context under it. */
-function TwoLine({ primary, secondary, className }: { primary: React.ReactNode; secondary?: React.ReactNode; className?: string }) {
+function TwoLine({
+  primary,
+  secondary,
+  numeric,
+  className,
+}: {
+  primary: React.ReactNode;
+  secondary?: React.ReactNode;
+  numeric?: boolean;
+  className?: string;
+}) {
   return (
-    <div className={cn('flex min-w-0 flex-col', className)}>
-      <span className="truncate text-body text-foreground">{primary}</span>
-      {secondary ? <span className="truncate text-small text-muted-foreground">{secondary}</span> : null}
+    <div className={cn('flex flex-col', numeric ? 'shrink-0' : 'min-w-0', className)}>
+      <span title={typeof primary === 'string' ? primary : undefined} className={cn(numeric ? 'whitespace-nowrap' : 'truncate', 'text-body text-foreground')}>
+        {primary}
+      </span>
+      {secondary ? (
+        <span title={typeof secondary === 'string' ? secondary : undefined} className="truncate text-small text-muted-foreground">
+          {secondary}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -392,7 +408,7 @@ const dealColumns = dealColumn.columns([
   dealColumn.accessor('value', {
     header: ({ column }) => <DataTableColumnHeader column={column} />,
     cell: ({ row }) => (
-      <TwoLine primary={usd.format(row.original.value)} secondary={row.original.detail} className="items-end tabular-nums" />
+      <TwoLine numeric primary={usd.format(row.original.value)} secondary={row.original.detail} className="items-end tabular-nums" />
     ),
     sortFn: 'basic',
     enableHiding: false,
@@ -402,6 +418,7 @@ const dealColumns = dealColumn.columns([
     header: 'Close',
     cell: ({ row: { original: deal } }) => (
       <TwoLine
+        numeric
         primary={deal.closeDate}
         secondary={
           deal.closeNote ? (
@@ -521,8 +538,8 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
                   <Icon />
                 </StatCardIcon>
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <span className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
-                  {task.detail ? <span className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
+                  <span title={task.title} className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
+                  {task.detail ? <span title={task.detail} className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
                 </div>
                 <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction?.({ icon: Icon, ...task })}>
                   {task.action}
@@ -565,11 +582,11 @@ function StagesPanel({ stageTotals, stats }: { stageTotals: StageTotal[]; stats:
           empty="No deals yet"
         />
         {stats.length > 0 ? (
-          <dl className="mt-auto grid auto-cols-fr grid-flow-col divide-x divide-border border-t border-border">
+          <dl className="mt-auto grid auto-cols-fr grid-flow-row divide-y divide-border border-t border-border @sm:grid-flow-col @sm:divide-x @sm:divide-y-0">
             {stats.map((stat) => (
               <div key={stat.label} className="flex min-w-0 flex-col gap-0.5 px-4 py-3">
                 <dt className="text-small text-pretty wrap-break-word text-muted-foreground">{stat.label}</dt>
-                <dd className="truncate text-title font-medium text-foreground tabular-nums">{stat.value}</dd>
+                <dd className="shrink-0 text-title font-medium text-foreground tabular-nums">{stat.value}</dd>
               </div>
             ))}
           </dl>
@@ -604,9 +621,10 @@ function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
                       <TwoLine primary={<span title={row.name}>{row.name}</span>} secondary={row.team} />
                     </div>
                     <TwoLine
+                      numeric
                       primary={usdCompact.format(row.won)}
                       secondary={`of ${usdCompact.format(row.target)}`}
-                      className="shrink-0 items-end tabular-nums"
+                      className="items-end tabular-nums"
                     />
                   </div>
                   <Meter
@@ -986,7 +1004,7 @@ function DashboardCrmPage({
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h1 className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
+          <h1 title={title} className="min-w-0 flex-1 truncate text-title font-medium">{title}</h1>
           {notifications ? <HeaderInbox notifications={notifications} onNotificationOpen={onNotificationOpen} onViewAll={onViewAllNotifications} /> : null}
         </header>
         <ScrollArea className="min-h-0 flex-1">

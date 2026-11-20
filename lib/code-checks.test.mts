@@ -390,6 +390,51 @@ export function Name({ name }: { name: string }) {
 }
 `,
   },
+  {
+    name: 'a number in a block never truncates',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Total() {
+  return <span className="truncate text-title tabular-nums">$14,620</span>;
+}
+`,
+    message: 'A number, amount or date never truncates; it takes `shrink-0`, and the text beside it takes `min-w-0` (kosmos-style, Phones).',
+    allowed: `
+export function Total() {
+  return <span className="shrink-0 text-title tabular-nums">$14,620</span>;
+}
+`,
+  },
+  {
+    name: 'truncated text in a block stays readable in full',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Name({ name }: { name: string }) {
+  return <span className="min-w-0 truncate">{name}</span>;
+}
+`,
+    message: 'Truncated text stays readable in full: give `truncate` or `line-clamp-*` a `title` (a string child), or list the file in `fullTextElsewhere` in the lint config with its reason (kosmos-style, Phones).',
+    allowed: `
+export function Name({ name }: { name: string }) {
+  return <span title={name} className="min-w-0 truncate">{name}</span>;
+}
+`,
+  },
+  {
+    name: 'a block places an item with a grid column, not order',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Row({ flipped }: { flipped: boolean }) {
+  return <div className={flipped ? '@3xl:order-2' : undefined}>Fernhill Books</div>;
+}
+`,
+    message: 'Place an item with `col-start-*` and `row-start-*`, not `order-*`: the visual order must match the DOM order (kosmos-style, Phones).',
+    allowed: `
+export function Row({ flipped }: { flipped: boolean }) {
+  return <div className={flipped ? '@3xl:col-start-2' : undefined}>Fernhill Books</div>;
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });
