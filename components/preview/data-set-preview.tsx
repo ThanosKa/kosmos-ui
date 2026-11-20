@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore, type ReactNode } from 'react';
+import { Fragment, useSyncExternalStore, type ReactNode } from 'react';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 
 type DataSet = 'demo' | 'worst';
@@ -35,7 +35,7 @@ export function DataSetPreview({ demo, worst }: { demo: ReactNode; worst: ReactN
         <SegmentedControlItem value="demo">Demo data</SegmentedControlItem>
         <SegmentedControlItem value="worst">Worst case</SegmentedControlItem>
       </SegmentedControl>
-      {dataSet === 'worst' ? worst : demo}
+      <Fragment key={dataSet}>{dataSet === 'worst' ? worst : demo}</Fragment>
     </div>
   );
 }
