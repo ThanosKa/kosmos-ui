@@ -2,6 +2,7 @@
 
 import { ChartColumn, Check, CircleAlert, Database, Hourglass, Link2, RotateCcw, Square } from 'lucide-react';
 import * as React from 'react';
+import { useCopy, type CopyResult } from '@/registry/kosmos/hooks/use-copy';
 import { formatDuration } from '@/registry/kosmos/lib/format';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -54,6 +55,7 @@ type RunTimelineProps = {
   onStop?: () => void;
   onRetry?: (fromStepId: string) => void;
   onDecide?: (stepId: string, decision: ApprovalDecision) => void | Promise<void>;
+  /** Runs after the link is copied. The Copy link button shows only when the run has a `url`. */
   onCopyLink?: (run: Run) => void;
   className?: string;
 };
@@ -195,13 +197,11 @@ function TimelineRow({ time, clock, children }: { time: string; clock: string; c
         stepEnter,
       )}
     >
-      <span className="hidden h-9 items-center justify-end @md/run:flex">
-        <Tooltip>
-          <TooltipTrigger render={<time dateTime={clock} />} className="text-caption text-muted-foreground tabular-nums">
-            {time}
-          </TooltipTrigger>
-          <TooltipContent side="left">{clock}</TooltipContent>
-        </Tooltip>
+      <span className="sr-only h-9 items-center justify-end @md/run:not-sr-only @md/run:flex">
+        <time dateTime={clock} className="text-caption text-muted-foreground tabular-nums">
+          <span className="sr-only">{clock}</span>
+          <span aria-hidden>{time}</span>
+        </time>
       </span>
       <span aria-hidden className="relative flex justify-center">
         <span className="absolute inset-y-0 w-px bg-border group-first/step:top-4.5 group-last/step:bottom-auto group-last/step:h-4.5" />
@@ -252,25 +252,10 @@ function HeaderAction({ label, onClick, children }: { label: string; onClick?: (
   );
 }
 
-function CopyLinkAction({ run, onCopyLink }: { run: Run; onCopyLink?: (run: Run) => void }) {
-  const [copied, setCopied] = React.useState(false);
-  React.useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1600);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  function copy() {
-    if (onCopyLink) onCopyLink(run);
-    else if (run.url) void navigator.clipboard?.writeText(run.url);
-    setCopied(true);
-  }
-
-  return (
-    <HeaderAction label={copied ? 'Link copied' : 'Copy link'} onClick={copy}>
-      {copied ? <Check /> : <Link2 />}
-    </HeaderAction>
-  );
+function copyLinkMessage(result: CopyResult) {
+  if (result === 'copied') return 'Link copied';
+  if (result === 'failed') return 'Couldn’t copy the link';
+  return '';
 }
 
 /**
@@ -296,6 +281,15 @@ function RunTimeline({
   const titleId = React.useId();
   const actionsRef = React.useRef<HTMLDivElement>(null);
   const stopPressed = React.useRef(false);
+  const [copyResult, copyLink] = useCopy(run.url ?? '');
+  // Each change to the status or the copy result replaces the text of the one live region, which is what screen readers announce.
+  const [announced, setAnnounced] = React.useState({ status: run.status, copyResult, text: '' });
+  if (announced.status !== run.status) {
+    setAnnounced({ status: run.status, copyResult, text: run.status === 'running' ? 'Working…' : badge.label });
+  } else if (announced.copyResult !== copyResult) {
+    setAnnounced({ status: run.status, copyResult, text: copyLinkMessage(copyResult) });
+  }
+  const announcement = announced.text;
 
   React.useEffect(() => {
     if (active || !stopPressed.current) return;
@@ -345,9 +339,22 @@ function RunTimeline({
                 <Square />
               </HeaderAction>
             ) : null}
-            <CopyLinkAction run={run} onCopyLink={onCopyLink} />
+            {run.url ? (
+              <HeaderAction
+                label={copyResult === 'copied' ? 'Link copied' : 'Copy link'}
+                onClick={() => {
+                  copyLink();
+                  onCopyLink?.(run);
+                }}
+              >
+                {copyResult === 'copied' ? <Check /> : <Link2 />}
+              </HeaderAction>
+            ) : null}
           </div>
         </div>
+        <p role="status" className="sr-only">
+          {announcement}
+        </p>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-caption text-muted-foreground">
           <StatusBadge status={badge.status}>{badge.label}</StatusBadge>
           <span className="flex min-w-0 items-center gap-1.5">
@@ -411,7 +418,7 @@ function RunTimeline({
               ))}
               {run.status === 'running' ? (
                 <TimelineRow time={formatOffset(run.elapsedMs)} clock={clockAt(run.startedAt, run.elapsedMs)}>
-                  <p role="status" className="flex h-9 items-center gap-2 px-2 text-body text-muted-foreground">
+                  <p className="flex h-9 items-center gap-2 px-2 text-body text-muted-foreground">
                     <StatusIcon status="running" />
                     Working…
                   </p>
@@ -428,10 +435,12 @@ function RunTimeline({
             <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0 text-destructive" />
             <span className="min-w-0 break-words">{run.error.message}</span>
           </p>
-          <Button variant="secondary" onClick={() => run.error && onRetry?.(run.error.stepId)}>
-            <RotateCcw />
-            {retryLabel}
-          </Button>
+          {onRetry ? (
+            <Button variant="secondary" onClick={() => run.error && onRetry(run.error.stepId)}>
+              <RotateCcw />
+              {retryLabel}
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </section>

@@ -57,7 +57,7 @@ Dialog, Drawer, Popover and Tooltip all open a layer over the page from a trigge
 
 ### Open on hover
 
-`openOnHover` on the trigger opens the popover on hover as well as on click, for a definition next to a label. Keyboard users still open it with Enter or Space, so keep the trigger a button with an `aria-label`.
+`openOnHover` on the trigger opens the popover on hover as well as on click, for a definition next to a label. Keyboard users still open it with Enter or Space, so keep the trigger a button with an `aria-label`. A popover with no `PopoverTitle` takes an `aria-label` on `PopoverContent` too, so a screen reader names the popup it opens.
 
 <ComponentPreview name="popover-hover" />
 

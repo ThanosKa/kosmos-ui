@@ -109,6 +109,7 @@ export default function PopoverPreview() {
                     initialFocus={false}
                     side="right"
                     align="start"
+                    aria-label="About this metric"
                     className="w-56"
                   >
                     <PopoverDescription>

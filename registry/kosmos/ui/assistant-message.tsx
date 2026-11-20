@@ -224,18 +224,20 @@ function AssistantMessage({
         ) : null}
       </div>
 
-      {status === 'error' ? (
-        <div role="alert" className="flex flex-wrap items-center gap-2">
-          <CircleAlert aria-hidden className="size-3.5 shrink-0 text-destructive" />
-          <span className="text-small">{error ?? 'This reply didn’t finish.'}</span>
-          {onRetry ? (
-            <Button variant="secondary" onClick={onRetry}>
-              <RotateCcw aria-hidden />
-              Retry
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
+      <div role="alert" className="empty:sr-only">
+        {status === 'error' ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <CircleAlert aria-hidden className="size-3.5 shrink-0 text-destructive" />
+            <span className="text-small">{error ?? 'This reply didn’t finish.'}</span>
+            {onRetry ? (
+              <Button variant="secondary" onClick={onRetry}>
+                <RotateCcw aria-hidden />
+                Retry
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
       {sources && sources.length > 0 && status !== 'streaming' ? (
         <div className="max-w-[40em]">

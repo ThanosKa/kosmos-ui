@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
+import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Meter, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Separator } from '@/registry/kosmos/ui/separator';
@@ -317,8 +318,9 @@ function DetailDrawer({
   if (local.id !== project.id) setLocal({ id: project.id, propStatus: project.status, notes: [] });
   else if (local.propStatus !== project.status) setLocal({ ...local, propStatus: project.status, status: undefined });
   const [draft, setDraft] = React.useState('');
+  const [noteEmpty, setNoteEmpty] = React.useState(false);
+  const [noteAdded, setNoteAdded] = React.useState(false);
   const statusLabelId = React.useId();
-  const noteId = React.useId();
   const noteRef = React.useRef<HTMLTextAreaElement>(null);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   // Bring a note added here into view at the end of the activity.
@@ -346,6 +348,8 @@ function DetailDrawer({
     event.preventDefault();
     const body = draft.trim();
     if (!body) {
+      setNoteEmpty(true);
+      setNoteAdded(false);
       noteRef.current?.focus();
       return;
     }
@@ -357,6 +361,8 @@ function DetailDrawer({
       });
     }
     setDraft('');
+    setNoteEmpty(false);
+    setNoteAdded(true);
   }
 
   return (
@@ -540,27 +546,34 @@ function DetailDrawer({
             </DrawerBody>
 
             <form onSubmit={submitNote} className="flex shrink-0 items-end gap-2 border-t border-border px-5 py-4">
-              <label htmlFor={noteId} className="sr-only">
-                Add a note
-              </label>
-              <Textarea
-                id={noteId}
-                ref={noteRef}
-                value={draft}
-                onValueChange={(value) => setDraft(String(value))}
-                placeholder="Add a note…"
-                className="max-h-32 min-h-7.5 resize-none py-1.25"
-                onKeyDown={(event) => {
-                  // ⌘Enter or Ctrl+Enter adds the note, as in most comment fields.
-                  if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-                    event.preventDefault();
-                    event.currentTarget.form?.requestSubmit();
-                  }
-                }}
-              />
+              <Field invalid={noteEmpty} className="min-w-0 flex-1">
+                <FieldLabel className="sr-only">Add a note</FieldLabel>
+                <Textarea
+                  ref={noteRef}
+                  value={draft}
+                  onValueChange={(value) => {
+                    setDraft(String(value));
+                    setNoteEmpty(false);
+                    setNoteAdded(false);
+                  }}
+                  placeholder="Add a note…"
+                  className="max-h-32 min-h-7.5 resize-none py-1.25"
+                  onKeyDown={(event) => {
+                    // ⌘Enter or Ctrl+Enter adds the note, as in most comment fields.
+                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                      event.preventDefault();
+                      event.currentTarget.form?.requestSubmit();
+                    }
+                  }}
+                />
+                <FieldError>{noteEmpty ? 'Write a note before you add it.' : null}</FieldError>
+              </Field>
               <Button type="submit" variant="primary">
                 Add note
               </Button>
+              <p role="status" className="sr-only">
+                {noteAdded ? 'Note added' : ''}
+              </p>
             </form>
           </>
         )}
