@@ -203,11 +203,11 @@ function EventQuota({ row }: { row: Project }) {
       high={95}
       optimum={0}
       aria-label={`${row.name} event quota`}
-      getAriaValueText={() => `${quota}% of ${count.format(planAllowance[row.plan])} events used`}
-      className="w-36 grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-y-0"
+      getAriaValueText={() => `${count.format(quota)}% of ${count.format(planAllowance[row.plan])} events used`}
+      className="w-36 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-0"
     >
       <MeterSegments count={10} className="col-span-1 h-3" />
-      <MeterValue className="row-start-1 text-caption">{() => `${quota}%`}</MeterValue>
+      <MeterValue className="row-start-1 text-caption tabular-nums">{() => `${count.format(quota)}%`}</MeterValue>
     </Meter>
   );
 }
@@ -244,7 +244,7 @@ function ProjectCell({ row }: { row: Project }) {
     <div className="flex min-w-0 items-center gap-2.5 @max-md:w-28">
       <Avatar size="sm" aria-hidden className="rounded-md">
         {row.logo ? <AvatarImage src={row.logo} alt="" /> : null}
-        <AvatarFallback>{row.name.charAt(0)}</AvatarFallback>
+        <AvatarFallback>{Array.from(row.name)[0]}</AvatarFallback>
       </Avatar>
       <div className="flex min-w-0 flex-1 flex-col items-start">
         {onOpen ? (

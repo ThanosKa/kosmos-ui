@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { FeatureSection, type FeatureSectionPoint } from '@/registry/kosmos/blocks/feature-section/feature-section';
 import { Asset, AssetImage } from '@/registry/kosmos/ui/asset';
@@ -35,6 +36,10 @@ const longPoints: FeatureSectionPoint[] = [
 ];
 
 export default function FeatureSectionPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default, side by side from 768px">
@@ -68,6 +73,18 @@ export default function FeatureSectionPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="No header, no card text, no action">
+        <div className={frame}>
+          <FeatureSection title={null} description={null} cardTitle={null} cardDescription={null} points={plainPoints} action={null} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text">
         <div className={frame}>
           <FeatureSection
@@ -86,9 +103,21 @@ export default function FeatureSectionPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="No header, no card text, no action">
-        <div className={frame}>
-          <FeatureSection title={null} description={null} cardTitle={null} cardDescription={null} points={plainPoints} action={null} />
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <FeatureSection
+            title="Every number your team asks about, pinned, current and shared before anyone thinks to ask for it"
+            description="Acme keeps every dashboard a minute behind your events, sends the pinned numbers to the team each Monday and lets anyone take the rows behind a chart into a spreadsheet."
+            cardTitle="One view for everyone on the team, on every plan, in every workspace you run"
+            points={longPoints}
+            action={
+              <Button variant="secondary" href="/docs/dashboards" className="max-w-full">
+                <span title="Read the dashboards guide and every example in it" className="truncate">
+                  Read the dashboards guide and every example in it
+                </span>
+              </Button>
+            }
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

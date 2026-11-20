@@ -64,7 +64,7 @@ function FooterMark({ name }: { name: React.ReactNode }) {
       aria-hidden
       className="flex size-7 items-center justify-center rounded-lg border border-transparent bg-primary text-body font-semibold text-primary-foreground shadow-primary"
     >
-      {typeof name === 'string' ? name.trim().charAt(0).toUpperCase() : null}
+      {typeof name === 'string' ? Array.from(name.trim())[0]?.toUpperCase() : null}
     </span>
   );
 }

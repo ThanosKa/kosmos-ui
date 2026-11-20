@@ -2,6 +2,7 @@
 
 import { Menu } from 'lucide-react';
 import { OverlayStage } from '@/components/preview/overlay-stage';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Navbar, NavbarBanner, NavbarSearch, type NavbarItem } from '@/registry/kosmos/blocks/navbar/navbar';
 import { megaItems } from './navbar-mega';
@@ -35,6 +36,10 @@ const longItems: NavbarItem[] = [
 ];
 
 export default function NavbarPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default, current page Pricing">
@@ -109,17 +114,6 @@ export default function NavbarPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Banner, long line, 320px">
-        <div className={`${frame} max-w-80`}>
-          <Navbar
-            banner={<NavbarBanner href="/changelog" linkLabel="Read more">Annual billing is live for every plan, with two months free until the end of the year.</NavbarBanner>}
-            current="/pricing"
-            data-scrolled=""
-          />
-          {page}
-        </div>
-      </PreviewSection>
-
       <PreviewSection title="Narrow container, 320px">
         <div className={`${frame} max-w-80`}>
           <Navbar current="/pricing" data-scrolled="" />
@@ -137,13 +131,6 @@ export default function NavbarPreview() {
             />
           )}
         </OverlayStage>
-      </PreviewSection>
-
-      <PreviewSection title="Long text">
-        <div className={frame}>
-          <Navbar name="Acme Product Analytics" items={longItems} current="/pricing" data-scrolled="" />
-          {page}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Your own menu button, no actions">
@@ -164,6 +151,37 @@ export default function NavbarPreview() {
       <PreviewSection title="Name and actions only">
         <div className={frame}>
           <Navbar items={[]} sheetActions={null} data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
+      <PreviewSection title="Banner, long line, 320px">
+        <div className={`${frame} max-w-80`}>
+          <Navbar
+            banner={<NavbarBanner href="/changelog" linkLabel="Read more">Annual billing is live for every plan, with two months free until the end of the year.</NavbarBanner>}
+            current="/pricing"
+            data-scrolled=""
+          />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Long text">
+        <div className={frame}>
+          <Navbar name="Acme Product Analytics" items={longItems} current="/pricing" data-scrolled="" />
+          {page}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <Navbar name="Acme Product Analytics" items={longItems} current="/pricing" data-scrolled="" />
           {page}
         </div>
       </PreviewSection>

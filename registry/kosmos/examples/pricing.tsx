@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Pricing, type PricingPlan } from '@/registry/kosmos/blocks/pricing/pricing';
 import { Badge } from '@/registry/kosmos/ui/badge';
@@ -93,6 +94,10 @@ const fourPlans: PricingPlan[] = [
 ];
 
 export default function PricingPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default: three plans, monthly">
@@ -119,6 +124,18 @@ export default function PricingPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="Four plans, one with only a name and a price">
+        <div className={frame}>
+          <Pricing headingLevel={1} title="Pricing" description={null} plans={fourPlans} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text, huge price, missing parts">
         <div className={frame}>
           <Pricing
@@ -131,9 +148,15 @@ export default function PricingPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Four plans, one with only a name and a price">
-        <div className={frame}>
-          <Pricing headingLevel={1} title="Pricing" description={null} plans={fourPlans} />
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <Pricing
+            title="Pricing that grows with every web, iOS, Android and server app your team ships this year"
+            description="Every plan collects events from web, iOS, Android and server apps, keeps them as long as the plan allows, and turns them into answers. Pay yearly and save 20%."
+            plans={longPlans}
+            billingLabels={{ monthly: 'Billed monthly', yearly: 'Billed yearly' }}
+            yearlyDiscount="Two months free"
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { FeatureRows, type FeatureRowItem } from '@/registry/kosmos/blocks/feature-rows/feature-rows';
 import { Asset, AssetImage } from '@/registry/kosmos/ui/asset';
@@ -47,6 +48,10 @@ const longItems: FeatureRowItem[] = [
 ];
 
 export default function FeatureRowsPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default, side by side from 768px">
@@ -72,9 +77,25 @@ export default function FeatureRowsPreview() {
           <FeatureRows />
         </div>
       </PreviewSection>
+    </PreviewStack>
+  );
+}
 
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text">
         <div className={frame}>
+          <FeatureRows
+            title="Every number your team asks about, pinned, current and shared before anyone thinks to ask for it"
+            description="Acme keeps every dashboard a minute behind your events and sends the pinned numbers to the team each Monday."
+            items={longItems}
+          />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
           <FeatureRows
             title="Every number your team asks about, pinned, current and shared before anyone thinks to ask for it"
             description="Acme keeps every dashboard a minute behind your events and sends the pinned numbers to the team each Monday."
