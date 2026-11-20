@@ -32,6 +32,7 @@ import {
   CommandShortcut,
 } from '@/registry/kosmos/ui/command';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 type Item = { value: string; label: string; icon: LucideIcon; shortcut?: string[] };
 type Group = { value: string; items: Item[] };
@@ -87,9 +88,9 @@ function Items({ onRun }: { onRun?: () => void }) {
   );
 }
 
-export default function CommandPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open (palette)">
         <OverlayStageGrid>
           <OverlayStage label="groups, first match highlighted, shortcuts, footer">
@@ -145,7 +146,7 @@ export default function CommandPreview() {
       <PreviewSection title="Live (⌘K or the button)">
         <LivePalette />
       </PreviewSection>
-    </PreviewStack>
+    </>
   );
 }
 
@@ -185,5 +186,64 @@ function LivePalette() {
         </Command>
       </CommandDialog>
     </div>
+  );
+}
+
+const worstGroups: Group[] = [
+  {
+    value: 'Projects',
+    items: [
+      { value: 'copperline', label: 'Copperline Bank server events for card payments, loans and the business portal', icon: FolderKanban, shortcut: ['⌘', '⇧', '⌥', 'P'] },
+      { value: 'path', label: 'payments-gateway.eu-west.copperline.example/dashboards/share/links/with-a-very-long-unbreakable-path-segment', icon: FolderKanban },
+      { value: 'greek', label: 'Ιστότοπος καφέ Saltmarsh 🌊', icon: FolderKanban },
+      { value: 'k', label: 'K', icon: FolderKanban, shortcut: ['K'] },
+    ],
+  },
+  {
+    value: 'Members',
+    items: Array.from({ length: 300 }, (_, index) => ({ value: `member-${index}`, label: `Member ${index + 1}: aleksandra.wisniewska-kowalczyk${index}@northwind-industries-holdings.example`, icon: Users })),
+  },
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Long and non-Latin items, 300 rows, and a query with no match">
+        <OverlayStageGrid>
+          <OverlayStage inert label="long labels, an unbreakable path, 300 members">
+            {(container) => (
+              <CommandDialog open modal={false} container={container} initialFocus={false}>
+                <Command items={worstGroups}>
+                  <CommandInput placeholder="Search for a command…" />
+                  <Items />
+                  <CommandFooter />
+                </Command>
+              </CommandDialog>
+            )}
+          </OverlayStage>
+
+          <OverlayStage inert label="a long query with no match">
+            {(container) => (
+              <CommandDialog open modal={false} container={container} initialFocus={false}>
+                <Command items={worstGroups} defaultValue="quarterly-revenue-forecast-every-region-and-plan-2026-final-v12-copy">
+                  <CommandInput placeholder="Search for a command…" />
+                  <Items />
+                  <CommandFooter />
+                </Command>
+              </CommandDialog>
+            )}
+          </OverlayStage>
+        </OverlayStageGrid>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function CommandPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
+    </PreviewStack>
   );
 }

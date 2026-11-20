@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/registry/kosmos/ui/select';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const statuses = [
   { value: 'backlog', label: 'Backlog' },
@@ -36,9 +37,9 @@ function StatusItems() {
   ));
 }
 
-export default function SelectPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       {/* First on the page, so the pinned popup has room below its trigger at every width. */}
       <PreviewSection title="Open: groups, separator, selected, disabled">
         <div className="min-h-76">
@@ -89,16 +90,32 @@ export default function SelectPreview() {
         />
       </PreviewSection>
 
-      <PreviewSection title="Long value in a narrow trigger">
-        <Select defaultValue="long" items={{ long: 'Quarterly revenue forecast for every region' }}>
-          <SelectTrigger aria-label="Report" className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="long">Quarterly revenue forecast for every region</SelectItem>
-          </SelectContent>
-        </Select>
-      </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long value in a narrow trigger">
+      <Select defaultValue="long" items={{ long: 'Quarterly revenue forecast for every region' }}>
+        <SelectTrigger aria-label="Report" className="w-48">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="long">Quarterly revenue forecast for every region</SelectItem>
+        </SelectContent>
+      </Select>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function SelectPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

@@ -1,6 +1,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { StatusBadge, StatusDot, StatusIcon, type Status } from '@/registry/kosmos/ui/status';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const statuses = ['pending', 'running', 'waiting', 'done', 'error', 'skipped'] as const satisfies readonly Status[];
 const looks = ['icon', 'icon 14px', 'dot', 'badge', 'row'] as const;
@@ -24,9 +25,9 @@ const steps: { status: Status; label: string; detail?: string }[] = [
   { status: 'pending', label: 'Close the run' },
 ];
 
-export default function StatusPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Statuses × looks">
         <StateMatrix
           rows={statuses}
@@ -67,22 +68,38 @@ export default function StatusPreview() {
           </ol>
         </PreviewSection>
 
-        <PreviewSection title="Dots and badges in a narrow slot">
-          <div className="flex w-full max-w-40 flex-col items-start gap-2">
-            <StatusDot status="waiting" className="text-body">
-              Waiting on Lena Park to approve
-            </StatusDot>
-            <StatusDot status="error" className="text-small text-muted-foreground">
-              Failed
-            </StatusDot>
-            <StatusBadge status="waiting" title="Waiting on Lena Park to approve">
-              Waiting on Lena Park to approve
-            </StatusBadge>
-            <StatusBadge status="running">Running for 2m 05s</StatusBadge>
-            <StatusBadge status="error">Failed</StatusBadge>
-          </div>
-        </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Dots and badges in a narrow slot">
+        <div className="flex w-full max-w-40 flex-col items-start gap-2">
+          <StatusDot status="waiting" className="text-body">
+            Waiting on Lena Park to approve
+          </StatusDot>
+          <StatusDot status="error" className="text-small text-muted-foreground">
+            Failed
+          </StatusDot>
+          <StatusBadge status="waiting" title="Waiting on Lena Park to approve">
+            Waiting on Lena Park to approve
+          </StatusBadge>
+          <StatusBadge status="running">Running for 2m 05s</StatusBadge>
+          <StatusBadge status="error">Failed</StatusBadge>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function StatusPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

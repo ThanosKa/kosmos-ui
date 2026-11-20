@@ -5,12 +5,13 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['active tab', 'inactive tab'] as const;
 
-export default function TabsPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Tab × states">
         <StateMatrix
           rows={rows}
@@ -111,6 +112,76 @@ export default function TabsPreview() {
           ))}
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+const regions = ['EU West', 'EU Central', 'US East', 'US West', 'Asia Pacific', 'South America', 'Middle East and Africa', 'Ιστότοπος καφέ 🌊', 'K'];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Fifty tabs and long names: the list scrolls sideways, a long tab stays one line">
+        <div className="flex flex-col gap-6">
+          <Tabs defaultValue="t0" className="max-w-sm">
+            <TabsList>
+              {Array.from({ length: 50 }, (_, index) => (
+                <TabsTrigger key={index} value={`t${index}`}>
+                  {regions[index % regions.length]} {index + 1}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          <Tabs defaultValue="long" className="max-w-xs">
+            <TabsList>
+              <TabsTrigger value="long">Copperline Bank server events for card payments, loans and the business portal</TabsTrigger>
+              <TabsTrigger value="k">K</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Counts in the thousands, with icons">
+        <Tabs defaultValue="files" className="max-w-sm">
+          <TabsList>
+            <TabsTrigger value="files">
+              <FileText data-icon="inline-start" />
+              Files
+              <span className="text-caption text-muted-foreground tabular-nums">1,284</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity">
+              <Activity data-icon="inline-start" />
+              Activity
+              <span className="text-caption text-muted-foreground tabular-nums">99,999</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings data-icon="inline-start" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </PreviewSection>
+
+      <PreviewSection title="Vertical, with a long label">
+        <Tabs defaultValue="general" orientation="vertical">
+          <TabsList className="w-40">
+            <TabsTrigger value="general">Workspace name, URL and data region settings</TabsTrigger>
+            <TabsTrigger value="members">Members</TabsTrigger>
+          </TabsList>
+          <TabsContent value="general" className="min-w-0 text-muted-foreground">
+            bartholomew.fitzgerald@northwind-industries-holdings.example/dashboards/share/links/with-a-very-long-unbreakable-path-segment
+          </TabsContent>
+        </Tabs>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function TabsPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

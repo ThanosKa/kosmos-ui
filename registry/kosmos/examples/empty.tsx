@@ -13,10 +13,11 @@ import {
 } from '@/registry/kosmos/ui/empty';
 import EmptyStates from '@/registry/kosmos/examples/empty-states';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
-export default function EmptyPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="First use: icon, title, description, actions">
         <div className="flex rounded-2xl border border-transparent bg-card shadow-card">
           <Empty>
@@ -132,25 +133,41 @@ export default function EmptyPreview() {
         </Table>
       </PreviewSection>
 
-      <PreviewSection title="Long text in a narrow panel">
-        <div className="w-full max-w-64 flex rounded-2xl border border-transparent bg-card shadow-card">
-          <Empty>
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <FolderPlus />
-              </EmptyMedia>
-              <EmptyTitle render={<h3 />}>No shared workspaces with the procurement department yet</EmptyTitle>
-              <EmptyDescription>
-                Ask an administrator of the procurement department to invite you, or create a workspace and invite them
-                instead.
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button variant="secondary">Request access</Button>
-            </EmptyContent>
-          </Empty>
-        </div>
-      </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text in a narrow panel">
+      <div className="w-full max-w-64 flex rounded-2xl border border-transparent bg-card shadow-card">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FolderPlus />
+            </EmptyMedia>
+            <EmptyTitle render={<h3 />}>No shared workspaces with the procurement department yet</EmptyTitle>
+            <EmptyDescription>
+              Ask an administrator of the procurement department to invite you, or create a workspace and invite them
+              instead.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button variant="secondary">Request access</Button>
+          </EmptyContent>
+        </Empty>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function EmptyPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

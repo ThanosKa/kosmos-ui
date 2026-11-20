@@ -20,6 +20,7 @@ import {
   ComboboxSeparator,
   ComboboxValue,
 } from '@/registry/kosmos/ui/combobox';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 type Project = { value: string; label: string; disabled?: boolean };
 
@@ -90,9 +91,9 @@ function EventChips({ label, ...inputProps }: { label: string } & ComponentProps
   );
 }
 
-export default function ComboboxPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <div className="grid gap-4 md:grid-cols-3">
           <OverlayStage label="filtered, selected" className="h-72">
@@ -180,18 +181,34 @@ export default function ComboboxPreview() {
         />
       </PreviewSection>
 
-      <PreviewSection title="Long values and many chips">
-        <div className="flex flex-col gap-4">
-          <Combobox items={projects} defaultValue={{ value: 'long', label: 'Quarterly event export for every live project on the Scale plan' }}>
-            <ComboboxInput aria-label="Report" className="w-56" showClear />
-          </Combobox>
-          <Combobox items={events} multiple defaultValue={[...events, 'checkout_completed_after_trial_ended_on_annual_plan']}>
-            <ComboboxChips className="max-w-sm">
-              <EventChips label="Events, many" />
-            </ComboboxChips>
-          </Combobox>
-        </div>
-      </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long values and many chips">
+      <div className="flex flex-col gap-4">
+        <Combobox items={projects} defaultValue={{ value: 'long', label: 'Quarterly event export for every live project on the Scale plan' }}>
+          <ComboboxInput aria-label="Report" className="w-56" showClear />
+        </Combobox>
+        <Combobox items={events} multiple defaultValue={[...events, 'checkout_completed_after_trial_ended_on_annual_plan']}>
+          <ComboboxChips className="max-w-sm">
+            <EventChips label="Events, many" />
+          </ComboboxChips>
+        </Combobox>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function ComboboxPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

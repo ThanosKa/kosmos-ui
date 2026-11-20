@@ -4,13 +4,14 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import BannerPage from '@/registry/kosmos/examples/banner-page';
 import BannerVariants from '@/registry/kosmos/examples/banner-variants';
 import { Banner, BannerAction, BannerText, type BannerVariant } from '@/registry/kosmos/ui/banner';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const variants = ['neutral', 'info', 'success', 'warning', 'destructive'] as const satisfies readonly BannerVariant[];
 const actionStates = ['default', 'hover', 'focus', 'active'] as const;
 
-export default function BannerPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Variants">
         <BannerVariants />
       </PreviewSection>
@@ -54,17 +55,33 @@ export default function BannerPreview() {
           </div>
         </PreviewSection>
 
-        <PreviewSection title="Long text in a narrow slot">
-          <div className="flex w-full max-w-64 flex-col gap-3">
-            <Banner variant="destructive">
-              <BannerText>
-                The payment for kai.nakamura.growth-team-weekly-digest@acme.example failed, and the project will be paused on November 3.
-              </BannerText>
-              <BannerAction href="#">Update credit card information</BannerAction>
-            </Banner>
-          </div>
-        </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long text in a narrow slot">
+        <div className="flex w-full max-w-64 flex-col gap-3">
+          <Banner variant="destructive">
+            <BannerText>
+              The payment for kai.nakamura.growth-team-weekly-digest@acme.example failed, and the project will be paused on November 3.
+            </BannerText>
+            <BannerAction href="#">Update credit card information</BannerAction>
+          </Banner>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function BannerPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

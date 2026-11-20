@@ -2,6 +2,7 @@ import type * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
 import { PlanChecklist, type PlanStep } from '@/registry/kosmos/ui/plan-checklist';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const title = 'Prepare the weekly summary for Acme';
 
@@ -62,9 +63,9 @@ function Grid({ children }: { children: React.ReactNode }) {
   return <div className="grid items-start gap-10 md:grid-cols-2">{children}</div>;
 }
 
-export default function PlanChecklistPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <Grid>
         <PreviewSection title="Every step status">
           <PlanChecklist title="Step statuses" steps={everyStatus} collapseWhenDone={false} />
@@ -121,14 +122,6 @@ export default function PlanChecklistPreview() {
           </div>
         </PreviewSection>
 
-        <PreviewSection title="Long labels and details at 320px">
-          <div className="w-full max-w-80">
-            <PlanChecklist
-              title="Prepare the weekly summary for every Acme project on the Scale and Pro plans, with the quota of each"
-              steps={wrapping}
-            />
-          </div>
-        </PreviewSection>
       </Grid>
 
       <PreviewSection title="Default title, no steps yet">
@@ -136,6 +129,30 @@ export default function PlanChecklistPreview() {
           <PlanChecklist steps={[]} />
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long labels and details at 320px">
+        <div className="w-full max-w-80">
+          <PlanChecklist
+            title="Prepare the weekly summary for every Acme project on the Scale and Pro plans, with the quota of each"
+            steps={wrapping}
+          />
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function PlanChecklistPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

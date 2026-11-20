@@ -2,6 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/registry/kosmos/ui/accordion';
 import { Button } from '@/registry/kosmos/ui/button';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['closed', 'open'] as const;
 
@@ -30,9 +31,9 @@ const faq = [
 
 const card = 'rounded-2xl border border-transparent bg-card px-2 py-1 shadow-card';
 
-export default function AccordionPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Closed and open × states">
         <StateMatrix
           rows={rows}
@@ -114,23 +115,6 @@ export default function AccordionPreview() {
       </div>
 
       <div className="grid gap-10 md:grid-cols-2">
-        <PreviewSection title="Long heading in a narrow slot">
-          <div className="w-full max-w-64">
-            <Accordion defaultValue={['long']}>
-              <AccordionItem value="long">
-                <AccordionTrigger>What happens to scheduled exports when the member who set them up leaves?</AccordionTrigger>
-                <AccordionContent>
-                  They keep running under a workspace admin, who gets an email listing every schedule that moved over.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="short">
-                <AccordionTrigger>Who can see exports?</AccordionTrigger>
-                <AccordionContent>Admins and the member who created them.</AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </PreviewSection>
-
         <PreviewSection title="With actions inside">
           <Accordion defaultValue={['danger']}>
             <AccordionItem value="general">
@@ -149,6 +133,38 @@ export default function AccordionPreview() {
           </Accordion>
         </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long heading in a narrow slot">
+        <div className="w-full max-w-64">
+          <Accordion defaultValue={['long']}>
+            <AccordionItem value="long">
+              <AccordionTrigger>What happens to scheduled exports when the member who set them up leaves?</AccordionTrigger>
+              <AccordionContent>
+                They keep running under a workspace admin, who gets an email listing every schedule that moved over.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="short">
+              <AccordionTrigger>Who can see exports?</AccordionTrigger>
+              <AccordionContent>Admins and the member who created them.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function AccordionPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }
