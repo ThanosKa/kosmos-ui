@@ -152,6 +152,8 @@ Six tints (`gray`, `blue`, `green`, `amber`, `red`, `violet`) color every badge,
 | Alert (info blue, success green, warning amber, destructive red) | Filled by default: `bg-tint-*`, `-foreground` text and icon, `border border-transparent`. `appearance="subtle"` is the outline: transparent fill, 1px `border-tint-*-border`. The neutral tone is a card |
 | Banner, docs callout | A filled alert. The banner has no divider; only the neutral one keeps a `border-b border-border` against the page |
 | A link inside an Alert, Banner or Callout | `text-foreground font-medium` with a soft underline (`decoration-foreground/40`, full on hover), since tint text against foreground is under 3:1 |
+| A Banner action on a tint | A ghost button whose hover fill is `tint-<hue>-hover`, not `bg-accent`, so the text keeps 4.5:1 |
+| A brand color on a logo (Logo marquee) | The mark only (`[&_:is(svg,img)]:text-(--logo-color)`, a lint rule); the name stays `text-foreground`, since a brand color can fall below 4.5:1 |
 
 - A category keeps one hue everywhere. Plans: Free gray, Pro blue, Scale violet, Trial amber. HTTP status: 2xx green, 4xx amber, 5xx red, 3xx and the rest gray. Methods: GET green, POST blue, PATCH amber, DELETE red.
 - `pnpm test` checks tint text at 4.5:1 on its fill and on `background` and `card`, foreground at 4.5:1 on every fill, and dots at 3:1 on the fill and the page. An outline alert on another surface, such as `muted`, is not checked.
@@ -235,7 +237,7 @@ Buttons are 30px (`md`) with `px-2.5`; text fields are 34px with `px-3`, so a fo
 - The destructive variant is red text on the secondary surface: the dark `destructive` is too light to carry white text.
 - An icon-only `Button` (`size="icon…"`) carries `aria-label` or a `sr-only` label; lint flags one with neither. A Button passed to a primitive's `render` takes the name from the primitive.
 - Kosmos code writes the Kosmos variant and size names, never shadcn's (`default`, `outline`, `link`, `xs`, `icon-xs`).
-- A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background and the focus outline, and does not press-scale, because it sits inline with content.
+- A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background (`tint-<hue>-hover` for a hue) and the focus outline, and does not press-scale, because it sits inline with content.
 
 ## Phones
 
