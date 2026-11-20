@@ -95,7 +95,7 @@ export function BlockViewerPanels({
       }
       stage={
         <div
-          className={cn('box-content w-full transition-[width] duration-slow ease-smooth-in-out motion-reduce:transition-[opacity] motion-reduce:duration-fast', switching && 'motion-reduce:opacity-0', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
+          className={cn('box-content w-full motion-safe:transition-[width] motion-safe:duration-slow motion-safe:ease-smooth-in-out', switching ? 'motion-reduce:opacity-0' : 'motion-reduce:transition-[opacity] motion-reduce:duration-fast', framed && '@min-[770px]/viewer:w-(--preview-width) @min-[770px]/viewer:border-x @min-[770px]/viewer:border-border')}
           style={framed ? ({ '--preview-width': `${framed}px` } as CSSProperties) : undefined}
         >
           {src ? (
