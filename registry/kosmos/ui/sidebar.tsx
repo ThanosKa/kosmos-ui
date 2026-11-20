@@ -539,6 +539,7 @@ function SidebarResizeHandle({ className, ...props }: React.ComponentProps<'div'
       }}
       className={cn(
         'relative z-20 w-0 shrink-0 cursor-col-resize touch-none self-stretch',
+        'my-0.5',
         usesDefaultBreakpoint && 'max-md:hidden',
         'focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring',
         // The hit area: 8px wide, centered on the sidebar's edge.
