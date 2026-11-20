@@ -306,7 +306,8 @@ function NotificationInboxBody({ className, children, notice, viewportClassName,
 
 /**
  * A pill over the top of the list for notifications that arrived while the inbox is open, so the rows under the
- * pointer never move. Clicking it shows them; hold new items back until then. Renders nothing at 0.
+ * pointer never move. Clicking it shows them; hold new items back until then. At 0 the pill is gone, but its live region stays,
+ * so screen readers hear "3 new notifications" when the count rises.
  */
 function NotificationInboxNewItems({
   count,
@@ -314,23 +315,29 @@ function NotificationInboxNewItems({
   children,
   ...props
 }: Omit<PlainButtonProps, 'variant' | 'size'> & { count: number }) {
-  if (count === 0) return null;
   return (
-    <div role="status" className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
-      <Button
-        data-slot="notification-inbox-new-items"
-        variant="secondary"
-        size="sm"
-        className={cn(
-          'pointer-events-auto rounded-full shadow-popover',
-          'transition-[opacity,translate,scale] starting:opacity-0 motion-safe:starting:-translate-y-2',
-          className,
-        )}
-        {...props}
-      >
-        {children ?? `${count} new`}
-      </Button>
-    </div>
+    <>
+      <span role="status" className="sr-only">
+        {count > 0 ? `${count} new ${count === 1 ? 'notification' : 'notifications'}` : ''}
+      </span>
+      {count > 0 ? (
+        <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
+          <Button
+            data-slot="notification-inbox-new-items"
+            variant="secondary"
+            size="sm"
+            className={cn(
+              'pointer-events-auto rounded-full shadow-popover',
+              'transition-[opacity,translate,scale] starting:opacity-0 motion-safe:starting:-translate-y-2',
+              className,
+            )}
+            {...props}
+          >
+            {children ?? `${count} new`}
+          </Button>
+        </div>
+      ) : null}
+    </>
   );
 }
 

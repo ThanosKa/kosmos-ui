@@ -412,7 +412,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
               className="flex-1 *:data-[slot=chart]:h-auto *:data-[slot=chart]:min-h-60 *:data-[slot=chart]:flex-1"
             />
           ) : (
-            <p role="status" className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
+            <p className="flex min-h-60 items-center justify-center text-center text-small text-muted-foreground">
               No visits in this range yet
             </p>
           )}

@@ -248,6 +248,28 @@ export function Stage({ height }: { height?: number }) {
 `,
   },
   {
+    name: 'a live region exists before its text arrives',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Count({ count }: { count: number }) {
+  return <div>{count > 0 && <p role="status">{count} new</p>}</div>;
+}
+`,
+    message:
+      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).',
+    allowed: `
+export function Count({ count }: { count: number }) {
+  return (
+    <div>
+      <p role="status" className="sr-only">
+        {count > 0 ? \`\${count} new\` : ''}
+      </p>
+    </div>
+  );
+}
+`,
+  },
+  {
     name: 'docs content scrolls in a scroll area',
     file: 'components/docs/example.tsx',
     flagged: `
@@ -261,6 +283,30 @@ import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 
 export function Contents() {
   return <ScrollArea className="min-h-0">Fernhill Books</ScrollArea>;
+}
+`,
+  },
+  {
+    name: 'a live region is not hidden while it is empty',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Notice({ message }: { message: string }) {
+  return (
+    <p role="alert" className="empty:hidden">
+      {message}
+    </p>
+  );
+}
+`,
+    message:
+      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).',
+    allowed: `
+export function Notice({ message }: { message: string }) {
+  return (
+    <p role="alert" className="empty:sr-only">
+      {message}
+    </p>
+  );
 }
 `,
   },
@@ -282,6 +328,35 @@ import { useDocsCopy } from '@/components/docs/use-docs-copy';
 export function Copy({ text }: { text: string }) {
   const { status, copy } = useDocsCopy();
   return <span onClick={() => copy(() => text)}>{status}</span>;
+}
+`,
+  },
+  {
+    name: 'a tooltip trigger can take focus',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/registry/kosmos/ui/tooltip';
+
+export function Clock() {
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<time dateTime="2026-01-01" />}>9:41</TooltipTrigger>
+      <TooltipContent>Started at 9:41</TooltipContent>
+    </Tooltip>
+  );
+}
+`,
+    message: 'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Tooltips; WCAG 2.1.1).',
+    allowed: `
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/registry/kosmos/ui/tooltip';
+
+export function Clock() {
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<time dateTime="2026-01-01" tabIndex={0} />}>9:41</TooltipTrigger>
+      <TooltipContent>Started at 9:41</TooltipContent>
+    </Tooltip>
+  );
 }
 `,
   },

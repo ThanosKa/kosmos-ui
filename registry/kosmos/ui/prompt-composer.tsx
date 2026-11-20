@@ -312,14 +312,17 @@ function PromptComposer({
             </Tooltip>
           </div>
         </form>
-        {error ? (
-          <p id={noteId} role="alert" className="flex items-start gap-1.5 px-2 text-small text-muted-foreground">
-            <span aria-hidden className="flex h-[1.4em] shrink-0 items-center">
-              <CircleAlert className="size-3.5 text-destructive" />
-            </span>
-            {error}
-          </p>
-        ) : note ? (
+        <div role="alert" className="empty:sr-only">
+          {error ? (
+            <p id={noteId} className="flex items-start gap-1.5 px-2 text-small text-muted-foreground">
+              <span aria-hidden className="flex h-[1.4em] shrink-0 items-center">
+                <CircleAlert className="size-3.5 text-destructive" />
+              </span>
+              {error}
+            </p>
+          ) : null}
+        </div>
+        {error ? null : note ? (
           <p id={noteId} className="px-2 text-small text-muted-foreground">
             {note}
           </p>

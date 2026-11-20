@@ -225,6 +225,31 @@ const toastActionSelectors = [
   },
 ];
 
+// A live region exists before its text arrives; a screen reader announces changes to a region that already exists.
+const liveRegionMessage =
+  'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).';
+const liveRole = "JSXAttribute[name.name='role'][value.value=/^(status|alert)$/]";
+const liveRegionSelectors = [
+  {
+    selector: `:matches(ConditionalExpression, LogicalExpression) > JSXElement > JSXOpeningElement:has(${liveRole})`,
+    message: liveRegionMessage,
+  },
+  {
+    selector: `JSXOpeningElement:has(${liveRole}):has(JSXAttribute[name.name='className'] :matches(Literal, TemplateElement)[value=/empty:hidden/])`,
+    message: liveRegionMessage,
+  },
+];
+
+// A tooltip trigger is reached by keyboard, so it renders a Button or a link, or takes `tabIndex`.
+const tooltipTriggerSelectors = [
+  {
+    selector:
+      "JSXOpeningElement[name.name='TooltipTrigger'] > JSXAttribute[name.name='render'] > JSXExpressionContainer > JSXElement > JSXOpeningElement[name.name!=/^(Button|button|a|Link|[A-Za-z]*Trigger)$/]:not(:has(JSXAttribute[name.name='tabIndex']))",
+    message:
+      'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Tooltips; WCAG 2.1.1).',
+  },
+];
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -243,6 +268,8 @@ const codeRules = [
   ...motionScaleSelectors,
   ...motionReduceNoneSelectors,
   ...toastActionSelectors,
+  ...liveRegionSelectors,
+  ...tooltipTriggerSelectors,
 ];
 
 /**

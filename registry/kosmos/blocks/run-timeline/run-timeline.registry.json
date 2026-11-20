@@ -9,6 +9,7 @@
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/format",
+    "@kosmos/use-copy",
     "@kosmos/avatar",
     "@kosmos/button",
     "@kosmos/collapsible",
