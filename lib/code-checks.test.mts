@@ -17,7 +17,40 @@ type CodeCheck = {
   allowed: string;
 };
 
+const overlayScrollMessage =
+  'A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay\'s edge; `PopoverContent` already scrolls its content, so drop the `ScrollArea` (kosmos-style, Focus).';
+
 const codeChecks: CodeCheck[] = [
+  {
+    name: 'a popover scrolls its content without a scroll area of its own',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { PopoverContent } from '@/registry/kosmos/ui/popover';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+export function Members() {
+  return (
+    <PopoverContent>
+      <ScrollArea className="max-h-64">
+        <p>Fernhill Books</p>
+      </ScrollArea>
+    </PopoverContent>
+  );
+}
+`,
+    message: overlayScrollMessage,
+    allowed: `
+import { PopoverContent } from '@/registry/kosmos/ui/popover';
+
+export function Members() {
+  return (
+    <PopoverContent>
+      <p>Fernhill Books</p>
+    </PopoverContent>
+  );
+}
+`,
+  },
   {
     name: 'a scroll area in an overlay scrolls in its body',
     file: 'registry/kosmos/blocks/example/example.tsx',
@@ -35,8 +68,7 @@ export function Panel() {
   );
 }
 `,
-    message:
-      'A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay\'s edge (kosmos-style, Focus).',
+    message: overlayScrollMessage,
     allowed: `
 import { DrawerBody, DrawerContent } from '@/registry/kosmos/ui/drawer';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';

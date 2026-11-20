@@ -148,7 +148,7 @@ const overlayScrollSelectors = [
   {
     selector: `${overlayContent} JSXElement[openingElement.name.name='ScrollArea']:not(${overlayBody} JSXElement)`,
     message:
-      "A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay's edge (kosmos-style, Focus).",
+      "A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay's edge; `PopoverContent` already scrolls its content, so drop the `ScrollArea` (kosmos-style, Focus).",
   },
 ];
 
