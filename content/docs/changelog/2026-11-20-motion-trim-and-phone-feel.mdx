@@ -1,0 +1,19 @@
+---
+title: Less motion on load, and controls that feel native on a phone
+description: Status icons and timeline steps hold still on page load, Checkbox and Radio fade without growing, and Button labels resist a long press.
+date: 2026-11-20
+---
+
+Nothing animates on page load anymore. Motion that shows a change stays.
+
+- [Status](/docs/components/status): the icon a row shows when the page loads no longer fades and grows in. A new icon still fades in when the status changes.
+- [Run timeline](/docs/blocks/run-timeline): the steps a timeline loads with are already in place. Steps that arrive later still fade in and rise.
+- [Plan checklist](/docs/components/plan-checklist), [Tool call](/docs/components/tool-call), [Tool approval](/docs/components/tool-approval) and [Reasoning](/docs/components/reasoning): their steps, badges and labels no longer fade in on page load. They still fade in when they change.
+- [Checkbox](/docs/components/checkbox) and [Radio group](/docs/components/radio-group): the mark fades in without growing from half size. People tick a column of checkboxes many times a day.
+- [Pagination](/docs/components/pagination) and [Command](/docs/components/command): the loading spinner pulses under reduced motion instead of standing still.
+- [Button](/docs/components/button): a long press no longer selects the label, and two quick taps no longer zoom the page.
+- [Dropdown menu](/docs/components/dropdown-menu), [Select](/docs/components/select), [Combobox](/docs/components/combobox), [Command](/docs/components/command) and [Navbar](/docs/blocks/navbar): a tap on an item no longer flashes a gray box on iOS and Android.
+
+A new hook, `use-mounted`, holds the rule that an entrance plays only for items that arrive after the page loads.
+
+To update, run the add command again for each item.
