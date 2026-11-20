@@ -27,12 +27,6 @@ type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
   viewportRender?: ScrollAreaPrimitive.Viewport.Props['render'];
 };
 
-/**
- * A native scroll container with a thin scrollbar that looks the same on every platform. Size it
- * with `className` (`h-72`, `max-h-80`). While content is hidden past an edge, that edge fades out
- * and the scrollbar shows, so the overflow never goes unnoticed. Both scrollbars are built in and
- * show only on the axis that overflows.
- */
 function scrollFocusedIntoView(event: React.FocusEvent<HTMLElement>) {
   const viewport = event.currentTarget;
   const target = event.target;
@@ -49,6 +43,12 @@ function scrollFocusedIntoView(event: React.FocusEvent<HTMLElement>) {
   if (hidden) target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
+/**
+ * A native scroll container with a thin scrollbar that looks the same on every platform. Size it
+ * with `className` (`h-72`, `max-h-80`). While content is hidden past an edge, that edge fades out
+ * and the scrollbar shows, so the overflow never goes unnoticed. Both scrollbars are built in and
+ * show only on the axis that overflows.
+ */
 function ScrollArea({
   className,
   children,
