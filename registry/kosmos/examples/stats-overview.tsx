@@ -1,5 +1,6 @@
 'use client';
 
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StatsOverview, type Metric, type StatsRange } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 
@@ -27,6 +28,13 @@ const longMetrics: Metric[] = [
   { id: 'projects', label: 'Live projects', value: 8, format: 'number', points: longPoints },
 ];
 
+const hugeMetrics: Metric[] = [
+  { id: 'users', label: '🚀 Monthly active users', value: 48_210_000, format: 'number', change: 99999.9, points: longPoints },
+  { id: 'revenue', label: '月間売上 (Monthly revenue)', value: 4_812_000_000, format: 'currency', change: -100, points: longPoints },
+  { id: 'errors', label: 'Error rate', value: 100, format: 'percent', change: 0, goodWhen: 'down', points: longPoints },
+  { id: 'projects', label: 'Live projects', value: 1, format: 'number', change: 1, points: longPoints },
+];
+
 const longEvents = [
   { name: 'subscription_trial_converted_to_annual_plan', count: 1_920_000 },
   { name: 'page_viewed', count: 1_200 },
@@ -34,6 +42,10 @@ const longEvents = [
 ];
 
 export default function StatsOverviewPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Full, 30 days">
@@ -66,21 +78,39 @@ export default function StatsOverviewPreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="In a narrow container">
+        <div className={`${frame} max-w-sm`}>
+          <StatsOverview />
+        </div>
+      </PreviewSection>
       <PreviewSection title="No metrics">
         <div className={frame}>
           <StatsOverview metrics={everyRange([])} topEvents={everyRange([])} />
         </div>
       </PreviewSection>
 
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long labels and extreme values, 7 days">
         <div className={frame}>
           <StatsOverview defaultRange="7d" metrics={everyRange(longMetrics)} topEvents={everyRange(longEvents)} />
         </div>
       </PreviewSection>
 
-      <PreviewSection title="In a narrow container">
+      <PreviewSection title="Huge numbers, emoji, non-Latin labels, 90 days">
+        <div className={frame}>
+          <StatsOverview defaultRange="90d" metrics={everyRange(hugeMetrics)} topEvents={everyRange(longEvents)} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
         <div className={`${frame} max-w-sm`}>
-          <StatsOverview />
+          <StatsOverview defaultRange="7d" metrics={everyRange(hugeMetrics)} topEvents={everyRange(longEvents)} />
         </div>
       </PreviewSection>
     </PreviewStack>
