@@ -16,6 +16,7 @@ import {
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/registry/kosmos/ui/command';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import { StatusDot } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type BentoItem = {
@@ -43,9 +44,9 @@ const card = 'w-full rounded-xl border border-transparent bg-card shadow-card';
 const wholeNumber = new Intl.NumberFormat('en-US');
 
 const sampleProjects = [
-  { name: 'Fernhill Books', plan: 'Scale', hue: 'violet', dot: 'bg-success', status: 'Live', users: 48210 },
-  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'blue', dot: 'bg-success', status: 'Live', users: 6120 },
-  { name: 'Marigold Recipes', plan: 'Pro', hue: 'blue', dot: 'bg-muted-foreground', status: 'Trial', users: 1920 },
+  { name: 'Fernhill Books', plan: 'Scale', hue: 'violet', status: 'done', statusLabel: 'Live', users: 48210 },
+  { name: 'Saltmarsh Coffee', plan: 'Pro', hue: 'blue', status: 'done', statusLabel: 'Live', users: 6120 },
+  { name: 'Marigold Recipes', plan: 'Pro', hue: 'blue', status: 'pending', statusLabel: 'Trial', users: 1920 },
 ] as const;
 
 function ProjectsTable() {
@@ -68,10 +69,7 @@ function ProjectsTable() {
                 <Badge variant={project.hue}>{project.plan}</Badge>
               </TableCell>
               <TableCell className="hidden @sm:table-cell">
-                <span className="inline-flex items-center gap-2">
-                  <span aria-hidden className={cn('size-2 shrink-0 rounded-full', project.dot)} />
-                  {project.status}
-                </span>
+                <StatusDot status={project.status}>{project.statusLabel}</StatusDot>
               </TableCell>
               <TableCell className="text-end tabular-nums">{wholeNumber.format(project.users)}</TableCell>
             </TableRow>

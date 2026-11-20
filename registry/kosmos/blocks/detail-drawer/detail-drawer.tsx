@@ -20,6 +20,7 @@ import { Meter, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Separator } from '@/registry/kosmos/ui/separator';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
 
 type DetailStatus = 'live' | 'trial' | 'paused';
@@ -103,10 +104,10 @@ const sampleProject: DetailProject = {
 
 const planAllowance: Record<DetailPlan, number> = { free: 50_000, pro: 3_000_000, scale: 8_000_000 };
 
-const statuses: Record<DetailStatus, { label: string; dot: string }> = {
-  live: { label: 'Live', dot: 'bg-success' },
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  paused: { label: 'Paused', dot: 'bg-warning' },
+const statuses: Record<DetailStatus, { label: string; state: Status }> = {
+  live: { label: 'Live', state: 'done' },
+  trial: { label: 'Trial', state: 'pending' },
+  paused: { label: 'Paused', state: 'waiting' },
 };
 const statusItems = Object.fromEntries(Object.entries(statuses).map(([key, value]) => [key, value.label]));
 
@@ -146,12 +147,7 @@ function PersonAvatar({ person }: { person: DetailPerson }) {
 }
 
 function StatusLabel({ status }: { status: DetailStatus }) {
-  return (
-    <span className="flex min-w-0 items-center gap-2">
-      <span aria-hidden className={cn('size-2 shrink-0 rounded-full', statuses[status].dot)} />
-      <span title={statuses[status].label} className="truncate">{statuses[status].label}</span>
-    </span>
-  );
+  return <StatusDot status={statuses[status].state}>{statuses[status].label}</StatusDot>;
 }
 
 function Property({ label, labelId, children }: { label: string; labelId?: string; children: React.ReactNode }) {
@@ -205,7 +201,7 @@ function EventQuota({ events, plan }: { events: number; plan: DetailPlan }) {
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-caption font-medium tracking-[0.05em] text-muted-foreground uppercase">{children}</h3>;
+  return <h3 className="text-caption tracking-[0.05em] text-muted-foreground uppercase">{children}</h3>;
 }
 
 function EventsTrend({ trend }: { trend: NonNullable<DetailProject['trend']> }) {

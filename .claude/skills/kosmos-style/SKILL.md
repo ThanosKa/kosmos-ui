@@ -155,6 +155,7 @@ Six tints (`gray`, `blue`, `green`, `amber`, `red`, `violet`) color every badge,
 | A Banner action on a tint | A ghost button whose hover fill is `tint-<hue>-hover`, not `bg-accent`, so the text keeps 4.5:1 |
 | A brand color on a logo (Logo marquee) | The mark only (`[&_:is(svg,img)]:text-(--logo-color)`, a lint rule); the name stays `text-foreground`, since a brand color can fall below 4.5:1 |
 
+- Lint flags a hue `Badge` whose `variant` picks between `'green'` and `'red'` (a change is a triangle and a signed number), and a small `rounded-full` span with `bg-success`, `bg-warning` or `bg-muted-foreground` in `registry/kosmos/blocks` or `registry/kosmos/examples` (a state is a `StatusDot`). A dot with a `ring-*`, a timeline node or a presence mark, is not flagged.
 - A category keeps one hue everywhere. Plans: Free gray, Pro blue, Scale violet, Trial amber. HTTP status: 2xx green, 4xx amber, 5xx red, 3xx and the rest gray. Methods: GET green, POST blue, PATCH amber, DELETE red.
 - `pnpm test` checks tint text at 4.5:1 on its fill and on `background` and `card`, foreground at 4.5:1 on every fill, and dots at 3:1 on the fill and the page. An outline alert on another surface, such as `muted`, is not checked.
 

@@ -20,7 +20,7 @@ Every chart takes its entrance from `@kosmos/use-chart-motion`: the hand-drawn o
 - **Stagger:** repeated marks (bars, candles, segments, legend items) start one after another, 10–60ms apart: fewer marks, longer gaps. Segments of one stack build bottom up.
 - **Direction:** lines draw left to right with `ease-smooth-in-out`; fills, bands and areas follow the line or flow in behind a clip or mask. A clip-path wipe ends on `[clip-path:inset(0)]`, since `none` snaps instead of animating.
 - **Numbers count** (`useCountUp`): from zero on entrance, then from the value shown to each new one, with a screen-reader copy of the final value.
-- **Morph, don't remount:** new data, a switched range or a hidden series moves every mark from where it is to its new place, every time, since the person asked for it. Key marks by place, not by label.
+- **Morph, don't remount:** new data, a switched range or a hidden series moves every mark from where it is to its new place, every time, since the person asked for it. Key marks by place, not by label. Lint flags `key={range}` on a chart in a block.
 - **Tooltip and cursor:** they slide to the next point instead of jumping, flip to the other side near the plot's edge, and fade in only when first shown.
 - **Legend toggles:** a legend item is a button with `aria-pressed` that hides or shows its series. The last series shown stays.
 - **No overshoot:** no bounce, back or elastic easing.

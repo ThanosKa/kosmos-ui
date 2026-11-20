@@ -3,10 +3,10 @@
 import { CalendarClock, Check, FileDown, Link2 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
-import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import { GrowthChart } from '@/registry/kosmos/ui/chart';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
 
 type FeatureSectionPoint = {
   /** A stable key for the point. */
@@ -59,7 +59,6 @@ const sampleAction = (
 
 const dateFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const userFormat = new Intl.NumberFormat('en-US');
-const changeFormat = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1, signDisplay: 'always' });
 
 /**
  * Active users per point, one point every `stepDays` days up to 11 October 2026, ending at `last` and rising by about
@@ -75,9 +74,9 @@ function activeUsers(points: number, stepDays: number, last: number, perDay: num
 }
 
 const sampleRanges = {
-  '7d': { label: '7 days', total: 61_240, change: 0.031, data: activeUsers(7, 1, 29_400, 90) },
-  '30d': { label: '30 days', total: 144_600, change: 0.096, data: activeUsers(30, 1, 29_400, 90) },
-  '90d': { label: '90 days', total: 312_800, change: 0.214, data: activeUsers(13, 7, 74_800, 155) },
+  '7d': { label: '7 days', total: 61_240, change: 3.1, data: activeUsers(7, 1, 29_400, 90) },
+  '30d': { label: '30 days', total: 144_600, change: 9.6, data: activeUsers(30, 1, 29_400, 90) },
+  '90d': { label: '90 days', total: 312_800, change: 21.4, data: activeUsers(13, 7, 74_800, 155) },
 };
 type SampleRange = keyof typeof sampleRanges;
 
@@ -98,10 +97,7 @@ function SampleDashboard() {
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="text-display text-foreground tabular-nums">{userFormat.format(total)}</span>
-        <span className="flex items-center gap-2 text-small text-muted-foreground">
-          <Badge variant={change < 0 ? 'red' : 'green'}>{changeFormat.format(change)}</Badge>
-          vs. previous {label}
-        </span>
+        <StatCardDelta value={change}>vs. last period</StatCardDelta>
       </div>
       <GrowthChart
         title={`Active users, last ${label}`}

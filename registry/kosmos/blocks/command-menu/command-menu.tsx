@@ -38,6 +38,7 @@ import {
   CommandShortcut,
 } from '@/registry/kosmos/ui/command';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
+import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 
 type CommandMenuItem = {
   /** Passed to `onRun`. */
@@ -51,8 +52,8 @@ type CommandMenuItem = {
   /** A muted second line under the title. Not searched unless it is also in `label`. */
   description?: string;
   icon?: LucideIcon;
-  /** A colored dot in place of the icon, and its word at the end of the row: `{ label: 'Paused', dot: 'bg-warning' }`. */
-  status?: { label: string; dot: string };
+  /** A state at the end of the row, a dot beside its word: `{ label: 'Paused', state: 'waiting' }`. */
+  status?: { label: string; state: Extract<Status, 'done' | 'pending' | 'waiting'> };
   /** Initials for an avatar in place of the icon. */
   initials?: string;
   /** The URL of a photo for that avatar. The initials show until it loads. */
@@ -73,10 +74,10 @@ type CommandMenuPage = { title: string; placeholder: string; groups: CommandMenu
 // Sample data: replace it with your records, actions and pages.
 type ProjectStatus = 'live' | 'trial' | 'paused';
 
-const projectStatus: Record<ProjectStatus, { label: string; dot: string }> = {
-  live: { label: 'Live', dot: 'bg-success' },
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  paused: { label: 'Paused', dot: 'bg-warning' },
+const projectStatus: Record<ProjectStatus, NonNullable<CommandMenuItem['status']>> = {
+  live: { label: 'Live', state: 'done' },
+  trial: { label: 'Trial', state: 'pending' },
+  paused: { label: 'Paused', state: 'waiting' },
 };
 
 const sampleProjects: { id: string; name: string; domain: string; status: ProjectStatus }[] = [
@@ -186,10 +187,6 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
           <AvatarImage src={item.logo} alt="" />
           <AvatarFallback>{item.label.charAt(0)}</AvatarFallback>
         </Avatar>
-      ) : item.status ? (
-        <span aria-hidden className="flex size-4 shrink-0 items-center justify-center">
-          <span className={cn('size-2 rounded-full', item.status.dot)} />
-        </span>
       ) : Icon ? (
         <Icon aria-hidden />
       ) : null}
@@ -203,7 +200,9 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
       )}
       {item.hint ? <span title={item.hint} className="min-w-0 shrink-[2] truncate text-small text-muted-foreground">{item.hint}</span> : null}
       {item.status ? (
-        <span className="ms-auto shrink-0 ps-2 text-small text-muted-foreground">{item.status.label}</span>
+        <StatusDot status={item.status.state} className="ms-auto shrink-0 ps-2 text-small text-muted-foreground">
+          {item.status.label}
+        </StatusDot>
       ) : null}
       {item.keys ? (
         <CommandShortcut>

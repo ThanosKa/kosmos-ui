@@ -237,9 +237,10 @@ Marketing blocks show the Acme website, `acme.example`, which sells the product 
 The analytics dashboard shows `acme.example` itself over the 30 days to 11 October, against the 30 before. Its KPIs are the product metrics above (Signups, Conversion, Median session) with the visitors they imply: 1,284 signups at 3.3% is 38,910 visitors, down 8.4% (−3,573) from 42,483 at 2.9%.
 
 - Traffic: Visitors 38,910 (−8.4%), Page views 126,400 (−5.1%), Bounce rate 38.2% (−2.1 pts, falling is good). 7 days: 9,180 (+1.8%), 29,800 (+2.6%), 37.6% (−0.8 pts). 90 days: 121,400 (+6.3%), 391,200 (+7.9%), 39.0% (−1.2 pts). About 1,300 visitors a day, a little lower at weekends.
-- Sources: Search 15,950, Direct 10,510, Referral 6,610, Social 3,890, Email 1,950 (they add up to the visitors).
-- Top pages: `/pricing` 9,840, `/docs/install` 8,170, `/` 7,410, `/docs/events` 5,150, `/changelog` 2,660.
-- Countries: United States 15,180, Germany 5,470, United Kingdom 4,550, France 3,330, Greece 2,470.
+- KPIs per range (visitors, signups, conversion, median session; the change against the period before). 7 days: 9,180 (+1.8%, +162), 300 (+3.4%, +10), 3.3% (+0.1 pts from 3.2%), 4m 15s (+1.2%, +3s). 30 days: the four above. 90 days: 121,400 (+6.3%, +7,195), 3,890 (+9.8%, +347), 3.2% (+0.1 pts from 3.1%), 4m 18s (+2.6%, +7s).
+- Sources add up to the visitors of the range. 30 days: Search 15,950, Direct 10,510, Referral 6,610, Social 3,890, Email 1,950. 7 days: 3,760, 2,480, 1,560, 910, 470. 90 days: 49,800, 33,200, 20,600, 11,600, 6,200.
+- Top pages, `/pricing`, `/docs/install`, `/`, `/docs/events`, `/changelog`. 30 days: 9,840, 8,170, 7,410, 5,150, 2,660. 7 days: 2,320, 1,930, 1,750, 1,220, 630. 90 days: 30,700, 25,500, 23,100, 16,100, 8,300.
+- Countries, United States, Germany, United Kingdom, France, Greece. 30 days: 15,180, 5,470, 4,550, 3,330, 2,470. 7 days: 3,580, 1,290, 1,070, 790, 580. 90 days: 47,300, 17,000, 14,200, 10,400, 7,700.
 - Signup goal: October target 1,300 signups, 482 so far (37%), 1.6 pts ahead of pace; owned by Growth (Kai Nakamura, Lena Park, Ama Mensah).
 - Recent signups are people at the customer projects from the Testimonials cast, each on their project's plan (a trial shows as Trial) with its monthly revenue, at `<first name>@<project domain>`: Leila Haddad, Daniel Okafor, Tessa Morgan, Owen Fitzgerald, Noor Rahman, Sofia Lindqvist, Ines Duarte, Marcus Bell and Ruth Adeyemi. Referrers are named, never a real domain ("Google", "GitHub", "Weekly digest").
 

@@ -1,11 +1,10 @@
 'use client';
 
-import { Bot, TrendingDown, TrendingUp } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import * as React from 'react';
 import * as Recharts from 'recharts';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
-import { Badge } from '@/registry/kosmos/ui/badge';
 import { Button } from '@/registry/kosmos/ui/button';
 import {
   ChartContainer,
@@ -20,6 +19,7 @@ import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
+import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
 type UsageRange = '7d' | '30d' | '90d';
@@ -135,9 +135,19 @@ const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFra
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 });
 const usdWhole = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-const signed = new Intl.NumberFormat('en-US', { signDisplay: 'exceptZero', maximumFractionDigits: 1 });
-// A true minus sign, not the hyphen Intl writes.
-const formatChange = (change: number) => `${signed.format(change).replace('-', '−')}%`;
+
+/** The tooltip's cursor over a bar chart: the thin vertical line the Chart's line charts draw, not a highlighted column. */
+function LineCursor({ x = 0, y = 0, width = 0, height = 0 }: { x?: number; y?: number; width?: number; height?: number }) {
+  const center = x + width / 2;
+  return <line x1={center} x2={center} y1={y} y2={y + height} strokeWidth={1} className="stroke-border" />;
+}
+
+/** The first and last day only, the one x label pair a quiet chart keeps. */
+const edgeDates = (daily: UsageDataset['daily']) => {
+  const first = String(daily[0]?.date ?? '');
+  const last = String(daily[daily.length - 1]?.date ?? '');
+  return first === last ? [first] : [first, last];
+};
 
 const initials = (name: string) =>
   (name.includes(' ') ? name.split(' ').map((part) => part[0]) : [name.slice(0, 2)]).join('').toUpperCase();
@@ -145,10 +155,6 @@ const initials = (name: string) =>
 type Tile = { id: string; label: string; value: string; change: number; goodWhen: 'up' | 'down' };
 
 function StatTile({ tile, loading }: { tile: Tile; loading: boolean }) {
-  const rising = tile.change > 0;
-  const good = tile.change === 0 ? null : rising === (tile.goodWhen === 'up');
-  const Icon = rising ? TrendingUp : TrendingDown;
-
   return (
     <div
       data-slot="stat-tile"
@@ -165,13 +171,9 @@ function StatTile({ tile, loading }: { tile: Tile; loading: boolean }) {
       ) : (
         <>
           <p className="shrink-0 text-display tabular-nums">{tile.value}</p>
-          <p className="flex min-w-0 items-center gap-2 text-small tabular-nums">
-            <Badge variant={good === null ? 'secondary' : good ? 'green' : 'red'}>
-              {good === null ? null : <Icon aria-hidden />}
-              {formatChange(tile.change)}
-            </Badge>
-            <span title="vs previous period" className="truncate text-muted-foreground">vs previous period</span>
-          </p>
+          <StatCardDelta value={tile.change} goodWhen={tile.goodWhen}>
+            vs. last period
+          </StatCardDelta>
         </>
       )}
     </div>
@@ -361,23 +363,22 @@ function UsageOverview({
               <figure className="m-0 flex w-full flex-col">
                 <ChartContainer config={chartConfig} className="aspect-auto h-60">
                   <Recharts.BarChart
-                    key={range}
                     title={`Tokens per day by model, last ${rangeLabels[range]}`}
                     data={data.daily}
                     margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
                   >
-                    <Recharts.CartesianGrid vertical={false} />
-                    <Recharts.XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
-                    <Recharts.YAxis
+                    <Recharts.XAxis
+                      dataKey="date"
+                      ticks={edgeDates(data.daily)}
+                      interval={0}
                       tickLine={false}
                       axisLine={false}
                       tickMargin={8}
-                      width="auto"
-                      tickFormatter={(value: number) => compact.format(value)}
                     />
+                    <Recharts.YAxis hide />
                     <ChartTooltip
                       isAnimationActive={false}
-                      cursor
+                      cursor={<LineCursor />}
                       content={
                         <ChartTooltipContent
                           valueFormatter={(value) => (typeof value === 'number' ? `${compact.format(value)} tokens` : String(value))}
@@ -452,7 +453,7 @@ function UsageOverview({
                   <Skeleton className="h-1.5 w-full rounded-full" />
                 </div>
               ) : (
-                <Meter value={budget.usedUsd} max={budget.limitUsd} tone={budgetPercent >= 90 ? 'warning' : 'primary'}>
+                <Meter value={budget.usedUsd} max={budget.limitUsd} tone={budgetPercent > 100 ? 'destructive' : budgetPercent >= 90 ? 'warning' : 'primary'}>
                   <MeterLabel>Monthly budget</MeterLabel>
                   <MeterValue>
                     {() => (
