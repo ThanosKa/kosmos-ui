@@ -378,7 +378,7 @@ function TrafficPanel({ traffic, range, onRangeChange }: { traffic: Record<Range
           ) : null}
           <SegmentedControl size="sm" aria-label="Range" value={range} onValueChange={(value) => onRangeChange(value as Range)}>
             {(Object.keys(ranges) as Range[]).map((key) => (
-              <SegmentedControlItem key={key} value={key}>
+              <SegmentedControlItem key={key} value={key} aria-label={`Last ${ranges[key].label}`}>
                 {key}
               </SegmentedControlItem>
             ))}

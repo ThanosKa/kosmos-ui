@@ -25,7 +25,7 @@ export default function HomePage() {
         <Hero
           announcement={
             <Announcement badge="New" render={<Link href="/changelog" />}>
-              Funnels now break down by country
+              EU data region: keep your events in Europe
             </Announcement>
           }
           title="Know what every user does next"
@@ -68,7 +68,7 @@ A `Button` with `href` renders a plain link, which loads the whole page. For lin
 
 ### With the product
 
-A title, one line and two actions, then a screen of the product in a [Browser frame](/docs/components/browser-frame) that stays flat. A [Glow](/docs/components/glow) sits behind the frame, never behind the actions. The bottom of the frame and the screen fade out into the page from 65% of their height, so they never end on a hard line. The screen is a live dashboard built from [App sidebar](/docs/blocks/app-sidebar) and [Stats overview](/docs/blocks/stats-overview). It stays sharp at any size and is a few kilobytes of markup, not an image. It is a picture to visitors: keyboard and screen readers skip it.
+The block has a title, one line and two actions. Below them, a screen of the product sits in a [Browser frame](/docs/components/browser-frame) that stays flat. A [Glow](/docs/components/glow) sits behind the frame, never behind the actions. The bottom of the frame and the screen fade out into the page from 65% of their height. They never end on a hard line. The screen is a live dashboard that the [App sidebar](/docs/blocks/app-sidebar) and [Stats overview](/docs/blocks/stats-overview) build. It stays sharp at any size. It is a few kilobytes of markup, not an image. It is a picture to visitors: keyboard and screen readers skip it.
 
 <ComponentInstall name="hero-product" />
 

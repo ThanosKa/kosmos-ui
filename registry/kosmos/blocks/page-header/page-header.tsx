@@ -135,7 +135,7 @@ function PageHeader({
   const [filters, setFilters] = useControlled<string[]>(filtersProp, defaultFilters, onFiltersChange);
   const searchId = React.useId();
   const Heading = `h${headingLevel}` as const;
-  const noun = title.toLowerCase();
+  const noun = title;
   const activeOptions = filters.flatMap((value) => filterOptions.filter((option) => option.value === value));
   const toggleFilter = (value: string, on: boolean) =>
     setFilters(on ? [...filters, value] : filters.filter((item) => item !== value));
@@ -318,7 +318,7 @@ function PageHeader({
               );
             })}
             <Button variant="ghost" size="sm" onClick={clearFilters}>
-              Clear all
+              Clear filters
             </Button>
           </div>
         ) : null}

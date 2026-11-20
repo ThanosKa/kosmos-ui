@@ -64,7 +64,7 @@ export function WorkspaceCard() {
 
 - **Save**: off until a field differs from what was last saved, and off again after a save or Discard. The footer says "Unsaved changes", "Saving", "Changes saved" or why saving failed, and screen readers hear each change.
 - **Saving**: the fields lock and the button shows a spinner. When your handler throws, its message shows in the footer and the values stay as typed.
-- **Danger zone**: each action has its own button that opens a dialog that says what you lose. When the action has `confirmText`, such as the workspace name, its button stays off until you type it exactly.
+- **Danger zone**: each action has its own button that opens a dialog that says what you lose. When the action has `confirmText`, such as the workspace name, its button stays off until you type it exactly. When the action succeeds, the card shows its `successMessage`. When it fails, the dialog stays open. It shows the thrown message, or a default that names the action and tells you to check the connection and try again.
 - **Section links**: the block marks the link of the section in view as the current page.
 - **Width**: the page lays itself out by its own width. The links sit in a column from 768px and above the cards below it, and two-column fields stack in a narrow container.
 
@@ -110,7 +110,7 @@ A card for settings with nothing to save, such as an API key. Takes `title`, `de
 
 <TypeTable
   type={{
-    actions: { description: 'The rows. `confirmText` is typed before the dialog confirms. `onConfirm` may return a promise and throw an `Error` to show its message.', type: '{ id: string; title: string; description: string; label: string; confirmText?: string; onConfirm?: () => Promise<void> | void }[]' },
+    actions: { description: 'The rows. `confirmText` is typed before the dialog confirms. `successMessage` is shown once the action succeeds. `onConfirm` may return a promise and throw an `Error` to show its message, which should name the cause and the next step.', type: '{ id: string; title: string; description: string; label: string; successMessage: string; confirmText?: string; onConfirm?: () => Promise<void> | void }[]' },
     title: { description: 'The title of the card.', type: 'ReactNode', default: "'Danger zone'" },
     description: { description: 'The line under the title.', type: 'ReactNode', default: "'These actions cannot be undone.'" },
     headingLevel: { description: 'The level of the title.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '2' },

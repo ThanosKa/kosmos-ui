@@ -7,7 +7,7 @@ import { CodeTabs } from '@/registry/kosmos/ui/code-tabs';
 // Sample data: replace it with your product's news, title, line, links and install commands.
 const sampleAnnouncement = (
   <Announcement badge="New" href="/changelog">
-    Funnels now break down by country
+    EU data region: keep your events in Europe
   </Announcement>
 );
 const sampleTitle = 'Know what every user does next';
