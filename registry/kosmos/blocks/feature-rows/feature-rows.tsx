@@ -183,8 +183,8 @@ function FeatureRows({
               className="grid min-w-0 grid-cols-1 gap-6 @3xl:grid-cols-12 @3xl:items-center @3xl:gap-12"
             >
               <div className={cn('flex min-w-0 flex-col items-start gap-3 @3xl:row-start-1 @3xl:col-span-4', flipped ? '@3xl:col-start-9' : '@3xl:col-start-1')}>
-                <RowHeading className="text-heading font-semibold text-balance wrap-break-word text-foreground">{item.title}</RowHeading>
-                <p data-slot="feature-rows-item-description" className="text-body text-pretty wrap-break-word text-muted-foreground">
+                <RowHeading className="max-w-full text-heading font-semibold text-balance wrap-break-word text-foreground">{item.title}</RowHeading>
+                <p data-slot="feature-rows-item-description" className="max-w-full text-body text-pretty wrap-break-word text-muted-foreground">
                   {item.description}
                 </p>
                 {item.href ? (

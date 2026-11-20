@@ -6,7 +6,7 @@ import { Bento, type BentoItem } from '@/registry/kosmos/blocks/bento/bento';
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background p-4 shadow-card sm:p-6';
 
 function Visual({ children }: { children: ReactNode }) {
-  return <div className="w-full max-w-sm rounded-xl border border-transparent bg-card p-4 text-body shadow-card">{children}</div>;
+  return <div className="w-full max-w-sm rounded-xl border border-transparent bg-card p-4 text-body wrap-anywhere shadow-card">{children}</div>;
 }
 
 const threeTiles: BentoItem[] = [
