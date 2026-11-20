@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger } from '@/registry/kosmos/ui/collapsible';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { StatusIcon } from '@/registry/kosmos/ui/status';
@@ -74,6 +75,7 @@ function Reasoning({
 
   const [previousStatus, setPreviousStatus] = React.useState(status);
   const [finishedWhileMounted, setFinishedWhileMounted] = React.useState(false);
+  const mounted = useMounted();
   if (previousStatus !== status) {
     setPreviousStatus(status);
     setFinishedWhileMounted(status === 'done');
@@ -105,7 +107,7 @@ function Reasoning({
         className="h-auto min-h-9 max-w-full justify-start gap-2 px-2 py-1.5 text-start whitespace-normal text-muted-foreground"
       >
         <StatusIcon status={thinking ? 'running' : 'done'} />
-        <span key={status} className="min-w-0 transition-[opacity] duration-fast starting:opacity-0">
+        <span key={status} className={cn('min-w-0 transition-[opacity] duration-fast', mounted && 'starting:opacity-0')}>
           {thinking ? 'Thinking…' : doneLabel(durationMs)}
         </span>
         <CollapsibleChevron size="md" />

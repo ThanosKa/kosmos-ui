@@ -2,6 +2,7 @@
 
 import { LoaderCircle, ShieldCheck } from 'lucide-react';
 import * as React from 'react';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger } from '@/registry/kosmos/ui/collapsible';
 import { StatusBadge, StatusIcon } from '@/registry/kosmos/ui/status';
@@ -65,6 +66,7 @@ function ToolApproval({
   const submitting = status === 'submitting';
   const allowed = decision === 'allow-once' || decision === 'always-allow';
   const showAlways = allowAlways && !danger;
+  const mounted = useMounted();
 
   React.useEffect(() => {
     // The focused button folds away with the actions, so focus moves to the record instead of the page.
@@ -109,7 +111,7 @@ function ToolApproval({
           <StatusBadge
             key={decided ? 'decided' : 'pending'}
             status={decided ? (allowed ? 'done' : 'skipped') : 'waiting'}
-            className="transition-[opacity] duration-fast starting:opacity-0"
+            className={cn('transition-[opacity] duration-fast', mounted && 'starting:opacity-0')}
           >
             {decided ? (allowed ? 'Allowed' : 'Denied') : 'Needs approval'}
           </StatusBadge>
@@ -185,7 +187,10 @@ function ToolApproval({
           <p
             ref={recordRef}
             tabIndex={-1}
-            className="mt-3 flex items-center gap-2 border-t border-border pt-3 text-small text-muted-foreground tabular-nums transition-[opacity] duration-fast starting:opacity-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className={cn(
+              'mt-3 flex items-center gap-2 border-t border-border pt-3 text-small text-muted-foreground tabular-nums transition-[opacity] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+              mounted && 'starting:opacity-0',
+            )}
           >
             <StatusIcon status={allowed ? 'done' : 'skipped'} className="size-3.5" />
             <span className="min-w-0 break-words">{record}</span>

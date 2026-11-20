@@ -3,6 +3,7 @@
 import { ChartColumn, Check, CircleAlert, Database, Hourglass, Link2, RotateCcw, Square } from 'lucide-react';
 import * as React from 'react';
 import { useCopy, type CopyResult } from '@/registry/kosmos/hooks/use-copy';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { formatDuration } from '@/registry/kosmos/lib/format';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -188,12 +189,12 @@ const stepEnter =
   'transition-[opacity,translate] duration-base ease-power3-out starting:opacity-0 motion-safe:starting:translate-y-1';
 
 /** One row of the timeline: the offset, the node on the connector, then the body. */
-function TimelineRow({ time, clock, children }: { time: string; clock: string; children: React.ReactNode }) {
+function TimelineRow({ time, clock, enter, children }: { time: string; clock: string; enter: boolean; children: React.ReactNode }) {
   return (
     <li
       className={cn(
         'group/step grid grid-cols-[0.5rem_minmax(0,1fr)] gap-x-3 @md/run:grid-cols-[3.5rem_0.5rem_minmax(0,1fr)]',
-        stepEnter,
+        enter && stepEnter,
       )}
     >
       <span className="sr-only h-9 items-center justify-end @md/run:not-sr-only @md/run:flex">
@@ -281,6 +282,7 @@ function RunTimeline({
   const actionsRef = React.useRef<HTMLDivElement>(null);
   const stopPressed = React.useRef(false);
   const [copyResult, copyLink] = useCopy(run.url ?? '');
+  const mounted = useMounted();
   // Each change to the status or the copy result replaces the text of the one live region, which is what screen readers announce.
   const [announced, setAnnounced] = React.useState({ status: run.status, copyResult, text: '' });
   if (announced.status !== run.status) {
@@ -411,12 +413,12 @@ function RunTimeline({
           <CollapsibleContent>
             <ol aria-label="Steps" className={cn('flex flex-col px-3 pb-3 @md/run:px-4', finished ? 'pt-1' : 'pt-3')}>
               {run.steps.map((step) => (
-                <TimelineRow key={step.id} time={formatOffset(step.offsetMs)} clock={clockAt(run.startedAt, step.offsetMs)}>
+                <TimelineRow key={step.id} time={formatOffset(step.offsetMs)} clock={clockAt(run.startedAt, step.offsetMs)} enter={mounted}>
                   <StepBody step={step} onDecide={onDecide} />
                 </TimelineRow>
               ))}
               {run.status === 'running' ? (
-                <TimelineRow time={formatOffset(run.elapsedMs)} clock={clockAt(run.startedAt, run.elapsedMs)}>
+                <TimelineRow time={formatOffset(run.elapsedMs)} clock={clockAt(run.startedAt, run.elapsedMs)} enter={mounted}>
                   <p className="flex h-9 items-center gap-2 px-2 text-body text-muted-foreground">
                     <StatusIcon status="running" />
                     Working…

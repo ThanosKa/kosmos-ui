@@ -366,7 +366,7 @@ function PaginationLoadMore({ shown, total, onLoadMore, loading = false, classNa
           className="data-disabled:opacity-100"
         >
           {loading ? (
-            <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin" />
+            <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin motion-reduce:animate-pulse" />
           ) : (
             <ArrowDown aria-hidden data-icon="inline-start" />
           )}

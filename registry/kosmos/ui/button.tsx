@@ -32,7 +32,7 @@ const sizeAliases: Record<string, keyof typeof sizes> = { default: 'md', xs: 'sm
 
 const buttonVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent font-medium whitespace-nowrap [-webkit-tap-highlight-color:transparent]',
+    'inline-flex shrink-0 touch-manipulation items-center justify-center gap-1.5 rounded-lg border border-transparent font-medium whitespace-nowrap select-none [-webkit-tap-highlight-color:transparent]',
     'transition-[background-color,scale]',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
     'data-disabled:opacity-50',

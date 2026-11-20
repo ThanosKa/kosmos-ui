@@ -188,7 +188,7 @@ function CommandItem({ className, ...props }: AutocompletePrimitive.Item.Props) 
     <AutocompletePrimitive.Item
       data-slot="command-item"
       className={cn(
-        'flex min-h-9 cursor-default scroll-my-1 items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none',
+        'flex min-h-9 cursor-default scroll-my-1 items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none [-webkit-tap-highlight-color:transparent]',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
@@ -230,7 +230,7 @@ function CommandLoading({ className, children = 'Searching…', ...props }: Reac
       className={cn('flex items-center justify-center gap-2 px-4 py-10 text-body text-muted-foreground', className)}
       {...props}
     >
-      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />
+      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin motion-reduce:animate-pulse" />
       {children}
     </div>
   );

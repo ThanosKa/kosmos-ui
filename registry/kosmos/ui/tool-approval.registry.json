@@ -5,7 +5,7 @@
   "title": "Tool approval",
   "description": "Asks before an agent runs a tool: what will happen, Allow once, Always allow or Deny, then a one-line record of who decided and when.",
   "dependencies": ["lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/button", "@kosmos/collapsible", "@kosmos/status"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-mounted", "@kosmos/button", "@kosmos/collapsible", "@kosmos/status"],
   "meta": { "group": "ai" },
   "files": [
     {

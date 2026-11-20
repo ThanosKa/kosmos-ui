@@ -114,7 +114,7 @@ function DropdownMenuContent({
 }
 
 const itemClass = cn(
-  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none',
+  'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] px-2 py-1.5 text-body outline-none select-none [-webkit-tap-highlight-color:transparent]',
   'transition-[background-color] duration-instant',
   'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
   'data-inset:ps-8',
