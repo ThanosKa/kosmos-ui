@@ -29,7 +29,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 28 | Showcase and hero pictures (Fixed in ticket 28) | B13, B21, L7, L13, L14, B27 (landmark, headings, page titles, HeroProduct props) | 16 | Showcase, HeroProduct, App sidebar (`navLabel`), landing showcase and hero, app sidebar previews, lint |
 | 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
 | 30 | Docs site fixes | D2 and B24, D4, D6, D7, D8, D9 (changelog), D10, D11, D12 | None | docs shell, preview frame, not-found page, search dialog, lint |
-| 31 | Block copy and docs prose | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
+| 31 | Block copy and docs prose (Fixed in ticket 31) | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
 
 Tickets 08 and 09 wait for 15, 16 and 18 to 31. Ticket 17 adds a check only and blocks nothing.
 
@@ -44,9 +44,9 @@ Pairs that share no file, in an order that respects every blocker: 15 and 17; 16
 | Section | Finding: ticket |
 | --- | --- |
 | Components | 1: 19 · 2: 19 · 3: 20 · 4: 20 · 5: 20 · 6: 23 · 7: 24 · 8: 24 · 9: 18 · 10: 25 · 11: 23 · 12: 23 · 13: 22 · 14: 25 · 15: not doing · 16: not doing · 17: 20 |
-| Blocks | 1: 21 · 2: 21 (its Panel and Sidebar causes: 20) · 3: 21 · 4: 24 · 5: 19 · 6: 25 · 7: 27 · 8: 26 · 9: 22 · 10: 18 · 11: 27 · 12: 26 (Run timeline: 24) · 13: 28 · 14: 21 · 15: 24 · 16: not doing · 17: 26 · 18: 27 · 19: 27 · 20: 27 · 21: 28 · 22: 18 · 23: 24 · 24: 30 · 25: not doing (`toLowerCase`: 31) · 26: 31 ("vs." wording: 27) · 27: split, below |
-| Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: Fixed in ticket 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: Fixed in ticket 26 · app page title size: 28 · mixed heights: Fixed in ticket 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: 31 · `NumberField` locale: Fixed in ticket 26 · copied code: not doing |
-| Docs site | 1: 20 · 2: 30 · 3: 18 (check: 16) · 4: 30 · 5: 18 (check: 15) · 6: 30 · 7: 30 · 8: 30 · 9: 30 (changelog item; naming not doing) · 10: 30 · 11: 30 · 12: 30 · 13: 23 · 14: Kosmos style · 15: 31 |
+| Blocks | 1: 21 · 2: 21 (its Panel and Sidebar causes: 20) · 3: 21 · 4: 24 · 5: 19 · 6: 25 · 7: 27 · 8: 26 · 9: 22 · 10: 18 · 11: 27 · 12: 26 (Run timeline: 24) · 13: 28 · 14: 21 · 15: 24 · 16: not doing · 17: 26 · 18: 27 · 19: 27 · 20: 27 · 21: 28 · 22: 18 · 23: 24 · 24: 30 · 25: not doing (`toLowerCase`: Fixed in ticket 31) · 26: Fixed in ticket 31 ("vs." wording: 27) · 27: split, below |
+| Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: Fixed in ticket 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: Fixed in ticket 26 · app page title size: 28 · mixed heights: Fixed in ticket 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: Fixed in ticket 31 · `NumberField` locale: Fixed in ticket 26 · copied code: not doing |
+| Docs site | 1: 20 · 2: 30 · 3: 18 (check: 16) · 4: 30 · 5: 18 (check: 15) · 6: 30 · 7: 30 · 8: 30 · 9: 30 (changelog item; naming not doing) · 10: 30 · 11: 30 · 12: 30 · 13: 23 · 14: Kosmos style · 15: Fixed in ticket 31 |
 | Landing and Presets | 1: 29 · 2: 29 · 3: 29 · 4: 22 · 5: 18 · 6: 29 · 7: 28 · 8: 22 · 9: not doing · 10: 29 · 11: 19 · 12: 29 · 13: 28 · 14: 28 · 15: 29 · site check tool note: 15 |
 
 ### Not doing
@@ -595,7 +595,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - `blocks/page-header/page-header.tsx:138,247`: `title.toLowerCase()` gives "Search q4 roadmap".
   - `examples/projects-table-demo.tsx:23`
 - **Fix:** whole messages per case through an `Intl.PluralRules('en-US')` helper. Keep the title's case in the search placeholder.
-- **Triage:** not doing, except the search placeholder's case (ticket 31). Kosmos ships English copy, the English plurals are correct, and the style skill sets no translation rule.
+- **Triage:** not doing, except the search placeholder's case (Fixed in ticket 31). Kosmos ships English copy, the English plurals are correct, and the style skill sets no translation rule.
 
 **26. Writing: the same thing worded two ways, and labels that miss.**
 - **Taste.** Not checkable, except the duplicate "Learn more" (**code** check: the fallback is used with no `linkLabel`).
