@@ -310,8 +310,8 @@ const initials = (name: string) =>
   name
     .split(/\s+/)
     .filter(Boolean)
-    .map((part) => part[0])
     .slice(0, 2)
+    .map((part) => Array.from(part)[0])
     .join('');
 
 /** Names a KPI's sparkline for screen readers: what it shows and which way it went ("Signups trend, up +4.2%"). */
