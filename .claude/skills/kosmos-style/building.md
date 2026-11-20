@@ -1,6 +1,6 @@
 # Building a component or block
 
-Build on Base UI (`@base-ui/react`), from scratch or from MIT-licensed code restyled to the Kosmos style, with the source's copyright line in a third-party notice (ADR 0010). Each file is found by its name, so adding one edits no shared file. Copy Button's files for the shape:
+Build on Base UI (`@base-ui/react`), from scratch or from MIT-licensed code restyled to the Kosmos style, with the source's copyright line in a third-party notice (ADR 0010). Mark an item built from MIT code `"meta": { "group": "<group>", "sources": ["<id>"] }` and list `registry/kosmos/ui/LICENSE-<ID>` (a block's own folder for a block) in its `files` as `{ "type": "registry:file", "target": "~/LICENSE-<ID>" }`; `pnpm test` fails when a marked item lacks the notice, the file holds no `Copyright` line, or a notice ships unnamed. Each file is found by its name, so adding one edits no shared file. Copy Button's files for the shape:
 
 | File | What it holds |
 | --- | --- |
