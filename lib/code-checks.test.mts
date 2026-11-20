@@ -179,7 +179,22 @@ export function Dot({ unread }: { unread: boolean }) {
     message: 'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
     allowed: `
 export function Dot({ unread }: { unread: boolean }) {
-  return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] motion-safe:scale-50 opacity-0'} />;
+  return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] motion-safe:scale-90 opacity-0'} />;
+}
+`,
+  },
+  {
+    name: 'a scale starts from a Kosmos value',
+    file: 'registry/kosmos/ui/example.tsx',
+    flagged: `
+export function Icon() {
+  return <svg className="transition-[opacity,scale] motion-safe:starting:scale-80" />;
+}
+`,
+    message: 'Start a scale from `scale-[0.97]` (popover, menu), `scale-95` (dialog), `scale-90`, or `scale-25` with `blur-xs` (icon swap) (kosmos-style, Motion).',
+    allowed: `
+export function Menu() {
+  return <div className="motion-safe:data-starting-style:scale-[0.97] motion-safe:scale-y-0 motion-safe:starting:scale-25" />;
 }
 `,
   },

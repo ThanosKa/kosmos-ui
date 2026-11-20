@@ -30,7 +30,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
 | 30 | Docs site fixes | D2 and B24, D4, D6, D7, D8, D9 (changelog), D10, D11, D12 | None | docs shell, preview frame, not-found page, search dialog, lint |
 | 31 | Block copy and docs prose (Fixed in ticket 31) | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
-| 34 | Icon swaps and small marks | M2, M5 | None | Status, Prompt composer, Assistant message, Notification inbox, style skill, lint |
+| 34 | Icon swaps and small marks (Fixed in ticket 34) | M2, M5 | None | Status, Prompt composer, Assistant message, Notification inbox, style skill, lint |
 | 35 | Chart motion | M1, M3, M4 | None | Chart (Sparkline, Growth chart), `use-chart-motion`, Usage overview, Candlestick chart, chart examples, `chart.mdx` |
 | 36 | Copy icon swaps | M6 | 34 | Copy field, Code tabs, Run timeline, docs code block, docs heading, docs page actions |
 
@@ -1101,7 +1101,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 - **Location:** `registry/kosmos/ui/status.tsx:46-49` (`starting:opacity-0 motion-safe:starting:scale-80`, `duration-fast`); `registry/kosmos/ui/prompt-composer.tsx:95-96` (`motion-safe:data-hidden:scale-80`, `duration-fast` both ways); `registry/kosmos/ui/assistant-message.tsx:48, 261-267` (`*:duration-slow` on both icons, so Copy and Check also leave in 300ms). The recipe they drift from: `registry/kosmos/ui/asset.tsx:136-139, 252-255`.
 - **What is wrong:** Asset and Assistant message swap two icons in one place by fading the hidden one to `scale-25` behind a 4px blur (`blur-xs`): the incoming icon arrives in 300ms, and in Asset the outgoing one leaves in 150ms. Status and Prompt composer grow the new icon from `scale-80` with no blur in 150ms, a third look. `scale-80` is also outside Emil's 0.9 to 0.97 range for an entrance, as ticket 10 noted for Status. Assistant message breaks the exit row of the motion table (any exit 150ms).
 - **Why it matters:** a Status icon turning from the spinner to a check is the moment a run finishes; the same change should look the same in every component. The blur makes two icons read as one shape changing.
-- **Fix:** ticket 34. One recipe for every icon swap, written into the style skill with a lint rule.
+- **Fix:** Fixed in ticket 34. One recipe for every icon swap, written into the style skill with a lint rule.
 
 #### 3. Candlestick chart slides its tooltip and cursor by animating `left` and `top`
 
@@ -1124,7 +1124,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 - **Severity:** LOW. **Kind:** taste. **Checkable:** yes, the lint rule of finding 2 flags `motion-safe:scale-50`.
 - **Location:** `registry/kosmos/ui/notification-inbox.tsx:505-511` (`transition-[opacity,scale]`, `!unread && 'motion-safe:scale-50 opacity-0'`).
 - **What is wrong:** marking a notification read is a repeated action, like ticking a checkbox. Ticket 10 made the Checkbox and Radio marks fade without growing for that reason; the 8px dot still shrinks from full size to half.
-- **Fix:** ticket 34. The dot only fades.
+- **Fix:** Fixed in ticket 34. The dot only fades.
 
 #### 6. Copy and reveal buttons swap their icon at once (missed opportunity)
 

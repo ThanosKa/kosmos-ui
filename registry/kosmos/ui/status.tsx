@@ -44,8 +44,8 @@ function StatusIcon({ status, label, className }: StatusIconProps) {
       aria-label={label}
       data-status={status}
       className={cn(
-        'size-4 shrink-0 transition-[opacity,scale] duration-fast',
-        mounted && 'starting:opacity-0 motion-safe:starting:scale-80',
+        'size-4 shrink-0 transition-[opacity,scale,filter] duration-slow',
+        mounted && 'starting:opacity-0 motion-safe:starting:scale-25 motion-safe:starting:blur-xs',
         tone,
         className,
       )}
