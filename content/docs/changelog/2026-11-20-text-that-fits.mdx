@@ -1,0 +1,13 @@
+---
+title: Text that does not fit stays readable in full
+description: Truncated text now carries a title, a stat value no longer truncates, and Model select no longer widens the page on a phone.
+date: 2026-11-20
+---
+
+Text that is cut off now has a way to read it in full, and a number never gets cut.
+
+- [Stat card](/docs/components/stat-card): the value no longer truncates. It steps down from `text-display` to `text-title` when its content is narrower than 11rem, and the label beside it can shrink.
+- [Model select](/docs/components/model-select): the button is now `relative`, so its screen-reader text stays inside it. Before, a long model name pushed that text past the edge and the page scrolled sideways on a phone.
+- [Panel](/docs/components/panel), [Status](/docs/components/status), [Sidebar](/docs/components/sidebar), [Command](/docs/components/command), [Data table](/docs/components/data-table), [Announcement](/docs/components/announcement), [Input group](/docs/components/input-group) and the chart legends and tooltips: a truncated string now shows its full text as a `title`. The Sidebar menu button takes it from `tooltip` while the sidebar is expanded.
+
+To update, run the add command again for each item.

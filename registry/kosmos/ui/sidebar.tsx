@@ -692,6 +692,7 @@ function SidebarGroupLabel({ className, render, ...props }: useRender.ComponentP
     render,
     props: mergeProps<'div'>(
       {
+        title: typeof props.children === 'string' ? props.children : undefined,
         className: cn(
           'flex h-6 shrink-0 items-center truncate px-2 text-caption tracking-[0.08em] text-muted-foreground uppercase',
           // In icon mode the label fades but keeps its row, so the icons below it never move. On expand it waits
@@ -749,6 +750,7 @@ function SidebarMenuButton({ isActive = false, tooltip, className, ...props }: S
       data-slot="sidebar-menu-button"
       data-active={isActive ? '' : undefined}
       aria-current={isActive ? (isLink ? 'page' : 'true') : undefined}
+      title={!iconsOnly && typeof tooltip === 'string' ? tooltip : undefined}
       className={cn(
         // `relative` keeps an `sr-only` count label inside the clip, so it never widens the sidebar.
         'relative h-7.5 w-full min-w-0 justify-start gap-2 overflow-hidden rounded-[calc(var(--radius-lg)-4px)] px-2 font-normal text-muted-foreground',
@@ -986,6 +988,7 @@ function SidebarSubmenuContent({ className, children, container, id, ...props }:
               <div className="p-1">
                 <PopoverPrimitive.Title
                   render={<div />}
+                  title={typeof label === 'string' ? label : undefined}
                   className="truncate px-2 pt-2 pb-1 text-caption font-medium text-muted-foreground"
                 >
                   {label}
@@ -1151,7 +1154,7 @@ function SidebarWorkspaceSwitcher({
           {workspaces.map((workspace) => (
             <DropdownMenuRadioItem key={workspace.id} value={workspace.id}>
               <WorkspaceMark workspace={workspace} className="size-5" />
-              <span className="min-w-0 truncate">{workspace.name}</span>
+              <span title={workspace.name} className="min-w-0 truncate">{workspace.name}</span>
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
@@ -1230,8 +1233,8 @@ function SidebarUserMenu({ user, children, className, ...props }: SidebarUserMen
       <DropdownMenuContent {...placement} className="min-w-(--anchor-width) sm:min-w-56">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex flex-col gap-0.5">
-            <span className="truncate text-body font-medium text-foreground">{user.name}</span>
-            {user.email ? <span className="truncate font-normal">{user.email}</span> : null}
+            <span title={user.name} className="truncate text-body font-medium text-foreground">{user.name}</span>
+            {user.email ? <span title={user.email} className="truncate font-normal">{user.email}</span> : null}
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

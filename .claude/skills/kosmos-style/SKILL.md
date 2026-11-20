@@ -248,7 +248,7 @@ A screen reader announces a change to a live region that already exists, so the 
 Every component and block works at 375px wide, in light and dark:
 
 - Nothing runs past its frame or scrolls the page sideways. A block sizes by its own width with container queries (`@container`, `@2xl:`); only a page's rhythm uses screen breakpoints ([marketing.md](marketing.md)).
-- Text that grows with the data (names, emails, titles, labels) sits in a child with `min-w-0`, then wraps, takes `truncate` or takes `line-clamp-*`. Truncated text stays readable in full somewhere: a `title`, a tooltip or the detail view. Numbers, amounts and dates never truncate; they take `shrink-0`.
+- Text that grows with the data (names, emails, titles, labels) sits in a child with `min-w-0`, then wraps, takes `truncate` or takes `line-clamp-*`. Truncated text stays readable in full somewhere: a `title`, a tooltip or the detail view. Numbers, amounts and dates never truncate; they take `shrink-0`. Lint flags `truncate` with `tabular-nums` or `text-display` on one element, and `truncate` or `line-clamp-*` with no `title` in `registry/kosmos/ui`; a slot whose full text lives in a tooltip or detail view goes in `fullTextElsewhere` in `eslint.config.mjs`, with its reason.
 - Full-height layouts take `svh` (`min-h-svh`, `h-svh`), as the Sidebar does, since `vh` and `h-screen` ignore the phone's browser bars.
 - A surface fixed to the bottom edge pads by `env(safe-area-inset-bottom)`, as the bottom-sheet Drawer does.
 - Hover styles use the `hover:` variant, which fires only on a device that can hover, so a tap never leaves a row lit.

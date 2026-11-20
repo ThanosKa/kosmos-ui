@@ -234,7 +234,7 @@ function DataTableFacetFilter<TData extends RowData, TValue>({
           <>
             <span aria-hidden className="mx-0.5 h-3.5 w-px shrink-0 bg-border" />
             <span className="sr-only">: </span>
-            <span className="truncate text-muted-foreground">{summary}</span>
+            <span title={summary} className="truncate text-muted-foreground">{summary}</span>
           </>
         ) : null}
       </PopoverTrigger>

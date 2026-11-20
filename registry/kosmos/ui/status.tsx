@@ -69,7 +69,7 @@ function StatusDot({ status, children, className, ...props }: StatusDotProps) {
       {...props}
     >
       <span aria-hidden className={cn('size-1.5 shrink-0 rounded-full', statusDot[status])} />
-      <span className="min-w-0 truncate">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="min-w-0 truncate">{children}</span>
     </span>
   );
 }
@@ -96,7 +96,7 @@ function StatusBadge({ status, children, className, ...props }: StatusBadgeProps
       {Icon ? (
         <Icon aria-hidden className={cn('text-muted-foreground', status === 'running' && cn('text-foreground', running))} />
       ) : null}
-      <span className="min-w-0 truncate">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="min-w-0 truncate">{children}</span>
     </Badge>
   );
 }

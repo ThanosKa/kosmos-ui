@@ -154,6 +154,7 @@ function ChartTooltipContent({
           const key = String(item.dataKey ?? item.name ?? 'value');
           const series = config[key];
           const Icon = series?.icon;
+          const seriesName = series?.label ?? item.name;
           return (
             <li key={key} className="flex items-center gap-2">
               {Icon ? (
@@ -163,7 +164,7 @@ function ChartTooltipContent({
                   <SeriesSwatch seriesKey={key} fallback={item.color} previous={previousKeys.includes(key)} />
                 )
               )}
-              <span className="min-w-0 flex-1 truncate text-muted-foreground">{series?.label ?? item.name}</span>
+              <span title={seriesName === undefined ? undefined : String(seriesName)} className="min-w-0 flex-1 truncate text-muted-foreground">{seriesName}</span>
               <span className="font-medium text-foreground">
                 {item.value === undefined ? null : valueFormatter ? valueFormatter(item.value, key) : formatValue(item.value)}
               </span>

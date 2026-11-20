@@ -419,6 +419,7 @@ function FlowChart({
                 <p
                   id={`${uid}-${sides[c]}`}
                   style={legendRise.style}
+                  title={columnLabels[sides[c]]}
                   className={cn('truncate text-caption tracking-[0.05em] text-muted-foreground uppercase', legendRise.className)}
                 >
                   {columnLabels[sides[c]]}
@@ -460,7 +461,7 @@ function FlowChart({
                               isHidden ? 'bg-transparent shadow-[inset_0_0_0_1px_var(--series)]' : 'bg-(--series)',
                             )}
                           />
-                          <span className="truncate">{node.label}</span>
+                          <span title={node.label} className="truncate">{node.label}</span>
                         </Button>
                       </li>
                     );
@@ -810,7 +811,7 @@ function TooltipValue({
       <span className="font-medium text-foreground">
         <CountValue value={value} format={format} ready={ready} instant={instant} />
       </span>
-      {children ? <span className="truncate text-muted-foreground">{children}</span> : null}
+      {children ? <span title={typeof children === 'string' ? children : undefined} className="truncate text-muted-foreground">{children}</span> : null}
     </div>
   );
 }

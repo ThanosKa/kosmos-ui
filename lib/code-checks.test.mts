@@ -307,6 +307,36 @@ export function Clock() {
 }
 `,
   },
+  {
+    name: 'a number never truncates',
+    file: 'registry/kosmos/ui/example.tsx',
+    flagged: `
+export function Value() {
+  return <span className="block truncate text-display tabular-nums">$14,620</span>;
+}
+`,
+    message: 'A number, amount or date never truncates; it takes `shrink-0`, and the text beside it takes `min-w-0` (kosmos-style, Phones).',
+    allowed: `
+export function Value() {
+  return <span className="block shrink-0 text-display tabular-nums">$14,620</span>;
+}
+`,
+  },
+  {
+    name: 'truncated text stays readable in full',
+    file: 'registry/kosmos/ui/example.tsx',
+    flagged: `
+export function Name({ name }: { name: string }) {
+  return <span className="min-w-0 truncate">{name}</span>;
+}
+`,
+    message: 'Truncated text stays readable in full: give `truncate` or `line-clamp-*` a `title` (a string child), or list the file in `fullTextElsewhere` in the lint config with its reason (kosmos-style, Phones).',
+    allowed: `
+export function Name({ name }: { name: string }) {
+  return <span title={name} className="min-w-0 truncate">{name}</span>;
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });
