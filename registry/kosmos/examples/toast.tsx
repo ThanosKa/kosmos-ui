@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -55,7 +56,71 @@ const cases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
   },
 ];
 
+const worstCases: { label: string; toasts: ToastOptions[]; className?: string }[] = [
+  {
+    label: 'long title, an email and a long action',
+    className: 'h-96',
+    toasts: [
+      {
+        type: 'error',
+        title: 'Could not send the invitation to bartholomew.fitzgerald@northwind-industries-holdings.example.com',
+        description: 'Supercalifragilisticexpialidocious-workspace-name-with-no-spaces-at-all is over the limit of 1,284 members.',
+        actionProps: { children: 'Upgrade the Northwind Industries plan' },
+      },
+    ],
+  },
+  {
+    label: 'title with a long action, no description',
+    toasts: [{ type: 'success', title: 'Roadmap item archived', actionProps: { children: 'Undo and restore to the previous column' } }],
+  },
+  {
+    label: 'emoji and Japanese',
+    toasts: [{ type: 'info', title: '🚀 Launch checklist 日本語のドキュメントと価格表', description: '🎉🎉🎉 株式会社ノースウィンド に 1,284,000 件のイベントが届きました。' }],
+  },
+  {
+    label: 'Arabic',
+    toasts: [{ type: 'warning', title: 'دعم اللغة العربية في لوحة التحكم', description: 'ليلى أضافت 12,480 عنصرًا إلى القائمة.' }],
+  },
+  { label: 'one letter', toasts: [{ title: 'Q', description: 'X' }] },
+  { label: 'description only', toasts: [{ description: 'Saved.' }] },
+  { label: 'a huge number', toasts: [{ type: 'loading', title: 'Exporting 1,284,000,000 rows from 12,480 projects…' }] },
+  {
+    label: 'stack of three, the front one long',
+    className: 'h-96',
+    toasts: [
+      { title: 'Q' },
+      { type: 'success', title: 'Changes saved to Copperline Bank, Ironbark Logistics and Northwind Industries Holdings' },
+      {
+        type: 'error',
+        title: 'Aleksandra Wiśniewska-Kowalczyk could not be added',
+        description: 'bartholomew.fitzgerald@northwind-industries-holdings.example.com already belongs to another workspace.',
+        actionProps: { children: 'Retry' },
+      },
+    ],
+  },
+];
+
 export default function ToastPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
+      <PreviewSection title="Long text, an email with no break, emoji, non-Latin text and extreme numbers">
+        <OverlayStageGrid>
+          {worstCases.map((item) => (
+            <OverlayStage key={item.label} label={item.label} className={item.className ?? 'h-48'}>
+              {(container) => <PinnedToasts container={container} toasts={item.toasts} />}
+            </OverlayStage>
+          ))}
+        </OverlayStageGrid>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Open">

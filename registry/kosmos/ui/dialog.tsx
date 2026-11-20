@@ -135,7 +135,7 @@ function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
         'has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2',
       )}
       // The 16px padding already clears the scrollbar.
-      viewportClassName="overscroll-contain data-has-overflow-y:pe-0"
+      viewportClassName="overscroll-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
     >
       <div data-slot="dialog-body" className={cn('px-4 pt-3 pb-1', className)} {...props} />
     </ScrollArea>
