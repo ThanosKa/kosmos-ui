@@ -3,6 +3,7 @@
 import { Bot } from 'lucide-react';
 import * as React from 'react';
 import * as Recharts from 'recharts';
+import { useRechartsEntrance } from '@/registry/kosmos/hooks/use-chart-motion';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -13,7 +14,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-  useChartAnimation,
+  chartAnimation,
 } from '@/registry/kosmos/ui/chart';
 import { EmptyState } from '@/registry/kosmos/ui/empty';
 import { Meter, MeterBar, MeterLabel, MeterValue } from '@/registry/kosmos/ui/meter';
@@ -291,7 +292,8 @@ function UsageOverview({
   };
 
   const data = usage[range];
-  const barAnimation = useChartAnimation(undefined, data.daily);
+  const figureRef = React.useRef<HTMLDivElement>(null);
+  const { revealed, isAnimationActive, remountKey } = useRechartsEntrance(figureRef, undefined, data.daily);
   const { totals } = data;
   const empty = !loading && totals.runs === 0;
   const costPerRun = totals.runs > 0 ? totals.costUsd / totals.runs : 0;
@@ -358,7 +360,7 @@ function UsageOverview({
             ))}
           </div>
 
-          <div className="flex min-w-0 flex-col gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
+          <div ref={figureRef} className="flex min-w-0 flex-col gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
             <div className="flex flex-col gap-0.5">
               <h3 className="text-title">Tokens per day</h3>
               <p className="text-small text-muted-foreground">By model, last {rangeLabels[range]}</p>
@@ -367,45 +369,48 @@ function UsageOverview({
               <Skeleton className="h-60 w-full" />
             ) : (
               <figure className="m-0 flex w-full flex-col">
-                <ChartContainer config={chartConfig} className="aspect-auto h-60">
-                  <Recharts.BarChart
-                    title={`Tokens per day by model, last ${rangeLabels[range]}`}
-                    data={data.daily}
-                    margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-                  >
-                    <Recharts.XAxis
-                      dataKey="date"
-                      ticks={edgeDates(data.daily)}
-                      interval={0}
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                    />
-                    <Recharts.YAxis hide />
-                    <ChartTooltip
-                      isAnimationActive={false}
-                      cursor={<LineCursor />}
-                      content={
-                        <ChartTooltipContent
-                          valueFormatter={(value) => (typeof value === 'number' ? `${compact.format(value)} tokens` : String(value))}
-                        />
-                      }
-                    />
-                    <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
-                    {series.map((model) => (
-                      <Recharts.Bar
-                        key={model.id}
-                        dataKey={model.id}
-                        name={model.name}
-                        stackId="tokens"
-                        fill={`var(--color-${model.id})`}
-                        {...stackSeparator}
-                        maxBarSize={24}
-                        {...barAnimation}
+                {revealed ? (
+                  <ChartContainer key={remountKey} config={chartConfig} className="aspect-auto h-60 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0">
+                    <Recharts.BarChart
+                      title={`Tokens per day by model, last ${rangeLabels[range]}`}
+                      data={data.daily}
+                      margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+                    >
+                      <Recharts.XAxis
+                        dataKey="date"
+                        ticks={edgeDates(data.daily)}
+                        interval={0}
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
                       />
-                    ))}
-                  </Recharts.BarChart>
-                </ChartContainer>
+                      <Recharts.YAxis hide />
+                      <ChartTooltip
+                        isAnimationActive={false}
+                        cursor={<LineCursor />}
+                        content={
+                          <ChartTooltipContent
+                            valueFormatter={(value) => (typeof value === 'number' ? `${compact.format(value)} tokens` : String(value))}
+                          />
+                        }
+                      />
+                      <ChartLegend verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
+                      {series.map((model) => (
+                        <Recharts.Bar
+                          key={model.id}
+                          dataKey={model.id}
+                          name={model.name}
+                          stackId="tokens"
+                          fill={`var(--color-${model.id})`}
+                          {...stackSeparator}
+                          maxBarSize={24}
+                          {...chartAnimation}
+                          isAnimationActive={isAnimationActive}
+                        />
+                      ))}
+                    </Recharts.BarChart>
+                  </ChartContainer>
+                ) : null}
                 <div className="sr-only">
                   <table>
                     <caption>Tokens per day by model, last {rangeLabels[range]}</caption>

@@ -12,6 +12,7 @@ import {
   ChartTooltipContent,
   GrowthChart,
   Sparkline,
+  useChartAnimation,
   type ChartConfig,
 } from '@/registry/kosmos/ui/chart';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/registry/kosmos/ui/empty';
@@ -57,6 +58,7 @@ const tiles = [
 ];
 
 function Normal() {
+  const animation = useChartAnimation(undefined, paletteData);
   return (
     <>
       <PreviewSection title="Growth chart: one series, tooltip pinned">
@@ -137,7 +139,7 @@ function Normal() {
               <ChartTooltip cursor defaultIndex={2} isAnimationActive={false} content={<ChartTooltipContent />} />
               <ChartLegend content={<ChartLegendContent />} />
               {Object.keys(paletteConfig).map((key) => (
-                <Recharts.Bar key={key} dataKey={key} fill={`var(--color-${key})`} radius={[4, 4, 0, 0]} maxBarSize={24} />
+                <Recharts.Bar key={key} dataKey={key} fill={`var(--color-${key})`} radius={[4, 4, 0, 0]} maxBarSize={24} {...animation} />
               ))}
             </Recharts.BarChart>
           </ChartContainer>
