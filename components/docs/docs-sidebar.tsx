@@ -73,11 +73,16 @@ function useSidebarScroll(pathname: string) {
   return ref;
 }
 
+/** The item for the page at `pathname`. The Changelog item also stands for its entry pages, which have none of their own. */
+function isCurrentItem(item: DocsNavItem, pathname: string) {
+  return item.url === pathname || (item.url === '/docs/changelog' && pathname.startsWith('/docs/changelog/'));
+}
+
 /** The group holding `pathname` opens on load and whenever a navigation enters it; the visitor opens and closes the rest. */
 function useOpenGroups(nav: DocsNav, pathname: string) {
   const currentGroup = nav.sections
     .flatMap((section) => section.groups)
-    .find((group) => group.items.some((item) => item.url === pathname))?.id;
+    .find((group) => group.items.some((item) => isCurrentItem(item, pathname)))?.id;
   const [open, setOpen] = useState(() => new Set<string>(currentGroup ? [currentGroup] : []));
   const [openedFor, setOpenedFor] = useState(currentGroup);
   if (currentGroup !== openedFor) {
@@ -154,7 +159,7 @@ function DocsSidebarLink({ item, pathname, className }: { item: DocsNavItem; pat
   return (
     <SidebarMenuButton
       href={item.url}
-      isActive={item.url === pathname}
+      isActive={isCurrentItem(item, pathname)}
       onClick={navigate}
       onPointerEnter={() => router.prefetch(item.url)}
       onFocus={() => router.prefetch(item.url)}

@@ -578,7 +578,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - `<Alert variant="destructive">` in a container that is always rendered.
 - **Not verified** with a screen reader.
 
-**24. Docs preview frame marks the iframe root before React hydrates it.**
+**24. Docs preview frame marks the iframe root before React hydrates it. (Fixed in ticket 30)**
 - **Bug (docs tooling).** Checkable by the **browser** check's console check. It already catches it, but only 3 of 16 loads.
 - **Where:** `components/docs/preview-frame.tsx:35-43`.
 - **What is wrong:** see the verdict above. The fix is in the docs code, not the blocks.
@@ -741,7 +741,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 
 #### MEDIUM
 
-**2. The docs preview frame writes attributes onto the iframe's page before React hydrates it.**
+**2. The docs preview frame writes attributes onto the iframe's page before React hydrates it. (Fixed in ticket 30)**
 - **Severity:** MEDIUM. **Kind:** bug. **Checkable:** yes, browser. The site check's console check already catches it, but only in about 3 of 16 loads. A dedicated pass that reloads each block page several times would make it reliable.
 - **Where:** `components/docs/preview-frame.tsx:38` (`root.dataset.inFrame = ''`) and `:43` (`toggleAttribute('data-centered', …)`), run from the iframe's `load` event and from `readyState === 'complete'` (`:65`). It reaches every block viewer: all 28 `/docs/blocks/*` pages. Seen on `new-item-dialog` and `settings` (blocks audit, finding 24).
 - **What is wrong:** under load, `load` fires before React has hydrated `[data-preview-root]` (`app/(view)/view/[name]/page.tsx:33`). React then finds `data-in-frame=""` that the server never rendered, logs a hydration mismatch and keeps the client tree out of sync with the DOM.
@@ -755,7 +755,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Why it matters:** the ring is a 3:1 mark at full strength. Faded, it falls under the floor exactly where a keyboard user is looking. This is the October 1d finding in a new form.
 - **Fix:** make the scroll padding match the fade, `scroll-py-8` in place of `scroll-p-1` on the viewport, so a focused item always stops clear of it. The same file holds ticket 03's finding 9 (scroll a partly visible focused item into view), and the two fixes belong together.
 
-**4. Docs prose runs 88 to 95 characters a line.**
+**4. Docs prose runs 88 to 95 characters a line. (Fixed in ticket 30)**
 - **Severity:** MEDIUM (every docs page). **Kind:** taste, in line with the style skill ("Prose measure is set in em"). **Checkable:** yes, browser: the average characters per line of the first long paragraph in `#content article`, failing above 75.
 - **Where:** `app/(site)/docs/[[...slug]]/page.tsx:40` (`max-w-3xl` on the article) and `:53` (`DocsBody` sets no measure). Measured at 16px/28px: `/docs/installation` 648px wide, about 88 characters, and 92 at 1600; `/docs/components/button` 688px, about 95.
 - **What is wrong:** long lines make the eye's return to the next line slow and error-prone. Block pages already cap `p`, `ul` and `ol` with `max-w-prose`, but other pages have no cap.
@@ -770,24 +770,24 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **What is wrong:** the dark current item is raised with `shadow-control` (`registry/kosmos/ui/sidebar.tsx:756`), whose 1px outer ring is clipped on the right, and on the bottom for the last item of a group. The focus outline there is already drawn inside, so the site check is flagging this shadow, not the focus ring.
 - **Fix:** `pe-px pb-px` on the panel's `SidebarMenu` (`:230`), so the ring has its 1px. In the check, `measureFocusRing` (`lib/site-check.ts`) should count only the outline and the shadows that change on focus, so a resting `shadow-control` is not reported as a focus ring.
 
-**6. The site's not-found page ignores the visitor's preset.**
+**6. The site's not-found page ignores the visitor's preset. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** bug. **Checkable:** yes, code: `app/global-not-found.tsx` renders `SitePresetScript` and `SitePresetSync`, as `app/(site)/layout.tsx` does. Or browser: `#site-preset` exists when a preset is stored.
 - **Where:** `app/global-not-found.tsx:14-19`. Measured with Console stored: `/docs/installation` and `/docs/nope` have the preset style and a violet `--ring`; `/nope` has no `#site-preset` and an ink `--ring`, while the header's button still says "Preset: Console".
 - **What is wrong:** this document brings its own `<html>`. It does not have the preset script, the sync, the viewport `themeColor` or the `selection:` brand class.
 - **Fix:** render `<SitePresetScript />` in its `<head>`, add `<SitePresetSync />`, and export the same `viewport`. Better, share one document shell with `app/(site)/layout.tsx` so the two cannot drift again.
 
-**7. Copy buttons fail silently.**
+**7. Copy buttons fail silently. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** bug. **Checkable:** partly, code: a `useCopyButton(` or `navigator.clipboard` call with no rejection handler.
 - **Where:** `useCopyButton` (Fumadocs) handles success only. It is used by `components/docs/code-block.tsx:167` (Copy code), `docs-heading.tsx:17` (Copy link to section), `page-actions.tsx:39` (Copy Markdown, which also fetches first) and `foundations/copy-swatch.tsx:14`. In `components/site/search-dialog.tsx:268-271`, "Copy install command" swallows the error with `() => {}`.
 - **What is wrong:** when the clipboard is denied, or the Markdown fetch fails, nothing changes on screen and nothing is announced. "Copy install command" also changes its row to "Copied" with no status region, so a screen reader may not hear it.
 - **Fix:** one shared copy hook with a failed state that says "Couldn't copy. Select the text and copy it." in the existing `role="status"` span. Give the palette action the same status line.
 
-**8. In the install tabs, focus reaches the Copy button before the tabs beside it.**
+**8. In the install tabs, focus reaches the Copy button before the tabs beside it. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** bug (WCAG 2.4.3 focus order). **Checkable:** no.
 - **Where:** `components/docs/docs-tabs.tsx:46-48`: the absolutely placed Copy button comes before `TabsList` in the DOM. Measured on `/docs/components/button` at 375, Tab order: "CLI" tab, the CLI panel, **Copy code**, then the "npm" tab and its panel. On screen, Copy sits at the end of the npm/pnpm/yarn/bun row. The outer CLI panel is also a tab stop that only wraps the card.
 - **Fix:** move the Copy button after `TabsList` in the DOM; its absolute position keeps it where it is. Drop the outer `TabsContent` tab stop (`tabIndex={-1}`) where its content already holds focusable tabs.
 
-**9. Sidebar wayfinding: the overview pages carry two names, and changelog entries mark nothing.**
+**9. Sidebar wayfinding: the overview pages carry two names, and changelog entries mark nothing. (Changelog half fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** taste. **Checkable:** partly, browser: every docs page has exactly one `aria-current` item in the docs sidebar.
 - **Where:**
   - `lib/docs-nav.ts:163` names the first item "Overview", while its pages are titled "About components", "About charts" and "About blocks" (`content/docs/{components,charts,blocks}/index.mdx`).
@@ -796,7 +796,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Fix:** use one name for both: title the pages "Overview" with the description kept, or label the item "About". Mark the Changelog item current on its entry pages: `item.url === pathname || (item.url === '/docs/changelog' && pathname.startsWith('/docs/changelog/'))`.
 - **Triage:** the changelog item is ticket 30. The naming is not doing: which name is a preference only.
 
-**10. Screen-reader names in the page chrome: one name for every heading's copy button, and new tabs left unannounced.**
+**10. Screen-reader names in the page chrome: one name for every heading's copy button, and new tabs left unannounced. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** taste. **Checkable:** yes, browser: buttons on one page that share an accessible name.
 - **Where:**
   - `components/docs/docs-heading.tsx:44`: `aria-label="Copy link to section"` on every heading, so a button list reads the same phrase 10–20 times per page.
@@ -805,13 +805,13 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
   - Name the copy button after its heading: `aria-labelledby` pointing at a `sr-only` "Copy link to" span and the heading's link id.
   - Add the same `sr-only` "(opens in a new tab)" to the three menu items.
 
-**11. The table of contents scrolls in a native box, not `ScrollArea`.**
+**11. The table of contents scrolls in a native box, not `ScrollArea`. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** taste, a style rule (Overflow: "Content that scrolls inside a frame … scrolls in `ScrollArea`"). **Checkable:** yes, code: `overflow-y-auto`, `overflow-x-auto` or `overflow-auto` in `components/docs` outside the code block viewport.
 - **Where:** `components/docs/docs-toc.tsx:76`. It matters most on `/docs/changelog`, whose rail lists over 100 entries.
 - **What is wrong:** there is no edge fade, so with macOS overlay scrollbars nothing shows that the list continues. It is also the one docs scroller that looks unlike the sidebar beside it.
 - **Fix:** `<ScrollArea>` with `viewportRef` for `ScrollProvider`, and `focusable={false}`, since the links scroll themselves into view.
 
-**12. An inline `style` slips past the lint rule when it is conditional.**
+**12. An inline `style` slips past the lint rule when it is conditional. (Fixed in ticket 30)**
 - **Severity:** LOW. **Kind:** taste, a style rule ("Inline `style` carries only CSS variables"). **Checkable:** yes, code: extend `styleSelectors` in `eslint.config.mjs:106-115` to `ConditionalExpression` and `LogicalExpression` objects.
 - **Where:** `components/docs/preview-shell.tsx:141` (`style={stageHeight ? { height: stageHeight } : undefined}`). `pnpm exec eslint components/docs` passes it, because the selector matches only an `ObjectExpression` directly inside the attribute.
 - **Fix:** `style={{ '--stage-height': … }}` with `h-(--stage-height)`, and the wider selector.
