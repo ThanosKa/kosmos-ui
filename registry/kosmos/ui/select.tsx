@@ -132,7 +132,7 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none',
+        'relative flex min-h-7.5 cursor-default items-center gap-2 rounded-[calc(var(--radius-lg)-4px)] py-1.5 ps-2 pe-8 text-body outline-none select-none [-webkit-tap-highlight-color:transparent]',
         'transition-[background-color] duration-instant',
         'data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50',
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5 [&_svg:not([class*='text-'])]:text-muted-foreground",

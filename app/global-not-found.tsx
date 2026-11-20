@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 /** A URL no route matches. The site has two root layouts, so this page brings its own document and providers. */
 export default function GlobalNotFound() {
   return (
-    <html lang="en" className={htmlFontClassName} suppressHydrationWarning>
+    <html lang="en" className={`${htmlFontClassName} [-webkit-tap-highlight-color:transparent]`} suppressHydrationWarning>
       <head>
         <SitePresetScript />
       </head>

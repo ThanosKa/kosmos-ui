@@ -106,6 +106,7 @@ function NavbarMark({ name }: { name: React.ReactNode }) {
 }
 
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+const noTapFlash = '[-webkit-tap-highlight-color:transparent]';
 
 // A nav item: the ghost look without the press scale, which dense rows of items skip.
 const barItemClass = cn(
@@ -113,6 +114,7 @@ const barItemClass = cn(
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
   'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text data-current:bg-accent data-current:text-accent-text',
   focusRing,
+  noTapFlash,
 );
 
 const sheetLinkClass = cn(
@@ -120,6 +122,7 @@ const sheetLinkClass = cn(
   'transition-[background-color,color] hover:bg-accent hover:text-foreground',
   'aria-[current=page]:bg-accent aria-[current=page]:text-accent-text',
   focusRing,
+  noTapFlash,
 );
 
 type NavbarLinksProps = {
@@ -150,6 +153,7 @@ function renderDropdownLink(link: NavbarLink, current: string | undefined, Link:
       className={cn(
         'group/link flex gap-2.5 rounded-lg px-2.5 py-2 transition-[background-color] duration-instant hover:bg-accent aria-[current=page]:bg-accent',
         'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+        noTapFlash,
       )}
     >
       {link.icon ? (
