@@ -1,5 +1,6 @@
 'use client';
 
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ProjectsTable, type Project } from '@/registry/kosmos/blocks/projects-table/projects-table';
 
@@ -19,6 +20,30 @@ const longRows: Project[] = [
     lastEventAt: '2026-10-11',
   },
   {
+    id: 'emoji',
+    name: '🚀 Launchpad',
+    domain: 'launchpad.example',
+    platform: 'ios',
+    plan: 'free',
+    status: 'trial',
+    users: 48210000,
+    events: 9999999999,
+    mrr: 0,
+    lastEventAt: '2026-10-11',
+  },
+  {
+    id: 'cjk',
+    name: '山田書店オンラインストア',
+    domain: 'yamada-shoten.example',
+    platform: 'web',
+    plan: 'scale',
+    status: 'live',
+    users: 0,
+    events: 0,
+    mrr: 12400000,
+    lastEventAt: '2026-10-11',
+  },
+  {
     id: 'long-2',
     name: 'Kiln',
     domain: 'kiln.example',
@@ -33,6 +58,28 @@ const longRows: Project[] = [
 ];
 
 export default function ProjectsTablePreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
+      <PreviewSection title="Long text and extreme values">
+        <div className={frame}>
+          <ProjectsTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-sm`}>
+          <ProjectsTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Rows selected, sorted by revenue">
@@ -89,12 +136,6 @@ export default function ProjectsTablePreview() {
       <PreviewSection title="No rows yet">
         <div className={frame}>
           <ProjectsTable rows={[]} />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Long text and extreme values">
-        <div className={frame}>
-          <ProjectsTable rows={longRows} onOpen={() => {}} onAction={() => {}} />
         </div>
       </PreviewSection>
 
