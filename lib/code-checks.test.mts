@@ -233,6 +233,21 @@ export function Save(toastManager: { add: (options: object) => void }) {
 `,
   },
   {
+    name: 'a conditional inline style sets custom properties only',
+    file: 'components/docs/example.tsx',
+    flagged: `
+export function Stage({ height }: { height?: number }) {
+  return <div style={height ? { height } : undefined}>Fernhill Books</div>;
+}
+`,
+    message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
+    allowed: `
+export function Stage({ height }: { height?: number }) {
+  return <div style={height ? { '--stage-height': \`\${height}px\` } as React.CSSProperties : undefined}>Fernhill Books</div>;
+}
+`,
+  },
+  {
     name: 'a live region exists before its text arrives',
     file: 'registry/kosmos/blocks/example/example.tsx',
     flagged: `
@@ -251,6 +266,23 @@ export function Count({ count }: { count: number }) {
       </p>
     </div>
   );
+}
+`,
+  },
+  {
+    name: 'docs content scrolls in a scroll area',
+    file: 'components/docs/example.tsx',
+    flagged: `
+export function Contents() {
+  return <div className="min-h-0 overflow-y-auto p-1">Fernhill Books</div>;
+}
+`,
+    message: 'Content in the docs scrolls in a `ScrollArea`, which keeps the scrollbar and focus ring on the Kosmos style (kosmos-style, Overflow). The code block viewport is the one exception.',
+    allowed: `
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+export function Contents() {
+  return <ScrollArea className="min-h-0">Fernhill Books</ScrollArea>;
 }
 `,
   },
@@ -275,6 +307,27 @@ export function Notice({ message }: { message: string }) {
       {message}
     </p>
   );
+}
+`,
+  },
+  {
+    name: 'docs copy buttons go through the docs copy hook',
+    file: 'components/docs/example.tsx',
+    flagged: `
+import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
+
+export function Copy({ text }: { text: string }) {
+  const [copied, copy] = useCopyButton(() => navigator.clipboard.writeText(text));
+  return <button onClick={copy}>{copied ? 'Copied' : 'Copy'}</button>;
+}
+`,
+    message: 'Copy through `useDocsCopy` (`components/docs/use-docs-copy.ts`), which reports a failed copy; no `navigator.clipboard` or `useCopyButton` in components.',
+    allowed: `
+import { useDocsCopy } from '@/components/docs/use-docs-copy';
+
+export function Copy({ text }: { text: string }) {
+  const { status, copy } = useDocsCopy();
+  return <span onClick={() => copy(() => text)}>{status}</span>;
 }
 `,
   },

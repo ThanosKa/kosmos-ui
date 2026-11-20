@@ -2,9 +2,9 @@
 
 import { useSyncExternalStore } from 'react';
 import { ArrowUpRight, Check, ChevronDown, Copy, FileText } from 'lucide-react';
-import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { ClaudeIcon, GitHubIcon, OpenAIIcon } from '@/components/site/brand-icons';
 import { Button } from '@/registry/kosmos/ui/button';
+import { copyAnnouncement, useDocsCopy } from './use-docs-copy';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,13 +21,10 @@ function useOrigin() {
   return useSyncExternalStore(subscribeToNothing, () => window.location.origin, () => '');
 }
 
-async function copyMarkdown(markdownUrl: string) {
-  const markdown = fetch(markdownUrl).then(async (response) => {
-    if (!response.ok) throw new Error(`Failed to fetch ${markdownUrl}: ${response.status}`);
-    return new Blob([await response.text()], { type: 'text/plain' });
-  });
-  // Safari only allows clipboard writes started in the click, so the fetch goes in as a promise.
-  await navigator.clipboard.write([new ClipboardItem({ 'text/plain': markdown })]);
+async function fetchMarkdown(markdownUrl: string) {
+  const response = await fetch(markdownUrl);
+  if (!response.ok) throw new Error(`Failed to fetch ${markdownUrl}: ${response.status}`);
+  return response.text();
 }
 
 /**
@@ -36,7 +33,7 @@ async function copyMarkdown(markdownUrl: string) {
  */
 export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; githubUrl: string }) {
   const origin = useOrigin();
-  const [copied, onCopy] = useCopyButton(() => copyMarkdown(markdownUrl));
+  const { status, copied, copy } = useDocsCopy();
   const prompt = encodeURIComponent(`Read ${origin}${markdownUrl}, I want to ask questions about it.`);
   const external = { target: '_blank', rel: 'noreferrer noopener' };
 
@@ -49,7 +46,7 @@ export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; g
           <ChevronDown aria-hidden className="-me-0.5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-52">
-          <DropdownMenuItem onClick={onCopy}>
+          <DropdownMenuItem onClick={() => copy(() => fetchMarkdown(markdownUrl))}>
             <Copy aria-hidden />
             Copy Markdown
           </DropdownMenuItem>
@@ -61,22 +58,25 @@ export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; g
           <DropdownMenuLinkItem href={`https://claude.ai/new?q=${prompt}`} {...external}>
             <ClaudeIcon />
             Open in Claude
+            <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight aria-hidden className="ms-auto" />
           </DropdownMenuLinkItem>
           <DropdownMenuLinkItem href={`https://chatgpt.com/?prompt=${prompt}`} {...external}>
             <OpenAIIcon />
             Open in ChatGPT
+            <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight aria-hidden className="ms-auto" />
           </DropdownMenuLinkItem>
           <DropdownMenuLinkItem href={githubUrl} {...external}>
             <GitHubIcon />
             View source on GitHub
+            <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight aria-hidden className="ms-auto" />
           </DropdownMenuLinkItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <span role="status" className="sr-only">
-        {copied ? 'Markdown copied' : ''}
+        {copyAnnouncement(status, 'Markdown copied')}
       </span>
     </>
   );

@@ -2,23 +2,21 @@
 
 import { Check, Link as LinkIcon } from 'lucide-react';
 import { useId, type ComponentProps } from 'react';
-import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { copyAnnouncement, useDocsCopy } from './use-docs-copy';
 
 type DocsHeadingProps = ComponentProps<'h2'> & { as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' };
 
 /**
  * A docs heading that links to itself, with a button that copies that link. The button shows on hover and focus,
- * and always on touch screens, which have no hover. The heading is named by its text alone, not the button.
+ * and always on touch screens, which have no hover. The heading is named by its text alone, not the button; the button
+ * is named after the heading.
  */
 export function DocsHeading({ as: Tag, id, className, children, ...props }: DocsHeadingProps) {
   const labelId = useId();
-  const [copied, copy] = useCopyButton(() => {
-    const url = new URL(window.location.href);
-    url.hash = id!;
-    return navigator.clipboard.writeText(url.href);
-  });
+  const copyId = useId();
+  const { status, copied, copy } = useDocsCopy();
 
   if (!id) {
     return (
@@ -41,18 +39,28 @@ export function DocsHeading({ as: Tag, id, className, children, ...props }: Docs
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label="Copy link to section"
-        onClick={copy}
+        id={copyId}
+        aria-labelledby={`${copyId}-action ${labelId}`}
+        onClick={() =>
+          copy(() => {
+            const url = new URL(window.location.href);
+            url.hash = id!;
+            return url.href;
+          })
+        }
         className={cn(
           'not-prose shrink-0 text-muted-foreground opacity-0 transition-[opacity,background-color,scale]',
           'group-hover/heading:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100',
           copied && 'opacity-100',
         )}
       >
+        <span id={`${copyId}-action`} className="sr-only">
+          Copy link to
+        </span>
         {copied ? <Check aria-hidden /> : <LinkIcon aria-hidden />}
       </Button>
       <span role="status" className="sr-only">
-        {copied ? 'Link copied' : ''}
+        {copyAnnouncement(status, 'Link copied')}
       </span>
     </Tag>
   );

@@ -113,6 +113,31 @@ const styleSelectors = [
     selector: "JSXAttribute[name.name='style'] > JSXExpressionContainer > ObjectExpression > Property[key.type='Literal'][key.value!=/^--/]",
     message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
   },
+  {
+    selector:
+      "JSXAttribute[name.name='style'] > JSXExpressionContainer :matches(ConditionalExpression, LogicalExpression) > ObjectExpression > Property[key.type='Identifier']",
+    message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
+  },
+  {
+    selector:
+      "JSXAttribute[name.name='style'] > JSXExpressionContainer :matches(ConditionalExpression, LogicalExpression) > ObjectExpression > Property[key.type='Literal'][key.value!=/^--/]",
+    message: 'An inline `style` may only set CSS custom properties (`--name`); use a class for the rest (kosmos-style).',
+  },
+];
+
+// The docs scroll in a `ScrollArea`. The code block viewport is the one exception: it is a focusable region whose
+// scroll axes, collapse height and copy text are measured on the element itself.
+const docsScrollSelectors = classSelectors(
+  `${classStart}overflow-(x-|y-)?auto${classEnd}`,
+  'Content in the docs scrolls in a `ScrollArea`, which keeps the scrollbar and focus ring on the Kosmos style (kosmos-style, Overflow). The code block viewport is the one exception.',
+);
+
+// Copying goes through one hook, so a refused clipboard says so instead of failing silently.
+const copyHookMessage =
+  'Copy through `useDocsCopy` (`components/docs/use-docs-copy.ts`), which reports a failed copy; no `navigator.clipboard` or `useCopyButton` in components.';
+const copyHookSelectors = [
+  { selector: "MemberExpression[object.name='navigator'][property.name='clipboard']", message: copyHookMessage },
+  { selector: "CallExpression[callee.name='useCopyButton']", message: copyHookMessage },
 ];
 
 // An overlay's scroll area spans its full width, so its focus ring would land on the overlay's edge. The bodies set it
@@ -339,6 +364,16 @@ const eslintConfig = defineConfig([
     // The site keeps number durations for its docs demos, such as the slow run in the easing demo.
     files: ['components/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules] },
+  },
+  {
+    files: ['components/**/*.{ts,tsx}'],
+    ignores: ['components/docs/use-docs-copy.ts'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors] },
+  },
+  {
+    files: ['components/docs/**/*.{ts,tsx}'],
+    ignores: ['components/docs/use-docs-copy.ts', 'components/docs/code-block.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors, ...docsScrollSelectors] },
   },
   {
     // The one file that wraps `clsx` and `tailwind-merge`.
