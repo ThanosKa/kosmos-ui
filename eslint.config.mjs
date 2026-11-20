@@ -350,6 +350,13 @@ const codeRules = [
 const uiRules = [...codeRules, ...truncatedNumberSelectors];
 const blockRules = [...uiRules, ...orderSelectors, ...chartRemountSelectors, ...changeBadgeSelectors, ...handMadeDotSelectors, ...deadHandlerSelectors, ...numberFieldLocaleSelectors];
 
+// Registry code takes every color from the tokens and every duration from a token. The token files are the one place a
+// color value is written.
+const registryRules = [...kosmosSelectors, ...colorSelectors, ...durationSelectors];
+
+// Components and blocks hold at phone width. Examples may fill the screen to show a scroll.
+const phoneRules = [...viewportSelectors, ...pixelSizeSelectors];
+
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
  * JSX is wrapped in a fragment, since a sample may list several elements side by side.
@@ -390,40 +397,26 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    // Registry code takes every color from the tokens. The token files are the one place a color value is written.
     files: ['registry/**/*.{ts,tsx}'],
     ignores: ['registry/**/tokens.*', 'registry/kosmos/styles/**'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules] },
-  },
-  {
-    // Components and blocks hold at phone width. Examples may fill the screen to show a scroll.
-    files: ['registry/kosmos/ui/**/*.tsx', 'registry/kosmos/blocks/**/*.tsx'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors, ...pixelSizeSelectors] },
+    rules: { 'no-restricted-syntax': ['error', ...registryRules, ...codeRules] },
   },
   {
     files: ['registry/kosmos/ui/**/*.tsx'],
     ignores: Object.keys(fullTextElsewhere),
-    rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...uiRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors],
-    },
-  },
-  {
-    files: ['registry/kosmos/blocks/**/*.tsx'],
-    rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...blockRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors, ...scrollSelectors],
-    },
-  },
-  {
-    files: ['registry/kosmos/examples/**/*.tsx'],
-    rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...handMadeDotSelectors, ...deadHandlerSelectors, ...numberFieldLocaleSelectors],
-    },
+    rules: { 'no-restricted-syntax': ['error', ...registryRules, ...uiRules, ...phoneRules, ...truncateWithoutTitleSelectors] },
   },
   {
     files: Object.keys(fullTextElsewhere),
-    rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...uiRules, ...viewportSelectors, ...pixelSizeSelectors],
-    },
+    rules: { 'no-restricted-syntax': ['error', ...registryRules, ...uiRules, ...phoneRules] },
+  },
+  {
+    files: ['registry/kosmos/blocks/**/*.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...registryRules, ...blockRules, ...phoneRules, ...truncateWithoutTitleSelectors, ...scrollSelectors] },
+  },
+  {
+    files: ['registry/kosmos/examples/**/*.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...registryRules, ...codeRules, ...handMadeDotSelectors, ...deadHandlerSelectors, ...numberFieldLocaleSelectors] },
   },
   {
     // The site keeps number durations for its docs demos, such as the slow run in the easing demo.
