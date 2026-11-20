@@ -83,15 +83,15 @@ function CopyField({ value, secret = false, defaultRevealed = false, label = sec
             onClick={() => setRevealed((shown) => !shown)}
           >
             <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-              <EyeOff data-visible={(revealed) || undefined} className={iconSwap} />
-              <Eye data-visible={!(revealed) || undefined} className={iconSwap} />
+              <EyeOff data-visible={revealed || undefined} className={iconSwap} />
+              <Eye data-visible={!revealed || undefined} className={iconSwap} />
             </span>
           </InputGroupButton>
         ) : null}
         <InputGroupButton variant="ghost" size="icon-sm" aria-label={`Copy ${label}`} disabled={buttonsDisabled} onClick={copy}>
           <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-            <Check data-visible={(result === 'copied') || undefined} className={iconSwap} />
-            <Copy data-visible={!(result === 'copied') || undefined} className={iconSwap} />
+            <Check data-visible={result === 'copied' || undefined} className={iconSwap} />
+            <Copy data-visible={result !== 'copied' || undefined} className={iconSwap} />
           </span>
         </InputGroupButton>
       </InputGroupAddon>

@@ -59,8 +59,8 @@ export function DocsHeading({ as: Tag, id, className, children, ...props }: Docs
           Copy link to
         </span>
         <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-          <Check data-visible={(copied) || undefined} className={iconSwapClass} />
-          <LinkIcon data-visible={!(copied) || undefined} className={iconSwapClass} />
+          <Check data-visible={copied || undefined} className={iconSwapClass} />
+          <LinkIcon data-visible={!copied || undefined} className={iconSwapClass} />
         </span>
       </Button>
       <span role="status" className="sr-only">

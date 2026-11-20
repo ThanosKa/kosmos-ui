@@ -43,8 +43,8 @@ export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; g
       <DropdownMenu>
         <DropdownMenuTrigger render={<Button variant="secondary" size="md" />}>
           <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-            <Check data-visible={(copied) || undefined} className={iconSwapClass} />
-            <Copy data-visible={!(copied) || undefined} className={iconSwapClass} />
+            <Check data-visible={copied || undefined} className={iconSwapClass} />
+            <Copy data-visible={!copied || undefined} className={iconSwapClass} />
           </span>
           Copy page
           <ChevronDown aria-hidden className="-me-0.5" />
