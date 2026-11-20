@@ -5,7 +5,7 @@ import type { Browser, Page } from 'playwright';
 import { openSitePage, type Theme } from '../scripts/site.mts';
 import { readRegistryItems } from './registry.ts';
 
-export const checks = ['overflow', 'focus-ring', 'console'] as const;
+export const checks = ['overflow', 'focus-ring', 'clipped-text', 'names', 'console'] as const;
 export type Check = (typeof checks)[number];
 
 export type Finding = { route: string; theme: Theme; width: number; check: Check | 'load'; detail: string };
@@ -51,7 +51,8 @@ export function widthsFor(route: string, defaults: number[]) {
   return previewRoute.test(route) ? previewWidths : defaults;
 }
 
-type Measured = { element: string; clipper: string; sides: string[] };
+type Measured = { detail: string };
+type Cut = { element: string; clipper: string; sides: string[] };
 
 /** Runs in the page: the focused element's ring box against every ancestor that clips, or null when nothing is cut. */
 function measureFocusRing(rested: Map<Element, string>): Measured | null {
@@ -103,9 +104,10 @@ function measureFocusRing(rested: Map<Element, string>): Measured | null {
     const selector = `${node.tagName.toLowerCase()}${html.id && !/_R_|base-ui/.test(html.id) ? `#${html.id}` : ''}${html.dataset.slot ? `[data-slot=${html.dataset.slot}]` : ''}${classes.map((name) => `.${name}`).join('')}`;
     return label ? `${selector} "${label}"` : selector;
   };
+  const fadeStrip = 32;
   const hasRing = box.left - left > subpixel || box.top - top > subpixel || right - box.right > subpixel || bottom - box.bottom > subpixel;
   if (!hasRing) return null;
-  const cuts: Measured[] = [];
+  const cuts: Cut[] = [];
   for (let ancestor = element.parentElement; ancestor && ancestor !== document.documentElement && ancestor !== document.body; ancestor = ancestor.parentElement) {
     const ancestorStyle = getComputedStyle(ancestor);
     const clipsX = ancestorStyle.overflowX !== 'visible';
@@ -126,7 +128,117 @@ function measureFocusRing(rested: Map<Element, string>): Measured | null {
       .map(([side, past]) => `${side} ${Math.round(past as number)}px`);
     if (sides.length) cuts.push({ element: describe(element), clipper: `${describe(ancestor)} (overflow ${ancestorStyle.overflowX}/${ancestorStyle.overflowY})`, sides });
   }
-  return cuts[0] ?? null;
+  if (cuts[0]) return { detail: `${cuts[0].element} is cut by ${cuts[0].clipper} on ${cuts[0].sides.join(', ')}` };
+  for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+    if (ancestor.getAttribute('data-slot') !== 'scroll-area-viewport') continue;
+    const viewportStyle = getComputedStyle(ancestor);
+    const rect = ancestor.getBoundingClientRect();
+    const overflowOf = (axis: string, end: string) => Math.min(fadeStrip, parseFloat(viewportStyle.getPropertyValue(`--scroll-area-overflow-${axis}-${end}`)) || 0);
+    const under: string[] = [];
+    const topFade = overflowOf('y', 'start');
+    const bottomFade = overflowOf('y', 'end');
+    const leftFade = overflowOf('x', 'start');
+    const rightFade = overflowOf('x', 'end');
+    if (topFade > 0 && top < rect.top + topFade && bottom > rect.top) under.push(`top ${Math.round(topFade)}px`);
+    if (bottomFade > 0 && bottom > rect.bottom - bottomFade && top < rect.bottom) under.push(`bottom ${Math.round(bottomFade)}px`);
+    if (leftFade > 0 && left < rect.left + leftFade && right > rect.left) under.push(`left ${Math.round(leftFade)}px`);
+    if (rightFade > 0 && right > rect.right - rightFade && left < rect.right) under.push(`right ${Math.round(rightFade)}px`);
+    if (under.length) return { detail: `${describe(element)} has its ring under the edge fade of ${describe(ancestor)} on ${under.join(', ')}` };
+  }
+  return null;
+}
+
+/** Runs in the page: visible text whose box runs past an ancestor that clips without scrolling. */
+function measureClippedText(): string[] {
+  const subpixel = 1;
+  const found: string[] = [];
+  const reported = new Set<string>();
+  const describe = (node: Element) => {
+    const html = node as HTMLElement;
+    const classes = typeof html.className === 'string' ? html.className.split(/\s+/).filter(Boolean).slice(0, 3) : [];
+    return `${node.tagName.toLowerCase()}${html.id && !/_R_|base-ui/.test(html.id) ? `#${html.id}` : ''}${html.dataset.slot ? `[data-slot=${html.dataset.slot}]` : ''}${classes.map((name) => `.${name}`).join('')}`;
+  };
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const text = (node.textContent ?? '').replace(/\s+/g, ' ').trim();
+    const owner = node.parentElement;
+    if (!text || !owner || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(owner.tagName)) continue;
+    const ownerStyle = getComputedStyle(owner);
+    if (ownerStyle.textOverflow === 'ellipsis' || (ownerStyle.getPropertyValue('-webkit-line-clamp') || 'none') !== 'none') continue;
+    if (owner.closest('.sr-only, [hidden], [aria-hidden=true], [inert]')) continue;
+    let invisible = false;
+    for (let up: Element | null = owner; up; up = up.parentElement) {
+      const upStyle = getComputedStyle(up);
+      if (upStyle.opacity === '0' || upStyle.visibility === 'hidden' || upStyle.display === 'none') invisible = true;
+    }
+    if (invisible) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const lineHeight = parseFloat(ownerStyle.lineHeight);
+    const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
+    if (!rects.length) continue;
+    const boxes = rects.map((rect) => {
+      const height = Number.isFinite(lineHeight) && lineHeight < rect.height ? lineHeight : rect.height;
+      const top = rect.top + (rect.height - height) / 2;
+      return { left: rect.left, right: rect.right, top, bottom: top + height };
+    });
+    const box = {
+      left: Math.min(...boxes.map((b) => b.left)),
+      right: Math.max(...boxes.map((b) => b.right)),
+      top: Math.min(...boxes.map((b) => b.top)),
+      bottom: Math.max(...boxes.map((b) => b.bottom)),
+    };
+    let below: Element | null = null;
+    for (let ancestor: Element | null = owner; ancestor && ancestor !== document.documentElement && ancestor !== document.body; ancestor = ancestor.parentElement) {
+      const style = getComputedStyle(ancestor);
+      const belowPosition = below ? getComputedStyle(below).position : 'static';
+      if (belowPosition === 'fixed') break;
+      const positioned = style.position !== 'static' || style.transform !== 'none';
+      const skipped = belowPosition === 'absolute' && !positioned;
+      below = ancestor;
+      const scrollsX = ['auto', 'scroll'].includes(style.overflowX);
+      const scrollsY = ['auto', 'scroll'].includes(style.overflowY);
+      const clipsX = style.overflowX !== 'visible' && !scrollsX;
+      const clipsY = style.overflowY !== 'visible' && !scrollsY;
+      if (skipped || (!clipsX && !clipsY && !scrollsX && !scrollsY)) continue;
+      if (ancestor.clientWidth <= 1 || ancestor.clientHeight <= 1) break;
+      if (scrollsX || scrollsY) {
+        const scroller = ancestor.getBoundingClientRect();
+        const clamp = (value: number, low: number, high: number) => Math.min(Math.max(value, low), high);
+        const innerX = scroller.left + ancestor.clientLeft;
+        const innerY = scroller.top + ancestor.clientTop;
+        if (scrollsX) {
+          box.left = clamp(box.left, innerX, innerX + ancestor.clientWidth);
+          box.right = clamp(box.right, innerX, innerX + ancestor.clientWidth);
+        }
+        if (scrollsY) {
+          box.top = clamp(box.top, innerY, innerY + ancestor.clientHeight);
+          box.bottom = clamp(box.bottom, innerY, innerY + ancestor.clientHeight);
+        }
+      }
+      if (!clipsX && !clipsY) continue;
+      const rect = ancestor.getBoundingClientRect();
+      const innerLeft = rect.left + ancestor.clientLeft;
+      const innerTop = rect.top + ancestor.clientTop;
+      const sides = [
+        ['left', innerLeft - box.left, clipsX],
+        ['top', innerTop - box.top, clipsY],
+        ['right', box.right - (innerLeft + ancestor.clientWidth), clipsX],
+        ['bottom', box.bottom - (innerTop + ancestor.clientHeight), clipsY],
+      ]
+        .filter(([, past, clips]) => clips && (past as number) > subpixel)
+        .map(([side, past]) => `${side} ${Math.round(past as number)}px`);
+      if (!sides.length) continue;
+      if (style.textOverflow === 'ellipsis' || (style.getPropertyValue('-webkit-line-clamp') || 'none') !== 'none') break;
+      const key = `${text}|${describe(ancestor)}`;
+      if (!reported.has(key)) {
+        reported.add(key);
+        found.push(`"${text.slice(0, 40)}" is cut by ${describe(ancestor)} (overflow ${style.overflowX}/${style.overflowY}) on ${sides.join(', ')}`);
+      }
+      break;
+    }
+  }
+  return found;
 }
 
 /** Tabs through the page and reports each element whose focus ring a clipping ancestor cuts. A shadow an element wears before it takes focus is not its ring. */
@@ -145,7 +257,24 @@ async function focusRingFindings(page: Page) {
     seen.add(identity);
     if (cut) cuts.push(cut);
   }
-  return cuts.map((cut) => `${cut.element} is cut by ${cut.clipper} on ${cut.sides.join(', ')}`);
+  return cuts.map((cut) => cut.detail);
+}
+
+const namedRoles = ['button', 'link', 'textbox', 'combobox', 'listbox', 'dialog', 'checkbox', 'switch', 'slider', 'tab', 'menuitem'];
+
+/** Reads an ARIA snapshot and lists each control of a named role that has no accessible name, with the nearest named line above it. */
+export function unnamedControls(snapshot: string) {
+  const unnamed = new RegExp(`^(\\s*)- (${namedRoles.join('|')})((?: \\[[^\\]]+\\])*):?$`);
+  const lines = snapshot.split('\n');
+  const details = new Set<string>();
+  lines.forEach((line, index) => {
+    const match = line.match(unnamed);
+    if (!match) return;
+    const indent = match[1].length;
+    const parent = lines.slice(0, index).reverse().find((above) => above.trim() && above.length - above.trimStart().length < indent);
+    details.add(`${match[2]}${match[3]} has no accessible name${parent ? ` in ${parent.trim().replace(/^- /, '').replace(/:$/, '')}` : ''}`);
+  });
+  return [...details];
 }
 
 /** Opens `route` in `theme` at `width` and runs `only` (default every check). Overflow counts at phone width or narrower. */
@@ -174,6 +303,12 @@ export async function checkPage(browser: Browser, base: string, route: string, {
     }
     if (only.includes('focus-ring')) {
       for (const detail of await focusRingFindings(page)) findings.push(found('focus-ring', detail));
+    }
+    if (only.includes('clipped-text')) {
+      for (const detail of await page.evaluate(measureClippedText)) findings.push(found('clipped-text', detail));
+    }
+    if (only.includes('names')) {
+      for (const detail of unnamedControls(await page.locator('body').ariaSnapshot())) findings.push(found('names', detail));
     }
     if (only.includes('console')) {
       for (const message of new Set(errors)) findings.push(found('console', message.slice(0, 200)));

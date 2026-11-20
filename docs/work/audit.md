@@ -14,7 +14,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | Ticket | Title | Findings | Blocked by | Touches |
 | --- | --- | --- | --- | --- |
 | 15 | Site check fixes | `--route /`, resting shadows, `/preset-preview` (L Verification, D5) | None | site check |
-| 16 | Site check: clipped text, unnamed controls and focus under the edge fade | checks for B3, B14, L8, C8, B4, D3 | 15 | site check |
+| 16 | Site check: clipped text, unnamed controls and focus under the edge fade | checks for B3, B14, L8, C8, B4, D3 (Fixed in ticket 16) | 15 | site check |
 | 17 | Third-party notice check | ADR 0010 check left out of ticket 12 (Fixed in ticket 17) | None | registry item `meta`, `building.md` |
 | 18 | Focus stays in view inside scroll areas | C9, B10, L5, D3, B22, D5 | 16 | ScrollArea, Sidebar (resize handle), docs sidebar |
 | 19 | Text contrast below the floor | C1, C2, B5, L11 | None | Chart, Badge, Banner, tints test, Logo marquee, lint |
@@ -1066,3 +1066,4 @@ Tool note for the site check (ticket 01): `--route /` selects every route, becau
 
 **Not verified:** 200% zoom and 320px reflow, RTL, forced colors, a real screen reader, the picker's non-default choices (accent off, other radii, Compact and Comfortable), Warm, and full-motion playback.
 
+Tool note for the site check (ticket 16): `--check clipped-text` and `--check names` and the edge-fade test in `focus-ring` measure the checkable half of Blocks 3 and 14, Landing 8, Components 8, Blocks 4 and Docs 3. Fixed in ticket 16.
