@@ -191,7 +191,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** flicker in the reader's peripheral vision distracts people with attention and vestibular conditions who have not turned on reduced motion.
 - **Fix:** let the flicker settle to the still pattern after a few seconds (the code already has `stillOpacity`), or add a `paused` prop and a pause control in the docs example.
 
-#### 13. Two pinned-open menus in a review preview crash focus with infinite recursion
+#### 13. Two pinned-open menus in a review preview crash focus with infinite recursion (Fixed in ticket 22)
 
 - **Severity:** MEDIUM. **Kind:** bug (review tooling; it also cuts short the site check's Tab walk on those pages). **Checkable:** yes, browser (the site check's console check reports it on every run).
 - **Location:** `registry/kosmos/examples/breadcrumb.tsx:126`, `:145` and `registry/kosmos/examples/dropdown-menu.tsx:60`, `:85`, `:128` (menus rendered `open modal={false}` side by side in `OverlayStage`s). The 01 run also saw it on the `app-sidebar`, `detail-drawer` and `page-header` previews (ticket 04).
@@ -434,7 +434,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - On dismiss, move focus to the bar's home link.
   - An always-rendered `role="status"` line that says what happened.
 
-**9. Review previews pin menus open with no `onOpenChange`: a keyboard trap and a stack overflow.**
+**9. Review previews pin menus open with no `onOpenChange`: a keyboard trap and a stack overflow.** (Fixed in ticket 22)
 - **Bug, preview only.** Already caught by the **browser** check's console check.
 - **Where:**
   - `examples/app-sidebar.tsx:34` (`{ open: true, modal: false }`)
@@ -937,7 +937,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** clickable rows give no hover feedback, and the selection reads only from the small checkbox.
 - **Fix:** derive both fills from a token that differs from `card`, such as `bg-accent` (the Kosmos hover overlay) for hover and `muted` for selected. Or delete both rules so Iris keeps the Kosmos row states.
 
-#### 4. Overlays tab: keyboard focus stops after two stops and the page throws "Maximum call stack size exceeded"
+#### 4. Overlays tab: keyboard focus stops after two stops and the page throws "Maximum call stack size exceeded" (Fixed in ticket 22)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Preset:** all (Default included). **Checkable:** yes, browser: the site check's console check, once `/preset-preview` is in its routes (with the Overlays tab selected).
 - **Location:** `components/preset-cards/overlay-cards.tsx:152` (`DropdownMenu open modal={false}`), `:307` (`Dialog open modal={false}`), `:342` (`Drawer open modal={false}`), `components/preset-cards/block-cards.tsx:13`, `:29` (`CommandMenu open modal={false}`), `:43` (`DetailDrawer open modal={false}`). Same cause as 03 finding 13; these are new locations for it.
@@ -968,7 +968,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **What is wrong:** the panels cut content at the frame edge with no edge fade, the one Kosmos overflow cue.
 - **Fix:** as 04 finding 13: wrap each screen in `ScrollArea`. Better, reuse the Showcase block once it is fixed rather than keeping a second copy.
 
-#### 8. Presets Overlays tab: the pinned toast stack overflows its fixed-height stage at phone width
+#### 8. Presets Overlays tab: the pinned toast stack overflows its fixed-height stage at phone width (Fixed in ticket 22)
 
 - **Severity:** LOW. **Kind:** bug. **Preset:** all. **Checkable:** yes, browser: text or a focusable element cut by an `overflow: hidden` ancestor (the 03 clipped-text measure, run on `/preset-preview`).
 - **Location:** `components/preset-cards/overlay-cards.tsx:284` (`stageClassName="h-[21rem]"`).

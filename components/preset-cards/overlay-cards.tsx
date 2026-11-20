@@ -280,8 +280,9 @@ export function ToastStage() {
   return (
     <PresetStage
       title="Toasts"
-      description="Stacked in the corner; hover to spread them."
-      stageClassName="h-[21rem]"
+      description="Stacked in the corner; point at them to spread them."
+      stageClassName="h-auto min-h-96"
+      inert={false}
       action={
         <Button
           variant="secondary"

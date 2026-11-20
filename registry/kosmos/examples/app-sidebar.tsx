@@ -95,10 +95,10 @@ export default function AppSidebarPreview() {
     <PreviewStack>
       <PreviewSection title="Expanded, with each menu open (a drawer below 768px)">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Shell className="h-40 md:h-[38rem]">
+          <Shell inert className="h-40 md:h-[38rem]">
             <PinnedSidebar menu="workspace" />
           </Shell>
-          <Shell className="h-40 md:h-[38rem]">
+          <Shell inert className="h-40 md:h-[38rem]">
             <PinnedSidebar menu="user" />
           </Shell>
         </div>
@@ -152,7 +152,7 @@ export default function AppSidebarPreview() {
       </PreviewSection>
 
       <PreviewSection title="Phone: the sidebar as a drawer">
-        <OverlayStage label="open, below 768px" className="h-[40rem] max-w-sm">
+        <OverlayStage inert label="open, below 768px" className="h-[40rem] max-w-sm">
           {(container) => (
             <Drawer open modal={false} swipeDirection="left">
               <DrawerContent
