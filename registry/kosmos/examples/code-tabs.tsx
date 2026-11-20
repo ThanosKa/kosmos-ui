@@ -2,6 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { CodeTabs } from '@/registry/kosmos/ui/code-tabs';
 import CodeTabsControlled from '@/registry/kosmos/examples/code-tabs-controlled';
 import CodeTabsOutput from '@/registry/kosmos/examples/code-tabs-output';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const install = {
   pnpm: 'pnpm add @acme/analytics',
@@ -27,9 +28,9 @@ const platforms = {
   Scoop: 'scoop install acme',
 };
 
-export default function CodeTabsPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <PreviewSection title="Default, first tab open">
           <CodeTabs commands={install} />
@@ -49,9 +50,6 @@ export default function CodeTabsPreview() {
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Long command wraps">
-          <CodeTabs commands={long} />
-        </PreviewSection>
         <PreviewSection title="More tabs than fit, in a narrow slot">
           <CodeTabs commands={platforms} label="Platform" className="max-w-72" />
         </PreviewSection>
@@ -62,6 +60,33 @@ export default function CodeTabsPreview() {
           <CodeTabs commands={{ npm: 'npm install @acme/analytics' }} />
         </PreviewSection>
       </div>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long command wraps">
+        <CodeTabs commands={long} />
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function CodeTabsPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

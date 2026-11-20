@@ -5,6 +5,7 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { isEmail } from '@/registry/kosmos/lib/tags';
 import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { TagsInput } from '@/registry/kosmos/ui/tags-input';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['placeholder', 'tags', 'mistyped tag'] as const;
 const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled', 'read-only'] as const;
@@ -39,9 +40,9 @@ const many = [
   'σοφία@tidepool.example',
 ];
 
-export default function TagsInputPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Field × states">
         <StateMatrix
           rows={rows}
@@ -76,12 +77,51 @@ export default function TagsInputPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Many tags, long and non-Latin">
+    </>
+  );
+}
+
+const worstTags = [
+  ...many,
+  'bartholomew.fitzgerald@northwind-industries-holdings.example',
+  'jo@a.example',
+  '🌊saltmarsh@example',
+  'quarterly-revenue-forecast-every-region-and-plan@copperline.example',
+  ...Array.from({ length: 24 }, (_, index) => `member-${index + 1}@acme.example`),
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Forty tags, long and non-Latin, with a mistyped one">
         <div className="flex max-w-md flex-col gap-4">
-          <TagsInput aria-label="Invite, many" defaultValue={many} validate={isEmail} />
+          <TagsInput aria-label="Invite, many" defaultValue={worstTags} validate={isEmail} />
           <TagsInput aria-label="Invite, one long address" defaultValue={['quarterly-revenue-forecast-every-region-and-plan@copperline.example']} />
         </div>
       </PreviewSection>
-    </PreviewStack>
+
+      <PreviewSection title="In a narrow field, at the limit">
+        <div className="flex w-56 flex-col gap-4">
+          <TagsInput aria-label="Labels at the limit" defaultValue={['Ιστότοπος καφέ', 'storm traffic and seasonal promotions', 'K']} max={3} />
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function TagsInputPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

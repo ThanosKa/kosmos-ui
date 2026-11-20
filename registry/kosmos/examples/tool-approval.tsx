@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
 import { ToolApproval, type ApprovalDecision, type ToolApprovalDetail } from '@/registry/kosmos/ui/tool-approval';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const reassignDetails: ToolApprovalDetail[] = [
   { label: 'Project', value: 'Cirrus Weather' },
@@ -75,9 +76,9 @@ function Interactive() {
   );
 }
 
-export default function ToolApprovalPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <PreviewSection title="Interactive: approve or deny">
           <Interactive />
@@ -109,9 +110,6 @@ export default function ToolApprovalPreview() {
         <PreviewSection title="No description or details">
           <ToolApproval tool="alerts.mute" title="Mute traffic alerts for Cirrus Weather for 1 hour?" />
         </PreviewSection>
-        <PreviewSection title="Long text">
-          <ToolApproval {...longText} defaultDetailsOpen />
-        </PreviewSection>
         <PreviewSection title="320px wide">
           <div className="w-full max-w-80">
             <ToolApproval {...reassign} defaultDetailsOpen />
@@ -128,6 +126,33 @@ export default function ToolApprovalPreview() {
           </div>
         </PreviewSection>
       </div>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long text">
+        <ToolApproval {...longText} defaultDetailsOpen />
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function ToolApprovalPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

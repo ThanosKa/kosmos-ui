@@ -4,6 +4,7 @@ import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@
 import { Input } from '@/registry/kosmos/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const roles = { viewer: 'Viewer', editor: 'Editor', admin: 'Admin' };
 
@@ -27,9 +28,9 @@ function RoleSelect({ defaultValue }: { defaultValue?: string }) {
 const orientations = ['vertical', 'horizontal'] as const;
 const states = ['default', 'focus', 'invalid', 'disabled'] as const;
 
-export default function FieldPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Orientation × states">
         <StateMatrix
           rows={orientations}
@@ -151,16 +152,40 @@ export default function FieldPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text in a narrow field">
-        <div className="w-56">
-          <Field invalid>
-            <FieldLabel>Billing contact for invoices and payment reminders</FieldLabel>
-            <Input type="email" defaultValue="lena@acme" />
-            <FieldDescription>Every invoice, receipt and failed payment notice goes to this address.</FieldDescription>
-            <FieldError>Enter an email address with a domain, such as name@company.com.</FieldError>
-          </Field>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text in a narrow field">
+      <div className="w-56">
+        <Field invalid>
+          <FieldLabel>Billing contact for invoices and payment reminders</FieldLabel>
+          <Input type="email" defaultValue="lena@acme" />
+          <FieldDescription>Every invoice, receipt and failed payment notice goes to this address.</FieldDescription>
+          <FieldError>Enter an email address with a domain, such as name@company.com.</FieldError>
+        </Field>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function FieldPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

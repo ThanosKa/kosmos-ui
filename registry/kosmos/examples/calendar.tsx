@@ -4,6 +4,7 @@ import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import type { DateRange } from '@/registry/kosmos/lib/dates';
 import { Calendar, type CalendarProps } from '@/registry/kosmos/ui/calendar';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const day = (month: number, date: number) => new Date(2026, month - 1, date);
 const october = day(10, 1);
@@ -28,9 +29,9 @@ function Live(props: CalendarProps) {
   );
 }
 
-export default function CalendarPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Single">
         <div className="flex flex-wrap gap-6">
           <Case label="picked, today marked">
@@ -80,13 +81,37 @@ export default function CalendarPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Narrow, 320px">
-        <div className="w-80 max-w-full">
-          <Case label="two months wrap">
-            <Live mode="range" months={2} defaultMonth={october} defaultValue={{ from: day(10, 26), to: day(11, 3) }} aria-label="Trip" />
-          </Case>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Narrow, 320px">
+      <div className="w-80 max-w-full">
+        <Case label="two months wrap">
+          <Live mode="range" months={2} defaultMonth={october} defaultValue={{ from: day(10, 26), to: day(11, 3) }} aria-label="Trip" />
+        </Case>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function CalendarPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

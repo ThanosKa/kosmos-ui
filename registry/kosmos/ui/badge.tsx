@@ -1,6 +1,7 @@
 import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
 import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 
 const neutral = 'bg-secondary text-secondary-foreground shadow-control [a&]:hover:bg-muted';
@@ -47,11 +48,20 @@ type BadgeProps = useRender.ComponentProps<'span'> & {
   variant?: BadgeVariant;
 };
 
-function Badge({ className, variant = 'secondary', render, ...props }: BadgeProps) {
+function Badge({ className, variant = 'secondary', render, children, ...props }: BadgeProps) {
+  const label = React.Children.map(children, (child) =>
+    typeof child === 'string' ? (
+      <span title={child} className="min-w-0 truncate">
+        {child}
+      </span>
+    ) : (
+      child
+    ),
+  );
   return useRender({
     defaultTagName: 'span',
     render,
-    props: mergeProps<'span'>({ className: cn(badgeVariants({ variant }), className) }, props),
+    props: mergeProps<'span'>({ className: cn(badgeVariants({ variant }), className), ...(children === undefined ? {} : { children: label }) }, props),
     state: { slot: 'badge', variant },
   });
 }

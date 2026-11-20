@@ -15,6 +15,7 @@ import {
   BreadcrumbTrail,
   type BreadcrumbCrumb,
 } from '@/registry/kosmos/ui/breadcrumb';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const trail: BreadcrumbCrumb[] = [
   { label: 'Acme', href: '/' },
@@ -70,9 +71,9 @@ function Frame({ label, children, className }: { label: string; children: React.
   );
 }
 
-export default function BreadcrumbPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Parts × states">
         <StateMatrix
           rows={['link', 'ellipsis'] as const}
@@ -156,20 +157,6 @@ export default function BreadcrumbPreview() {
       </PreviewSection>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Long and non-Latin names">
-          <div className="flex flex-col gap-4">
-            <Frame label="long names, 100%" className="w-full">
-              <BreadcrumbTrail items={longTrail} />
-            </Frame>
-            <Frame label="long names, 280px" className="w-full max-w-[280px]">
-              <BreadcrumbTrail items={longTrail} />
-            </Frame>
-            <Frame label="Greek and Japanese" className="w-full">
-              <BreadcrumbTrail items={nonLatinTrail} />
-            </Frame>
-          </div>
-        </PreviewSection>
-
         <PreviewSection title="Short trails, own separator">
           <div className="flex flex-col gap-4">
             <Frame label="one crumb" className="w-full">
@@ -194,6 +181,69 @@ export default function BreadcrumbPreview() {
           <h1 className="text-title font-medium">Settings</h1>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+const worstTrail: BreadcrumbCrumb[] = [
+  { label: 'Acme', href: '/' },
+  { label: 'Projects', href: '/projects' },
+  { label: 'Copperline Bank server events for card payments, loans and the business portal', href: '/projects/copperline' },
+  { label: 'payments-gateway.eu-west.copperline.example', href: '/projects/copperline/domains' },
+  { label: 'K' },
+];
+
+const emojiTrail: BreadcrumbCrumb[] = [
+  { label: '🌊', href: '/' },
+  { label: 'Ιστότοπος καφέ Saltmarsh 🌊', href: '/projects/saltmarsh' },
+  { label: 'Quarterly-revenue-forecast-every-region-and-plan-2026-final-v12' },
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Long and non-Latin names">
+        <div className="flex flex-col gap-4">
+          <Frame label="long names, 100%" className="w-full">
+            <BreadcrumbTrail items={longTrail} />
+          </Frame>
+          <Frame label="long names, 280px" className="w-full max-w-[280px]">
+            <BreadcrumbTrail items={longTrail} />
+          </Frame>
+          <Frame label="an unbreakable domain, a one-letter page, 100%" className="w-full">
+            <BreadcrumbTrail items={worstTrail} />
+          </Frame>
+          <Frame label="an unbreakable domain, a one-letter page, 240px" className="w-full max-w-[240px]">
+            <BreadcrumbTrail items={worstTrail} />
+          </Frame>
+          <Frame label="Greek and Japanese" className="w-full">
+            <BreadcrumbTrail items={nonLatinTrail} />
+          </Frame>
+          <Frame label="emoji and a long version slug, 280px" className="w-full max-w-[280px]">
+            <BreadcrumbTrail items={emojiTrail} />
+          </Frame>
+          <Frame label="a single long page, 160px" className="w-full max-w-[160px]">
+            <BreadcrumbTrail items={[{ label: worstTrail[2].label as string }]} />
+          </Frame>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function BreadcrumbPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

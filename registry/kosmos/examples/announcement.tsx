@@ -2,13 +2,14 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Announcement } from '@/registry/kosmos/ui/announcement';
 import AnnouncementHero from '@/registry/kosmos/examples/announcement-hero';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['with badge', 'without badge'] as const;
 const states = ['default', 'hover', 'focus', 'active'] as const;
 
-export default function AnnouncementPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Badge × states">
         <StateMatrix
           rows={rows}
@@ -37,18 +38,6 @@ export default function AnnouncementPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text in a narrow slot">
-        <div className="flex w-64 flex-col items-start gap-2 bg-background">
-          <Announcement href="#changelog" badge="New">
-            EU data region: keep the events of every project in Europe, on every plan, including Free
-          </Announcement>
-          <Announcement href="#changelog" badge="Beta, Insights area, Q4 2026">
-            Funnel comparisons
-          </Announcement>
-          <Announcement href="#status">ScheduledMaintenanceForTheIngestionPipelineInEurope</Announcement>
-        </div>
-      </PreviewSection>
-
       <PreviewSection title="Other scripts">
         <div className="flex flex-col items-start gap-3">
           <Announcement href="#el" badge="Νέο">
@@ -59,6 +48,41 @@ export default function AnnouncementPreview() {
           </Announcement>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text in a narrow slot">
+      <div className="flex w-64 flex-col items-start gap-2 bg-background">
+        <Announcement href="#changelog" badge="New">
+          EU data region: keep the events of every project in Europe, on every plan, including Free
+        </Announcement>
+        <Announcement href="#changelog" badge="Beta, Insights area, Q4 2026">
+          Funnel comparisons
+        </Announcement>
+        <Announcement href="#status">ScheduledMaintenanceForTheIngestionPipelineInEurope</Announcement>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function AnnouncementPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

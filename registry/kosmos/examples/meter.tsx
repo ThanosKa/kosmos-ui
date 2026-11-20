@@ -3,14 +3,15 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const tones = ['primary', 'success', 'warning', 'destructive'] as const;
 const values = ['0', '5', '50', '100'] as const;
 const autoValues = [12, 48, 91] as const;
 
-export default function MeterPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Segments: tone × value">
         <StateMatrix
           rows={tones}
@@ -69,26 +70,6 @@ export default function MeterPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Segment counts and a long label">
-        <div className="flex max-w-sm flex-col gap-4">
-          <Meter value={60} tone="primary">
-            <MeterLabel>10 segments</MeterLabel>
-            <MeterValue />
-            <MeterSegments count={10} />
-          </Meter>
-          <Meter value={60} tone="primary">
-            <MeterLabel>40 segments</MeterLabel>
-            <MeterValue />
-            <MeterSegments count={40} />
-          </Meter>
-          <Meter value={73} tone="primary">
-            <MeterLabel>Monthly active seats across every workspace in the organization</MeterLabel>
-            <MeterValue />
-            <MeterBar />
-          </Meter>
-        </div>
-      </PreviewSection>
-
       <PreviewSection title="In a card, no visible label">
         <div className="flex max-w-xs flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 shadow-card">
           <div className="flex items-baseline justify-between gap-3">
@@ -100,6 +81,74 @@ export default function MeterPreview() {
           </Meter>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Segment counts and a long label">
+      <div className="flex max-w-sm flex-col gap-4">
+        <Meter value={60} tone="primary">
+          <MeterLabel>10 segments</MeterLabel>
+          <MeterValue />
+          <MeterSegments count={10} />
+        </Meter>
+        <Meter value={60} tone="primary">
+          <MeterLabel>40 segments</MeterLabel>
+          <MeterValue />
+          <MeterSegments count={40} />
+        </Meter>
+        <Meter value={73} tone="primary">
+          <MeterLabel>Monthly active seats across every workspace in the organization</MeterLabel>
+          <MeterValue />
+          <MeterBar />
+        </Meter>
+      </div>
+    </PreviewSection>
+
+      <PreviewSection title="Out of range, huge and tiny values, a one-letter label">
+        <div className="flex max-w-sm flex-col gap-4">
+          <Meter value={140} tone="auto">
+            <MeterLabel>Over 100%</MeterLabel>
+            <MeterValue />
+            <MeterBar />
+          </Meter>
+          <Meter value={-5} tone="auto">
+            <MeterLabel>Below zero</MeterLabel>
+            <MeterValue />
+            <MeterSegments />
+          </Meter>
+          <Meter value={1_284_903} min={0} max={1_000_000} tone="warning">
+            <MeterLabel>Events this month, past the 1,000,000 allowance</MeterLabel>
+            <MeterValue />
+            <MeterBar />
+          </Meter>
+          <Meter value={0.4} tone="primary">
+            <MeterLabel>K</MeterLabel>
+            <MeterValue />
+            <MeterBar />
+          </Meter>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function MeterPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

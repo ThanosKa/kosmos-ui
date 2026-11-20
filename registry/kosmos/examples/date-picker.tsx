@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { lastDays, startOfDay } from '@/registry/kosmos/lib/dates';
@@ -28,10 +29,10 @@ function Trigger({ row, state }: { row: (typeof rows)[number]; state: string }) 
   return <DateRangePicker aria-label="Period" defaultValue={{ from: day(10, 3), to: day(11, 9) }} className="w-full" {...preview} />;
 }
 
-export default function DatePickerPreview() {
+function Normal() {
   const [today] = React.useState(() => startOfDay(new Date()));
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Trigger">
         <StateMatrix rows={rows} render={(row, state) => <Trigger row={row} state={state} />} />
       </PreviewSection>
@@ -41,39 +42,6 @@ export default function DatePickerPreview() {
           <DateRangePicker aria-label="Period" defaultValue={lastDays(30)} className="h-7.5 w-48" />
           <Button variant="secondary">Export</Button>
         </div>
-      </PreviewSection>
-
-      <PreviewSection title="Long text">
-        <div className="flex w-80 max-w-full flex-col gap-3">
-          <DatePicker aria-label="Fecha" locale="es-ES" defaultValue={day(9, 30)} className="w-full" />
-          <DateRangePicker
-            aria-label="Period"
-            locale="en-GB"
-            ranges={[]}
-            defaultValue={{ from: day(12, 28), to: new Date(2027, 0, 11) }}
-            className="w-44"
-          />
-          <DatePicker aria-label="Kickoff" placeholder="Pick the day the quarterly planning kickoff starts" className="w-full" />
-        </div>
-      </PreviewSection>
-
-      <PreviewSection title="Worst case">
-        <OverlayStage label="translated quick ranges, a range across the year" className="h-[40rem] sm:h-[27rem]">
-          {(container) => (
-            <DateRangePicker
-              open
-              aria-label="Zeitraum"
-              locale="de-DE"
-              placeholder="Zeitraum wählen"
-              rangesLabel="Schnellauswahl"
-              startHint="Ersten oder letzten Tag wählen"
-              endHint="Das andere Ende wählen"
-              ranges={germanRanges}
-              defaultValue={{ from: day(12, 22), to: new Date(2027, 0, 6) }}
-              container={container}
-            />
-          )}
-        </OverlayStage>
       </PreviewSection>
 
       <PreviewSection title="Open">
@@ -101,6 +69,61 @@ export default function DatePickerPreview() {
           {(container) => <DateRangePicker open aria-label="Period" defaultValue={lastDays(7)} container={container} />}
         </OverlayStage>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+    <PreviewSection title="Long text">
+      <div className="flex w-80 max-w-full flex-col gap-3">
+        <DatePicker aria-label="Fecha" locale="es-ES" defaultValue={day(9, 30)} className="w-full" />
+        <DateRangePicker
+          aria-label="Period"
+          locale="en-GB"
+          ranges={[]}
+          defaultValue={{ from: day(12, 28), to: new Date(2027, 0, 11) }}
+          className="w-44"
+        />
+        <DatePicker aria-label="Kickoff" placeholder="Pick the day the quarterly planning kickoff starts" className="w-full" />
+      </div>
+    </PreviewSection>
+    <PreviewSection title="Worst case">
+      <OverlayStage label="translated quick ranges, a range across the year" className="h-[40rem] sm:h-[27rem]">
+        {(container) => (
+          <DateRangePicker
+            open
+            aria-label="Zeitraum"
+            locale="de-DE"
+            placeholder="Zeitraum wählen"
+            rangesLabel="Schnellauswahl"
+            startHint="Ersten oder letzten Tag wählen"
+            endHint="Das andere Ende wählen"
+            ranges={germanRanges}
+            defaultValue={{ from: day(12, 22), to: new Date(2027, 0, 6) }}
+            container={container}
+          />
+        )}
+      </OverlayStage>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function DatePickerPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

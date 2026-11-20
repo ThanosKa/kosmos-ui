@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ScrollArea, ScrollBar, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const events = [
   'Deployed web to production',
@@ -50,9 +51,9 @@ function PinnedScrollArea({ at, ...props }: ScrollAreaProps & { at: 'start' | 'm
 
 const card = 'rounded-2xl border border-transparent bg-card p-1 shadow-card';
 
-export default function ScrollAreaPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Vertical: at the top, scrolled, at the end">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {(['start', 'middle', 'end'] as const).map((at) => (
@@ -120,22 +121,46 @@ export default function ScrollAreaPreview() {
         </PreviewSection>
       </div>
 
-      <PreviewSection title="Long text in a narrow slot">
-        <div className={`${card} w-full max-w-72`}>
-          <ScrollArea className="max-h-40 rounded-xl">
-            <div className="flex flex-col gap-3 p-3 text-small text-muted-foreground">
-              <p>
-                Every request to the API counts toward the limit of the workspace it belongs to. When a workspace goes over
-                its limit, further requests get a 429 response until the window resets.
-              </p>
-              <p>
-                Limits reset every minute. Raise the limit from the billing page, or spread requests out with a queue so a
-                burst never reaches the limit at all.
-              </p>
-            </div>
-          </ScrollArea>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text in a narrow slot">
+      <div className={`${card} w-full max-w-72`}>
+        <ScrollArea className="max-h-40 rounded-xl">
+          <div className="flex flex-col gap-3 p-3 text-small text-muted-foreground">
+            <p>
+              Every request to the API counts toward the limit of the workspace it belongs to. When a workspace goes over
+              its limit, further requests get a 429 response until the window resets.
+            </p>
+            <p>
+              Limits reset every minute. Raise the limit from the billing page, or spread requests out with a queue so a
+              burst never reaches the limit at all.
+            </p>
+          </div>
+        </ScrollArea>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function ScrollAreaPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

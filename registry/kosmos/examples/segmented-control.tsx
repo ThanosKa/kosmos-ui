@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['selected item', 'other item'] as const;
 
@@ -23,9 +24,9 @@ function Controlled() {
   );
 }
 
-export default function SegmentedControlPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Item × states">
         <StateMatrix
           rows={rows}
@@ -115,14 +116,38 @@ export default function SegmentedControlPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long labels in a narrow slot (labels wrap)">
-        <div className="w-64">
-          <SegmentedControl aria-label="Audience" defaultValue="everyone" className="w-full">
-            <SegmentedControlItem value="everyone">Everyone in the workspace</SegmentedControlItem>
-            <SegmentedControlItem value="team">Only my team</SegmentedControlItem>
-          </SegmentedControl>
-        </div>
-      </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long labels in a narrow slot (labels wrap)">
+      <div className="w-64">
+        <SegmentedControl aria-label="Audience" defaultValue="everyone" className="w-full">
+          <SegmentedControlItem value="everyone">Everyone in the workspace</SegmentedControlItem>
+          <SegmentedControlItem value="team">Only my team</SegmentedControlItem>
+        </SegmentedControl>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function SegmentedControlPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

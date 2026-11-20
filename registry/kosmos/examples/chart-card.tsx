@@ -14,6 +14,7 @@ import {
   type ChartCardState,
 } from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const days = [66100, 66400, 66200, 66900, 67300, 67100, 67800, 68200, 68000, 68700, 69100, 68900, 69500, 70000];
 const events = days.map((count, i) => ({ day: `Sep ${12 + i}`, current: count, previous: Math.round(count * 0.88) }));
@@ -67,9 +68,9 @@ function StateCard({ state, retry = true }: { state: ChartCardState; retry?: boo
   );
 }
 
-export default function ChartCardPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Growth chart with a range switch">
         <ChartCard>
           <ChartCardHeader>
@@ -116,53 +117,136 @@ export default function ChartCardPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text, title only, no header">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ChartCard>
+    </>
+  );
+}
+
+const huge = days.map((count, i) => ({ day: `Sep ${12 + i}`, current: count * 19_000 + i * 7, previous: Math.round(count * 15_000) }));
+const flatZero = days.map((_, i) => ({ day: `Sep ${12 + i}`, current: 0 }));
+const longConfig = {
+  web: { label: 'Web, every browser and every region of the EU data region', color: 'var(--chart-1)' },
+  ios: { label: 'iOS and watchOS, production and TestFlight builds', color: 'var(--chart-2)' },
+  android: { label: 'Ιστότοπος καφέ 🌊', color: 'var(--chart-3)' },
+  server: { label: 'K', color: 'var(--chart-4)' },
+  other: { label: 'Everything else that sends events without a platform', color: 'var(--chart-5)' },
+} satisfies ChartConfig;
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text, title only, no header">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <ChartCard>
+          <ChartCardHeader>
+            <ChartCardTitle>Events received across every project and region, by day</ChartCardTitle>
+            <ChartCardDescription>Against the same 14 days of the previous year, before the EU data region went live</ChartCardDescription>
+            <ChartCardAction>
+              <RangeSwitch />
+            </ChartCardAction>
+            <ChartCardLegend
+              config={{
+                current: { label: 'Last 14 days, every project in every region', color: 'var(--chart-1)' },
+                previous: { label: 'Same 14 days a year ago', color: 'var(--chart-1)' },
+              }}
+            />
+          </ChartCardHeader>
+          <ChartCardContent>
+            <GrowthChart title="Events a day" data={events} config={oneSeries} xKey="day" />
+          </ChartCardContent>
+        </ChartCard>
+        <ChartCard state="empty">
+          <ChartCardHeader>
+            <ChartCardTitle>Events</ChartCardTitle>
+          </ChartCardHeader>
+          <ChartCardContent
+            emptyTitle="Tidepool Notes has sent no events in the last 14 days, on any of its platforms"
+            emptyDescription="Events show up here as soon as the app sends one. Check that the SDK key matches the project, then open the app once."
+          />
+        </ChartCard>
+        <ChartCard>
+          <ChartCardContent>
+            <GrowthChart title="Events a day" data={events} config={oneSeries} xKey="day" />
+          </ChartCardContent>
+        </ChartCard>
+        <div className="w-80 max-w-full">
+          <ChartCard state="error">
             <ChartCardHeader>
-              <ChartCardTitle>Events received across every project and region, by day</ChartCardTitle>
-              <ChartCardDescription>Against the same 14 days of the previous year, before the EU data region went live</ChartCardDescription>
+              <ChartCardTitle>Events</ChartCardTitle>
               <ChartCardAction>
                 <RangeSwitch />
               </ChartCardAction>
-              <ChartCardLegend
-                config={{
-                  current: { label: 'Last 14 days, every project in every region', color: 'var(--chart-1)' },
-                  previous: { label: 'Same 14 days a year ago', color: 'var(--chart-1)' },
-                }}
-              />
             </ChartCardHeader>
-            <ChartCardContent>
-              <GrowthChart title="Events a day" data={events} config={oneSeries} xKey="day" />
-            </ChartCardContent>
+            <ChartCardContent onRetry={() => {}} />
           </ChartCard>
-          <ChartCard state="empty">
+        </div>
+      </div>
+    </PreviewSection>
+
+      <PreviewSection title="Numbers in the billions, one point, all zero">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ChartCard>
             <ChartCardHeader>
               <ChartCardTitle>Events</ChartCardTitle>
+              <ChartCardDescription>Against the 14 days before</ChartCardDescription>
             </ChartCardHeader>
-            <ChartCardContent
-              emptyTitle="Tidepool Notes has sent no events in the last 14 days, on any of its platforms"
-              emptyDescription="Events show up here as soon as the app sends one. Check that the SDK key matches the project, then open the app once."
-            />
-          </ChartCard>
-          <ChartCard>
             <ChartCardContent>
-              <GrowthChart title="Events a day" data={events} config={oneSeries} xKey="day" />
+              <GrowthChart title="Events a day, in the billions" data={huge} config={twoSeries} xKey="day" previousKeys={['previous']} />
             </ChartCardContent>
           </ChartCard>
-          <div className="w-80 max-w-full">
-            <ChartCard state="error">
-              <ChartCardHeader>
-                <ChartCardTitle>Events</ChartCardTitle>
-                <ChartCardAction>
-                  <RangeSwitch />
-                </ChartCardAction>
-              </ChartCardHeader>
-              <ChartCardContent onRetry={() => {}} />
-            </ChartCard>
-          </div>
+          <ChartCard>
+            <ChartCardHeader>
+              <ChartCardTitle>Events, one day of data</ChartCardTitle>
+            </ChartCardHeader>
+            <ChartCardContent>
+              <GrowthChart title="Events a day" data={events.slice(0, 1)} config={oneSeries} xKey="day" />
+            </ChartCardContent>
+          </ChartCard>
+          <ChartCard>
+            <ChartCardHeader>
+              <ChartCardTitle>Events, all zero</ChartCardTitle>
+            </ChartCardHeader>
+            <ChartCardContent>
+              <GrowthChart title="Events a day" data={flatZero} config={oneSeries} xKey="day" />
+            </ChartCardContent>
+          </ChartCard>
+          <ChartCard>
+            <ChartCardHeader>
+              <ChartCardTitle>Events by platform</ChartCardTitle>
+              <ChartCardDescription>Each week, in millions</ChartCardDescription>
+              <ChartCardLegend config={longConfig} />
+            </ChartCardHeader>
+            <ChartCardContent>
+              <ChartContainer config={longConfig} className="aspect-auto h-60">
+                <BarChart data={platforms} title="Events by platform, each week">
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" />
+                  {Object.keys(longConfig).map((key) => (
+                    <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} />
+                  ))}
+                </BarChart>
+              </ChartContainer>
+            </ChartCardContent>
+          </ChartCard>
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+export default function ChartCardPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -3,6 +3,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Alert, AlertAction, AlertDescription, AlertTitle, type AlertVariant } from '@/registry/kosmos/ui/alert';
 import { Button } from '@/registry/kosmos/ui/button';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const variants = ['neutral', 'info', 'success', 'warning', 'destructive'] as const satisfies readonly AlertVariant[];
 const linkStates = ['default', 'hover', 'focus'] as const;
@@ -35,9 +36,9 @@ const copy: Record<AlertVariant, { title: string; description: string; link: str
   },
 };
 
-export default function AlertPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Subtle">
         <div className="flex flex-col gap-3">
           {variants.map((variant) => (
@@ -141,17 +142,6 @@ export default function AlertPreview() {
           </div>
         </PreviewSection>
 
-        <PreviewSection title="Long text in a narrow slot">
-          <div className="flex w-full max-w-64 flex-col gap-3">
-            <Alert variant="destructive">
-              <AlertTitle>The weekly summary could not be sent to kai.nakamura.growth-team-weekly-digest@acme.example</AlertTitle>
-              <AlertDescription>
-                The mailbox is full. Ask Kai to free some space, then send it again from{' '}
-                <a href="https://acme.example/settings/notifications">https://acme.example/settings/notifications/weekly-summary</a>.
-              </AlertDescription>
-            </Alert>
-          </div>
-        </PreviewSection>
       </div>
 
       <PreviewSection title="On a card, subtle and filled">
@@ -169,6 +159,41 @@ export default function AlertPreview() {
           ))}
         </div>
       </PreviewSection>
-    </PreviewStack>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long text in a narrow slot">
+        <div className="flex w-full max-w-64 flex-col gap-3">
+          <Alert variant="destructive">
+            <AlertTitle>The weekly summary could not be sent to kai.nakamura.growth-team-weekly-digest@acme.example</AlertTitle>
+            <AlertDescription>
+              The mailbox is full. Ask Kai to free some space, then send it again from{' '}
+              <a href="https://acme.example/settings/notifications">https://acme.example/settings/notifications/weekly-summary</a>.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function AlertPreview() {
+  return (
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }
