@@ -32,7 +32,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 31 | Block copy and docs prose (Fixed in ticket 31) | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
 | 34 | Icon swaps and small marks (Fixed in ticket 34) | M2, M5 | None | Status, Prompt composer, Assistant message, Notification inbox, style skill, lint |
 | 35 | Chart motion | M1, M3, M4 | None | Chart (Sparkline, Growth chart), `use-chart-motion`, Usage overview, Candlestick chart, chart examples, `chart.mdx` |
-| 36 | Copy icon swaps | M6 | 34 | Copy field, Code tabs, Run timeline, docs code block, docs heading, docs page actions |
+| 36 | Copy icon swaps (Fixed in ticket 36) | M6 | 34 | Copy field, Code tabs, Run timeline, docs code block, docs heading, docs page actions |
 
 Tickets 08 and 09 wait for 15, 16 and 18 to 31. Ticket 17 adds a check only and blocks nothing. Ticket 11 added 34 to 36 from the Motion section (M and the finding number).
 
@@ -1126,13 +1126,13 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 - **What is wrong:** marking a notification read is a repeated action, like ticking a checkbox. Ticket 10 made the Checkbox and Radio marks fade without growing for that reason; the 8px dot still shrinks from full size to half.
 - **Fix:** Fixed in ticket 34. The dot only fades.
 
-#### 6. Copy and reveal buttons swap their icon at once (missed opportunity)
+#### 6. Copy and reveal buttons swap their icon at once (Fixed in ticket 36)
 
 - **Severity:** LOW. **Kind:** taste (cohesion). **Checkable:** no.
 - **Location:** `registry/kosmos/ui/copy-field.tsx:78, 82`; `registry/kosmos/ui/code-tabs.tsx:104`; `registry/kosmos/blocks/run-timeline/run-timeline.tsx:351`; `components/docs/code-block.tsx:172`; `components/docs/docs-heading.tsx:60`; `components/docs/page-actions.tsx:44`.
 - **What is wrong:** Copy turns into Check with no transition here, while Assistant message's Copy button morphs. The docs' code block Copy is the most used copy button on the site.
 - **Why it matters:** the morph is the confirmation people look for after a copy; one product should confirm it one way.
-- **Fix:** ticket 36, with the recipe from ticket 34.
+- **Fix:** Fixed in ticket 36. Every copy and reveal button uses the icon swap recipe.
 
 No other missed opportunity was found: the state changes that teleport (calendar months, dismissed banners, tags) are frequent or keyboard-driven, where no motion is right.
 

@@ -241,6 +241,12 @@ function StepBody({
   }
 }
 
+// Icon swaps cross-fade; with motion allowed they also scale and blur, as Asset's play and pause icons do.
+const iconSwap = cn(
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+);
+
 function HeaderAction({ label, onClick, children }: { label: string; onClick?: () => void; children: React.ReactNode }) {
   return (
     <Tooltip>
@@ -348,7 +354,10 @@ function RunTimeline({
                   onCopyLink?.(run);
                 }}
               >
-                {copyResult === 'copied' ? <Check /> : <Link2 />}
+                <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+                  <Check data-visible={(copyResult === 'copied') || undefined} className={iconSwap} />
+                  <Link2 data-visible={!(copyResult === 'copied') || undefined} className={iconSwap} />
+                </span>
               </HeaderAction>
             ) : null}
           </div>

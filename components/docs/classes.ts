@@ -15,3 +15,9 @@ export const inlineProseClass = [
 
 /** The card a table sits in on a docs page. */
 export const tableCardClass = 'not-prose my-6 min-w-0 rounded-2xl border border-transparent bg-card shadow-card';
+
+/** The class of each icon in a stacked copy swap: it cross-fades, and with motion allowed scales and blurs; `data-visible` shows it. */
+export const iconSwapClass = [
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+].join(' ');

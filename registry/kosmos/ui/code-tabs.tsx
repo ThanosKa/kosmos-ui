@@ -8,6 +8,12 @@ import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
+// Icon swaps cross-fade; with motion allowed they also scale and blur, as Asset's play and pause icons do.
+const iconSwap = cn(
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+);
+
 const copyMessages: Record<CopyResult, string> = {
   idle: '',
   copied: 'Command copied',
@@ -101,7 +107,10 @@ function CodeTabs<Tab extends string>({
               </span>
             </code>
             <Button variant="ghost" size="icon" aria-label={`Copy command: ${commands[tab]}`} onClick={copy} className="rounded-md">
-              {result === 'copied' ? <Check aria-hidden /> : <Copy aria-hidden />}
+              <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+                <Check data-visible={(result === 'copied') || undefined} className={iconSwap} />
+                <Copy data-visible={!(result === 'copied') || undefined} className={iconSwap} />
+              </span>
             </Button>
           </div>
           {children != null ? <div className="min-w-0 text-small text-muted-foreground">{children}</div> : null}
