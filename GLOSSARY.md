@@ -35,7 +35,7 @@ _Avoid_: kitchen sink (αυτό είναι πολλά components μαζί)
 _Avoid_: demo (το demo είναι το παράδειγμα των docs, `<name>-demo`)
 
 **Browser check**:
-Η εντολή `pnpm site-check`. Ανοίγει κάθε σελίδα του site, των docs και κάθε review preview σε έναν browser, στα 375 και 1280, σε light και dark, και αποτυγχάνει όταν μια σελίδα σκρολάρει πλάγια, ένα focus ring κόβεται από τον γονέα του ή υπάρχει console error. Μια γνωστή εξαίρεση, με τον λόγο της, δεν την αποτυγχάνει.
+Η εντολή `pnpm site-check`. Ανοίγει κάθε σελίδα του site, των docs και κάθε review preview σε έναν browser, στα 375 και 1280, σε light και dark, και αποτυγχάνει όταν μια σελίδα σκρολάρει πλάγια, ένα focus ring κόβεται από τον γονέα του ή μπαίνει κάτω από το fade της άκρης ενός scroll area, ένα κείμενο κόβεται από γονέα που δεν σκρολάρει, ένα control δεν έχει όνομα για τους screen readers ή υπάρχει console error. Μια γνωστή εξαίρεση, με τον λόγο της, δεν την αποτυγχάνει.
 _Avoid_: e2e test, visual test (δεν συγκρίνει εικόνες)
 
 **Group**:

@@ -1,7 +1,7 @@
 // Usage: pnpm site-check [--port 3000 | --base http://localhost:3000] [--check overflow] [--route /view] [--theme dark] [--width 375]
 // The browser check. Opens every site page, docs page and review preview of a running server at 375 and 1280 wide (the Presets preview on each
 // of its five tabs at 341 and 966, the widths its iframe gets), in light and dark, and prints one line per finding: route, theme, width, check, detail. Checks: overflow (the page scrolls
-// sideways at 375), focus-ring (a clipping ancestor cuts a focus ring) and console (console and page errors).
+// sideways at 375), focus-ring (a clipping ancestor or a scroll area's edge fade covers a focus ring), clipped-text (text cut by an ancestor that does not scroll), names (a control with no accessible name) and console (console and page errors).
 // --check, --route, --theme and --width each narrow the run and can repeat. --route takes a page or a group of pages
 // (/view, /docs/components). Findings listed in site-check-exceptions.mts print as known and do not fail the run.
 // Exits 1 on any other finding.

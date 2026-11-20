@@ -14,6 +14,17 @@ const pages: Record<string, string> = {
   '/room': `${ringStyle}<div style="overflow:hidden;width:fit-content;padding:8px"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
   '/resting': `<style>button{box-shadow:0 0 0 1px gray}button:focus-visible{outline:2px solid red;outline-offset:-2px}</style><div style="overflow:hidden;width:fit-content"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
   '/shadow-ring': `<style>button:focus-visible{outline:none;box-shadow:0 0 0 2px red}</style><div id="card" style="overflow:hidden;width:fit-content"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
+  '/text-cut': '<div id="chip" style="overflow:hidden;width:60px;white-space:nowrap;font:16px/20px sans-serif">A label that runs past the chip</div>',
+  '/text-ellipsis': '<div style="overflow:hidden;width:60px;white-space:nowrap;text-overflow:ellipsis;font:16px/20px sans-serif">A label that runs past the chip</div>',
+  '/text-clamp': '<div style="overflow:hidden;width:80px;height:20px;font:16px/20px sans-serif;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical">A label that wraps onto a second line</div>',
+  '/text-scrolls': '<div style="overflow:auto;width:60px;white-space:nowrap;font:16px/20px sans-serif">A label that runs past the box</div>',
+  '/text-hidden-kinds': '<div style="overflow:hidden;width:60px;white-space:nowrap;font:16px/20px sans-serif"><span style="opacity:0">Invisible words past the edge</span><span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">Screen reader only words</span><div hidden="until-found">Found in page words</div></div>',
+  '/text-fits': '<div style="overflow:hidden;width:200px;font:16px/20px sans-serif">Short</div>',
+  '/nameless': '<button></button><a href="/x"></a><input type="text"><div role="checkbox" tabindex="0"></div>',
+  '/named': '<button>Save</button><button aria-label="Close"></button><a href="/x">Home</a><label>Email <input type="text"></label>',
+  '/fade-under-ring': `${ringStyle}<div data-slot="scroll-area-viewport" style="--scroll-area-overflow-y-start:20px;overflow:auto;height:100px;padding:10px"><button style="margin:0;border:0;padding:4px">Save</button><div style="height:300px"></div></div>`,
+  '/fade-inactive': `${ringStyle}<div data-slot="scroll-area-viewport" style="--scroll-area-overflow-y-start:0px;overflow:auto;height:100px;padding:10px"><button style="margin:0;border:0;padding:4px">Save</button><div style="height:300px"></div></div>`,
+  '/fade-clear': `${ringStyle}<div data-slot="scroll-area-viewport" style="--scroll-area-overflow-y-start:20px;overflow:auto;height:100px;padding:40px 10px"><button style="margin:0;border:0;padding:4px">Save</button><div style="height:300px"></div></div>`,
   '/broken': '<script>console.error("boom")</script><script>throw new Error("crash")</script>',
 };
 
@@ -75,6 +86,43 @@ describe('browser check on a page', () => {
     const ring = (await run('/shadow-ring')).filter((finding) => finding.check === 'focus-ring');
     assert.equal(ring.length, 1);
     assert.match(ring[0].detail, /left 2px/);
+  });
+
+  test('text cut by an overflow-hidden ancestor names the text, the clipper, the side and the pixels', async () => {
+    const cut = await run('/text-cut', 375, ['clipped-text']);
+    assert.equal(cut.length, 1);
+    assert.equal(cut[0].check, 'clipped-text');
+    assert.match(cut[0].detail, /A label that runs past the chip/);
+    assert.match(cut[0].detail, /div#chip/);
+    assert.match(cut[0].detail, /right \d+px/);
+  });
+
+  test('text that truncates on purpose, scrolls, fits or is not visible is not clipped text', async () => {
+    for (const route of ['/text-ellipsis', '/text-clamp', '/text-scrolls', '/text-hidden-kinds', '/text-fits']) {
+      assert.deepEqual(await run(route, 375, ['clipped-text']), [], route);
+    }
+  });
+
+  test('a control with no accessible name is a finding for each role', async () => {
+    const details = (await run('/nameless', 375, ['names'])).map((finding) => finding.detail);
+    for (const role of ['button', 'link', 'textbox', 'checkbox']) assert.ok(details.some((detail) => detail.startsWith(role)), role);
+  });
+
+  test('controls with a name, a label or an aria-label are not findings', async () => {
+    assert.deepEqual(await run('/named', 375, ['names']), []);
+  });
+
+  test('a focus ring inside an active scroll area edge fade is a finding', async () => {
+    const ring = await run('/fade-under-ring', 375, ['focus-ring']);
+    assert.equal(ring.length, 1);
+    assert.match(ring[0].detail, /button "Save"/);
+    assert.match(ring[0].detail, /fade/);
+    assert.match(ring[0].detail, /top/);
+  });
+
+  test('a focus ring clear of the fade, or under an inactive fade, is not a finding', async () => {
+    assert.deepEqual(await run('/fade-clear', 375, ['focus-ring']), []);
+    assert.deepEqual(await run('/fade-inactive', 375, ['focus-ring']), []);
   });
 
   test('console errors and page errors are findings', async () => {
