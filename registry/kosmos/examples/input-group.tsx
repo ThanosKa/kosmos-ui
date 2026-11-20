@@ -11,7 +11,7 @@ import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import InputGroupToolbar from '@/registry/kosmos/examples/input-group-toolbar';
 import InputGroupButtonExample from '@/registry/kosmos/examples/input-group-button';
 import InputGroupTextExample from '@/registry/kosmos/examples/input-group-text';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['icon start', 'text start', 'kbd end', 'button end', 'both sides'] as const;
 const states = ['placeholder', 'filled', 'invalid', 'disabled'] as const;
@@ -183,9 +183,17 @@ function Worst() {
 
 export default function InputGroupPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

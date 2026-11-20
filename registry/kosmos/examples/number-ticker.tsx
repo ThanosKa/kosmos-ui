@@ -1,6 +1,6 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { NumberTicker } from '@/registry/kosmos/ui/number-ticker';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 function Normal() {
   return (
@@ -46,9 +46,17 @@ function Worst() {
 
 export default function NumberTickerPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

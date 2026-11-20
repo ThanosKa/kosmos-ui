@@ -3,7 +3,7 @@
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { UsageMeter, type UsageBreakdownRow } from '@/registry/kosmos/ui/usage-meter';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const LIMIT = 200_000;
 
@@ -158,9 +158,17 @@ function Worst() {
 
 export default function UsageMeterPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

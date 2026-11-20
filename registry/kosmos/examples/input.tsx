@@ -2,7 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Button } from '@/registry/kosmos/ui/button';
 import { Input } from '@/registry/kosmos/ui/input';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['placeholder', 'filled'] as const;
 const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
@@ -68,9 +68,17 @@ function Worst() {
 
 export default function InputPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

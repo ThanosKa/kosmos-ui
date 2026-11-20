@@ -14,7 +14,7 @@ import {
   type ChartCardState,
 } from '@/registry/kosmos/ui/chart-card';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const days = [66100, 66400, 66200, 66900, 67300, 67100, 67800, 68200, 68000, 68700, 69100, 68900, 69500, 70000];
 const events = days.map((count, i) => ({ day: `Sep ${12 + i}`, current: count, previous: Math.round(count * 0.88) }));
@@ -236,9 +236,17 @@ function Worst() {
 
 export default function ChartCardPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

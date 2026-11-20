@@ -35,7 +35,7 @@ import {
   NotificationItemTitle,
 } from '@/registry/kosmos/ui/notification-inbox';
 import { Skeleton } from '@/registry/kosmos/ui/skeleton';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[42rem]';
 
@@ -416,9 +416,17 @@ function Worst() {
 
 export default function NotificationInboxPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

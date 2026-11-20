@@ -1,7 +1,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['placeholder', 'filled'] as const;
 const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled'] as const;
@@ -57,9 +57,17 @@ function Worst() {
 
 export default function TextareaPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

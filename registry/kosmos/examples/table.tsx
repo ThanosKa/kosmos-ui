@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/registry/kosmos/ui/table';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const invoices = [
   { id: 'INV-1042', project: 'Fernhill Books', status: 'Paid', tone: 'bg-success', amount: 2400 },
@@ -276,9 +276,17 @@ function Worst() {
 
 export default function TablePreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

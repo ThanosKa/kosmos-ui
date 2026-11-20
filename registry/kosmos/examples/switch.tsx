@@ -2,7 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Switch } from '@/registry/kosmos/ui/switch';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['off', 'on'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -96,9 +96,17 @@ function Worst() {
 
 export default function SwitchPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

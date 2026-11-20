@@ -3,7 +3,7 @@ import { StateMatrix } from '@/components/preview/state-matrix';
 import { CopyField } from '@/registry/kosmos/ui/copy-field';
 import { Field, FieldDescription, FieldLabel } from '@/registry/kosmos/ui/field';
 import CopyFieldRevealed from '@/registry/kosmos/examples/copy-field-revealed';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['plain', 'secret, hidden', 'secret, shown'] as const;
 const states = ['default', 'disabled'] as const;
@@ -84,9 +84,17 @@ function Worst() {
 
 export default function CopyFieldPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

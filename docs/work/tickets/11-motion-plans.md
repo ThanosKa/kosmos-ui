@@ -2,7 +2,7 @@
 
 **What to build:** The maintainer gets a prioritized audit of every animation that remains, and each fix worth making becomes a ticket a Sonnet agent can execute with no taste of its own. Emil's `improve-animations` writes the audit and the plans; it changes no source. Spec: `docs/work/audit-spec.md`.
 
-**Blocked by:** 08, 09 (the worst-case passes).
+**Blocked by:** 08, 09 (the worst-case passes), 33 (Worst-case leftovers).
 
 **Model:** Opus
 

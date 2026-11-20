@@ -3,7 +3,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Alert, AlertAction, AlertDescription, AlertTitle, type AlertVariant } from '@/registry/kosmos/ui/alert';
 import { Button } from '@/registry/kosmos/ui/button';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const variants = ['neutral', 'info', 'success', 'warning', 'destructive'] as const satisfies readonly AlertVariant[];
 const linkStates = ['default', 'hover', 'focus'] as const;
@@ -183,9 +183,17 @@ function Worst() {
 
 export default function AlertPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

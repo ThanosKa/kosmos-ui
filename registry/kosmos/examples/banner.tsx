@@ -4,7 +4,7 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import BannerPage from '@/registry/kosmos/examples/banner-page';
 import BannerVariants from '@/registry/kosmos/examples/banner-variants';
 import { Banner, BannerAction, BannerText, type BannerVariant } from '@/registry/kosmos/ui/banner';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const variants = ['neutral', 'info', 'success', 'warning', 'destructive'] as const satisfies readonly BannerVariant[];
 const actionStates = ['default', 'hover', 'focus', 'active'] as const;
@@ -79,9 +79,17 @@ function Worst() {
 
 export default function BannerPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

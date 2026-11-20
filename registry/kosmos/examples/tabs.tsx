@@ -5,7 +5,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { ScrollToMiddle } from '@/components/preview/scroll-to-middle';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['active tab', 'inactive tab'] as const;
 
@@ -179,9 +179,17 @@ function Worst() {
 
 export default function TabsPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -3,7 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Meter, MeterBar, MeterLabel, MeterSegments, MeterValue } from '@/registry/kosmos/ui/meter';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const tones = ['primary', 'success', 'warning', 'destructive'] as const;
 const values = ['0', '5', '50', '100'] as const;
@@ -138,9 +138,17 @@ function Worst() {
 
 export default function MeterPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

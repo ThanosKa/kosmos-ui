@@ -1,16 +1,29 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Showcase } from '@/registry/kosmos/blocks/showcase/showcase';
 import { Button } from '@/registry/kosmos/ui/button';
 
 export default function ShowcasePreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default">
         <Showcase className="w-full" />
       </PreviewSection>
+
       <PreviewSection title="Starts on the settings">
         <Showcase className="w-full" defaultScreen="settings" />
       </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Your own screens, with a long tab and a long address">
         <Showcase
           className="w-full"

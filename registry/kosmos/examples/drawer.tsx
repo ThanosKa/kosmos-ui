@@ -16,7 +16,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/registry/kosmos/ui/drawer';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const details = [
   ['Status', 'In progress'],
@@ -226,9 +226,17 @@ function Worst() {
 
 export default function DrawerPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

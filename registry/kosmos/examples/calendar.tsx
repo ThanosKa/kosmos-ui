@@ -4,7 +4,7 @@ import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import type { DateRange } from '@/registry/kosmos/lib/dates';
 import { Calendar, type CalendarProps } from '@/registry/kosmos/ui/calendar';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const day = (month: number, date: number) => new Date(2026, month - 1, date);
 const october = day(10, 1);
@@ -101,9 +101,17 @@ function Worst() {
 
 export default function CalendarPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ScrollArea, ScrollBar, type ScrollAreaProps } from '@/registry/kosmos/ui/scroll-area';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const events = [
   'Deployed web to production',
@@ -150,9 +150,17 @@ function Worst() {
 
 export default function ScrollAreaPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

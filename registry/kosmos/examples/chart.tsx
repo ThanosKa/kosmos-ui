@@ -15,7 +15,7 @@ import {
   type ChartConfig,
 } from '@/registry/kosmos/ui/chart';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/registry/kosmos/ui/empty';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const revenue = [18200, 21400, 19800, 24600, 27100, 26300, 31800, 34200, 33100, 38900, 41200, 45600];
@@ -199,9 +199,17 @@ function Worst() {
 
 export default function ChartPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

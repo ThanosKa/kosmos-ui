@@ -237,7 +237,7 @@ function PageHeader({
             </TabsList>
           </div>
 
-          <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2">
+          <div role="group" aria-label={`Search and filter ${noun}`} className="flex min-w-0 items-center gap-2 @3xl:shrink-0">
             <div className="relative min-w-0 flex-1 @3xl:w-56 @3xl:flex-none">
               <Search
                 aria-hidden

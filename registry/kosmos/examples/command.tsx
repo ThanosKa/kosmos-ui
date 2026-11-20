@@ -32,7 +32,7 @@ import {
   CommandShortcut,
 } from '@/registry/kosmos/ui/command';
 import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 type Item = { value: string; label: string; icon: LucideIcon; shortcut?: string[] };
 type Group = { value: string; items: Item[] };
@@ -241,9 +241,17 @@ function Worst() {
 
 export default function CommandPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

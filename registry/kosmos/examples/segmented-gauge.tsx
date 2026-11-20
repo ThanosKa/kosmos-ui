@@ -3,7 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import SegmentedGaugeDemo from '@/registry/kosmos/examples/segmented-gauge-demo';
 import { SegmentedGauge, type SegmentedGaugeProps } from '@/registry/kosmos/ui/segmented-gauge';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 });
 
@@ -71,9 +71,17 @@ function Worst() {
 
 export default function SegmentedGaugePreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

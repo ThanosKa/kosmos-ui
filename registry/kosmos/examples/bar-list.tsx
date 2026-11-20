@@ -1,4 +1,4 @@
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { BarList } from '@/registry/kosmos/ui/bar-list';
 
@@ -121,9 +121,17 @@ function Worst() {
 
 export default function BarListPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

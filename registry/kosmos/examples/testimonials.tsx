@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Testimonials } from '@/registry/kosmos/blocks/testimonials/testimonials';
 
@@ -9,6 +10,10 @@ const few = [
 ];
 
 export default function TestimonialsPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Wall">
@@ -45,9 +50,40 @@ export default function TestimonialsPreview() {
           </div>
         </div>
       </PreviewSection>
+    </PreviewStack>
+  );
+}
 
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text, a photo and no role">
         <div className={frame}>
+          <Testimonials
+            title="What the product, engineering and growth teams behind these web, iOS, Android and server apps say"
+            featured={{
+              quote:
+                'We moved every event from three tools into Acme over one weekend, and on Monday the dashboards already matched what finance had, down to the last checkout_completed_with_discount_code_applied event.',
+              name: 'Alexandria Montgomery-Whitfield',
+              role: 'Vice president of product and platform engineering, Cirrus Weather',
+            }}
+            testimonials={[
+              {
+                quote: 'Supercalifragilisticexpialidocious_event_name_without_spaces_that_never_breaks shows up in full.',
+                name: 'Bartholomew Featherstonehaugh-Cholmondeley',
+                role: 'Senior staff engineer for data infrastructure, Copperline Bank',
+              },
+              { quote: 'Short.', name: 'Noor' },
+              { quote: '霧島ウェザーのチーム全員が、同じ数字を見ています。', name: '霧島 さくら', role: 'プロダクト, Cirrus Weather' },
+              { quote: 'Our funnels finally match our invoices.', name: 'Tessa Morgan', avatar: '/avatars/tessa.jpg' },
+              { quote: 'Сводка за неделю приходит в понедельник утром.', name: 'Ольга Смирнова', role: 'Аналитик, Driftwood Travel' },
+            ]}
+          />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
           <Testimonials
             title="What the product, engineering and growth teams behind these web, iOS, Android and server apps say"
             featured={{

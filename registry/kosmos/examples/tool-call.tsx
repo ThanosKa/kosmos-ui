@@ -4,7 +4,7 @@ import { Database, Download, FileText, Gauge, Mail, Receipt } from 'lucide-react
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { ToolCall } from '@/registry/kosmos/ui/tool-call';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const card = 'min-w-0 rounded-2xl border border-transparent bg-card p-2 shadow-card';
 
@@ -224,9 +224,17 @@ function Worst() {
 
 export default function ToolCallPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

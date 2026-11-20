@@ -2,7 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Announcement } from '@/registry/kosmos/ui/announcement';
 import AnnouncementHero from '@/registry/kosmos/examples/announcement-hero';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['with badge', 'without badge'] as const;
 const states = ['default', 'hover', 'focus', 'active'] as const;
@@ -72,9 +72,17 @@ function Worst() {
 
 export default function AnnouncementPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -2,7 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { CodeTabs } from '@/registry/kosmos/ui/code-tabs';
 import CodeTabsControlled from '@/registry/kosmos/examples/code-tabs-controlled';
 import CodeTabsOutput from '@/registry/kosmos/examples/code-tabs-output';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const install = {
   pnpm: 'pnpm add @acme/analytics',
@@ -76,9 +76,17 @@ function Worst() {
 
 export default function CodeTabsPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

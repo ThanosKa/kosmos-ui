@@ -3,7 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import StackedBlockChartDemo from '@/registry/kosmos/examples/stacked-block-chart-demo';
 import { StackedBlockChart, type StackedBlockChartItem, type StackedBlockChartSeries } from '@/registry/kosmos/ui/stacked-block-chart';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const platforms: StackedBlockChartSeries[] = [
   { key: 'web', label: 'Web' },
@@ -96,9 +96,17 @@ function Worst() {
 
 export default function StackedBlockChartPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

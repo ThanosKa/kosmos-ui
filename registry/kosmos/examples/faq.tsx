@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Faq } from '@/registry/kosmos/blocks/faq/faq';
 
@@ -9,6 +10,10 @@ const shortItems = [
 ];
 
 export default function FaqPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Default, first question open">
@@ -40,9 +45,44 @@ export default function FaqPreview() {
           <Faq items={[]} />
         </div>
       </PreviewSection>
+    </PreviewStack>
+  );
+}
 
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text">
         <div className={frame}>
+          <Faq
+            title="Questions the product, engineering and growth teams ask before they add their first project to Acme"
+            defaultValue={['retention']}
+            items={[
+              {
+                id: 'retention',
+                question:
+                  'How long does Acme keep the events of a project on the Scale plan, and can we choose a shorter period for the events of our users in the European Union?',
+                answer:
+                  'Scale keeps every event for 25 months by default. Each project can set a shorter period in its settings, from 30 days up, and the period can differ between the events of users in the European Union and everyone else. Events older than the period are deleted every night.',
+              },
+              {
+                id: 'domain',
+                question: 'Does fernhill-books-and-stationery-international.example work as a project domain?',
+                answer: 'Yes. Any domain you own works, however long, including subdomains such as shop.fernhill-books-and-stationery-international.example.',
+              },
+              { id: 'jp', question: '霧島ウェザーのイベントも送れますか？', answer: 'はい。どの言語のアプリからでも、同じSDKでイベントを送れます。' },
+            ]}
+            contact={
+              <>
+                Still have a question about plans, limits, retention or exports for your team? <a href="/contact">Talk to the team behind Acme</a>
+              </>
+            }
+          />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
           <Faq
             title="Questions the product, engineering and growth teams ask before they add their first project to Acme"
             defaultValue={['retention']}

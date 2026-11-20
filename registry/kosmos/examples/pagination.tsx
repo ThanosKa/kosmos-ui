@@ -13,7 +13,7 @@ import {
   PaginationPrevious,
   PaginationStatus,
 } from '@/registry/kosmos/ui/pagination';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const pages = ['page', 'current page'] as const;
 const steps = ['previous', 'next', 'previous with label', 'next with label'] as const;
@@ -220,9 +220,17 @@ function Worst() {
 
 export default function PaginationPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

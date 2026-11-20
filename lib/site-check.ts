@@ -40,7 +40,7 @@ export function siteRoutes(group?: string) {
     .filter((item) => (item.type === 'registry:ui' || item.type === 'registry:block') && existsSync(`registry/kosmos/examples/${item.name}.tsx`))
     .flatMap((item) => {
       const route = `/view/${item.name}`;
-      return readFileSync(`registry/kosmos/examples/${item.name}.tsx`, 'utf8').includes('DataToggle') ? [route, `${route}?data=worst`] : [route];
+      return readFileSync(`registry/kosmos/examples/${item.name}.tsx`, 'utf8').includes('DataSetPreview') ? [route, `${route}?data=worst`] : [route];
     });
   const presetPreviews = previewTabs.map((tab) => `/preset-preview (${tab})`);
   const routes = [...new Set(['/', '/presets', ...presetPreviews, ...docs, ...previews])].sort();

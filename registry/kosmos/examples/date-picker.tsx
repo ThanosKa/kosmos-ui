@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-stage';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { lastDays, startOfDay } from '@/registry/kosmos/lib/dates';
@@ -113,9 +113,17 @@ function Worst() {
 
 export default function DatePickerPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

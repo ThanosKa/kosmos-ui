@@ -1,3 +1,4 @@
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { LogoMarquee } from '@/registry/kosmos/blocks/logo-marquee/logo-marquee';
 
@@ -17,6 +18,10 @@ function dotLogo(name: string) {
 const stack = ['Base UI', 'Tailwind CSS', 'React', 'Next.js', 'shadcn CLI'].map((name) => ({ name }));
 
 export default function LogoMarqueePreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="Marquee">
@@ -67,9 +72,30 @@ export default function LogoMarqueePreview() {
           <LogoMarquee logos={stack.slice(0, 2)} />
         </div>
       </PreviewSection>
+    </PreviewStack>
+  );
+}
 
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long line and long names">
         <div className={frame}>
+          <LogoMarquee
+            title="Used by the product, engineering and growth teams behind these web, iOS, Android and server apps"
+            logos={[
+              { name: 'Fernhill Books and Stationery International' },
+              { name: 'Brightloop Fitness' },
+              { name: 'Copperline Bank' },
+              { name: 'Сaltmarsh Кофе' },
+              { name: '霧島ウェザー' },
+            ]}
+          />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
           <LogoMarquee
             title="Used by the product, engineering and growth teams behind these web, iOS, Android and server apps"
             logos={[

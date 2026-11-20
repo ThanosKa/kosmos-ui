@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['selected item', 'other item'] as const;
 
@@ -137,9 +137,17 @@ function Worst() {
 
 export default function SegmentedControlPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

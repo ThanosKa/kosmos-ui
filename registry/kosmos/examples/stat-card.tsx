@@ -16,7 +16,7 @@ import {
   StatCardSparkline,
   StatCardValue,
 } from '@/registry/kosmos/ui/stat-card';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const trend = (values: number[]) => values.map((value) => ({ value }));
 
@@ -332,9 +332,17 @@ function Worst() {
 
 export default function StatCardPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

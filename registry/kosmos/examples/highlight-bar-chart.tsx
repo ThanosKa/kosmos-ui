@@ -3,7 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import HighlightBarChartDemo from '@/registry/kosmos/examples/highlight-bar-chart-demo';
 import { HighlightBarChart, type HighlightBarChartItem } from '@/registry/kosmos/ui/highlight-bar-chart';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const week: HighlightBarChartItem[] = [
   { label: 'Mon', name: 'Mon, Oct 5', value: 962400 },
@@ -73,9 +73,17 @@ function Worst() {
 
 export default function HighlightBarChartPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

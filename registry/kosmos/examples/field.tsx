@@ -4,7 +4,7 @@ import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@
 import { Input } from '@/registry/kosmos/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/registry/kosmos/ui/select';
 import { Textarea } from '@/registry/kosmos/ui/textarea';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const roles = { viewer: 'Viewer', editor: 'Editor', admin: 'Admin' };
 
@@ -175,9 +175,17 @@ function Worst() {
 
 export default function FieldPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

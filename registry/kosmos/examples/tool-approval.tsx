@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
 import { ToolApproval, type ApprovalDecision, type ToolApprovalDetail } from '@/registry/kosmos/ui/tool-approval';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const reassignDetails: ToolApprovalDetail[] = [
   { label: 'Project', value: 'Cirrus Weather' },
@@ -142,9 +142,17 @@ function Worst() {
 
 export default function ToolApprovalPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

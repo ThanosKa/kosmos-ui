@@ -3,7 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import CompareAreaChartDemo from '@/registry/kosmos/examples/compare-area-chart-demo';
 import { CompareAreaChart, type CompareAreaChartItem } from '@/registry/kosmos/ui/compare-area-chart';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const week: CompareAreaChartItem[] = [
   { label: 'Oct 5', name: 'Mon, Oct 5', current: 962400, previous: 941200 },
@@ -71,9 +71,17 @@ function Worst() {
 
 export default function CompareAreaChartPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

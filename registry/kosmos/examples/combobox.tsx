@@ -20,7 +20,7 @@ import {
   ComboboxSeparator,
   ComboboxValue,
 } from '@/registry/kosmos/ui/combobox';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 type Project = { value: string; label: string; disabled?: boolean };
 
@@ -206,9 +206,17 @@ function Worst() {
 
 export default function ComboboxPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

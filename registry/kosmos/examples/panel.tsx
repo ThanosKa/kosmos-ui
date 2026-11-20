@@ -18,7 +18,7 @@ import { Panel, PanelAction, PanelContent, PanelDescription, PanelFooter, PanelH
 import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/segmented-control';
 import { StatusDot, type Status } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const projects = [
   { name: 'Fernhill Books', domain: 'fernhill.example', plan: 'Scale', status: 'live', users: 48210, mrr: 2400 },
@@ -296,9 +296,17 @@ function Worst() {
 
 export default function PanelPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

@@ -15,7 +15,7 @@ import {
   BreadcrumbTrail,
   type BreadcrumbCrumb,
 } from '@/registry/kosmos/ui/breadcrumb';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const trail: BreadcrumbCrumb[] = [
   { label: 'Acme', href: '/' },
@@ -233,9 +233,17 @@ function Worst() {
 
 export default function BreadcrumbPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

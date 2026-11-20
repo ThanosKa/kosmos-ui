@@ -2,7 +2,7 @@ import type * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
 import { PlanChecklist, type PlanStep } from '@/registry/kosmos/ui/plan-checklist';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const title = 'Prepare the weekly summary for Acme';
 
@@ -150,9 +150,17 @@ function Worst() {
 
 export default function PlanChecklistPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

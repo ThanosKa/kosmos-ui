@@ -5,7 +5,7 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { isEmail } from '@/registry/kosmos/lib/tags';
 import { Field, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { TagsInput } from '@/registry/kosmos/ui/tags-input';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['placeholder', 'tags', 'mistyped tag'] as const;
 const states = ['default', 'focus', 'invalid', 'invalid focus', 'disabled', 'read-only'] as const;
@@ -111,9 +111,17 @@ function Worst() {
 
 export default function TagsInputPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

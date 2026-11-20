@@ -2,7 +2,7 @@
 
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { AssistantMessage, Citation, type Source } from '@/registry/kosmos/ui/assistant-message';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const sources: Source[] = [
   { id: 'usage', title: 'Acme · Events by project, last 30 days', url: 'https://acme.example/usage', domain: 'acme.example' },
@@ -157,9 +157,17 @@ function Worst() {
 
 export default function AssistantMessagePreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

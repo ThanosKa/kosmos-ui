@@ -1,12 +1,17 @@
 'use client';
 
 import { ErrorPage } from '@/registry/kosmos/blocks/error-page/error-page';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Button } from '@/registry/kosmos/ui/button';
 
 const frame = 'flex min-h-[32rem] w-full flex-col overflow-hidden rounded-xl border border-transparent bg-background shadow-card';
 
 export default function ErrorPagePreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="404 with a logo">
@@ -36,6 +41,18 @@ export default function ErrorPagePreview() {
         </div>
       </PreviewSection>
 
+      <PreviewSection title="No actions, no description">
+        <div className={frame}>
+          <ErrorPage description={null} actions={null} />
+        </div>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewStack>
       <PreviewSection title="Long text, no grid">
         <div className={frame}>
           <ErrorPage
@@ -51,9 +68,18 @@ export default function ErrorPagePreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="No actions, no description">
-        <div className={frame}>
-          <ErrorPage description={null} actions={null} />
+      <PreviewSection title="Worst case in a narrow container">
+        <div className={`${frame} max-w-80`}>
+          <ErrorPage
+            grid={false}
+            title="The project Copperline Bank International Holdings and Partners was moved to another workspace"
+            description="https://acme.example/projects/copperline-bank-international-holdings-and-partners/settings/billing/invoices/2026-10"
+            actions={
+              <Button variant="primary" size="lg" href="#">
+                Go to the projects of the Acme workspace and find it there
+              </Button>
+            }
+          />
         </div>
       </PreviewSection>
     </PreviewStack>

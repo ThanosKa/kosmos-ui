@@ -10,7 +10,7 @@ import {
   type PromptComposerProps,
   type PromptComposerStatus,
 } from '@/registry/kosmos/ui/prompt-composer';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const models: ModelOption[] = [
   { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
@@ -184,9 +184,17 @@ function Worst() {
 
 export default function PromptComposerPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

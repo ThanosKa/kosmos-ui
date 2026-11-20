@@ -14,7 +14,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/registry/kosmos/ui/popover';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[22rem]';
 
@@ -220,9 +220,17 @@ function Worst() {
 
 export default function PopoverPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

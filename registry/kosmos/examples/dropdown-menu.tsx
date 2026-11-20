@@ -37,7 +37,7 @@ import {
   DropdownMenuTrigger,
 } from '@/registry/kosmos/ui/dropdown-menu';
 import { Kbd } from '@/registry/kosmos/ui/kbd';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const stageClass = 'h-[24rem]';
 
@@ -315,9 +315,17 @@ function Worst() {
 
 export default function DropdownMenuPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

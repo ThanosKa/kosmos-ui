@@ -10,7 +10,7 @@ import NumberFieldDemo from './number-field-demo';
 import NumberFieldFormat from './number-field-format';
 import NumberFieldInvalid from './number-field-invalid';
 import NumberFieldSettings from './number-field-settings';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['empty', 'value', 'at min', 'currency'] as const;
 const states = ['default', 'hover', 'active', 'focus', 'invalid', 'disabled', 'read-only'] as const;
@@ -116,9 +116,17 @@ function Worst() {
 
 export default function NumberFieldPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

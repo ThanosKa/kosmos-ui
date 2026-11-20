@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Reasoning } from '@/registry/kosmos/ui/reasoning';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const sample =
   'Three projects are close to or over their event quota: Copperline Bank (109%), Cirrus Weather (80%) and Ironbark Logistics (79%). Copperline Bank passed its 8,000,000 allowance on the Scale plan, so Lena should see this first.';
@@ -112,9 +112,17 @@ function Worst() {
 
 export default function ReasoningPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

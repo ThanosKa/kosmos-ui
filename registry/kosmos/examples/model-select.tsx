@@ -4,7 +4,7 @@ import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-sta
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, defaultStates, previewState } from '@/components/preview/state-matrix';
 import { ModelSelect, ModelSelectButton, type ModelEffort, type ModelOption } from '@/registry/kosmos/ui/model-select';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const models: ModelOption[] = [
   { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
@@ -158,9 +158,17 @@ function Worst() {
 
 export default function ModelSelectPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }

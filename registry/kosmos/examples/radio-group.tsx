@@ -6,7 +6,7 @@ import RadioGroupCards from './radio-group-cards';
 import RadioGroupDemo from './radio-group-demo';
 import RadioGroupDescription from './radio-group-description';
 import RadioGroupInvalid from './radio-group-invalid';
-import { DataSet, DataToggle } from '@/components/preview/data-toggle';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 
 const rows = ['unselected', 'selected'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -159,9 +159,17 @@ function Worst() {
 
 export default function RadioGroupPreview() {
   return (
-    <PreviewStack>
-      <DataToggle />
-      <DataSet demo={<Normal />} worst={<Worst />} />
-    </PreviewStack>
+    <DataSetPreview
+      demo={
+        <PreviewStack>
+          <Normal />
+        </PreviewStack>
+      }
+      worst={
+        <PreviewStack>
+          <Worst />
+        </PreviewStack>
+      }
+    />
   );
 }
