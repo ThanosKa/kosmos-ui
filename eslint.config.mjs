@@ -155,7 +155,7 @@ const overlayScrollSelectors = [
 // Sticky chrome is opaque: a `bg-*` with an opacity on the same element lets the page show through its text.
 const stickyTranslucentSelectors = classSelectors(
   `^(?=[\\s\\S]*${classStart}(@[a-z0-9]+:)?sticky${classEnd})(?=[\\s\\S]*${classStart}bg-[a-z-]+\\x2f[0-9])`,
-  'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces).',
+  'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces: shadows, not borders).',
 );
 
 // A link that looks like a button is a Button, so a preset's rules, which skip Buttons, skip it too.
@@ -189,19 +189,19 @@ const pixelSizeSelectors = classSelectors(
 const keyLikePattern = '\\b((sk|pk|rk)_[A-Za-z0-9_]{6,}|whsec_|AKIA[0-9A-Z]{8,}|gh[pousr]_[A-Za-z0-9]{10,}|github_pat_|xox[abp]-)';
 const keyLikeSelectors = classSelectors(
   keyLikePattern,
-  'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, Demo world).',
+  'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, demo-world.md, API).',
 );
 
 // A brand color from `--logo-color` reaches the mark only, so the name keeps its contrast.
 const logoColorSelectors = classSelectors(
   `(^|[\\s"'\`])(?![^\\s"'\`]*\\[&_)[^\\s"'\`]*text-\\(--logo-color`,
-  'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Contrast).',
+  'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Status and tints).',
 );
 
 // A scale that runs through a transition must not run under reduced motion; the opacity fade carries the change.
 const motionScaleSelectors = classSelectors(
   `^(?=[\\s\\S]*${classStart}transition-\\[[^\\]]*scale)(?=[\\s\\S]*(^|[\\s"'\`])(?![^\\s"'\`]*motion-safe:)[^\\s"'\`]*scale-[0-9\\[])`,
-  'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
+  'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion is mandatory).',
 );
 
 // A scale that starts a motion is one of the Kosmos values; `scale-x-*`, `scale-y-*` and `scale-(--var)` pass.
@@ -213,11 +213,11 @@ const motionScaleStartSelectors = classSelectors(
 // Reduced motion cross-fades; switching the transition off makes the change jump.
 const motionReduceNoneSelectors = classSelectors(
   `${classStart}motion-reduce:transition-none${classEnd}`,
-  'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion).',
+  'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion is mandatory).',
 );
 
 // A toast with an action must outlast the time a person needs to reach it (WCAG 2.2.1).
-const toastActionMessage = 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).';
+const toastActionMessage = 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Reduced motion is mandatory; WCAG 2.2.1).';
 const toastActionSelectors = [
   {
     selector:
@@ -233,7 +233,7 @@ const toastActionSelectors = [
 
 // A live region exists before its text arrives; a screen reader announces changes to a region that already exists.
 const liveRegionMessage =
-  'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).';
+  'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Names and announcements; WCAG 4.1.3).';
 const liveRole = "JSXAttribute[name.name='role'][value.value=/^(status|alert)$/]";
 const liveRegionSelectors = [
   {
@@ -252,7 +252,7 @@ const tooltipTriggerSelectors = [
     selector:
       "JSXOpeningElement[name.name='TooltipTrigger'] > JSXAttribute[name.name='render'] > JSXExpressionContainer > JSXElement > JSXOpeningElement[name.name!=/^(Button|button|a|Link|[A-Za-z]*Trigger)$/]:not(:has(JSXAttribute[name.name='tabIndex']))",
     message:
-      'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Tooltips; WCAG 2.1.1).',
+      'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Names and announcements; WCAG 2.1.1).',
   },
 ];
 
@@ -288,7 +288,7 @@ const chartRemountSelectors = [
   {
     selector:
       "JSXOpeningElement:matches([name.name=/Chart/], [name.property.name=/Chart/]) > JSXAttribute[name.name='key'] > JSXExpressionContainer > Identifier[name=/^range$/i]",
-    message: "A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, Charts: Morph, don't remount).",
+    message: "A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, charts.md, Chart motion).",
   },
 ];
 
@@ -297,12 +297,12 @@ const changeBadgeSelectors = [
   {
     selector:
       "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='variant'] > JSXExpressionContainer > ConditionalExpression:has(Literal[value='green']):has(Literal[value='red'])",
-    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Stat change).',
+    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Status and tints).',
   },
 ];
 
 // A status is a `StatusDot` with its word. A ringed dot is a marker (timeline node, presence on an avatar), not a status.
-const statusDotMessage = 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).';
+const statusDotMessage = 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status and tints).';
 const handMadeDotSelectors = classSelectors(
   `^(?=[\\s\\S]*${classStart}rounded-full${classEnd})(?=[\\s\\S]*${classStart}size-(1|1\\.5|2|2\\.5)${classEnd})(?=[\\s\\S]*${classStart}bg-(success|warning|muted-foreground)${classEnd})(?![\\s\\S]*${classStart}ring-)`,
   statusDotMessage,
@@ -320,7 +320,7 @@ const deadHandlerSelectors = [
 const numberFieldLocaleSelectors = [
   {
     selector: "JSXOpeningElement[name.name='NumberField']:not(:has(JSXAttribute[name.name='locale']))",
-    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Buttons).',
   },
 ];
 
