@@ -237,9 +237,9 @@ function KanbanCard({ item, lifted = false, placeholder = false, menu, className
             </span>
           ) : null}
           {item.target ? (
-            <span className="flex shrink-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
+            <span className="flex min-w-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
               <CalendarDays aria-hidden className="size-3.5 shrink-0" />
-              <span>{item.target}</span>
+              <span title={item.target} className="truncate">{item.target}</span>
             </span>
           ) : null}
           {item.assignee ? (
@@ -356,7 +356,7 @@ function KanbanColumnView({
   const tone = column.tone ?? 'muted';
   const Icon = column.icon;
   return (
-    <section data-slot="kanban-column" aria-labelledby={headingId} className="flex max-h-full w-72 shrink-0 flex-col">
+    <section data-slot="kanban-column" aria-labelledby={headingId} className="box-content flex max-h-full w-72 shrink-0 flex-col">
       {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
       <header className="relative flex h-11 shrink-0 items-center gap-2 ps-3.5 pe-2">
         {Icon ? (
@@ -371,7 +371,7 @@ function KanbanColumnView({
           <Skeleton className="h-3 w-4" />
         ) : (
           <span className="text-caption text-muted-foreground tabular-nums">
-            {items.length}
+            {count.format(items.length)}
             <span className="sr-only">{items.length === 1 ? ' card' : ' cards'}</span>
           </span>
         )}
@@ -397,7 +397,7 @@ function KanbanColumnView({
         viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0"
       >
         <SortableContext id={column.id} items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-          <div ref={setNodeRef} className="flex min-h-20 flex-col gap-2 px-3 py-1">
+          <div ref={setNodeRef} className="flex min-h-20 w-72 flex-col gap-2 px-3 py-1">
             {loading ? (
               <>
                 <Skeleton className="h-24 rounded-2xl" />
