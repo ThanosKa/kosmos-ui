@@ -133,6 +133,16 @@ const stickyTranslucentSelectors = classSelectors(
   'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces).',
 );
 
+// A link that looks like a button is a Button, so a preset's rules, which skip Buttons, skip it too.
+const buttonVariantsLinkSelectors = [
+  {
+    selector:
+      "JSXOpeningElement[name.name!='Button'] > JSXAttribute[name.name='className'] > JSXExpressionContainer > CallExpression[callee.name='buttonVariants']",
+    message:
+      'Render a link as a button through `Button` (`<Button variant="primary" nativeButton={false} render={<Link href=… />}>`), so presets treat it as a Button (kosmos-style, Buttons).',
+  },
+];
+
 // An icon-only Button names its action in `aria-label`, `aria-labelledby` or a `sr-only` child. A spread may carry it,
 // and a Button given to a primitive's `render` takes the name from that primitive.
 const iconButtonSelectors = [
@@ -202,6 +212,7 @@ const codeRules = [
   ...markColorSelectors,
   ...stickyTranslucentSelectors,
   ...iconButtonSelectors,
+  ...buttonVariantsLinkSelectors,
   ...keyLikeSelectors,
   ...logoColorSelectors,
   ...motionScaleSelectors,

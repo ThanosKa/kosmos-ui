@@ -13,7 +13,7 @@ import { itemsInGroup, readRegistryItems } from '@/lib/registry';
 import { appDescription, appName, docsRoute, siteOpenGraph } from '@/lib/shared';
 import { Cta } from '@/registry/kosmos/blocks/cta/cta';
 import { HeroProduct } from '@/registry/kosmos/blocks/hero/hero-product';
-import { buttonVariants } from '@/registry/kosmos/ui/button';
+import { Button } from '@/registry/kosmos/ui/button';
 
 const title = `${appName}: Components and blocks for dashboard apps`;
 
@@ -40,13 +40,13 @@ export default function HomePage() {
             description="Base UI components and dashboard blocks you own, added with the shadcn CLI."
             actions={
               <>
-                {/* Router links styled as buttons: `Button href` renders a plain <a>, which reloads the page. */}
-                <Link href={`${docsRoute}/installation`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+                {/* `Button href` renders a plain <a>, which reloads the page; `render` keeps client navigation. */}
+                <Button variant="primary" size="lg" nativeButton={false} render={<Link href={`${docsRoute}/installation`} />}>
                   Get started
-                </Link>
-                <Link href={`${docsRoute}/blocks`} className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
+                </Button>
+                <Button variant="secondary" size="lg" nativeButton={false} render={<Link href={`${docsRoute}/blocks`} />}>
                   Browse blocks
-                </Link>
+                </Button>
               </>
             }
           />
@@ -70,9 +70,9 @@ export default function HomePage() {
           <Cta
             title={null}
             action={
-              <Link href={`${docsRoute}/installation`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+              <Button variant="primary" size="lg" nativeButton={false} render={<Link href={`${docsRoute}/installation`} />}>
                 Read the installation guide
-              </Link>
+              </Button>
             }
           />
         </LandingSection>

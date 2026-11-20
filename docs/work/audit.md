@@ -913,7 +913,7 @@ Ticket 06. `better-interface` review (with `better-accessibility`, `better-layou
 
 Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** names the kind of check that would catch it again.
 
-#### 1. Iris: the focus ring sits flush on checked and filled controls and merges with their fill
+#### 1. Iris: the focus ring sits flush on checked and filled controls and merges with their fill (Fixed in ticket 29)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Preset:** Iris. **Checkable:** yes, code: extend the preset style test in `pnpm test` (the one that forbids `shadow-control` and friends) to forbid `outline-offset` in a style's rules. Also browser: ring color equals the element's own fill with a 0 offset.
 - **Location:** `lib/presets/iris-style.ts:72-73` (`':is([data-slot="badge"], [data-slot="checkbox"], [data-slot="switch"], [data-slot="segmented-control-item"], a:not([data-slot="button"])):focus-visible:not([class*="-outline-offset-"])': { 'outline-offset': '0' }`).
@@ -921,7 +921,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** Kosmos puts the 2px offset there for exactly this case ("the 2px offset leaves a page-color gap, so an outline still reads around an ink primary button"). The rule also reaches checkboxes and switches, which ADR 0014 lets a style touch only for type.
 - **Fix:** delete the rule, so Iris keeps the Kosmos 2px offset.
 
-#### 2. The Presets preview's Components tab scrolls sideways at phone width, most under Console
+#### 2. The Presets preview's Components tab scrolls sideways at phone width, most under Console (Fixed in ticket 29)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Preset:** all, widest under Console. **Checkable:** yes, browser: add `/preset-preview` at 341 to the site check's overflow check (fixed in ticket 15: the check now visits it). The site check visits `/presets`, but not the document inside its iframe.
 - **Location:** `components/site/preset-components.tsx:130` (`grid items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3`: below `md` the grid has one implicit `auto` track). The widest child is the Monthly revenue card's `GrowthChart` (`components/preset-cards/data-cards.tsx:57`) and the Members table.
@@ -929,7 +929,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** the page that shows a preset off scrolls sideways inside its frame on a phone, and cards are cut at the right edge.
 - **Fix:** `grid-cols-1` (Tailwind 4 writes `minmax(0,1fr)`) on that grid, then recheck the GrowthChart under Console. If it still pushes, the chart's wrapper needs `min-w-0` (owner: `registry/kosmos/ui/chart.tsx`, ticket 03 scope).
 
-#### 3. Iris: table rows in a card lose their hover and selected fills
+#### 3. Iris: table rows in a card lose their hover and selected fills (Fixed in ticket 29)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Preset:** Iris. **Checkable:** yes, browser: the hovered or selected row's computed fill must differ from the surface behind it.
 - **Location:** `lib/presets/iris-style.ts:181-184` (row hover `color-mix(in srgb, var(--card) 60%, transparent)`, selected row `var(--card)`).
@@ -953,7 +953,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** row actions are where a keyboard user acts on a project, and under two presets their focus ring is cut.
 - **Fix:** 03 finding 9's fix (scroll the focused element fully into view inside `ScrollArea`), which covers every preset. No style change needed.
 
-#### 6. Landing CTAs are links styled with `buttonVariants`, so presets treat them as links, not buttons
+#### 6. Landing CTAs are links styled with `buttonVariants`, so presets treat them as links, not buttons (Fixed in ticket 29)
 
 - **Severity:** LOW. **Kind:** bug. **Preset:** Iris and Night reach them. **Checkable:** yes, code: flag `className={buttonVariants(` on an element that is not `Button` (or require `data-slot="button"` beside it).
 - **Location:** `app/(site)/(home)/page.tsx:44`, `:47`, `:73`, and `components/site/landing-pricing.tsx:27`, `:39` (`<Link className={buttonVariants({ variant: 'primary', size: 'lg' })}>`).
@@ -983,7 +983,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Fix:** darken `--iris-subtle` in light to `#8a8a8a` (3.14:1 on `#f4f4f4`, computed).
 - **Triage:** not doing. The icons sit beside text labels, so no floor asks for 3:1, and the fix would change a preset palette value.
 
-#### 10. Night: the current sidebar item drops the accent that its description and its navbar keep
+#### 10. Night: the current sidebar item drops the accent that its description and its navbar keep (Fixed in ticket 29)
 
 - **Severity:** LOW. **Kind:** bug (the picker text misdescribes the preset). **Preset:** Night. **Checkable:** no.
 - **Location:** `lib/presets/night-style.ts:47-50` (`[data-slot="sidebar-menu-button"][data-active] { color: var(--sidebar-foreground) }`); `lib/presets/night.ts:11-12` (description: "a mint accent that … colors focus, the current page in navigation and meters").
@@ -997,7 +997,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **What is wrong:** measured at 1280 on hover: "React" **2.97:1** and "Tailwind CSS" **2.33:1** in light (16px, 600). Dark passes (5.94:1 and 7.59:1). These are brand names next to their marks, so 1.4.3's logotype exception may cover them. They still read faint on the page.
 - **Fix:** in light, use the darker brand step or keep the mark colored and the name in `foreground`.
 
-#### 12. Presets copy says a preset is a palette and a radius; under Soft, Console, Night and Iris it is also a style
+#### 12. Presets copy says a preset is a palette and a radius; under Soft, Console, Night and Iris it is also a style (Fixed in ticket 29)
 
 - **Severity:** LOW. **Kind:** bug (the text understates what the code ships). **Checkable:** no.
 - **Location:** `components/site/presets-view.tsx:49` ("Ready palettes and radii for the Kosmos tokens"); `app/(site)/(home)/presets/page.tsx:8-9` (metadata); `components/site/preset-code-dialog.tsx:92` ("The palette, radius and size you picked, in light and dark."); `:103` ("light on `:root`, dark on `.dark`").
@@ -1018,7 +1018,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **What is wrong:** measured at 375: the frame starts at y 373 and shows 384px. The sidebar is a closed drawer and the header has no trigger, so the phone hero reads as an app with no navigation.
 - **Fix:** a visual `SidebarTrigger` (inert, like the rest) before the title, as 04 finding 21 proposes for the block.
 
-#### 15. Presets page: the preview panel and its iframe are two separate Tab stops
+#### 15. Presets page: the preview panel and its iframe are two separate Tab stops (Fixed in ticket 29)
 
 - **Severity:** LOW. **Kind:** bug. **Checkable:** yes, browser: two consecutive Tab stops with the same box.
 - **Location:** `components/site/presets-view.tsx:82` (`TabsContent keepMounted`, focusable by default) around the `iframe` at `:84`.

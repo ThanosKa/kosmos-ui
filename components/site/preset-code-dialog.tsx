@@ -89,7 +89,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Get the {preset.name} preset</DialogTitle>
-          <DialogDescription>The palette, radius and size you picked, in light and dark.</DialogDescription>
+          <DialogDescription>The preset you picked, its palette, radius, size and style, in light and dark.</DialogDescription>
         </DialogHeader>
         <DialogBody className="pb-4">
           {/* Inline-size containment keeps the widest line of code from widening the dialog: the code scrolls instead. */}
@@ -100,7 +100,7 @@ export function PresetCodeDialog({ choice, runners, registryAdd }: PresetCodeDia
               <TabsTrigger value="design">DESIGN.md</TabsTrigger>
             </TabsList>
             <TabsContent value="css" className="flex flex-col gap-3">
-              <p className="text-small text-muted-foreground">Paste it after the Kosmos tokens in your global CSS: light on <code className="font-mono">:root</code>, dark on <code className="font-mono">.dark</code>.</p>
+              <p className="text-small text-muted-foreground">Paste it after the Kosmos tokens in your global CSS.</p>
               <ChosenCode title="app/globals.css" lang="css" code={presetCss(preset)} />
             </TabsContent>
             <TabsContent value="registry" className="flex flex-col gap-3">
