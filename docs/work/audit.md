@@ -167,7 +167,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** keyboard users reach row actions and sortable headers they cannot see; the ring that should show where they are is cut off.
 - **Fix:** in `ScrollArea`, on `focusin` inside the viewport, call `target.scrollIntoView({ block: 'nearest', inline: 'nearest' })` (the `scroll-p-1` padding then keeps the ring clear). One fix covers tables, tab lists and every other scroller.
 
-#### 10. Data table rows open on click only
+#### 10. Data table rows open on click only (Fixed in ticket 25)
 
 - **Severity:** MEDIUM. **Kind:** bug (API invites a pointer-only path). **Checkable:** no (needs judgment per caller).
 - **Location:** `registry/kosmos/ui/data-table.tsx:529`, `:551-553`, `:598` (`onRowClick` on the `<tr>`); `content/docs/components/data-table.mdx:67`, `:125`.
@@ -199,7 +199,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** keyboard review of those previews is impossible, and the browser check stops measuring focus there.
 - **Fix:** first reduce it to a minimal repro (likely two Base UI menus held `open modal={false}` on one page, each with its portal focus guards). Then either keep pinned popups out of the tab order in previews (`inert` on each `OverlayStage` that is not under review) or pin one non-modal menu per page, and report the guard loop to Base UI if it reproduces outside the preview.
 
-#### 14. Charts give pointer targets narrower than 24px
+#### 14. Charts give pointer targets narrower than 24px (Fixed in ticket 25)
 
 - **Severity:** LOW. **Kind:** bug (WCAG 2.5.8). **Checkable:** yes, browser (target size with the spacing test).
 - **Location:** `registry/kosmos/ui/daily-stacked-bar-chart.tsx` (one Button per day: 10–18px wide at 375, 15px at 1280 with 30 days); `registry/kosmos/ui/flow-chart.tsx:647` (band value labels, 17–25 × 20px).
@@ -402,7 +402,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** body-size text below the floor in one theme is an escalation trigger, and here it shows on keyboard focus.
 - **Fix:** color the mark only (`[&_:is(svg,img)]:text-(--logo-color)`) and keep the name `text-foreground`. Or document that `color` must pass 4.5:1 in both themes and drop the tint-solid samples.
 
-**6. Kanban board: dragging is the only pointer path to move a card.**
+**6. Kanban board: dragging is the only pointer path to move a card. (Fixed in ticket 25)**
 - **Bug.** Not checkable.
 - **Where:** `blocks/kanban-board/kanban-board.tsx:256-307` (SortableCard) and `:504-511` (Mouse, Touch and Keyboard sensors).
 - **What is wrong:** the keyboard path is good (Space, arrows, Space, every move announced). But a pointer user who cannot drag (head pointer, tremor) has no other way, and `onOpen` offers no column change.
@@ -626,7 +626,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Wrong item marked current:** `dashboard-analytics.tsx:1043` and `dashboard-crm.tsx:984` mark "Overview" as the current page for Analytics and Sales.
 - **App page title size:** `examples/app-sidebar*.tsx` and `showcase.tsx:31` set page titles in `text-body`. Kosmos and both dashboards use `text-title font-medium`.
 - **Mixed heights in one row:** `members.tsx:318-319` puts a 34px select beside a 36px `lg` Button. Kosmos says a field beside a Button takes the Button's height.
-- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400.
+- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400. (Fixed in ticket 25)
 - **Props on the wrong element:** `HeroProduct` spreads `{...props}` onto the inner Hero but `className` onto the outer section (`hero-product.tsx:42-43`), so `id`, `aria-*` and `data-*` land on the wrong element.
 - **Missing states:**
   - Usage overview has no error state (`:231-250`).

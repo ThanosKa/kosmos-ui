@@ -206,6 +206,12 @@ function DailyStackedBarChart({
     days.current[index]?.focus();
   };
 
+  const dayAt = (clientX: number) => {
+    const rect = plotRef.current?.getBoundingClientRect();
+    if (!rect || rect.width === 0 || data.length === 0) return selected;
+    return Math.min(Math.max(Math.floor(((clientX - rect.left) / rect.width) * data.length), 0), last);
+  };
+
   const onKeyDown = (event: React.KeyboardEvent) => {
     const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
     const jump = { Home: 0, End: last }[event.key];
@@ -314,7 +320,11 @@ function DailyStackedBarChart({
           </div>
         </div>
 
-        <div ref={plotRef} data-slot="daily-stacked-bar-chart-plot" className="relative h-48 min-w-0" onPointerLeave={() => setHovered(null)}>
+        <div ref={plotRef} data-slot="daily-stacked-bar-chart-plot" className="relative h-48 min-w-0"
+          onPointerMove={(event) => setHovered(dayAt(event.clientX))}
+          onPointerLeave={() => setHovered(null)}
+          onClick={(event) => select(dayAt(event.clientX))}
+        >
           {size ? (
             <div
               key={reduced ? `${version}-${visible.map((item) => item.key).join()}` : undefined}
@@ -354,11 +364,10 @@ function DailyStackedBarChart({
                       tabIndex={d === selected ? 0 : -1}
                       aria-pressed={d === selected}
                       aria-label={`${day.name ?? day.label}: ${visible.map((item) => `${item.label} ${whole.format(amount(day, item.key))}`).join(', ')}. Total ${whole.format(total)}.`}
-                      onPointerEnter={() => setHovered(d)}
                       onClick={() => select(d)}
                       data-slot="daily-stacked-bar-chart-day"
                       data-lit={d === lit || undefined}
-                      className="h-full min-w-0 flex-1 items-end rounded-md border-0 px-0 hover:not-data-disabled:bg-transparent"
+                      className="pointer-events-none h-full min-w-0 flex-1 items-end rounded-md border-0 px-0 hover:not-data-disabled:bg-transparent"
                     >
                       <span data-slot="daily-stacked-bar-chart-bar" className="flex w-3/5 max-w-6 flex-col-reverse overflow-hidden rounded-sm">
                         {series.map((item, s) => {

@@ -526,7 +526,10 @@ type DataTableContentProps<TData extends RowData> = Omit<React.ComponentProps<ty
   loading?: boolean;
   /** What shows under the header when no row passes, such as an `EmptyState`. */
   empty?: React.ReactNode;
-  /** Opens a row from a click anywhere on it but its buttons, links and checkboxes, which do their own thing. */
+  /**
+   * A pointer shortcut that opens a row from a click anywhere on it but its buttons, links and checkboxes. It is not
+   * reachable by keyboard, so the row's name cell must hold a link or button that opens the same thing.
+   */
   onRowClick?: (row: Row<DataTableFeatures, TData>) => void;
 };
 

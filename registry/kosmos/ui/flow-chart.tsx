@@ -692,7 +692,7 @@ function FlowChart({
                       } as React.CSSProperties
                     }
                     className={cn(
-                      'absolute top-(--y) left-(--x) h-5 -translate-y-1/2 rounded-md px-1 text-caption tabular-nums hover:not-data-disabled:bg-transparent',
+                      'absolute top-(--y) left-(--x) h-5 -translate-y-1/2 rounded-md px-1 text-caption after:absolute after:-inset-1.5 tabular-nums hover:not-data-disabled:bg-transparent',
                       'transition-[opacity,translate] delay-(--delay) duration-reveal ease-power3-out starting:opacity-0',
                       'motion-safe:transition-[opacity,translate,top]',
                       !revealed && 'opacity-0 motion-safe:-translate-x-1.5',
