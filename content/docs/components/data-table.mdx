@@ -64,7 +64,7 @@ A column's `meta` tells the parts what TanStack does not know. It holds the colu
 - **DataTableColumnHeader**: the header's name and a menu that sorts the column either way and hides it. Hiding a sorted column clears the sort, and focus moves to the Columns menu.
 - **DataTableColumnToggle**: the Columns menu, usually in the last header. It marks a column that is on but has no room at the current width.
 - **DataTableSelectAll** and **DataTableSelectRow**: the checkboxes of a select column. Shift-click ticks every row between two clicks.
-- **DataTableContent**: the table: the headers and the rows of the page. It shows `loading` skeleton rows, `empty` when no row passes, and with `onRowClick` it opens a row from a click anywhere but its buttons.
+- **DataTableContent**: the table: the headers and the rows of the page. It shows `loading` skeleton rows, `empty` when no row passes, and with `onRowClick` it opens a row from a click anywhere but its buttons. That click is a pointer shortcut only: a row cannot take focus, so put a link or button in the name cell that opens the same thing, as the example does.
 - **DataTableFooter**: the rows in view and the page buttons, after whatever you pass it, such as totals. Add `pageSizes` for a rows-per-page select and `pages` for numbered pages. Screen readers hear the selection change.
 - **DataTableBulkBar**: Clear selection, the count and Select all, then the actions you return from its child function, given the selected rows. It shows only while rows are selected. Put it in the footer.
 
@@ -122,7 +122,7 @@ Takes every prop of [Table](/docs/components/table), plus:
     table: { description: 'The table from `useDataTable`.', type: 'DataTableInstance', required: true },
     loading: { description: 'Shows up to six skeleton rows in place of the rows.', type: 'boolean', default: 'false' },
     empty: { description: 'What shows under the header when no row passes, such as an Empty state.', type: 'ReactNode' },
-    onRowClick: { description: 'Called with a row clicked anywhere but its buttons, links and checkboxes.', type: '(row: Row) => void' },
+    onRowClick: { description: 'A pointer shortcut, called with a row clicked anywhere but its buttons, links and checkboxes. The name cell must hold a link or button that opens the same thing.', type: '(row: Row) => void' },
   }}
 />
 
