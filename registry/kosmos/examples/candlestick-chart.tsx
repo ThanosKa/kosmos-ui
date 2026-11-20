@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import CandlestickChartDemo from '@/registry/kosmos/examples/candlestick-chart-demo';
 import { CandlestickChart, type CandlestickChartItem } from '@/registry/kosmos/ui/candlestick-chart';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const DAY = 86_400_000;
 const monthDay = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
@@ -52,22 +53,11 @@ const cases: { title: string; data: CandlestickChartItem[]; format?: (value: num
   },
 ];
 
-export default function CandlestickChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a range switch">
         <CandlestickChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, data, format }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <CandlestickChart data={data} label={title} format={format} volumeLabel="Events" entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -80,6 +70,32 @@ export default function CandlestickChartPreview() {
           ))}
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, data, format }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <CandlestickChart data={data} label={title} format={format} volumeLabel="Events" entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function CandlestickChartPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

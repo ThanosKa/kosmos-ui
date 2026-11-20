@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import HighlightBarChartDemo from '@/registry/kosmos/examples/highlight-bar-chart-demo';
 import { HighlightBarChart, type HighlightBarChartItem } from '@/registry/kosmos/ui/highlight-bar-chart';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const week: HighlightBarChartItem[] = [
   { label: 'Mon', name: 'Mon, Oct 5', value: 962400 },
@@ -32,22 +33,11 @@ const cases: { title: string; data: HighlightBarChartItem[] }[] = [
   },
 ];
 
-export default function HighlightBarChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a range switch">
         <HighlightBarChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, data }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <HighlightBarChart data={data} label={title} entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -60,6 +50,32 @@ export default function HighlightBarChartPreview() {
           ))}
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, data }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <HighlightBarChart data={data} label={title} entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function HighlightBarChartPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

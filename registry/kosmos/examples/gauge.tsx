@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -10,10 +11,10 @@ const tones = ['primary', 'success', 'warning', 'destructive'] as const;
 const sizes = ['xs', 'sm', 'md', 'lg'] as const;
 const values = ['0', '5', '50', '100'] as const;
 
-export default function GaugePreview() {
+function Normal() {
   const [value, setValue] = React.useState(35);
   return (
-    <PreviewStack>
+    <>
       {sizes.map((size) => (
         <PreviewSection key={size} title={`${size}: tone × value`}>
           <StateMatrix
@@ -71,6 +72,47 @@ export default function GaugePreview() {
           </div>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Out of range, huge and invalid values">
+        <div className="flex flex-wrap items-center gap-8">
+          <Gauge value={1234} max={1000} showValue size="lg" aria-label="Over the range" />
+          <Gauge value={-40} showValue size="lg" aria-label="Below zero" />
+          <Gauge value={1_284_903_772} max={1_000_000_000} showValue size="lg" aria-label="Past a billion" />
+          <Gauge value={0.4} showValue size="lg" aria-label="Under one percent" />
+          <Gauge value={Number.NaN} showValue size="lg" aria-label="Not a number" />
+          <Gauge value={3} max={0} showValue size="lg" aria-label="No range" />
+          {sizes.map((size) => (
+            <Gauge key={size} size={size} value={1234} max={1000} showValue aria-label={`Over the range, ${size}`} />
+          ))}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="In a card, with a long title">
+        <div className="flex max-w-xs items-center gap-4 rounded-2xl border border-transparent bg-card p-4 shadow-card">
+          <Gauge value={100} tone="auto" showValue aria-label="Lead score" />
+          <div className="min-w-0">
+            <p className="truncate text-body font-medium" title="Ιστότοπος καφέ Saltmarsh, lead score across every region 🌊">
+              Ιστότοπος καφέ Saltmarsh, lead score across every region 🌊
+            </p>
+            <p className="text-small text-muted-foreground">Up 6,284 points since last week</p>
+          </div>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function GaugePreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

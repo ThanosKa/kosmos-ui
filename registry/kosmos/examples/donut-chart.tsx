@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Button } from '@/registry/kosmos/ui/button';
@@ -39,12 +40,12 @@ const datasets = {
 const sizes = ['sm', 'md', 'lg'] as const;
 const cases = Object.keys(datasets) as (keyof typeof datasets)[];
 
-export default function DonutChartPreview() {
+function Normal() {
   const [shift, setShift] = React.useState(0);
   const live = sources.map((source, i) => ({ ...source, value: i === 0 ? source.value + shift : source.value }));
 
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Beside Gauge: same size, same ring">
         <StateMatrix
           rows={sizes}
@@ -108,42 +109,6 @@ export default function DonutChartPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Worst case: huge totals, a long label, seven parts, repeated and invalid values">
-        <div className="flex flex-wrap items-center gap-8">
-          {sizes.map((size) => (
-            <DonutChart
-              key={size}
-              size={size}
-              data={[
-                { label: 'Enterprise', value: 987654321 },
-                { label: 'Other', value: 123456789 },
-              ]}
-              label="Unique visitors across every workspace"
-            />
-          ))}
-          <DonutChart
-            data={[
-              { label: 'Search', value: 30 },
-              { label: 'Direct', value: 20 },
-              { label: 'Referral', value: 15 },
-              { label: 'Social', value: 12 },
-              { label: 'Email', value: 9 },
-              { label: 'Other', value: 8 },
-              { label: 'Other', value: 6 },
-            ]}
-            label="Seven parts"
-          />
-          <DonutChart
-            data={[
-              { label: 'Refunds', value: -40 },
-              { label: 'Unknown', value: Number.NaN },
-              { label: 'Sales', value: 120 },
-            ]}
-            label="Invalid"
-          />
-        </div>
-      </PreviewSection>
-
       <PreviewSection title="Value change">
         <div className="flex items-center gap-6">
           <DonutChart data={live} label="Visitors" format={compact.format} />
@@ -157,6 +122,57 @@ export default function DonutChartPreview() {
           </div>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Worst case: huge totals, a long label, seven parts, repeated and invalid values">
+      <div className="flex flex-wrap items-center gap-8">
+        {sizes.map((size) => (
+          <DonutChart
+            key={size}
+            size={size}
+            data={[
+              { label: 'Enterprise', value: 987654321 },
+              { label: 'Other', value: 123456789 },
+            ]}
+            label="Unique visitors across every workspace"
+          />
+        ))}
+        <DonutChart
+          data={[
+            { label: 'Search', value: 30 },
+            { label: 'Direct', value: 20 },
+            { label: 'Referral', value: 15 },
+            { label: 'Social', value: 12 },
+            { label: 'Email', value: 9 },
+            { label: 'Other', value: 8 },
+            { label: 'Other', value: 6 },
+          ]}
+          label="Seven parts"
+        />
+        <DonutChart
+          data={[
+            { label: 'Refunds', value: -40 },
+            { label: 'Unknown', value: Number.NaN },
+            { label: 'Sales', value: 120 },
+          ]}
+          label="Invalid"
+        />
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function DonutChartPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

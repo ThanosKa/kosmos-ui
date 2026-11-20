@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import FlowChartDemo from '@/registry/kosmos/examples/flow-chart-demo';
 import { FlowChart, type FlowChartFlow, type FlowChartNode } from '@/registry/kosmos/ui/flow-chart';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const sources: FlowChartNode[] = [
   { id: 'search', label: 'Search' },
@@ -68,22 +69,11 @@ const cases: Case[] = [
   },
 ];
 
-export default function FlowChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a range switch">
         <FlowChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, ...data }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <FlowChart {...data} label={title} unit="signups" sourceLabel="Source" targetLabel="Plan" entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -105,6 +95,32 @@ export default function FlowChartPreview() {
           ))}
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, ...data }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <FlowChart {...data} label={title} unit="signups" sourceLabel="Source" targetLabel="Plan" entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function FlowChartPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

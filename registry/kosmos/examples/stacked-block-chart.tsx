@@ -3,6 +3,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import StackedBlockChartDemo from '@/registry/kosmos/examples/stacked-block-chart-demo';
 import { StackedBlockChart, type StackedBlockChartItem, type StackedBlockChartSeries } from '@/registry/kosmos/ui/stacked-block-chart';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const platforms: StackedBlockChartSeries[] = [
   { key: 'web', label: 'Web' },
@@ -55,22 +56,11 @@ const cases: { title: string; data: StackedBlockChartItem[]; series?: StackedBlo
   },
 ];
 
-export default function StackedBlockChartPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="In a chart card, with a metric switch">
         <StackedBlockChartDemo />
-      </PreviewSection>
-
-      <PreviewSection title="Data">
-        <div className="grid w-full gap-8 sm:grid-cols-2">
-          {cases.map(({ title, data, series = platforms }) => (
-            <div key={title} className="flex min-w-0 flex-col gap-2">
-              <p className="font-mono text-caption text-muted-foreground">{title}</p>
-              <StackedBlockChart data={data} series={series} label={title} entrance="none" />
-            </div>
-          ))}
-        </div>
       </PreviewSection>
 
       <PreviewSection title="Entrance: always, session (default), none">
@@ -83,6 +73,32 @@ export default function StackedBlockChartPreview() {
           ))}
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Data">
+      <div className="grid w-full gap-8 sm:grid-cols-2">
+        {cases.map(({ title, data, series = platforms }) => (
+          <div key={title} className="flex min-w-0 flex-col gap-2">
+            <p className="font-mono text-caption text-muted-foreground">{title}</p>
+            <StackedBlockChart data={data} series={series} label={title} entrance="none" />
+          </div>
+        ))}
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function StackedBlockChartPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }
