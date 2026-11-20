@@ -27,3 +27,4 @@ This repo is one Next.js app that holds the landing page, the docs, the preview 
 - `style` means code formatting only. A visual change to a component is `feat` or `fix`.
 - Components and blocks may start from MIT-licensed code (shadcn/ui's Base UI variant first) and are restyled to the Kosmos style; each keeps its source's copyright line in a third-party notice (ADR 0010).
 - Pro blocks and templates never enter this repo (ADR 0003).
+- `pnpm site-check --port <port>` loads every route of a running dev server in a headless browser and reports pages that scroll sideways, clipped focus rings, clipped text and console errors. The maintainer runs it by hand before a release. Agents and CI do not run it: verify with lint, types and tests.
