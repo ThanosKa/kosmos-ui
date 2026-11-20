@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import type { DocsNeighbours } from '@/lib/docs-nav';
-import { Button, buttonVariants } from '@/registry/kosmos/ui/button';
+import { Button } from '@/registry/kosmos/ui/button';
 import { cardLinkClass } from './classes';
 
 const defaultLabels = { previous: 'Previous', next: 'Next' };
@@ -17,16 +17,17 @@ export function PageNavButtons({ previous, next, labels = defaultLabels }: DocsN
     <div className="flex items-center gap-1">
       {buttons.map(({ link, rel, label, Icon }) =>
         link ? (
-          <Link
+          <Button
             key={rel}
-            href={link.url}
-            rel={rel}
+            variant="secondary"
+            size="icon"
+            nativeButton={false}
+            render={<Link href={link.url} rel={rel} />}
             aria-label={`${label}: ${link.title}`}
             title={`${label}: ${link.title}`}
-            className={buttonVariants({ variant: 'secondary', size: 'icon' })}
           >
             <Icon aria-hidden />
-          </Link>
+          </Button>
         ) : (
           <Button key={rel} variant="secondary" size="icon" disabled aria-label={`No ${label.toLowerCase()} page`}>
             <Icon aria-hidden />

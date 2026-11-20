@@ -9,6 +9,8 @@ import { cn } from '@/registry/kosmos/lib/cn';
  * into it (`container` on the overlay's Content part) fills the box instead of the page: several
  * overlays sit open side by side, and the iframe on the approval and docs pages measures them.
  *
+ * Pass `inert` when the pinned overlay is a picture, not the thing under review: several open menus on one page trap focus in a guard loop.
+ *
  * Render the overlay with controlled `open`, `modal={false}` (no focus trap or scroll lock shared
  * between several open overlays) and `initialFocus={false}` (the page must not scroll to the last one):
  *
@@ -25,10 +27,12 @@ import { cn } from '@/registry/kosmos/lib/cn';
 export function OverlayStage({
   label,
   className,
+  inert,
   children,
 }: {
   label: string;
   className?: string;
+  inert?: boolean;
   children: (container: HTMLElement) => ReactNode;
 }) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
@@ -38,6 +42,7 @@ export function OverlayStage({
       <div
         ref={setContainer}
         data-overlay-stage
+        inert={inert}
         className={cn(
           'relative h-[30rem] w-full overflow-hidden rounded-xl border border-transparent bg-background p-4 shadow-inset [transform:translateZ(0)]',
           className,

@@ -253,6 +253,15 @@ for (const preset of presets.filter((candidate) => candidate.style)) {
     assert.deepEqual(reshaped, []);
   });
 
+  test(`${preset.name}: the focus ring keeps its 2px offset, and a table row keeps its Kosmos hover and selected fills`, () => {
+    assert.deepEqual(declarations.filter(({ property }) => property === 'outline-offset'), []);
+    const cardRows = declarations.filter(
+      ({ within, property, value }) =>
+        property === 'background-color' && within.some((rule) => /data-slot="table-row"/.test(rule)) && /var\(--card\)/.test(value),
+    );
+    assert.deepEqual(cardRows, []);
+  });
+
   test(`${preset.name}: its style sizes nothing, so the size stays the visitor's choice`, () => {
     const sizingTokens = Object.keys(style.theme ?? {}).filter((token) => token === 'spacing' || /^text-[a-z]+(--line-height)?$/.test(token));
     assert.deepEqual(sizingTokens, []);

@@ -80,7 +80,7 @@ export default function DropdownMenuPreview() {
     <PreviewStack>
       <PreviewSection title="Open">
         <OverlayStageGrid>
-          <OverlayStage label="items: icon, shortcut, highlighted, disabled, destructive" className={stageClass}>
+          <OverlayStage inert label="items: icon, shortcut, highlighted, disabled, destructive" className={stageClass}>
             {(container) => (
               <DropdownMenu open modal={false}>
                 <DropdownMenuTrigger render={<Button variant="secondary" />}>
@@ -119,11 +119,11 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="checkbox and radio items, group labels" className={stageClass}>
+          <OverlayStage inert label="checkbox and radio items, group labels" className={stageClass}>
             {(container) => <CheckAndRadioMenu container={container} />}
           </OverlayStage>
 
-          <OverlayStage label="submenu open, link item" className={stageClass}>
+          <OverlayStage inert label="submenu open, link item" className={stageClass}>
             {(container) => (
               <DropdownMenu open modal={false}>
                 <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="More actions" />}>
@@ -159,7 +159,7 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="long text, no room below (flips up), end aligned" className={stageClass}>
+          <OverlayStage inert label="long text, no room below (flips up), end aligned" className={stageClass}>
             {(container) => (
               <div className="flex h-full items-end justify-end">
                 <DropdownMenu open modal={false}>
@@ -187,11 +187,11 @@ export default function DropdownMenuPreview() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more items than fit, at the top" className={stageClass}>
+          <OverlayStage inert label="more items than fit, at the top" className={stageClass}>
             {(container) => <MoveToMenu container={container} />}
           </OverlayStage>
 
-          <OverlayStage label="more items than fit, scrolled halfway" className={stageClass}>
+          <OverlayStage inert label="more items than fit, scrolled halfway" className={stageClass}>
             {(container) => <MoveToMenu container={container} scrolled />}
           </OverlayStage>
         </OverlayStageGrid>

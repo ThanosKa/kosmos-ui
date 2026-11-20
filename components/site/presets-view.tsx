@@ -46,7 +46,7 @@ export function PresetsView({ sharedChoice, runners, registryAdd }: PresetsViewP
         <div className="flex max-w-[40em] flex-col gap-1">
           <h1 className="text-heading">Presets</h1>
           <p className="text-small text-pretty text-muted-foreground">
-            Ready palettes and radii for the Kosmos tokens. Pick one and the whole site takes it, with the components,
+            Ready palettes, radii and styles for the Kosmos tokens. Pick one and the whole site takes it, with the components,
             dashboard, forms, overlays and tokens below. Then get its code.
           </p>
         </div>
@@ -79,7 +79,7 @@ export function PresetsView({ sharedChoice, runners, registryAdd }: PresetsViewP
             ))}
           </TabsList>
           {/* One panel for every tab: the screens are pages of one document in the frame, which keeps its state. */}
-          <TabsContent value={screen} keepMounted>
+          <TabsContent value={screen} keepMounted tabIndex={-1}>
             {/* The frame fills the screen below the site header, the page title and the tabs, about 14rem. */}
             <iframe
               ref={frame}

@@ -43,7 +43,7 @@ export default function DetailDrawerPreview() {
     <PreviewStack>
       <PreviewSection title="Open, more menu pinned open">
         <OverlayStageGrid>
-          <OverlayStage label="full record, more menu open" className={stage}>
+          <OverlayStage inert label="full record, more menu open" className={stage}>
             {(container) => (
               <DetailDrawer
                 open
@@ -56,17 +56,17 @@ export default function DetailDrawerPreview() {
               />
             )}
           </OverlayStage>
-          <OverlayStage label="long text" className={stage}>
+          <OverlayStage inert label="long text" className={stage}>
             {(container) => (
               <DetailDrawer project={longProject} open modal={false} container={container} initialFocus={false} trigger={null} onAction={noop} />
             )}
           </OverlayStage>
-          <OverlayStage label="no details yet" className={stage}>
+          <OverlayStage inert label="no details yet" className={stage}>
             {(container) => (
               <DetailDrawer project={emptyProject} open modal={false} container={container} initialFocus={false} trigger={null} />
             )}
           </OverlayStage>
-          <OverlayStage label="loading" className={stage}>
+          <OverlayStage inert label="loading" className={stage}>
             {(container) => <DetailDrawer loading open modal={false} container={container} initialFocus={false} trigger={null} />}
           </OverlayStage>
         </OverlayStageGrid>
