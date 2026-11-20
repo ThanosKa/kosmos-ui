@@ -96,7 +96,7 @@ Ticket 03. `better-interface` review (with `better-accessibility`, `better-layou
 
 Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable** names the kind of check that would catch it again.
 
-#### 1. Chart axis labels ignore the token: Recharts 3 ticks render `#666`, 3.0:1 in dark
+#### 1. Chart axis labels ignore the token: Recharts 3 ticks render `#666`, 3.0:1 in dark (Fixed in ticket 19)
 
 - **Severity:** HIGH (text contrast fails). **Kind:** bug. **Checkable:** yes, browser (computed `fill` of `.recharts-cartesian-axis-tick-value` equals `muted-foreground`), or code (a test that the `ChartContainer` selector names a class Recharts renders).
 - **Location:** `registry/kosmos/ui/chart.tsx:71` (`'[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground'`). Shows in every chart that keeps Recharts' own tick: `examples/chart.tsx:134-135`, `examples/chart-custom.tsx:31-32`, `examples/chart-card.tsx:99-100`, `examples/chart-card-legend.tsx:42-43`, and the `usage-overview` block (`blocks/usage-overview/usage-overview.tsx:369-370`).
@@ -104,7 +104,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** 12px axis labels are the only scale a reader has; in dark they fall below the text floor in every chart built on `ChartContainer` with default ticks.
 - **Fix:** point the selector at the class Recharts 3 renders: `[&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground` (and check the other `.recharts-*` selectors on lines 72-78 against Recharts 3's markup the same way).
 
-#### 2. Hover fills on tints drop the tint text below 4.5:1 (hue Badge links, Banner action)
+#### 2. Hover fills on tints drop the tint text below 4.5:1 (hue Badge links, Banner action) (Fixed in ticket 19)
 
 - **Severity:** HIGH (control text contrast fails). **Kind:** bug. **Checkable:** yes, code: add the pair `tint-*-foreground` on `tint-*-border` (and on `tint-*` under the `accent` overlay) to `lib/tints.test.mts`.
 - **Location:** `registry/kosmos/ui/badge.tsx:26-31` (`[a&]:hover:bg-tint-*-border`); `registry/kosmos/ui/banner.tsx:74-75` (`BannerAction`: ghost Button with `text-inherit`, hover `bg-accent` over the tint).
@@ -392,7 +392,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** WCAG 4.1.2. A screen reader announces an unnamed read-only field.
 - **Fix:** `aria-label="API key"`, or wrap it in `Field` with a `FieldLabel`.
 
-**5. Logo marquee: on hover and focus, the names fail text contrast in dark mode.**
+**5. Logo marquee: on hover and focus, the names fail text contrast in dark mode (Fixed in ticket 19).**
 - **Bug.** Checkable by a **code** check (a `--tint-*-solid` used as `--logo-color` or as a text color) or a `pnpm test` contrast case.
 - **Where:**
   - `blocks/logo-marquee/logo-marquee.tsx:38-44`: the sample `color: 'var(--tint-*-solid)'`.
@@ -990,7 +990,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **What is wrong:** measured on the Dashboard tab: Night's current sidebar item is `rgb(18,20,24)` in light and `rgb(243,245,249)` in dark, equal to `--sidebar-foreground`, while `--accent-text` is mint. Soft and Console color it with the accent. Night's navbar current item, which no rule overrides, keeps the accent, so the two navigations disagree. Iris does the same thing to its sidebar, but its description says so ("a raised key in ink").
 - **Fix:** decide one. Either drop the `color` line, so the raised key keeps the accent text, or change the description to say what Iris's says.
 
-#### 11. Landing stack: the React and Tailwind names fall below 4.5:1 on hover in light
+#### 11. Landing stack: the React and Tailwind names fall below 4.5:1 on hover in light (Fixed in ticket 19)
 
 - **Severity:** LOW. **Kind:** bug. **Checkable:** yes, code: check `stackBrandColors` against `background` in every preset in a `pnpm test` case.
 - **Location:** `components/site/stack-brands.ts:3-4` (`react: '#149eca'`, `tailwind: '#06b6d4'`), shown through `logo-marquee.tsx:62` (`hover:text-(--logo-color)`). This is the landing's copy of 04 finding 5.

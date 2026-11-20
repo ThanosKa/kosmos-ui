@@ -157,6 +157,12 @@ const keyLikeSelectors = classSelectors(
   'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, Demo world).',
 );
 
+// A brand color from `--logo-color` reaches the mark only, so the name keeps its contrast.
+const logoColorSelectors = classSelectors(
+  `(^|[\\s"'\`])(?![^\\s"'\`]*\\[&_)[^\\s"'\`]*text-\\(--logo-color`,
+  'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Contrast).',
+);
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -170,6 +176,7 @@ const codeRules = [
   ...stickyTranslucentSelectors,
   ...iconButtonSelectors,
   ...keyLikeSelectors,
+  ...logoColorSelectors,
 ];
 
 /**
