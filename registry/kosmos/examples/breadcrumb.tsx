@@ -114,7 +114,7 @@ export default function BreadcrumbPreview() {
 
       <PreviewSection title="Ellipsis menu open">
         <OverlayStageGrid>
-          <OverlayStage label="hidden pages, in order" className="h-56">
+          <OverlayStage inert label="hidden pages, in order" className="h-56">
             {(container) => (
               <Breadcrumb>
                 <BreadcrumbList>
@@ -133,7 +133,7 @@ export default function BreadcrumbPreview() {
               </Breadcrumb>
             )}
           </OverlayStage>
-          <OverlayStage label="a long hidden name wraps" className="h-56">
+          <OverlayStage inert label="a long hidden name wraps" className="h-56">
             {(container) => (
               <Breadcrumb>
                 <BreadcrumbList>

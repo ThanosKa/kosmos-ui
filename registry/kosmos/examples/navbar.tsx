@@ -52,7 +52,7 @@ export default function NavbarPreview() {
       </PreviewSection>
 
       <PreviewSection title="Dropdown open">
-        <OverlayStage label="Product open" className="h-[26rem] p-0">
+        <OverlayStage inert label="Product open" className="h-[26rem] p-0">
           {(container) => (
             <Navbar current="/features/funnels" container={container} dropdownProps={{ value: 'Product' }} />
           )}
@@ -60,7 +60,7 @@ export default function NavbarPreview() {
       </PreviewSection>
 
       <PreviewSection title="Mega menu open">
-        <OverlayStage label="Product open" className="h-[28rem] p-0">
+        <OverlayStage inert label="Product open" className="h-[28rem] p-0">
           {(container) => (
             <Navbar items={megaItems} current="/features/funnels" container={container} dropdownProps={{ value: 'Product' }} />
           )}
@@ -68,7 +68,7 @@ export default function NavbarPreview() {
       </PreviewSection>
 
       <PreviewSection title="Mega menu in the sheet">
-        <OverlayStage label="Sheet open" className="h-[40rem] max-w-96 p-0">
+        <OverlayStage inert label="Sheet open" className="h-[40rem] max-w-96 p-0">
           {(container) => (
             <Navbar
               items={megaItems}
@@ -128,7 +128,7 @@ export default function NavbarPreview() {
       </PreviewSection>
 
       <PreviewSection title="Sheet open">
-        <OverlayStage label="Sheet open" className="h-[34rem] max-w-96 p-0">
+        <OverlayStage inert label="Sheet open" className="h-[34rem] max-w-96 p-0">
           {(container) => (
             <Navbar
               current="/features/funnels"

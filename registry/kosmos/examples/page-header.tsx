@@ -21,7 +21,7 @@ export default function PageHeaderPreview() {
   return (
     <PreviewStack>
       <PreviewSection title="Filter menu open, two filters on">
-        <div className={`${frame} pb-80`}>
+        <div inert className={`${frame} pb-80`}>
           <PageHeader
             leading={toggle}
             defaultTab="live"
