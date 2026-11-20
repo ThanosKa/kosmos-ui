@@ -2,7 +2,7 @@
 
 **What to build:** Across the whole app, motion with no purpose is gone and the app feels right on a phone. Emil's `remove-animations` removes motion on keyboard actions, high-frequency surfaces and pure decoration; `mobile-native` fixes the phone details (sticky hover, tap highlight, inputs that zoom, safe areas, viewport height). Spec: `docs/work/audit-spec.md`.
 
-**Blocked by:** 08, 09 (the worst-case passes).
+**Blocked by:** 08, 09 (the worst-case passes), 33 (Worst-case leftovers).
 
 **Model:** Opus
 
