@@ -4,6 +4,7 @@ import { Check, Link as LinkIcon } from 'lucide-react';
 import { useId, type ComponentProps } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { iconSwapClass } from './classes';
 import { copyAnnouncement, useDocsCopy } from './use-docs-copy';
 
 type DocsHeadingProps = ComponentProps<'h2'> & { as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' };
@@ -57,7 +58,10 @@ export function DocsHeading({ as: Tag, id, className, children, ...props }: Docs
         <span id={`${copyId}-action`} className="sr-only">
           Copy link to
         </span>
-        {copied ? <Check aria-hidden /> : <LinkIcon aria-hidden />}
+        <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+          <Check data-visible={(copied) || undefined} className={iconSwapClass} />
+          <LinkIcon data-visible={!(copied) || undefined} className={iconSwapClass} />
+        </span>
       </Button>
       <span role="status" className="sr-only">
         {copyAnnouncement(status, 'Link copied')}

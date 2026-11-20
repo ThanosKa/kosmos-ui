@@ -4,6 +4,7 @@ import { Check, Copy, Eye, EyeOff } from 'lucide-react';
 import * as React from 'react';
 import { flushSync } from 'react-dom';
 import { type CopyResult, useCopy } from '@/registry/kosmos/hooks/use-copy';
+import { cn } from '@/registry/kosmos/lib/cn';
 import { maskSecret } from '@/registry/kosmos/lib/secret';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, type InputGroupInputProps } from '@/registry/kosmos/ui/input-group';
 
@@ -17,6 +18,12 @@ type CopyFieldProps = Omit<InputGroupInputProps, 'value' | 'defaultValue' | 'onV
   /** What the value is, in the names of its buttons and in what screen readers hear: "Copy API key", "API key copied". */
   label?: string;
 };
+
+// Icon swaps cross-fade; with motion allowed they also scale and blur, as Asset's play and pause icons do.
+const iconSwap = cn(
+  'opacity-0 transition-[opacity,scale,filter] duration-fast data-visible:opacity-100 data-visible:duration-slow',
+  'motion-safe:scale-25 motion-safe:blur-xs motion-safe:data-visible:scale-100 motion-safe:data-visible:blur-none',
+);
 
 function copyMessage(result: CopyResult, label: string) {
   if (result === 'copied') return `${label.charAt(0).toUpperCase()}${label.slice(1)} copied`;
@@ -75,11 +82,17 @@ function CopyField({ value, secret = false, defaultRevealed = false, label = sec
             disabled={buttonsDisabled}
             onClick={() => setRevealed((shown) => !shown)}
           >
-            {revealed ? <EyeOff aria-hidden /> : <Eye aria-hidden />}
+            <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+              <EyeOff data-visible={(revealed) || undefined} className={iconSwap} />
+              <Eye data-visible={!(revealed) || undefined} className={iconSwap} />
+            </span>
           </InputGroupButton>
         ) : null}
         <InputGroupButton variant="ghost" size="icon-sm" aria-label={`Copy ${label}`} disabled={buttonsDisabled} onClick={copy}>
-          {result === 'copied' ? <Check aria-hidden /> : <Copy aria-hidden />}
+          <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+            <Check data-visible={(result === 'copied') || undefined} className={iconSwap} />
+            <Copy data-visible={!(result === 'copied') || undefined} className={iconSwap} />
+          </span>
         </InputGroupButton>
       </InputGroupAddon>
       <span role="status" className="sr-only">

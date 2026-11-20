@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Button } from '@/registry/kosmos/ui/button';
+import { iconSwapClass } from './classes';
 import { copyAnnouncement, useDocsCopy } from './use-docs-copy';
 
 /** How tall a collapsed block is, and what its toggle says. Expanded, a block grows to its file or to 75% of the screen, whichever is shorter, and scrolls inside. */
@@ -169,7 +170,10 @@ export function CopyButton({ text }: { text: () => string }) {
   return (
     <>
       <Button variant="secondary" size="icon-sm" aria-label="Copy code" onClick={() => copy(text)}>
-        {copied ? <Check /> : <Copy />}
+        <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+          <Check data-visible={(copied) || undefined} className={iconSwapClass} />
+          <Copy data-visible={!(copied) || undefined} className={iconSwapClass} />
+        </span>
       </Button>
       <span role="status" className="sr-only">
         {copyAnnouncement(status, 'Copied')}

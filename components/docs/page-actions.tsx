@@ -4,6 +4,7 @@ import { useSyncExternalStore } from 'react';
 import { ArrowUpRight, Check, ChevronDown, Copy, FileText } from 'lucide-react';
 import { ClaudeIcon, GitHubIcon, OpenAIIcon } from '@/components/site/brand-icons';
 import { Button } from '@/registry/kosmos/ui/button';
+import { iconSwapClass } from './classes';
 import { copyAnnouncement, useDocsCopy } from './use-docs-copy';
 import {
   DropdownMenu,
@@ -41,7 +42,10 @@ export function PageActions({ markdownUrl, githubUrl }: { markdownUrl: string; g
     <>
       <DropdownMenu>
         <DropdownMenuTrigger render={<Button variant="secondary" size="md" />}>
-          {copied ? <Check aria-hidden /> : <Copy aria-hidden />}
+          <span aria-hidden className="grid *:col-start-1 *:row-start-1">
+            <Check data-visible={(copied) || undefined} className={iconSwapClass} />
+            <Copy data-visible={!(copied) || undefined} className={iconSwapClass} />
+          </span>
           Copy page
           <ChevronDown aria-hidden className="-me-0.5" />
         </DropdownMenuTrigger>
