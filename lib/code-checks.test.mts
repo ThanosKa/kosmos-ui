@@ -541,6 +541,98 @@ export function Live() {
 }
 `,
   },
+  {
+    name: 'a block button does something',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Retry() {
+  return (
+    <Button variant="primary" onClick={() => {}}>
+      Try again
+    </Button>
+  );
+}
+`,
+    message: 'A control that does nothing is not rendered: render it only when its handler or `href` is passed (kosmos-style, Buttons).',
+    allowed: `
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Retry() {
+  return (
+    <Button variant="primary" onClick={() => location.reload()}>
+      Try again
+    </Button>
+  );
+}
+`,
+  },
+  {
+    name: 'an example button does something',
+    file: 'registry/kosmos/examples/example.tsx',
+    flagged: `
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Retry() {
+  return (
+    <Button variant="primary" onClick={() => {}}>
+      Try again
+    </Button>
+  );
+}
+`,
+    message: 'A control that does nothing is not rendered: render it only when its handler or `href` is passed (kosmos-style, Buttons).',
+    allowed: `
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Retry() {
+  return (
+    <Button variant="primary" onClick={() => location.reload()}>
+      Try again
+    </Button>
+  );
+}
+`,
+  },
+  {
+    name: 'a number field in a block sets its locale',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { NumberField } from '@/registry/kosmos/ui/number-field';
+
+export function Seats() {
+  return <NumberField defaultValue={250} aria-label="Seats" />;
+}
+`,
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+    allowed: `
+import { NumberField } from '@/registry/kosmos/ui/number-field';
+
+export function Seats() {
+  return <NumberField defaultValue={250} aria-label="Seats" locale="en-US" />;
+}
+`,
+  },
+  {
+    name: 'a number field in an example sets its locale',
+    file: 'registry/kosmos/examples/example.tsx',
+    flagged: `
+import { NumberField } from '@/registry/kosmos/ui/number-field';
+
+export function Seats() {
+  return <NumberField defaultValue={250} aria-label="Seats" />;
+}
+`,
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+    allowed: `
+import { NumberField } from '@/registry/kosmos/ui/number-field';
+
+export function Seats() {
+  return <NumberField defaultValue={250} aria-label="Seats" locale="en-US" />;
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });

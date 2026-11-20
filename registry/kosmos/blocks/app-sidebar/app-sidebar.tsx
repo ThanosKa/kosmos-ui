@@ -2,9 +2,11 @@
 
 import {
   Activity,
+  ChartNoAxesColumn,
   CircleDollarSign,
   CircleHelp,
   FolderKanban,
+  Handshake,
   Layers,
   LayoutDashboard,
   LogOut,
@@ -61,6 +63,8 @@ type NavItem = {
 
 const sampleNavMain: NavItem[] = [
   { id: 'overview', label: 'Overview', href: '#overview', icon: LayoutDashboard },
+  { id: 'analytics', label: 'Analytics', href: '#analytics', icon: ChartNoAxesColumn },
+  { id: 'sales', label: 'Sales', href: '#sales', icon: Handshake },
   { id: 'projects', label: 'Projects', href: '#projects', icon: FolderKanban },
   {
     id: 'events-menu',
@@ -262,25 +266,27 @@ function AppSidebarContent({
             </DropdownMenuItem>
           ) : null}
         </SidebarWorkspaceSwitcher>
-        <SidebarMenuButton
-          tooltip="Search"
-          className={cn(
-            'bg-secondary font-normal shadow-control hover:not-data-disabled:bg-muted hover:not-data-disabled:text-muted-foreground',
-            'transition-[background-color,color,box-shadow,scale] motion-safe:not-disabled:not-data-disabled:active:scale-96',
-          )}
-          // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
-          aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
-          onClick={onSearch}
-        >
-          <Search aria-hidden />
-          <span className="flex-1 text-start">Search…</span>
-          {searchShortcut ? (
-            <KbdGroup aria-hidden className={hiddenInIconMode}>
-              <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
-              <Kbd>K</Kbd>
-            </KbdGroup>
-          ) : null}
-        </SidebarMenuButton>
+        {onSearch ? (
+          <SidebarMenuButton
+            tooltip="Search"
+            className={cn(
+              'bg-secondary font-normal shadow-control hover:not-data-disabled:bg-muted hover:not-data-disabled:text-muted-foreground',
+              'transition-[background-color,color,box-shadow,scale] motion-safe:not-disabled:not-data-disabled:active:scale-96',
+            )}
+            // The hint is shown and announced only when the app binds the shortcut (`searchShortcut`).
+            aria-keyshortcuts={searchShortcut ? (isMac ? 'Meta+K' : 'Control+K') : undefined}
+            onClick={onSearch}
+          >
+            <Search aria-hidden />
+            <span className="flex-1 text-start">Search…</span>
+            {searchShortcut ? (
+              <KbdGroup aria-hidden className={hiddenInIconMode}>
+                <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
+                <Kbd>K</Kbd>
+              </KbdGroup>
+            ) : null}
+          </SidebarMenuButton>
+        ) : null}
       </SidebarHeader>
 
       <SidebarContent render={<nav aria-label={navLabel} />}>

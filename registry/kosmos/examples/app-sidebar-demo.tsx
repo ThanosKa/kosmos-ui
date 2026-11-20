@@ -6,6 +6,8 @@ import { SidebarInset, SidebarProvider, SidebarResizeHandle, SidebarTrigger } fr
 
 const titles: Record<string, string> = {
   overview: 'Overview',
+  analytics: 'Analytics',
+  sales: 'Sales',
   projects: 'Projects',
   events: 'Live events',
   funnels: 'Funnels',

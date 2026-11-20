@@ -302,6 +302,22 @@ const handMadeDotSelectors = classSelectors(
   statusDotMessage,
 );
 
+// A control that does nothing is not rendered: it takes a real handler or `href`, or it does not show.
+const deadHandlerSelectors = [
+  {
+    selector: "JSXAttribute[name.name='onClick'] > JSXExpressionContainer > ArrowFunctionExpression[body.type='BlockStatement'][body.body.length=0]",
+    message: 'A control that does nothing is not rendered: render it only when its handler or `href` is passed (kosmos-style, Buttons).',
+  },
+];
+
+// The server and the browser must format a number the same way.
+const numberFieldLocaleSelectors = [
+  {
+    selector: "JSXOpeningElement[name.name='NumberField']:not(:has(JSXAttribute[name.name='locale']))",
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+  },
+];
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -325,7 +341,7 @@ const codeRules = [
 ];
 
 const uiRules = [...codeRules, ...truncatedNumberSelectors];
-const blockRules = [...uiRules, ...orderSelectors, ...chartRemountSelectors, ...changeBadgeSelectors, ...handMadeDotSelectors];
+const blockRules = [...uiRules, ...orderSelectors, ...chartRemountSelectors, ...changeBadgeSelectors, ...handMadeDotSelectors, ...deadHandlerSelectors, ...numberFieldLocaleSelectors];
 
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
@@ -393,7 +409,7 @@ const eslintConfig = defineConfig([
   {
     files: ['registry/kosmos/examples/**/*.tsx'],
     rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...handMadeDotSelectors],
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...handMadeDotSelectors, ...deadHandlerSelectors, ...numberFieldLocaleSelectors],
     },
   },
   {

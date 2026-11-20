@@ -24,7 +24,7 @@ export default function ErrorPagePreview() {
             description="We couldn’t load this page. Try again in a moment, or check the status page."
             actions={
               <>
-                <Button variant="primary" size="lg" onClick={() => {}}>
+                <Button variant="primary" size="lg" onClick={() => location.reload()}>
                   Try again
                 </Button>
                 <Button variant="secondary" size="lg" href="#">
