@@ -277,6 +277,31 @@ const orderSelectors = classSelectors(
   'Place an item with `col-start-*` and `row-start-*`, not `order-*`: the visual order must match the DOM order (kosmos-style, Phones).',
 );
 
+// A chart morphs to a new range; a `key` on the range remounts it and replays the entrance.
+const chartRemountSelectors = [
+  {
+    selector:
+      "JSXOpeningElement:matches([name.name=/Chart/], [name.property.name=/Chart/]) > JSXAttribute[name.name='key'] > JSXExpressionContainer > Identifier[name=/^range$/i]",
+    message: "A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, Charts: Morph, don't remount).",
+  },
+];
+
+// A change in a stat is a triangle and a signed number, not a hue Badge, which marks a category.
+const changeBadgeSelectors = [
+  {
+    selector:
+      "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='variant'] > JSXExpressionContainer > ConditionalExpression:has(Literal[value='green']):has(Literal[value='red'])",
+    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Stat change).',
+  },
+];
+
+// A status is a `StatusDot` with its word. A ringed dot is a marker (timeline node, presence on an avatar), not a status.
+const statusDotMessage = 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).';
+const handMadeDotSelectors = classSelectors(
+  `^(?=[\\s\\S]*${classStart}rounded-full${classEnd})(?=[\\s\\S]*${classStart}size-(1|1\\.5|2|2\\.5)${classEnd})(?=[\\s\\S]*${classStart}bg-(success|warning|muted-foreground)${classEnd})(?![\\s\\S]*${classStart}ring-)`,
+  statusDotMessage,
+);
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -300,7 +325,7 @@ const codeRules = [
 ];
 
 const uiRules = [...codeRules, ...truncatedNumberSelectors];
-const blockRules = [...uiRules, ...orderSelectors];
+const blockRules = [...uiRules, ...orderSelectors, ...chartRemountSelectors, ...changeBadgeSelectors, ...handMadeDotSelectors];
 
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
@@ -363,6 +388,12 @@ const eslintConfig = defineConfig([
     files: ['registry/kosmos/blocks/**/*.tsx'],
     rules: {
       'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...blockRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors, ...scrollSelectors],
+    },
+  },
+  {
+    files: ['registry/kosmos/examples/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...handMadeDotSelectors],
     },
   },
   {

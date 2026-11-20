@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { PageHeader, type PageHeaderAction, type PageTab } from '@/registry/kosmos/blocks/page-header/page-header';
 import { Button } from '@/registry/kosmos/ui/button';
+import { StatusDot, type Status as DotStatus } from '@/registry/kosmos/ui/status';
 
 type Status = 'live' | 'trial' | 'paused';
 type Project = { id: string; name: string; domain: string; platform: string; plan: string; status: Status };
@@ -32,10 +33,10 @@ const names: Record<string, string> = {
   android: 'Android',
   server: 'Server',
 };
-const statuses: Record<Status, { label: string; dot: string }> = {
-  live: { label: 'Live', dot: 'bg-success' },
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  paused: { label: 'Paused', dot: 'bg-warning' },
+const statuses: Record<Status, { label: string; state: DotStatus }> = {
+  live: { label: 'Live', state: 'done' },
+  trial: { label: 'Trial', state: 'pending' },
+  paused: { label: 'Paused', state: 'waiting' },
 };
 
 const actionLabels: Record<PageHeaderAction | 'new', string> = {
@@ -97,10 +98,9 @@ export default function PageHeaderDemo() {
                 <span className="hidden w-28 shrink-0 text-small text-muted-foreground @md:block">
                   {names[project.plan]} · {names[project.platform]}
                 </span>
-                <span className="flex w-16 shrink-0 items-center gap-1.5 text-small">
-                  <span aria-hidden className={`size-1.5 rounded-full ${statuses[project.status].dot}`} />
+                <StatusDot status={statuses[project.status].state} className="w-16 shrink-0 text-small">
                   {statuses[project.status].label}
-                </span>
+                </StatusDot>
               </li>
             ))}
           </ul>

@@ -1,0 +1,15 @@
+---
+title: Status, change and ranges in blocks
+description: Blocks show a state with StatusDot, a change as a green or red triangle, and Analytics dashboard follows its range in every panel. Command menu status now takes a state.
+date: 2026-11-20
+---
+
+Blocks say a state in words, show a change the Kosmos way and keep one range across a dashboard.
+
+- [Command menu](/docs/blocks/command-menu): breaking change. An item's `status` is now `{ label, state }`, where `state` is `done`, `pending` or `waiting`, in place of `{ label, dot }`. The state shows as a [Status](/docs/components/status) dot beside its word at the end of the row, and the dot no longer replaces the icon. Rename `dot: 'bg-warning'` to `state: 'waiting'`, `bg-success` to `done` and `bg-muted-foreground` to `pending`.
+- [Analytics dashboard](/docs/blocks/dashboard-analytics): breaking change. `kpis`, `sources`, `topPages` and `countries` are keyed by range, as `traffic` already is, so the 7, 30 or 90 day switch changes every panel and each description names its range. The traffic chart morphs between ranges in place of remounting. A signup row's presence is written in its second line, such as "Online · leila@ironbark.example".
+- [Usage overview](/docs/blocks/usage-overview): a change is a green or red triangle with the signed number and "vs. last period", in place of a hue badge. The chart morphs between ranges, drops its value axis and horizontal grid, and labels only its first and last day. The budget meter turns `destructive` past 100%.
+- [Stats overview](/docs/blocks/stats-overview) and [Feature section](/docs/blocks/feature-section): the change reads "vs. last period" with the same triangle, and the chart morphs between ranges. Feature section's `change` sample values are percentages, such as 9.6, not fractions.
+- [Detail drawer](/docs/blocks/detail-drawer) and [Bento](/docs/blocks/bento): the status is a Status dot with its word, and the drawer's section eyebrows use regular weight.
+
+To update, run the add command again for each item.

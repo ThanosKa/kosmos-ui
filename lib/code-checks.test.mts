@@ -469,6 +469,78 @@ export function Row({ flipped }: { flipped: boolean }) {
 }
 `,
   },
+  {
+    name: 'a chart in a block morphs on a range change',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { GrowthChart } from '@/registry/kosmos/ui/chart';
+
+export function Trend({ range, data }: { range: string; data: Array<{ day: string; users: number }> }) {
+  return <GrowthChart key={range} title="Users" data={data} xKey="day" />;
+}
+`,
+    message: 'A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, Charts: Morph, don\'t remount).',
+    allowed: `
+import { GrowthChart } from '@/registry/kosmos/ui/chart';
+
+export function Trend({ data }: { data: Array<{ day: string; users: number }> }) {
+  return <GrowthChart title="Users" data={data} xKey="day" />;
+}
+`,
+  },
+  {
+    name: 'a change in a block is not a hue Badge',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { Badge } from '@/registry/kosmos/ui/badge';
+
+export function Change({ change }: { change: number }) {
+  return <Badge variant={change < 0 ? 'red' : 'green'}>{change}%</Badge>;
+}
+`,
+    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Stat change).',
+    allowed: `
+import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
+
+export function Change({ change }: { change: number }) {
+  return <StatCardDelta value={change}>vs. last period</StatCardDelta>;
+}
+`,
+  },
+  {
+    name: 'a status dot in a block is a StatusDot',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Live() {
+  return <span aria-hidden className="size-2 shrink-0 rounded-full bg-success" />;
+}
+`,
+    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).',
+    allowed: `
+import { StatusDot } from '@/registry/kosmos/ui/status';
+
+export function Live() {
+  return <StatusDot status="done">Live</StatusDot>;
+}
+`,
+  },
+  {
+    name: 'a status dot in an example is a StatusDot',
+    file: 'registry/kosmos/examples/example.tsx',
+    flagged: `
+export function Live() {
+  return <span aria-hidden className="size-1.5 rounded-full bg-warning" />;
+}
+`,
+    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).',
+    allowed: `
+import { StatusDot } from '@/registry/kosmos/ui/status';
+
+export function Live() {
+  return <StatusDot status="waiting">Paused</StatusDot>;
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });

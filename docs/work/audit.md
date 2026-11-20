@@ -409,7 +409,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** WCAG 2.5.7.
 - **Fix:** a per-card "Move to…" `DropdownMenu` (`Button variant="item" size="icon-sm"`, `aria-label={`Move ${title}`}`) listing the other columns plus Move up and Move down. Each item calls the same `commit()` and the same announcement.
 
-**7. Dashboard Analytics: presence is shown by color alone.**
+**7. Dashboard Analytics: presence is shown by color alone. (Fixed in ticket 27)**
 - **Bug.** Checkable by a **code** check (a dot whose state is only a `bg-*` with an `sr-only` label).
 - **Where:** `blocks/dashboard-analytics/dashboard-analytics.tsx:482-486` (the `presenceDot` map), `:509-513` (the dot) and `:519` (the `sr-only` label).
 - **What is wrong:** online, away and offline are a green, amber or grey dot on the avatar. Sighted people get no word and no tooltip. In forced colors all three become `CanvasText`.
@@ -453,7 +453,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Cause:** a shared one, the ScrollArea or DataTable.
 - **Fix:** in `ui/scroll-area.tsx`, an `onFocus` on the viewport (capture phase) that calls `target.scrollIntoView({ block: 'nearest', inline: 'nearest' })` when the focused element is not fully inside the viewport. One fix covers every table block.
 
-**11. Dashboard Analytics: the header period picker changes only the Traffic panel.**
+**11. Dashboard Analytics: the header period picker changes only the Traffic panel. (Fixed in ticket 27)**
 - **Bug (misleading).** Not checkable.
 - **Where:**
   - `dashboard-analytics.tsx:1049-1057`: the DateRangePicker sets `range`.
@@ -520,7 +520,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** the title is announced as a link, but Cmd-click opens `#mention`. Without `onNotificationOpen` it only marks the item as read.
 - **Fix:** add `href?: string` to `DashboardNotification`. With no `href`, render the title as a `<button type="button">`.
 
-**18. Usage overview: the chart breaks the Kosmos chart rules, and range changes remount it.**
+**18. Usage overview: the chart breaks the Kosmos chart rules, and range changes remount it. (Fixed in ticket 27)**
 - **Bug against kosmos-style (`charts.md`).** Checkable by a **code** check (a visible `Recharts.YAxis` in a block; `key={range}` on a chart).
 - **Where:**
   - `usage-overview.tsx:363` (`key={range}`).
@@ -533,7 +533,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - `<YAxis hide />`, no horizontal grid, ticks at the first and last index.
   - The Chart component's cursor.
 
-**19. A change is shown as a hue Badge, not the Kosmos stat change.**
+**19. A change is shown as a hue Badge, not the Kosmos stat change. (Fixed in ticket 27)**
 - **Bug against kosmos-style (Status and tints).** Checkable by a **code** check (a `Badge variant` choosing between `'green'` and `'red'`).
 - **Where:** `usage-overview.tsx:168-171` (with its own `formatChange` at `:137-139`) and `feature-section.tsx:100`.
 - **What is wrong:** hue Badges are for categories. A change in a stat tile is a green ▲ or red ▼ with the signed number in `text-tint-*-foreground`, then the muted "vs. last period". `stats-overview` already does this through `lib/stat-delta`.
@@ -541,7 +541,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 
 #### LOW
 
-**20. Hand-made status dots instead of `StatusDot`.**
+**20. Hand-made status dots instead of `StatusDot`. (Fixed in ticket 27)**
 - **Bug (consistency).** Checkable by a **code** check: a small `rounded-full` span with `bg-success`, `bg-warning` or `bg-muted-foreground` in `blocks/` or `examples/`.
 - **Where:**
   - `blocks/command-menu/command-menu.tsx:76-80,189-192`. The public `CommandMenuItem.status.dot` takes a raw class string.
@@ -603,7 +603,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - "You are all caught up" (`dashboard-crm.tsx:514`) beside "You’re all caught up" (`dashboard-analytics.tsx:866`, `dashboard-crm.tsx:826`).
   - "Clear all" (`page-header.tsx:321`) beside "Clear filters" (`:293`).
   - "Search" (`command-menu.tsx:363`) beside "Search…" (`app-sidebar.tsx:273`).
-  - "vs previous period" (`usage-overview.tsx:172`), "vs. last period" (`stats-overview.tsx:172`) and "vs. previous 30 days" (`feature-section.tsx:101`).
+  - "vs previous period" (`usage-overview.tsx:172`), "vs. last period" (`stats-overview.tsx:172`) and "vs. previous 30 days" (`feature-section.tsx:101`). (Fixed in ticket 27)
   - The button "Deal" (`dashboard-crm.tsx:476`) is not verb-first: use "New deal".
   - `aria-label` "Call: Call Copperline Bank" (`dashboard-crm.tsx:527`).
   - Range items "7d", "30d", "90d" with no spoken form (`dashboard-analytics.tsx:377-381`).
@@ -626,11 +626,11 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Wrong item marked current:** `dashboard-analytics.tsx:1043` and `dashboard-crm.tsx:984` mark "Overview" as the current page for Analytics and Sales.
 - **App page title size:** `examples/app-sidebar*.tsx` and `showcase.tsx:31` set page titles in `text-body`. Kosmos and both dashboards use `text-title font-medium`.
 - **Mixed heights in one row:** `members.tsx:318-319` puts a 34px select beside a 36px `lg` Button. Kosmos says a field beside a Button takes the Button's height.
-- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400. (Fixed in ticket 25)
+- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400. (Fixed in ticket 27)
 - **Props on the wrong element:** `HeroProduct` spreads `{...props}` onto the inner Hero but `className` onto the outer section (`hero-product.tsx:42-43`), so `id`, `aria-*` and `data-*` land on the wrong element.
 - **Missing states:**
   - Usage overview has no error state (`:231-250`).
-  - Its budget meter stays `warning` at 131% (`:454`); use `destructive` past 100%.
+  - Its budget meter stays `warning` at 131% (`:454`); use `destructive` past 100%. (Fixed in ticket 27)
   - New item dialog drops typed text on Escape or an outside click (`new-item-dialog.tsx:223-232`).
 - **Demo data off the demo world:**
   - Lena's bio "Platform engineer" (`settings.tsx:401`); she is the Product lead.

@@ -81,9 +81,9 @@ export default function DashboardAnalyticsPreview() {
         <div className={frame}>
           <DashboardAnalytics
             traffic={everyRange(emptyTraffic)}
-            sources={[]}
-            topPages={[]}
-            countries={[]}
+            sources={everyRange([])}
+            topPages={everyRange([])}
+            countries={everyRange([])}
             goal={{ description: 'October target: 1,300 signups', count: 0, target: 1300, pace: -35.5, team: { label: 'Growth', people: [] } }}
             signups={[]}
           />
@@ -93,11 +93,11 @@ export default function DashboardAnalyticsPreview() {
       <PreviewSection title="Long text and extreme values">
         <div className={frame}>
           <DashboardAnalytics
-            topPages={[
+            topPages={everyRange([
               { id: 'long', label: '/docs/dashboards/share-a-dashboard-with-a-link-that-never-expires', value: 1_920_000 },
               { id: 'one', label: '/', value: 1 },
-            ]}
-            countries={[{ id: 'cd', label: 'Democratic Republic of the Congo', meta: 'CD', value: 38_910 }]}
+            ])}
+            countries={everyRange([{ id: 'cd', label: 'Democratic Republic of the Congo', meta: 'CD', value: 38_910 }])}
             goal={{
               description: 'October target for the Growth and Platform teams across Europe and the Middle East',
               count: 2_480,

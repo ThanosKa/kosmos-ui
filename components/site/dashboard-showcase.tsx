@@ -51,10 +51,10 @@ const roadmapTeam: Record<string, KanbanPerson> = {
   kai: { name: 'Kai Nakamura', initials: 'KN', avatarUrl: '/avatars/kai.jpg' },
 };
 
-const projectStatus: Record<ProjectStatus, { label: string; dot: string }> = {
-  live: { label: 'Live', dot: 'bg-success' },
-  trial: { label: 'Trial', dot: 'bg-muted-foreground' },
-  paused: { label: 'Paused', dot: 'bg-warning' },
+const projectStatus: Record<ProjectStatus, { label: string; state: 'done' | 'pending' | 'waiting' }> = {
+  live: { label: 'Live', state: 'done' },
+  trial: { label: 'Trial', state: 'pending' },
+  paused: { label: 'Paused', state: 'waiting' },
 };
 
 /** What each saved view sets on the Projects page. */
