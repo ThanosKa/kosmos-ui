@@ -307,7 +307,7 @@ function NavbarSheetLinks({ items, current, label, Link, onNavigate }: NavbarLin
             {link.icon}
           </span>
         ) : null}
-        <span className="truncate">{link.label}</span>
+        <span title={link.label} className="truncate">{link.label}</span>
         {link.href === current ? <Check aria-hidden className="ms-auto size-4 shrink-0" /> : null}
       </Link>
     </li>
@@ -366,7 +366,7 @@ function NavbarSearch({ children = 'Search…', shortcut, className, ...props }:
       {...props}
     >
       <Search aria-hidden />
-      <span className="flex-1 truncate text-start">{children}</span>
+      <span title={typeof children === 'string' ? children : undefined} className="flex-1 truncate text-start">{children}</span>
       {shortcut ? (
         <KbdGroup aria-hidden>
           {shortcut.map((key) => (
@@ -407,7 +407,7 @@ function NavbarBanner({
   if (dismissed) return null;
   const line = (
     <>
-      <span className="min-w-0 line-clamp-2 text-pretty">{children}</span>
+      <span className="min-w-0 text-pretty wrap-break-word">{children}</span>
       {linkLabel ? (
         <span className="flex shrink-0 items-center gap-1 font-medium text-foreground">
           {linkLabel}
@@ -427,14 +427,14 @@ function NavbarBanner({
         <Link
           href={href}
           className={cn(
-            'mx-auto flex min-w-0 items-center gap-2 rounded-md px-1 py-0.5 transition-[color] hover:text-foreground',
+            'mx-auto flex min-w-0 flex-col items-start gap-0.5 rounded-md px-1 py-0.5 transition-[color] hover:text-foreground @sm:flex-row @sm:items-center @sm:gap-2',
             focusRing,
           )}
         >
           {line}
         </Link>
       ) : (
-        <span className="mx-auto flex min-w-0 items-center gap-2">{line}</span>
+        <span className="mx-auto flex min-w-0 flex-col items-start gap-0.5 @sm:flex-row @sm:items-center @sm:gap-2">{line}</span>
       )}
       <Button
         variant="ghost"
@@ -588,7 +588,7 @@ function Navbar({
             )}
           >
             {logo ?? <NavbarMark name={name} />}
-            <span className="truncate">{name}</span>
+            <span title={typeof name === 'string' ? name : undefined} className="truncate">{name}</span>
           </Link>
         </div>
         {items.length > 0 ? (

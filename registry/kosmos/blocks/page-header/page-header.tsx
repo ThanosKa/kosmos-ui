@@ -312,7 +312,7 @@ function PageHeader({
                   className="max-w-full"
                 >
                   {option.group ? <span className="text-muted-foreground">{option.group}</span> : null}
-                  <span className="truncate">{option.label}</span>
+                  <span title={option.label} className="truncate">{option.label}</span>
                   <X aria-hidden data-icon="inline-end" />
                 </Button>
               );

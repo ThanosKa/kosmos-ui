@@ -335,7 +335,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 
 #### HIGH
 
-**1. Numbers truncate, with no way to read them in full.**
+**1. Numbers truncate, with no way to read them in full (Fixed in ticket 21).**
 - **Bug.** Checkable by a **code** check (`truncate` with `tabular-nums` or `text-display` on one element in `blocks/`) and a **browser** check (ellipsis on numeric text).
 - **Where:**
   - `blocks/dashboard-analytics/dashboard-analytics.tsx:393`: Traffic totals, `truncate text-title … tabular-nums`.
@@ -352,7 +352,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - Let the three-column total strips wrap below a container width: `grid-flow-row` under `@sm`.
   - Compact large currency the way `stats-overview`'s `formatValue` already does.
 
-**2. Truncated text with no way back.**
+**2. Truncated text with no way back (Fixed in ticket 21).**
 - **Bug.** Checkable by a **browser** check: an ellipsis or line clamp whose element, and whose ancestors, carry no `title`, tooltip or `aria-describedby` (`measure-blocks.mts` already does this).
 - **Shared causes:**
   - `ui/panel.tsx:45,55`: PanelTitle and PanelDescription `truncate` with no `title`. Measured: "October target for the Growth and Platform…" in `dashboard-analytics` at 375 and 1280.
@@ -374,7 +374,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - Drop `line-clamp-2` from the banner and put `linkLabel` on its own line below `@sm`.
   - Give dates `shrink-0` and no `truncate`.
 
-**3. Long words and long labels overflow the block at phone width.**
+**3. Long words and long labels overflow the block at phone width (Fixed in ticket 21).**
 - **Bug.** Checkable by a **browser** check: visible text cut by an ancestor that clips it, in the previews' worst-case sections (`clip-probe.mts`).
 - **Where:**
   - `blocks/feature-rows/feature-rows.tsx:186-188`: the row title and description have no `wrap-break-word`. The preview's long event name runs 364px past the block at 375 and 357px at 1280 ("signup_completed_with_a_very_long_event_name_from_the_web_sdk" and its URL).
@@ -485,7 +485,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** the fade is the Kosmos cue for hidden content. An overlay scrollbar shows nothing until you scroll.
 - **Fix:** wrap each screen in `ScrollArea` with a focusable viewport, and keep `-outline-offset-2` on the root.
 
-**14. Feature rows: the stage crops the media's header text at mid widths, and visual order differs from DOM order.**
+**14. Feature rows: the stage crops the media's header text at mid widths, and visual order differs from DOM order (Fixed in ticket 21).**
 - **Bug.** Checkable by a **browser** check (text cut by `[feature-rows-item-media]` at 900 wide) and a **code** check (`order-` in a block).
 - **Where:** `feature-rows.tsx:200-204` (`overflow-hidden … justify-end`, with media `@3xl:min-w-136`) and `:185` (`flipped && '@3xl:order-2'`).
 - **What is wrong:** measured with `clip-probe.mts` at 900 wide:
@@ -616,7 +616,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 
 **27. Smaller structure and API points.**
 - **Taste.** Not checkable unless noted.
-- **Fixed height on wrapping text:** `detail-drawer.tsx:159` puts `h-7.5` on a `dt`, which overflows when its label wraps. Use `min-h-7.5`. **Code** check: a fixed `h-*` on an element that holds text.
+- **Fixed height on wrapping text:** `detail-drawer.tsx:159` puts `h-7.5` on a `dt`, which overflows when its label wraps. Use `min-h-7.5`. (Fixed in ticket 21) **Code** check: a fixed `h-*` on an element that holds text.
 - **Hard-coded announced shortcut:** `navbar.tsx:364` sets `aria-keyshortcuts` to `'Meta+K Control+K'` whatever `shortcut` says. **Code** check.
 - **Duplicate landmark name:** AppSidebar's `<nav aria-label="Main">` (`app-sidebar.tsx:283`) sits beside the Navbar's default "Main" in the showcase and landing page. Give it its own name or a `navLabel` prop. **Browser** check: axe `landmark-unique`.
 - **Hard-coded heading levels:**

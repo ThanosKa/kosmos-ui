@@ -149,7 +149,7 @@ function formatValue(value: number, format: StatFormat) {
 /** The change as a green or red triangle and signed number, with the muted period it is measured against. A flat change stays muted. */
 function MetricChange({ metric, rangeLabel }: { metric: Metric; rangeLabel: string }) {
   const delta = metric.change === undefined ? null : statDelta(metric.change, { goodWhen: metric.goodWhen, unit: metric.format === 'percent' ? 'points' : 'percent' });
-  if (!delta) return <span className="truncate text-caption text-muted-foreground">No earlier period</span>;
+  if (!delta) return <span title="No earlier period" className="truncate text-caption text-muted-foreground">No earlier period</span>;
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-caption tabular-nums">
       <span
@@ -202,7 +202,7 @@ function MetricTab({ metric, loading, rangeLabel }: { metric: Metric; loading: b
         </>
       ) : (
         <>
-          <span className="max-w-full truncate text-title font-medium text-foreground tabular-nums">{formatValue(metric.value, metric.format)}</span>
+          <span className="shrink-0 text-title font-medium text-foreground tabular-nums">{formatValue(metric.value, metric.format)}</span>
           <MetricChange metric={metric} rangeLabel={rangeLabel} />
         </>
       )}
@@ -366,7 +366,7 @@ function StatsOverview({
       {active ? (
         <>
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pb-3">
-            <span className="truncate text-small text-muted-foreground">
+            <span title={`${active.label}, last ${rangeLabel}`} className="truncate text-small text-muted-foreground">
               {active.label}, last {rangeLabel}
             </span>
             <PeriodLegend rangeLabel={rangeLabel} />

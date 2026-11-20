@@ -247,6 +247,11 @@ const truncateWithoutTitleSelectors = [
   },
 ];
 
+const orderSelectors = classSelectors(
+  `${classStart}-?order-`,
+  'Place an item with `col-start-*` and `row-start-*`, not `order-*`: the visual order must match the DOM order (kosmos-style, Phones).',
+);
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -270,6 +275,7 @@ const codeRules = [
 ];
 
 const uiRules = [...codeRules, ...truncatedNumberSelectors];
+const blockRules = [...uiRules, ...orderSelectors];
 
 /**
  * Lints the tsx code blocks of the docs pages, so the samples a reader copies follow the same rules. A block of bare
@@ -322,11 +328,16 @@ const eslintConfig = defineConfig([
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...codeRules, ...viewportSelectors, ...pixelSizeSelectors] },
   },
   {
-    // Ticket 21 extends the truncation rules to the blocks once they are fixed.
     files: ['registry/kosmos/ui/**/*.tsx'],
     ignores: Object.keys(fullTextElsewhere),
     rules: {
       'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...uiRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors],
+    },
+  },
+  {
+    files: ['registry/kosmos/blocks/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...blockRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors],
     },
   },
   {

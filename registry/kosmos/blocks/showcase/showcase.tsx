@@ -28,7 +28,7 @@ function SampleDashboard() {
       <SidebarInset render={<div />} className="scroll-p-1 overflow-y-auto">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h3 className="truncate text-body font-medium">Overview</h3>
+          <h3 className="text-body font-medium">Overview</h3>
         </header>
         <div className="p-4">
           <StatsOverview />
@@ -110,7 +110,7 @@ function Showcase({ screens = sampleScreens, label = 'Screens', defaultScreen, c
               <span className="size-2.5 rounded-full bg-foreground/15" />
               <span className="size-2.5 rounded-full bg-foreground/15" />
             </span>
-            <span className="truncate text-caption text-muted-foreground">{current.address}</span>
+            <span title={current.address} className="truncate text-caption text-muted-foreground">{current.address}</span>
           </div>
           {screens.map((item) => (
             <TabsContent

@@ -221,7 +221,7 @@ function PlatformLabel({ platform }: { platform: ProjectPlatform }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
       <Icon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className="truncate">{label}</span>
+      <span title={label} className="truncate">{label}</span>
     </span>
   );
 }

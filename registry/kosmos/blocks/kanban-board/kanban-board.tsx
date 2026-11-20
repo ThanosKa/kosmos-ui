@@ -223,10 +223,10 @@ function KanbanCard({ item, lifted = false, placeholder = false, menu, className
         ) : null}
         {item.area ? (
           <Badge variant={item.area.hue} className="max-w-full">
-            <span className="truncate">{item.area.label}</span>
+            <span title={item.area.label} className="truncate">{item.area.label}</span>
           </Badge>
         ) : null}
-        <p className={cn('line-clamp-3 text-body font-medium text-pretty wrap-break-word', menu && 'pe-7')}>{item.title}</p>
+        <p title={item.title} className={cn('line-clamp-3 text-body font-medium text-pretty wrap-break-word', menu && 'pe-7')}>{item.title}</p>
       </div>
       {hasMeta ? (
         <div className="flex min-h-10 items-center gap-3 px-3 py-2">
@@ -237,9 +237,9 @@ function KanbanCard({ item, lifted = false, placeholder = false, menu, className
             </span>
           ) : null}
           {item.target ? (
-            <span className="flex min-w-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
+            <span className="flex shrink-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
               <CalendarDays aria-hidden className="size-3.5 shrink-0" />
-              <span className="truncate">{item.target}</span>
+              <span>{item.target}</span>
             </span>
           ) : null}
           {item.assignee ? (
@@ -362,7 +362,7 @@ function KanbanColumnView({
         ) : (
           <span aria-hidden className={cn('size-2 shrink-0 rounded-full', toneDot[tone])} />
         )}
-        <h3 id={headingId} className="truncate text-body font-medium">
+        <h3 id={headingId} title={column.title} className="truncate text-body font-medium">
           {column.title}
         </h3>
         {loading ? (

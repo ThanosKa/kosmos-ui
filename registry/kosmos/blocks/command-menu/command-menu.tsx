@@ -195,13 +195,13 @@ function ItemRow({ item }: { item: CommandMenuItem }) {
       ) : null}
       {item.description ? (
         <CommandItemText>
-          <span className="truncate">{item.title ?? item.label}</span>
+          <span title={item.title ?? item.label} className="truncate">{item.title ?? item.label}</span>
           <CommandDescription>{item.description}</CommandDescription>
         </CommandItemText>
       ) : (
-        <span className="min-w-0 truncate">{item.title ?? item.label}</span>
+        <span title={item.title ?? item.label} className="min-w-0 truncate">{item.title ?? item.label}</span>
       )}
-      {item.hint ? <span className="min-w-0 shrink-[2] truncate text-small text-muted-foreground">{item.hint}</span> : null}
+      {item.hint ? <span title={item.hint} className="min-w-0 shrink-[2] truncate text-small text-muted-foreground">{item.hint}</span> : null}
       {item.status ? (
         <span className="ms-auto shrink-0 ps-2 text-small text-muted-foreground">{item.status.label}</span>
       ) : null}

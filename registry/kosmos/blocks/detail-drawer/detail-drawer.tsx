@@ -149,7 +149,7 @@ function StatusLabel({ status }: { status: DetailStatus }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
       <span aria-hidden className={cn('size-2 shrink-0 rounded-full', statuses[status].dot)} />
-      <span className="truncate">{statuses[status].label}</span>
+      <span title={statuses[status].label} className="truncate">{statuses[status].label}</span>
     </span>
   );
 }
@@ -157,7 +157,7 @@ function StatusLabel({ status }: { status: DetailStatus }) {
 function Property({ label, labelId, children }: { label: string; labelId?: string; children: React.ReactNode }) {
   return (
     <div className="contents">
-      <dt id={labelId} className="flex h-7.5 items-center text-muted-foreground">
+      <dt id={labelId} className="flex min-h-7.5 items-center text-muted-foreground">
         {label}
       </dt>
       <dd className="flex min-h-7.5 min-w-0 flex-wrap items-center gap-1.5">{children}</dd>

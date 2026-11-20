@@ -76,8 +76,10 @@ export default function FeatureSectionPreview() {
             cardTitle="One view for everyone on the team, on every plan, in every workspace you run"
             points={longPoints}
             action={
-              <Button variant="secondary" href="/docs/dashboards">
-                Read the dashboards guide and every example in it
+              <Button variant="secondary" href="/docs/dashboards" className="max-w-full">
+                <span title="Read the dashboards guide and every example in it" className="truncate">
+                  Read the dashboards guide and every example in it
+                </span>
               </Button>
             }
           />
