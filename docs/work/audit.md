@@ -1087,7 +1087,7 @@ Ticket 11. Emil's `improve-animations` surveyed the motion of every component, b
 
 Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 
-#### 1. Recharts charts jump under reduced motion and play their entrance on mount (Sparkline, Growth chart, Usage overview)
+#### 1. Recharts charts jump under reduced motion and play their entrance on mount (Sparkline, Growth chart, Usage overview) (Fixed in ticket 35)
 
 - **Severity:** MEDIUM. **Kind:** bug (style skill, Reduced motion is mandatory; `charts.md`, Entrance and Reduced motion). **Checkable:** partly, browser: with reduced motion emulated, change the Usage overview range and read the chart container's computed opacity on the next frame (below 1 while it fades).
 - **Location:** `registry/kosmos/ui/chart.tsx:25-42` (`chartAnimation`, `useChartAnimation`), `:252-288` (Sparkline), `:299-344` (Sparkline bars), `:371-473` (Growth chart); `registry/kosmos/hooks/use-chart-motion.ts:94-108` (`useEntranceAnimation`); `registry/kosmos/blocks/usage-overview/usage-overview.tsx:294, 369-408`; `content/docs/components/chart.mdx:56`.
@@ -1103,7 +1103,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 - **Why it matters:** a Status icon turning from the spinner to a check is the moment a run finishes; the same change should look the same in every component. The blur makes two icons read as one shape changing.
 - **Fix:** Fixed in ticket 34. One recipe for every icon swap, written into the style skill with a lint rule.
 
-#### 3. Candlestick chart slides its tooltip and cursor by animating `left` and `top`
+#### 3. Candlestick chart slides its tooltip and cursor by animating `left` and `top` (Fixed in ticket 35)
 
 - **Severity:** MEDIUM. **Kind:** taste (performance and cohesion). **Checkable:** no.
 - **Location:** `registry/kosmos/ui/candlestick-chart.tsx:557-566` (cursor, `left-(--x)`, `motion-safe:transition-[opacity,left] motion-safe:duration-base`) and `:610-619` (tooltip, `top-(--y) left-(--x)`, `motion-safe:transition-[opacity,left,top] motion-safe:duration-base`), easing `ease-power3-out`. The sibling that does it right: `registry/kosmos/ui/daily-stacked-bar-chart.tsx:338-342, 405-415` (`translate-x-(--x)`, `transition-[opacity,translate]`, `duration-slow`, `ease-smooth-in-out`).
@@ -1111,7 +1111,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**.
 - **Why it matters:** hovering a chart is the most frequent chart motion; layout work per frame is where a busy dashboard drops frames.
 - **Fix:** ticket 35. Position both with `translate` and slide them on `duration-slow`, `ease-smooth-in-out`, as Daily stacked bar chart does.
 
-#### 4. The docs' Recharts examples draw with Recharts' own timing
+#### 4. The docs' Recharts examples draw with Recharts' own timing (Fixed in ticket 35)
 
 - **Severity:** LOW. **Kind:** taste (cohesion). **Checkable:** no.
 - **Location:** `registry/kosmos/examples/chart-custom.tsx:35-37`, `chart-card.tsx:103, 225`, `chart-card-legend.tsx:46`, `chart.tsx:140` (each `<Bar>` without `useChartAnimation`).

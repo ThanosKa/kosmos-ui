@@ -2,7 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
-import { ChartContainer, GrowthChart, type ChartConfig } from '@/registry/kosmos/ui/chart';
+import { ChartContainer, GrowthChart, useChartAnimation, type ChartConfig } from '@/registry/kosmos/ui/chart';
 import {
   ChartCard,
   ChartCardAction,
@@ -69,6 +69,7 @@ function StateCard({ state, retry = true }: { state: ChartCardState; retry?: boo
 }
 
 function Normal() {
+  const animation = useChartAnimation(undefined, platforms);
   return (
     <>
       <PreviewSection title="Growth chart with a range switch">
@@ -100,7 +101,7 @@ function Normal() {
                 <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={8} />
                 <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" />
                 {Object.keys(platformConfig).map((key) => (
-                  <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} />
+                  <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} {...animation} />
                 ))}
               </BarChart>
             </ChartContainer>
@@ -132,6 +133,7 @@ const longConfig = {
 } satisfies ChartConfig;
 
 function Worst() {
+  const animation = useChartAnimation(undefined, platforms);
   return (
     <>
           <PreviewSection title="Long text, title only, no header">
@@ -222,7 +224,7 @@ function Worst() {
                   <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={8} />
                   <YAxis tickLine={false} axisLine={false} tickMargin={8} width="auto" />
                   {Object.keys(longConfig).map((key) => (
-                    <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} />
+                    <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} stroke="var(--card)" maxBarSize={40} {...animation} />
                   ))}
                 </BarChart>
               </ChartContainer>
