@@ -5,6 +5,66 @@ Date: 2026-11-20
 
 The findings of tickets 03 to 06 (`docs/work/audit-spec.md`). `better-interface` reviewed each part; the site check measured it. Each section ranks its own findings; ticket 07 merges shared causes and turns them into fix tickets.
 
+## Triage
+
+Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/tickets/`. Below, C, B, D and L name the four sections (Components, Blocks and dashboards, Docs site, Landing and Presets) and the number is the finding's number in that section. The tickets name findings in full ("Blocks 10").
+
+### Tickets
+
+| Ticket | Title | Findings | Blocked by | Touches |
+| --- | --- | --- | --- | --- |
+| 15 | Site check fixes | `--route /`, resting shadows, `/preset-preview` (L Verification, D5) | None | site check |
+| 16 | Site check: clipped text, unnamed controls and focus under the edge fade | checks for B3, B14, L8, C8, B4, D3 | 15 | site check |
+| 17 | Third-party notice check | ADR 0010 check left out of ticket 12 | None | registry item `meta`, `building.md` |
+| 18 | Focus stays in view inside scroll areas | C9, B10, L5, D3, B22, D5 | 16 | ScrollArea, Sidebar (resize handle), docs sidebar |
+| 19 | Text contrast below the floor | C1, C2, B5, L11 | None | Chart, Badge, Banner, tints test, Logo marquee, lint |
+| 20 | Text that fits: components and docs | C3, C4, C5, C17, D1 | None | Model select, Panel, Status, Sidebar (labels), Chart and the charts, Command, Data table, Announcement, Input group, Stat card, copy swatch, lint |
+| 21 | Text that fits: blocks | B1, B2, B3, B14, B27 (`dt` height) | 16, 20 | dashboards, Usage and Stats overview, Navbar, Members, Kanban, Feature rows, Feature section, Bento, Testimonials, Detail drawer, app sidebar previews, lint |
+| 22 | Pinned overlays in previews | C13, B9, L4, L8 | 15 | `OverlayStage`, previews (Breadcrumb, Dropdown menu, App sidebar, Page header, Detail drawer, Navbar), preset cards |
+| 23 | Timing and reduced motion | C6, C11, C12, D13 | None | Notification inbox (dot), Sonner demo, Flickering grid, block viewer, lint |
+| 24 | Names and announcements | C7, C8, B4, B12 (Run timeline), B15, B23 | 16 | Notification inbox, Command, Select, Popover examples, Settings, Run timeline, dashboards, Detail drawer, Auth forms, lint |
+| 25 | Pointer and keyboard paths | C10, C14, B6, B27 (Kanban radius) | None | Data table, Daily stacked bar chart, Flow chart, Kanban |
+| 26 | Block controls keep focus and do what they say | B8, B12, B17, B27 (current item, shortcut, locale, row heights) | None | Navbar, dashboards, Settings, Members, App sidebar, App sidebar demo, 500 example, lint |
+| 27 | Status, change, charts and ranges in blocks | B7, B11, B18, B19, B20, B26 ("vs."), B27 (budget meter, eyebrow) | None | Analytics dashboard, Usage and Stats overview, Feature section, Command menu, Detail drawer, Bento, page header demo, `demo-world.md`, lint |
+| 28 | Showcase and hero pictures | B13, B21, L7, L13, L14, B27 (landmark, headings, page titles, HeroProduct props) | 16 | Showcase, HeroProduct, App sidebar (`navLabel`), landing showcase and hero, app sidebar previews, lint |
+| 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
+| 30 | Docs site fixes | D2 and B24, D4, D6, D7, D8, D9 (changelog), D10, D11, D12 | None | docs shell, preview frame, not-found page, search dialog, lint |
+| 31 | Block copy and docs prose | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
+
+Tickets 08 and 09 wait for 15, 16 and 18 to 31. Ticket 17 adds a check only and blocks nothing.
+
+### Run order
+
+Tickets run two at a time; two that touch the same files never run together. The dashboards are touched by 21, 24, 26, 27 and 31, so those run one at a time. The lint files (`eslint.config.mjs`, `lib/code-checks.test.mts`) and the style skill's line for each check are shared by every ticket marked "lint": each adds its own entries, and a merge conflict there is solved by keeping both sides, so it does not keep two tickets apart.
+
+Pairs that share no file, in an order that respects every blocker: 15 and 17; 16 and 19; 18 and 23; 20 and 22; 21 and 29; 24 and 25; 26 and 30; 27 and 28; then 31 alone.
+
+### Finding to ticket
+
+| Section | Finding: ticket |
+| --- | --- |
+| Components | 1: 19 · 2: 19 · 3: 20 · 4: 20 · 5: 20 · 6: 23 · 7: 24 · 8: 24 · 9: 18 · 10: 25 · 11: 23 · 12: 23 · 13: 22 · 14: 25 · 15: not doing · 16: not doing · 17: 20 |
+| Blocks | 1: 21 · 2: 21 (its Panel and Sidebar causes: 20) · 3: 21 · 4: 24 · 5: 19 · 6: 25 · 7: 27 · 8: 26 · 9: 22 · 10: 18 · 11: 27 · 12: 26 (Run timeline: 24) · 13: 28 · 14: 21 · 15: 24 · 16: not doing · 17: 26 · 18: 27 · 19: 27 · 20: 27 · 21: 28 · 22: 18 · 23: 24 · 24: 30 · 25: not doing (`toLowerCase`: 31) · 26: 31 ("vs." wording: 27) · 27: split, below |
+| Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: 26 · app page title size: 28 · mixed heights: 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: 31 · `NumberField` locale: 26 · copied code: not doing |
+| Docs site | 1: 20 · 2: 30 · 3: 18 (check: 16) · 4: 30 · 5: 18 (check: 15) · 6: 30 · 7: 30 · 8: 30 · 9: 30 (changelog item; naming not doing) · 10: 30 · 11: 30 · 12: 30 · 13: 23 · 14: Kosmos style · 15: 31 |
+| Landing and Presets | 1: 29 · 2: 29 · 3: 29 · 4: 22 · 5: 18 · 6: 29 · 7: 28 · 8: 22 · 9: not doing · 10: 29 · 11: 19 · 12: 29 · 13: 28 · 14: 28 · 15: 29 · site check tool note: 15 |
+
+### Not doing
+
+Each is marked in its section with the same reason.
+
+- **C15, Gauge in `accent-text`.** Code and rule disagree, and both fixes (add Gauge to the rule, or move the arc to `primary`) are a preference the style skill does not settle. The maintainer picks one.
+- **C16 and B25 (all but the Page header's `toLowerCase`), translation.** Kosmos ships English copy and the style skill sets no translation rule; the English plurals are correct. Label props on every component and an `Intl.PluralRules` helper are an API decision for the maintainer.
+- **B16, destructive actions with no confirmation in the block.** Taste the style skill does not settle. The blocks hand the action to the app (`onAction`), and their JSDoc and docs ask the app to confirm.
+- **B27, `headingLevel` props on ErrorPage, RunTimeline, Footer, Kanban and Members, and Members' repeated "Members".** An API addition and a wording preference the style skill does not settle; their default levels are valid on the pages the docs show. The Showcase's real skip is fixed in 28.
+- **B27, Usage overview error state and New item dialog keeping typed text on Escape.** Product behavior the style skill does not settle.
+- **B27, copied code in the two dashboards.** Code structure, out of scope (spec, Out of Scope).
+- **D9, "Overview" against "About".** Which name is a preference only. The changelog item is fixed in 30.
+- **D14, code block warm ink and fixed hues.** The maintainer keeps them: Kosmos style.
+- **L9, Iris idle sidebar icons at 2.94:1.** The icons sit beside text labels, so no floor asks for 3:1, and the fix would change a preset palette value.
+
+Also Kosmos style after triage: the unticked Checkbox, Radio, Switch and Slider edges (the maintainer keeps them), and the review's 75-character line in D4 (ticket 30 applies the Kosmos measure, `40em`).
+
 ## Components
 
 Ticket 03. `better-interface` review (with `better-accessibility`, `better-layout`, `better-writing`, `better-typography`, `better-colors`, `better-ui`), `kosmos-style` winning every conflict. Read-only: no repo file changed.
@@ -153,6 +213,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Location:** `registry/kosmos/ui/gauge.tsx:12`, `:128`; rule in `.claude/skills/kosmos-style/SKILL.md`, Current page in navigation ("accent-text fills only the Meter's primary tone and tints Glow and Flickering grid").
 - **Why it matters:** under a preset with an accent, the Gauge takes the accent hue while the rule tells agents it never does, so the next agent either breaks Gauge or the rule.
 - **Fix:** add Gauge (the Meter's sibling) to the rule, or move the arc to `primary`. The maintainer decides which.
+- **Triage:** not doing. Both fixes are a preference the style skill does not settle; the maintainer picks one.
 
 #### 16. Components build English sentences with English-only plurals
 
@@ -161,6 +222,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **What is wrong:** strings are assembled around a number with `=== 1` plurals and most cannot be replaced through props, so a non-English app cannot translate them.
 - **Why it matters:** many languages have more than two plural forms and another word order; an app in another language ships English inside its own UI.
 - **Fix:** take label props (as Calendar's `previousMonthLabel` does) and use `Intl.PluralRules` where a count is spoken.
+- **Triage:** not doing. Kosmos ships English copy and the style skill sets no translation rule; label props on every component are an API decision for the maintainer.
 
 #### 17. Donut chart preview's controls overflow at 375
 
@@ -177,7 +239,7 @@ Findings the review skills raise that a Kosmos value settles. Listed, not fixed.
 | Review says | Kosmos value | Locations | Note |
 | --- | --- | --- | --- |
 | A text field's boundary needs 3:1 (WCAG 1.4.11); `shadow-field` is a 1px `input` ring, about 1.2:1 in light | `conflicts.md`, Input boundary: LOW at most | `input.tsx`, `textarea.tsx`, `select.tsx`, `number-field.tsx`, `input-group.tsx`, `combobox.tsx`, `otp-field.tsx`, `date-picker.tsx` | As documented |
-| An unticked Checkbox or Radio, a Switch that is off and a Slider track are identified by their edge; `shadow-control` (foreground at 10%) is about 1.2:1 on the light page and about 1.1–1.3:1 in dark; the off Switch track (`bg-muted` + `shadow-inset`) is about 1.1:1 | SKILL.md, Surfaces table (`shadow-control`, `shadow-inset`) | `checkbox.tsx:19`, `radio-group.tsx:35`, `switch.tsx:17`, `slider.tsx:63`, `segmented-control.tsx:95` | Not in `conflicts.md`: the Input boundary row covers fields only. The maintainer should add a row for unticked controls or raise their edge |
+| An unticked Checkbox or Radio, a Switch that is off and a Slider track are identified by their edge; `shadow-control` (foreground at 10%) is about 1.2:1 on the light page and about 1.1–1.3:1 in dark; the off Switch track (`bg-muted` + `shadow-inset`) is about 1.1:1 | SKILL.md, Surfaces table (`shadow-control`, `shadow-inset`) | `checkbox.tsx:19`, `radio-group.tsx:35`, `switch.tsx:17`, `slider.tsx:63`, `segmented-control.tsx:95` | Not in `conflicts.md`: the Input boundary row covers fields only. Triage: the maintainer keeps the edges as they are |
 | A `title` is no way back for truncated text: it shows on mouse hover only, never on keyboard focus or touch | SKILL.md, Phones: "a `title`, a tooltip or the detail view" | `bar-list.tsx:116`, `combobox.tsx:120`, `daily-stacked-bar-chart.tsx:274`, `donut-chart.tsx:253`, `flow-chart.tsx:403`, `:442`, `prompt-composer.tsx:205`, `sidebar.tsx:1061`, `:1065`, `stacked-block-chart.tsx:319`, `tool-call.tsx:107` | Breadcrumb's truncated crumbs already use a hover-and-focus tooltip (`breadcrumb.tsx:166-179`); that is the better pattern |
 | Focus color should be a saturated hue | `conflicts.md`, Focus color: ink at 55% | every focus outline | As documented |
 
@@ -450,6 +512,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Fix:**
   - Revoke: an Undo in the existing status line ("Invite to x revoked. Undo").
   - Delete: build in the Settings `ConfirmDialog` ("Delete Fernhill Books?", `Cancel` / `Delete project`) and call `onAction` on confirm only.
+- **Triage:** not doing. Taste the style skill does not settle; the blocks hand the action to the app, and their JSDoc and docs ask it to confirm.
 
 **17. Notification titles are links that never navigate.**
 - **Bug.** Not checkable.
@@ -532,6 +595,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - `blocks/page-header/page-header.tsx:138,247`: `title.toLowerCase()` gives "Search q4 roadmap".
   - `examples/projects-table-demo.tsx:23`
 - **Fix:** whole messages per case through an `Intl.PluralRules('en-US')` helper. Keep the title's case in the search placeholder.
+- **Triage:** not doing, except the search placeholder's case (ticket 31). Kosmos ships English copy, the English plurals are correct, and the style skill sets no translation rule.
 
 **26. Writing: the same thing worded two ways, and labels that miss.**
 - **Taste.** Not checkable, except the duplicate "Learn more" (**code** check: the fallback is used with no `linkLabel`).
@@ -573,6 +637,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - The hero announcement (`hero.tsx:10`) and Bento's six component tiles that link into Kosmos docs.
   - `NumberField` with no `locale` (`settings.tsx:582`) shows "80 %" in a de or fr browser. **Code** check.
 - **Copied code:** both dashboards copy `HeaderInbox`, `KpiStrip`, `TwoLine`, `initials` and `trendLabel` verbatim, so findings 1, 8 and 17 must land twice. A maintenance note, not a UI flaw.
+- **Triage:** split across tickets 21, 25 to 28 and 31 (see Triage, Finding to ticket). Not doing: the `headingLevel` props and Members' repeated label (an API addition and a wording preference the style skill does not settle), the Usage overview error state and the New item dialog on Escape (product behavior it does not settle), and the copied code (code structure, out of scope).
 
 ### Kosmos style (reported, not fixed)
 
@@ -695,6 +760,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Where:** `app/(site)/docs/[[...slug]]/page.tsx:40` (`max-w-3xl` on the article) and `:53` (`DocsBody` sets no measure). Measured at 16px/28px: `/docs/installation` 648px wide, about 88 characters, and 92 at 1600; `/docs/components/button` 688px, about 95.
 - **What is wrong:** long lines make the eye's return to the next line slow and error-prone. Block pages already cap `p`, `ul` and `ol` with `max-w-prose`, but other pages have no cap.
 - **Fix:** cap the prose children, not the article, so code blocks, previews and tables keep the full column: `[&>p]:max-w-[37em] [&>ul]:max-w-[37em] [&>ol]:max-w-[37em]` on `DocsBody` (about 75 characters at the measured 7.4px average). Use the same cap in place of `max-w-prose` on block pages, so both read alike.
+- **Triage:** ticket 30, at the Kosmos measure `40em` (style skill, Typography). The 75-character target would change that value: Kosmos style.
 
 #### LOW
 
@@ -728,6 +794,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
   - `components/docs/docs-sidebar.tsx:157` (`isActive={item.url === pathname}`): on `/docs/changelog/2026-10-24-navbar` the sidebar marks no item. The header marks Changelog.
 - **What is wrong:** one page with two names, and a page that the sidebar cannot place.
 - **Fix:** use one name for both: title the pages "Overview" with the description kept, or label the item "About". Mark the Changelog item current on its entry pages: `item.url === pathname || (item.url === '/docs/changelog' && pathname.startsWith('/docs/changelog/'))`.
+- **Triage:** the changelog item is ticket 30. The naming is not doing: which name is a preference only.
 
 **10. Screen-reader names in the page chrome: one name for every heading's copy button, and new tabs left unannounced.**
 - **Severity:** LOW. **Kind:** taste. **Checkable:** yes, browser: buttons on one page that share an accessible name.
@@ -758,6 +825,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Severity:** LOW. **Kind:** taste. It needs the maintainer's decision, since ADR 0009 covers palette tokens, not syntax colors. **Checkable:** yes, code: a test that `text`, `comment` and `punctuation` in `code-themes.ts` have OKLCH chroma 0.
 - **Where:** `components/docs/code-themes.ts:11-34`. Measured: code text renders `rgb(38, 37, 30)` in light and `rgb(245, 245, 242)` in dark, against the true-grey `foreground` around it. The comment at `:6-9` cites "the chart and tag hues", but charts are now a mono ramp.
 - **Fix:** set `text`, `comment` and `punctuation` to the hex of `foreground`, `muted-foreground` and a step between, so code ink matches the page. Decide whether the five hues stay; if they do, rewrite the comment to say where they come from.
+- **Triage:** not doing. The maintainer keeps the warm ink and the five hues: Kosmos style.
 
 **15. Docs prose: 59 Vale warnings.**
 - **Severity:** LOW. **Kind:** taste. **Checkable:** yes, code: `pnpm prose` already reports them as warnings.
@@ -913,6 +981,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Location:** `lib/presets/iris-style.ts:43` (`--iris-subtle: #8f8f8f`), `:40` (`--iris-sidebar-block: #f4f4f4`), `:153`.
 - **What is wrong:** measured on the Dashboard tab and the landing hero sidebar: an idle nav item's icon `rgb(143,143,143)` on `rgb(244,244,244)` is **2.94:1**. On the white sidebar body it passes.
 - **Fix:** darken `--iris-subtle` in light to `#8a8a8a` (3.14:1 on `#f4f4f4`, computed).
+- **Triage:** not doing. The icons sit beside text labels, so no floor asks for 3:1, and the fix would change a preset palette value.
 
 #### 10. Night: the current sidebar item drops the accent that its description and its navbar keep
 

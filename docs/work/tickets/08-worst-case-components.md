@@ -2,7 +2,7 @@
 
 **What to build:** Every component that renders user data (table, data table, lists, cards, stat card, bar list, avatar, badge, tags input, breadcrumb, pagination, notification inbox, charts and the like) holds up with its worst realistic data: long names, unbreakable emails, one-letter names, missing fields, huge counts, zero items, long labels, non-Latin text, emoji and extreme numbers. `break-ui` finds what breaks, the agent fixes it without showing the maintainer, and the worst-case data stays in each item's review preview for good. Spec: `docs/work/audit-spec.md`.
 
-**Blocked by:** 07 (Triage the audit) and every fix ticket it creates.
+**Blocked by:** 07 (Triage the audit) and the fix tickets it created: 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31.
 
 **Model:** Sonnet
 
