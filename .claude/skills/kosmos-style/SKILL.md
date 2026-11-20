@@ -81,7 +81,7 @@ Adjacent items in a list, menu or table are separated by one real 1px border in 
 
 ## Overflow
 
-Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover, a horizontal tab list, a command list, a sidebar's content, a board column) scrolls in `ScrollArea`. Lint flags `overflow-auto`, `overflow-x-auto` and `overflow-y-auto` in `components/docs`, except in the code block viewport.
+Content that scrolls inside a frame (a dialog or drawer body, a menu, a popover, a horizontal tab list, a command list, a sidebar's content, a board column) scrolls in `ScrollArea`. Lint flags `overflow-auto`, `overflow-x-auto` and `overflow-y-auto` in `components/docs`, `components/site` and `registry/kosmos/blocks`, except in the docs code block viewport.
 
 - Its edge fade is the one overflow cue: each edge with content hidden past it fades out over 2rem, and the fade leaves as the scroll reaches that edge. The scrollbar shows beside it.
 - The frame keeps its fill and shadow and clips; the padding sits inside the scroll area, so content fades out at the frame's edge.

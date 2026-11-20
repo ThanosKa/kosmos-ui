@@ -277,7 +277,41 @@ export function Contents() {
   return <div className="min-h-0 overflow-y-auto p-1">Fernhill Books</div>;
 }
 `,
-    message: 'Content in the docs scrolls in a `ScrollArea`, which keeps the scrollbar and focus ring on the Kosmos style (kosmos-style, Overflow). The code block viewport is the one exception.',
+    message: 'Content in the docs, the site and the blocks scrolls in a `ScrollArea`, which keeps the scrollbar, edge fade and focus ring on the Kosmos style (kosmos-style, Overflow). The docs code block viewport is the one exception.',
+    allowed: `
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+export function Contents() {
+  return <ScrollArea className="min-h-0">Fernhill Books</ScrollArea>;
+}
+`,
+  },
+  {
+    name: 'block content scrolls in a scroll area',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Contents() {
+  return <div className="min-h-0 overflow-y-auto p-1">Fernhill Books</div>;
+}
+`,
+    message: 'Content in the docs, the site and the blocks scrolls in a `ScrollArea`, which keeps the scrollbar, edge fade and focus ring on the Kosmos style (kosmos-style, Overflow). The docs code block viewport is the one exception.',
+    allowed: `
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+export function Contents() {
+  return <ScrollArea className="min-h-0">Fernhill Books</ScrollArea>;
+}
+`,
+  },
+  {
+    name: 'site content scrolls in a scroll area',
+    file: 'components/site/example.tsx',
+    flagged: `
+export function Contents() {
+  return <div className="min-h-0 overflow-y-auto p-1">Fernhill Books</div>;
+}
+`,
+    message: 'Content in the docs, the site and the blocks scrolls in a `ScrollArea`, which keeps the scrollbar, edge fade and focus ring on the Kosmos style (kosmos-style, Overflow). The docs code block viewport is the one exception.',
     allowed: `
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 

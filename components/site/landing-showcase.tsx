@@ -7,19 +7,20 @@ import { ProjectsTable, sampleProjects, type ProjectsTableAction, type Project }
 import { KanbanBoard } from '@/registry/kosmos/blocks/kanban-board/kanban-board';
 import { SettingsPage } from '@/registry/kosmos/blocks/settings/settings';
 import type { ShowcaseScreen } from '@/registry/kosmos/blocks/showcase/showcase';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
-import { Tabs, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 import './landing-motion.css';
 
 /** A product screen: the app sidebar, a page bar with the title, and the page under it. */
 function AppScreen({ active, title, children }: { active: string; title: string; children: React.ReactNode }) {
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
-      <AppSidebar headingLevel={4} activeItem={active} onNavigate={(_id, event) => event.preventDefault()} />
+      <AppSidebar headingLevel={3} navLabel="App" activeItem={active} onNavigate={(_id, event) => event.preventDefault()} />
       <SidebarInset render={<div />} className="overflow-hidden">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h3 className="truncate text-body font-medium">{title}</h3>
+          <h3 className="truncate text-title font-medium">{title}</h3>
         </header>
         {children}
       </SidebarInset>
@@ -48,11 +49,13 @@ function ProjectsScreen() {
 
   return (
     <AppScreen active="projects" title="Projects">
-      <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
-          <ProjectsTable rows={rows} selection={selection} onSelectionChange={setSelection} onAction={run} />
+      <ScrollArea className="min-h-0 flex-1 rounded-none">
+        <div className="p-4">
+          <div className="overflow-hidden rounded-2xl border border-transparent bg-card shadow-card">
+            <ProjectsTable rows={rows} selection={selection} onSelectionChange={setSelection} onAction={run} />
+          </div>
         </div>
-      </div>
+      </ScrollArea>
     </AppScreen>
   );
 }
@@ -121,16 +124,21 @@ export function LandingShowcase() {
           </div>
           <div data-slot="showcase-panels" className="grid h-[34rem] bg-background @3xl:h-[40rem]">
             {screens.map((item) => (
-              <div
+              <TabsContent
                 key={item.id}
-                role="tabpanel"
-                aria-label={item.label}
+                value={item.id}
+                keepMounted
+                tabIndex={-1}
                 data-active={item.id === current.id ? '' : undefined}
-                inert={item.id === current.id ? undefined : true}
-                className="landing-panel col-start-1 row-start-1 min-h-0 overflow-x-hidden overflow-y-auto"
+                className="landing-panel col-start-1 row-start-1 flex min-h-0 flex-col focus-visible:outline-none"
               >
-                {item.content}
-              </div>
+                <ScrollArea
+                  className="min-h-0 flex-1 rounded-none has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2"
+                  viewportClassName="[&>[data-slot=scroll-area-content]]:h-full"
+                >
+                  {item.content}
+                </ScrollArea>
+              </TabsContent>
             ))}
           </div>
         </div>

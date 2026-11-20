@@ -125,11 +125,11 @@ const styleSelectors = [
   },
 ];
 
-// The docs scroll in a `ScrollArea`. The code block viewport is the one exception: it is a focusable region whose
-// scroll axes, collapse height and copy text are measured on the element itself.
-const docsScrollSelectors = classSelectors(
+// The docs, the site and the blocks scroll in a `ScrollArea`. The docs code block viewport is the one exception: it is a
+// focusable region whose scroll axes, collapse height and copy text are measured on the element itself.
+const scrollSelectors = classSelectors(
   `${classStart}overflow-(x-|y-)?auto${classEnd}`,
-  'Content in the docs scrolls in a `ScrollArea`, which keeps the scrollbar and focus ring on the Kosmos style (kosmos-style, Overflow). The code block viewport is the one exception.',
+  'Content in the docs, the site and the blocks scrolls in a `ScrollArea`, which keeps the scrollbar, edge fade and focus ring on the Kosmos style (kosmos-style, Overflow). The docs code block viewport is the one exception.',
 );
 
 // Copying goes through one hook, so a refused clipboard says so instead of failing silently.
@@ -362,7 +362,7 @@ const eslintConfig = defineConfig([
   {
     files: ['registry/kosmos/blocks/**/*.tsx'],
     rules: {
-      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...blockRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors],
+      'no-restricted-syntax': ['error', ...kosmosSelectors, ...colorSelectors, ...durationSelectors, ...blockRules, ...viewportSelectors, ...pixelSizeSelectors, ...truncateWithoutTitleSelectors, ...scrollSelectors],
     },
   },
   {
@@ -382,9 +382,13 @@ const eslintConfig = defineConfig([
     rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors] },
   },
   {
+    files: ['components/site/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors, ...scrollSelectors] },
+  },
+  {
     files: ['components/docs/**/*.{ts,tsx}'],
     ignores: ['components/docs/use-docs-copy.ts', 'components/docs/code-block.tsx'],
-    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors, ...docsScrollSelectors] },
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...codeRules, ...copyHookSelectors, ...scrollSelectors] },
   },
   {
     // The one file that wraps `clsx` and `tailwind-merge`.
