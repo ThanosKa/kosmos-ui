@@ -108,8 +108,8 @@ function CodeTabs<Tab extends string>({
             </code>
             <Button variant="ghost" size="icon" aria-label={`Copy command: ${commands[tab]}`} onClick={copy} className="rounded-md">
               <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-                <Check data-visible={(result === 'copied') || undefined} className={iconSwap} />
-                <Copy data-visible={!(result === 'copied') || undefined} className={iconSwap} />
+                <Check data-visible={result === 'copied' || undefined} className={iconSwap} />
+                <Copy data-visible={result !== 'copied' || undefined} className={iconSwap} />
               </span>
             </Button>
           </div>

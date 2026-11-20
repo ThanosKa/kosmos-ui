@@ -34,8 +34,8 @@ function useReducedMotion() {
 
 /** How long the squares flicker after the grid first comes into view, in seconds. */
 const flickerDuration = 3.5;
-/** How fast the squares ease to the still pattern once the flicker ends, in seconds. */
-const settleEasing = 0.3;
+/** The time constant of the squares easing to the still pattern once the flicker ends, in seconds. */
+const settleTimeConstant = 0.3;
 /** How long the grid takes to settle before it snaps to the still pattern, in seconds. Flicker and settle end by 5s. */
 const settleDuration = 1.5;
 
@@ -158,7 +158,7 @@ function FlickeringGrid({
           }
         } else {
           const done = flickered >= flickerDuration + settleDuration;
-          const ease = 1 - Math.exp(-elapsed / settleEasing);
+          const ease = 1 - Math.exp(-elapsed / settleTimeConstant);
           for (let index = 0; index < squares.length; index += 1) {
             const target = stillOpacity(index);
             squares[index] = done ? target : squares[index] + (target - squares[index]) * ease;

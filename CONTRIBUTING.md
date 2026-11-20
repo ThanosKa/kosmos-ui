@@ -24,6 +24,6 @@ With `pnpm dev` running, `pnpm screenshots <name> --port 3000` writes four PNGs 
 
 ### Checks
 
-GitHub Actions runs `pnpm lint`, `pnpm types:check`, `pnpm test` and `pnpm build` on every pull request to `dev` and `main`. Run them locally before you push. The browser checks (the docs, focus-ring, console and link sweeps) are gone: check the pages you changed by hand on `pnpm dev`, and open the docs at 375px wide.
+GitHub Actions runs `pnpm lint`, `pnpm types:check`, `pnpm test` and `pnpm build` on every pull request to `dev` and `main`. Run them locally before you push. CI runs no browser check. `pnpm site-check --port <port>` loads every route of a running dev server in a headless browser. It reports pages that scroll sideways, clipped focus rings, clipped text and console errors. The maintainer runs it by hand before a release. Before you push, check the pages you changed on `pnpm dev`, and open the docs at 375px wide.
 
 `pnpm lint` guards the tokens: registry code has no color literal (hex, `rgb()`, `oklch()`) and no Tailwind palette class (`text-orange-500`), so every color comes from a token. The token files are the only place a color value is written.

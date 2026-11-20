@@ -171,8 +171,8 @@ export function CopyButton({ text }: { text: () => string }) {
     <>
       <Button variant="secondary" size="icon-sm" aria-label="Copy code" onClick={() => copy(text)}>
         <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-          <Check data-visible={(copied) || undefined} className={iconSwapClass} />
-          <Copy data-visible={!(copied) || undefined} className={iconSwapClass} />
+          <Check data-visible={copied || undefined} className={iconSwapClass} />
+          <Copy data-visible={!copied || undefined} className={iconSwapClass} />
         </span>
       </Button>
       <span role="status" className="sr-only">

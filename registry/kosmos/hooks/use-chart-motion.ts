@@ -129,10 +129,8 @@ function useReducedMotion() {
  * `key={remountKey}`, and spread `isAnimationActive` on its series. Under reduced motion `remountKey` goes up with each
  * new `data`, so the chart fades in again instead of moving.
  */
-function useRechartsEntrance(ref: React.RefObject<Element | null>, entranceProp: ChartEntrance | undefined, data: unknown) {
-  const fallback = React.useContext(ChartEntranceContext);
-  const entrance = entranceProp ?? fallback;
-  const { revealed, instant } = useChartEntrance(ref, entranceProp);
+function useRechartsEntrance(ref: React.RefObject<Element | null>, entrance: ChartEntrance | undefined, data: unknown) {
+  const { revealed, instant } = useChartEntrance(ref, entrance);
   const reduced = useReducedMotion();
   const [shownData, setShownData] = React.useState(data);
   const [version, setVersion] = React.useState(0);
@@ -141,7 +139,7 @@ function useRechartsEntrance(ref: React.RefObject<Element | null>, entranceProp:
     setVersion(version + 1);
   }
   // The data drawn while the entrance is skipped stays still; any data after it moves.
-  const [stillData, setStillData] = React.useState<unknown>(entrance === 'none' ? data : null);
+  const [stillData, setStillData] = React.useState<unknown>(instant ? data : null);
   if (instant && stillData !== data) setStillData(data);
   return {
     revealed,

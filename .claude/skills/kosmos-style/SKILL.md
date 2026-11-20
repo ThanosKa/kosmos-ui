@@ -227,7 +227,7 @@ Text fields (Input, Textarea, Select trigger) light up their own edge instead, a
 Where an offset outline would be clipped or have nothing to surround:
 
 - An element a clipping container would cut (a tab in a scrolling tab list, an item in a collapsible panel, a scrolling code viewport inside its card) draws it inside: `-outline-offset-2`. Any container with `overflow` other than `visible` clips outside its padding box.
-- An overlay's scrolling content sits 4px in from the overlay's edges and draws its outline inside, so the outline never lands on those edges. `DialogBody` and `DrawerBody` do both; lint flags a `ScrollArea` placed in a `DialogContent`, `DrawerContent` or `PopoverContent` outside them.
+- An overlay's scrolling content sits 4px in from the overlay's edges and draws its outline inside, so the outline never lands on those edges. `DialogBody` and `DrawerBody` do both. `PopoverContent` scrolls its own content and draws that outline inside, so it needs no `ScrollArea`; lint flags a `ScrollArea` placed in a `DialogContent`, `DrawerContent` or `PopoverContent` outside a body.
 - The zero-width sidebar resize handle draws it flush (`outline-offset-0`) as a 4px line.
 
 ## Buttons

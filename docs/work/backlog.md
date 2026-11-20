@@ -23,6 +23,17 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
   - Recharts draws in 300ms (`chart.mdx`) but `charts.md` says 500ms: which one?
   - `viewport-fit=cover`, so the Drawer's bottom safe-area padding works on the site: check it on a real phone first.
   - Check on a real phone: sticky hover, tap flashes, the browser bar color, charts below the fold drawing on scroll.
+  - The docs sidebar names the first item "Overview", but its pages are titled "About components", "About charts" and "About blocks": which name?
+  - Members says "Members" four times: the section label, the `h2`, the `h3` and the table label. Keep it?
+
+- [ ] **Later from the audit run (#102).**
+  - More "When to pick which" families: Accordion or Collapsible, Table or Data table, Dropdown menu or Popover or Select.
+  - Worst-case previews for Sonner, Tooltip and Text reveal.
+  - A `--preset` option for `pnpm site-check`.
+  - A code check for a dialog or drawer body with no bottom padding.
+  - A `pnpm site-check` test against a real preview that is known to be bad.
+  - `initials` and `wideGlyph` are copied in five blocks (Members, Dashboard analytics, Dashboard CRM, Usage overview, Run timeline), and the notification panel in both dashboards.
+  - `title={typeof x === 'string' ? x : undefined}` repeats about 26 times in `registry/kosmos/ui`.
 
 ## Build
 

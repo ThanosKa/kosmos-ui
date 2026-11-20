@@ -355,8 +355,8 @@ function RunTimeline({
                 }}
               >
                 <span aria-hidden className="grid *:col-start-1 *:row-start-1">
-                  <Check data-visible={(copyResult === 'copied') || undefined} className={iconSwap} />
-                  <Link2 data-visible={!(copyResult === 'copied') || undefined} className={iconSwap} />
+                  <Check data-visible={copyResult === 'copied' || undefined} className={iconSwap} />
+                  <Link2 data-visible={copyResult !== 'copied' || undefined} className={iconSwap} />
                 </span>
               </HeaderAction>
             ) : null}

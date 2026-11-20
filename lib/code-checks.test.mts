@@ -1,7 +1,9 @@
 // Usage: node --test lib/code-checks.test.mts
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { ESLint } from 'eslint';
+import eslintConfig from '../eslint.config.mjs';
 
 /**
  * Each code check is a lint rule with two snippets: one it must flag with its message, one it must allow.
@@ -15,7 +17,40 @@ type CodeCheck = {
   allowed: string;
 };
 
+const overlayScrollMessage =
+  'A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay\'s edge; `PopoverContent` already scrolls its content, so drop the `ScrollArea` (kosmos-style, Focus).';
+
 const codeChecks: CodeCheck[] = [
+  {
+    name: 'a popover scrolls its content without a scroll area of its own',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+import { PopoverContent } from '@/registry/kosmos/ui/popover';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
+
+export function Members() {
+  return (
+    <PopoverContent>
+      <ScrollArea className="max-h-64">
+        <p>Fernhill Books</p>
+      </ScrollArea>
+    </PopoverContent>
+  );
+}
+`,
+    message: overlayScrollMessage,
+    allowed: `
+import { PopoverContent } from '@/registry/kosmos/ui/popover';
+
+export function Members() {
+  return (
+    <PopoverContent>
+      <p>Fernhill Books</p>
+    </PopoverContent>
+  );
+}
+`,
+  },
   {
     name: 'a scroll area in an overlay scrolls in its body',
     file: 'registry/kosmos/blocks/example/example.tsx',
@@ -33,8 +68,7 @@ export function Panel() {
   );
 }
 `,
-    message:
-      'A scroll area in an overlay goes in `DialogBody` or `DrawerBody`, which keep its focus ring inside, clear of the overlay\'s edge (kosmos-style, Focus).',
+    message: overlayScrollMessage,
     allowed: `
 import { DrawerBody, DrawerContent } from '@/registry/kosmos/ui/drawer';
 import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
@@ -60,7 +94,7 @@ export function Bar() {
   return <header className="sticky top-0 z-40 bg-background/80 border-b">Fernhill Books</header>;
 }
 `,
-    message: 'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces).',
+    message: 'Sticky chrome sits on an opaque fill (`bg-background`), not a translucent `bg-*/NN` (kosmos-style, Surfaces: shadows, not borders).',
     allowed: `
 export function Bar() {
   return <header className="sticky top-0 z-40 border-b bg-background">Fernhill Books</header>;
@@ -147,9 +181,28 @@ export function Row() {
     flagged: `
 export const secretKey = 'sk_live_51HxQ2eLkd93Jf8aZpR7vNc';
 `,
-    message: 'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, Demo world).',
+    message: 'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, demo-world.md, API).',
     allowed: `
 export const secretKey = 'acme_secret_demo_7Q2Kf9r3Vx';
+`,
+  },
+  {
+    name: 'a docs code sample holds no key-like string',
+    file: 'content/docs/components/example.mdx',
+    flagged: `
+# Copy field
+
+\`\`\`tsx
+<CopyField value="sk_live_51HxQ2eLkd93Jf8aZpR7vNc" />
+\`\`\`
+`,
+    message: 'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, demo-world.md, API).',
+    allowed: `
+# Copy field
+
+\`\`\`tsx
+<CopyField value="acme_secret_demo_7Q2Kf9r3Vx" />
+\`\`\`
 `,
   },
   {
@@ -161,7 +214,7 @@ export function Brand() {
 }
 `,
     message:
-      'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Contrast).',
+      'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Status and tints).',
     allowed: `
 export function Brand() {
   return <li className="text-muted-foreground hover:text-foreground hover:[&_:is(svg,img)]:text-(--logo-color,var(--foreground))">Fernhill Books</li>;
@@ -176,7 +229,7 @@ export function Dot({ unread }: { unread: boolean }) {
   return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] scale-50 opacity-0'} />;
 }
 `,
-    message: 'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
+    message: 'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion is mandatory).',
     allowed: `
 export function Dot({ unread }: { unread: boolean }) {
   return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] motion-safe:scale-90 opacity-0'} />;
@@ -206,7 +259,7 @@ export function Stage() {
   return <div className="transition-[width] motion-reduce:transition-none" />;
 }
 `,
-    message: 'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion).',
+    message: 'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion is mandatory).',
     allowed: `
 export function Stage() {
   return <div className="transition-[width] motion-reduce:transition-[opacity]" />;
@@ -223,7 +276,7 @@ export function Save() {
   return toast('Item created', { action: { label: 'Undo', onClick: () => {} } });
 }
 `,
-    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).',
+    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Reduced motion is mandatory; WCAG 2.2.1).',
     allowed: `
 import { toast } from 'sonner';
 
@@ -240,7 +293,7 @@ export function Save(toastManager: { add: (options: object) => void }) {
   return toastManager.add({ title: 'Item created', actionProps: { children: 'Undo' } });
 }
 `,
-    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).',
+    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Reduced motion is mandatory; WCAG 2.2.1).',
     allowed: `
 export function Save(toastManager: { add: (options: object) => void }) {
   return toastManager.add({ title: 'Item created', timeout: 0, actionProps: { children: 'Undo' } });
@@ -271,7 +324,7 @@ export function Count({ count }: { count: number }) {
 }
 `,
     message:
-      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).',
+      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Names and announcements; WCAG 4.1.3).',
     allowed: `
 export function Count({ count }: { count: number }) {
   return (
@@ -348,7 +401,7 @@ export function Notice({ message }: { message: string }) {
 }
 `,
     message:
-      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Announcements; WCAG 4.1.3).',
+      'A `role="status"` or `role="alert"` renders before its text does, and never behind a condition or with `empty:hidden`, since a screen reader announces changes to a region that already exists (kosmos-style, Names and announcements; WCAG 4.1.3).',
     allowed: `
 export function Notice({ message }: { message: string }) {
   return (
@@ -395,7 +448,7 @@ export function Clock() {
   );
 }
 `,
-    message: 'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Tooltips; WCAG 2.1.1).',
+    message: 'A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; a `<time>` or `<span>` is mouse-only unless it takes `tabIndex` (kosmos-style, Names and announcements; WCAG 2.1.1).',
     allowed: `
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/registry/kosmos/ui/tooltip';
 
@@ -494,7 +547,7 @@ export function Trend({ range, data }: { range: string; data: Array<{ day: strin
   return <GrowthChart key={range} title="Users" data={data} xKey="day" />;
 }
 `,
-    message: 'A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, Charts: Morph, don\'t remount).',
+    message: 'A chart morphs to a new range, it does not remount: no `key={range}` on a chart (kosmos-style, charts.md, Chart motion).',
     allowed: `
 import { GrowthChart } from '@/registry/kosmos/ui/chart';
 
@@ -513,7 +566,7 @@ export function Change({ change }: { change: number }) {
   return <Badge variant={change < 0 ? 'red' : 'green'}>{change}%</Badge>;
 }
 `,
-    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Stat change).',
+    message: 'A change is a green or red triangle with the signed number (`StatCardDelta`), not a hue Badge, which marks a category (kosmos-style, Status and tints).',
     allowed: `
 import { StatCardDelta } from '@/registry/kosmos/ui/stat-card';
 
@@ -530,7 +583,7 @@ export function Live() {
   return <span aria-hidden className="size-2 shrink-0 rounded-full bg-success" />;
 }
 `,
-    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).',
+    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status and tints).',
     allowed: `
 import { StatusDot } from '@/registry/kosmos/ui/status';
 
@@ -547,7 +600,7 @@ export function Live() {
   return <span aria-hidden className="size-1.5 rounded-full bg-warning" />;
 }
 `,
-    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status).',
+    message: 'A status is a `StatusDot` with its word (`done`, `pending`, `waiting`), not a hand-made dot (kosmos-style, Status and tints).',
     allowed: `
 import { StatusDot } from '@/registry/kosmos/ui/status';
 
@@ -620,7 +673,7 @@ export function Seats() {
   return <NumberField defaultValue={250} aria-label="Seats" />;
 }
 `,
-    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Buttons).',
     allowed: `
 import { NumberField } from '@/registry/kosmos/ui/number-field';
 
@@ -639,7 +692,7 @@ export function Seats() {
   return <NumberField defaultValue={250} aria-label="Seats" />;
 }
 `,
-    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Fields).',
+    message: 'A `NumberField` sets `locale="en-US"`, so the server and the browser format the same number (kosmos-style, Buttons).',
     allowed: `
 import { NumberField } from '@/registry/kosmos/ui/number-field';
 
@@ -667,3 +720,30 @@ for (const check of codeChecks) {
     assert.deepEqual(await lint(check.allowed, check.file), []);
   });
 }
+
+function messagesIn(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(messagesIn);
+  if (value && typeof value === 'object') {
+    return Object.entries(value).flatMap(([key, child]) =>
+      key === 'message' && typeof child === 'string' ? [child] : messagesIn(child),
+    );
+  }
+  return [];
+}
+
+function styleHeadings(file: string) {
+  const text = readFileSync(`.claude/skills/kosmos-style/${file}`, 'utf8');
+  return text.split('\n').flatMap((line) => /^#+ (.+)$/.exec(line)?.[1] ?? []);
+}
+
+test('every kosmos-style section a lint message cites is a heading in the style skill', () => {
+  const messages = eslintConfig.flatMap((entry: { rules?: unknown }) => messagesIn(entry.rules));
+  const citations = [...new Set(messages.flatMap((message: string) => [...message.matchAll(/kosmos-style, ([^;)]+)/g)].map((match) => match[1])))];
+  assert.ok(citations.length > 0);
+
+  const missing = citations.filter((citation) => {
+    const [, file = 'SKILL.md', section = citation] = /^(\S+\.md), (.+)$/.exec(citation) ?? [];
+    return !styleHeadings(file).includes(section);
+  });
+  assert.deepEqual(missing, []);
+});

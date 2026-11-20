@@ -43,6 +43,9 @@ function useChartAnimation(entrance?: ChartEntrance, data?: unknown) {
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
 
+/** Fades a chart in under reduced motion, where Recharts skips the drawing entrance. */
+const reducedMotionFade = 'transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0';
+
 /**
  * Sizes a Recharts chart to its box (give it a height or an aspect ratio), exposes each series color as
  * `--color-<key>` and themes axes, grid, cursor and focus with Kosmos tokens.
@@ -271,7 +274,7 @@ function Sparkline({
         <ChartContainer
           key={remountKey}
           config={{ [dataKey]: { color } }}
-          className="size-full transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0"
+          className={cn('size-full', reducedMotionFade)}
         >
           <Recharts.AreaChart data={data as Datum[]} margin={{ top: 2, right: 2, bottom: 2, left: 2 }} accessibilityLayer={false}>
             <Recharts.YAxis hide domain={['dataMin', 'dataMax']} />
@@ -333,7 +336,7 @@ function SparklineBars({
           key={remountKey}
           config={{ [dataKey]: { color } }}
           style={{ '--sparkline-width': `${bars.length * BAR_SLOT}px` } as React.CSSProperties}
-          className="aspect-auto h-full w-(--sparkline-width) shrink-0 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0"
+          className={cn('aspect-auto h-full w-(--sparkline-width) shrink-0', reducedMotionFade)}
         >
           <Recharts.BarChart data={bars} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} barCategoryGap={0} accessibilityLayer={false}>
             <Recharts.YAxis hide domain={[0, 'dataMax']} />
@@ -440,7 +443,7 @@ function GrowthChart({
         <ChartContainer
           key={remountKey}
           config={config}
-          className="aspect-auto h-60 transition-[opacity] duration-reveal ease-power3-out motion-reduce:starting:opacity-0 [&_.recharts-cartesian-grid_line]:stroke-foreground/15"
+          className={cn('aspect-auto h-60 [&_.recharts-cartesian-grid_line]:stroke-foreground/15', reducedMotionFade)}
           {...props}
         >
           <Recharts.AreaChart title={title} data={data as Datum[]} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
