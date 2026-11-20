@@ -5,7 +5,7 @@
   "title": "Plan checklist",
   "description": "An agent's plan as a live checklist that opens and closes. It has a status mark per step, a done count, optional approval actions, and a live region that announces progress.",
   "dependencies": ["lucide-react@^1.50.0"],
-  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/collapsible", "@kosmos/status"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/use-mounted", "@kosmos/collapsible", "@kosmos/status"],
   "meta": { "group": "ai" },
   "files": [
     {

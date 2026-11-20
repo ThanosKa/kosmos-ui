@@ -3,6 +3,7 @@
 import { ListChecks } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type * as React from 'react';
+import { useMounted } from '@/registry/kosmos/hooks/use-mounted';
 import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger } from '@/registry/kosmos/ui/collapsible';
 import { StatusIcon, type Status } from '@/registry/kosmos/ui/status';
 import { cn } from '@/registry/kosmos/lib/cn';
@@ -79,6 +80,7 @@ function PlanChecklist({
   const allDone = steps.length > 0 && doneCount === steps.length;
   const [announcement, setAnnouncement] = useState('');
   const previousSteps = useRef(steps);
+  const mounted = useMounted();
   const wasAllDone = useRef(allDone);
 
   function changeOpen(next: boolean) {
@@ -127,7 +129,7 @@ function PlanChecklist({
             <li
               key={step.id}
               data-status={step.status}
-              className="flex min-h-7.5 items-start gap-2 px-2 py-1.25 transition-[opacity] duration-fast starting:opacity-0"
+              className={cn('flex min-h-7.5 items-start gap-2 px-2 py-1.25 transition-[opacity] duration-fast', mounted && 'starting:opacity-0')}
             >
               <StatusIcon status={step.status} className="mt-0.5" />
               <span className={cn('min-w-0 flex-1 text-body break-words', labelStyle[step.status])}>
