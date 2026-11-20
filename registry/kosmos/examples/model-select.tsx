@@ -4,6 +4,7 @@ import { OverlayStage, OverlayStageGrid } from '@/components/preview/overlay-sta
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, defaultStates, previewState } from '@/components/preview/state-matrix';
 import { ModelSelect, ModelSelectButton, type ModelEffort, type ModelOption } from '@/registry/kosmos/ui/model-select';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const models: ModelOption[] = [
   { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
@@ -30,9 +31,9 @@ const rows = ['with effort', 'model only', 'none chosen', 'long name'] as const;
 
 const stageClass = 'h-[20rem]';
 
-export default function ModelSelectPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Trigger">
         <StateMatrix
           rows={rows}
@@ -109,6 +110,57 @@ export default function ModelSelectPreview() {
           <ModelSelect models={models} efforts={efforts} disabled />
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+const worstModels: ModelOption[] = [
+  { id: 'long', name: 'Claude Sonnet 5.5 for the weekly summary and quota reports of the Acme Staging workspace', hint: 'Tuned for Acme, billed per workspace and per region, with a 90-day retention window' },
+  { id: 'greek', name: 'Ιστότοπος καφέ 🌊', hint: 'Ελληνικά' },
+  { id: 'k', name: 'K', hint: '' },
+  ...Array.from({ length: 40 }, (_, index) => ({ id: `fine-tune-${index}`, name: `Fine-tuned model ${index + 1}`, hint: index % 3 === 0 ? 'Not on your plan' : 'Custom', disabled: index % 3 === 0 })),
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Trigger: a long name in a narrow slot, a one-letter name">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-full max-w-40">
+            <ModelSelectButton model={worstModels[0]} effort="medium" />
+          </div>
+          <div className="w-full max-w-40">
+            <ModelSelectButton model={worstModels[2]} effort="high" />
+          </div>
+          <div className="w-full max-w-40">
+            <ModelSelectButton model={worstModels[1]} />
+          </div>
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Open: forty-three models, long names and hints">
+        <OverlayStageGrid>
+          <OverlayStage inert label="a long name, 43 models" className={stageClass}>
+            {(container) => <ModelSelect models={worstModels} defaultValue="long" efforts={efforts} defaultEffort="high" open modal={false} container={container} />}
+          </OverlayStage>
+          <OverlayStage inert label="a long name in a narrow slot, no room below (flips up)" className={stageClass}>
+            {(container) => (
+              <div className="flex h-full max-w-48 items-end">
+                <ModelSelect models={worstModels} defaultValue="long" efforts={efforts} defaultEffort="high" open modal={false} container={container} />
+              </div>
+            )}
+          </OverlayStage>
+        </OverlayStageGrid>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function ModelSelectPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

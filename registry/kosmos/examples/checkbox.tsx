@@ -3,6 +3,7 @@ import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Checkbox } from '@/registry/kosmos/ui/checkbox';
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import CheckboxGroupExample from './checkbox-group';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['unchecked', 'checked', 'indeterminate'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -12,9 +13,9 @@ function stateProps(state: (typeof states)[number]) {
   return previewState(state);
 }
 
-export default function CheckboxPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Value × states">
         <StateMatrix
           rows={rows}
@@ -64,17 +65,33 @@ export default function CheckboxPreview() {
         <CheckboxGroupExample />
       </PreviewSection>
 
-      <PreviewSection title="Long label in a narrow slot">
-        <div className="w-56">
-          <Field orientation="horizontal">
-            <Checkbox defaultChecked />
-            <FieldContent>
-              <FieldLabel>Notify every member of the workspace when a project is archived or restored</FieldLabel>
-              <FieldDescription>Members who muted the project are skipped.</FieldDescription>
-            </FieldContent>
-          </Field>
-        </div>
-      </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long label in a narrow slot">
+      <div className="w-56">
+        <Field orientation="horizontal">
+          <Checkbox defaultChecked />
+          <FieldContent>
+            <FieldLabel>Notify every member of the workspace when a project is archived or restored</FieldLabel>
+            <FieldDescription>Members who muted the project are skipped.</FieldDescription>
+          </FieldContent>
+        </Field>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function CheckboxPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

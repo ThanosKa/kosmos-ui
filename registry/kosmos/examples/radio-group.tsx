@@ -6,6 +6,7 @@ import RadioGroupCards from './radio-group-cards';
 import RadioGroupDemo from './radio-group-demo';
 import RadioGroupDescription from './radio-group-description';
 import RadioGroupInvalid from './radio-group-invalid';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['unselected', 'selected'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -15,9 +16,9 @@ function stateProps(state: (typeof states)[number]) {
   return previewState(state);
 }
 
-export default function RadioGroupPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Radio × states">
         <StateMatrix
           rows={rows}
@@ -108,43 +109,59 @@ export default function RadioGroupPreview() {
         </RadioGroup>
       </PreviewSection>
 
-      <PreviewSection title="Long text in a narrow slot">
-        <div className="grid gap-8 sm:grid-cols-2">
-          <div className="w-56">
-            <Field name="long">
-              <FieldLabel nativeLabel={false} render={<div />}>
-                When a project passes its monthly event allowance
-              </FieldLabel>
-              <RadioGroup defaultValue="email">
-                <FieldItem>
-                  <RadioGroupItem value="email" />
-                  <FieldContent>
-                    <FieldLabel>Email every member of the workspace before the next bill</FieldLabel>
-                    <FieldDescription>Collection never stops, so nothing is lost.</FieldDescription>
-                  </FieldContent>
-                </FieldItem>
-                <FieldItem>
-                  <RadioGroupItem value="quiet" />
-                  <FieldLabel>Say nothing</FieldLabel>
-                </FieldItem>
-              </RadioGroup>
-            </Field>
-          </div>
-          <RadioGroup aria-label="Workspace" defaultValue="staging" className="w-56">
-            <RadioCard value="acme">
-              <RadioCardTitle>Acme</RadioCardTitle>
-              <RadioCardDescription>Scale plan</RadioCardDescription>
-            </RadioCard>
-            <RadioCard value="staging">
-              <RadioCardTitle>Acme Staging, the workspace for testing new tracking plans</RadioCardTitle>
-              <RadioCardDescription>Free plan, up to 50,000 events a month across every project in it</RadioCardDescription>
-            </RadioCard>
-            <RadioCard value="unbroken">
-              <RadioCardTitle >acme-staging-tracking-plan-review-2026.example</RadioCardTitle>
-            </RadioCard>
-          </RadioGroup>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text in a narrow slot">
+      <div className="grid gap-8 sm:grid-cols-2">
+        <div className="w-56">
+          <Field name="long">
+            <FieldLabel nativeLabel={false} render={<div />}>
+              When a project passes its monthly event allowance
+            </FieldLabel>
+            <RadioGroup defaultValue="email">
+              <FieldItem>
+                <RadioGroupItem value="email" />
+                <FieldContent>
+                  <FieldLabel>Email every member of the workspace before the next bill</FieldLabel>
+                  <FieldDescription>Collection never stops, so nothing is lost.</FieldDescription>
+                </FieldContent>
+              </FieldItem>
+              <FieldItem>
+                <RadioGroupItem value="quiet" />
+                <FieldLabel>Say nothing</FieldLabel>
+              </FieldItem>
+            </RadioGroup>
+          </Field>
         </div>
-      </PreviewSection>
+        <RadioGroup aria-label="Workspace" defaultValue="staging" className="w-56">
+          <RadioCard value="acme">
+            <RadioCardTitle>Acme</RadioCardTitle>
+            <RadioCardDescription>Scale plan</RadioCardDescription>
+          </RadioCard>
+          <RadioCard value="staging">
+            <RadioCardTitle>Acme Staging, the workspace for testing new tracking plans</RadioCardTitle>
+            <RadioCardDescription>Free plan, up to 50,000 events a month across every project in it</RadioCardDescription>
+          </RadioCard>
+          <RadioCard value="unbroken">
+            <RadioCardTitle >acme-staging-tracking-plan-review-2026.example</RadioCardTitle>
+          </RadioCard>
+        </RadioGroup>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function RadioGroupPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

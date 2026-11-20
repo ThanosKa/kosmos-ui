@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { Reasoning } from '@/registry/kosmos/ui/reasoning';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const sample =
   'Three projects are close to or over their event quota: Copperline Bank (109%), Cirrus Weather (80%) and Ironbark Logistics (79%). Copperline Bank passed its 8,000,000 allowance on the Scale plan, so Lena should see this first.';
@@ -40,9 +41,9 @@ function Streaming() {
   );
 }
 
-export default function ReasoningPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <div className="grid gap-10 md:grid-cols-2">
         {cells.map(({ status, open }) => (
           <PreviewSection key={`${status}-${open}`} title={`${status}, ${open ? 'open' : 'collapsed'}`}>
@@ -90,14 +91,30 @@ export default function ReasoningPreview() {
           </Reasoning>
         </PreviewSection>
 
-        <PreviewSection title="Narrow slot">
-          <div className="w-full max-w-48">
-            <Reasoning status="done" durationMs={125000} defaultOpen>
-              {sample}
-            </Reasoning>
-          </div>
-        </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Narrow slot">
+        <div className="w-full max-w-48">
+          <Reasoning status="done" durationMs={125000} defaultOpen>
+            {sample}
+          </Reasoning>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function ReasoningPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

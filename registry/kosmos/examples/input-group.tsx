@@ -11,6 +11,7 @@ import { Kbd, KbdGroup } from '@/registry/kosmos/ui/kbd';
 import InputGroupToolbar from '@/registry/kosmos/examples/input-group-toolbar';
 import InputGroupButtonExample from '@/registry/kosmos/examples/input-group-button';
 import InputGroupTextExample from '@/registry/kosmos/examples/input-group-text';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['icon start', 'text start', 'kbd end', 'button end', 'both sides'] as const;
 const states = ['placeholder', 'filled', 'invalid', 'disabled'] as const;
@@ -101,9 +102,9 @@ function FocusedOnMount() {
   );
 }
 
-export default function InputGroupPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Addons × states">
         <StateMatrix rows={rows} states={states} render={(row, state) => <Addons row={row} state={state} />} />
       </PreviewSection>
@@ -153,22 +154,38 @@ export default function InputGroupPreview() {
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Long prefix and value in a narrow slot">
-          <div className="w-56">
-            <InputGroup>
-              <InputGroupAddon>
-                <InputGroupText>analytics.acme.example/projects/</InputGroupText>
-              </InputGroupAddon>
-              <InputGroupInput aria-label="Project slug" defaultValue="fernhill-books-quarterly-revenue-forecast" />
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton variant="ghost" size="icon-sm" aria-label="Clear">
-                  <X aria-hidden />
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long prefix and value in a narrow slot">
+        <div className="w-56">
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>analytics.acme.example/projects/</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput aria-label="Project slug" defaultValue="fernhill-books-quarterly-revenue-forecast" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton variant="ghost" size="icon-sm" aria-label="Clear">
+                <X aria-hidden />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function InputGroupPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

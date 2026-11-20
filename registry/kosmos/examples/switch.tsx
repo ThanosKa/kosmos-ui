@@ -2,6 +2,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Switch } from '@/registry/kosmos/ui/switch';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['off', 'on'] as const;
 const states = ['default', 'hover', 'focus', 'invalid', 'disabled'] as const;
@@ -11,9 +12,9 @@ function stateProps(state: (typeof states)[number]) {
   return previewState(state);
 }
 
-export default function SwitchPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Value × states">
         <StateMatrix
           rows={rows}
@@ -71,17 +72,33 @@ export default function SwitchPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long label in a narrow slot">
-        <div className="w-64">
-          <Field orientation="horizontal">
-            <FieldContent>
-              <FieldLabel>Archive projects with no activity for ninety days or more</FieldLabel>
-              <FieldDescription>Archived projects stay searchable and can be restored at any time.</FieldDescription>
-            </FieldContent>
-            <Switch defaultChecked />
-          </Field>
-        </div>
-      </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long label in a narrow slot">
+      <div className="w-64">
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel>Archive projects with no activity for ninety days or more</FieldLabel>
+            <FieldDescription>Archived projects stay searchable and can be restored at any time.</FieldDescription>
+          </FieldContent>
+          <Switch defaultChecked />
+        </Field>
+      </div>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function SwitchPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

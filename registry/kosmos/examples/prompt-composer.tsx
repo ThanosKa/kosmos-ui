@@ -10,6 +10,7 @@ import {
   type PromptComposerProps,
   type PromptComposerStatus,
 } from '@/registry/kosmos/ui/prompt-composer';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const models: ModelOption[] = [
   { id: 'claude-opus-5-5', name: 'Claude Opus 5.5', hint: 'Most capable' },
@@ -105,9 +106,9 @@ function Interactive() {
   );
 }
 
-export default function PromptComposerPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="States">
         <Frame label="empty, Send disabled">
           <PromptComposer {...full} onSubmit={noop} />
@@ -154,23 +155,38 @@ export default function PromptComposerPreview() {
         </Frame>
       </PreviewSection>
 
-      <PreviewSection title="Long content">
-        <Frame label="long text at max height, scrolls">
-          <PromptComposer {...full} onSubmit={noop} defaultValue={longText} />
-        </Frame>
-        <Frame label="long and many attachments, wrapping">
-          <PromptComposer {...full} onSubmit={noop} defaultAttachments={[csv, brief, chart, notes]} />
-        </Frame>
-        <Frame label="narrow container, 320px" className="max-w-80">
-          <PromptComposer {...full} onSubmit={noop} defaultValue={typed} defaultAttachments={[csv, brief]} />
-        </Frame>
-      </PreviewSection>
-
       <PreviewSection title="Live">
         <Frame label="Enter sends, 0.8s sending, a 2.5s answer, then idle; Escape stops">
           <Interactive />
         </Frame>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long content">
+      <Frame label="long text at max height, scrolls">
+        <PromptComposer {...full} onSubmit={noop} defaultValue={longText} />
+      </Frame>
+      <Frame label="long and many attachments, wrapping">
+        <PromptComposer {...full} onSubmit={noop} defaultAttachments={[csv, brief, chart, notes]} />
+      </Frame>
+      <Frame label="narrow container, 320px" className="max-w-80">
+        <PromptComposer {...full} onSubmit={noop} defaultValue={typed} defaultAttachments={[csv, brief]} />
+      </Frame>
+    </PreviewSection>
+    </>
+  );
+}
+
+export default function PromptComposerPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }
