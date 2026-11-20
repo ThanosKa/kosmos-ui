@@ -138,6 +138,70 @@ export function Brand() {
 }
 `,
   },
+  {
+    name: 'a scale in a transition runs only when motion is allowed',
+    file: 'registry/kosmos/ui/example.tsx',
+    flagged: `
+export function Dot({ unread }: { unread: boolean }) {
+  return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] scale-50 opacity-0'} />;
+}
+`,
+    message: 'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
+    allowed: `
+export function Dot({ unread }: { unread: boolean }) {
+  return <span className={unread ? 'transition-[opacity,scale]' : 'transition-[opacity,scale] motion-safe:scale-50 opacity-0'} />;
+}
+`,
+  },
+  {
+    name: 'reduced motion fades instead of switching a transition off',
+    file: 'components/docs/example.tsx',
+    flagged: `
+export function Stage() {
+  return <div className="transition-[width] motion-reduce:transition-none" />;
+}
+`,
+    message: 'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion).',
+    allowed: `
+export function Stage() {
+  return <div className="transition-[width] motion-reduce:transition-[opacity]" />;
+}
+`,
+  },
+  {
+    name: 'a toast with an action stays until it is used',
+    file: 'registry/kosmos/examples/example.tsx',
+    flagged: `
+import { toast } from 'sonner';
+
+export function Save() {
+  return toast('Item created', { action: { label: 'Undo', onClick: () => {} } });
+}
+`,
+    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).',
+    allowed: `
+import { toast } from 'sonner';
+
+export function Save() {
+  return toast('Item created', { duration: Infinity, action: { label: 'Undo', onClick: () => {} } });
+}
+`,
+  },
+  {
+    name: 'a Base UI toast with an action stays until it is used',
+    file: 'registry/kosmos/examples/example.tsx',
+    flagged: `
+export function Save(toastManager: { add: (options: object) => void }) {
+  return toastManager.add({ title: 'Item created', actionProps: { children: 'Undo' } });
+}
+`,
+    message: 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).',
+    allowed: `
+export function Save(toastManager: { add: (options: object) => void }) {
+  return toastManager.add({ title: 'Item created', timeout: 0, actionProps: { children: 'Undo' } });
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });

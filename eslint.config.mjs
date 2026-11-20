@@ -163,6 +163,33 @@ const logoColorSelectors = classSelectors(
   'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Contrast).',
 );
 
+// A scale that runs through a transition must not run under reduced motion; the opacity fade carries the change.
+const motionScaleSelectors = classSelectors(
+  `^(?=[\\s\\S]*${classStart}transition-\\[[^\\]]*scale)(?=[\\s\\S]*(^|[\\s"'\`])(?![^\\s"'\`]*motion-safe:)[^\\s"'\`]*scale-[0-9\\[])`,
+  'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
+);
+
+// Reduced motion cross-fades; switching the transition off makes the change jump.
+const motionReduceNoneSelectors = classSelectors(
+  `${classStart}motion-reduce:transition-none${classEnd}`,
+  'Under reduced motion, fade opacity (`motion-reduce:transition-[opacity]`) instead of `motion-reduce:transition-none`, so a change never jumps (kosmos-style, Reduced motion).',
+);
+
+// A toast with an action must outlast the time a person needs to reach it (WCAG 2.2.1).
+const toastActionMessage = 'A toast with an action sets `duration: Infinity` (Sonner) or `timeout: 0` (Base UI), so it cannot close before it can be used (kosmos-style, Timing; WCAG 2.2.1).';
+const toastActionSelectors = [
+  {
+    selector:
+      "CallExpression:matches([callee.name='toast'], [callee.object.name='toast'][callee.property.name!='add']) > ObjectExpression:has(Property[key.name='action']):not(:has(Property[key.name='duration'][value.name='Infinity']))",
+    message: toastActionMessage,
+  },
+  {
+    selector:
+      "CallExpression[callee.object.name=/^toast/i][callee.property.name='add'] > ObjectExpression:has(Property[key.name='actionProps']):not(:has(Property[key.name='timeout'][value.value=0]))",
+    message: toastActionMessage,
+  },
+];
+
 const codeRules = [
   ...overlayScrollSelectors,
   ...transitionSelectors,
@@ -177,6 +204,9 @@ const codeRules = [
   ...iconButtonSelectors,
   ...keyLikeSelectors,
   ...logoColorSelectors,
+  ...motionScaleSelectors,
+  ...motionReduceNoneSelectors,
+  ...toastActionSelectors,
 ];
 
 /**

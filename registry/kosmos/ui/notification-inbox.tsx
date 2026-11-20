@@ -497,7 +497,7 @@ function NotificationItemAside({ className, children, ...props }: React.Componen
         aria-hidden
         className={cn(
           'me-0.5 size-2 rounded-full bg-tint-blue-dot transition-[opacity,scale] group-hover/notification:opacity-0 [@media(hover:hover)]:group-focus-within/notification:opacity-0',
-          !unread && 'scale-50 opacity-0',
+          !unread && 'motion-safe:scale-50 opacity-0',
         )}
       />
     </div>

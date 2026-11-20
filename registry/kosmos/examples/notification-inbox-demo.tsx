@@ -204,6 +204,7 @@ export default function NotificationInboxDemo() {
     setItems((all) => all.map((item) => ({ ...item, read: true })));
     toast.add({
       title: `Marked ${ids.length} as read`,
+      timeout: 0,
       actionProps: {
         children: 'Undo',
         onClick: () => setItems((all) => all.map((item) => (ids.includes(item.id) ? { ...item, read: false } : item))),

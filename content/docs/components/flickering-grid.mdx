@@ -1,6 +1,6 @@
 ---
 title: Flickering grid
-description: A grid of small squares that flicker behind a section, still when the visitor asks for less motion.
+description: A grid of small squares that flicker for a few seconds behind a section, then settle, and stay still when the visitor asks for less motion.
 ---
 
 <ComponentPreview name="flickering-grid-demo" />
@@ -42,7 +42,7 @@ Pass `spotlight` and the squares near a mouse or pen pointer over the parent bri
 
 ## Accessibility
 
-The grid is decorative, so it is `aria-hidden` and screen readers skip it. When the visitor asks for reduced motion, it draws one still grid and never animates. Otherwise it stops drawing while it is off screen and while the tab is in the background. It costs nothing when nobody can see it. A frame redraws only the squares that changed. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
+The grid is decorative, so it is `aria-hidden` and screen readers skip it. It flickers for 5 seconds after it first comes into view, then eases to a still grid and stays still, so nothing blinks forever (WCAG 2.2.2). When the visitor asks for reduced motion, it draws that still grid from the start and never animates. While it flickers it stops drawing while it is off screen and while the tab is in the background. It costs nothing when nobody can see it. A frame redraws only the squares that changed. It draws on a canvas that is as large as its parent, so nothing shifts while it loads.
 
 ## API
 

@@ -136,7 +136,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** the one figure the tile exists for can read as another value.
 - **Fix:** drop `truncate`; let the value shrink the label beside it instead (`shrink-0` on the value, `min-w-0` on its sibling), or step the value down a role (`@3xs:text-display text-title`) by container width.
 
-#### 6. The unread dot scales under reduced motion
+#### 6. The unread dot scales under reduced motion (Fixed in ticket 23)
 
 - **Severity:** HIGH (escalation trigger: motion that ignores reduced motion; the style calls a missing gate a blocking bug). Its reach is one 8px dot, so it is the cheapest HIGH here. **Kind:** bug. **Checkable:** yes, code: a `scale-*` utility outside `motion-safe:` in a class list whose `transition-[…]` names `scale` (the press scale excepted).
 - **Location:** `registry/kosmos/ui/notification-inbox.tsx:497-501` (`transition-[opacity,scale]` with `!unread && 'scale-50 opacity-0'`).
@@ -175,7 +175,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** a keyboard or switch user cannot open a row in an app that relies on `onRowClick` alone.
 - **Fix:** say in the prop's JSDoc and the docs that `onRowClick` is a pointer shortcut and the row's name cell must hold a link or button that opens the same thing; show it in the docs example.
 
-#### 11. The Sonner docs hero teaches an Undo toast that disappears after 4 seconds
+#### 11. The Sonner docs hero teaches an Undo toast that disappears after 4 seconds (Fixed in ticket 23)
 
 - **Severity:** MEDIUM. **Kind:** bug (WCAG 2.2.1; the docs' own rule). **Checkable:** yes, code: a Sonner `toast(…, { action })` with no `duration: Infinity`, or a Base UI `toast.add` with `actionProps` and no `timeout: 0`.
 - **Location:** `registry/kosmos/examples/sonner-demo.tsx:13-16` (`action: { label: 'Undo' }`, default duration), the hero of `content/docs/components/sonner.mdx`.
@@ -183,7 +183,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** people copy the hero; slow readers and screen-reader users lose the Undo before they reach it.
 - **Fix:** `duration: Infinity` on the demo toast (the Toast demo and both `-action` examples already follow the rule).
 
-#### 12. Flickering grid flickers forever with no way to pause it
+#### 12. Flickering grid flickers forever with no way to pause it (Fixed in ticket 23)
 
 - **Severity:** MEDIUM. **Kind:** bug (WCAG 2.2.2). **Checkable:** no.
 - **Location:** `registry/kosmos/ui/flickering-grid.tsx:156-162` (the `requestAnimationFrame` loop; stops only under reduced motion, off screen or in a hidden tab).
@@ -816,7 +816,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Where:** `components/docs/preview-shell.tsx:141` (`style={stageHeight ? { height: stageHeight } : undefined}`). `pnpm exec eslint components/docs` passes it, because the selector matches only an `ObjectExpression` directly inside the attribute.
 - **Fix:** `style={{ '--stage-height': … }}` with `h-(--stage-height)`, and the wider selector.
 
-**13. Under reduced motion, the block viewer's width jumps.**
+**13. Under reduced motion, the block viewer's width jumps.** (Fixed in ticket 23)
 - **Severity:** LOW. **Kind:** taste, a style rule ("the same change becomes an opacity cross-fade, never an instant jump"). **Checkable:** yes, code: `motion-reduce:transition-none` in `components/` or `registry/`.
 - **Where:** `components/docs/block-viewer-panels.tsx:89`.
 - **Fix:** under `motion-reduce:`, fade the frame out and back in around the width change (`transition-[opacity]`), as the code block's expand does (`code-block.tsx:129-130`).
