@@ -239,7 +239,7 @@ function KanbanCard({ item, lifted = false, placeholder = false, menu, className
           {item.target ? (
             <span className="flex min-w-0 items-center gap-1 text-caption text-muted-foreground tabular-nums">
               <CalendarDays aria-hidden className="size-3.5 shrink-0" />
-              <span title={item.target} className="truncate">{item.target}</span>
+              <span className="wrap-break-word">{item.target}</span>
             </span>
           ) : null}
           {item.assignee ? (

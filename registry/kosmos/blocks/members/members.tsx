@@ -413,7 +413,7 @@ function Members({
                                   setRemoveOpen(true);
                                 }}>
                                 <UserMinus aria-hidden />
-                                <span className="min-w-0 truncate">Remove from {workspace}</span>
+                                <span title={`Remove from ${workspace}`} className="min-w-0 truncate">{`Remove from ${workspace}`}</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
