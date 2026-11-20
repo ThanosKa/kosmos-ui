@@ -16,6 +16,7 @@ import {
   StatCardSparkline,
   StatCardValue,
 } from '@/registry/kosmos/ui/stat-card';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const trend = (values: number[]) => values.map((value) => ({ value }));
 
@@ -31,9 +32,9 @@ const daily = trend(Array.from({ length: 40 }, (_, day) => 50 + ((day * 37) % 23
 
 const grid = 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4';
 
-export default function StatCardPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Overview, last 30 days">
         <div className={grid}>
           <StatCard>
@@ -216,80 +217,124 @@ export default function StatCardPreview() {
         </div>
       </PreviewSection>
 
-      <PreviewSection title="Long text and extreme values">
-        <div className={grid}>
-          <StatCard>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+          <PreviewSection title="Long text and extreme values">
+      <div className={grid}>
+        <StatCard>
+          <StatCardLabel>Events received across every project and region</StatCardLabel>
+          <StatCardValue>1,284,502,920</StatCardValue>
+          <StatCardDelta value={1240.5}>vs the same 30 days of the previous year, before the EU region</StatCardDelta>
+          <StatCardSparkline data={events} aria-label="Events, last 30 days, up 1,240.5%" />
+        </StatCard>
+        <StatCard>
+          <StatCardLabel>Error events</StatCardLabel>
+          <StatCardValue>0.18%</StatCardValue>
+          <StatCardDelta value={-99.94}>vs September</StatCardDelta>
+          <StatCardSparkline data={errorRate} aria-label="Error events, last 30 days, down 99.9%" />
+        </StatCard>
+        <StatCard>
+          <StatCardLabel>イベント</StatCardLabel>
+          <StatCardValue>3</StatCardValue>
+          <StatCardDelta value={0.04}>vs September</StatCardDelta>
+          <StatCardSparkline data={flat} aria-label="Events, last 30 days, no change" />
+        </StatCard>
+        <StatCard>
+          <StatCardHeader>
+            <StatCardIcon>
+              <Activity />
+            </StatCardIcon>
+            <StatCardEyebrow>Every project and region, web, iOS, Android and server</StatCardEyebrow>
             <StatCardLabel>Events received across every project and region</StatCardLabel>
+          </StatCardHeader>
+          <StatCardContent>
             <StatCardValue>1,284,502,920</StatCardValue>
-            <StatCardDelta value={1240.5}>vs the same 30 days of the previous year, before the EU region</StatCardDelta>
-            <StatCardSparkline data={events} aria-label="Events, last 30 days, up 1,240.5%" />
-          </StatCard>
-          <StatCard>
-            <StatCardLabel>Error events</StatCardLabel>
-            <StatCardValue>0.18%</StatCardValue>
-            <StatCardDelta value={-99.94}>vs September</StatCardDelta>
-            <StatCardSparkline data={errorRate} aria-label="Error events, last 30 days, down 99.9%" />
-          </StatCard>
-          <StatCard>
-            <StatCardLabel>イベント</StatCardLabel>
+            <StatCardDelta value={1240.5}>(+1,188,754,310 against the same 30 days last year)</StatCardDelta>
+            <StatCardSparkline variant="bar" data={daily} aria-label="Events, last 40 days, up 1,240.5%" />
+          </StatCardContent>
+        </StatCard>
+        <StatCard>
+          <StatCardHeader>
+            <StatCardIcon>
+              <Users />
+            </StatCardIcon>
+            <StatCardEyebrow>ウェブとアプリ</StatCardEyebrow>
+            <StatCardLabel>アクティブユーザー</StatCardLabel>
+          </StatCardHeader>
+          <StatCardContent>
             <StatCardValue>3</StatCardValue>
-            <StatCardDelta value={0.04}>vs September</StatCardDelta>
-            <StatCardSparkline data={flat} aria-label="Events, last 30 days, no change" />
-          </StatCard>
-          <StatCard>
-            <StatCardHeader>
-              <StatCardIcon>
-                <Activity />
-              </StatCardIcon>
-              <StatCardEyebrow>Every project and region, web, iOS, Android and server</StatCardEyebrow>
-              <StatCardLabel>Events received across every project and region</StatCardLabel>
-            </StatCardHeader>
-            <StatCardContent>
-              <StatCardValue>1,284,502,920</StatCardValue>
-              <StatCardDelta value={1240.5}>(+1,188,754,310 against the same 30 days last year)</StatCardDelta>
-              <StatCardSparkline variant="bar" data={daily} aria-label="Events, last 40 days, up 1,240.5%" />
-            </StatCardContent>
-          </StatCard>
+            <StatCardDelta value={0}>(±0)</StatCardDelta>
+            <StatCardSparkline variant="bar" data={sparse} aria-label="Active users, last 10 weeks, no change" />
+          </StatCardContent>
+        </StatCard>
+        <div className="w-40">
           <StatCard>
             <StatCardHeader>
               <StatCardIcon>
                 <Users />
               </StatCardIcon>
-              <StatCardEyebrow>ウェブとアプリ</StatCardEyebrow>
-              <StatCardLabel>アクティブユーザー</StatCardLabel>
+              <StatCardEyebrow>Web and apps</StatCardEyebrow>
+              <StatCardLabel>Active users</StatCardLabel>
             </StatCardHeader>
             <StatCardContent>
-              <StatCardValue>3</StatCardValue>
-              <StatCardDelta value={0}>(±0)</StatCardDelta>
-              <StatCardSparkline variant="bar" data={sparse} aria-label="Active users, last 10 weeks, no change" />
+              <StatCardValue>144,600</StatCardValue>
+              <StatCardDelta value={9.6}>(+12,666)</StatCardDelta>
+              <StatCardSparkline data={users} aria-label="Active users, last 30 days, up 9.6%" />
             </StatCardContent>
           </StatCard>
-          <div className="w-40">
-            <StatCard>
-              <StatCardHeader>
-                <StatCardIcon>
-                  <Users />
-                </StatCardIcon>
-                <StatCardEyebrow>Web and apps</StatCardEyebrow>
-                <StatCardLabel>Active users</StatCardLabel>
-              </StatCardHeader>
-              <StatCardContent>
-                <StatCardValue>144,600</StatCardValue>
-                <StatCardDelta value={9.6}>(+12,666)</StatCardDelta>
-                <StatCardSparkline data={users} aria-label="Active users, last 30 days, up 9.6%" />
-              </StatCardContent>
-            </StatCard>
-          </div>
-          <div className="w-40">
-            <StatCard>
-              <StatCardLabel>Monthly revenue</StatCardLabel>
-              <StatCardValue>$14,628</StatCardValue>
-              <StatCardDelta value={6.8}>vs September</StatCardDelta>
-              <StatCardSparkline data={revenue} aria-label="Monthly revenue, last 30 days, up 6.8%" />
-            </StatCard>
-          </div>
+        </div>
+        <div className="w-40">
+          <StatCard>
+            <StatCardLabel>Monthly revenue</StatCardLabel>
+            <StatCardValue>$14,628</StatCardValue>
+            <StatCardDelta value={6.8}>vs September</StatCardDelta>
+            <StatCardSparkline data={revenue} aria-label="Monthly revenue, last 30 days, up 6.8%" />
+          </StatCard>
+        </div>
+      </div>
+    </PreviewSection>
+
+      <PreviewSection title="Missing and degenerate data">
+        <div className={grid}>
+          <StatCard>
+            <StatCardLabel>Active users</StatCardLabel>
+            <StatCardValue>0</StatCardValue>
+            <StatCardDelta value={0}>vs previous 30 days</StatCardDelta>
+            <StatCardSparkline data={[]} aria-label="Active users, no data" />
+          </StatCard>
+          <StatCard>
+            <StatCardLabel>Signups</StatCardLabel>
+            <StatCardValue>1</StatCardValue>
+            <StatCardDelta value={100}>vs previous 30 days</StatCardDelta>
+            <StatCardSparkline data={trend([1])} aria-label="Signups, one day of data" />
+          </StatCard>
+          <StatCard>
+            <StatCardLabel>Annual recurring revenue across every plan, region and currency</StatCardLabel>
+            <StatCardValue>$1,284,903,772,000</StatCardValue>
+            <StatCardDelta value={-100}>vs previous 30 days</StatCardDelta>
+            <StatCardSparkline data={trend([5, 0, 0, 0, 0])} aria-label="Revenue, down 100%" />
+          </StatCard>
+          <StatCard>
+            <StatCardLabel>Ιστότοπος καφέ 🌊</StatCardLabel>
+            <StatCardValue>—</StatCardValue>
+            <StatCardDescription>No data in this range yet, so there is nothing to compare</StatCardDescription>
+          </StatCard>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+export default function StatCardPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

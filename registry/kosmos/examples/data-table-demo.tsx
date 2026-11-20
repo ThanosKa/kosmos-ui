@@ -68,8 +68,8 @@ const OpenProjectContext = React.createContext<(project: Project) => void>(() =>
 function NameCell({ project }: { project: Project }) {
   const open = React.useContext(OpenProjectContext);
   return (
-    <Button variant="item" size="sm" onClick={() => open(project)} className="-mx-1 h-5 justify-start rounded-sm px-1 text-body font-medium">
-      {project.name}
+    <Button variant="item" size="sm" onClick={() => open(project)} title={project.name} className="-mx-1 h-5 max-w-full justify-start rounded-sm px-1 text-body font-medium">
+      <span className="truncate">{project.name}</span>
     </Button>
   );
 }
@@ -89,7 +89,7 @@ const columns = column.columns([
     cell: ({ row }) => <NameCell project={row.original} />,
     sortFn: 'text',
     enableHiding: false,
-    meta: { label: 'Project', sortLabels: ['A to Z', 'Z to A'] },
+    meta: { label: 'Project', sortLabels: ['A to Z', 'Z to A'], className: 'max-w-56 @lg:max-w-80' },
   }),
   column.accessor('plan', {
     header: ({ column }) => <DataTableColumnHeader column={column} />,

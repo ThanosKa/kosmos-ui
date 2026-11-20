@@ -3,6 +3,7 @@ import { PreviewSection, PreviewStack } from '@/components/preview/preview-secti
 import { StateMatrix } from '@/components/preview/state-matrix';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/registry/kosmos/ui/avatar';
 import { Button } from '@/registry/kosmos/ui/button';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const sizes = ['sm', 'md', 'lg'] as const;
 const states = ['image', 'initials', 'icon'] as const;
@@ -13,9 +14,9 @@ const team = [
   { id: 'kai', name: 'Kai Nakamura', initials: 'KN' },
 ];
 
-export default function AvatarPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Sizes × content">
         <StateMatrix
           rows={sizes}
@@ -89,6 +90,89 @@ export default function AvatarPreview() {
           <span className="min-w-0 truncate text-body">Alexandra Wolfeschlegelsteinhausen</span>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+const worstPeople = [
+  { id: 'a', name: 'Aleksandra Wiśniewska-Kowalczyk', email: 'aleksandra.wisniewska-kowalczyk@northwind-industries-holdings.example', initials: 'AW' },
+  { id: 'j', name: 'Jo', email: 'jo@acme.example', initials: 'J' },
+  { id: 'e', name: '🌊 Saltmarsh Coffee', email: 'barista@saltmarsh.example', initials: '🌊' },
+  { id: 'g', name: 'Ελένη Παπαδοπούλου', email: 'eleni.papadopoulou@acme.example', initials: 'ΕΠ' },
+  { id: 'n', name: 'Nguyễn Thị Minh Khai', email: 'khai@acme.example', initials: 'NK' },
+];
+
+function Worst() {
+  return (
+    <>
+      <PreviewSection title="Fallbacks: one letter, an emoji, Greek, Vietnamese">
+        <div className="flex flex-wrap items-center gap-4">
+          {sizes.map((size) => (
+            <div key={size} className="flex items-center gap-2">
+              {worstPeople.map((person) => (
+                <Avatar key={person.id} size={size}>
+                  <AvatarFallback>{person.initials}</AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+          ))}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="A name and an email in a narrow slot, with a trailing action">
+        <ul className="flex w-72 flex-col gap-3">
+          {worstPeople.map((person) => (
+            <li key={person.id} className="flex min-w-0 items-center gap-2.5">
+              <Avatar size="lg">
+                <AvatarFallback>{person.initials}</AvatarFallback>
+              </Avatar>
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span title={person.name} className="truncate text-body font-medium">
+                  {person.name}
+                </span>
+                <span title={person.email} className="truncate text-small text-muted-foreground">
+                  {person.email}
+                </span>
+              </div>
+              <Button variant="ghost" size="sm" className="shrink-0">
+                Invite
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </PreviewSection>
+
+      <PreviewSection title="A group with a count in the thousands, and a group of one">
+        <div className="flex flex-col gap-4">
+          {sizes.map((size) => (
+            <AvatarGroup key={size}>
+              {team.map((person) => (
+                <Avatar key={person.id} size={size}>
+                  <AvatarImage src={`/avatars/${person.id}.jpg`} alt={person.name} />
+                  <AvatarFallback>{person.initials}</AvatarFallback>
+                </Avatar>
+              ))}
+              <AvatarGroupCount size={size}>
+                +1,284<span className="sr-only"> more</span>
+              </AvatarGroupCount>
+            </AvatarGroup>
+          ))}
+          <AvatarGroup>
+            <Avatar>
+              <AvatarFallback>J</AvatarFallback>
+            </Avatar>
+          </AvatarGroup>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function AvatarPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

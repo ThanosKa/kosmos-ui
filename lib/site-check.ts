@@ -1,6 +1,6 @@
 // The browser check: what it looks for on a page, which pages it visits and which findings are known exceptions.
 // scripts/site-check.mts runs it against a dev server.
-import { existsSync, globSync } from 'node:fs';
+import { existsSync, globSync, readFileSync } from 'node:fs';
 import type { Browser, Page } from 'playwright';
 import { openSitePage, type Theme } from '../scripts/site.mts';
 import { readRegistryItems } from './registry.ts';
@@ -38,12 +38,15 @@ export function siteRoutes(group?: string) {
   const docs = globSync('content/docs/**/*.mdx').map((file) => `/docs/${file.replace('content/docs/', '').replace(/\.mdx$/, '')}`.replace(/\/?index$/, ''));
   const previews = readRegistryItems()
     .filter((item) => (item.type === 'registry:ui' || item.type === 'registry:block') && existsSync(`registry/kosmos/examples/${item.name}.tsx`))
-    .map((item) => `/view/${item.name}`);
+    .flatMap((item) => {
+      const route = `/view/${item.name}`;
+      return readFileSync(`registry/kosmos/examples/${item.name}.tsx`, 'utf8').includes('DataToggle') ? [route, `${route}?data=worst`] : [route];
+    });
   const presetPreviews = previewTabs.map((tab) => `/preset-preview (${tab})`);
   const routes = [...new Set(['/', '/presets', ...presetPreviews, ...docs, ...previews])].sort();
   if (!group) return routes;
   const prefix = group.endsWith('/') ? group : `${group}/`;
-  return routes.filter((route) => route === group || (group !== '/' && route.startsWith(prefix)) || route.startsWith(`${group} (`));
+  return routes.filter((route) => route === group || (group !== '/' && route.startsWith(prefix)) || route.startsWith(`${group} (`) || route.startsWith(`${group}?`));
 }
 
 /** The widths a route is visited at when none are asked for: the preview's own widths, else `defaults`. */
