@@ -15,7 +15,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | --- | --- | --- | --- | --- |
 | 15 | Site check fixes | `--route /`, resting shadows, `/preset-preview` (L Verification, D5) | None | site check |
 | 16 | Site check: clipped text, unnamed controls and focus under the edge fade | checks for B3, B14, L8, C8, B4, D3 | 15 | site check |
-| 17 | Third-party notice check | ADR 0010 check left out of ticket 12 | None | registry item `meta`, `building.md` |
+| 17 | Third-party notice check | ADR 0010 check left out of ticket 12 (Fixed in ticket 17) | None | registry item `meta`, `building.md` |
 | 18 | Focus stays in view inside scroll areas | C9, B10, L5, D3, B22, D5 | 16 | ScrollArea, Sidebar (resize handle), docs sidebar |
 | 19 | Text contrast below the floor | C1, C2, B5, L11 | None | Chart, Badge, Banner, tints test, Logo marquee, lint |
 | 20 | Text that fits: components and docs | C3, C4, C5, C17, D1 | None | Model select, Panel, Status, Sidebar (labels), Chart and the charts, Command, Data table, Announcement, Input group, Stat card, copy swatch, lint |

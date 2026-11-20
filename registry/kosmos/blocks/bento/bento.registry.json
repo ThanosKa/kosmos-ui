@@ -7,7 +7,7 @@
   "dependencies": ["lucide-react@^1.50.0"],
   "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/chart", "@kosmos/chart-card", "@kosmos/command", "@kosmos/meter", "@kosmos/segmented-control", "@kosmos/table"],
   "categories": ["bento"],
-  "meta": { "group": "blocks", "section": "marketing", "tier": "free" },
+  "meta": { "group": "blocks", "section": "marketing", "tier": "free", "sources": ["magic-ui"] },
   "files": [
     {
       "path": "registry/kosmos/blocks/bento/bento.tsx",
