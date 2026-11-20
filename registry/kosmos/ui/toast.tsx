@@ -184,8 +184,9 @@ function ToastList() {
   const { toasts } = ToastPrimitive.useToastManager();
   return toasts.map((item) => {
     const action = item.actionProps ? <ToastAction className={item.description ? undefined : 'max-w-[45%]'} /> : null;
+    const label = typeof item.description === 'string' ? item.description : 'Notification';
     return (
-      <Toast key={item.id} toast={item} aria-label={item.title ? undefined : String(item.description ?? 'Notification')}>
+      <Toast key={item.id} toast={item} aria-label={item.title ? undefined : label}>
         <ToastContent>
           <ToastIcon type={item.type} />
           <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
