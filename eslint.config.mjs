@@ -204,6 +204,12 @@ const motionScaleSelectors = classSelectors(
   'A `scale-*` in a class list that transitions `scale` takes `motion-safe:`, so reduced motion fades without scaling (kosmos-style, Reduced motion).',
 );
 
+// A scale that starts a motion is one of the Kosmos values; `scale-x-*`, `scale-y-*` and `scale-(--var)` pass.
+const motionScaleStartSelectors = classSelectors(
+  `${classStart}motion-safe:([^\\s"'\`]*:)?scale-(?!(\\[0\\.97\\]|95|90|25|96|100)($|[\\s"'\`]|\\x2f))[0-9\\[]`,
+  'Start a scale from `scale-[0.97]` (popover, menu), `scale-95` (dialog), `scale-90`, or `scale-25` with `blur-xs` (icon swap) (kosmos-style, Motion).',
+);
+
 // Reduced motion cross-fades; switching the transition off makes the change jump.
 const motionReduceNoneSelectors = classSelectors(
   `${classStart}motion-reduce:transition-none${classEnd}`,
@@ -334,6 +340,7 @@ const codeRules = [
   ...keyLikeSelectors,
   ...logoColorSelectors,
   ...motionScaleSelectors,
+  ...motionScaleStartSelectors,
   ...motionReduceNoneSelectors,
   ...toastActionSelectors,
   ...liveRegionSelectors,

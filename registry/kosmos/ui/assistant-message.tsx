@@ -45,7 +45,8 @@ type AssistantMessageProps = {
 
 const newTab = { target: '_blank', rel: 'noreferrer' } as const;
 
-const iconHidden = 'opacity-0 motion-safe:scale-25 motion-safe:blur-xs';
+const iconSwap = 'transition-[opacity,scale,filter] duration-slow ease-power3-out';
+const iconHidden = 'opacity-0 duration-fast motion-safe:scale-25 motion-safe:blur-xs';
 
 /** A numbered marker inside the answer. It links to its source and shows the source title in a tooltip. */
 function Citation({ n, source }: { n: number; source: Pick<Source, 'title' | 'url'> }) {
@@ -260,10 +261,10 @@ function AssistantMessage({
             <ActionButton label={copied ? 'Copied' : 'Copy'} onClick={copy}>
               <span
                 aria-hidden
-                className="relative size-3 *:absolute *:inset-0 *:transition-[opacity,scale,filter] *:duration-slow *:ease-power3-out"
+                className="relative size-3 *:absolute *:inset-0"
               >
-                <Copy className={cn(copied && iconHidden)} />
-                <Check className={cn(!copied && iconHidden)} />
+                <Copy className={cn(iconSwap, copied && iconHidden)} />
+                <Check className={cn(iconSwap, !copied && iconHidden)} />
               </span>
             </ActionButton>
             {onRetry ? (

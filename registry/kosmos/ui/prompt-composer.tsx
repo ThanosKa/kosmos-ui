@@ -92,8 +92,10 @@ function useControllableState<Value>(controlled: Value | undefined, initial: Val
   return [controlled ?? inner, set] as const;
 }
 
-const swapIcon =
-  'absolute transition-[opacity,scale] duration-fast data-hidden:opacity-0 motion-safe:data-hidden:scale-80';
+const swapIcon = cn(
+  'absolute transition-[opacity,scale,filter] duration-slow',
+  'data-hidden:opacity-0 data-hidden:duration-fast motion-safe:data-hidden:scale-25 motion-safe:data-hidden:blur-xs',
+);
 
 /** Where a user writes to an agent: a text box that grows, attachments, the model, the context meter, and Send that turns into Stop. */
 function PromptComposer({
