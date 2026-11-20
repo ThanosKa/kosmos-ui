@@ -227,7 +227,7 @@ function DocsSidebarGroup({ group, noun, pathname, open, onOpenChange }: DocsSid
           'motion-reduce:transition-[opacity] motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:opacity-0',
         )}
       >
-        <SidebarMenu className="ps-5.5 pt-0.5">
+        <SidebarMenu className="ps-5.5 pt-0.5 pe-px pb-px">
           {group.items.map((item) => (
             <SidebarMenuItem key={item.url}>
               {/* The panel clips anything outside it while it opens and closes, so the focus outline is drawn inside. */}

@@ -159,7 +159,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** a screen reader announces "list box" or "dialog" with no context when focus enters it.
 - **Fix:** `CommandList` takes an `aria-label` (default "Commands", or `aria-labelledby` the input); `SelectContent` passes `aria-labelledby` the trigger when no `SelectLabel` or Field label names it; a Popover without a `PopoverTitle` takes `aria-label` on `PopoverContent`, and the docs say so beside `openOnHover`.
 
-#### 9. Wide tables leave the focused control mostly hidden past the scroll edge
+#### 9. Wide tables leave the focused control mostly hidden past the scroll edge (Fixed in ticket 18)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Checkable:** yes, browser (the site check's focus-ring check already reports it: `/view/table` "Open" cut 43px, `/view/data-table` "MRR" 2–17px and "Status" 23–25px, light and dark, 375 and 1280).
 - **Location:** `registry/kosmos/ui/scroll-area.tsx:57-64` (the viewport that scrolls a `Table`, `table.tsx:13`, and `DataTableContent`).
@@ -167,7 +167,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** keyboard users reach row actions and sortable headers they cannot see; the ring that should show where they are is cut off.
 - **Fix:** in `ScrollArea`, on `focusin` inside the viewport, call `target.scrollIntoView({ block: 'nearest', inline: 'nearest' })` (the `scroll-p-1` padding then keeps the ring clear). One fix covers tables, tab lists and every other scroller.
 
-#### 10. Data table rows open on click only
+#### 10. Data table rows open on click only (Fixed in ticket 25)
 
 - **Severity:** MEDIUM. **Kind:** bug (API invites a pointer-only path). **Checkable:** no (needs judgment per caller).
 - **Location:** `registry/kosmos/ui/data-table.tsx:529`, `:551-553`, `:598` (`onRowClick` on the `<tr>`); `content/docs/components/data-table.mdx:67`, `:125`.
@@ -199,7 +199,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** keyboard review of those previews is impossible, and the browser check stops measuring focus there.
 - **Fix:** first reduce it to a minimal repro (likely two Base UI menus held `open modal={false}` on one page, each with its portal focus guards). Then either keep pinned popups out of the tab order in previews (`inert` on each `OverlayStage` that is not under review) or pin one non-modal menu per page, and report the guard loop to Base UI if it reproduces outside the preview.
 
-#### 14. Charts give pointer targets narrower than 24px
+#### 14. Charts give pointer targets narrower than 24px (Fixed in ticket 25)
 
 - **Severity:** LOW. **Kind:** bug (WCAG 2.5.8). **Checkable:** yes, browser (target size with the spacing test).
 - **Location:** `registry/kosmos/ui/daily-stacked-bar-chart.tsx` (one Button per day: 10–18px wide at 375, 15px at 1280 with 30 days); `registry/kosmos/ui/flow-chart.tsx:647` (band value labels, 17–25 × 20px).
@@ -402,7 +402,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** body-size text below the floor in one theme is an escalation trigger, and here it shows on keyboard focus.
 - **Fix:** color the mark only (`[&_:is(svg,img)]:text-(--logo-color)`) and keep the name `text-foreground`. Or document that `color` must pass 4.5:1 in both themes and drop the tint-solid samples.
 
-**6. Kanban board: dragging is the only pointer path to move a card.**
+**6. Kanban board: dragging is the only pointer path to move a card. (Fixed in ticket 25)**
 - **Bug.** Not checkable.
 - **Where:** `blocks/kanban-board/kanban-board.tsx:256-307` (SortableCard) and `:504-511` (Mouse, Touch and Keyboard sensors).
 - **What is wrong:** the keyboard path is good (Space, arrows, Space, every move announced). But a pointer user who cannot drag (head pointer, tremor) has no other way, and `onOpen` offers no column change.
@@ -446,7 +446,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** the preview is where the site check measures the block. Today the trap hides every focus-ring finding after the menu, and the console check fails on every run.
 - **Fix:** pin a menu with an `onOpenChange` that ignores only the `focus-out` and `outside-press` reasons. Or pass `modal={false}` plus `disablePortal`, or `trapFocus={false}` if the menu exposes it. Re-run `pnpm site-check --route /view/app-sidebar` afterwards to measure what the trap hid.
 
-**10. Data table header controls take focus while hidden past the table's scroll edge.**
+**10. Data table header controls take focus while hidden past the table's scroll edge (Fixed in ticket 18).**
 - **Bug.** Checkable by a **browser** check: the site check flags it as a focus ring cut by `scroll-area-viewport`.
 - **Where:** in `/view/dashboard-crm` and `/view/dashboard-analytics` at 375 (both themes), the header sort menus "Stage", "Plan" and "Activation" are cut by 10 to 61px.
 - **What is wrong:** measured with `scroll-probe.mts`. Focusing "Stage" leaves it at x 323 to 385 inside a viewport that ends at 328, with `scrollLeft` still 0. Chrome treats a partly visible element as already in view, so the ring and label stay hidden.
@@ -559,7 +559,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - `[&_[data-slot=scroll-area-scrollbar]]:hidden` on the inert wrapper.
   - A visual `SidebarTrigger` in the sample header.
 
-**22. The sidebar resize handle's focus line is cut at both ends.**
+**22. The sidebar resize handle's focus line is cut at both ends (Fixed in ticket 18).**
 - **Bug (October 1f, still open).** Checkable by a **browser** check: the site check flags it.
 - **Where:** `/view/dashboard-analytics` and `/view/dashboard-crm`, both themes. `div[data-slot=sidebar-resize-handle]` is cut 2px top and bottom by `sidebar-wrapper` (`overflow-hidden`). Cause in `ui/sidebar.tsx`.
 - **Fix:** inset the handle by 2px top and bottom (`inset-y-0.5`), or draw its 4px line as a pseudo-element inside the wrapper.
@@ -626,7 +626,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Wrong item marked current:** `dashboard-analytics.tsx:1043` and `dashboard-crm.tsx:984` mark "Overview" as the current page for Analytics and Sales.
 - **App page title size:** `examples/app-sidebar*.tsx` and `showcase.tsx:31` set page titles in `text-body`. Kosmos and both dashboards use `text-title font-medium`.
 - **Mixed heights in one row:** `members.tsx:318-319` puts a 34px select beside a 36px `lg` Button. Kosmos says a field beside a Button takes the Button's height.
-- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400.
+- **Radius:** the kanban board's `rounded-3xl` (`kanban-board.tsx:585`) is the bottom-sheet step. The drawer's eyebrow uses `font-medium` (`detail-drawer.tsx:207`); the Kosmos eyebrow is 400. (Fixed in ticket 25)
 - **Props on the wrong element:** `HeroProduct` spreads `{...props}` onto the inner Hero but `className` onto the outer section (`hero-product.tsx:42-43`), so `id`, `aria-*` and `data-*` land on the wrong element.
 - **Missing states:**
   - Usage overview has no error state (`:231-250`).
@@ -748,7 +748,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 - **Why it matters:** a console error on a docs page fails the release browser check at random, and a mismatched subtree can keep stale attributes.
 - **Fix:** put both flags on the iframe document's `<html>`, which already has `suppressHydrationWarning`, and style the root with an ancestor variant (`in-data-in-frame:p-4`). Or have the view page post `kosmos:hydrated` and measure only after it.
 
-**3. Keyboard focus in the docs sidebar lands inside the scroll edge fade.**
+**3. Keyboard focus in the docs sidebar lands inside the scroll edge fade (Fixed in ticket 18).**
 - **Severity:** MEDIUM. **Kind:** bug. **Checkable:** yes, browser. Extend the focus-ring check: on each Tab stop inside a `scroll-area-viewport`, fail when the ring box overlaps an edge whose fade is active (`--scroll-area-overflow-y-end` > 0).
 - **Where:** the cause is `registry/kosmos/ui/scroll-area.tsx:64-65`: `scroll-p-1` gives 4px of scroll padding, but the edge fade is 2rem (`:69`). It shows in the docs sidebar (`components/docs/docs-sidebar.tsx:123`, `SidebarContent` with `focusable={false}`) on every docs page whose sidebar scrolls (all of Components, Charts and Blocks at 800px tall). Measured on `/docs/blocks/settings` at 1280: Tab stops "Feature section" 8px and "Footer" 3px above the bottom edge, inside a 32px fade, with the ring cut by 1px. These are the first run's 55 findings.
 - **What is wrong:** the browser scrolls a focused item only far enough to clear the scroll padding, 4px. That leaves the item, its label and its focus outline under the mask, drawn at partial opacity.
@@ -764,7 +764,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that wo
 
 #### LOW
 
-**5. In dark mode the current sidebar item loses its right edge, and the site check reads it as a cut focus ring.**
+**5. In dark mode the current sidebar item loses its right edge, and the site check reads it as a cut focus ring (Fixed in ticket 18).**
 - **Severity:** LOW. **Kind:** bug. **Checkable:** yes, browser. The site check flagged it as a cut focus ring (79 findings); the check half is fixed in ticket 15, the panel padding is not.
 - **Where:** `components/docs/docs-sidebar.tsx:222-230`. The group's `Collapsible.Panel` is `overflow-hidden`, and its `SidebarMenu` gives the items the panel's full width. Measured on `/docs/components/button` and `/docs/charts/donut-chart` in dark: the item ends at x 248, and so does the panel.
 - **What is wrong:** the dark current item is raised with `shadow-control` (`registry/kosmos/ui/sidebar.tsx:756`), whose 1px outer ring is clipped on the right, and on the bottom for the last item of a group. The focus outline there is already drawn inside, so the site check is flagging this shadow, not the focus ring.
@@ -945,7 +945,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** the tab that shows every overlay under a preset cannot be used from the keyboard. It also blinds any browser check that walks it.
 - **Fix:** the one 03 finding 13 gives. Make each pinned stage `inert` except the one being tried, or pin one non-modal popup per stage. Here the overlays are a picture of the preset, so `inert` on every stage fits, as the landing hero does.
 
-#### 5. Night and Console widen tables, and at 375 the landing showcase's row actions land on the scroll edge with their rings cut
+#### 5. Night and Console widen tables, and at 375 the landing showcase's row actions land on the scroll edge with their rings cut (the focus half fixed in ticket 18)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Preset:** Night (5px), Console (1px). **Checkable:** yes, browser: the site check's focus-ring check already finds it, if it could run under a preset (add a `--preset` option that stores the choice before load).
 - **Location:** the cause in the styles is `lib/presets/night-style.ts:54-58` (table heads `uppercase`, `letter-spacing: 0.06em`) and `lib/presets/console-style.ts:88-89` (uppercase mono table heads). The page is `components/site/landing-showcase.tsx:51-53` (ProjectsTable in a card). The clipping is the 03 finding 9 cause in `registry/kosmos/ui/scroll-area.tsx`.

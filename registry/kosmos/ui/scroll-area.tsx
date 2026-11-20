@@ -33,6 +33,22 @@ type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
  * and the scrollbar shows, so the overflow never goes unnoticed. Both scrollbars are built in and
  * show only on the axis that overflows.
  */
+function scrollFocusedIntoView(event: React.FocusEvent<HTMLElement>) {
+  const viewport = event.currentTarget;
+  const target = event.target;
+  if (target === viewport) return;
+  const box = target.getBoundingClientRect();
+  const view = viewport.getBoundingClientRect();
+  const style = getComputedStyle(viewport);
+  const inset = (property: string) => Number.parseFloat(style.getPropertyValue(property)) || 0;
+  const hidden =
+    box.top < view.top + inset('scroll-padding-top') ||
+    box.bottom > view.bottom - inset('scroll-padding-bottom') ||
+    box.left < view.left + inset('scroll-padding-left') ||
+    box.right > view.right - inset('scroll-padding-right');
+  if (hidden) target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
 function ScrollArea({
   className,
   children,
@@ -58,13 +74,16 @@ function ScrollArea({
         ref={viewportRef}
         render={viewportRender}
         data-slot="scroll-area-viewport"
+        // Chrome leaves a partly visible focused element where it is, so its ring ends up under the edge fade.
+        onFocusCapture={scrollFocusedIntoView}
         {...(focusable ? null : { tabIndex: -1 })}
         className={cn(
           // `relative` keeps absolutely positioned content (an `sr-only` label) inside the clip, so it never widens the page.
-          // `scroll-p-1`: focus scrolls an item into view with 4px to spare, so its focus ring is not cut by the edge.
-          'relative min-h-0 flex-auto scroll-p-1 overscroll-x-contain rounded-[inherit] outline-none',
+          'relative min-h-0 flex-auto overscroll-x-contain rounded-[inherit] outline-none',
           // Room for the scrollbar, so it never covers content.
           'data-has-overflow-x:pb-3 data-has-overflow-y:pe-3',
+          // Focus scrolls an item clear of the edge fade (2rem) and its focus ring, so the ring is not under the fade.
+          fade ? 'scroll-p-10' : 'scroll-p-1',
           fade && [
             'mask-t-from-[calc(100%-min(2rem,var(--scroll-area-overflow-y-start)))] mask-b-from-[calc(100%-min(2rem,var(--scroll-area-overflow-y-end)))]',
             'mask-l-from-[calc(100%-min(2rem,var(--scroll-area-overflow-x-start)))] mask-r-from-[calc(100%-min(2rem,var(--scroll-area-overflow-x-end)))]',

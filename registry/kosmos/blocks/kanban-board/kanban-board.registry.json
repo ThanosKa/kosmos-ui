@@ -16,6 +16,7 @@
     "@kosmos/motion",
     "@kosmos/avatar",
     "@kosmos/button",
+    "@kosmos/dropdown-menu",
     "@kosmos/badge",
     "@kosmos/empty",
     "@kosmos/scroll-area",

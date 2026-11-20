@@ -248,6 +248,7 @@ async function focusRingFindings(page: Page) {
   const cuts: Measured[] = [];
   for (let stop = 0; stop < maxTabStops; stop++) {
     await page.keyboard.press('Tab');
+    await page.waitForTimeout(100);
     const cut = await page.evaluate(measureFocusRing, rested).catch(() => null);
     const identity = await page.evaluate(() => {
       const active = document.activeElement;

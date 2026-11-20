@@ -1,0 +1,9 @@
+---
+title: Focus stays in view inside ScrollArea and Sidebar
+description: A focused control inside a ScrollArea scrolls fully into view, clear of the edge fade. The Sidebar resize handle keeps its whole focus line.
+date: 2026-11-20
+---
+
+A [ScrollArea](/docs/components/scroll-area) now scrolls a control into view when it takes focus and any part of it is hidden past an edge or under the edge fade. Before, Chrome left a partly visible control where it was, so Tab could land on a row action or a sortable header with half of it hidden. The viewport's scroll padding grows from 4px to 2.5rem on each side while `fade` is on, so the focused control stops clear of the fade and keeps its focus ring. This reaches every [Table](/docs/components/table), [Data table](/docs/components/data-table), tab list and scrolling sidebar. With `fade={false}` the padding stays 4px.
+
+The [Sidebar](/docs/components/sidebar) resize handle is 4px shorter at the top and bottom, so the wrapper no longer cuts its focus line.
