@@ -7,6 +7,7 @@ import { FeatureSection } from '@/registry/kosmos/blocks/feature-section/feature
 import { SettingsPage } from '@/registry/kosmos/blocks/settings/settings';
 import { StatsOverview } from '@/registry/kosmos/blocks/stats-overview/stats-overview';
 import { cn } from '@/registry/kosmos/lib/cn';
+import { ScrollArea } from '@/registry/kosmos/ui/scroll-area';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/registry/kosmos/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/kosmos/ui/tabs';
 
@@ -24,15 +25,17 @@ type ShowcaseScreen = {
 function SampleDashboard() {
   return (
     <SidebarProvider storageKey={false} keyboardShortcut={false} className="h-full min-h-0">
-      <AppSidebar activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
-      <SidebarInset render={<div />} className="scroll-p-1 overflow-y-auto">
+      <AppSidebar navLabel="App" activeItem="overview" onNavigate={(_id, event) => event.preventDefault()} />
+      <SidebarInset render={<div />} className="overflow-hidden">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <SidebarTrigger />
-          <h3 className="text-body font-medium">Overview</h3>
+          <h2 className="text-title font-medium">Overview</h2>
         </header>
-        <div className="p-4">
-          <StatsOverview />
-        </div>
+        <ScrollArea className="min-h-0 flex-1 rounded-none">
+          <div className="p-4">
+            <StatsOverview />
+          </div>
+        </ScrollArea>
       </SidebarInset>
     </SidebarProvider>
   );
@@ -116,9 +119,15 @@ function Showcase({ screens = sampleScreens, label = 'Screens', defaultScreen, c
             <TabsContent
               key={item.id}
               value={item.id}
-              className="h-[34rem] scroll-p-1 focus-visible:-outline-offset-2 overflow-x-hidden overflow-y-auto bg-background transition-[opacity] duration-base starting:opacity-0 @3xl:h-[40rem]"
+              tabIndex={-1}
+              className="flex h-[34rem] flex-col bg-background transition-[opacity] duration-base starting:opacity-0 focus-visible:outline-none @3xl:h-[40rem]"
             >
-              {item.content}
+              <ScrollArea
+                className="min-h-0 flex-1 rounded-none has-[>[data-slot=scroll-area-viewport]:focus-visible]:-outline-offset-2"
+                viewportClassName="[&>[data-slot=scroll-area-content]]:h-full"
+              >
+                {item.content}
+              </ScrollArea>
             </TabsContent>
           ))}
         </div>

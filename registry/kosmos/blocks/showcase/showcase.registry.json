@@ -8,6 +8,7 @@
     "@kosmos/tokens",
     "@kosmos/cn",
     "@kosmos/tabs",
+    "@kosmos/scroll-area",
     "@kosmos/sidebar",
     "@kosmos/app-sidebar",
     "@kosmos/stats-overview",

@@ -26,7 +26,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 25 | Pointer and keyboard paths | C10, C14, B6, B27 (Kanban radius) | None | Data table, Daily stacked bar chart, Flow chart, Kanban |
 | 26 | Block controls keep focus and do what they say | B8, B12, B17, B27 (current item, shortcut, locale, row heights) | None | Navbar, dashboards, Settings, Members, App sidebar, App sidebar demo, 500 example, lint |
 | 27 | Status, change, charts and ranges in blocks | B7, B11, B18, B19, B20, B26 ("vs."), B27 (budget meter, eyebrow) | None | Analytics dashboard, Usage and Stats overview, Feature section, Command menu, Detail drawer, Bento, page header demo, `demo-world.md`, lint |
-| 28 | Showcase and hero pictures | B13, B21, L7, L13, L14, B27 (landmark, headings, page titles, HeroProduct props) | 16 | Showcase, HeroProduct, App sidebar (`navLabel`), landing showcase and hero, app sidebar previews, lint |
+| 28 | Showcase and hero pictures (Fixed in ticket 28) | B13, B21, L7, L13, L14, B27 (landmark, headings, page titles, HeroProduct props) | 16 | Showcase, HeroProduct, App sidebar (`navLabel`), landing showcase and hero, app sidebar previews, lint |
 | 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
 | 30 | Docs site fixes | D2 and B24, D4, D6, D7, D8, D9 (changelog), D10, D11, D12 | None | docs shell, preview frame, not-found page, search dialog, lint |
 | 31 | Block copy and docs prose | B25 (`toLowerCase`), B26, B27 (demo world), D15 | None | dashboards, Page header, Command menu, App sidebar, Bento, Kanban, Members, Settings, Hero, `demo-world.md`, `content/docs`, Vale |
@@ -476,7 +476,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - Copy link uses `useCopy` (`hooks/use-copy.ts`) and an always-rendered `role="status"`.
   - The 500 example calls `reset()` or `location.reload()`.
 
-**13. Showcase: screens scroll with `overflow-y-auto`, not ScrollArea, so there is no edge fade.**
+**13. Showcase: screens scroll with `overflow-y-auto`, not ScrollArea, so there is no edge fade. (Fixed in ticket 28)**
 - **Bug against kosmos-style (Overflow).** Checkable by a **code** check (`overflow-(x|y)-auto` inside a block; it also appears in the style's detection table).
 - **Where:** `blocks/showcase/showcase.tsx:119` (`TabsContent … overflow-x-hidden overflow-y-auto`) and `:28` (`SidebarInset … overflow-y-auto`).
 - **What is wrong:**
@@ -551,7 +551,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **What is wrong:** the same project status looks different in Projects table (a 6px `tint-*-dot`) and in the drawer.
 - **Fix:** `StatusDot` with `done`, `pending` or `waiting`. Type the command menu status as `{ label, state }`.
 
-**21. HeroProduct: a scrollbar shows in the inert picture, and the top bar has no sidebar trigger at 375.**
+**21. HeroProduct: a scrollbar shows in the inert picture, and the top bar has no sidebar trigger at 375. (Fixed in ticket 28)**
 - **Bug (October item, still open).** Checkable by a **browser** check: a visible `[data-slot=scroll-area-scrollbar]` inside `[inert]`.
 - **Where:** `blocks/hero/hero-product.tsx:49` (the inert wrapper) and `:17-19` (the header holds only `<h3>Overview</h3>`).
 - **What is wrong:** measured on `/view/hero-product` at 1280: two vertical scrollbars, 6×314 and visible. The landing page hides its own copy; the block does not. At 375 the sidebar is a closed drawer, and nothing in the header hints at navigation.
@@ -961,7 +961,7 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **Why it matters:** ADR 0014 keeps buttons Kosmos under every preset, and these five are the landing's main actions.
 - **Fix:** render them through the Button so they carry its data attributes: `<Button variant="primary" size="lg" nativeButton={false} render={<Link href=… />}>`. That keeps client navigation, which is why the comment at `page.tsx:43` avoids `Button href`.
 
-#### 7. Landing showcase: screens scroll with `overflow-y-auto`, not ScrollArea
+#### 7. Landing showcase: screens scroll with `overflow-y-auto`, not ScrollArea (Fixed in ticket 28)
 
 - **Severity:** LOW. **Kind:** bug (kosmos-style, Overflow). **Checkable:** yes, code: `overflow-(x|y)-auto` in `components/site`. The style's detection table already lists it.
 - **Location:** `components/site/landing-showcase.tsx:130` (`landing-panel … overflow-x-hidden overflow-y-auto`) and `:51` (ProjectsScreen `overflow-y-auto`). This is the landing's own copy of 04 finding 13 (`blocks/showcase/showcase.tsx`).
@@ -1004,14 +1004,14 @@ Ranked by severity, then reach. **Kind** is **bug** or **taste**. **Checkable** 
 - **What is wrong:** `presetCss` (`lib/presets/index.ts:48-56`) also writes an `@theme inline` block (type weights, tracking, motion) and the component rules. A visitor pasting Console's CSS gets mono table heads and a framed inset, which the dialog never mentions.
 - **Fix:** "Ready palettes, radii and styles for the Kosmos tokens…"; dialog description "The preset you picked, its palette, radius, size and style, in light and dark."; CSS hint "Paste it after the Kosmos tokens in your global CSS."
 
-#### 13. Landing showcase: tabs are not wired to their panels, and its headings skip a level
+#### 13. Landing showcase: tabs are not wired to their panels, and its headings skip a level (Fixed in ticket 28)
 
 - **Severity:** LOW. **Kind:** bug. **Checkable:** yes, browser: every `[role=tab]` has an `aria-controls` that names a `[role=tabpanel]`; axe `heading-order` for the outline.
 - **Location:** `components/site/landing-showcase.tsx:123-131` (hand-made `role="tabpanel"` divs with `aria-label` and no `id`; `TabsTrigger` without a `TabsContent`, so Base UI sets no `aria-controls`); `:18` and `:22` (`AppSidebar headingLevel={4}` before the page's `<h3>`).
 - **What is wrong:** measured on `/`: the four tabs have `aria-controls` "-", and the panels have no `aria-labelledby`. At 1280 the outline under "Whole screens from the same blocks" (h2) runs h4 "Saved views", then h3 "Projects".
 - **Fix:** give each panel an `id` and pass it to its trigger, or render the panels as `TabsContent keepMounted` with the cross-fade classes. Pass `headingLevel={3}` to the sidebar and make the page title an `h3` after it, or make the sidebar labels non-headings in this picture.
 
-#### 14. Landing hero at 375: the picture's top bar holds only "Overview", with no sidebar trigger
+#### 14. Landing hero at 375: the picture's top bar holds only "Overview", with no sidebar trigger (Fixed in ticket 28)
 
 - **Severity:** LOW. **Kind:** taste. **Checkable:** no.
 - **Location:** `components/site/landing-hero-product.tsx:94-95`. This is the October hero item 2, still open, and the landing's copy of 04 finding 21's second half.
