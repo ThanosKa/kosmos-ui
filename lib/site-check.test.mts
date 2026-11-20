@@ -43,8 +43,8 @@ before(async () => {
 });
 
 after(async () => {
-  await browser.close();
-  server.close();
+  server?.close();
+  await browser?.close();
 });
 
 const run = (route: string, width = 375, checks?: Parameters<typeof checkPage>[4]) => checkPage(browser, base, route, { theme: 'light', width }, checks);

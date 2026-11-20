@@ -58,7 +58,7 @@ before(async () => {
 });
 
 after(async () => {
-  await browser.close();
+  await browser?.close();
 });
 
 test('chart.tsx names the Recharts selectors it targets', () => {

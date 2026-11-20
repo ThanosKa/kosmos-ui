@@ -34,7 +34,7 @@ before(async () => {
 });
 
 after(async () => {
-  await browser.close();
+  await browser?.close();
 });
 
 async function toastName(add: string) {
