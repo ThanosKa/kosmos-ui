@@ -397,6 +397,10 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    files: ['content/**/*.mdx/*.tsx'],
+    rules: { 'no-restricted-syntax': ['error', ...kosmosSelectors, ...overlayScrollSelectors, ...keyLikeSelectors] },
+  },
+  {
     files: ['registry/**/*.{ts,tsx}'],
     ignores: ['registry/**/tokens.*', 'registry/kosmos/styles/**'],
     rules: { 'no-restricted-syntax': ['error', ...registryRules, ...codeRules] },

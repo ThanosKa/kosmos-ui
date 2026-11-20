@@ -187,6 +187,25 @@ export const secretKey = 'acme_secret_demo_7Q2Kf9r3Vx';
 `,
   },
   {
+    name: 'a docs code sample holds no key-like string',
+    file: 'content/docs/components/example.mdx',
+    flagged: `
+# Copy field
+
+\`\`\`tsx
+<CopyField value="sk_live_51HxQ2eLkd93Jf8aZpR7vNc" />
+\`\`\`
+`,
+    message: 'Demo keys start with `acme_` and never contain `sk_`, `pk_` or `whsec_`, which push protection reads as real keys (kosmos-style, demo-world.md, API).',
+    allowed: `
+# Copy field
+
+\`\`\`tsx
+<CopyField value="acme_secret_demo_7Q2Kf9r3Vx" />
+\`\`\`
+`,
+  },
+  {
     name: 'a logo takes its brand color on the mark only',
     file: 'registry/kosmos/blocks/example/example.tsx',
     flagged: `
