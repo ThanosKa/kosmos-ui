@@ -356,7 +356,7 @@ function KanbanColumnView({
   const tone = column.tone ?? 'muted';
   const Icon = column.icon;
   return (
-    <section data-slot="kanban-column" aria-labelledby={headingId} className="box-content flex max-h-full w-72 shrink-0 flex-col">
+    <section data-slot="kanban-column" aria-labelledby={headingId} className="box-content flex max-h-full w-(--kanban-column) shrink-0 flex-col">
       {/* `relative` anchors the `sr-only` labels here, so they cannot escape the board's scroll clip. */}
       <header className="relative flex h-11 shrink-0 items-center gap-2 ps-3.5 pe-2">
         {Icon ? (
@@ -394,10 +394,10 @@ function KanbanColumnView({
       <ScrollArea
         focusable={false}
         className="min-h-0 flex-1 rounded-none"
-        viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0"
+        viewportClassName="overscroll-y-contain data-has-overflow-y:pe-0 [&>[data-slot=scroll-area-content]]:min-w-0!"
       >
         <SortableContext id={column.id} items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-          <div ref={setNodeRef} className="flex min-h-20 w-72 flex-col gap-2 px-3 py-1">
+          <div ref={setNodeRef} className="flex min-h-20 w-full flex-col gap-2 px-3 py-1">
             {loading ? (
               <>
                 <Skeleton className="h-24 rounded-2xl" />
@@ -652,7 +652,7 @@ function KanbanBoard({
     <div
       data-slot="kanban-board"
       aria-busy={loading || undefined}
-      className={cn('flex min-h-0 w-full min-w-0 flex-col', className)}
+      className={cn('@container flex min-h-0 w-full min-w-0 flex-col', className)}
       {...props}
     >
       <DndContext
@@ -671,7 +671,7 @@ function KanbanBoard({
         onDragCancel={handleDragCancel}
       >
         <ScrollArea className="min-h-0 flex-1 rounded-none" viewportClassName="[&>[data-slot=scroll-area-content]]:h-full">
-          <div className="flex h-full w-max items-stretch divide-x divide-border">
+          <div className="flex h-full w-max items-stretch divide-x divide-border [--kanban-column:min(18rem,calc(100cqw-3.5rem))]">
             {columns.map((column) => (
               <KanbanColumnView
                 key={column.id}

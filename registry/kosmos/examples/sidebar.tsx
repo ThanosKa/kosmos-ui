@@ -2,6 +2,7 @@
 
 import type * as React from 'react';
 import { BarChart3, Folder, Home, Inbox, LifeBuoy, LogOut, Plus, Settings, UserRound, Users } from 'lucide-react';
+import { DataSetPreview } from '@/components/preview/data-set-preview';
 import { OverlayStage } from '@/components/preview/overlay-stage';
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
@@ -32,24 +33,61 @@ import {
   type SidebarWorkspace,
 } from '@/registry/kosmos/ui/sidebar';
 
-const pages = [
-  { label: 'Home', icon: Home, active: true },
-  { label: 'Inbox', icon: Inbox, count: 12 },
-];
+type SidebarData = {
+  pages: { label: string; count?: number | string }[];
+  reports: string[];
+  projects: string[];
+  workspaces: SidebarWorkspace[];
+  user: { name: string; email?: string; initials: string; avatar?: string };
+};
 
-const reports = ['Revenue', 'Retention', 'Funnels', 'Signups by first event, platform and plan'];
-
-const projects = ['Q3 Roadmap', 'Billing revamp', 'Reconcile September payouts with the bank export'];
+const pageIcons = { Home, Inbox };
 
 // eslint-disable-next-line @next/next/no-img-element
 const workspaceLogo = (id: string) => <img src={`/logos/${id}.svg`} alt="" />;
 
-const workspaces: SidebarWorkspace[] = [
-  { id: 'acme', name: 'Acme', description: 'Scale plan', logo: workspaceLogo('acme') },
-  { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan', logo: workspaceLogo('acme-staging') },
-];
+const demoData: SidebarData = {
+  pages: [{ label: 'Home' }, { label: 'Inbox', count: 12 }],
+  reports: ['Revenue', 'Retention', 'Funnels', 'Signups by first event, platform and plan'],
+  projects: ['Q3 Roadmap', 'Billing revamp', 'Reconcile September payouts with the bank export'],
+  workspaces: [
+    { id: 'acme', name: 'Acme', description: 'Scale plan', logo: workspaceLogo('acme') },
+    { id: 'acme-staging', name: 'Acme Staging', description: 'Free plan', logo: workspaceLogo('acme-staging') },
+  ],
+  user: { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' },
+};
 
-const user = { name: 'Lena Park', email: 'lena@acme.example', initials: 'LP', avatar: '/avatars/lena.jpg' };
+const worstData: SidebarData = {
+  pages: [{ label: 'Home' }, { label: 'Inbox', count: '12,480' }],
+  reports: [
+    'Revenue',
+    'Retention cohorts by plan, platform and signup month',
+    'دعم اللغة العربية في لوحة التحكم',
+    '日本語のドキュメントと価格表',
+    '🚀 Launch checklist',
+    'Q',
+  ],
+  projects: [
+    'Reconcile-September-payouts-with-the-bank-export-for-every-region',
+    'Aleksandra Wiśniewska-Kowalczyk onboarding for Copperline Bank, Ironbark Logistics and Northwind Industries',
+    '🚀 日本語のプロジェクト',
+    'X',
+  ],
+  workspaces: [
+    {
+      id: 'northwind',
+      name: 'Northwind Industries Holdings, Copperline Bank server events and Ironbark Logistics',
+      description: 'Enterprise plan with 1,284,000 members',
+      logo: workspaceLogo('acme'),
+    },
+    { id: 'jp', name: '株式会社ノースウィンド', description: 'プロ', logo: workspaceLogo('acme-staging') },
+  ],
+  user: {
+    name: 'Aleksandra Wiśniewska-Kowalczyk',
+    email: 'bartholomew.fitzgerald@northwind-industries-holdings.example.com',
+    initials: 'AW',
+  },
+};
 
 type Pinned = 'submenu' | 'workspace' | 'user';
 
@@ -61,12 +99,15 @@ function SidebarBody({
   activePage = 'Home',
   reportsOpen = false,
   menus = true,
+  data = demoData,
 }: {
   pinned?: Pinned;
   activePage?: string;
   reportsOpen?: boolean;
   menus?: boolean;
+  data?: SidebarData;
 }) {
+  const { pages, reports, projects, workspaces, user } = data;
   const pin = (menu: Pinned) => (pinned === menu ? { open: true, modal: false } : {});
   return (
     <>
@@ -90,7 +131,9 @@ function SidebarBody({
       <SidebarContent render={<nav aria-label="Main" />}>
         <SidebarGroup>
           <SidebarMenu>
-            {pages.map(({ label, icon: Icon, count }) => (
+            {pages.map(({ label, count }) => {
+              const Icon = pageIcons[label as keyof typeof pageIcons] ?? Folder;
+              return (
               <SidebarMenuItem key={label}>
                 <SidebarMenuButton href={`/${label.toLowerCase()}`} isActive={label === activePage} tooltip={label} onClick={stay}>
                   <Icon aria-hidden />
@@ -98,7 +141,8 @@ function SidebarBody({
                   {count ? <SidebarMenuBadge>{count}</SidebarMenuBadge> : null}
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            ))}
+              );
+            })}
             <SidebarMenuItem>
               <SidebarSubmenu label="Reports" defaultOpen={reportsOpen} popoverOpen={pinned === 'submenu' ? true : undefined}>
                 <SidebarSubmenuTrigger isActive={reports.includes(activePage)}>
@@ -194,11 +238,11 @@ function PageHeader({ title }: { title: string }) {
 const frame = 'min-h-0 overflow-hidden rounded-xl border border-transparent shadow-card';
 
 /** A collapsed, icons-only shell with one menu pinned open beside the column. Below 768px it is a closed drawer. */
-function IconShell({ pinned, activePage }: { pinned: Pinned; activePage?: string }) {
+function IconShell({ pinned, activePage, data }: { pinned: Pinned; activePage?: string; data?: SidebarData }) {
   return (
     <SidebarProvider defaultOpen={false} storageKey={false} keyboardShortcut={false} className={`${frame} h-40 md:h-[30rem]`}>
       <Sidebar collapsible="icon">
-        <SidebarBody pinned={pinned} activePage={activePage} />
+        <SidebarBody pinned={pinned} activePage={activePage} data={data} />
       </Sidebar>
       <SidebarResizeHandle />
       <SidebarInset render={<div />}>
@@ -209,6 +253,71 @@ function IconShell({ pinned, activePage }: { pinned: Pinned; activePage?: string
 }
 
 export default function SidebarPreview() {
+  return <DataSetPreview demo={<Demo />} worst={<Worst />} />;
+}
+
+function Worst() {
+  const long = worstData.reports[1];
+  return (
+    <PreviewStack>
+      <PreviewSection title="Long labels, a huge count, emoji and non-Latin text, expanded">
+        <SidebarProvider storageKey={false} keyboardShortcut={false} className={`${frame} h-[40rem]`}>
+          <Sidebar collapsible="icon">
+            <SidebarBody activePage={long} reportsOpen data={worstData} />
+          </Sidebar>
+          <SidebarResizeHandle />
+          <SidebarInset render={<div />}>
+            <PageHeader title={long} />
+          </SidebarInset>
+        </SidebarProvider>
+      </PreviewSection>
+
+      <PreviewSection title="Icon mode, with the long names in tooltips and the menus open beside the column">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <IconShell pinned="submenu" activePage={long} data={worstData} />
+          <IconShell pinned="workspace" data={worstData} />
+          <IconShell pinned="user" data={worstData} />
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Expanded: the workspace switcher and the user menu open">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {(['workspace', 'user'] as const).map((pinned) => (
+            <SidebarProvider key={pinned} storageKey={false} keyboardShortcut={false} className={`${frame} h-40 md:h-[40rem]`}>
+              <Sidebar collapsible="icon">
+                <SidebarBody pinned={pinned} data={worstData} />
+              </Sidebar>
+              <SidebarResizeHandle />
+              <SidebarInset render={<div />}>
+                <PageHeader title="Home" />
+              </SidebarInset>
+            </SidebarProvider>
+          ))}
+        </div>
+      </PreviewSection>
+
+      <PreviewSection title="Phone: the sidebar as a drawer">
+        <OverlayStage label="open, below 768px" className="h-[40rem] max-w-sm">
+          {(container) => (
+            <Drawer open modal={false} swipeDirection="left">
+              <DrawerContent
+                container={container}
+                initialFocus={false}
+                showCloseButton={false}
+                className="bg-sidebar text-sidebar-foreground data-[swipe-direction=left]:w-72 data-[swipe-direction=left]:max-w-[calc(100%-1rem)] sm:data-[swipe-direction=left]:w-72"
+              >
+                <DrawerTitle className="sr-only">Sidebar</DrawerTitle>
+                <SidebarBody activePage={long} reportsOpen data={worstData} />
+              </DrawerContent>
+            </Drawer>
+          )}
+        </OverlayStage>
+      </PreviewSection>
+    </PreviewStack>
+  );
+}
+
+function Demo() {
   return (
     <PreviewStack>
       <PreviewSection title="App shell, collapsing to icons (a drawer below 768px)">

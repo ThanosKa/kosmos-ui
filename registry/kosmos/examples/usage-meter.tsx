@@ -75,7 +75,7 @@ function Normal() {
       <PreviewSection title="Panel open">
         <OverlayStageGrid>
           {stages.map((stage) => (
-            <OverlayStage key={stage.label} label={stage.label} className={stageClass}>
+            <OverlayStage whileVisible key={stage.label} label={stage.label} className={stageClass}>
               {(container) => (
                 <UsageMeter
                   label={stage.title}
@@ -135,7 +135,7 @@ function Worst() {
       <PreviewSection title="Panel open">
         <OverlayStageGrid>
           {worstStages.map((stage) => (
-            <OverlayStage key={stage.label} label={stage.label} className={stageClass}>
+            <OverlayStage whileVisible key={stage.label} label={stage.label} className={stageClass}>
               {(container) => <UsageMeter label={stage.title} breakdown={stage.breakdown} limit={stage.limit} open modal={false} container={container} />}
             </OverlayStage>
           ))}

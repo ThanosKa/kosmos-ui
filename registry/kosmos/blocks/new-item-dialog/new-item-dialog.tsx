@@ -307,7 +307,7 @@ function NewItemDialog({
               <Textarea
                 name="description"
                 placeholder="What customers asked for, and why it matters"
-                className="max-h-40 wrap-anywhere"
+                className="max-h-40"
                 value={values.description}
                 onValueChange={(value) => setField('description', String(value))}
               />

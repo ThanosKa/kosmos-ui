@@ -54,7 +54,7 @@ function Normal() {
     <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
-          <OverlayStage label="bottom, center (default)" className={stageClass}>
+          <OverlayStage whileVisible label="bottom, center (default)" className={stageClass}>
             {(container) => (
               <div className="flex justify-center pt-4">
                 <Popover open>
@@ -79,7 +79,7 @@ function Normal() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="top, end" className={stageClass}>
+          <OverlayStage whileVisible label="top, end" className={stageClass}>
             {(container) => (
               <div className="flex h-full items-end justify-end pb-4">
                 <Popover open>
@@ -98,7 +98,7 @@ function Normal() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="right, start" className={stageClass}>
+          <OverlayStage whileVisible label="right, start" className={stageClass}>
             {(container) => (
               <div className="flex items-start pt-4">
                 <Popover open>
@@ -122,7 +122,7 @@ function Normal() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="long text, no room below (flips up)" className={stageClass}>
+          <OverlayStage whileVisible label="long text, no room below (flips up)" className={stageClass}>
             {(container) => (
               <div className="flex h-full items-end justify-center pb-4">
                 <Popover open>
@@ -141,7 +141,7 @@ function Normal() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more content than fits, at the top" className={stageClass}>
+          <OverlayStage whileVisible label="more content than fits, at the top" className={stageClass}>
             {(container) => (
               <div className="pt-4">
                 <ChangesPopover container={container} />
@@ -149,7 +149,7 @@ function Normal() {
             )}
           </OverlayStage>
 
-          <OverlayStage label="more content than fits, scrolled halfway" className={stageClass}>
+          <OverlayStage whileVisible label="more content than fits, scrolled halfway" className={stageClass}>
             {(container) => (
               <div className="pt-4">
                 <ChangesPopover container={container} scrolled />
@@ -187,7 +187,7 @@ function Worst() {
   return (
     <PreviewSection title="Long text, an unbreakable link, a long trigger">
       <OverlayStageGrid>
-        <OverlayStage inert label="long title and description" className={stageClass}>
+        <OverlayStage whileVisible inert label="long title and description" className={stageClass}>
           {(container) => (
             <div className="flex justify-center pt-4">
               <Popover open>
