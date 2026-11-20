@@ -3,6 +3,17 @@ import { LogoMarquee } from '@/registry/kosmos/blocks/logo-marquee/logo-marquee'
 
 const frame = 'w-full overflow-hidden rounded-xl border border-transparent bg-background py-10 shadow-card';
 
+function dotLogo(name: string) {
+  return (
+    <span className="flex items-center gap-2">
+      <svg aria-hidden viewBox="0 0 8 8" className="size-2">
+        <circle cx="4" cy="4" r="4" fill="currentColor" />
+      </svg>
+      {name}
+    </span>
+  );
+}
+
 const stack = ['Base UI', 'Tailwind CSS', 'React', 'Next.js', 'shadcn CLI'].map((name) => ({ name }));
 
 export default function LogoMarqueePreview() {
@@ -19,10 +30,10 @@ export default function LogoMarqueePreview() {
           <LogoMarquee
             variant="static"
             logos={[
-              { name: 'Fernhill Books', color: 'var(--tint-blue-solid)', href: '#fernhill' },
-              { name: 'Brightloop Fitness', color: 'var(--tint-amber-solid)', href: '#brightloop' },
-              { name: 'Copperline Bank', color: 'var(--tint-green-solid)', href: '#copperline' },
-              { name: 'No color given', href: '#plain' },
+              { name: 'Fernhill Books', logo: dotLogo('Fernhill Books'), color: 'var(--tint-blue-solid)', href: '#fernhill' },
+              { name: 'Brightloop Fitness', logo: dotLogo('Brightloop Fitness'), color: 'var(--tint-amber-solid)', href: '#brightloop' },
+              { name: 'Copperline Bank', logo: dotLogo('Copperline Bank'), color: 'var(--tint-green-solid)', href: '#copperline' },
+              { name: 'No color given', logo: dotLogo('No color given'), href: '#plain' },
             ]}
           />
         </div>

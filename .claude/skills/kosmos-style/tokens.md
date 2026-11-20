@@ -59,8 +59,9 @@ In their own labelled blocks after the chart colors, the same under every preset
 | `tint-<hue>` (`gray`, `blue`, `green`, `amber`, `red`, `violet`) | The fill of a Badge hue and of a tinted Alert (filled by default), a Banner and a Callout | Light: L 0.96 to 0.97, chroma 0.03 to 0.04 (pale, clearly tinted). Dark: L 0.24, chroma 0.055 to 0.077 (deep, saturated); gray chroma 0 |
 | `tint-<hue>-foreground` | Text on the fill, and on `background` and `card` in an outline Alert, and the icon | Light: L 0.5 to 0.52, chroma 0.14 to 0.2 (vivid, darker). Dark: L 0.65 to 0.72, chroma 0.15 to 0.2 (amber 0.721 0.17 60, red 0.651 0.198 22, blue 0.668 0.148 250, green 0.72 0.18 146, violet 0.7 0.15 300); the amber, red and blue fills and texts are the maintainer's reference colors |
 | `tint-<hue>-dot` | The dot of `StatusDot` | Light L 0.62, chroma 0.16 to 0.2; dark the same as `-foreground`; 3:1 on the fill and on `background` (`pnpm test`) |
-| `tint-<hue>-border` | The edge of an outline Alert and the Banner's bottom divider; a linked Badge's hover fill | Derived: light L 0.84 to 0.85, chroma 0.07 to 0.09; dark L 0.4 to 0.42, chroma 0.1 to 0.12 (a dark-mid step). A decorative edge, not held to 3:1 |
-| `tint-<hue>-solid` (`blue`, `green`, `amber`, `red`, `violet`) | The logo marquee's sample colors | Derived: L 0.5 in both modes, chroma 0.17 (amber 0.12, hue 58) |
+| `tint-<hue>-border` | The edge of an outline Alert and the Banner's bottom divider | Derived: light L 0.84 to 0.85, chroma 0.07 to 0.09; dark L 0.4 to 0.42, chroma 0.1 to 0.12 (a dark-mid step). A decorative edge, not held to 3:1 |
+| `tint-<hue>-hover` | The hover fill of a linked Badge hue and of a Banner action on its tint | Derived: a step from `tint-<hue>` toward `-border`: light L 0.924 to 0.94, chroma 0.042 to 0.055; dark L 0.256 to 0.289. `tint-<hue>-foreground` reads at 4.5:1 or more on it in both modes (`pnpm test`), which `-border` does not |
+| `tint-<hue>-solid` (`blue`, `green`, `amber`, `red`, `violet`) | The logo marquee's sample colors, for the mark only | Derived: L 0.5 in both modes, chroma 0.17 (amber 0.12, hue 58) |
 
 ## Shadows
 

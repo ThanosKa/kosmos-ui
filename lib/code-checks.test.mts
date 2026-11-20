@@ -122,6 +122,22 @@ export const secretKey = 'sk_live_51HxQ2eLkd93Jf8aZpR7vNc';
 export const secretKey = 'acme_secret_demo_7Q2Kf9r3Vx';
 `,
   },
+  {
+    name: 'a logo takes its brand color on the mark only',
+    file: 'registry/kosmos/blocks/example/example.tsx',
+    flagged: `
+export function Brand() {
+  return <li className="text-muted-foreground hover:text-(--logo-color,var(--foreground))">Fernhill Books</li>;
+}
+`,
+    message:
+      'A logo takes `--logo-color` on its mark only (`[&_:is(svg,img)]:text-(--logo-color)`); the name stays `text-foreground`, since a brand color can fall below 4.5:1 (kosmos-style, Contrast).',
+    allowed: `
+export function Brand() {
+  return <li className="text-muted-foreground hover:text-foreground hover:[&_:is(svg,img)]:text-(--logo-color,var(--foreground))">Fernhill Books</li>;
+}
+`,
+  },
 ];
 
 const eslint = new ESLint({ cwd: process.cwd() });

@@ -68,7 +68,7 @@ function ChartContainer({
         style={{ ...colorVars, ...style }}
         className={cn(
           'flex aspect-video w-full justify-center text-caption tabular-nums',
-          '[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground',
+          '[&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground',
           '[&_.recharts-cartesian-grid_line]:stroke-border',
           '[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border',
           '[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-accent',

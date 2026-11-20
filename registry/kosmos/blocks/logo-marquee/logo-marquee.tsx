@@ -11,7 +11,7 @@ type LogoMarqueeLogo = {
   name: string;
   /** The mark, such as an `<svg>` or an `<img alt="">`. Decorative: `name` names it. */
   logo?: React.ReactNode;
-  /** The brand color the logo turns to on hover or focus, any CSS color. Without one it turns to the text color. */
+  /** The brand color the mark turns to on hover or focus, any CSS color. The name turns to the text color, so it stays readable. Reaches an `<svg>` that draws in `currentColor`. */
   color?: string;
   /** Makes the logo a link, which also brings it into the keyboard's reach. */
   href?: string;
@@ -59,7 +59,7 @@ const driftKeyframes = '@keyframes kosmos-marquee-drift{to{transform:translateX(
  * An `<svg>` or `<img>` is 20px tall at its own aspect ratio, unless it sets a height class of its own.
  */
 const itemClass =
-  "flex min-h-8 shrink-0 items-center px-5 text-center text-title text-balance text-muted-foreground grayscale transition-[color,filter] hover:text-(--logo-color,var(--foreground)) hover:grayscale-0 focus-within:text-(--logo-color,var(--foreground)) focus-within:grayscale-0 @2xl:px-7 [&_:is(svg,img)]:w-auto [&_:is(svg,img)]:shrink-0 [&_:is(svg,img):not([class*='h-'])]:h-5";
+  "flex min-h-8 shrink-0 items-center px-5 text-center text-title text-balance text-muted-foreground grayscale transition-[color,filter] hover:text-foreground hover:grayscale-0 hover:[&_:is(svg,img)]:text-(--logo-color,var(--foreground)) focus-within:text-foreground focus-within:grayscale-0 focus-within:[&_:is(svg,img)]:text-(--logo-color,var(--foreground)) @2xl:px-7 [&_:is(svg,img)]:w-auto [&_:is(svg,img)]:shrink-0 [&_:is(svg,img):not([class*='h-'])]:h-5";
 
 function LogoItems({ logos, interactive }: { logos: LogoMarqueeLogo[]; interactive: boolean }) {
   return logos.map(({ name, logo, color, href }, index) => {
