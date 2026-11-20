@@ -355,13 +355,21 @@ type NavbarSearchProps = Omit<React.ComponentProps<'button'>, 'children'> & {
   shortcut?: string[];
 };
 
+const keyNames: Record<string, string> = { '⌘': 'Meta', '⌃': 'Control', '⌥': 'Alt', '⇧': 'Shift', Ctrl: 'Control', Cmd: 'Meta' };
+
+/** `['⌘', 'K']` becomes `Meta+K Control+K`: a Command hint also answers to Control on Windows and Linux. */
+function keyShortcuts(keys: string[]) {
+  const mac = keys.map((key) => keyNames[key] ?? key.toUpperCase()).join('+');
+  return keys.some((key) => keyNames[key] === 'Meta') ? `${mac} ${mac.replace('Meta', 'Control')}` : mac;
+}
+
 /** A search field look-alike that opens a search, such as the command menu. Takes the width of its slot. */
 function NavbarSearch({ children = 'Search…', shortcut, className, ...props }: NavbarSearchProps) {
   return (
     <Button
       variant="secondary"
       data-slot="navbar-search"
-      aria-keyshortcuts={shortcut ? 'Meta+K Control+K' : undefined}
+      aria-keyshortcuts={shortcut ? keyShortcuts(shortcut) : undefined}
       className={cn('w-full justify-start ps-2.5 pe-1.5 font-normal text-muted-foreground', className)}
       {...props}
     >
@@ -440,7 +448,8 @@ function NavbarBanner({
         variant="ghost"
         size="icon-sm"
         aria-label={dismissLabel}
-        onClick={() => {
+        onClick={(event) => {
+          event.currentTarget.closest('[data-slot="navbar"]')?.querySelector<HTMLElement>('[data-slot="navbar-home"]')?.focus();
           setDismissed(true);
           onDismiss?.();
         }}
@@ -582,6 +591,7 @@ function Navbar({
           ) : null}
           <Link
             href={homeHref}
+            data-slot="navbar-home"
             className={cn(
               '-mx-1 flex min-w-0 items-center gap-2 rounded-lg px-1 py-1 text-body font-semibold whitespace-nowrap text-foreground [&>:first-child]:shrink-0',
               focusRing,

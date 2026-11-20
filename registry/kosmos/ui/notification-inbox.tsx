@@ -437,18 +437,21 @@ function NotificationItemContent({ className, ...props }: React.ComponentProps<'
 
 /**
  * The sentence, and the link that opens the notification: it stretches over the whole row. Wrap names and the object
- * in `<strong>`. Renders an `<a>`; `render` swaps in a router link.
+ * in `<strong>`. Renders an `<a>` with an `href` and a `<button>` without one; `render` swaps in a router link.
  */
 function NotificationItemTitle({ className, render, children, ...props }: useRender.ComponentProps<'a'>) {
   const unread = React.use(ItemUnread);
+  const link = props.href !== undefined;
   return useRender({
-    defaultTagName: 'a',
+    defaultTagName: link ? 'a' : 'button',
     render,
     props: mergeProps<'a'>(
       {
+        ...(link ? null : { type: 'button' as never }),
         className: cn(
           'block text-body text-pretty text-muted-foreground [&_strong]:font-medium [&_strong]:text-foreground',
           'after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-ring',
+          link ? null : 'w-full text-start',
           className,
         ),
       },

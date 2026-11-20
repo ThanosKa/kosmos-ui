@@ -541,9 +541,11 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
                   <span title={task.title} className="line-clamp-2 text-body text-pretty wrap-break-word text-foreground">{task.title}</span>
                   {task.detail ? <span title={task.detail} className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
                 </div>
-                <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction?.({ icon: Icon, ...task })}>
-                  {task.action}
-                </Button>
+                {onTaskAction ? (
+                  <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction({ icon: Icon, ...task })}>
+                    {task.action}
+                  </Button>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -836,6 +838,8 @@ type DashboardNotification = {
   /** The kind, as a small icon on the avatar: a mention, a quota, a won deal. */
   icon?: React.ReactNode;
   unread?: boolean;
+  /** Where the notification opens. Leave it out and the title is a button that calls `onNotificationOpen`. */
+  href?: string;
 };
 
 type InboxTab = 'all' | 'unread' | 'archive';
@@ -874,6 +878,21 @@ function HeaderInbox({
     return next;
   };
 
+  // A row that leaves the list, or the button that hides itself, takes focus with it, so focus moves to the next row,
+  // else the previous one, else the selected tab.
+  const focusAfter = React.useRef<{ inbox: Element | null; rowId?: string } | null>(null);
+  React.useEffect(() => {
+    const request = focusAfter.current;
+    if (!request) return;
+    focusAfter.current = null;
+    const row = request.rowId ? request.inbox?.querySelector<HTMLElement>(`[data-notification-id="${CSS.escape(request.rowId)}"] [data-slot="notification-item-title"]`) : null;
+    (row ?? request.inbox?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]'))?.focus();
+  }, [read, archived]);
+  const focusFrom = (element: Element, id?: string) => {
+    const index = shown.findIndex((item) => item.id === id);
+    focusAfter.current = { inbox: element.closest('[data-slot="notification-inbox-content"]'), rowId: id ? (shown[index + 1] ?? shown[index - 1])?.id : undefined };
+  };
+
   return (
     <NotificationInbox open={open} onOpenChange={setOpen}>
       <NotificationInboxTrigger count={unread} />
@@ -882,7 +901,14 @@ function HeaderInbox({
           <NotificationInboxTitle>Notifications</NotificationInboxTitle>
           {unread > 0 ? (
             <NotificationInboxActions>
-              <Button variant="ghost" size="sm" onClick={() => setRead(new Set(notifications.map((item) => item.id)))}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(event) => {
+                  focusFrom(event.currentTarget);
+                  setRead(new Set(notifications.map((item) => item.id)));
+                }}
+              >
                 <CheckCheck data-icon="inline-start" aria-hidden />
                 Mark all as read
               </Button>
@@ -904,7 +930,7 @@ function HeaderInbox({
                   {shown
                     .filter((item) => item.day === day)
                     .map((item) => (
-                      <NotificationItem key={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
+                      <NotificationItem key={item.id} data-notification-id={item.id} unread={!read.has(item.id) && !archived.has(item.id)}>
                         <NotificationItemMedia icon={item.icon}>
                           <Avatar className={item.avatar.square ? 'rounded-md' : undefined}>
                             {item.avatar.src ? <AvatarImage src={item.avatar.src} alt="" /> : null}
@@ -913,9 +939,8 @@ function HeaderInbox({
                         </NotificationItemMedia>
                         <NotificationItemContent>
                           <NotificationItemTitle
-                            href={`#${item.id}`}
-                            onClick={(event) => {
-                              event.preventDefault();
+                            href={item.href}
+                            onClick={() => {
                               if (!read.has(item.id)) setRead(toggle(read, item.id));
                               onNotificationOpen?.(item);
                             }}
@@ -930,14 +955,18 @@ function HeaderInbox({
                             {archived.has(item.id) ? null : (
                               <NotificationItemQuickAction
                                 label={read.has(item.id) ? 'Mark as unread' : 'Mark as read'}
-                                onClick={() => setRead(toggle(read, item.id))}
+                                onClick={(event) => {
+                                  if (tab === 'unread') focusFrom(event.currentTarget, item.id);
+                                  setRead(toggle(read, item.id));
+                                }}
                               >
                                 {read.has(item.id) ? <Mail /> : <Check />}
                               </NotificationItemQuickAction>
                             )}
                             <NotificationItemQuickAction
                               label={archived.has(item.id) ? 'Move to inbox' : 'Archive'}
-                              onClick={() => {
+                              onClick={(event) => {
+                                focusFrom(event.currentTarget, item.id);
                                 setArchived(toggle(archived, item.id));
                                 setRead((current) => new Set(current).add(item.id));
                               }}
@@ -999,7 +1028,7 @@ function DashboardCrmPage({
 }: DashboardCrmPageProps) {
   return (
     <SidebarProvider {...frame} className={cn('h-svh min-h-0', frame?.className)}>
-      <AppSidebar activeItem="overview" {...sidebar} />
+      <AppSidebar activeItem="sales" {...sidebar} />
       <SidebarResizeHandle />
       <SidebarInset className="min-h-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">

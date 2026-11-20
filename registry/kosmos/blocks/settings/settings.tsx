@@ -187,11 +187,18 @@ function SettingsCard({
         </p>
         <div className="ms-auto flex items-center gap-2">
           {dirty && !saving ? (
-            <Button type="button" variant="ghost" onClick={onReset}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={(event) => {
+                event.currentTarget.parentElement?.querySelector<HTMLElement>('[type="submit"]')?.focus();
+                onReset();
+              }}
+            >
               Discard
             </Button>
           ) : null}
-          <Button type="submit" variant="primary" disabled={!dirty || saving}>
+          <Button type="submit" variant="primary" disabled={!dirty || saving} focusableWhenDisabled>
             {saving ? <LoaderCircle aria-hidden data-icon="inline-start" className={spinner} /> : null}
             {saving ? 'Saving' : saveLabel}
           </Button>
@@ -584,6 +591,7 @@ function SettingsPage({
                 max={100}
                 step={5}
                 format={{ style: 'unit', unit: 'percent' }}
+                locale="en-US"
                 value={notificationForm.values.usageAlert}
                 onValueChange={(value) => notificationForm.setValue('usageAlert', value ?? notificationForm.values.usageAlert)}
               />

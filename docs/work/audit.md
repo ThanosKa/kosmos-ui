@@ -24,7 +24,7 @@ Ticket 07 merged the findings by cause into tickets 15 to 31 in `docs/work/ticke
 | 23 | Timing and reduced motion | C6, C11, C12, D13 | None | Notification inbox (dot), Sonner demo, Flickering grid, block viewer, lint |
 | 24 | Names and announcements | C7, C8, B4, B12 (Run timeline), B15, B23 | 16 | Notification inbox, Command, Select, Popover examples, Settings, Run timeline, dashboards, Detail drawer, Auth forms, lint |
 | 25 | Pointer and keyboard paths | C10, C14, B6, B27 (Kanban radius) | None | Data table, Daily stacked bar chart, Flow chart, Kanban |
-| 26 | Block controls keep focus and do what they say | B8, B12, B17, B27 (current item, shortcut, locale, row heights) | None | Navbar, dashboards, Settings, Members, App sidebar, App sidebar demo, 500 example, lint |
+| 26 | Block controls keep focus and do what they say (Fixed in ticket 26) | B8, B12, B17, B27 (current item, shortcut, locale, row heights) | None | Navbar, dashboards, Settings, Members, App sidebar, App sidebar demo, 500 example, lint |
 | 27 | Status, change, charts and ranges in blocks | B7, B11, B18, B19, B20, B26 ("vs."), B27 (budget meter, eyebrow) | None | Analytics dashboard, Usage and Stats overview, Feature section, Command menu, Detail drawer, Bento, page header demo, `demo-world.md`, lint |
 | 28 | Showcase and hero pictures (Fixed in ticket 28) | B13, B21, L7, L13, L14, B27 (landmark, headings, page titles, HeroProduct props) | 16 | Showcase, HeroProduct, App sidebar (`navLabel`), landing showcase and hero, app sidebar previews, lint |
 | 29 | Preset styles and the Presets page | L1, L2, L3, L6, L10, L12, L15 | 15 | Iris and Night styles, preset test, Presets page, landing CTAs, lint |
@@ -45,7 +45,7 @@ Pairs that share no file, in an order that respects every blocker: 15 and 17; 16
 | --- | --- |
 | Components | 1: 19 · 2: 19 · 3: 20 · 4: 20 · 5: 20 · 6: 23 · 7: 24 · 8: 24 · 9: 18 · 10: 25 · 11: 23 · 12: 23 · 13: 22 · 14: 25 · 15: not doing · 16: not doing · 17: 20 |
 | Blocks | 1: 21 · 2: 21 (its Panel and Sidebar causes: 20) · 3: 21 · 4: 24 · 5: 19 · 6: 25 · 7: 27 · 8: 26 · 9: 22 · 10: 18 · 11: 27 · 12: 26 (Run timeline: 24) · 13: 28 · 14: 21 · 15: 24 · 16: not doing · 17: 26 · 18: 27 · 19: 27 · 20: 27 · 21: 28 · 22: 18 · 23: 24 · 24: 30 · 25: not doing (`toLowerCase`: 31) · 26: 31 ("vs." wording: 27) · 27: split, below |
-| Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: 26 · app page title size: 28 · mixed heights: 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: 31 · `NumberField` locale: 26 · copied code: not doing |
+| Blocks 27 | `dt` height: 21 · `aria-keyshortcuts`: Fixed in ticket 26 · duplicate landmark: 28 · heading levels: showcase 28, the rest not doing · wrong current item: Fixed in ticket 26 · app page title size: 28 · mixed heights: Fixed in ticket 26 · Kanban radius: 25 · drawer eyebrow: 27 · HeroProduct props: 28 · budget meter: 27 · Usage overview error state, New item dialog on Escape: not doing · demo world: 31 · `NumberField` locale: Fixed in ticket 26 · copied code: not doing |
 | Docs site | 1: 20 · 2: 30 · 3: 18 (check: 16) · 4: 30 · 5: 18 (check: 15) · 6: 30 · 7: 30 · 8: 30 · 9: 30 (changelog item; naming not doing) · 10: 30 · 11: 30 · 12: 30 · 13: 23 · 14: Kosmos style · 15: 31 |
 | Landing and Presets | 1: 29 · 2: 29 · 3: 29 · 4: 22 · 5: 18 · 6: 29 · 7: 28 · 8: 22 · 9: not doing · 10: 29 · 11: 19 · 12: 29 · 13: 28 · 14: 28 · 15: 29 · site check tool note: 15 |
 
@@ -418,7 +418,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 
 #### MEDIUM
 
-**8. Focus drops to `<body>` when the focused control removes or disables itself.**
+**8. Focus drops to `<body>` when the focused control removes or disables itself. (Fixed in ticket 26)**
 - **Bug.** Checkable by a **browser** check: activate the control from the keyboard, then assert `document.activeElement !== document.body`.
 - **Where:**
   - Navbar banner dismiss: `navbar.tsx:407` (`if (dismissed) return null`) and `:439-446`. **Measured:** focus lands on `BODY`.
@@ -462,7 +462,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** a picker in the page header reads as a filter for the whole page. Pick "Last 7 days" and the KPIs, Top pages and Countries still show 30 days.
 - **Fix:** key `kpis`, `sources`, `topPages` and `countries` by `Range`, as `traffic` already is, and build the descriptions from `ranges[range].label`. Or move the range control into the Traffic panel only.
 
-**12. Controls that do nothing, or report success that did not happen (the Run timeline part: Fixed in ticket 24; the rest: ticket 26).**
+**12. Controls that do nothing, or report success that did not happen (the Run timeline part: Fixed in ticket 24; the rest: Fixed in ticket 26).**
 - **Bug.** Partly checkable by a **code** check (`onClick={() => {}}` outside `examples/*` preview files, and `clipboard?.writeText` without `await`).
 - **Where:**
   - `blocks/app-sidebar/app-sidebar.tsx:262-270`: the Search button always renders with `onClick={onSearch}`, and `examples/app-sidebar-demo.tsx` passes none.
@@ -514,7 +514,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - Delete: build in the Settings `ConfirmDialog` ("Delete Fernhill Books?", `Cancel` / `Delete project`) and call `onAction` on confirm only.
 - **Triage:** not doing. Taste the style skill does not settle; the blocks hand the action to the app, and their JSDoc and docs ask it to confirm.
 
-**17. Notification titles are links that never navigate.**
+**17. Notification titles are links that never navigate. (Fixed in ticket 26)**
 - **Bug.** Not checkable.
 - **Where:** `dashboard-analytics.tsx:937-946`, `dashboard-crm.tsx:897-906`: `href={`#${item.id}`}` with `event.preventDefault()`.
 - **Why it matters:** the title is announced as a link, but Cmd-click opens `#mention`. Without `onNotificationOpen` it only marks the item as read.

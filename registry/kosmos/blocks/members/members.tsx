@@ -315,8 +315,8 @@ function Members({
             )}
           </Field>
           <div className="flex items-center gap-2 @lg:pt-6">
-            <RoleSelect aria-label="Role for new invites" className="h-8.5 w-32" value={inviteRole} onValueChange={setInviteRole} />
-            <Button type="submit" variant="primary" size="lg" disabled={!canSend || loading}>
+            <RoleSelect aria-label="Role for new invites" className="h-9 w-32" value={inviteRole} onValueChange={setInviteRole} />
+            <Button type="submit" variant="primary" size="lg" disabled={!canSend || loading} focusableWhenDisabled>
               {emails.length > 1 ? `Send ${emails.length} invites` : 'Send invite'}
             </Button>
           </div>
