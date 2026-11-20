@@ -68,6 +68,36 @@ export function Bar() {
 `,
   },
   {
+    name: 'a link styled as a button renders through Button',
+    file: 'components/site/example.tsx',
+    flagged: `
+import Link from 'next/link';
+import { buttonVariants } from '@/registry/kosmos/ui/button';
+
+export function Cta() {
+  return (
+    <Link href="/docs" className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+      Get started
+    </Link>
+  );
+}
+`,
+    message:
+      'Render a link as a button through `Button` (`<Button variant="primary" nativeButton={false} render={<Link href=… />}>`), so presets treat it as a Button (kosmos-style, Buttons).',
+    allowed: `
+import Link from 'next/link';
+import { Button } from '@/registry/kosmos/ui/button';
+
+export function Cta() {
+  return (
+    <Button variant="primary" size="lg" nativeButton={false} render={<Link href="/docs" />}>
+      Get started
+    </Button>
+  );
+}
+`,
+  },
+  {
     name: 'an icon-only button has an accessible name',
     file: 'registry/kosmos/blocks/example/example.tsx',
     flagged: `

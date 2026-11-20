@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { docsRoute, licenseUrl, proUrl } from '@/lib/shared';
 import { Pricing, type PricingPlan } from '@/registry/kosmos/blocks/pricing/pricing';
-import { buttonVariants } from '@/registry/kosmos/ui/button';
+import { Button } from '@/registry/kosmos/ui/button';
 
 const inlineLink =
   'rounded-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-[text-decoration-color] hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
@@ -24,9 +24,9 @@ export function LandingPricing({ componentCount, blockCount }: { componentCount:
         'Docs as Markdown for your agent',
       ],
       action: (
-        <Link href={`${docsRoute}/components`} className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
+        <Button variant="secondary" size="lg" nativeButton={false} render={<Link href={`${docsRoute}/components`} />}>
           Browse components
-        </Link>
+        </Button>
       ),
     },
     {
@@ -36,9 +36,9 @@ export function LandingPricing({ componentCount, blockCount }: { componentCount:
       period: 'updates included',
       features: ['Everything in Free', 'More variants in every block category', 'Templates you can run as whole apps', 'Installs with the same shadcn CLI'],
       action: (
-        <Link href={proUrl ?? `${docsRoute}/blocks`} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
+        <Button variant="primary" size="lg" nativeButton={false} render={<Link href={proUrl ?? `${docsRoute}/blocks`} />}>
           {proUrl ? 'Get Pro' : 'Browse the blocks'}
-        </Link>
+        </Button>
       ),
       featured: true,
     },
