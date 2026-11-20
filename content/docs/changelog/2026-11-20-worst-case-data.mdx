@@ -1,0 +1,14 @@
+---
+title: Components hold up with long names and big counts
+description: Badge truncates a long label, the Avatar group count grows with its number, Pagination keeps a long page size label on one line, and Tabs panels wrap unbreakable text.
+date: 2026-11-20
+---
+
+Four components now hold up with the worst data a real user can send.
+
+- [Badge](/docs/components/badge): a plain text label that outgrows the badge now ends in an ellipsis and shows its full text as a `title`. Before, the text was clipped with no sign, unless you added a `truncate` span.
+- [Avatar](/docs/components/avatar): the group count is as tall as the avatars and grows wider with its number, so "+1,284" is no longer cut off.
+- [Pagination](/docs/components/pagination): a long page size label now truncates and shows a `title`. Before, a translated label pushed the select past the edge of a narrow slot.
+- [Tabs](/docs/components/tabs): a tab panel next to a vertical list breaks a word with no spaces, such as a URL, instead of widening the page.
+
+To update, run the add command again for each item.

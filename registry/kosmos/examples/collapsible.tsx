@@ -1,6 +1,7 @@
 import { PreviewSection, PreviewStack } from '@/components/preview/preview-section';
 import { StateMatrix, previewState } from '@/components/preview/state-matrix';
 import { Collapsible, CollapsibleChevron, CollapsibleContent, CollapsibleTrigger } from '@/registry/kosmos/ui/collapsible';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['row, closed', 'row, open', 'small, closed', 'small, open'] as const;
 
@@ -23,9 +24,9 @@ function DetailsLabel() {
   );
 }
 
-export default function CollapsiblePreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Row and small triggers × states">
         <StateMatrix
           rows={rows}
@@ -91,23 +92,6 @@ export default function CollapsiblePreview() {
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Long label in a narrow slot">
-          <div className="w-full max-w-64">
-            <Collapsible defaultOpen className={card}>
-              <CollapsibleTrigger
-                variant="item"
-                className="h-auto min-h-9 w-full items-start justify-between gap-2 px-2 py-2 text-start whitespace-normal"
-              >
-                Event retention and deletion policy for projects that send from outside the European Union
-                <CollapsibleChevron />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="px-2 pb-2 text-small text-muted-foreground">
-                Events are kept for 13 months, then deleted.
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </PreviewSection>
-
         <PreviewSection title="Panel with no trigger, controlled open">
           <Collapsible open>
             <CollapsibleContent className="text-small text-muted-foreground">
@@ -116,6 +100,38 @@ export default function CollapsiblePreview() {
           </Collapsible>
         </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long label in a narrow slot">
+        <div className="w-full max-w-64">
+          <Collapsible defaultOpen className={card}>
+            <CollapsibleTrigger
+              variant="item"
+              className="h-auto min-h-9 w-full items-start justify-between gap-2 px-2 py-2 text-start whitespace-normal"
+            >
+              Event retention and deletion policy for projects that send from outside the European Union
+              <CollapsibleChevron />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-2 pb-2 text-small text-muted-foreground">
+              Events are kept for 13 months, then deleted.
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function CollapsiblePreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

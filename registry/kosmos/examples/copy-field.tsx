@@ -3,15 +3,16 @@ import { StateMatrix } from '@/components/preview/state-matrix';
 import { CopyField } from '@/registry/kosmos/ui/copy-field';
 import { Field, FieldDescription, FieldLabel } from '@/registry/kosmos/ui/field';
 import CopyFieldRevealed from '@/registry/kosmos/examples/copy-field-revealed';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const rows = ['plain', 'secret, hidden', 'secret, shown'] as const;
 const states = ['default', 'disabled'] as const;
 
 const key = 'acme_secret_demo_7Q2Kf9r3Vx';
 
-export default function CopyFieldPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Kinds × states">
         <StateMatrix
           rows={rows}
@@ -52,11 +53,6 @@ export default function CopyFieldPreview() {
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <PreviewSection title="Long value in a narrow slot">
-          <div className="w-56">
-            <CopyField aria-label="Ingest URL" label="ingest URL" value="https://ingest.acme.example/v1/projects/fernhill-books/events?batch=true" />
-          </div>
-        </PreviewSection>
       </div>
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -70,6 +66,27 @@ export default function CopyFieldPreview() {
           </Field>
         </PreviewSection>
       </div>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <>
+            <PreviewSection title="Long value in a narrow slot">
+        <div className="w-56">
+          <CopyField aria-label="Ingest URL" label="ingest URL" value="https://ingest.acme.example/v1/projects/fernhill-books/events?batch=true" />
+        </div>
+      </PreviewSection>
+    </>
+  );
+}
+
+export default function CopyFieldPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

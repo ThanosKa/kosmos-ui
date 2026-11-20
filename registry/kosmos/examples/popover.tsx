@@ -14,6 +14,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/registry/kosmos/ui/popover';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const stageClass = 'h-[22rem]';
 
@@ -48,9 +49,9 @@ function ChangesPopover({ container, scrolled }: { container: HTMLElement; scrol
   );
 }
 
-export default function PopoverPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
           <OverlayStage label="bottom, center (default)" className={stageClass}>
@@ -178,6 +179,50 @@ export default function PopoverPreview() {
           </Popover>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+function Worst() {
+  return (
+    <PreviewSection title="Long text, an unbreakable link, a long trigger">
+      <OverlayStageGrid>
+        <OverlayStage inert label="long title and description" className={stageClass}>
+          {(container) => (
+            <div className="flex justify-center pt-4">
+              <Popover open>
+                <PopoverTrigger render={<Button variant="secondary" className="max-w-48" />}>
+                  <Bell data-icon="inline-start" />
+                  <span className="truncate">Notifications for Copperline Bank server events</span>
+                </PopoverTrigger>
+                <PopoverContent container={container} initialFocus={false}>
+                  <PopoverHeader>
+                    <PopoverTitle>Turn on notifications for the Copperline Bank server events workspace?</PopoverTitle>
+                    <PopoverDescription>
+                      Get an email at bartholomew.fitzgerald@northwind-industries-holdings.example whenever someone assigns you a task or mentions you.
+                    </PopoverDescription>
+                  </PopoverHeader>
+                  <div className="flex justify-end gap-2">
+                    <PopoverClose render={<Button variant="secondary" size="sm" />}>Not now</PopoverClose>
+                    <Button variant="primary" size="sm">
+                      Turn on
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+        </OverlayStage>
+      </OverlayStageGrid>
+    </PreviewSection>
+  );
+}
+
+export default function PopoverPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }

@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/registry/kosmos/ui/dialog';
+import { DataSet, DataToggle } from '@/components/preview/data-toggle';
 
 const projects = [
   'Fernhill Books',
@@ -31,9 +32,9 @@ const projects = [
   'Ironbark Logistics',
 ];
 
-export default function DialogPreview() {
+function Normal() {
   return (
-    <PreviewStack>
+    <>
       <PreviewSection title="Open">
         <OverlayStageGrid>
           <OverlayStage label="header, body, footer">
@@ -168,6 +169,67 @@ export default function DialogPreview() {
           </Dialog>
         </div>
       </PreviewSection>
+    </>
+  );
+}
+
+const longTitle = 'Invite Aleksandra Wiśniewska-Kowalczyk to the Copperline Bank server events workspace';
+const longLink = 'https://acme.example/invite/bartholomew.fitzgerald@northwind-industries-holdings.example/with-a-very-long-unbreakable-path-segment';
+
+function Worst() {
+  return (
+    <PreviewSection title="A long title, an unbreakable link, twelve long names and long buttons">
+      <OverlayStageGrid>
+        <OverlayStage inert label="long text, the body scrolls" className="h-[30rem]">
+          {(container) => (
+            <Dialog open modal={false}>
+              <DialogContent container={container} initialFocus={false}>
+                <DialogHeader>
+                  <DialogTitle>{longTitle}</DialogTitle>
+                  <DialogDescription>New members can see every project in Acme Staging, including the ones that belong to the EU data region and the Copperline Bank server events.</DialogDescription>
+                </DialogHeader>
+                <DialogBody>
+                  <p>{longLink}</p>
+                  <ul>
+                    {projects.map((project) => (
+                      <li key={project}>{project} server events for card payments, loans and the business portal, EU data region</li>
+                    ))}
+                  </ul>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogClose render={<Button variant="secondary" />}>Cancel and keep the current members</DialogClose>
+                  <Button variant="primary">Send the invite to every selected project</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </OverlayStage>
+
+        <OverlayStage inert label="Greek, emoji and a one-letter title" className="h-[20rem]">
+          {(container) => (
+            <Dialog open modal={false}>
+              <DialogContent container={container} initialFocus={false}>
+                <DialogHeader>
+                  <DialogTitle>K</DialogTitle>
+                  <DialogDescription>Ιστότοπος καφέ Saltmarsh 🌊 θα διαγραφεί μαζί με όλα τα δεδομένα του.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="primary">Διαγραφή</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </OverlayStage>
+      </OverlayStageGrid>
+    </PreviewSection>
+  );
+}
+
+export default function DialogPreview() {
+  return (
+    <PreviewStack>
+      <DataToggle />
+      <DataSet demo={<Normal />} worst={<Worst />} />
     </PreviewStack>
   );
 }
