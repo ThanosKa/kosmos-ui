@@ -162,14 +162,13 @@ function clockAt(start: string, offsetMs: number) {
     .join(':');
 }
 
+const wideGlyph = /[\p{Extended_Pictographic}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+/** The first letter of one or two words. An emoji or an ideograph fills an avatar alone, so it is the only letter then. */
 function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase();
+  const words = name.split(/\s+/).filter(Boolean);
+  const letters = words.length > 1 ? words.slice(0, 2).map((word) => Array.from(word)[0]) : Array.from(words[0] ?? '').slice(0, 2);
+  return (letters.some((letter) => wideGlyph.test(letter)) ? letters.slice(0, 1) : letters).join('').toUpperCase();
 }
 
 function plural(count: number, word: string) {
@@ -237,7 +236,7 @@ function StepBody({
     case 'approval':
       return <ToolApproval {...step.approval} surface="none" onDecide={(decision) => onDecide?.(step.id, decision)} />;
     default:
-      return <p className="max-w-[40em] px-2 py-2 text-body text-pretty text-foreground">{step.text}</p>;
+      return <p className="max-w-[40em] px-2 py-2 text-body text-pretty wrap-anywhere text-foreground">{step.text}</p>;
   }
 }
 
