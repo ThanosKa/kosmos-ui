@@ -19,7 +19,7 @@ import { SegmentedControl, SegmentedControlItem } from '@/registry/kosmos/ui/seg
 import { StatusDot } from '@/registry/kosmos/ui/status';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/registry/kosmos/ui/table';
 
-type BentoItem = {
+type BentoItemBase = {
   /** A stable key for the tile. */
   id: string;
   /** The tile's name, an `<h3>` under the section title. */
@@ -30,11 +30,18 @@ type BentoItem = {
   visual: React.ReactNode;
   /** `wide` takes two of the three columns. */
   size?: 'default' | 'wide';
-  /** Where the tile leads. Adds a link under the caption, the tile's one tab stop. */
-  href?: string;
-  /** The text of that link. */
-  linkLabel?: React.ReactNode;
 };
+
+type BentoItem = BentoItemBase &
+  (
+    | { href?: undefined; linkLabel?: undefined }
+    | {
+        /** Where the tile leads. Adds a link under the caption, the tile's one tab stop. */
+        href: string;
+        /** The text of that link. Name where it leads, such as "See the table". */
+        linkLabel: React.ReactNode;
+      }
+  );
 
 // Sample data: replace it with your product's title, line and tiles.
 const sampleTitle = 'From the first event to the answer';
@@ -202,6 +209,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <ProjectsTable />,
     href: '/docs/components/table',
+    linkLabel: 'See the table',
   },
   {
     id: 'granularity',
@@ -209,6 +217,7 @@ const sampleItems: BentoItem[] = [
     description: 'Switch between hours, days and weeks in one tap.',
     visual: <Granularity />,
     href: '/docs/components/segmented-control',
+    linkLabel: 'See the range switch',
   },
   {
     id: 'notifications',
@@ -216,6 +225,7 @@ const sampleItems: BentoItem[] = [
     description: 'Alerts land in a list your team can scan.',
     visual: <Notifications />,
     href: '/docs/components/alert',
+    linkLabel: 'See the alerts',
   },
   {
     id: 'chart',
@@ -224,6 +234,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <EventsChart />,
     href: '/docs/components/chart-card',
+    linkLabel: 'See the chart card',
   },
   {
     id: 'command',
@@ -232,6 +243,7 @@ const sampleItems: BentoItem[] = [
     size: 'wide',
     visual: <CommandMenu />,
     href: '/docs/components/command',
+    linkLabel: 'See the command menu',
   },
   {
     id: 'quota',
@@ -239,6 +251,7 @@ const sampleItems: BentoItem[] = [
     description: 'Usage as a bar, with the number beside it.',
     visual: <Quota />,
     href: '/docs/components/meter',
+    linkLabel: 'See the meter',
   },
 ];
 
@@ -310,7 +323,7 @@ function Bento({ title = sampleTitle, description = sampleDescription, items = s
                   href={item.href}
                   className="mt-2 inline-flex w-fit items-center gap-1 rounded-sm text-body font-medium text-muted-foreground transition-[color] group-hover/tile:text-foreground focus-visible:text-foreground focus-visible:outline-none"
                 >
-                  {item.linkLabel ?? 'Learn more'}
+                  {item.linkLabel}
                   <ArrowRight
                     aria-hidden
                     className={cn('size-3.5 transition-[translate] motion-safe:group-hover/tile:translate-x-0.5', 'motion-safe:group-has-[[data-slot=bento-item-link]:focus-visible]/tile:translate-x-0.5')}

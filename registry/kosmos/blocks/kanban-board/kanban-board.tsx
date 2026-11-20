@@ -334,6 +334,7 @@ function KanbanColumnView({
   column,
   items,
   loading,
+  filtered,
   reducedMotion,
   dragging,
   onOpen,
@@ -343,6 +344,7 @@ function KanbanColumnView({
   column: KanbanColumn;
   items: KanbanItem[];
   loading: boolean;
+  filtered: boolean;
   reducedMotion: boolean;
   dragging: boolean;
   onOpen?: (item: KanbanItem) => void;
@@ -406,8 +408,14 @@ function KanbanColumnView({
                 compact
                 variant="first-use"
                 className="min-h-20"
-                title={dragging ? 'Drop here' : 'No items'}
-                description={dragging ? 'Release to move the card to this column.' : 'Drag a card here to plan it.'}
+                title={dragging ? 'Drop here' : filtered ? 'No matches' : 'No items'}
+                description={
+                  dragging
+                    ? 'Release to move the card to this column.'
+                    : filtered
+                      ? 'No card in this column matches your search.'
+                      : 'Drag a card here to plan it.'
+                }
               />
             ) : (
               items.map((item, index) => (
@@ -670,6 +678,7 @@ function KanbanBoard({
                 column={column}
                 items={items.filter((item) => item.column === column.id && matches(item))}
                 loading={loading}
+                filtered={needle !== ''}
                 reducedMotion={reducedMotion}
                 dragging={activeId !== null}
                 onOpen={onOpen}

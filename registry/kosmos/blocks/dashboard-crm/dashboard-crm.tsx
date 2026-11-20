@@ -490,7 +490,7 @@ function DealsPanel({
             {onNewDeal ? (
               <Button variant="secondary" onClick={onNewDeal}>
                 <Plus data-icon="inline-start" aria-hidden />
-                Deal
+                New deal
               </Button>
             ) : null}
           </PanelAction>
@@ -528,7 +528,7 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
       <PanelContent>
         {tasks.length === 0 ? (
           <p className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
-            You are all caught up
+            You’re all caught up
           </p>
         ) : (
           <ul aria-labelledby={titleId} role="list" className="flex flex-col divide-y divide-border">
@@ -542,7 +542,7 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
                   {task.detail ? <span title={task.detail} className="truncate text-small text-muted-foreground">{task.detail}</span> : null}
                 </div>
                 {onTaskAction ? (
-                  <Button variant="secondary" size="sm" aria-label={`${task.action}: ${task.title}`} onClick={() => onTaskAction({ icon: Icon, ...task })}>
+                  <Button variant="secondary" size="sm" aria-label={task.title} onClick={() => onTaskAction({ icon: Icon, ...task })}>
                     {task.action}
                   </Button>
                 ) : null}
@@ -702,7 +702,7 @@ type DashboardCrmProps = Omit<React.ComponentProps<'section'>, 'children'> & {
   quota?: QuotaRow[];
   /** What the team did today, newest first. */
   activity?: ActivityItem[];
-  /** Shows a Deal button beside the search, which calls this. */
+  /** Shows a New deal button beside the search, which calls this. */
   onNewDeal?: () => void;
   /** The items of each deal's actions menu, as `DropdownMenuItem`s. Leave it out for no menu. */
   dealActions?: (deal: Deal) => React.ReactNode;

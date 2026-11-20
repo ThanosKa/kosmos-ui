@@ -359,7 +359,7 @@ function CommandMenu({
         >
           <span className="flex items-center gap-2">
             <Search aria-hidden />
-            Search
+            Search…
           </span>
           {hotkey ? (
             <KbdGroup aria-hidden>
@@ -401,9 +401,9 @@ function CommandMenu({
           />
           {loading ? (
             <CommandLoading />
-          ) : (
+          ) : query.trim() ? (
             <CommandEmpty>No results for “{query}”.</CommandEmpty>
-          )}
+          ) : null}
           <CommandList className={loading ? 'hidden' : undefined}>
             {(group: CommandMenuGroup) => (
               <CommandGroup key={group.value} items={group.items}>

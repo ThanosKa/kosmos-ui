@@ -1,0 +1,19 @@
+---
+title: Blocks name each thing one way and say what to do next
+description: Block labels start with a verb. Empty and error messages name the cause and the next step. Each Bento tile now needs a link label.
+date: 2026-11-20
+---
+
+Each thing in a block has one name, and each message tells you what to do next.
+
+- [Dashboard analytics](/docs/blocks/dashboard-analytics) and [Dashboard CRM](/docs/blocks/dashboard-crm): both inboxes say "You’re all caught up". The range switch items "7d", "30d" and "90d" now carry the spoken names "Last 7 days", "Last 30 days" and "Last 90 days".
+- [Dashboard CRM](/docs/blocks/dashboard-crm): the button reads "New deal", and a task button's `aria-label` is the task title, such as "Call Copperline Bank", not "Call: Call Copperline Bank".
+- [Page header](/docs/blocks/page-header): the clear button reads "Clear filters", and the search placeholder keeps the title's case, such as "Search Q4 roadmap".
+- [Command menu](/docs/blocks/command-menu): the trigger reads "Search…" like the App sidebar, and an empty query no longer shows `No results for “”`.
+- [Bento](/docs/blocks/bento): breaking change. A tile with an `href` must also have a `linkLabel`. The type enforces it. No tile falls back to "Learn more" any more. Name where each link leads, such as "See the meter".
+- [Kanban board](/docs/blocks/kanban-board): an empty column says "Drag a card here to plan it". A column with no match for the search says "No card in this column matches your search."
+- [Members](/docs/blocks/members): the invite error names the addresses to fix, not "in red".
+- [Settings](/docs/blocks/settings): breaking change. Each danger zone action needs a `successMessage`. The card shows it after the action succeeds. A failure names the cause and the next step, not "That did not work."
+- [Hero](/docs/blocks/hero): the sample announcement follows the Acme demo world.
+
+To update, run the add command again for each item. Add a `linkLabel` to each Bento tile that has an `href`, and a `successMessage` to each danger zone action.

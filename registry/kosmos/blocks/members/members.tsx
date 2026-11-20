@@ -84,6 +84,11 @@ const initials = (name: string) =>
 
 const countLabel = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
+function listAddresses(addresses: string[]) {
+  if (addresses.length <= 2) return addresses.join(' and ');
+  return `${addresses.slice(0, 2).join(', ')} and ${addresses.length - 2} more`;
+}
+
 function RoleSelect({
   value,
   onValueChange,
@@ -305,7 +310,7 @@ function Members({
             {rejected.length > 0 ? (
               <FieldError>
                 {mistyped.length > 0
-                  ? `Fix or remove ${mistyped.length === 1 ? mistyped[0] : `the ${mistyped.length} addresses in red`}: an address ends in a domain, such as acme.example.`
+                  ? `Fix or remove ${listAddresses(mistyped)}: an address ends in a domain, such as acme.example.`
                   : `${taking.length === 1 ? taking[0] : `${taking.length} addresses`} already ${taking.length === 1 ? 'belongs' : 'belong'} to a member or a pending invite.`}
               </FieldError>
             ) : (

@@ -4,10 +4,10 @@ description: Chart axis labels, linked Badges, Banner actions and Logo marquee n
 date: 2026-11-20
 ---
 
-Four places drew text that fell below 4.5:1 against its background. All four are fixed in light and dark.
+Four places drew text that fell below 4.5:1 against its background. All four now pass in light and dark.
 
 - [Chart](/docs/components/chart): the axis labels took Recharts' default `#666`, about 3:1 in dark. `ChartContainer` now sets them to `muted-foreground`. Its selector named a class that Recharts 3 no longer renders, and a test now fails when a selector in `chart.tsx` matches nothing.
-- [Badge](/docs/components/badge): a hue Badge used as a link turned to the border step of its tint on hover, which put its text at 2.8:1 to 4.1:1. It now takes the new `tint-<hue>-hover` step, 4.5:1 or more for all six tints.
+- [Badge](/docs/components/badge): a hue Badge used as a link turned to the border step of its tint on hover. That put its text at 2.8:1 to 4.1:1. It now takes the new `tint-<hue>-hover` step, 4.5:1 or more for all six tints.
 - [Banner](/docs/components/banner): the action button on a tinted Banner takes the same `tint-<hue>-hover` fill instead of the gray `bg-accent`.
 - [Logo marquee](/docs/blocks/logo-marquee): the brand color from `color` now reaches the mark only. The name turns to `text-foreground` on hover and focus, so a light brand color such as React blue no longer sets text below 3:1. A logo that is plain text, with no `<svg>` mark, no longer changes color.
 

@@ -88,6 +88,7 @@ export default function SettingsPreview() {
                     title: 'Delete workspace',
                     description: 'Removes every project, member and key. This cannot be undone.',
                     label: 'Delete workspace',
+                    successMessage: 'Workspace deleted. Its projects, members and keys are gone.',
                     confirmText: 'Acme',
                   },
                 ]}

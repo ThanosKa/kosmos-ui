@@ -259,7 +259,9 @@ type DangerAction = {
   label: string;
   /** Text to type before the action can be confirmed, such as the workspace name. Without it, the dialog needs one press. */
   confirmText?: string;
-  /** Called once confirmed. Throw an `Error` to show its message in the dialog. */
+  /** What the danger zone says once the action succeeds, such as "Workspace deleted." */
+  successMessage: string;
+  /** Called once confirmed. Throw an `Error` to show its message in the dialog; a message that names the cause and the next step reads best. */
   onConfirm?: () => Promise<void> | void;
 };
 
@@ -294,6 +296,7 @@ function DangerZone({
   const titleId = React.useId();
   const Heading = `h${headingLevel}` as const;
   const [openId, setOpenId] = React.useState<string | null>(defaultOpenAction ?? null);
+  const [result, setResult] = React.useState<string | null>(null);
   const action = actions.find((candidate) => candidate.id === openId);
   return (
     <section data-slot="danger-zone" aria-labelledby={titleId} className={cn(cardSurface, className)} {...props}>
@@ -303,6 +306,14 @@ function DangerZone({
         </Heading>
         {description ? <p className="text-small text-muted-foreground">{description}</p> : null}
       </div>
+      <p role="status" className="flex min-w-0 items-start gap-1.5 px-5 pb-4 text-small text-tint-green-foreground empty:sr-only">
+        {result ? (
+          <>
+            <Check aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+            <span className="min-w-0">{result}</span>
+          </>
+        ) : null}
+      </p>
       <ul className="flex flex-col divide-y divide-border border-t border-border">
         {actions.map((item) => (
           <li key={item.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
@@ -310,13 +321,27 @@ function DangerZone({
               <p className="text-body font-medium">{item.title}</p>
               <p className="text-small text-muted-foreground">{item.description}</p>
             </div>
-            <Button type="button" variant="destructive" onClick={() => setOpenId(item.id)}>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                setResult(null);
+                setOpenId(item.id);
+              }}
+            >
               {item.label}
             </Button>
           </li>
         ))}
       </ul>
-      {action ? <ConfirmDialog key={action.id} action={action} container={container} modal={modal} onClose={() => setOpenId(null)} /> : null}
+      {action ? <ConfirmDialog
+          key={action.id}
+          action={action}
+          container={container}
+          modal={modal}
+          onClose={() => setOpenId(null)}
+          onDone={() => setResult(action.successMessage)}
+        /> : null}
     </section>
   );
 }
@@ -326,11 +351,13 @@ function ConfirmDialog({
   container,
   modal,
   onClose,
+  onDone,
 }: {
   action: DangerAction;
   container: DangerZoneProps['container'];
   modal: boolean;
   onClose: () => void;
+  onDone: () => void;
 }) {
   const [typed, setTyped] = React.useState('');
   const [pending, setPending] = React.useState(false);
@@ -344,9 +371,14 @@ function ConfirmDialog({
     setError(null);
     try {
       await action.onConfirm?.();
+      onDone();
       onClose();
     } catch (thrown) {
-      setError(thrown instanceof Error ? thrown.message : 'That did not work. Try again.');
+      setError(
+        thrown instanceof Error && thrown.message
+          ? thrown.message
+          : `${action.title} failed because the server did not answer. Check your connection, then press ${action.label} again.`,
+      );
       setPending(false);
     }
   }
@@ -405,7 +437,7 @@ const sampleProfile: ProfileValues = {
   name: 'Lena Park',
   email: 'lena@acme.example',
   username: 'lena',
-  bio: 'Platform engineer. I look after ingestion and billing.',
+  bio: 'Product lead. I decide what Acme builds next.',
 };
 
 const sampleNotifications: NotificationValues = { product: true, security: true, digest: 'weekly', usageAlert: 80 };
@@ -619,6 +651,7 @@ function SettingsPage({
                 title: 'Reset API key',
                 description: 'The current key stops working at once, so update your servers first.',
                 label: 'Reset key',
+                successMessage: 'API key reset. The old key no longer works, so update your servers with the new one.',
                 onConfirm: onResetApiKey ?? simulateRequest,
               },
               {
@@ -626,6 +659,7 @@ function SettingsPage({
                 title: 'Delete workspace',
                 description: 'Removes every project, member and key. This cannot be undone.',
                 label: 'Delete workspace',
+                successMessage: 'Workspace deleted. Its projects, members and keys are gone.',
                 confirmText: workspaceName,
                 onConfirm: onDeleteWorkspace ?? simulateRequest,
               },
