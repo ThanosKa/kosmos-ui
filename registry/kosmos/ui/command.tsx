@@ -230,7 +230,7 @@ function CommandLoading({ className, children = 'Searching…', ...props }: Reac
       className={cn('flex items-center justify-center gap-2 px-4 py-10 text-body text-muted-foreground', className)}
       {...props}
     >
-      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />
+      <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin motion-reduce:animate-pulse" />
       {children}
     </div>
   );

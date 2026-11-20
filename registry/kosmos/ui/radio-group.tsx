@@ -36,16 +36,15 @@ const circle = [
   'transition-[background-color,box-shadow]',
 ];
 
-/** The dot in a selected radio. It fades in with the fill and grows from half size only when motion is allowed. */
+/** The dot in a selected radio. It fades in with the fill. */
 function RadioDot() {
   return (
     <RadioPrimitive.Indicator
       data-slot="radio-indicator"
       className={cn(
         'flex items-center justify-center',
-        'transition-[opacity,scale] duration-fast',
+        'transition-[opacity] duration-fast',
         'data-starting-style:opacity-0 data-ending-style:opacity-0',
-        'motion-safe:data-starting-style:scale-50 motion-safe:data-ending-style:scale-50',
       )}
     >
       {/* An SVG fill in `currentColor`, so forced-colors mode, which drops backgrounds, still draws the dot. */}
