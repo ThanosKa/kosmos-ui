@@ -143,7 +143,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **What is wrong:** marking a notification read shrinks the dot to half size whether or not the reader asked for reduced motion.
 - **Fix:** `motion-safe:scale-50` in place of `scale-50`; the opacity fade stays.
 
-#### 7. The new-items pill announces through a live region mounted with its text
+#### 7. The new-items pill announces through a live region mounted with its text (Fixed in ticket 24)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Checkable:** yes, code: a `role="status"` element rendered behind a condition (`count === 0 ? null : <div role="status">`).
 - **Location:** `registry/kosmos/ui/notification-inbox.tsx:316-334` (`NotificationInboxNewItems`: `if (count === 0) return null;` then `<div role="status">`).
@@ -151,7 +151,7 @@ Ranked by severity, then by reach. **Kind** is **bug** or **taste**. **Checkable
 - **Why it matters:** screen-reader users are not told that new notifications arrived while the inbox is open.
 - **Fix:** render an always-present `sr-only` `role="status"` span in the inbox that holds "`${count}` new notifications" (empty at 0), and render the pill Button outside it. The rest of the kit already does this (`copy-field.tsx:85`, `reasoning.tsx:134`, `chart-card.tsx:158`).
 
-#### 8. Popups without an accessible name (Command list, Select list, untitled Popovers)
+#### 8. Popups without an accessible name (Command list, Select list, untitled Popovers) (Fixed in ticket 24)
 
 - **Severity:** MEDIUM. **Kind:** bug. **Checkable:** yes, browser (ARIA snapshot: a `listbox` or `dialog` with no name).
 - **Location:** `registry/kosmos/ui/command.tsx:141-153` (`CommandList`, Base UI `Autocomplete.List`); `registry/kosmos/ui/select.tsx:95` (`SelectPrimitive.List` when the trigger is named with `aria-label`, as in `examples/select.tsx:51`, `:81`, `:94`); Popovers with a description and no title in the docs examples and preview: `examples/popover-hover.tsx:17-21`, `examples/popover-side.tsx:12-14`, `examples/model-select-search.tsx:60`, `examples/popover.tsx:107-117`.
@@ -385,7 +385,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - Add `wrap-break-word` to every heading and description that takes caller text in the marketing blocks.
   - Give the action slot `max-w-full min-w-0`, and let the Button label `truncate` with a `title`, or wrap it with `h-auto whitespace-normal`.
 
-**4. Settings: the API key field has no accessible name.**
+**4. Settings: the API key field has no accessible name (Fixed in ticket 24).**
 - **Bug.** Checkable by a **browser** check (axe `label`) or a **code** check (`<CopyField` with no `aria-label` outside a `Field`).
 - **Where:** `blocks/settings/settings.tsx:601`, `<CopyField secret label="API key" value={apiKey} />`.
 - **What is wrong:** measured with `attr-probe.mts`. The computed role and name are `textbox: ••••••••••••6789`, with no label. CopyField's `label` names only its Show and Copy buttons.
@@ -462,7 +462,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Why it matters:** a picker in the page header reads as a filter for the whole page. Pick "Last 7 days" and the KPIs, Top pages and Countries still show 30 days.
 - **Fix:** key `kpis`, `sources`, `topPages` and `countries` by `Range`, as `traffic` already is, and build the descriptions from `ranges[range].label`. Or move the range control into the Traffic panel only.
 
-**12. Controls that do nothing, or report success that did not happen.**
+**12. Controls that do nothing, or report success that did not happen (the Run timeline part: Fixed in ticket 24; the rest: ticket 26).**
 - **Bug.** Partly checkable by a **code** check (`onClick={() => {}}` outside `examples/*` preview files, and `clipboard?.writeText` without `await`).
 - **Where:**
   - `blocks/app-sidebar/app-sidebar.tsx:262-270`: the Search button always renders with `onClick={onSearch}`, and `examples/app-sidebar-demo.tsx` passes none.
@@ -493,7 +493,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
   - The Greek sample line and "One short line" are cut by 88px.
 - **Fix:** crop only the trailing edge on flipped rows (`justify-start`), or apply `min-w-136` from `@5xl`. Place flipped media with `col-start-*` instead of `order-2`.
 
-**15. Run timeline: status changes, step times and copy results do not reach screen readers or the keyboard.**
+**15. Run timeline: status changes, step times and copy results do not reach screen readers or the keyboard (Fixed in ticket 24).**
 - **Bug.** Partly checkable by a **code** check (`role="status"` inside a conditional render; a `TooltipTrigger` whose `render` is not a button or link).
 - **Where:**
   - `run-timeline.tsx:412-418`: `<p role="status">Working…</p>` mounts together with its text.
@@ -564,7 +564,7 @@ Ranked by severity, then by reach. **Checkable** names the kind of check that co
 - **Where:** `/view/dashboard-analytics` and `/view/dashboard-crm`, both themes. `div[data-slot=sidebar-resize-handle]` is cut 2px top and bottom by `sidebar-wrapper` (`overflow-hidden`). Cause in `ui/sidebar.tsx`.
 - **Fix:** inset the handle by 2px top and bottom (`inset-y-0.5`), or draw its 4px line as a pseudo-element inside the wrapper.
 
-**23. Live regions that mount with their text or start as `display: none`.**
+**23. Live regions that mount with their text or start as `display: none` (Fixed in ticket 24).**
 - **Bug.** Checkable by a **code** check (`role="status|alert"` inside a conditional, or with `empty:hidden`).
 - **Where:**
   - Empty states with `role="status"`: `dashboard-analytics.tsx:415`, `dashboard-crm.tsx:513,592,645`.

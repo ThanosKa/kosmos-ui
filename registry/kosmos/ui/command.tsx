@@ -134,7 +134,7 @@ function CommandInput({ className, ...props }: AutocompletePrimitive.Input.Props
 }
 
 /**
- * The scrolling list of matches. Pass a function to render each item or group of `items`,
+ * The scrolling list of matches, named "Commands" for screen readers; pass `aria-label` for a better name. Pass a function to render each item or group of `items`,
  * or the items themselves. Scrolls past 20rem in a `ScrollArea`: while matches are hidden past an
  * edge, that edge fades out and the scrollbar shows, so rows below the fold are never missed.
  */
@@ -148,7 +148,7 @@ function CommandList({ className, ...props }: AutocompletePrimitive.List.Props) 
       // `min-w-0!` beats the content's inline `min-width: fit-content`, so long labels truncate instead of widening the list.
       viewportClassName="max-h-80 overscroll-contain scroll-py-1 [&>[data-slot=scroll-area-content]]:min-w-0!"
     >
-      <AutocompletePrimitive.List data-slot="command-list" className={cn('p-1 data-empty:p-0', className)} {...props} />
+      <AutocompletePrimitive.List data-slot="command-list" aria-label="Commands" className={cn('p-1 data-empty:p-0', className)} {...props} />
     </ScrollArea>
   );
 }

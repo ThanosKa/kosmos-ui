@@ -9,7 +9,7 @@ export default function PopoverSide() {
       {sides.map((side) => (
         <Popover key={side}>
           <PopoverTrigger render={<Button variant="secondary" className="capitalize" />}>{side}</PopoverTrigger>
-          <PopoverContent side={side} className="w-56">
+          <PopoverContent side={side} aria-label={`Popover on the ${side}`} className="w-56">
             <PopoverDescription>Opens on the {side}, or flips when there isn&apos;t room.</PopoverDescription>
           </PopoverContent>
         </Popover>

@@ -57,7 +57,7 @@ export default function ModelSelectSearch() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger render={<ModelSelectButton model={selected} effort={shownEffort} />} />
-      <PopoverContent align="start" className="w-80 [&_[data-slot=popover-body]]:gap-0 [&_[data-slot=popover-body]]:p-0">
+      <PopoverContent align="start" aria-label="Models" className="w-80 [&_[data-slot=popover-body]]:gap-0 [&_[data-slot=popover-body]]:p-0">
         <Command
           items={groups}
           itemToStringValue={(model: SearchModel) => model.name}
@@ -65,7 +65,7 @@ export default function ModelSelectSearch() {
         >
           <CommandInput placeholder="Search models" aria-label="Search models" />
           <CommandEmpty>No models match.</CommandEmpty>
-          <CommandList>
+          <CommandList aria-label="Models">
             {(group: ModelGroup) => (
               <CommandGroup key={group.value} items={group.items}>
                 <CommandGroupLabel>{group.value}</CommandGroupLabel>

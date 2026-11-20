@@ -510,7 +510,7 @@ function TasksPanel({ tasks, onTaskAction, tasksHref }: { tasks: Task[]; onTaskA
       </PanelHeader>
       <PanelContent>
         {tasks.length === 0 ? (
-          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+          <p className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
             You are all caught up
           </p>
         ) : (
@@ -589,7 +589,7 @@ function QuotaPanel({ quota }: { quota: QuotaRow[] }) {
       </PanelHeader>
       <PanelContent>
         {quota.length === 0 ? (
-          <p role="status" className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
+          <p className="flex min-h-36 items-center justify-center p-4 text-center text-small text-muted-foreground">
             No targets set for this quarter
           </p>
         ) : (
@@ -642,7 +642,7 @@ function ActivityPanel({ activity, className }: { activity: ActivityItem[]; clas
       </PanelHeader>
       <PanelContent className="flex flex-col p-4">
         {activity.length === 0 ? (
-          <p role="status" className="flex min-h-28 flex-1 items-center justify-center text-center text-small text-muted-foreground">
+          <p className="flex min-h-28 flex-1 items-center justify-center text-center text-small text-muted-foreground">
             Nothing yet today
           </p>
         ) : (

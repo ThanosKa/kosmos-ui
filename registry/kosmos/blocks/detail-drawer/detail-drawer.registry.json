@@ -15,6 +15,7 @@
     "@kosmos/button",
     "@kosmos/chart",
     "@kosmos/drawer",
+    "@kosmos/field",
     "@kosmos/dropdown-menu",
     "@kosmos/meter",
     "@kosmos/scroll-area",

@@ -361,7 +361,7 @@ function ConfirmDialog({
                 <Input autoComplete="off" spellCheck={false} value={typed} onValueChange={setTyped} />
               </Field>
             ) : null}
-            <p role="alert" className="flex min-w-0 items-start gap-1.5 text-small text-tint-red-foreground empty:hidden">
+            <p role="alert" className="flex min-w-0 items-start gap-1.5 text-small text-tint-red-foreground empty:sr-only">
               {error ? (
                 <>
                   <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
@@ -598,7 +598,7 @@ function SettingsPage({
             title="API access"
             description="Use this key to call the API from your servers. Keep it out of your code."
           >
-            <CopyField secret label="API key" value={apiKey} />
+            <CopyField secret label="API key" aria-label="API key" value={apiKey} />
           </SettingsPanel>
 
           <DangerZone

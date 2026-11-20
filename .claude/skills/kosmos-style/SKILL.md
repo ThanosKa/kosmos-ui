@@ -239,6 +239,10 @@ Buttons are 30px (`md`) with `px-2.5`; text fields are 34px with `px-3`, so a fo
 - Kosmos code writes the Kosmos variant and size names, never shadcn's (`default`, `outline`, `link`, `xs`, `icon-xs`).
 - A Badge may render as a link (`render={<a href="…" />}`), a tag that navigates. It keeps the Badge look, takes the hover background (`tint-<hue>-hover` for a hue) and the focus outline, and does not press-scale, because it sits inline with content.
 
+## Names and announcements
+
+A screen reader announces a change to a live region that already exists, so the region is always rendered and only its text changes. A `role="status"` or `role="alert"` rendered behind a condition, or carrying `empty:hidden` (it starts as `display: none`), is flagged by lint; render it always, empty at first, and hide it with `empty:sr-only`. A static empty state is not a live region. A `TooltipTrigger` renders a `Button` or a link, which a keyboard reaches; lint flags one that renders a `<time>` or a `<span>` with no `tabIndex`. Every popup has a name: `CommandList` is "Commands" until given an `aria-label`, `SelectContent` is named by its trigger, and a Popover with no `PopoverTitle` takes `aria-label` on `PopoverContent`.
+
 ## Phones
 
 Every component and block works at 375px wide, in light and dark:

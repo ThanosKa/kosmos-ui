@@ -14,7 +14,7 @@ export default function PopoverHover() {
         >
           <Info />
         </PopoverTrigger>
-        <PopoverContent side="right" align="start" className="w-56">
+        <PopoverContent side="right" align="start" aria-label="About active users" className="w-56">
           <PopoverDescription>
             Everyone who opened the app at least once in the last 28 days.
           </PopoverDescription>
