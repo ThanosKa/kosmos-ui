@@ -207,7 +207,7 @@ Transitions name the properties that change: `transition-[background-color,box-s
 
 ### Reduced motion is mandatory
 
-Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-motion: reduce` the same change becomes an opacity cross-fade, never an instant jump. Motion trees sit inside `<MotionConfig reducedMotion="user">`. An animation without this gate is a blocking bug.
+Movement, scale and blur run only under `motion-safe:`. Under `prefers-reduced-motion: reduce` the same change becomes an opacity cross-fade, never an instant jump. Lint flags a `scale-*` outside `motion-safe:` in a class list that transitions `scale`, and `motion-reduce:transition-none`; fade with `motion-reduce:transition-[opacity]`. A toast with an action stays until it is used (WCAG 2.2.1): lint flags a Sonner `toast(…, { action })` with no `duration: Infinity`, and a Base UI `toast.add` with `actionProps` and no `timeout: 0`. Motion trees sit inside `<MotionConfig reducedMotion="user">`. An animation without this gate is a blocking bug.
 
 ### Press scale
 
