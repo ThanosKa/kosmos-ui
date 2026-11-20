@@ -3,7 +3,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { after, before, describe, test } from 'node:test';
 import { chromium, type Browser } from 'playwright';
-import { checkPage, siteRoutes, splitKnown, type Finding } from './site-check.ts';
+import { checkPage, previewWidths, siteRoutes, splitKnown, type Finding } from './site-check.ts';
 
 const ringStyle = '<style>button:focus-visible{outline:2px solid red;outline-offset:2px}</style>';
 
@@ -12,6 +12,8 @@ const pages: Record<string, string> = {
   '/wide': '<div style="width:600px;height:20px">wide</div>',
   '/clipped': `${ringStyle}<div id="card" style="overflow:hidden;width:fit-content"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
   '/room': `${ringStyle}<div style="overflow:hidden;width:fit-content;padding:8px"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
+  '/resting': `<style>button{box-shadow:0 0 0 1px gray}button:focus-visible{outline:2px solid red;outline-offset:-2px}</style><div style="overflow:hidden;width:fit-content"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
+  '/shadow-ring': `<style>button:focus-visible{outline:none;box-shadow:0 0 0 2px red}</style><div id="card" style="overflow:hidden;width:fit-content"><button style="margin:0;border:0;padding:4px">Save</button></div>`,
   '/broken': '<script>console.error("boom")</script><script>throw new Error("crash")</script>',
 };
 
@@ -65,6 +67,16 @@ describe('browser check on a page', () => {
     assert.deepEqual(await run('/room'), []);
   });
 
+  test('a spread shadow the element wears at rest is not its focus ring', async () => {
+    assert.deepEqual(await run('/resting'), []);
+  });
+
+  test('a ring shadow that appears on focus and is cut is a finding', async () => {
+    const ring = (await run('/shadow-ring')).filter((finding) => finding.check === 'focus-ring');
+    assert.equal(ring.length, 1);
+    assert.match(ring[0].detail, /left 2px/);
+  });
+
   test('console errors and page errors are findings', async () => {
     const details = (await run('/broken')).filter((finding) => finding.check === 'console').map((finding) => finding.detail);
     assert.equal(details.length, 2);
@@ -114,5 +126,20 @@ describe('routes', () => {
     const picked = siteRoutes('/view');
     assert.ok(picked.length > 0 && picked.every((route) => route.startsWith('/view/')));
     assert.deepEqual(siteRoutes('/docs/components/button'), ['/docs/components/button']);
+  });
+
+  test('a slash picks the landing page alone, /docs picks every docs page', () => {
+    assert.deepEqual(siteRoutes('/'), ['/']);
+    const docs = siteRoutes('/docs');
+    assert.ok(docs.includes('/docs') && docs.includes('/docs/components/button'));
+    assert.ok(docs.every((route) => route === '/docs' || route.startsWith('/docs/')));
+  });
+
+  test('the Presets preview is visited once per tab, and /preset-preview picks them all', () => {
+    const previews = siteRoutes('/preset-preview');
+    assert.deepEqual(previews, ['components', 'dashboard', 'forms', 'overlays', 'tokens'].map((tab) => `/preset-preview (${tab})`));
+    assert.deepEqual(siteRoutes('/preset-preview (forms)'), ['/preset-preview (forms)']);
+    assert.ok(routes.includes('/preset-preview (tokens)'));
+    assert.deepEqual(previewWidths, [341, 966]);
   });
 });
