@@ -1,0 +1,15 @@
+---
+title: Added auth pages, Password input and Provider button
+description: Three full-page variants of Auth, a new password form, an email-first log in, and the components they are built from.
+date: 2026-11-21
+---
+
+[Auth](/docs/blocks/auth) now comes as full pages, and its forms cover the whole password reset.
+
+- [Auth](/docs/blocks/auth): three new variants. Backdrop sets the form on the page over a flickering grid. Split puts a customer's quote beside the form. Email first asks for the email, then the password or a code.
+- [Auth](/docs/blocks/auth): `NewPasswordForm` is the page the reset link opens. `EmailFirstForm` logs in one step at a time. `AuthProviders` adds Google and GitHub buttons with a "Last used" badge. `appearance="plain"` sets any form on the page without its card.
+- [Password input](/docs/components/password-input): a password input with a button that shows what was typed.
+- [Provider button](/docs/components/provider-button): a button that logs in with Google, GitHub or another provider, with a spinner while its page opens and a "Last used" badge.
+- [Separator](/docs/components/separator): takes a label, such as "or", in the middle of the line.
+
+To update, run the add command again for each item.

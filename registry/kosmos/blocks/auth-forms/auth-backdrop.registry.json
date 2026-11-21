@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-backdrop",
+  "type": "registry:block",
+  "title": "Auth backdrop",
+  "description": "A full page for log in and sign up. The form stands on the page with no card, over a flickering grid and a glow. Google and GitHub sit side by side, with a Last used badge.",
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/auth-forms",
+    "@kosmos/flickering-grid",
+    "@kosmos/glow"
+  ],
+  "categories": [
+    "auth"
+  ],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/auth-forms/auth-backdrop.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

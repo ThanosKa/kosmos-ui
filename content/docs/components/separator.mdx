@@ -41,6 +41,12 @@ A horizontal Separator spans the card edge to edge between its header and body.
 
 <ComponentPreview name="separator-card" />
 
+### With a label
+
+Put a short word such as "or" inside a horizontal Separator, and the line splits around it. Use it between two ways to do the same thing, such as single sign-on and email.
+
+<ComponentPreview name="separator-label" />
+
 ## API
 
 Wraps the [Base UI Separator](https://base-ui.com/react/components/separator), which renders a `<div role="separator">`, and accepts all its props.
@@ -51,6 +57,10 @@ Wraps the [Base UI Separator](https://base-ui.com/react/components/separator), w
       description: 'The direction of the line.',
       type: "'horizontal' | 'vertical'",
       default: "'horizontal'",
+    },
+    children: {
+      description: 'A short label in the middle of a horizontal line. Screen readers read the label and skip the line. With a label, `render` does not apply.',
+      type: 'ReactNode',
     },
   }}
 />

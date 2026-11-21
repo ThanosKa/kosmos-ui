@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "provider-button",
+  "type": "registry:ui",
+  "title": "Provider button",
+  "description": "A button that logs in with another account, such as Google or GitHub, with a spinner while the provider opens and a Last used badge. A group sets them in a column or side by side.",
+  "dependencies": ["@base-ui/react@^1.9.0", "lucide-react@^1.50.0"],
+  "registryDependencies": ["@kosmos/tokens", "@kosmos/cn", "@kosmos/badge", "@kosmos/button"],
+  "meta": { "group": "forms" },
+  "files": [
+    {
+      "path": "registry/kosmos/ui/provider-button.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}
