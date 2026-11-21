@@ -28,7 +28,6 @@ Things the maintainer wants checked or built next. Each becomes a ticket in `doc
 
 - [ ] **Later from the audit run (#102).**
   - More "When to pick which" families: Accordion or Collapsible, Table or Data table, Dropdown menu or Popover or Select.
-  - Worst-case previews for Sonner, Tooltip and Text reveal.
   - A `--preset` option for `pnpm site-check`.
   - A code check for a dialog or drawer body with no bottom padding.
   - A `pnpm site-check` test against a real preview that is known to be bad.

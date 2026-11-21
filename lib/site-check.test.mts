@@ -166,13 +166,13 @@ describe('known exceptions', () => {
 describe('routes', () => {
   const routes = siteRoutes();
 
-  test('lists the site pages, the docs pages and the review previews', () => {
-    for (const route of ['/', '/presets', '/docs', '/docs/components/button', '/view/button']) assert.ok(routes.includes(route), route);
+  test('lists the site pages and the docs pages', () => {
+    for (const route of ['/', '/presets', '/docs', '/docs/components/button']) assert.ok(routes.includes(route), route);
   });
 
   test('one route group can be picked', () => {
-    const picked = siteRoutes('/view');
-    assert.ok(picked.length > 0 && picked.every((route) => route.startsWith('/view/')));
+    const picked = siteRoutes('/docs/components');
+    assert.ok(picked.length > 0 && picked.every((route) => route === '/docs/components' || route.startsWith('/docs/components/')));
     assert.deepEqual(siteRoutes('/docs/components/button'), ['/docs/components/button']);
   });
 

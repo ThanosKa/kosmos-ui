@@ -18,7 +18,7 @@ function useIsInView(element: HTMLElement | null) {
 }
 
 /**
- * A framed box for an overlay pinned open on a review preview (dialog, drawer, popover, menu...).
+ * A framed box for an overlay pinned open for a thumbnail (dialog, drawer, popover, menu...).
  * `transform` makes the box the containing block of every `fixed` descendant, so an overlay portalled
  * into it (`container` on the overlay's Content part) fills the box instead of the page: several
  * overlays sit open side by side, and the iframe on the approval and docs pages measures them.

@@ -1,9 +1,8 @@
 // The browser check: what it looks for on a page, which pages it visits and which findings are known exceptions.
 // scripts/site-check.mts runs it against a dev server.
-import { existsSync, globSync, readFileSync } from 'node:fs';
+import { globSync } from 'node:fs';
 import type { Browser, Page } from 'playwright';
 import { openSitePage, type Theme } from '../scripts/site.mts';
-import { readRegistryItems } from './registry.ts';
 
 export const checks = ['overflow', 'focus-ring', 'clipped-text', 'names', 'console'] as const;
 export type Check = (typeof checks)[number];
@@ -31,19 +30,13 @@ export function splitKnown(findings: Finding[], exceptions: KnownException[]) {
 }
 
 /**
- * Every page the check visits: the site pages, every docs page and the review preview of every component and block.
- * `group` keeps one route, or every route under it (`/view`, `/docs/components`); `/` is the landing page alone.
+ * Every page the check visits: the site pages and every docs page.
+ * `group` keeps one route, or every route under it (`/docs/components`); `/` is the landing page alone.
  */
 export function siteRoutes(group?: string) {
   const docs = globSync('content/docs/**/*.mdx').map((file) => `/docs/${file.replace('content/docs/', '').replace(/\.mdx$/, '')}`.replace(/\/?index$/, ''));
-  const previews = readRegistryItems()
-    .filter((item) => (item.type === 'registry:ui' || item.type === 'registry:block') && existsSync(`registry/kosmos/examples/${item.name}.tsx`))
-    .flatMap((item) => {
-      const route = `/view/${item.name}`;
-      return readFileSync(`registry/kosmos/examples/${item.name}.tsx`, 'utf8').includes('DataSetPreview') ? [route, `${route}?data=worst`] : [route];
-    });
   const presetPreviews = previewTabs.map((tab) => `/preset-preview (${tab})`);
-  const routes = [...new Set(['/', '/presets', ...presetPreviews, ...docs, ...previews])].sort();
+  const routes = [...new Set(['/', '/presets', ...presetPreviews, ...docs])].sort();
   if (!group) return routes;
   const prefix = group.endsWith('/') ? group : `${group}/`;
   return routes.filter((route) => route === group || (group !== '/' && route.startsWith(prefix)) || route.startsWith(`${group} (`) || route.startsWith(`${group}?`));

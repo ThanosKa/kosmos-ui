@@ -1,10 +1,10 @@
 # Demo world: Acme
 
-Every block's sample data, review preview, demo and docs page uses this world and nothing else. When a block needs a value this file lacks, add it here in the same change, so the next block finds it.
+Every block's sample data, demo and docs page uses this world and nothing else. When a block needs a value this file lacks, add it here in the same change, so the next block finds it.
 
 **Acme** is a fictional product analytics SaaS. A customer adds a **project** for each site or app, Acme collects its **events**, and the customer pays a **plan**. The blocks show Acme from the inside: the dashboard its own team uses to run the product, with its users, revenue, events, customer projects and roadmap.
 
-A review preview may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
+While you build, worst-case data may stretch a value to test the layout (a label too long for its slot, a count in the thousands, a huge or tiny number), as long as it stays something Acme would show.
 
 Every person, company and domain comes from this file: the Acme team, the sales team, the customers in Testimonials and the projects. Acme's customers are projects, filtered by plan, platform and status, and a person works on a project rather than owning it. Pipeline, deals and stages belong to the CRM dashboard alone, as written under Sales below.
 
@@ -201,7 +201,7 @@ Each column carries a stage glyph (lucide) colored like a status dot: Ideas `Cir
 | Kanban board | The roadmap above. |
 | New item dialog | "New roadmap item": title, description, stage (the board's columns), area, assignee and target quarter (`Q4 2026` to `Q3 2027`); the item it creates lands as a card on the kanban board, with 0 votes. |
 | App sidebar | The workspace switcher; nav Overview, Projects, Events (a submenu: Live events, Funnels and Alerts), Users, Revenue and Roadmap; saved views "Scale plan" and "Trials" (with its count, 2); Help and feedback and Settings at the bottom; Lena Park in the user menu (profile, preferences, log out). It collapses to a column of icons. |
-| Auth forms | The way into Acme itself, not a customer's app: "Log in to Acme", "Create your Acme account" (on the Free plan), a 6-digit email code sent to lena@acme.example, and a password reset. Email placeholders read `name@acme.example`; the review preview's filled forms use the team's addresses. |
+| Auth forms | The way into Acme itself, not a customer's app: "Log in to Acme", "Create your Acme account" (on the Free plan), a 6-digit email code sent to lena@acme.example, and a password reset. Email placeholders read `name@acme.example` and filled forms use the team's addresses. |
 | Command menu | All twelve projects (each with its domain and status dot); actions "New roadmap item", "Invite teammate", "Show roadmap items assigned to…" (a second list of the team, plus "No one") and "Switch workspace…" (a second list of the two workspaces); and Go to the sidebar's pages and Settings. |
 | Hero | The top of the Acme website: title, one line, two actions and the install command (Marketing site below). |
 | Bento | The Acme website's feature grid: four live tiles (Marketing site below). |
