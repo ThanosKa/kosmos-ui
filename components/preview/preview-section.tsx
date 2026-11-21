@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-/** The page body of a component's review preview (`registry/kosmos/examples/<name>.tsx`). */
+/** The page body of an example that shows a component in several labelled groups. */
 export function PreviewStack({ children }: { children: ReactNode }) {
   return <div className="flex w-full max-w-5xl flex-col gap-10">{children}</div>;
 }
 
-/** One labelled group on a review preview: the state matrix, sizes, with icons, ... */
+/** One labelled group on such an example. */
 export function PreviewSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">

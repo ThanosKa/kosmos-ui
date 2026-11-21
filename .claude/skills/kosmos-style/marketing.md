@@ -10,7 +10,7 @@ A marketing block sets no padding around itself: the page that stacks them sets 
 - The hero takes room above it, `pt-16 md:pt-24`, and less below, `pb-10 md:pb-12`, when a showcase or strip that belongs to it follows (a Showcase right under it, or a Logo marquee of the stack or of customers), so the product shows in the first screen.
 - The last section before the footer keeps `pb-28 md:pb-40`, so the page ends on a pause rather than on the footer's edge.
 - The text column is `max-w-5xl`; a showcase (a live app in a frame, a grid of tiles) widens to `max-w-6xl`. The FAQ keeps its own 672px column inside it.
-- A block's demo and review preview wrap it in the same padding a page would give it (`px-4 py-14 sm:px-6 sm:py-20` in the demo frame).
+- A block's demo wraps it in the same padding a page would give it (`px-4 py-14 sm:px-6 sm:py-20` in the demo frame).
 
 ## Section grammar
 

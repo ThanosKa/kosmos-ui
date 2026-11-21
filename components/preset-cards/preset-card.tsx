@@ -48,7 +48,7 @@ type PresetStageProps = Omit<PresetCardProps, 'children' | 'bodyClassName'> & {
  * A card whose body is a small inset screen with an overlay pinned open in it. `transform` makes the
  * stage the containing block of every `fixed` descendant, so a dialog, drawer, menu or toast portalled
  * into it fills the stage instead of the page. Pin the overlay with controlled `open`, `modal={false}`
- * and `initialFocus={false}`, as on the review previews.
+ * and `initialFocus={false}`, as on the thumbnails.
  */
 export function PresetStage({ stageClassName, inert = true, children, ...card }: PresetStageProps) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
