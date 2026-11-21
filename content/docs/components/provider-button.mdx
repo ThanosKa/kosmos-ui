@@ -1,0 +1,74 @@
+---
+title: Provider button
+description: A button that logs in with another account, such as Google or GitHub, with a Last used badge.
+---
+
+<ComponentPreview name="provider-button-demo" />
+
+## Installation
+
+<ComponentInstall name="provider-button" />
+
+## Usage
+
+```tsx
+import { GitHubIcon, GoogleIcon, ProviderButton, ProviderButtonGroup } from '@/components/ui/provider-button';
+```
+
+```tsx
+<ProviderButtonGroup>
+  <ProviderButton name="Google" icon={<GoogleIcon />} lastUsed onClick={() => signIn('google')} />
+  <ProviderButton name="GitHub" icon={<GitHubIcon />} onClick={() => signIn('github')} />
+</ProviderButtonGroup>
+```
+
+Each button reads "Continue with" and the provider's name. The Google and GitHub marks come with the component in one color, so they follow the text color in light and dark mode. For another provider, pass its mark as `icon` with `data-icon="inline-start"`.
+
+`lastUsed` adds a "Last used" badge on the top edge of a button. Set it on the way this browser logged in last time, so people who come back pick the same account. The group makes room above itself for the badge. Keep that choice in a cookie or local storage when someone logs in.
+
+## Examples
+
+### Side by side
+
+`orientation="horizontal"` sets the buttons side by side when each has at least 128px, and stacks them in a narrower container. The visible label is the provider's name alone, and screen readers still hear "Continue with Google".
+
+<ComponentPreview name="provider-button-horizontal" />
+
+### Pending
+
+While the provider's page opens, `pending` shows a spinner in place of the mark. Disable the other buttons too, so a second click doesn't start another login.
+
+<ComponentPreview name="provider-button-pending" />
+
+## API
+
+### ProviderButtonGroup
+
+Renders a `<div>` and accepts all its props.
+
+<TypeTable
+  type={{
+    orientation: {
+      description: 'A column, or side by side when the buttons fit, with the provider name alone as the visible label.',
+      type: "'vertical' | 'horizontal'",
+      default: "'vertical'",
+    },
+  }}
+/>
+
+### ProviderButton
+
+Takes every prop of the [Base UI Button](https://base-ui.com/react/components/button) except `children`, plus:
+
+<TypeTable
+  type={{
+    name: { description: 'The provider’s name, such as Google.', type: 'string', required: true },
+    icon: { description: 'The provider’s mark, 16px, with `data-icon="inline-start"`.', type: 'ReactNode', required: true },
+    lastUsed: { description: 'Adds a "Last used" badge.', type: 'boolean', default: 'false' },
+    pending: { description: 'Shows a spinner in place of the mark and disables the button.', type: 'boolean', default: 'false' },
+  }}
+/>
+
+### GoogleIcon and GitHubIcon
+
+The providers’ marks in one color, from [Simple Icons](https://simpleicons.org). They render an `<svg>` and accept all its props.

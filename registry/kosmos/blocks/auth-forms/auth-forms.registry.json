@@ -3,8 +3,10 @@
   "name": "auth-forms",
   "type": "registry:block",
   "title": "Auth forms",
-  "description": "Log in, sign up, the email code that confirms a new account, and password reset, as four forms in one card layout. Each has labels, inline errors, a loading state and a success state, and AuthForms switches between them in place.",
-  "dependencies": ["lucide-react@^1.50.0"],
+  "description": "Log in, sign up, the email code that confirms a new account, password reset and the new password it leads to, plus an email-first log in. Each has labels, inline errors, a loading state and a success state, in a card or on the page, and AuthForms switches between them in place.",
+  "dependencies": [
+    "lucide-react@^1.50.0"
+  ],
   "registryDependencies": [
     "@kosmos/tokens",
     "@kosmos/cn",
@@ -12,10 +14,19 @@
     "@kosmos/button",
     "@kosmos/field",
     "@kosmos/input",
-    "@kosmos/otp-field"
+    "@kosmos/otp-field",
+    "@kosmos/password-input",
+    "@kosmos/provider-button",
+    "@kosmos/separator"
   ],
-  "categories": ["auth"],
-  "meta": { "group": "blocks", "section": "application", "tier": "free" },
+  "categories": [
+    "auth"
+  ],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
   "files": [
     {
       "path": "registry/kosmos/blocks/auth-forms/auth-forms.tsx",

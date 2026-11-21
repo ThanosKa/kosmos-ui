@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-email-first",
+  "type": "registry:block",
+  "title": "Auth email first",
+  "description": "A log in that asks one thing at a time: the email first, then the password or a code sent to the email, with Google and GitHub above and a Last used badge.",
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/auth-forms"
+  ],
+  "categories": [
+    "auth"
+  ],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/auth-forms/auth-email-first.tsx",
+      "type": "registry:component"
+    }
+  ]
+}

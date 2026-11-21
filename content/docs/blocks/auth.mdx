@@ -1,13 +1,13 @@
 ---
 title: Auth
-description: Log in, sign up, the email code that confirms a new account, and password reset, with labels, inline errors, loading and success states.
+description: Log in, sign up, the email code that confirms a new account, password reset and a new password, as forms and as full pages, with labels, inline errors, loading and success states.
 ---
 
 ## Installation
 
 <ComponentInstall name="auth-forms" />
 
-The block brings [Field](/docs/components/field), [Input](/docs/components/input), [OTP field](/docs/components/otp-field) and [Button](/docs/components/button) with it, and lands in `components/auth-forms.tsx`.
+The block brings [Field](/docs/components/field), [Input](/docs/components/input), [Password input](/docs/components/password-input), [OTP field](/docs/components/otp-field), [Provider button](/docs/components/provider-button), [Separator](/docs/components/separator) and [Button](/docs/components/button) with it, and lands in `components/auth-forms.tsx`.
 
 ## Usage
 
@@ -50,6 +50,7 @@ import { AuthForms } from '@/components/auth-forms';
   onResendCode={sendCode}
   onLogIn={logIn}
   onResetPassword={sendResetLink}
+  onSetPassword={saveNewPassword}
 />;
 ```
 
@@ -57,25 +58,50 @@ Every handler can return a promise: the form shows its loading state until it se
 
 ## What it does
 
-- **Other ways in**: pass buttons such as single sign-on as `alternatives`. They sit above the log in and sign up forms, with an "or" line under them.
+- **Other ways in**: pass buttons as `alternatives`. They sit above the log in and sign up forms, with an "or" line under them. `AuthProviders` makes one [Provider button](/docs/components/provider-button) per provider, Google and GitHub by default. It marks the one used last time and shows a spinner while its page opens.
 - **Log in**: email and password, with a link to reset the password beside its label and a link to sign up under the card. When `onLogIn` succeeds it says who logged in, with a button to continue.
 - **Sign up**: name, email and a password of at least 8 characters, with your terms under the button. When `onSignUp` succeeds, `onViewChange` gets `'email-code'`, the next step. On its own route, send people to the code form from `onSignUp` instead.
 - **Email code**: one box per character of the code. Pasting it, or the code autofill on phones, fills every box, and the form submits itself when you fill the last one. You can send a new code once `resendAfter` seconds have passed.
 - **Forgot password**: asks for the email and sends a reset link. Then it says to check the inbox without telling whether an account uses that address.
+- **New password**: the page your reset link opens. It asks for one new password of at least 8 characters, which people can show to check it, so it needs no second field. Then it says the password changed, with a button to log in. A link that has expired shows your error and a link to send a new one.
+- **Email first**: `EmailFirstForm` asks one thing at a time. First the email, then the password, with a button to get a code by email instead. The email stays on screen with a Change button on both steps, and focus moves to the field of each new step.
+- **On the page or in a card**: every form sits in a card. `appearance="plain"` sets it on the page itself with a larger title, for a full-page layout such as the variants below.
 - **Errors**: once you submit the form, each field says what is wrong under it, and focus moves to the first field to fix. Errors from your server show above the fields, or under the code.
 - **Loading**: the button shows a spinner and says what is happening, the fields can't change, and pressing the button again does nothing.
 - **Keyboard and screen readers**: every field has a visible label. When a link switches the view in `AuthForms`, focus moves to its first field. When a success state replaces a form, focus moves to its title.
 - **Width**: the card is at most 384px wide and fills a narrower container, with less padding below 384px.
 
+## Variants
+
+Each variant is a full page around the forms. Pass a form as `children` to use it on its own route, such as `<AuthBackdrop><LogInForm appearance="plain" /></AuthBackdrop>`.
+
+### Backdrop
+
+The form stands on the page with no card, over a [Flickering grid](/docs/components/flickering-grid) that fades out toward the middle and a [Glow](/docs/components/glow) at the top. Google and GitHub sit side by side above the form, and the one used last time has a "Last used" badge.
+
+<ComponentInstall name="auth-backdrop" />
+
+### Split
+
+The page in two halves. One half holds the form, with your product name above it and the legal links under it. The other holds a customer's quote and the teams that use the product. Below 896px wide, the panel goes and the form stands alone. Pass your own panel as `aside`.
+
+<ComponentInstall name="auth-split" />
+
+### Email first
+
+The email first, then the password or a code sent to the email, in a card in the middle of the page. Your `onContinue` handler looks up the email and picks the next step. Return `'code'` for an account without a password, once you have sent it a code.
+
+<ComponentInstall name="auth-email-first" />
+
 ## API
 
 ### AuthForms
 
-Takes the shared props below, plus every handler of the four forms (`onLogIn`, `alternatives`, `onSignUp`, `legal`, `onVerify`, `onResendCode`, `resendAfter`, `onResetPassword`) and:
+Takes the shared props below, plus every handler of the five forms (`onLogIn`, `alternatives`, `onSignUp`, `legal`, `onVerify`, `onResendCode`, `resendAfter`, `onResetPassword`, `onSetPassword`) and:
 
 <TypeTable
   type={{
-    view: { description: 'The view shown. Use with `onViewChange`.', type: "'log-in' | 'sign-up' | 'email-code' | 'forgot-password'" },
+    view: { description: 'The view shown. Use with `onViewChange`.', type: "'log-in' | 'sign-up' | 'email-code' | 'forgot-password' | 'new-password'" },
     defaultView: { description: 'The view shown at first, when the forms keep their own state.', type: 'AuthView', default: "'log-in'" },
     onViewChange: { description: 'Called with the view a link or a finished sign-up leads to.', type: '(view: AuthView) => void' },
     email: { description: 'The email address, shared by every view so it stays filled in. Use with `onEmailChange`.', type: 'string' },
@@ -96,12 +122,13 @@ Every form takes these.
     links: { description: 'Where the links point. Links to another view switch it instead when `onViewChange` is passed.', type: "Partial<{ 'log-in', 'sign-up', 'forgot-password', terms, privacy, continue: string }>" },
     onViewChange: { description: 'Called with the view a link leads to. With it, those links switch the view instead of navigating.', type: '(view: AuthView) => void' },
     headingLevel: { description: 'The level of the title. Lower it when the page already has an `<h1>`.', type: '1 | 2 | 3 | 4 | 5 | 6', default: '1' },
+    appearance: { description: 'In a card, or on the page itself with a larger title.', type: "'card' | 'plain'", default: "'card'" },
     autoFocus: { description: 'Moves focus to the first field when the form appears.', type: 'boolean', default: 'false' },
     className: { description: 'Classes for the outer element, which holds the card and the line under it.', type: 'string' },
   }}
 />
 
-For previews and tests, every form also takes `pending` (shows the loading state), `defaultError` (an error from the server), and `defaultSubmitted` (shows the field errors). Log in and the email code take `defaultSuccess`, and forgot password takes `defaultSent`, to start in their success state.
+For previews and tests, every form also takes `pending` (shows the loading state), `defaultError` (an error from the server), and `defaultSubmitted` (shows the field errors). Log in, the email code, the new password and email first take `defaultSuccess`, and forgot password takes `defaultSent`, to start in their success state. Email first also takes `defaultStep`.
 
 ### LogInForm
 
@@ -153,3 +180,45 @@ Takes the shared props and the `email`, `defaultEmail`, `onEmailChange` and `ema
     onResetPassword: { description: 'Sends the reset link. Resolve whether or not an account uses the address, so the form never tells who has one.', type: '(email: string) => Promise<void> | void' },
   }}
 />
+
+### NewPasswordForm
+
+Takes the shared props, plus:
+
+<TypeTable
+  type={{
+    email: { description: 'The account whose password changes, from the reset link. Shown in the description and given to password managers.', type: 'string' },
+    onSetPassword: { description: 'Saves the new password. Throw an `Error` to show its message, such as a link that has expired.', type: '(password: string) => Promise<void> | void' },
+  }}
+/>
+
+### EmailFirstForm
+
+Takes the shared props and the `email`, `defaultEmail`, `onEmailChange` and `emailPlaceholder` of AuthForms, plus:
+
+<TypeTable
+  type={{
+    alternatives: { description: 'Other ways in, shown above the email with an "or" line under them.', type: 'ReactNode' },
+    onContinue: { description: "Looks up the email and picks the next step: `'password'`, the default, or `'code'` once it has sent one. Throw an `Error` to show its message.", type: "(email: string) => Promise<'password' | 'code' | void> | 'password' | 'code' | void" },
+    onLogIn: { description: 'Logs in with the password. Throw an `Error` to show its message above the field.', type: '(values: { email: string; password: string }) => Promise<void> | void' },
+    onSendCode: { description: 'Sends a one-time code to the email, to log in without the password.', type: '(email: string) => Promise<void> | void' },
+    onVerify: { description: 'Checks the code and logs in. Throw an `Error` to show its message under the code.', type: '(code: string, email: string) => Promise<void> | void' },
+    length: { description: 'The number of characters in the code.', type: 'number', default: '6' },
+    resendAfter: { description: 'Seconds to wait before a new code can be sent. The wait starts each time a code is sent.', type: 'number', default: '30' },
+  }}
+/>
+
+### AuthProviders
+
+<TypeTable
+  type={{
+    providers: { description: 'The other accounts people can log in with.', type: '{ id: string; name: string; icon: ReactNode }[]', default: 'Google and GitHub' },
+    lastUsed: { description: 'The `id` of the provider this browser used last time, which gets a "Last used" badge.', type: 'string' },
+    onProvider: { description: 'Opens the provider’s page. Its button shows a spinner until the promise settles.', type: '(id: string) => Promise<void> | void' },
+    orientation: { description: 'A column, or side by side when the buttons fit.', type: "'vertical' | 'horizontal'", default: "'vertical'" },
+  }}
+/>
+
+### AuthBackdrop, AuthSplit and AuthEmailFirst
+
+Each takes the form as `children`, and `className`. Without children, each shows its sample form. AuthSplit also takes `aside`, `productName` and `homeHref`.

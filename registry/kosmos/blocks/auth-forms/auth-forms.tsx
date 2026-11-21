@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleCheck, Eye, LoaderCircle, MailCheck } from 'lucide-react';
+import { ArrowLeft, CircleCheck, KeyRound, LoaderCircle, Mail, MailCheck } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/registry/kosmos/lib/cn';
 import { Alert, AlertDescription } from '@/registry/kosmos/ui/alert';
@@ -8,9 +8,15 @@ import { Button } from '@/registry/kosmos/ui/button';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/kosmos/ui/field';
 import { Input } from '@/registry/kosmos/ui/input';
 import { OtpField } from '@/registry/kosmos/ui/otp-field';
+import { PasswordInput } from '@/registry/kosmos/ui/password-input';
+import { GitHubIcon, GoogleIcon, ProviderButton, ProviderButtonGroup } from '@/registry/kosmos/ui/provider-button';
+import { Separator } from '@/registry/kosmos/ui/separator';
 
-/** The screens of the flow. `email-code` asks for the code sent to confirm a new account's email. */
-type AuthView = 'log-in' | 'sign-up' | 'email-code' | 'forgot-password';
+/**
+ * The screens of the flow. `email-code` asks for the code sent to confirm a new account's email, and `new-password` is
+ * the page the reset link opens.
+ */
+type AuthView = 'log-in' | 'sign-up' | 'email-code' | 'forgot-password' | 'new-password';
 
 /** Where the links of the forms point. Inside `AuthForms`, links to another view switch it in place. */
 type AuthLinks = {
@@ -111,6 +117,8 @@ type AuthFormProps = {
   onViewChange?: (view: AuthView) => void;
   /** The level of the title. Lower it when the page already has an `<h1>`. */
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  /** `card` sets the form in a card; `plain` sets it on the page itself, with a larger title, for a full-page layout. */
+  appearance?: 'card' | 'plain';
   /** Moves focus to the first field when the form appears. */
   autoFocus?: boolean;
   /** Shows the form as waiting for the server. For previews; the form sets it itself while its handler runs. */
@@ -133,7 +141,7 @@ type AuthEmailProps = {
   emailPlaceholder?: string;
 };
 
-type ShellProps = Pick<AuthFormProps, 'productName' | 'logo' | 'headingLevel' | 'className'> & {
+type ShellProps = Pick<AuthFormProps, 'productName' | 'logo' | 'headingLevel' | 'appearance' | 'className'> & {
   title: React.ReactNode;
   description: React.ReactNode;
   headingRef?: React.Ref<HTMLHeadingElement>;
@@ -165,6 +173,7 @@ function AuthShell({
   productName = sampleProductName,
   logo,
   headingLevel = 1,
+  appearance = 'card',
   className,
   title,
   description,
@@ -174,13 +183,26 @@ function AuthShell({
 }: ShellProps) {
   const Heading = `h${headingLevel}` as const;
   return (
-    <div data-slot="auth-form" className={cn('@container/auth flex w-full flex-col items-center gap-5', className)}>
-      <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl border border-transparent bg-card p-6 shadow-card @sm/auth:p-8">
+    <div
+      data-slot="auth-form"
+      data-appearance={appearance}
+      className={cn('@container/auth flex w-full flex-col items-center', appearance === 'card' ? 'gap-5' : 'gap-8', className)}
+    >
+      <div
+        className={cn(
+          'flex w-full max-w-sm flex-col gap-6',
+          appearance === 'card' && 'rounded-2xl border border-transparent bg-card p-6 shadow-card @sm/auth:p-8',
+        )}
+      >
         <div className="flex flex-col items-center gap-4 text-center">
           {logo ?? <ProductMark name={productName} />}
           <div className="flex flex-col gap-1">
             {/* Focused by script only, when it replaces the form, so it needs no focus outline. */}
-            <Heading ref={headingRef} tabIndex={-1} className="text-title text-balance text-foreground outline-none">
+            <Heading
+              ref={headingRef}
+              tabIndex={-1}
+              className={cn('text-balance text-foreground outline-none', appearance === 'card' ? 'text-title' : 'text-heading')}
+            >
               {title}
             </Heading>
             <p className="text-body text-pretty text-muted-foreground">{description}</p>
@@ -240,12 +262,61 @@ function Alternatives({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">{children}</div>
-      <div className="flex items-center gap-3 text-caption text-muted-foreground">
-        <span aria-hidden className="flex-1 border-t border-border" />
-        or
-        <span aria-hidden className="flex-1 border-t border-border" />
-      </div>
+      <Separator>or</Separator>
     </div>
+  );
+}
+
+type AuthProvider = { id: string; name: string; icon: React.ReactNode };
+
+const sampleProviders: AuthProvider[] = [
+  { id: 'google', name: 'Google', icon: <GoogleIcon /> },
+  { id: 'github', name: 'GitHub', icon: <GitHubIcon /> },
+];
+
+type AuthProvidersProps = {
+  /** The other accounts people can log in with. Google and GitHub by default. */
+  providers?: AuthProvider[];
+  /** The `id` of the provider this browser logged in with last time, which gets a "Last used" badge. */
+  lastUsed?: string;
+  /** Opens the provider's page. The button shows a spinner until the promise settles. */
+  onProvider?: (id: string) => Promise<void> | void;
+  /** `horizontal` sets the buttons side by side when they fit. */
+  orientation?: 'horizontal' | 'vertical';
+  className?: string;
+};
+
+/** Log in with another account: one Provider button each, for the `alternatives` of a form. */
+function AuthProviders({ providers = sampleProviders, lastUsed, onProvider = sampleRequest, orientation, className }: AuthProvidersProps) {
+  const [pending, setPending] = React.useState<string | null>(null);
+
+  async function open(id: string) {
+    if (pending) return;
+    setPending(id);
+    try {
+      await onProvider(id);
+    } finally {
+      setPending(null);
+    }
+  }
+
+  return (
+    <ProviderButtonGroup orientation={orientation} className={className}>
+      <p role="status" className="sr-only">
+        {pending ? `Opening ${providers.find((provider) => provider.id === pending)?.name ?? ''}…` : null}
+      </p>
+      {providers.map((provider) => (
+        <ProviderButton
+          key={provider.id}
+          name={provider.name}
+          icon={provider.icon}
+          lastUsed={provider.id === lastUsed}
+          pending={pending === provider.id}
+          disabled={pending !== null}
+          onClick={() => open(provider.id)}
+        />
+      ))}
+    </ProviderButtonGroup>
   );
 }
 
@@ -261,31 +332,6 @@ function SubmitButton({ pending, pendingLabel, children }: { pending: boolean; p
         children
       )}
     </Button>
-  );
-}
-
-type PasswordInputProps = Omit<React.ComponentProps<typeof Input>, 'type'>;
-
-/** A password input with a button that shows what was typed. */
-function PasswordInput({ className, ...props }: PasswordInputProps) {
-  const [visible, setVisible] = React.useState(false);
-  return (
-    <div className="relative">
-      <Input type={visible ? 'text' : 'password'} className={cn('pe-10', className)} {...props} />
-      <div className="absolute inset-y-0 end-1.5 flex items-center">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Show password"
-          aria-pressed={visible}
-          onClick={() => setVisible(!visible)}
-          className="aria-pressed:bg-accent"
-        >
-          <Eye aria-hidden />
-        </Button>
-      </div>
-    </div>
   );
 }
 
@@ -306,6 +352,7 @@ function LogInForm({
   links: linksProp,
   onViewChange,
   headingLevel,
+  appearance,
   autoFocus,
   pending: pendingProp = false,
   defaultError,
@@ -329,7 +376,7 @@ function LogInForm({
   const passwordRef = React.useRef<HTMLInputElement>(null);
   const successRef = useFocusWhen<HTMLHeadingElement>(success);
   const errors = { email: emailError(email), password: password === '' ? 'Enter your password.' : null };
-  const shell = { productName, logo, headingLevel, className };
+  const shell = { productName, logo, headingLevel, appearance, className };
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -443,6 +490,7 @@ function SignUpForm({
   links: linksProp,
   onViewChange,
   headingLevel,
+  appearance,
   autoFocus,
   pending: pendingProp = false,
   defaultError,
@@ -483,7 +531,7 @@ function SignUpForm({
 
   return (
     <AuthShell
-      {...{ productName, logo, headingLevel, className }}
+      {...{ productName, logo, headingLevel, appearance, className }}
       title={`Create your ${productName} account`}
       description="Start with the Free plan. No card needed."
       footer={
@@ -597,6 +645,7 @@ function EmailCodeForm({
   links: linksProp,
   onViewChange,
   headingLevel,
+  appearance,
   autoFocus,
   pending: pendingProp = false,
   defaultError,
@@ -626,7 +675,7 @@ function EmailCodeForm({
   const successRef = useFocusWhen<HTMLHeadingElement>(success);
   const incomplete = code.length < length ? `Enter all ${length} digits of the code.` : null;
   const codeError = (submitted ? incomplete : null) ?? error;
-  const shell = { productName, logo, headingLevel, className };
+  const shell = { productName, logo, headingLevel, appearance, className };
 
   React.useEffect(() => {
     if (wait <= 0) return;
@@ -699,7 +748,7 @@ function EmailCodeForm({
       footer={
         <>
           Wrong address?{' '}
-          <AuthLink href={links[backView === 'email-code' ? 'sign-up' : backView]} view={backView} onViewChange={onViewChange}>
+          <AuthLink href={links[backView === 'email-code' || backView === 'new-password' ? 'sign-up' : backView]} view={backView} onViewChange={onViewChange}>
             Use a different email
           </AuthLink>
         </>
@@ -762,6 +811,7 @@ function ForgotPasswordForm({
   links: linksProp,
   onViewChange,
   headingLevel,
+  appearance,
   autoFocus,
   pending: pendingProp = false,
   defaultError,
@@ -783,7 +833,7 @@ function ForgotPasswordForm({
   const emailRef = useFocusWhen<HTMLInputElement>(!sent);
   const sentRef = useFocusWhen<HTMLHeadingElement>(sent);
   const invalid = emailError(email);
-  const shell = { productName, logo, headingLevel, className };
+  const shell = { productName, logo, headingLevel, appearance, className };
   const backToLogIn = (
     <AuthLink href={links['log-in']} view="log-in" onViewChange={onViewChange}>
       Back to log in
@@ -860,12 +910,463 @@ function ForgotPasswordForm({
   );
 }
 
+type NewPasswordFormProps = AuthFormProps & {
+  /** The account whose password changes, from the reset link. Shown in the description and given to password managers. */
+  email?: string;
+  /** Saves the new password. Throw an `Error` to show its message, such as a link that has expired. */
+  onSetPassword?: (password: string) => Promise<void> | void;
+  /** Shows the "Password changed" state from the start. For previews. */
+  defaultSuccess?: boolean;
+};
+
+/** The page the reset link opens: one new password of at least 8 characters, then a way back to log in. */
+function NewPasswordForm({
+  productName = sampleProductName,
+  logo,
+  links: linksProp,
+  onViewChange,
+  headingLevel,
+  appearance,
+  autoFocus,
+  pending: pendingProp = false,
+  defaultError,
+  defaultSubmitted = false,
+  className,
+  email,
+  onSetPassword = sampleRequest,
+  defaultSuccess = false,
+}: NewPasswordFormProps) {
+  const links = { ...sampleLinks, ...linksProp };
+  const [password, setPassword] = React.useState('');
+  const [submitted, setSubmitted] = React.useState(defaultSubmitted);
+  const [success, setSuccess] = React.useState(defaultSuccess);
+  const { pending, error, run } = useSubmit(pendingProp, defaultError);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
+  const successRef = useFocusWhen<HTMLHeadingElement>(success);
+  const invalid = password.length < minPasswordLength ? `Use at least ${minPasswordLength} characters.` : null;
+  const shell = { productName, logo, headingLevel, appearance, className };
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (pending) return;
+    setSubmitted(true);
+    if (invalid) return passwordRef.current?.focus();
+    if (await run(() => onSetPassword(password))) setSuccess(true);
+  }
+
+  if (success) {
+    return (
+      <AuthShell
+        {...shell}
+        logo={<StatusMark icon={CircleCheck} tone="success" />}
+        headingRef={successRef}
+        title="Password changed"
+        description="Your new password works from now on. Log in with it to continue."
+      >
+        <Button
+          variant="primary"
+          size="lg"
+          href={links['log-in']}
+          className="w-full"
+          onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+            if (!onViewChange) return;
+            event.preventDefault();
+            onViewChange('log-in');
+          }}
+        >
+          Log in
+        </Button>
+      </AuthShell>
+    );
+  }
+
+  return (
+    <AuthShell
+      {...shell}
+      logo={<StatusMark icon={KeyRound} tone="neutral" />}
+      title="Set a new password"
+      description={
+        email ? (
+          <>
+            Choose a new password for <span className="font-medium wrap-anywhere text-foreground">{email}</span>.
+          </>
+        ) : (
+          'Choose a new password for your account.'
+        )
+      }
+      footer={
+        <>
+          Link not working?{' '}
+          <AuthLink href={links['forgot-password']} view="forgot-password" onViewChange={onViewChange}>
+            Send a new link
+          </AuthLink>
+        </>
+      }
+    >
+      <form noValidate onSubmit={submit} aria-busy={pending || undefined} className="flex flex-col gap-4">
+        {/* Tells password managers which account the new password belongs to. */}
+        {email ? <input type="email" name="email" autoComplete="username" value={email} readOnly hidden /> : null}
+        <FormAlert error={error} />
+        <Field invalid={submitted && invalid !== null}>
+          <FieldLabel>New password</FieldLabel>
+          <PasswordInput
+            ref={passwordRef}
+            name="password"
+            autoComplete="new-password"
+            minLength={minPasswordLength}
+            autoFocus={autoFocus}
+            readOnly={pending}
+            value={password}
+            onValueChange={setPassword}
+          />
+          {submitted && invalid ? <FieldError>{invalid}</FieldError> : <FieldDescription>At least {minPasswordLength} characters.</FieldDescription>}
+        </Field>
+        <SubmitButton pending={pending} pendingLabel="Saving…">
+          Save password
+        </SubmitButton>
+      </form>
+    </AuthShell>
+  );
+}
+
+/** The steps of `EmailFirstForm`: the email, then the password or a one-time code sent to it. */
+type EmailFirstStep = 'email' | 'password' | 'code';
+
+type EmailFirstFormProps = AuthFormProps &
+  AuthEmailProps & {
+    /** Other ways in, such as Provider buttons, shown above the email with an "or" line under them. */
+    alternatives?: React.ReactNode;
+    /**
+     * Checks the email, such as looking up the account, and picks the next step: `password` (the default when it returns
+     * nothing), or `code` for an account without a password, once it has sent the code. Throw an `Error` to show its message.
+     */
+    onContinue?: (email: string) => Promise<EmailFirstStep | void> | EmailFirstStep | void;
+    /** Logs in with the password. Throw an `Error` to show its message above the field. */
+    onLogIn?: (values: LogInValues) => Promise<void> | void;
+    /** Sends a one-time code to the email, to log in without the password. */
+    onSendCode?: (email: string) => Promise<void> | void;
+    /** Checks the code and logs in. Throw an `Error` to show its message under the code. */
+    onVerify?: (code: string, email: string) => Promise<void> | void;
+    /** The number of characters in the code. */
+    length?: number;
+    /** Seconds to wait before a new code can be sent. The wait starts each time a code is sent. */
+    resendAfter?: number;
+    /** The step shown at first. For previews. */
+    defaultStep?: EmailFirstStep;
+    /** Shows the logged-in state from the start. For previews. */
+    defaultSuccess?: boolean;
+  };
+
+/**
+ * One question at a time: the email first, then the password, or a code sent to the email instead. The email stays
+ * on screen with a way to change it, and focus moves to the field of each new step.
+ */
+function EmailFirstForm({
+  productName = sampleProductName,
+  logo,
+  links: linksProp,
+  onViewChange,
+  headingLevel,
+  appearance,
+  autoFocus,
+  pending: pendingProp = false,
+  defaultError,
+  defaultSubmitted = false,
+  className,
+  email: emailProp,
+  defaultEmail = '',
+  onEmailChange,
+  emailPlaceholder = sampleEmailPlaceholder,
+  alternatives,
+  onContinue = sampleRequest,
+  onLogIn = sampleRequest,
+  onSendCode = sampleRequest,
+  onVerify = sampleRequest,
+  length = 6,
+  resendAfter = 30,
+  defaultStep = 'email',
+  defaultSuccess = false,
+}: EmailFirstFormProps) {
+  const links = { ...sampleLinks, ...linksProp };
+  const [step, setStep] = React.useState(defaultStep);
+  const [email, setEmail] = useControllable(emailProp, defaultEmail, onEmailChange);
+  const [password, setPassword] = React.useState('');
+  const [code, setCode] = React.useState('');
+  const [submitted, setSubmitted] = React.useState(defaultSubmitted);
+  const [success, setSuccess] = React.useState(defaultSuccess);
+  // Focus moves into a step only when someone moved to it, never on the first render.
+  const [moved, setMoved] = React.useState(false);
+  const [sendingCode, setSendingCode] = React.useState(false);
+  const [resent, setResent] = React.useState(false);
+  const [wait, setWait] = React.useState(defaultStep === 'code' ? resendAfter : 0);
+  const { pending, error, setError, run } = useSubmit(pendingProp, defaultError);
+  const fieldRef = React.useRef<HTMLInputElement>(null);
+  const codeRef = React.useRef<HTMLDivElement>(null);
+  const successRef = useFocusWhen<HTMLHeadingElement>(success);
+  const address = email.trim();
+  const errors = {
+    email: emailError(email),
+    password: password === '' ? 'Enter your password.' : null,
+    code: code.length < length ? `Enter all ${length} digits of the code.` : null,
+  };
+  const shell = { productName, logo, headingLevel, appearance, className };
+  const focusCode = () => codeRef.current?.querySelector('input')?.focus();
+
+  React.useEffect(() => {
+    if (moved && step === 'code') codeRef.current?.querySelector('input')?.focus();
+  }, [moved, step]);
+
+  React.useEffect(() => {
+    if (wait <= 0) return;
+    const timer = setTimeout(() => setWait(wait - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [wait]);
+
+  function go(next: EmailFirstStep) {
+    if (next === 'code') setWait(resendAfter);
+    setSubmitted(false);
+    setError(null);
+    setResent(false);
+    setMoved(true);
+    setStep(next);
+  }
+
+  async function submitEmail(event: React.FormEvent) {
+    event.preventDefault();
+    if (pending) return;
+    setSubmitted(true);
+    if (errors.email) return fieldRef.current?.focus();
+    let next: EmailFirstStep = 'password';
+    const found = await run(async () => {
+      next = (await onContinue(address)) || 'password';
+    });
+    if (found) go(next);
+  }
+
+  async function submitPassword(event: React.FormEvent) {
+    event.preventDefault();
+    if (pending) return;
+    setSubmitted(true);
+    if (errors.password) return fieldRef.current?.focus();
+    if (await run(() => onLogIn({ email: address, password }))) setSuccess(true);
+  }
+
+  async function submitCode(event: React.FormEvent) {
+    event.preventDefault();
+    if (pending) return;
+    setSubmitted(true);
+    if (errors.code) return focusCode();
+    if (await run(() => onVerify(code, address))) setSuccess(true);
+    else focusCode();
+  }
+
+  async function sendCode() {
+    if (pending || (step === 'code' && wait > 0)) return;
+    setSendingCode(true);
+    const sent = await run(() => onSendCode(address));
+    setSendingCode(false);
+    if (!sent) return;
+    if (step === 'code') {
+      setCode('');
+      setResent(true);
+      setWait(resendAfter);
+      focusCode();
+    } else go('code');
+  }
+
+  if (success) {
+    return (
+      <AuthShell
+        {...shell}
+        logo={<StatusMark icon={CircleCheck} tone="success" />}
+        headingRef={successRef}
+        title="You’re logged in"
+        description={
+          <>
+            Welcome back. You’re logged in as{' '}
+            <span className="wrap-anywhere">
+              <span className="font-medium text-foreground">{address}</span>.
+            </span>
+          </>
+        }
+      >
+        <Button variant="primary" size="lg" href={links.continue} className="w-full">
+          Continue to {productName}
+        </Button>
+      </AuthShell>
+    );
+  }
+
+  const enter =
+    'flex flex-col gap-6 transition-[opacity,translate] duration-base ease-power3-out starting:opacity-0 motion-safe:starting:translate-y-1';
+
+  const emailChip = (
+    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent bg-muted py-1 ps-3 pe-1 shadow-inset">
+      <Mail aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1 truncate text-body text-foreground" title={address}>
+        {address}
+      </span>
+      <Button variant="ghost" size="sm" aria-label={`Change email, ${address}`} disabled={pending} focusableWhenDisabled onClick={() => go('email')}>
+        Change
+      </Button>
+    </div>
+  );
+
+  if (step === 'password') {
+    return (
+      <AuthShell {...shell} title="Enter your password" description={`Log in to ${productName} with your password, or get a code by email.`}>
+        <div key={step} className={enter}>
+          {emailChip}
+          <form noValidate onSubmit={submitPassword} aria-busy={pending || undefined} className="flex flex-col gap-4">
+            {/* Tells password managers which account the password belongs to. */}
+            <input type="email" name="email" autoComplete="username" value={address} readOnly hidden />
+            <FormAlert error={error} />
+            {/* The link sits in the label row but comes after the input in the DOM, so Tab goes from the password to the button. */}
+            <Field invalid={submitted && errors.password !== null} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline">
+              <FieldLabel className="col-start-1 row-start-1">Password</FieldLabel>
+              <div className="col-span-2 row-start-2">
+                <PasswordInput
+                  ref={fieldRef}
+                  name="password"
+                  autoComplete="current-password"
+                  autoFocus={moved || autoFocus}
+                  readOnly={pending}
+                  value={password}
+                  onValueChange={setPassword}
+                />
+              </div>
+              <FieldError className="col-span-2 row-start-3">{errors.password}</FieldError>
+              <span className="col-start-2 row-start-1 text-small">
+                <AuthLink href={links['forgot-password']} view="forgot-password" onViewChange={onViewChange}>
+                  Forgot password?
+                </AuthLink>
+              </span>
+            </Field>
+            <SubmitButton pending={pending && !sendingCode} pendingLabel="Logging in…">
+              Log in
+            </SubmitButton>
+          </form>
+          <Separator>or</Separator>
+          <Button variant="secondary" size="lg" className="w-full" disabled={pending} focusableWhenDisabled onClick={sendCode}>
+            {sendingCode ? (
+              <LoaderCircle aria-hidden data-icon="inline-start" className="motion-safe:animate-spin motion-reduce:animate-pulse" />
+            ) : (
+              <Mail aria-hidden data-icon="inline-start" />
+            )}
+            {sendingCode ? 'Sending code…' : 'Email me a code instead'}
+          </Button>
+        </div>
+      </AuthShell>
+    );
+  }
+
+  if (step === 'code') {
+    const codeError = (submitted ? errors.code : null) ?? error;
+    return (
+      <AuthShell
+        {...shell}
+        logo={<StatusMark icon={MailCheck} tone="neutral" />}
+        title="Check your email"
+        description={`Enter the ${length}-digit code we sent to your email.`}
+      >
+        <div key={step} className={enter}>
+          {emailChip}
+          <form noValidate onSubmit={submitCode} aria-busy={pending || undefined} className="flex flex-col gap-4">
+            <Field invalid={codeError !== null} className="items-center">
+              <FieldLabel className="sr-only">Code</FieldLabel>
+              <OtpField
+                ref={codeRef}
+                name="code"
+                length={length}
+                autoSubmit
+                readOnly={pending}
+                value={code}
+                onValueChange={(value) => {
+                  setCode(value);
+                  setError(null);
+                }}
+              />
+              <FieldError>{codeError}</FieldError>
+            </Field>
+            <SubmitButton pending={pending && !sendingCode} pendingLabel="Checking the code…">
+              Log in
+            </SubmitButton>
+            <div className="flex flex-wrap items-center justify-center gap-x-1 text-small text-muted-foreground">
+              <span>Didn’t get the email?</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={pending || wait > 0}
+                focusableWhenDisabled
+                onClick={sendCode}
+                className="tabular-nums"
+              >
+                {sendingCode ? 'Sending…' : wait > 0 ? `Send a new code in ${formatWait(wait)}` : 'Send a new code'}
+              </Button>
+            </div>
+            <p role="status" className="text-center text-small text-muted-foreground empty:sr-only">
+              {resent ? `We sent a new code to ${address}.` : null}
+            </p>
+          </form>
+          <Button variant="ghost" className="self-center" disabled={pending} focusableWhenDisabled onClick={() => go('password')}>
+            <ArrowLeft aria-hidden data-icon="inline-start" />
+            Use my password instead
+          </Button>
+        </div>
+      </AuthShell>
+    );
+  }
+
+  return (
+    <AuthShell
+      {...shell}
+      title={`Log in to ${productName}`}
+      description="Enter your email to log in."
+      footer={
+        <>
+          New to {productName}?{' '}
+          <AuthLink href={links['sign-up']} view="sign-up" onViewChange={onViewChange}>
+            Create an account
+          </AuthLink>
+        </>
+      }
+    >
+      <div key={step} className={enter}>
+        {alternatives ? <Alternatives>{alternatives}</Alternatives> : null}
+        <form noValidate onSubmit={submitEmail} aria-busy={pending || undefined} className="flex flex-col gap-4">
+          <FormAlert error={error} />
+          <Field invalid={submitted && errors.email !== null}>
+            <FieldLabel>Email</FieldLabel>
+            <Input
+              ref={fieldRef}
+              type="email"
+              name="email"
+              autoComplete="email"
+              placeholder={emailPlaceholder}
+              autoFocus={moved || autoFocus}
+              readOnly={pending}
+              value={email}
+              onValueChange={setEmail}
+            />
+            <FieldError>{errors.email}</FieldError>
+          </Field>
+          <SubmitButton pending={pending} pendingLabel="Finding your account…">
+            Continue
+          </SubmitButton>
+        </form>
+      </div>
+    </AuthShell>
+  );
+}
+
 type AuthFormsProps = Omit<AuthFormProps, 'autoFocus' | 'pending' | 'defaultError' | 'defaultSubmitted'> &
   AuthEmailProps &
   Pick<LogInFormProps, 'onLogIn' | 'alternatives'> &
   Pick<SignUpFormProps, 'onSignUp' | 'legal'> &
   Pick<EmailCodeFormProps, 'onVerify' | 'onResendCode' | 'resendAfter'> &
-  Pick<ForgotPasswordFormProps, 'onResetPassword'> & {
+  Pick<ForgotPasswordFormProps, 'onResetPassword'> &
+  Pick<NewPasswordFormProps, 'onSetPassword'> & {
     /** The view shown. Use with `onViewChange`. */
     view?: AuthView;
     /** The view shown at first, when the forms keep their own state. */
@@ -874,7 +1375,7 @@ type AuthFormsProps = Omit<AuthFormProps, 'autoFocus' | 'pending' | 'defaultErro
 
 /**
  * The whole flow in one place: log in, sign up, the email code that confirms a new account,
- * and the password reset. Links between views switch them in place, the email typed in one
+ * the password reset and the new password it leads to. Links between views switch them in place, the email typed in one
  * view carries to the next, and focus moves to the first field of the new view.
  */
 function AuthForms({
@@ -893,6 +1394,7 @@ function AuthForms({
   onResendCode,
   resendAfter,
   onResetPassword,
+  onSetPassword,
   ...shared
 }: AuthFormsProps) {
   const [view, setView] = useControllable(viewProp, defaultView, onViewChange);
@@ -921,24 +1423,33 @@ function AuthForms({
         resendAfter={resendAfter}
       />
     );
+  if (view === 'new-password') return <NewPasswordForm key={view} {...props} email={email.trim() || undefined} onSetPassword={onSetPassword} />;
   if (view === 'forgot-password') return <ForgotPasswordForm key={view} {...props} {...emailProps} onResetPassword={onResetPassword} />;
   return <LogInForm key={view} {...props} {...emailProps} onLogIn={onLogIn} alternatives={alternatives} />;
 }
 
 export {
   AuthForms,
+  AuthProviders,
   EmailCodeForm,
+  EmailFirstForm,
   ForgotPasswordForm,
   LogInForm,
+  NewPasswordForm,
   SignUpForm,
   type AuthFormProps,
   type AuthFormsProps,
   type AuthLinks,
+  type AuthProvider,
+  type AuthProvidersProps,
   type AuthView,
   type EmailCodeFormProps,
+  type EmailFirstFormProps,
+  type EmailFirstStep,
   type ForgotPasswordFormProps,
   type LogInFormProps,
   type LogInValues,
+  type NewPasswordFormProps,
   type SignUpFormProps,
   type SignUpValues,
 };

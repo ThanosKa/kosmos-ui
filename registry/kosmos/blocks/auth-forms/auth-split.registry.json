@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-split",
+  "type": "registry:block",
+  "title": "Auth split",
+  "description": "A full page for log in and sign up in two halves: the form with the product name and legal links, and a customer's quote beside it. Below 896px wide the form stands alone.",
+  "registryDependencies": [
+    "@kosmos/tokens",
+    "@kosmos/cn",
+    "@kosmos/auth-forms",
+    "@kosmos/avatar"
+  ],
+  "categories": [
+    "auth"
+  ],
+  "meta": {
+    "group": "blocks",
+    "section": "application",
+    "tier": "free"
+  },
+  "files": [
+    {
+      "path": "registry/kosmos/blocks/auth-forms/auth-split.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
