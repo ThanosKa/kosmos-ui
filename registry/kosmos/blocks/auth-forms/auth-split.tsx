@@ -83,8 +83,8 @@ type AuthSplitProps = {
  */
 function AuthSplit({ children, aside, productName = sampleProductName, homeHref = sampleLinks.home, className }: AuthSplitProps) {
   return (
-    <div data-slot="auth-split" className={cn('@container/split w-full bg-background', className)}>
-      <div className="grid min-h-svh @4xl/split:grid-cols-2">
+    <div data-slot="auth-split" className={cn('@container/split flex min-h-svh w-full flex-col bg-background', className)}>
+      <div className="grid flex-1 @4xl/split:grid-cols-2">
         <div className="flex min-w-0 flex-col p-6 @sm/split:p-8">
           <header>
             <a
